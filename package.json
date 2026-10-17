@@ -1,0 +1,11 @@
+{
+  "name": "sutra",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "pnpm --filter @sutra/ui build",
+    "dev": "pnpm --filter @sutra/ui dev",
+    "playground": "pnpm --filter playground dev",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

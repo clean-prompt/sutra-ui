@@ -1,0 +1,454 @@
+import * as React from "react";
+import { Dialog as DialogPrimitive, AlertDialog as AlertDialogPrimitive } from "radix-ui";
+import { cva, type VariantProps } from "class-variance-authority";
+import { RiCloseLine } from "@remixicon/react";
+import { cn, focusRing } from "../lib/cn";
+import { Button, type ButtonProps } from "./button";
+import { useControllableState } from "../hooks/use-controllable-state";
+
+/* ------------------------------------------------------------------ */
+/* Shared pieces                                                       */
+/* ------------------------------------------------------------------ */
+
+const overlayClass =
+  "fixed inset-0 z-50 bg-overlay backdrop-blur-[2px] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0";
+
+export const dialogContentVariants = cva(
+  [
+    "fixed z-50 flex flex-col gap-4 border border-border bg-background p-6 text-foreground shadow-2xl outline-none duration-200",
+    // Mobile: bottom sheet
+    "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-2xl pb-[max(1.5rem,env(safe-area-inset-bottom))]",
+    // Desktop: centered modal
+    "sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:max-h-[calc(100dvh-2rem)] sm:w-full sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:pb-6",
+    "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
+    "max-sm:data-[state=open]:slide-in-from-bottom max-sm:data-[state=closed]:slide-out-to-bottom",
+    "sm:data-[state=open]:zoom-in-95 sm:data-[state=closed]:zoom-out-95",
+  ],
+  {
+    variants: {
+      size: {
+        sm: "sm:max-w-sm",
+        md: "sm:max-w-lg",
+        lg: "sm:max-w-2xl",
+        xl: "sm:max-w-4xl",
+        full: "sm:h-[calc(100dvh-2rem)] sm:max-w-[calc(100vw-2rem)]",
+      },
+    },
+    defaultVariants: { size: "md" },
+  }
+);
+
+const closeButtonClass = "absolute right-3 top-3 text-muted-foreground hover:text-foreground";
+
+const MobileHandle = () => (
+  <span aria-hidden className="mx-auto -mt-3 mb-1 block h-1 w-10 shrink-0 rounded-full bg-border-strong sm:hidden" />
+);
+
+export type DialogTone = "default" | "primary" | "success" | "warning" | "destructive" | "info";
+
+const toneClass: Record<DialogTone, string> = {
+  default: "bg-muted text-foreground ring-muted/50",
+  primary: "bg-primary-soft text-primary ring-primary-soft/50",
+  success: "bg-success-soft text-success ring-success-soft/50",
+  warning: "bg-warning-soft text-warning-soft-foreground ring-warning-soft/50",
+  destructive: "bg-destructive-soft text-destructive ring-destructive-soft/50",
+  info: "bg-info-soft text-info ring-info-soft/50",
+};
+
+/** Featured icon in a soft ringed circle. */
+function FeaturedIcon({ icon, tone = "primary" }: { icon: React.ReactNode; tone?: DialogTone }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "mb-3 inline-flex size-11 shrink-0 items-center justify-center rounded-full ring-[6px] [&_svg]:size-5",
+        toneClass[tone]
+      )}
+    >
+      {icon}
+    </span>
+  );
+}
+
+export interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Featured icon shown above the title. */
+  icon?: React.ReactNode;
+  tone?: DialogTone;
+  align?: "start" | "center";
+}
+
+function renderHeader(
+  { className, icon, tone, align = "start", children, ...props }: DialogHeaderProps,
+  ref: React.ForwardedRef<HTMLDivElement>
+) {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex flex-col gap-1.5 pr-6",
+        align === "center" ? "items-center pr-0 text-center" : "items-start text-left",
+        className
+      )}
+      {...props}
+    >
+      {icon && <FeaturedIcon icon={icon} tone={tone} />}
+      {children}
+    </div>
+  );
+}
+
+export interface DialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Separate the footer with a top border and subtle background. */
+  bordered?: boolean;
+}
+
+function renderFooter({ className, bordered, ...props }: DialogFooterProps, ref: React.ForwardedRef<HTMLDivElement>) {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex flex-col-reverse gap-2 max-sm:[&>*]:w-full sm:flex-row sm:items-center sm:justify-end",
+        bordered && "-mx-6 -mb-6 mt-2 border-t border-border bg-subtle px-6 py-4 max-sm:pb-[max(1rem,env(safe-area-inset-bottom))] sm:rounded-b-2xl",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+const titleClass = "text-lg font-semibold leading-tight tracking-tight text-foreground";
+const descriptionClass = "text-sm text-muted-foreground";
+const bodyClass = "-mx-6 min-h-0 flex-1 overflow-y-auto px-6 text-sm scrollbar-thin";
+
+/* ------------------------------------------------------------------ */
+/* Dialog                                                              */
+/* ------------------------------------------------------------------ */
+
+/** Modal dialog root. */
+export const Dialog = DialogPrimitive.Root;
+/** Element that opens the dialog. */
+export const DialogTrigger = DialogPrimitive.Trigger;
+/** Portal for custom compositions. */
+export const DialogPortal = DialogPrimitive.Portal;
+/** Closes the dialog when clicked. */
+export const DialogClose = DialogPrimitive.Close;
+
+/** Dimmed, blurred backdrop. */
+export const DialogOverlay = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Overlay>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+>(({ className, ...props }, ref) => <DialogPrimitive.Overlay ref={ref} className={cn(overlayClass, className)} {...props} />);
+DialogOverlay.displayName = "DialogOverlay";
+
+export interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
+    VariantProps<typeof dialogContentVariants> {
+  /** Show the top-right close button. Default true. */
+  showClose?: boolean;
+  overlayClassName?: string;
+}
+
+/** Dialog panel: centered modal on desktop, bottom sheet on mobile. */
+export const DialogContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Content>, DialogContentProps>(
+  ({ className, size, showClose = true, overlayClassName, children, ...props }, ref) => (
+    <DialogPrimitive.Portal>
+      <DialogOverlay className={overlayClassName} />
+      <DialogPrimitive.Content ref={ref} className={cn(dialogContentVariants({ size }), className)} {...props}>
+        <MobileHandle />
+        {children}
+        {showClose && (
+          <DialogPrimitive.Close asChild>
+            <Button variant="ghost" size="icon-sm" className={closeButtonClass} aria-label="Close">
+              <RiCloseLine />
+            </Button>
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </DialogPrimitive.Portal>
+  )
+);
+DialogContent.displayName = "DialogContent";
+
+/** Title block with optional featured icon. */
+export const DialogHeader = React.forwardRef<HTMLDivElement, DialogHeaderProps>(renderHeader);
+DialogHeader.displayName = "DialogHeader";
+
+/** Accessible dialog title. */
+export const DialogTitle = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, ref) => <DialogPrimitive.Title ref={ref} className={cn(titleClass, className)} {...props} />);
+DialogTitle.displayName = "DialogTitle";
+
+/** Accessible dialog description. */
+export const DialogDescription = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Description ref={ref} className={cn(descriptionClass, className)} {...props} />
+));
+DialogDescription.displayName = "DialogDescription";
+
+/** Scrollable main content area. */
+export const DialogBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn(bodyClass, className)} {...props} />
+);
+DialogBody.displayName = "DialogBody";
+
+/** Action row; stacks full-width on mobile. */
+export const DialogFooter = React.forwardRef<HTMLDivElement, DialogFooterProps>(renderFooter);
+DialogFooter.displayName = "DialogFooter";
+
+/* ------------------------------------------------------------------ */
+/* AlertDialog                                                         */
+/* ------------------------------------------------------------------ */
+
+/** Interrupting confirmation dialog root (no outside-click dismiss). */
+export const AlertDialog = AlertDialogPrimitive.Root;
+/** Element that opens the alert dialog. */
+export const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
+
+export interface AlertDialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>,
+    VariantProps<typeof dialogContentVariants> {
+  overlayClassName?: string;
+}
+
+/** Alert dialog panel (defaults to the `sm` size). */
+export const AlertDialogContent = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Content>,
+  AlertDialogContentProps
+>(({ className, size = "sm", overlayClassName, children, ...props }, ref) => (
+  <AlertDialogPrimitive.Portal>
+    <AlertDialogPrimitive.Overlay className={cn(overlayClass, overlayClassName)} />
+    <AlertDialogPrimitive.Content ref={ref} className={cn(dialogContentVariants({ size }), className)} {...props}>
+      <MobileHandle />
+      {children}
+    </AlertDialogPrimitive.Content>
+  </AlertDialogPrimitive.Portal>
+));
+AlertDialogContent.displayName = "AlertDialogContent";
+
+/** Title block with optional featured icon. */
+export const AlertDialogHeader = React.forwardRef<HTMLDivElement, DialogHeaderProps>((props, ref) =>
+  renderHeader({ ...props, className: cn("pr-0", props.className) }, ref)
+);
+AlertDialogHeader.displayName = "AlertDialogHeader";
+
+/** Accessible alert title. */
+export const AlertDialogTitle = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>
+>(({ className, ...props }, ref) => <AlertDialogPrimitive.Title ref={ref} className={cn(titleClass, className)} {...props} />);
+AlertDialogTitle.displayName = "AlertDialogTitle";
+
+/** Accessible alert description. */
+export const AlertDialogDescription = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Description ref={ref} className={cn(descriptionClass, className)} {...props} />
+));
+AlertDialogDescription.displayName = "AlertDialogDescription";
+
+/** Action row; stacks full-width on mobile. */
+export const AlertDialogFooter = React.forwardRef<HTMLDivElement, DialogFooterProps>(renderFooter);
+AlertDialogFooter.displayName = "AlertDialogFooter";
+
+/** Confirming action button (closes the dialog). */
+export const AlertDialogAction = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = "primary", ...props }, ref) => (
+    <AlertDialogPrimitive.Action asChild>
+      <Button ref={ref} variant={variant} {...props} />
+    </AlertDialogPrimitive.Action>
+  )
+);
+AlertDialogAction.displayName = "AlertDialogAction";
+
+/** Dismissing button (receives initial focus). */
+export const AlertDialogCancel = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = "secondary", ...props }, ref) => (
+    <AlertDialogPrimitive.Cancel asChild>
+      <Button ref={ref} variant={variant} {...props} />
+    </AlertDialogPrimitive.Cancel>
+  )
+);
+AlertDialogCancel.displayName = "AlertDialogCancel";
+
+export interface ConfirmDialogProps {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Element that opens the dialog (wrapped with `asChild`). */
+  trigger?: React.ReactNode;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  confirmLabel?: React.ReactNode;
+  cancelLabel?: React.ReactNode;
+  tone?: "default" | "destructive";
+  icon?: React.ReactNode;
+  /** May return a promise; the confirm button shows a spinner until it settles. Throw to keep the dialog open. */
+  onConfirm?: () => void | Promise<void>;
+  onCancel?: () => void;
+  /** Extra content between the header and the footer. */
+  children?: React.ReactNode;
+  className?: string;
+}
+
+/** Ready-made confirmation dialog with async-aware confirm. */
+export function ConfirmDialog({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  trigger,
+  title,
+  description,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  tone = "default",
+  icon,
+  onConfirm,
+  onCancel,
+  children,
+  className,
+}: ConfirmDialogProps) {
+  const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
+  const [loading, setLoading] = React.useState(false);
+
+  const handleConfirm = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+      await onConfirm?.();
+      setOpen(false);
+    } catch {
+      /* keep open so the caller can surface the error */
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <AlertDialog open={open} onOpenChange={(next) => !loading && setOpen(next)}>
+      {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
+      <AlertDialogContent className={className}>
+        <AlertDialogHeader icon={icon} tone={tone === "destructive" ? "destructive" : "primary"}>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
+        </AlertDialogHeader>
+        {children}
+        <AlertDialogFooter className="sm:pt-2">
+          <AlertDialogCancel disabled={loading} onClick={onCancel}>
+            {cancelLabel}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            variant={tone === "destructive" ? "destructive" : "primary"}
+            loading={loading}
+            onClick={handleConfirm}
+          >
+            {confirmLabel}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+ConfirmDialog.displayName = "ConfirmDialog";
+
+/* ------------------------------------------------------------------ */
+/* Sheet                                                               */
+/* ------------------------------------------------------------------ */
+
+/** Edge-anchored panel root (a Dialog). */
+export const Sheet = DialogPrimitive.Root;
+/** Element that opens the sheet. */
+export const SheetTrigger = DialogPrimitive.Trigger;
+/** Closes the sheet when clicked. */
+export const SheetClose = DialogPrimitive.Close;
+
+export const sheetContentVariants = cva(
+  [
+    "fixed z-50 flex flex-col gap-4 bg-background p-6 text-foreground shadow-2xl outline-none",
+    "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:duration-300 data-[state=closed]:duration-200 ease-out-quart",
+  ],
+  {
+    variants: {
+      side: {
+        left: "inset-y-0 left-0 h-full w-[85vw] max-w-sm border-r border-border data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
+        right:
+          "inset-y-0 right-0 h-full w-[85vw] max-w-sm border-l border-border data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
+        top: "inset-x-0 top-0 max-h-[90dvh] border-b border-border rounded-b-2xl data-[state=open]:slide-in-from-top data-[state=closed]:slide-out-to-top",
+        bottom:
+          "inset-x-0 bottom-0 max-h-[90dvh] border-t border-border rounded-t-2xl pb-[max(1.5rem,env(safe-area-inset-bottom))] data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
+      },
+    },
+    defaultVariants: { side: "right" },
+  }
+);
+
+export interface SheetContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
+    VariantProps<typeof sheetContentVariants> {
+  showClose?: boolean;
+  overlayClassName?: string;
+}
+
+/** Sheet panel sliding in from `side`. */
+export const SheetContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Content>, SheetContentProps>(
+  ({ className, side = "right", showClose = true, overlayClassName, children, ...props }, ref) => (
+    <DialogPrimitive.Portal>
+      <DialogOverlay className={overlayClassName} />
+      <DialogPrimitive.Content ref={ref} className={cn(sheetContentVariants({ side }), className)} {...props}>
+        {children}
+        {showClose && (
+          <DialogPrimitive.Close asChild>
+            <Button variant="ghost" size="icon-sm" className={cn(closeButtonClass, focusRing)} aria-label="Close">
+              <RiCloseLine />
+            </Button>
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </DialogPrimitive.Portal>
+  )
+);
+SheetContent.displayName = "SheetContent";
+
+/** Sheet title block. */
+export const SheetHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("flex flex-col gap-1.5 pr-8", className)} {...props} />
+);
+SheetHeader.displayName = "SheetHeader";
+
+/** Accessible sheet title. */
+export const SheetTitle = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(({ className, ...props }, ref) => <DialogPrimitive.Title ref={ref} className={cn(titleClass, className)} {...props} />);
+SheetTitle.displayName = "SheetTitle";
+
+/** Accessible sheet description. */
+export const SheetDescription = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Description ref={ref} className={cn(descriptionClass, className)} {...props} />
+));
+SheetDescription.displayName = "SheetDescription";
+
+/** Scrollable sheet content area. */
+export const SheetBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn(bodyClass, className)} {...props} />
+);
+SheetBody.displayName = "SheetBody";
+
+/** Sheet action row, pinned to the bottom. */
+export const SheetFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn("mt-auto flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
+      {...props}
+    />
+  )
+);
+SheetFooter.displayName = "SheetFooter";

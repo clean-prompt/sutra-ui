@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "paths": {
+      "@sutra/ui": ["../../packages/ui/src/index.ts"],
+      "@sutra/ui/components/*": ["../../packages/ui/src/components/*.tsx"],
+      "@sutra/ui/blocks/*": ["../../packages/ui/src/blocks/*.tsx"],
+      "@sutra/ui/assets/*": ["../../packages/ui/src/assets/*.tsx"],
+      "@sutra/ui/*": ["../../packages/ui/src/entries/*.ts"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

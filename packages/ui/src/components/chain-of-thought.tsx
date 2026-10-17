@@ -1,0 +1,237 @@
+import * as React from "react";
+import { Collapsible } from "radix-ui";
+import { RiArrowDownSLine, RiBrainLine, RiCheckLine } from "@remixicon/react";
+import { Favicon, domainOf } from "./favicon";
+import { cn, focusRing } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
+import { Spinner } from "./spinner";
+import { TextShimmer } from "./text-shimmer";
+
+function formatDuration(seconds: number) {
+  if (seconds < 1) return "a moment";
+  if (seconds < 60) return `${Math.round(seconds)}s`;
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  return s ? `${m}m ${s}s` : `${m}m`;
+}
+
+export interface ChainOfThoughtProps
+  extends Omit<React.ComponentPropsWithoutRef<typeof Collapsible.Root>, "title"> {
+  /** While true the header shimmers "Thinking…" and the elapsed time is measured. */
+  streaming?: boolean;
+  /** Seconds spent thinking. Measured automatically from `streaming` when omitted. */
+  duration?: number;
+  /** Custom header text (overrides "Thinking…" / "Thought for 12s"). */
+  title?: React.ReactNode;
+  icon?: React.ReactNode;
+  /** Open while streaming and collapse when done (default true, uncontrolled only). */
+  autoCollapse?: boolean;
+}
+
+/** Collapsible reasoning panel with a "Thinking… / Thought for Ns" header. */
+export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtProps>(
+  (
+    {
+      streaming = false,
+      duration,
+      title,
+      icon,
+      autoCollapse = true,
+      open: openProp,
+      defaultOpen,
+      onOpenChange,
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const [open, setOpen] = useControllableState<boolean>({
+      value: openProp,
+      defaultValue: defaultOpen ?? streaming,
+      onChange: onOpenChange,
+    });
+    const startedAt = React.useRef<number | null>(null);
+    const [measured, setMeasured] = React.useState<number | null>(null);
+    const prevStreaming = React.useRef(streaming);
+
+    React.useEffect(() => {
+      const wasStreaming = prevStreaming.current;
+      prevStreaming.current = streaming;
+      if (streaming) {
+        // Covers both mounting mid-stream and a stream starting later.
+        if (startedAt.current == null) startedAt.current = Date.now();
+        if (!wasStreaming) {
+          setMeasured(null);
+          if (autoCollapse && openProp === undefined) setOpen(true);
+        }
+      } else if (wasStreaming) {
+        if (startedAt.current != null) setMeasured((Date.now() - startedAt.current) / 1000);
+        startedAt.current = null;
+        if (autoCollapse && openProp === undefined) setOpen(false);
+      }
+    }, [streaming, autoCollapse, openProp, setOpen]);
+
+    const seconds = duration ?? measured;
+    const label =
+      title ?? (streaming ? "Thinking…" : seconds != null ? `Thought for ${formatDuration(seconds)}` : "Thoughts");
+
+    return (
+      <Collapsible.Root
+        ref={ref}
+        open={open}
+        onOpenChange={setOpen}
+        data-streaming={streaming || undefined}
+        className={cn("w-full", className)}
+        {...props}
+      >
+        <Collapsible.Trigger
+          className={cn(
+            "group/cot -mx-1 inline-flex max-w-full items-center gap-1.5 rounded-control px-1 py-0.5 text-sm text-muted-foreground transition-colors hover:text-foreground",
+            focusRing
+          )}
+        >
+          <span aria-hidden className="inline-flex shrink-0 [&_svg]:size-4">
+            {icon ?? <RiBrainLine />}
+          </span>
+          {streaming && title == null ? (
+            <TextShimmer className="font-medium">{label}</TextShimmer>
+          ) : (
+            <span className="truncate font-medium">{label}</span>
+          )}
+          <RiArrowDownSLine
+            aria-hidden
+            className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/cot:rotate-180"
+          />
+        </Collapsible.Trigger>
+        {children}
+      </Collapsible.Root>
+    );
+  }
+);
+ChainOfThought.displayName = "ChainOfThought";
+
+/** Collapsible body holding the reasoning steps. */
+export const ChainOfThoughtContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<typeof Collapsible.Content>
+>(({ className, children, ...props }, ref) => (
+  <Collapsible.Content
+    ref={ref}
+    className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down"
+    {...props}
+  >
+    <div className={cn("mt-3 flex flex-col text-sm", className)}>{children}</div>
+  </Collapsible.Content>
+));
+ChainOfThoughtContent.displayName = "ChainOfThoughtContent";
+
+export type ChainOfThoughtStepStatus = "pending" | "active" | "complete";
+
+export interface ChainOfThoughtStepProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  label: React.ReactNode;
+  description?: React.ReactNode;
+  status?: ChainOfThoughtStepStatus;
+  /** Icon in the timeline dot (defaults depend on status). */
+  icon?: React.ReactNode;
+}
+
+/** One step on the reasoning timeline. Children render under the label (e.g. search results). */
+export const ChainOfThoughtStep = React.forwardRef<HTMLDivElement, ChainOfThoughtStepProps>(
+  ({ label, description, status = "complete", icon, className, children, ...props }, ref) => {
+    let dot: React.ReactNode;
+    if (status === "active") dot = <Spinner aria-hidden role="presentation" size="xs" className="text-primary" />;
+    else if (icon) dot = icon;
+    else if (status === "complete") dot = <RiCheckLine />;
+    else dot = <span className="size-1.5 rounded-full bg-current" />;
+
+    return (
+      <div
+        ref={ref}
+        data-status={status}
+        className={cn("group/step relative flex gap-3 pb-4 last:pb-0", className)}
+        {...props}
+      >
+        <span
+          aria-hidden
+          className="absolute bottom-0 left-[9.5px] top-6 w-px bg-border group-last/step:hidden"
+        />
+        <span
+          aria-hidden
+          className={cn(
+            "relative z-[1] mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border bg-background [&_svg]:size-3",
+            status === "complete" && "border-border text-muted-foreground",
+            status === "active" && "border-primary/40 bg-primary-soft text-primary",
+            status === "pending" && "border-dashed border-border-strong text-muted-foreground/60"
+          )}
+        >
+          {dot}
+        </span>
+        <div className={cn("flex min-w-0 flex-1 flex-col gap-1.5", status === "pending" && "opacity-60")}>
+          <div className="leading-6">
+            {status === "active" && typeof label === "string" ? (
+              <TextShimmer className="font-medium">{label}</TextShimmer>
+            ) : (
+              <span className={cn("font-medium", status === "complete" ? "text-foreground" : "text-muted-foreground")}>
+                {label}
+              </span>
+            )}
+          </div>
+          {description && <div className="text-sm leading-6 text-muted-foreground">{description}</div>}
+          {children}
+        </div>
+      </div>
+    );
+  }
+);
+ChainOfThoughtStep.displayName = "ChainOfThoughtStep";
+
+export interface ChainOfThoughtSearchResultProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string;
+  /** Text in the chip; defaults to the domain. */
+  title?: string;
+  /** Icon URL; falls back to the FaviconProvider or a local monogram. */
+  favicon?: string;
+}
+
+/** Small source chip with favicon. */
+export const ChainOfThoughtSearchResult = React.forwardRef<HTMLAnchorElement, ChainOfThoughtSearchResultProps>(
+  ({ href, title, favicon, className, children, ...props }, ref) => {
+    const domain = domainOf(href);
+    return (
+      <a
+        ref={ref}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={title ?? domain}
+        className={cn(
+          "inline-flex h-6 max-w-56 items-center gap-1.5 rounded-control border border-border bg-subtle px-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
+          focusRing,
+          className
+        )}
+        {...props}
+      >
+        <Favicon domain={domain} src={favicon} shape="square" className="size-3" />
+        <span className="truncate">{children ?? title ?? domain}</span>
+      </a>
+    );
+  }
+);
+ChainOfThoughtSearchResult.displayName = "ChainOfThoughtSearchResult";
+
+export interface ChainOfThoughtSearchResultsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "results"> {
+  /** Data-driven chips; alternatively pass ChainOfThoughtSearchResult children. */
+  results?: { href: string; title?: string; favicon?: string }[];
+}
+
+/** Wrapping row of source chips under a search step. */
+export const ChainOfThoughtSearchResults = React.forwardRef<HTMLDivElement, ChainOfThoughtSearchResultsProps>(
+  ({ results, className, children, ...props }, ref) => (
+    <div ref={ref} className={cn("flex flex-wrap gap-1.5", className)} {...props}>
+      {results?.map((r, i) => <ChainOfThoughtSearchResult key={`${r.href}-${i}`} href={r.href} title={r.title} favicon={r.favicon} />)}
+      {children}
+    </div>
+  )
+);
+ChainOfThoughtSearchResults.displayName = "ChainOfThoughtSearchResults";

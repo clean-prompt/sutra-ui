@@ -1,0 +1,16 @@
+/* @sutra/ui/ai: chat, prompt and streaming-text components. */
+export * from "../components/text-shimmer";
+export * from "../components/markdown";
+export * from "../components/chain-of-thought";
+export * from "../components/chat-attachment";
+export * from "../components/chat-conversation";
+export * from "../components/chat-list-view";
+export * from "../components/chat-loader";
+export * from "../components/chat-message";
+export * from "../components/chat-message-actions";
+export * from "../components/favicon";
+export * from "../components/chat-source";
+export * from "../components/chat-tool";
+export * from "../components/prompt-input";
+export * from "../components/prompt-suggestion";
+export * from "../components/ai-extras";

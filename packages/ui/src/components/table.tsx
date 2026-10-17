@@ -1,0 +1,566 @@
+import * as React from "react";
+import {
+  RiArrowDownLine,
+  RiArrowUpDownLine,
+  RiArrowUpLine,
+  RiCheckLine,
+  RiInboxLine,
+  RiSubtractLine,
+} from "@remixicon/react";
+import { cn, focusRing } from "../lib/cn";
+
+export type TableDensity = "compact" | "normal" | "relaxed";
+export type TableAlign = "left" | "center" | "right";
+export type TableSortDirection = "asc" | "desc" | false;
+
+interface TableContextValue {
+  density: TableDensity;
+  striped: boolean;
+  stickyHeader: boolean;
+}
+
+const TableContext = React.createContext<TableContextValue>({
+  density: "normal",
+  striped: false,
+  stickyHeader: false,
+});
+
+const cellPadding: Record<TableDensity, string> = {
+  compact: "px-3 py-1.5",
+  normal: "px-4 py-2.5",
+  relaxed: "px-4 py-4",
+};
+
+const headHeight: Record<TableDensity, string> = {
+  compact: "h-8 px-3",
+  normal: "h-10 px-4",
+  relaxed: "h-11 px-4",
+};
+
+const alignClass: Record<TableAlign, string> = {
+  left: "text-left",
+  center: "text-center",
+  right: "text-right",
+};
+
+export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
+  density?: TableDensity;
+  striped?: boolean;
+  /** Keeps the header visible while the container scrolls. Pair with `maxHeight`. */
+  stickyHeader?: boolean;
+  maxHeight?: number | string;
+  containerClassName?: string;
+  /** Remove the bordered box around the table. */
+  bare?: boolean;
+}
+
+/** Data table inside a bordered, scrollable box. */
+export const Table = React.forwardRef<HTMLTableElement, TableProps>(
+  (
+    {
+      className,
+      containerClassName,
+      density = "normal",
+      striped = false,
+      stickyHeader = false,
+      maxHeight,
+      bare,
+      ...props
+    },
+    ref
+  ) => {
+    const ctx = React.useMemo(
+      () => ({ density, striped, stickyHeader }),
+      [density, striped, stickyHeader]
+    );
+    return (
+      <TableContext.Provider value={ctx}>
+        <div
+          className={cn(
+            "relative w-full overflow-auto scrollbar-thin",
+            !bare && "rounded-box border border-border bg-card shadow-xs",
+            containerClassName
+          )}
+          style={maxHeight !== undefined ? { maxHeight } : undefined}
+        >
+          <table
+            ref={ref}
+            className={cn(
+              "w-full caption-bottom border-separate border-spacing-0 text-sm text-foreground",
+              className
+            )}
+            {...props}
+          />
+        </div>
+      </TableContext.Provider>
+    );
+  }
+);
+Table.displayName = "Table";
+
+/** Table `<thead>`. */
+export const TableHeader = React.forwardRef<
+  HTMLTableSectionElement,
+  React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => {
+  const { stickyHeader } = React.useContext(TableContext);
+  return (
+    <thead
+      ref={ref}
+      className={cn(
+        "[&>tr]:hover:bg-transparent",
+        stickyHeader && "[&_th]:sticky [&_th]:top-0 [&_th]:z-10",
+        className
+      )}
+      {...props}
+    />
+  );
+});
+TableHeader.displayName = "TableHeader";
+
+/** Table `<tbody>`. */
+export const TableBody = React.forwardRef<
+  HTMLTableSectionElement,
+  React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => {
+  const { striped } = React.useContext(TableContext);
+  return (
+    <tbody
+      ref={ref}
+      className={cn(
+        "[&>tr:last-child>td]:border-b-0",
+        striped && "[&>tr:nth-child(even)]:bg-subtle",
+        className
+      )}
+      {...props}
+    />
+  );
+});
+TableBody.displayName = "TableBody";
+
+/** Table `<tfoot>`. */
+export const TableFooter = React.forwardRef<
+  HTMLTableSectionElement,
+  React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => (
+  <tfoot
+    ref={ref}
+    className={cn(
+      "bg-subtle font-medium [&>tr]:hover:bg-transparent [&>tr>td]:border-b-0 [&>tr:first-child>td]:border-t [&>tr:first-child>td]:border-border",
+      className
+    )}
+    {...props}
+  />
+));
+TableFooter.displayName = "TableFooter";
+
+/** Table row. Set `data-state="selected"` to highlight. */
+export const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
+  ({ className, ...props }, ref) => (
+    <tr
+      ref={ref}
+      className={cn(
+        "transition-colors hover:bg-accent/60 data-[state=selected]:bg-primary-soft/60",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+TableRow.displayName = "TableRow";
+
+export interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+  align?: TableAlign;
+  /** Current sort of this column. `false` = sortable but unsorted. */
+  sortDirection?: TableSortDirection;
+  onSort?: () => void;
+}
+
+/** Header cell, optionally sortable. */
+export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
+  ({ className, align = "left", sortDirection, onSort, children, scope, ...props }, ref) => {
+    const { density } = React.useContext(TableContext);
+    const sortable = onSort !== undefined || sortDirection !== undefined;
+    const SortIcon =
+      sortDirection === "asc" ? RiArrowUpLine : sortDirection === "desc" ? RiArrowDownLine : RiArrowUpDownLine;
+    return (
+      <th
+        ref={ref}
+        scope={scope ?? "col"}
+        aria-sort={
+          sortable
+            ? sortDirection === "asc"
+              ? "ascending"
+              : sortDirection === "desc"
+                ? "descending"
+                : "none"
+            : undefined
+        }
+        className={cn(
+          "whitespace-nowrap border-b border-border bg-subtle align-middle text-xs font-medium text-muted-foreground",
+          headHeight[density],
+          alignClass[align],
+          "[&:has([role=checkbox])]:w-px [&:has([role=checkbox])]:pr-0",
+          className
+        )}
+        {...props}
+      >
+        {sortable ? (
+          <button
+            type="button"
+            onClick={onSort}
+            className={cn(
+              "group/sort -mx-1.5 inline-flex items-center gap-1 rounded-xs px-1.5 py-0.5 transition-colors hover:bg-accent hover:text-foreground",
+              sortDirection && "text-foreground",
+              align === "right" && "flex-row-reverse",
+              focusRing
+            )}
+          >
+            {children}
+            <SortIcon
+              aria-hidden
+              className={cn(
+                "size-3.5 shrink-0 transition-opacity",
+                !sortDirection && "opacity-40 group-hover/sort:opacity-100"
+              )}
+            />
+          </button>
+        ) : (
+          children
+        )}
+      </th>
+    );
+  }
+);
+TableHead.displayName = "TableHead";
+
+export interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  align?: TableAlign;
+}
+
+/** Body cell. */
+export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
+  ({ className, align = "left", ...props }, ref) => {
+    const { density } = React.useContext(TableContext);
+    return (
+      <td
+        ref={ref}
+        className={cn(
+          "border-b border-border align-middle",
+          cellPadding[density],
+          alignClass[align],
+          "[&:has([role=checkbox])]:w-px [&:has([role=checkbox])]:pr-0",
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+TableCell.displayName = "TableCell";
+
+/** Table caption, rendered under the table. */
+export const TableCaption = React.forwardRef<
+  HTMLTableCaptionElement,
+  React.HTMLAttributes<HTMLTableCaptionElement>
+>(({ className, ...props }, ref) => (
+  <caption
+    ref={ref}
+    className={cn("border-t border-border px-4 py-3 text-left text-sm text-muted-foreground", className)}
+    {...props}
+  />
+));
+TableCaption.displayName = "TableCaption";
+
+/* ------------------------------------------------------------------ */
+/* DataTable                                                           */
+/* ------------------------------------------------------------------ */
+
+interface TableCheckboxProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "checked" | "onChange"> {
+  checked: boolean;
+  indeterminate?: boolean;
+  onCheckedChange: (checked: boolean) => void;
+}
+
+function TableCheckbox({ checked, indeterminate, onCheckedChange, className, ...props }: TableCheckboxProps) {
+  const ref = React.useRef<HTMLInputElement>(null);
+  React.useEffect(() => {
+    if (ref.current) ref.current.indeterminate = !!indeterminate;
+  }, [indeterminate]);
+  return (
+    <span className={cn("relative inline-flex size-4 shrink-0 align-middle", className)}>
+      <input
+        ref={ref}
+        type="checkbox"
+        role="checkbox"
+        checked={checked && !indeterminate}
+        onChange={(e) => onCheckedChange(e.target.checked)}
+        onClick={(e) => e.stopPropagation()}
+        className={cn(
+          "peer size-4 cursor-pointer appearance-none rounded-[4px] border border-border-strong bg-background shadow-xs transition-colors",
+          "checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          focusRing
+        )}
+        {...props}
+      />
+      <RiCheckLine
+        aria-hidden
+        className="pointer-events-none absolute inset-0 m-auto size-3 scale-50 text-primary-foreground opacity-0 transition-[opacity,transform] duration-150 peer-checked:scale-100 peer-checked:opacity-100"
+      />
+      <RiSubtractLine
+        aria-hidden
+        className="pointer-events-none absolute inset-0 m-auto size-3 text-primary-foreground opacity-0 peer-indeterminate:opacity-100"
+      />
+    </span>
+  );
+}
+
+export interface DataTableColumn<T> {
+  /** Property of the row to read, or any unique id when `cell` is provided. */
+  key: string;
+  header: React.ReactNode;
+  cell?: (row: T, index: number) => React.ReactNode;
+  sortable?: boolean;
+  /** Custom value used for sorting. Defaults to `row[key]`. */
+  sortValue?: (row: T) => string | number | Date | null | undefined;
+  align?: TableAlign;
+  width?: number | string;
+  headerClassName?: string;
+  className?: string;
+}
+
+export interface DataTableSort {
+  key: string;
+  direction: "asc" | "desc";
+}
+
+export interface DataTableProps<T> {
+  columns: DataTableColumn<T>[];
+  data: T[];
+  /** Stable row id. Defaults to `row.id` or the index. */
+  getRowId?: (row: T, index: number) => string;
+  selectable?: boolean;
+  selectedRowIds?: string[];
+  defaultSelectedRowIds?: string[];
+  onSelectionChange?: (ids: string[]) => void;
+  sort?: DataTableSort | null;
+  defaultSort?: DataTableSort | null;
+  onSortChange?: (sort: DataTableSort | null) => void;
+  /** Disable built-in sorting (e.g. when sorting on the server). */
+  manualSorting?: boolean;
+  loading?: boolean;
+  loadingRows?: number;
+  emptyState?: React.ReactNode;
+  onRowClick?: (row: T, index: number) => void;
+  caption?: React.ReactNode;
+  density?: TableDensity;
+  striped?: boolean;
+  stickyHeader?: boolean;
+  maxHeight?: number | string;
+  className?: string;
+  tableClassName?: string;
+}
+
+function readKey<T>(row: T, key: string): unknown {
+  if (row !== null && typeof row === "object") {
+    return (row as Record<string, unknown>)[key];
+  }
+  return undefined;
+}
+
+function compareValues(a: unknown, b: unknown) {
+  if (a === b) return 0;
+  if (a === null || a === undefined || a === "") return 1;
+  if (b === null || b === undefined || b === "") return -1;
+  if (a instanceof Date && b instanceof Date) return a.getTime() - b.getTime();
+  if (typeof a === "number" && typeof b === "number") return a - b;
+  if (typeof a === "boolean" && typeof b === "boolean") return a === b ? 0 : a ? -1 : 1;
+  return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: "base" });
+}
+
+function defaultRowId<T>(row: T, index: number) {
+  const id = readKey(row, "id");
+  return typeof id === "string" || typeof id === "number" ? String(id) : String(index);
+}
+
+/** Data-driven table with sorting, selection, loading and empty states. */
+export function DataTable<T>({
+  columns,
+  data,
+  getRowId = defaultRowId,
+  selectable,
+  selectedRowIds,
+  defaultSelectedRowIds = [],
+  onSelectionChange,
+  sort: sortProp,
+  defaultSort = null,
+  onSortChange,
+  manualSorting,
+  loading,
+  loadingRows = 5,
+  emptyState,
+  onRowClick,
+  caption,
+  density,
+  striped,
+  stickyHeader,
+  maxHeight,
+  className,
+  tableClassName,
+}: DataTableProps<T>) {
+  const [innerSort, setInnerSort] = React.useState<DataTableSort | null>(defaultSort);
+  const sort = sortProp !== undefined ? sortProp : innerSort;
+  const [innerSelected, setInnerSelected] = React.useState<string[]>(defaultSelectedRowIds);
+  const selected = selectedRowIds ?? innerSelected;
+
+  const setSort = (next: DataTableSort | null) => {
+    if (sortProp === undefined) setInnerSort(next);
+    onSortChange?.(next);
+  };
+  const setSelected = (next: string[]) => {
+    if (selectedRowIds === undefined) setInnerSelected(next);
+    onSelectionChange?.(next);
+  };
+
+  const rows = React.useMemo(() => {
+    const indexed = data.map((row, index) => ({ row, index, id: getRowId(row, index) }));
+    if (!sort || manualSorting) return indexed;
+    const column = columns.find((c) => c.key === sort.key);
+    if (!column) return indexed;
+    const value = (row: T) => (column.sortValue ? column.sortValue(row) : readKey(row, column.key));
+    const dir = sort.direction === "asc" ? 1 : -1;
+    return [...indexed].sort((a, b) => compareValues(value(a.row), value(b.row)) * dir || a.index - b.index);
+  }, [data, columns, sort, manualSorting, getRowId]);
+
+  const cycleSort = (key: string) => {
+    if (!sort || sort.key !== key) setSort({ key, direction: "asc" });
+    else if (sort.direction === "asc") setSort({ key, direction: "desc" });
+    else setSort(null);
+  };
+
+  const allIds = rows.map((r) => r.id);
+  const selectedCount = allIds.filter((id) => selected.includes(id)).length;
+  const allSelected = allIds.length > 0 && selectedCount === allIds.length;
+  const someSelected = selectedCount > 0 && !allSelected;
+  const colSpan = columns.length + (selectable ? 1 : 0);
+
+  return (
+    <Table
+      density={density}
+      striped={striped}
+      stickyHeader={stickyHeader}
+      maxHeight={maxHeight}
+      containerClassName={className}
+      className={tableClassName}
+      aria-busy={loading || undefined}
+    >
+      <TableHeader>
+        <TableRow>
+          {selectable ? (
+            <TableHead>
+              <TableCheckbox
+                aria-label="Select all rows"
+                checked={allSelected}
+                indeterminate={someSelected}
+                disabled={loading || allIds.length === 0}
+                onCheckedChange={() =>
+                  setSelected(
+                    allSelected || someSelected
+                      ? selected.filter((id) => !allIds.includes(id))
+                      : Array.from(new Set([...selected, ...allIds]))
+                  )
+                }
+              />
+            </TableHead>
+          ) : null}
+          {columns.map((column) => (
+            <TableHead
+              key={column.key}
+              align={column.align}
+              style={column.width !== undefined ? { width: column.width } : undefined}
+              className={column.headerClassName}
+              sortDirection={
+                column.sortable ? (sort && sort.key === column.key ? sort.direction : false) : undefined
+              }
+              onSort={column.sortable ? () => cycleSort(column.key) : undefined}
+            >
+              {column.header}
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {loading ? (
+          Array.from({ length: loadingRows }, (_, i) => (
+            <TableRow key={`skeleton-${i}`} className="hover:bg-transparent">
+              {selectable ? (
+                <TableCell>
+                  <span className="block size-4 animate-pulse rounded-[4px] bg-muted" />
+                </TableCell>
+              ) : null}
+              {columns.map((column, c) => (
+                <TableCell key={column.key} align={column.align}>
+                  <span
+                    className={cn(
+                      "inline-block h-3.5 animate-pulse rounded-xs bg-muted align-middle",
+                      (i + c) % 3 === 0 ? "w-3/5" : (i + c) % 3 === 1 ? "w-4/5" : "w-2/5"
+                    )}
+                  />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
+        ) : rows.length === 0 ? (
+          <TableRow className="hover:bg-transparent">
+            <TableCell colSpan={colSpan} className="py-12 text-center">
+              {emptyState ?? (
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                  <span className="flex size-10 items-center justify-center rounded-full bg-muted">
+                    <RiInboxLine className="size-5" aria-hidden />
+                  </span>
+                  <span className="text-sm font-medium text-foreground">No results</span>
+                  <span className="text-xs">There is nothing to show here yet.</span>
+                </div>
+              )}
+            </TableCell>
+          </TableRow>
+        ) : (
+          rows.map(({ row, index, id }) => {
+            const isSelected = selected.includes(id);
+            return (
+              <TableRow
+                key={id}
+                data-state={isSelected ? "selected" : undefined}
+                onClick={onRowClick ? () => onRowClick(row, index) : undefined}
+                className={cn(onRowClick && "cursor-pointer")}
+              >
+                {selectable ? (
+                  <TableCell>
+                    <TableCheckbox
+                      aria-label="Select row"
+                      checked={isSelected}
+                      onCheckedChange={(checked) =>
+                        setSelected(checked ? [...selected, id] : selected.filter((x) => x !== id))
+                      }
+                    />
+                  </TableCell>
+                ) : null}
+                {columns.map((column) => (
+                  <TableCell key={column.key} align={column.align} className={column.className}>
+                    {column.cell
+                      ? column.cell(row, index)
+                      : (readKey(row, column.key) as React.ReactNode) ?? null}
+                  </TableCell>
+                ))}
+              </TableRow>
+            );
+          })
+        )}
+      </TableBody>
+      {caption ? <TableCaption>{caption}</TableCaption> : null}
+    </Table>
+  );
+}
+DataTable.displayName = "DataTable";
