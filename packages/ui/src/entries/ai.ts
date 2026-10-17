@@ -14,3 +14,4 @@ export * from "../components/chat-tool";
 export * from "../components/prompt-input";
 export * from "../components/prompt-suggestion";
 export * from "../components/ai-extras";
+export * from "../components/embeds";

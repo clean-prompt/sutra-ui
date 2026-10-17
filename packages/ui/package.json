@@ -42,6 +42,14 @@
       "types": "./dist/entries/mobile.d.ts",
       "import": "./dist/entries/mobile.js"
     },
+    "./workspace": {
+      "types": "./dist/entries/workspace.d.ts",
+      "import": "./dist/entries/workspace.js"
+    },
+    "./billing": {
+      "types": "./dist/entries/billing.d.ts",
+      "import": "./dist/entries/billing.js"
+    },
     "./agent-admin": {
       "types": "./dist/entries/agent-admin.d.ts",
       "import": "./dist/entries/agent-admin.js"
@@ -129,9 +137,6 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "react": ">=19",
-    "react-dom": ">=19",
-    "tailwindcss": ">=4.0",
     "@codemirror/commands": "^6",
     "@codemirror/lang-markdown": "^6",
     "@codemirror/language": "^6",
@@ -144,29 +149,62 @@
     "@tiptap/react": "^3",
     "@tiptap/starter-kit": "^3",
     "@xterm/addon-fit": "^0.10",
-    "@xterm/xterm": "^5"
+    "@xterm/xterm": "^5",
+    "react": ">=19",
+    "react-dom": ">=19",
+    "tailwindcss": ">=4.0"
   },
   "peerDependenciesMeta": {
-    "@codemirror/commands": { "optional": true },
-    "@codemirror/lang-markdown": { "optional": true },
-    "@codemirror/language": { "optional": true },
-    "@codemirror/search": { "optional": true },
-    "@codemirror/state": { "optional": true },
-    "@codemirror/view": { "optional": true },
-    "@tiptap/extension-link": { "optional": true },
-    "@tiptap/extension-placeholder": { "optional": true },
-    "@tiptap/pm": { "optional": true },
-    "@tiptap/react": { "optional": true },
-    "@tiptap/starter-kit": { "optional": true },
-    "@xterm/addon-fit": { "optional": true },
-    "@xterm/xterm": { "optional": true }
+    "@codemirror/commands": {
+      "optional": true
+    },
+    "@codemirror/lang-markdown": {
+      "optional": true
+    },
+    "@codemirror/language": {
+      "optional": true
+    },
+    "@codemirror/search": {
+      "optional": true
+    },
+    "@codemirror/state": {
+      "optional": true
+    },
+    "@codemirror/view": {
+      "optional": true
+    },
+    "@tiptap/extension-link": {
+      "optional": true
+    },
+    "@tiptap/extension-placeholder": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    },
+    "@tiptap/react": {
+      "optional": true
+    },
+    "@tiptap/starter-kit": {
+      "optional": true
+    },
+    "@xterm/addon-fit": {
+      "optional": true
+    },
+    "@xterm/xterm": {
+      "optional": true
+    }
   },
   "dependencies": {
-    "diff": "^8.0.0",
+    "@dnd-kit/core": "^6",
+    "@dnd-kit/sortable": "^10",
+    "@dnd-kit/utilities": "^3",
     "@remixicon/react": "^4.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "d3-force": "^3",
+    "diff": "^8.0.0",
     "input-otp": "^1.4.2",
     "jsqr": "^1.4.0",
     "katex": "^0.16.47",
@@ -197,6 +235,7 @@
     "@tiptap/pm": "^3",
     "@tiptap/react": "^3",
     "@tiptap/starter-kit": "^3",
+    "@types/d3-force": "^3",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@xterm/addon-fit": "^0.10",

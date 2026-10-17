@@ -50,6 +50,17 @@ import {
   createMockPairingAdapter,
 } from "./kunji-blocks";
 import { createMockKunjiClient } from "../components/kunji-client";
+import {
+  AuthorShelf,
+  ComparisonTable,
+  ExtensionDetailPage,
+  FeatureGrid,
+  InstallSnippet,
+  MarketplaceGrid,
+  MarketplaceHero,
+  TestimonialWall,
+  marketingDemoData,
+} from "./marketing-blocks";
 
 export * from "./auth-blocks";
 export * from "./auth-pages";
@@ -59,9 +70,10 @@ export * from "./sidebar-navigation-blocks";
 export * from "./section-header-blocks";
 export * from "./modal-dialog-blocks";
 export * from "./kunji-blocks";
+export * from "./marketing-blocks";
 export type { BlockLinkRenderer } from "./block-utils";
 
-export type BlockCategory = "auth" | "auth-page" | "dropdown" | "header" | "sidebar" | "section-header" | "dialog" | "kunji";
+export type BlockCategory = "auth" | "auth-page" | "dropdown" | "header" | "sidebar" | "section-header" | "dialog" | "kunji" | "marketing";
 
 export interface BlockRegistryEntry {
   id: string;
@@ -82,6 +94,7 @@ export const blockCategoryLabels: Record<BlockCategory, string> = {
   "section-header": "Section Headers",
   dialog: "Modals & Dialogs",
   kunji: "kunji Sign-in",
+  marketing: "Marketing & Docs",
 };
 
 const h = React.createElement;
@@ -101,6 +114,11 @@ const withTrigger = (label: string, variant: "primary" | "secondary" | "destruct
 
 const kunjiDemoClient = createMockKunjiClient({ appName: "Sutra", audience: "id.sutra.app" });
 const pairingDemoAdapter = createMockPairingAdapter();
+
+const mk = marketingDemoData;
+const mkPadded = (child: React.ReactElement) => h("div", { className: "w-full p-6" }, child);
+const mkDetail = mk.extensions.find((e) => e.id === "deep-search") ?? mk.extensions[0]!;
+const mkByAuthor = (handle: string, exclude?: string) => mk.extensions.filter((e) => e.author.handle === handle && e.id !== exclude);
 
 /** Every block, with a demo-friendly component, for building an "All Blocks" gallery. */
 export const blockRegistry: BlockRegistryEntry[] = [
@@ -183,4 +201,14 @@ export const blockRegistry: BlockRegistryEntry[] = [
   { id: "kunji-awaiting-approval", name: "Awaiting approval", category: "kunji", component: demo("AwaitingApproval", () => centered(h(AwaitingApproval, { handle: "maya", onCheck: () => false, onSignOut: () => {} }))), description: "Waiting-for-admin screen that checks in the background, with check now and sign out." },
   { id: "kunji-signed-in-panel", name: "Signed-in panel", category: "kunji", component: demo("SignedInPanel", () => centered(h(SignedInPanel, { name: "Maya Patel", handle: "@maya", role: "Admin", client: kunjiDemoClient, onSignOut: () => {}, onSignOutEverywhere: () => {} }))), description: "Account panel with link kunji, sign out and sign out everywhere." },
   { id: "kunji-device-pairing", name: "Device pairing", category: "kunji", component: demo("DevicePairingFlow", () => centered(h(DevicePairingFlow, { adapter: pairingDemoAdapter }))), description: "Wallet-side “link a new device”: QR and 8-digit code with a 2-minute TTL, then a “Do these match?” check." },
+
+  /* Marketing & docs-site (fictional data, generated gradient art; no network) */
+  { id: "marketplace-hero", name: "Marketplace hero", category: "marketing", component: demo("MarketplaceHero", () => mkPadded(h(MarketplaceHero))), description: "Title, subtitle, “678 plugins · 120 authors” stats row and a search field on a mesh-gradient glow." },
+  { id: "marketplace-grid", name: "Marketplace grid", category: "marketing", component: demo("MarketplaceGrid", () => mkPadded(h(MarketplaceGrid, { items: mk.extensions }))), description: "Tier and category pills with counts, sort pills, category sections with “View all”, cards with capped capability chips, load more and empty state." },
+  { id: "extension-detail-page", name: "Extension detail page", category: "marketing", component: demo("ExtensionDetailPage", () => mkPadded(h(ExtensionDetailPage, { extension: mkDetail, moreFromAuthor: mkByAuthor(mkDetail.author.handle, mkDetail.id) }))), description: "Breadcrumbs, hero, copyable install command, facts sidebar, capabilities, security disclosure, screenshots, README and more from the author." },
+  { id: "author-shelf", name: "Author shelf", category: "marketing", component: demo("AuthorShelf", () => mkPadded(h(AuthorShelf, { author: mk.authors[0]!, items: mkByAuthor(mk.authors[0]!.handle), onViewAll: () => {} }))), description: "Author header with a horizontally scrolling shelf of their extensions." },
+  { id: "testimonial-wall", name: "Testimonial wall", category: "marketing", component: demo("TestimonialWall", () => mkPadded(h(TestimonialWall, { testimonials: mk.testimonials, description: "What builders say about Sutra." }))), description: "Masonry quotes with X / Reddit / Discord / blog source badges and a category filter." },
+  { id: "feature-grid", name: "Feature grid", category: "marketing", component: demo("FeatureGrid", () => mkPadded(h(FeatureGrid, { features: mk.features.slice(0, 6), eyebrow: "Why Sutra", title: "Everything you need, nothing you don't", columns: 3 }))), description: "Icon, title and description cards in 2–4 columns with a section header." },
+  { id: "install-snippet", name: "Install snippet", category: "marketing", component: demo("InstallSnippet", () => mkPadded(h(InstallSnippet, { tabs: mk.installTabs }))), description: "Tabs for curl, Homebrew, npm and pip with copyable commands." },
+  { id: "comparison-table", name: "Comparison table", category: "marketing", component: demo("ComparisonTable", () => mkPadded(h(ComparisonTable, mk.comparison))), description: "Product vs alternatives with check / cross / partial marks and footnotes." },
 ];

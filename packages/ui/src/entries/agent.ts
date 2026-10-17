@@ -14,3 +14,7 @@ export * from "../components/agent-sessions";
 export * from "../components/agent-transcript";
 export * from "../components/agent-usage";
 export * from "../components/agent-onboarding";
+export * from "../components/agent-browser";
+export * from "../components/artifacts";
+export * from "../components/git-review";
+export * from "../components/approval-stack";

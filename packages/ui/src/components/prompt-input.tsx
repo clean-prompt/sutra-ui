@@ -12,6 +12,8 @@ import {
   RiEyeLine,
   RiEyeOffLine,
   RiFileCodeLine,
+  RiFileTextLine,
+  RiHistoryLine,
   RiFlashlightFill,
   RiStopFill,
   RiUploadCloud2Line,
@@ -36,6 +38,8 @@ interface PromptInputContextValue {
   dragging: boolean;
   /** Mounted PromptInputDropOverlay parts replace the built-in drop hint. */
   registerDropOverlay: () => () => void;
+  /** Routes an oversized paste to an attachment; returns true when handled (only with `largePasteThreshold`). */
+  handleLargePaste?: (text: string, selection: readonly [number, number]) => boolean;
 }
 
 const PromptInputContext = React.createContext<PromptInputContextValue | null>(null);
@@ -72,6 +76,23 @@ export interface PromptInputProps
    * Called with the drop's DataTransfer when the drop carries no files (or `onFilesAdded` is unset).
    */
   onContextDrop?: (data: DataTransfer) => void;
+  /**
+   * Opt-in: plain-text pastes longer than this many characters (e.g. 3000) become an attachment instead of
+   * flooding the textarea. Routed to `onLargePaste`, else to `onFilesAdded` as a generated `.txt` File.
+   */
+  largePasteThreshold?: number;
+  /** Receives an oversized paste (see `largePasteThreshold`). */
+  onLargePaste?: (text: string) => void;
+  /** The user chose "Paste inline" on the notice: the text is inserted; remove the attachment you created. */
+  onLargePasteUndo?: (text: string, file?: File) => void;
+  /** Auto-hide the large-paste notice after this many ms (0 = never). Default 8000. */
+  largePasteNoticeDuration?: number;
+}
+
+interface LargePasteNotice {
+  text: string;
+  file?: File;
+  selection: readonly [number, number];
 }
 
 /** Chat composer card. Compose with PromptInputAttachments, PromptInputTextarea and PromptInputToolbar. */
@@ -89,6 +110,10 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
       canSubmit: canSubmitProp,
       onFilesAdded,
       onContextDrop,
+      largePasteThreshold,
+      onLargePaste,
+      onLargePasteUndo,
+      largePasteNoticeDuration = 8000,
       className,
       children,
       onClick,
@@ -123,9 +148,61 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
       [onFilesAdded]
     );
 
+    const [pasteNotice, setPasteNotice] = React.useState<LargePasteNotice | null>(null);
+    const largePasteEnabled = !!largePasteThreshold && largePasteThreshold > 0 && (!!onLargePaste || !!onFilesAdded);
+    const handleLargePaste = React.useCallback(
+      (text: string, selection: readonly [number, number]) => {
+        if (!largePasteThreshold || largePasteThreshold <= 0 || text.length <= largePasteThreshold) return false;
+        if (onLargePaste) {
+          onLargePaste(text);
+          setPasteNotice({ text, selection });
+          return true;
+        }
+        if (onFilesAdded) {
+          const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+          const file = new File([text], `pasted-text-${stamp}.txt`, { type: "text/plain" });
+          onFilesAdded([file]);
+          setPasteNotice({ text, file, selection });
+          return true;
+        }
+        return false;
+      },
+      [largePasteThreshold, onLargePaste, onFilesAdded]
+    );
+
+    React.useEffect(() => {
+      if (!pasteNotice || !largePasteNoticeDuration) return;
+      const t = setTimeout(() => setPasteNotice(null), largePasteNoticeDuration);
+      return () => clearTimeout(t);
+    }, [pasteNotice, largePasteNoticeDuration]);
+
+    const undoLargePaste = () => {
+      if (!pasteNotice) return;
+      const [start, end] = pasteNotice.selection;
+      const s0 = Math.min(start, value.length);
+      const e0 = Math.min(Math.max(end, s0), value.length);
+      setValue(value.slice(0, s0) + pasteNotice.text + value.slice(e0));
+      onLargePasteUndo?.(pasteNotice.text, pasteNotice.file);
+      setPasteNotice(null);
+      textareaRef.current?.focus();
+    };
+
     const ctx = React.useMemo<PromptInputContextValue>(
-      () => ({ value, setValue, isLoading, disabled, canSubmit, onStop, addFiles, acceptsFiles, textareaRef, dragging, registerDropOverlay }),
-      [value, setValue, isLoading, disabled, canSubmit, onStop, addFiles, acceptsFiles, dragging, registerDropOverlay]
+      () => ({
+        value,
+        setValue,
+        isLoading,
+        disabled,
+        canSubmit,
+        onStop,
+        addFiles,
+        acceptsFiles,
+        textareaRef,
+        dragging,
+        registerDropOverlay,
+        handleLargePaste: largePasteEnabled ? handleLargePaste : undefined,
+      }),
+      [value, setValue, isLoading, disabled, canSubmit, onStop, addFiles, acceptsFiles, dragging, registerDropOverlay, largePasteEnabled, handleLargePaste]
     );
 
     const hasFiles = (e: React.DragEvent) => Array.from(e.dataTransfer?.types ?? []).includes("Files");
@@ -191,6 +268,30 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
           )}
           {...props}
         >
+          {pasteNotice && (
+            <div
+              role="status"
+              data-slot="prompt-input-large-paste"
+              data-prompt-input-ignore=""
+              className="mx-3 mt-2.5 flex cursor-default items-center gap-2 rounded-control border border-border bg-subtle py-1 pl-2.5 pr-1 text-xs text-muted-foreground animate-in fade-in-0 slide-in-from-top-1 motion-reduce:animate-none"
+            >
+              <RiFileTextLine aria-hidden className="size-3.5 shrink-0" />
+              <span className="min-w-0 flex-1 truncate">
+                Pasted {pasteNotice.text.length.toLocaleString()} characters as an attachment
+              </span>
+              <Button type="button" size="xs" variant="ghost" className="h-6" onClick={undoLargePaste}>
+                Paste inline
+              </Button>
+              <button
+                type="button"
+                aria-label="Dismiss"
+                onClick={() => setPasteNotice(null)}
+                className={cn("inline-flex size-6 items-center justify-center rounded-xs hover:bg-accent hover:text-foreground [&_svg]:size-3.5", focusRing)}
+              >
+                <RiCloseLine aria-hidden />
+              </button>
+            </div>
+          )}
           {children}
           {dragging && customOverlays === 0 && (
             <div
@@ -390,7 +491,7 @@ export const PromptInputTextarea = React.forwardRef<HTMLTextAreaElement, PromptI
     },
     ref
   ) => {
-    const { value, setValue, isLoading, disabled, textareaRef, addFiles, acceptsFiles } = usePromptInput();
+    const { value, setValue, isLoading, disabled, textareaRef, addFiles, acceptsFiles, handleLargePaste } = usePromptInput();
     const composing = React.useRef(false);
 
     const setRefs = React.useCallback(
@@ -476,11 +577,17 @@ export const PromptInputTextarea = React.forwardRef<HTMLTextAreaElement, PromptI
         }}
         onPaste={(e) => {
           onPaste?.(e);
-          if (e.defaultPrevented || !acceptsFiles) return;
-          const files = Array.from(e.clipboardData.files);
+          if (e.defaultPrevented) return;
+          const files = acceptsFiles ? Array.from(e.clipboardData?.files ?? []) : [];
           if (files.length > 0) {
             e.preventDefault();
             addFiles(files);
+            return;
+          }
+          if (handleLargePaste) {
+            const text = e.clipboardData?.getData("text/plain") ?? "";
+            const el = e.currentTarget;
+            if (text && handleLargePaste(text, [el.selectionStart ?? value.length, el.selectionEnd ?? value.length])) e.preventDefault();
           }
         }}
         className={cn(
@@ -1221,3 +1328,94 @@ export const PromptInputAddContextMenu = React.forwardRef<HTMLButtonElement, Pro
   }
 );
 PromptInputAddContextMenu.displayName = "PromptInputAddContextMenu";
+
+/* ------------------------------------------------------------------ */
+/* Restored draft notice                                               */
+/* ------------------------------------------------------------------ */
+
+export interface PromptInputRestoredDraftProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Main line. Default "Restored your unsent draft". */
+  message?: React.ReactNode;
+  /** When the draft was saved, shown muted after the message (e.g. "2h ago"). */
+  savedAt?: React.ReactNode;
+  /** Discard the draft. Inside a PromptInput the text is also cleared unless `clearOnDiscard={false}`. */
+  onDiscard?: () => void;
+  /** Keep the draft (just dismisses the notice). */
+  onKeep?: () => void;
+  clearOnDiscard?: boolean;
+  /** Controlled visibility. Uncontrolled notices hide themselves after either choice. */
+  open?: boolean;
+  discardLabel?: string;
+  keepLabel?: string;
+}
+
+/** Notice shown when an unsent draft was restored into the composer, with Discard / Keep. */
+export const PromptInputRestoredDraft = React.forwardRef<HTMLDivElement, PromptInputRestoredDraftProps>(
+  (
+    {
+      message = "Restored your unsent draft",
+      savedAt,
+      onDiscard,
+      onKeep,
+      clearOnDiscard = true,
+      open: openProp,
+      discardLabel = "Discard",
+      keepLabel = "Keep",
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const ctx = React.useContext(PromptInputContext);
+    const [innerOpen, setInnerOpen] = React.useState(true);
+    const open = openProp ?? innerOpen;
+    if (!open) return null;
+    return (
+      <div
+        ref={ref}
+        role="status"
+        data-slot="prompt-input-restored-draft"
+        data-prompt-input-ignore=""
+        className={cn(
+          "flex cursor-default items-center gap-2 rounded-control border border-info/30 bg-info-soft py-1 pl-2.5 pr-1 text-xs text-info-soft-foreground",
+          ctx && "mx-3 mt-2.5",
+          className
+        )}
+        {...props}
+      >
+        <RiHistoryLine aria-hidden className="size-3.5 shrink-0" />
+        <span className="min-w-0 flex-1 truncate">
+          {message}
+          {savedAt && <span className="ml-1 opacity-70">· {savedAt}</span>}
+        </span>
+        <Button
+          type="button"
+          size="xs"
+          variant="ghost"
+          className="h-6 text-current"
+          onClick={() => {
+            onDiscard?.();
+            if (ctx && clearOnDiscard) ctx.setValue("");
+            setInnerOpen(false);
+          }}
+        >
+          {discardLabel}
+        </Button>
+        <Button
+          type="button"
+          size="xs"
+          variant="secondary"
+          className="h-6"
+          onClick={() => {
+            onKeep?.();
+            setInnerOpen(false);
+            ctx?.textareaRef.current?.focus();
+          }}
+        >
+          {keepLabel}
+        </Button>
+      </div>
+    );
+  }
+);
+PromptInputRestoredDraft.displayName = "PromptInputRestoredDraft";

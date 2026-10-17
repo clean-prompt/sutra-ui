@@ -11,6 +11,7 @@ import {
   RiPencilLine,
   RiQuestionAnswerLine,
   RiRefreshLine,
+  RiSteering2Line,
   RiTimeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
@@ -19,6 +20,7 @@ import { Spinner } from "./spinner";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Lightbox, useLightbox, type LightboxItem } from "./lightbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { SimpleTooltip } from "./tooltip";
 import { FileFormatIcon } from "../assets/file-format";
 import { formatAttachmentSize } from "./chat-attachment";
 import { PromptInput, PromptInputSubmit, PromptInputTextarea } from "./prompt-input";
@@ -49,6 +51,10 @@ export interface QueuedMessagesProps extends Omit<React.HTMLAttributes<HTMLEleme
   onRemove?: (id: string) => void;
   /** Interrupt the agent and send this message now. */
   onSendNow?: (id: string) => void;
+  /** Inject this message into the live turn without interrupting it ("Steer"). */
+  onSteer?: (id: string) => void;
+  /** Tooltip for the Steer action. */
+  steerHint?: React.ReactNode;
   /** Enables move up / down (buttons and Alt+↑/↓) and reports the new order. */
   onReorder?: (ids: string[]) => void;
   collapsed?: boolean;
@@ -66,6 +72,8 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
       onEdit,
       onRemove,
       onSendNow,
+      onSteer,
+      steerHint = "Steer: add this to the current turn so the agent adjusts course without stopping. Send now interrupts and starts a new turn.",
       onReorder,
       collapsed: collapsedProp,
       defaultCollapsed = false,
@@ -221,6 +229,20 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                           <button type="button" aria-label="Remove" title="Remove" onClick={() => onRemove(item.id)} className={iconAction}>
                             <RiDeleteBinLine />
                           </button>
+                        )}
+                        {onSteer && (
+                          <SimpleTooltip content={<span className="block max-w-60">{steerHint}</span>}>
+                            <Button
+                              type="button"
+                              size="xs"
+                              variant="ghost"
+                              leadingIcon={<RiSteering2Line />}
+                              onClick={() => onSteer(item.id)}
+                              className="ml-0.5 h-6"
+                            >
+                              Steer
+                            </Button>
+                          </SimpleTooltip>
                         )}
                         {onSendNow && (
                           <Button

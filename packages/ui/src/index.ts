@@ -251,3 +251,26 @@ export * from "./components/mcp";
 export * from "./components/extensions-catalog";
 export * from "./components/schema-form";
 export * from "./components/slot-outlet";
+
+/* Agent: browser, artifacts & git review */
+export * from "./components/agent-browser";
+export * from "./components/artifacts";
+export * from "./components/git-review";
+
+/* Billing */
+export * from "./components/billing";
+
+/* Workspace & shell */
+export * from "./components/workspace-switcher";
+export * from "./components/notice-bar";
+export * from "./components/coachmarks";
+export * from "./components/keybind-editor";
+export * from "./components/timeline-rail";
+
+/* Chat extras & primitives */
+export * from "./components/embeds";
+export * from "./components/approval-stack";
+export * from "./components/primitives-extra";
+export * from "./components/tiling-layout";
+export * from "./components/kanban";
+export * from "./components/memory-map";
