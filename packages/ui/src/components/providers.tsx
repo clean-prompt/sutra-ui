@@ -428,12 +428,13 @@ function DeviceFlowPanel({
   const mounted = React.useRef(true);
   const onDoneRef = React.useRef(onDone);
   onDoneRef.current = onDone;
-  React.useEffect(
-    () => () => {
+  React.useEffect(() => {
+    // Set on every mount, not just initially: React may unmount and remount (StrictMode, <Activity>).
+    mounted.current = true;
+    return () => {
       mounted.current = false;
-    },
-    []
-  );
+    };
+  }, []);
 
   const start = async () => {
     if (!onStart) return;

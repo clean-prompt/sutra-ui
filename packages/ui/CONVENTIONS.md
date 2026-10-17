@@ -41,3 +41,11 @@ Stack: **React 19 + TypeScript (strict) + Tailwind CSS v4 + Radix UI** (`radix-u
 - Floating content goes through a Portal with `z-50`. Use `sideOffset={6}` by default.
 - Compound components (`Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent`) are preferred over giant prop objects. A convenience "data-driven" wrapper is welcome when it helps (e.g. `items` prop).
 - Comment density: a one-line JSDoc on each exported component; no noisy inline comments.
+
+## Effects must survive remounts (StrictMode)
+Tests render everything inside `<StrictMode>` (see `test/setup.ts`), which mounts → unmounts → remounts and re-runs effects, as React also does with `<Activity>` and Fast Refresh.
+- A ref that a cleanup flips (`mounted.current = false`, a pending frame id, a "started" flag) must be **reset in the effect body**, not only initialised in `useRef(...)`. Otherwise it stays stale after the remount.
+- "Skip the first run" refs break when the effect re-runs. Compare against the previous value instead (e.g. only focus when `step` actually changed).
+- Async work started in an effect must be cancelled in its cleanup (`AbortController`, an `alive` flag set in the same effect). Results from a cancelled run must be dropped, and any resources it acquired (camera streams, sockets) released.
+- Share one promise for lazy imports at module level instead of `import()`-ing on every mount.
+- In tests, don't assert exact counts of mount-time effect calls; assert relative to the count after mount, and make mocks depend on state rather than call order (`mockReturnValueOnce`).

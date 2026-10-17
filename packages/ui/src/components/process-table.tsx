@@ -32,7 +32,13 @@ export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
     const confirmRef = React.useRef<HTMLButtonElement>(null);
     const termRef = React.useRef<HTMLButtonElement>(null);
     const mounted = React.useRef(true);
-    React.useEffect(() => () => void (mounted.current = false), []);
+    React.useEffect(() => {
+      // Set on every mount: React may unmount and remount (StrictMode, <Activity>).
+      mounted.current = true;
+      return () => {
+        mounted.current = false;
+      };
+    }, []);
     const pending = pendingProp || busy;
 
     const setConfirming = (s: KillSignal | null) => {

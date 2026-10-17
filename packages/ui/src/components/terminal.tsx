@@ -52,6 +52,20 @@ export interface TerminalTheme {
 let colorCanvas: CanvasRenderingContext2D | null | undefined;
 
 /** Resolve any CSS color expression (vars, color-mix, oklch) to `rgb()/rgba()` for xterm. */
+/**
+ * Load xterm and its fit addon once per page. Every Terminal (and every remount of one, e.g.
+ * StrictMode's mount → unmount → mount) shares the same promise instead of re-importing.
+ * A failed load is forgotten so a later mount can retry.
+ */
+let xtermModules: Promise<[typeof import("@xterm/xterm"), typeof import("@xterm/addon-fit")]> | null = null;
+function loadXterm() {
+  xtermModules ??= Promise.all([import("@xterm/xterm"), import("@xterm/addon-fit")]).catch((err) => {
+    xtermModules = null;
+    throw err;
+  });
+  return xtermModules;
+}
+
 function resolveColor(scope: HTMLElement, expr: string, fallback: string): string {
   if (typeof document === "undefined" || typeof getComputedStyle === "undefined") return fallback;
   const probe = document.createElement("span");
@@ -278,7 +292,7 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>(
       const cleanups: (() => void)[] = [];
       (async () => {
         try {
-          const [xtermMod, fitMod] = await Promise.all([import("@xterm/xterm"), import("@xterm/addon-fit")]);
+          const [xtermMod, fitMod] = await loadXterm();
           if (disposed || !hostRef.current) return;
           const term = new xtermMod.Terminal({
             fontSize,

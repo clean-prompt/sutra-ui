@@ -1152,14 +1152,17 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
     const [busy, setBusy] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
     const headingRef = React.useRef<HTMLHeadingElement>(null);
-    const mounted = React.useRef(false);
+    const shownStep = React.useRef(step);
     const setStep = (s: CheckoutStep) => {
       setStepState(s);
       onStepChange?.(s);
     };
+    // Move focus to the new step's heading only when the step actually changes (not on mount,
+    // and not when StrictMode re-runs the effect).
     React.useEffect(() => {
-      if (mounted.current) headingRef.current?.focus();
-      mounted.current = true;
+      if (shownStep.current === step) return;
+      shownStep.current = step;
+      headingRef.current?.focus();
     }, [step]);
 
     const price = formatPrice(plan.price, currency, locale);

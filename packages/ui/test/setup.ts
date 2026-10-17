@@ -1,6 +1,11 @@
 import "@testing-library/jest-dom/vitest";
 import { afterEach } from "vitest";
-import { cleanup } from "@testing-library/react";
+import { cleanup, configure } from "@testing-library/react";
+
+// Render every test inside <StrictMode>, like apps do in development. StrictMode mounts,
+// unmounts and remounts components and double-invokes effects, which surfaces cleanup bugs
+// (stale refs, leaked listeners/timers) that a single mount hides.
+configure({ reactStrictMode: true });
 
 afterEach(() => cleanup());
 

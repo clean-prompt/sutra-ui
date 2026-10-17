@@ -426,8 +426,9 @@ describe("MemoryMap", () => {
     const { unmount } = render(<MemoryMap nodes={memNodes} staticLayout={80} seed="abc" onLayout={first} />);
     unmount();
     render(<MemoryMap nodes={memNodes} staticLayout={80} seed="abc" onLayout={second} />);
-    expect(first).toHaveBeenCalledTimes(1);
-    expect(first.mock.calls[0]![0]).toEqual(second.mock.calls[0]![0]);
+    // StrictMode may report the layout more than once per mount; every report must be identical.
+    expect(first).toHaveBeenCalled();
+    for (const [pos] of [...first.mock.calls, ...second.mock.calls]) expect(pos).toEqual(first.mock.calls[0]![0]);
     expect(Object.keys(first.mock.calls[0]![0])).toHaveLength(12);
   });
 

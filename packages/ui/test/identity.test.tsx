@@ -104,14 +104,23 @@ describe("QRCodeCard", () => {
 /* ------------------------------------------------------------------ */
 
 describe("QRScanner", () => {
-  let track: { stop: ReturnType<typeof vi.fn>; getCapabilities: () => object; kind: string };
+  type FakeTrack = { stop: ReturnType<typeof vi.fn>; getCapabilities: () => object; kind: string };
+  // `track` is always the most recently opened stream's track (the live one). Each getUserMedia call
+  // gets its own stream, like a real camera, so StrictMode's discarded first mount can stop its own
+  // stream without looking like the live camera was stopped.
+  let track: FakeTrack;
+  let tracks: FakeTrack[];
   let getUserMedia: ReturnType<typeof vi.fn>;
   const original = Object.getOwnPropertyDescriptor(navigator, "mediaDevices");
 
   beforeEach(() => {
-    track = { stop: vi.fn(), getCapabilities: () => ({}), kind: "video" };
-    const stream = { getTracks: () => [track], getVideoTracks: () => [track] };
-    getUserMedia = vi.fn().mockResolvedValue(stream);
+    tracks = [];
+    getUserMedia = vi.fn().mockImplementation(async () => {
+      const t: FakeTrack = { stop: vi.fn(), getCapabilities: () => ({}), kind: "video" };
+      tracks.push(t);
+      track = t;
+      return { getTracks: () => [t], getVideoTracks: () => [t] };
+    });
     Object.defineProperty(navigator, "mediaDevices", {
       configurable: true,
       value: { getUserMedia, enumerateDevices: vi.fn().mockResolvedValue([]) },
@@ -150,6 +159,8 @@ describe("QRScanner", () => {
     expect(await axeViolations(container)).toEqual([]);
     unmount();
     expect(track.stop).toHaveBeenCalled();
+    // No camera stream is left running, including any opened by a discarded StrictMode mount.
+    for (const t of tracks) expect(t.stop).toHaveBeenCalled();
   });
 
   it("shows the denied state with instructions", async () => {

@@ -692,6 +692,8 @@ describe("TranscriptTimelineRail", () => {
   it("syncs the active turn from IntersectionObserver", () => {
     const original = globalThis.IntersectionObserver;
     let callback: IntersectionObserverCallback | null = null;
+    // Elements observed by the live observer. disconnect() empties it, as a real observer stops
+    // watching, so a StrictMode remount doesn't leave the first observer's elements behind.
     const observed: Element[] = [];
     class IO {
       constructor(cb: IntersectionObserverCallback) {
@@ -700,7 +702,9 @@ describe("TranscriptTimelineRail", () => {
       observe(el: Element) {
         observed.push(el);
       }
-      disconnect() {}
+      disconnect() {
+        observed.length = 0;
+      }
       unobserve() {}
       takeRecords() {
         return [];

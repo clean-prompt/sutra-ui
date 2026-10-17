@@ -303,9 +303,12 @@ describe("KunjiSignIn", () => {
     render(<KunjiSignIn client={client} />);
     await waitFor(() => expect(liveRegion()).toHaveTextContent(kunjiStatusText.expired));
     expect(screen.getByText("Code expired")).toBeInTheDocument();
+    // StrictMode mounts twice; every session except the live one must have been aborted.
+    const atMount = create.mock.calls.length;
+    for (const [signal] of create.mock.calls.slice(0, -1)) expect((signal as AbortSignal).aborted).toBe(true);
     fireEvent.click(screen.getByRole("button", { name: "Get a new code" }));
     await waitFor(() => expect(liveRegion()).toHaveTextContent(kunjiStatusText.ready));
-    expect(create).toHaveBeenCalledTimes(2);
+    expect(create).toHaveBeenCalledTimes(atMount + 1);
   });
 
   it("shows an error and retries", async () => {

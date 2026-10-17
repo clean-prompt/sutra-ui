@@ -317,6 +317,13 @@ describe("CheckoutSteps", () => {
     { id: "pm2", last4: "4444", brand: "mastercard" as const },
   ];
 
+  it("doesn't steal focus on mount, but moves it to the new step's heading on change", () => {
+    render(<CheckoutSteps plan={{ name: "Sutra Pro", price: 2000 }} paymentMethods={methods} onConfirm={vi.fn()} />);
+    expect(screen.getByRole("heading", { name: "Review your plan" })).not.toHaveFocus();
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+    expect(document.activeElement?.tagName).toMatch(/^H\d$/);
+  });
+
   it("walks plan → payment → confirm → 3-D Secure → success", async () => {
     const onConfirm = vi.fn<(id: string | null) => Promise<CheckoutOutcome>>().mockResolvedValue("requires_action");
     const onAuthenticate = vi.fn().mockResolvedValue("succeeded");

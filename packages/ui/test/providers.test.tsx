@@ -577,7 +577,12 @@ describe("ReasoningPill", () => {
 describe("BackendPicker", () => {
   it("runs probes on mount, shows results and re-checks", async () => {
     const local = vi.fn().mockResolvedValue({ latencyMs: 12 });
-    const docker = vi.fn().mockRejectedValueOnce(new Error("daemon not running")).mockResolvedValueOnce({ latencyMs: 48 });
+    // Driven by state rather than call order, since StrictMode probes once more on mount.
+    let dockerUp = false;
+    const docker = vi.fn(async () => {
+      if (!dockerUp) throw new Error("daemon not running");
+      return { latencyMs: 48 };
+    });
     const backends: BackendOption[] = [
       { id: "local", name: "Local", kind: "local", description: "Run on this machine", probe: local },
       { id: "docker", name: "Docker", kind: "docker", description: "Isolated container", probe: docker },
@@ -595,18 +600,21 @@ describe("BackendPicker", () => {
     expect(backends[2]!.probe).not.toHaveBeenCalled();
     expect(await axeViolations(container)).toEqual([]);
 
+    const dockerAtMount = docker.mock.calls.length;
+    const localAtMount = local.mock.calls.length;
+    dockerUp = true;
     fireEvent.click(screen.getByRole("button", { name: "Re-check Docker" }));
     expect(within(card("docker")).getByText("Checking…")).toBeInTheDocument();
     await waitFor(() => expect(within(card("docker")).getByText("· 48 ms")).toBeInTheDocument());
-    expect(docker).toHaveBeenCalledTimes(2);
-    expect(local).toHaveBeenCalledTimes(1);
+    expect(docker).toHaveBeenCalledTimes(dockerAtMount + 1);
+    expect(local).toHaveBeenCalledTimes(localAtMount);
 
     fireEvent.click(screen.getByRole("radio", { name: /Docker/ }));
     expect(onValueChange).toHaveBeenCalledWith("docker");
     fireEvent.click(screen.getByRole("button", { name: "Configure SSH" }));
     expect(onConfigure).toHaveBeenCalledWith("ssh");
     fireEvent.click(screen.getByRole("button", { name: "Re-check all" }));
-    await waitFor(() => expect(local).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(local).toHaveBeenCalledTimes(localAtMount + 1));
   });
 });
 
