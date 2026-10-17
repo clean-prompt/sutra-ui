@@ -224,3 +224,30 @@ export * from "./components/agent-sessions";
 export * from "./components/agent-transcript";
 export * from "./components/agent-usage";
 export * from "./components/agent-onboarding";
+
+/* Agent admin: providers & models */
+export * from "./components/providers";
+export * from "./components/model-routing";
+export * from "./components/backends";
+export * from "./components/local-models";
+
+/* Agent admin: channels & multi-agent */
+export * from "./components/channels";
+export * from "./components/agent-room";
+export * from "./components/subagents";
+export * from "./components/agent-persona";
+export * from "./components/remote-screen";
+
+/* Agent admin: automation */
+export * from "./components/cron";
+export * from "./components/agent-jobs";
+export * from "./components/status-stack";
+export * from "./components/webhooks";
+
+/* Agent admin: capabilities */
+export * from "./components/capabilities";
+export * from "./components/tool-toggles";
+export * from "./components/mcp";
+export * from "./components/extensions-catalog";
+export * from "./components/schema-form";
+export * from "./components/slot-outlet";

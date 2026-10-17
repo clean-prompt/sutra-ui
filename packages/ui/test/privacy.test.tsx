@@ -23,7 +23,7 @@ const SRC = path.resolve(__dirname, "../src");
 
 /** Every remote URL that may appear in src/, with the reason it is safe. */
 const URL_ALLOWLIST: { file: string; url: string; reason: string }[] = [
-  { file: "components/favicon.tsx", url: "https://www.google.com/s2/favicons?domain=", reason: "googleFaviconResolver: opt-in only, never used unless passed to FaviconProvider" },
+  { file: "components/favicon.tsx", url: "https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain", reason: "googleFaviconResolver: opt-in only, never used unless passed to FaviconProvider" },
   { file: "components/input.tsx", url: "https://", reason: "JSDoc example for the `prefix` addon" },
   { file: "components/input-group.tsx", url: "https://", reason: "JSDoc example for InputGroupText" },
   { file: "blocks/header-navigation-blocks.tsx", url: "https://github.com", reason: "default <a href> for the DocsHeader GitHub link (navigation, not a request)" },
@@ -31,8 +31,20 @@ const URL_ALLOWLIST: { file: string; url: string; reason: string }[] = [
   { file: "blocks/modal-dialog-blocks.tsx", url: "https://sutra.app/n/q4-launch-plan-8d2f", reason: "demo share link text shown in an input" },
   { file: "components/kunji-client.ts", url: "https://kunji.cc/rp.js", reason: "KUNJI_RP_SCRIPT_URL: only loaded by the opt-in createRpScriptAdapter().load(); never used by KunjiSignIn" },
   { file: "components/kunji-client.ts", url: "https://app.kunji.cc", reason: "KUNJI_WALLET_URL: <a href> target of the same-device \"Open kunji\" deep link (navigation, not a request)" },
-  { file: "components/kunji-client.ts", url: "https://${audience}", reason: "protocol-derived default callback URL the wallet POSTs to; compared, never fetched by the browser" },
+  { file: "components/kunji-client.ts", url: "https://${audience}/kunji/callback", reason: "protocol-derived default callback URL the wallet POSTs to; compared, never fetched by the browser" },
   { file: "components/rich-text-editor.tsx", url: "https://${url}", reason: "adds a scheme to a link the user typed (href normalization); never fetched" },
+  { file: "components/agent-jobs.tsx", url: "https://example.com/hook", reason: "placeholder text for the webhook delivery URL input" },
+  { file: "components/channels.tsx", url: "http://127.0.0.1:8080", reason: "placeholder text for the signal-cli REST URL input" },
+  { file: "components/channels.tsx", url: "https://matrix.org", reason: "placeholder text for the Matrix homeserver input" },
+  { file: "components/channels.tsx", url: "http://", reason: "URL validation message / scheme check" },
+  { file: "components/channels.tsx", url: "https://.", reason: "URL validation message (\"…http:// or https://.\")" },
+  { file: "components/extensions-catalog.tsx", url: "https://github.com/org/plugin.git", reason: "placeholder text for the git URL install input" },
+  { file: "components/extensions-catalog.tsx", url: "https://", reason: "URL validation message (\"Enter an https:// or git@ URL\")" },
+  { file: "components/mcp.tsx", url: "http://", reason: "URL validation message / scheme check" },
+  { file: "components/mcp.tsx", url: "https://", reason: "URL validation message / scheme check" },
+  { file: "components/mcp.tsx", url: "https://example.com/sse", reason: "placeholder text for the SSE server URL input" },
+  { file: "components/mcp.tsx", url: "https://example.com/mcp", reason: "placeholder text for the HTTP server URL input" },
+  { file: "components/providers.tsx", url: "https://llm.example.internal/v1", reason: "placeholder text for the custom endpoint base URL input" },
 ];
 
 /** SVG namespace identifiers are not fetched. */
@@ -68,7 +80,7 @@ describe("privacy: static scan of src/", () => {
           if (!/["'`(=]/.test(before)) continue;
         }
         if (isXmlns(url)) continue;
-        const allowed = URL_ALLOWLIST.findIndex((a) => a.file === rel && url.startsWith(a.url));
+        const allowed = URL_ALLOWLIST.findIndex((a) => a.file === rel && url === a.url);
         if (allowed === -1) offenders.push(`${rel}: ${url}`);
         else used.add(allowed);
       }

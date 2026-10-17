@@ -55,6 +55,7 @@ The build ships one ES module per source file and every file is marked `"use cli
 | `@sutra/ui/ops` | Log viewer, transfer list and tray, streaming progress dialog |
 | `@sutra/ui/mobile` | Bottom tab bar, swipe drawer, lightbox, file viewer, split pane, presence |
 | `@sutra/ui/agent` | Coding-agent UI: tool timeline, diff cards, permission prompts, mode switcher, effort slider, plan review, rewind, composer extras, queued messages, side thread, todo list, agent roster, agent sessions, transcript chrome, usage, onboarding |
+| `@sutra/ui/agent-admin` | Managing an agent: capabilities (tool toggles, toolsets, MCP servers, connector directory, catalog/installed extensions, security scan, skills, schema forms, plugin slots), automation (cron builder, jobs, run history, blueprints, status stack, webhooks), providers & models (provider list, connect flows, fallback chain, task models, ensembles, backends, local models), channels & multi-agent (platform connectors, rotating QR pairing, access requests, agent rooms, subagent tree, avatar builder, remote screen) |
 | `@sutra/ui/kunji` | kunji sign-in widget and client, link kunji, access gate, auth problems, sign-in blocks |
 | `@sutra/ui/security` | Authenticator codes (TOTP), secrets, recovery keys, consent and scopes, API keys, credentials, payment cards, connected apps |
 | `@sutra/ui/media` | Video and audio players, seek and volume controls, queue, poster/album cards, shelves, cast picker |

@@ -1,0 +1,645 @@
+import * as React from "react";
+import { RiDeleteBinLine, RiImageAddLine, RiShuffleLine } from "@remixicon/react";
+import { cn, focusRing } from "../lib/cn";
+import { chartColors } from "../lib/tokens";
+import { useControllableState } from "../hooks/use-controllable-state";
+import { identityHash } from "./identity-mark";
+import { Button } from "./button";
+import { Input } from "./input";
+import { Textarea } from "./textarea";
+import { Markdown } from "./markdown";
+import { Field, FieldError, FieldHint, FieldLabel } from "./field";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
+
+/* ------------------------------------------------------------------ */
+/* Spec + generator                                                    */
+/* ------------------------------------------------------------------ */
+
+export type AgentAvatarShape = "circle" | "squircle" | "hexagon" | "blob";
+export type AgentAvatarFace = "dots" | "visor" | "smile" | "sleepy" | "cyclops" | "pixel";
+
+export interface AgentAvatarSpec {
+  shape: AgentAvatarShape;
+  /** Any CSS color; `var(--primary)` for the brand color. */
+  color: string;
+  face: AgentAvatarFace;
+  /** Drives the blob outline and small variations. */
+  seed: string;
+  /** Uploaded image; replaces the drawn face, clipped to the shape. */
+  imageUrl?: string;
+}
+
+export const agentAvatarShapes: AgentAvatarShape[] = ["circle", "squircle", "hexagon", "blob"];
+export const agentAvatarFaces: AgentAvatarFace[] = ["dots", "visor", "smile", "sleepy", "cyclops", "pixel"];
+/** Swatches offered by the builder. The first entry is the brand color. */
+export const agentAvatarColors: string[] = ["var(--primary)", ...chartColors];
+
+function rng(seed: string) {
+  let h = identityHash(seed) || 1;
+  return () => {
+    h ^= h << 13;
+    h ^= h >>> 17;
+    h ^= h << 5;
+    return ((h >>> 0) % 10000) / 10000;
+  };
+}
+
+/** Deterministic avatar spec for a seed. */
+export function randomAvatarSpec(seed: string): AgentAvatarSpec {
+  const h = identityHash(seed);
+  return {
+    shape: agentAvatarShapes[h % agentAvatarShapes.length]!,
+    color: agentAvatarColors[(h >>> 4) % agentAvatarColors.length]!,
+    face: agentAvatarFaces[(h >>> 9) % agentAvatarFaces.length]!,
+    seed,
+  };
+}
+
+function blobPath(seed: string) {
+  const r = rng(`${seed}#blob`);
+  const n = 8;
+  const pts = Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+    const rad = 38 + r() * 9;
+    return [50 + Math.cos(a) * rad, 50 + Math.sin(a) * rad] as const;
+  });
+  let d = `M${pts[0]![0].toFixed(2)},${pts[0]![1].toFixed(2)}`;
+  for (let i = 0; i < n; i++) {
+    const p0 = pts[(i - 1 + n) % n]!;
+    const p1 = pts[i]!;
+    const p2 = pts[(i + 1) % n]!;
+    const p3 = pts[(i + 2) % n]!;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += `C${c1[0]!.toFixed(2)},${c1[1]!.toFixed(2)} ${c2[0]!.toFixed(2)},${c2[1]!.toFixed(2)} ${p2[0].toFixed(2)},${p2[1].toFixed(2)}`;
+  }
+  return d + "Z";
+}
+
+function shapePath(shape: AgentAvatarShape, seed: string) {
+  switch (shape) {
+    case "circle":
+      return "M50,4a46,46 0 1 0 0.01,0Z";
+    case "squircle":
+      return "M50,4C86,4 96,14 96,50S86,96 50,96 4,86 4,50 14,4 50,4Z";
+    case "hexagon":
+      return "M50,3L91,26.5V73.5L50,97L9,73.5V26.5Z";
+    case "blob":
+      return blobPath(seed);
+  }
+}
+
+function Face({ face, seed }: { face: AgentAvatarFace; seed: string }) {
+  const r = rng(`${seed}#face`);
+  const spread = 13 + Math.round(r() * 4);
+  const y = 44 + Math.round(r() * 4);
+  const lx = 50 - spread;
+  const rx = 50 + spread;
+  const ink = "#fff";
+  switch (face) {
+    case "dots":
+      return (
+        <g fill={ink}>
+          <circle cx={lx} cy={y} r={6} />
+          <circle cx={rx} cy={y} r={6} />
+        </g>
+      );
+    case "visor":
+      return (
+        <g>
+          <rect x={22} y={y - 8} width={56} height={16} rx={8} fill="rgba(0,0,0,0.35)" />
+          <rect x={30} y={y - 2.5} width={12} height={5} rx={2.5} fill={ink} />
+          <rect x={58} y={y - 2.5} width={12} height={5} rx={2.5} fill={ink} />
+        </g>
+      );
+    case "smile":
+      return (
+        <g fill={ink} stroke={ink} strokeLinecap="round">
+          <circle cx={lx} cy={y - 2} r={5} stroke="none" />
+          <circle cx={rx} cy={y - 2} r={5} stroke="none" />
+          <path d={`M${lx + 2},${y + 12}Q50,${y + 22} ${rx - 2},${y + 12}`} fill="none" strokeWidth={4} />
+        </g>
+      );
+    case "sleepy":
+      return (
+        <g fill="none" stroke={ink} strokeWidth={4} strokeLinecap="round">
+          <path d={`M${lx - 6},${y}Q${lx},${y + 6} ${lx + 6},${y}`} />
+          <path d={`M${rx - 6},${y}Q${rx},${y + 6} ${rx + 6},${y}`} />
+          <path d={`M44,${y + 16}h12`} />
+        </g>
+      );
+    case "cyclops":
+      return (
+        <g>
+          <circle cx={50} cy={y} r={14} fill={ink} />
+          <circle cx={50 + (r() * 6 - 3)} cy={y + 1} r={6} fill="rgba(0,0,0,0.75)" />
+        </g>
+      );
+    case "pixel":
+      return (
+        <g fill={ink}>
+          <rect x={lx - 5} y={y - 5} width={10} height={10} />
+          <rect x={rx - 5} y={y - 5} width={10} height={10} />
+          <rect x={40} y={y + 14} width={20} height={4} />
+        </g>
+      );
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* AgentAvatar                                                         */
+/* ------------------------------------------------------------------ */
+
+export interface AgentAvatarProps extends Omit<React.SVGAttributes<SVGSVGElement>, "color"> {
+  spec: AgentAvatarSpec;
+  /** Pixel size. Default 40. */
+  size?: number;
+  /** Accessible name. Pass "" to hide from assistive tech. Default "Agent avatar". */
+  label?: string;
+}
+
+/** Procedural agent avatar drawn as pure SVG from `{ shape, color, face, seed }`. */
+export const AgentAvatar = React.forwardRef<SVGSVGElement, AgentAvatarProps>(
+  ({ spec, size = 40, label = "Agent avatar", className, ...props }, ref) => {
+    const uid = React.useId().replace(/:/g, "");
+    const d = React.useMemo(() => shapePath(spec.shape, spec.seed), [spec.shape, spec.seed]);
+    const hl = React.useMemo(() => {
+      const r = rng(`${spec.seed}#hl`);
+      return { cx: 30 + r() * 12, cy: 22 + r() * 8 };
+    }, [spec.seed]);
+    return (
+      <svg
+        ref={ref}
+        viewBox="0 0 100 100"
+        width={size}
+        height={size}
+        role={label ? "img" : undefined}
+        aria-label={label || undefined}
+        aria-hidden={label ? undefined : true}
+        data-shape={spec.shape}
+        data-face={spec.face}
+        data-color={spec.color}
+        className={cn("shrink-0", className)}
+        {...props}
+      >
+        <defs>
+          <clipPath id={`${uid}-clip`}>
+            <path d={d} />
+          </clipPath>
+          <radialGradient id={`${uid}-hl`} cx={hl.cx / 100} cy={hl.cy / 100} r="0.6">
+            <stop offset="0" stopColor="#fff" stopOpacity="0.35" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <path d={d} style={{ fill: spec.color }} />
+        {spec.imageUrl ? (
+          <image href={spec.imageUrl} x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${uid}-clip)`} />
+        ) : (
+          <g clipPath={`url(#${uid}-clip)`}>
+            <rect width="100" height="100" fill={`url(#${uid}-hl)`} />
+            <Face face={spec.face} seed={spec.seed} />
+          </g>
+        )}
+      </svg>
+    );
+  }
+);
+AgentAvatar.displayName = "AgentAvatar";
+
+/* ------------------------------------------------------------------ */
+/* AgentAvatarBuilder                                                  */
+/* ------------------------------------------------------------------ */
+
+function OptionGroup<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+  render,
+  optionLabel,
+}: {
+  label: string;
+  options: T[];
+  value: T;
+  onChange: (v: T) => void;
+  render: (v: T) => React.ReactNode;
+  optionLabel: (v: T) => string;
+}) {
+  const refs = React.useRef<(HTMLButtonElement | null)[]>([]);
+  const idx = Math.max(0, options.indexOf(value));
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    const d = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    const next = (idx + d + options.length) % options.length;
+    onChange(options[next]!);
+    refs.current[next]?.focus();
+  };
+  return (
+    <div role="radiogroup" aria-label={label} onKeyDown={onKeyDown} className="flex flex-wrap gap-2">
+      {options.map((o, i) => (
+        <button
+          key={o}
+          ref={(el) => {
+            refs.current[i] = el;
+          }}
+          type="button"
+          role="radio"
+          aria-checked={o === value}
+          aria-label={optionLabel(o)}
+          tabIndex={o === value || (!options.includes(value) && i === 0) ? 0 : -1}
+          onClick={() => onChange(o)}
+          className={cn(
+            "flex items-center justify-center rounded-lg border p-1.5 transition-colors",
+            o === value ? "border-primary bg-primary-soft" : "border-border hover:bg-accent",
+            focusRing
+          )}
+        >
+          {render(o)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const colorName = (c: string) => (c === "var(--primary)" ? "Brand" : c);
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+export interface AgentAvatarBuilderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  value?: AgentAvatarSpec;
+  defaultValue?: AgentAvatarSpec;
+  onValueChange?: (spec: AgentAvatarSpec) => void;
+  /** Swatches. Default `agentAvatarColors`. */
+  colors?: string[];
+  /** Turn an uploaded file into a URL. Default reads it as a data URL. */
+  onUpload?: (file: File) => string | Promise<string>;
+  /** Preview size in px. Default 96. */
+  previewSize?: number;
+}
+
+function readAsDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(String(fr.result));
+    fr.onerror = () => reject(fr.error);
+    fr.readAsDataURL(file);
+  });
+}
+
+function newSeed() {
+  return Math.random().toString(36).slice(2, 8);
+}
+
+/** Procedural agent avatar editor: shape, color, face, seeded generation and image upload, with a live preview. */
+export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBuilderProps>(
+  ({ value, defaultValue, onValueChange, colors = agentAvatarColors, onUpload, previewSize = 96, className, ...props }, ref) => {
+    const [spec, setSpec] = useControllableState<AgentAvatarSpec>({
+      value,
+      defaultValue: defaultValue ?? randomAvatarSpec("agent"),
+      onChange: onValueChange,
+    });
+    const patch = (p: Partial<AgentAvatarSpec>) => setSpec({ ...spec, ...p });
+    const fileRef = React.useRef<HTMLInputElement>(null);
+    const seedId = React.useId();
+
+    const upload = async (file: File | undefined) => {
+      if (!file) return;
+      const url = await (onUpload ? onUpload(file) : readAsDataUrl(file));
+      patch({ imageUrl: url });
+    };
+
+    return (
+      <div ref={ref} data-slot="agent-avatar-builder" className={cn("flex flex-col gap-4 sm:flex-row sm:items-start", className)} {...props}>
+        <div className="flex flex-col items-center gap-2 rounded-box border border-border bg-subtle p-4">
+          <AgentAvatar spec={spec} size={previewSize} label="Avatar preview" />
+          <span className="text-2xs text-muted-foreground">
+            {cap(spec.shape)} · {cap(spec.face)}
+          </span>
+        </div>
+        <Tabs defaultValue="shape" variant="underline" size="sm" className="min-w-0 flex-1">
+          <TabsList>
+            <TabsTrigger value="shape">Shape</TabsTrigger>
+            <TabsTrigger value="color">Color</TabsTrigger>
+            <TabsTrigger value="face">Face</TabsTrigger>
+            <TabsTrigger value="generate">Generate</TabsTrigger>
+            <TabsTrigger value="upload">Upload</TabsTrigger>
+          </TabsList>
+          <TabsContent value="shape" className="pt-3">
+            <OptionGroup
+              label="Shape"
+              options={agentAvatarShapes}
+              value={spec.shape}
+              onChange={(shape) => patch({ shape })}
+              optionLabel={cap}
+              render={(shape) => <AgentAvatar spec={{ ...spec, shape, imageUrl: undefined }} size={36} label="" />}
+            />
+          </TabsContent>
+          <TabsContent value="color" className="pt-3">
+            <OptionGroup
+              label="Color"
+              options={colors}
+              value={spec.color}
+              onChange={(color) => patch({ color })}
+              optionLabel={colorName}
+              render={(c) => (
+                <span className="relative block size-6 rounded-full ring-1 ring-black/10" style={{ background: c }}>
+                  {c === "var(--primary)" && <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold text-primary-foreground">B</span>}
+                </span>
+              )}
+            />
+          </TabsContent>
+          <TabsContent value="face" className="pt-3">
+            <OptionGroup
+              label="Face"
+              options={agentAvatarFaces}
+              value={spec.face}
+              onChange={(face) => patch({ face, imageUrl: undefined })}
+              optionLabel={cap}
+              render={(face) => <AgentAvatar spec={{ ...spec, face, imageUrl: undefined }} size={36} label="" />}
+            />
+          </TabsContent>
+          <TabsContent value="generate" className="flex flex-col gap-2 pt-3">
+            <label htmlFor={seedId} className="text-xs font-medium text-muted-foreground">
+              Seed
+            </label>
+            <div className="flex gap-2">
+              <Input
+                id={seedId}
+                size="sm"
+                value={spec.seed}
+                onChange={(e) => setSpec({ ...randomAvatarSpec(e.target.value), imageUrl: spec.imageUrl })}
+                className="font-mono"
+              />
+              <Button size="sm" variant="secondary" leadingIcon={<RiShuffleLine />} onClick={() => setSpec(randomAvatarSpec(newSeed()))}>
+                Shuffle
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">The same seed always draws the same avatar.</p>
+          </TabsContent>
+          <TabsContent value="upload" className="flex flex-col gap-2 pt-3">
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              aria-label="Upload avatar image"
+              tabIndex={-1}
+              onChange={(e) => {
+                void upload(e.target.files?.[0]);
+                e.target.value = "";
+              }}
+            />
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="secondary" leadingIcon={<RiImageAddLine />} onClick={() => fileRef.current?.click()}>
+                Choose image
+              </Button>
+              {spec.imageUrl && (
+                <Button size="sm" variant="ghost" leadingIcon={<RiDeleteBinLine />} onClick={() => patch({ imageUrl: undefined })}>
+                  Remove image
+                </Button>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">Cropped to the selected shape. Square images work best.</p>
+          </TabsContent>
+        </Tabs>
+      </div>
+    );
+  }
+);
+AgentAvatarBuilder.displayName = "AgentAvatarBuilder";
+
+/* ------------------------------------------------------------------ */
+/* PersonaEditor                                                       */
+/* ------------------------------------------------------------------ */
+
+export interface PersonaEditorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  label?: React.ReactNode;
+  placeholder?: string;
+  /** Textarea rows. Default 8. */
+  rows?: number;
+  maxLength?: number;
+  hint?: React.ReactNode;
+}
+
+/** Persona / SOUL.md editor: a markdown textarea with a rendered preview tab. */
+export const PersonaEditor = React.forwardRef<HTMLDivElement, PersonaEditorProps>(
+  (
+    {
+      value,
+      defaultValue = "",
+      onValueChange,
+      label = "Persona",
+      placeholder = "# Who you are\nYou are a careful research assistant…",
+      rows = 8,
+      maxLength,
+      hint = "Markdown. Sets the agent's voice, values and boundaries (SOUL.md).",
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const [text, setText] = useControllableState({ value, defaultValue, onChange: onValueChange });
+    const [tab, setTab] = React.useState("write");
+    const id = React.useId();
+    return (
+      <div ref={ref} data-slot="persona-editor" className={cn("flex flex-col gap-1.5", className)} {...props}>
+        <Tabs value={tab} onValueChange={setTab} variant="ghost" size="sm">
+          <div className="flex items-center justify-between gap-2">
+            <label htmlFor={id} className="text-sm font-medium text-foreground">
+              {label}
+            </label>
+            <TabsList aria-label="Persona view">
+              <TabsTrigger value="write">Write</TabsTrigger>
+              <TabsTrigger value="preview">Preview</TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent value="write" className="mt-1.5" forceMount hidden={tab !== "write"}>
+            <Textarea
+              id={id}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder={placeholder}
+              rows={rows}
+              maxLength={maxLength}
+              showCount={maxLength != null}
+              className="font-mono text-xs"
+            />
+          </TabsContent>
+          <TabsContent value="preview" className="mt-1.5">
+            <div className="min-h-32 rounded-control border border-border bg-subtle px-3 py-2 text-sm" data-slot="persona-preview">
+              {text.trim() ? <Markdown>{text}</Markdown> : <p className="text-muted-foreground">Nothing to preview.</p>}
+            </div>
+          </TabsContent>
+        </Tabs>
+        {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+      </div>
+    );
+  }
+);
+PersonaEditor.displayName = "PersonaEditor";
+
+/* ------------------------------------------------------------------ */
+/* CreateAgentDialog                                                   */
+/* ------------------------------------------------------------------ */
+
+export interface CreateAgentValues {
+  name: string;
+  avatar: AgentAvatarSpec;
+  role: string;
+  description: string;
+  persona: string;
+}
+
+export interface CreateAgentDialogProps {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /** Element that opens the dialog (wrapped with `asChild`). */
+  trigger?: React.ReactNode;
+  /** May return a promise; throw to keep the dialog open. */
+  onCreate?: (values: CreateAgentValues) => void | Promise<void>;
+  /** Names already taken (case-insensitive). */
+  existingNames?: string[];
+  defaultValues?: Partial<CreateAgentValues>;
+  /** Default model picker (e.g. a `SimpleSelect`). */
+  modelSlot?: React.ReactNode;
+  /** Toolset picker. */
+  toolsetsSlot?: React.ReactNode;
+  title?: React.ReactNode;
+  submitLabel?: React.ReactNode;
+}
+
+/** Validate an agent name. Returns an error message or null. */
+export function validateAgentName(name: string, existing: string[] = []): string | null {
+  const n = name.trim();
+  if (!n) return "Give the agent a name.";
+  if (n.length > 40) return "Keep it under 40 characters.";
+  if (!/^[\p{L}\p{N}][\p{L}\p{N} ._-]*$/u.test(n)) return "Use letters, numbers, spaces, dots, dashes or underscores.";
+  if (existing.some((e) => e.toLowerCase() === n.toLowerCase())) return `An agent named "${n}" already exists.`;
+  return null;
+}
+
+/** Dialog for creating an agent: name, avatar, role, description, persona and model / toolset slots. */
+export function CreateAgentDialog({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  trigger,
+  onCreate,
+  existingNames = [],
+  defaultValues,
+  modelSlot,
+  toolsetsSlot,
+  title = "Create agent",
+  submitLabel = "Create agent",
+}: CreateAgentDialogProps) {
+  const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
+  const init = React.useCallback(
+    (): CreateAgentValues => ({
+      name: defaultValues?.name ?? "",
+      avatar: defaultValues?.avatar ?? randomAvatarSpec(newSeed()),
+      role: defaultValues?.role ?? "",
+      description: defaultValues?.description ?? "",
+      persona: defaultValues?.persona ?? "",
+    }),
+    [defaultValues]
+  );
+  const [values, setValues] = React.useState<CreateAgentValues>(init);
+  const [nameError, setNameError] = React.useState<string | null>(null);
+  const [saving, setSaving] = React.useState(false);
+
+  React.useEffect(() => {
+    if (open) {
+      setValues(init());
+      setNameError(null);
+    }
+  }, [open, init]);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const err = validateAgentName(values.name, existingNames);
+    setNameError(err);
+    if (err) return;
+    try {
+      setSaving(true);
+      await onCreate?.({ ...values, name: values.name.trim() });
+      setOpen(false);
+    } catch {
+      /* keep open */
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !saving && setOpen(o)}>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      <DialogContent size="lg">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>Agents get their own persona, avatar, model and tools.</DialogDescription>
+        </DialogHeader>
+        <form noValidate onSubmit={submit} className="flex min-h-0 flex-col gap-4">
+          <DialogBody className="flex flex-col gap-4 overflow-y-auto">
+            <Field invalid={Boolean(nameError)} required>
+              <FieldLabel>Name</FieldLabel>
+              <Input
+                value={values.name}
+                autoFocus
+                placeholder="Researcher"
+                onChange={(e) => {
+                  setValues({ ...values, name: e.target.value });
+                  if (nameError) setNameError(null);
+                }}
+              />
+              <FieldError>{nameError}</FieldError>
+            </Field>
+            <AgentAvatarBuilder value={values.avatar} onValueChange={(avatar) => setValues({ ...values, avatar })} previewSize={80} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel>Role</FieldLabel>
+                <Input value={values.role} placeholder="Finds and cites sources" onChange={(e) => setValues({ ...values, role: e.target.value })} />
+              </Field>
+              {modelSlot && (
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-foreground">Default model</span>
+                  {modelSlot}
+                </div>
+              )}
+            </div>
+            <Field>
+              <FieldLabel>Description</FieldLabel>
+              <Textarea
+                rows={2}
+                value={values.description}
+                placeholder="Shown in the agent roster."
+                onChange={(e) => setValues({ ...values, description: e.target.value })}
+              />
+              <FieldHint>Optional.</FieldHint>
+            </Field>
+            <PersonaEditor value={values.persona} onValueChange={(persona) => setValues({ ...values, persona })} rows={6} />
+            {toolsetsSlot && (
+              <div className="flex flex-col gap-1.5">
+                <span className="text-sm font-medium text-foreground">Toolsets</span>
+                {toolsetsSlot}
+              </div>
+            )}
+          </DialogBody>
+          <DialogFooter>
+            <Button type="button" variant="secondary" onClick={() => setOpen(false)} disabled={saving}>
+              Cancel
+            </Button>
+            <Button type="submit" loading={saving}>
+              {submitLabel}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+CreateAgentDialog.displayName = "CreateAgentDialog";
