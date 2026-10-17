@@ -42,6 +42,10 @@
       "types": "./dist/entries/mobile.d.ts",
       "import": "./dist/entries/mobile.js"
     },
+    "./agent": {
+      "types": "./dist/entries/agent.d.ts",
+      "import": "./dist/entries/agent.js"
+    },
     "./kunji": {
       "types": "./dist/entries/kunji.d.ts",
       "import": "./dist/entries/kunji.js"

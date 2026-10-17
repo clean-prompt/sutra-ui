@@ -13,6 +13,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
+import { PermissionPrompt, type PermissionDecision, type PermissionPromptProps } from "./permission-prompt";
 
 export type ChatToolState = "pending" | "running" | "completed" | "error";
 
@@ -184,6 +185,12 @@ export interface ChatToolApprovalProps extends Omit<React.HTMLAttributes<HTMLDiv
   approveLabel?: string;
   denyLabel?: string;
   icon?: React.ReactNode;
+  /** "numbered" renders a keyboard-driven `PermissionPrompt` (Yes / Always / No with feedback). Default "default". */
+  variant?: "default" | "numbered";
+  /** Numbered variant: full decision payload (choice, scope, feedback). */
+  onDecision?: (decision: PermissionDecision) => void;
+  /** Numbered variant: extra props for the inner `PermissionPrompt`. */
+  permissionProps?: Partial<PermissionPromptProps>;
 }
 
 /** Human-in-the-loop prompt: shows the pending tool call with Approve / Deny buttons. */
@@ -200,12 +207,50 @@ export const ChatToolApproval = React.forwardRef<HTMLDivElement, ChatToolApprova
       approveLabel = "Approve",
       denyLabel = "Deny",
       icon,
+      variant = "default",
+      onDecision,
+      permissionProps,
       className,
       children,
       ...props
     },
     ref
-  ) => (
+  ) =>
+    variant === "numbered" ? (
+      <PermissionPrompt
+        ref={ref}
+        tool="mcp"
+        icon={icon}
+        title={
+          title === "Approval required" ? (
+            <>
+              Allow <code className="font-mono text-[0.92em]">{name}</code> to run?
+            </>
+          ) : (
+            title
+          )
+        }
+        preview={
+          input !== undefined || children || description ? (
+            <>
+              {description != null && <p className="text-sm text-muted-foreground">{description}</p>}
+              {input !== undefined && <JsonBlock label="Arguments" value={input} />}
+              {children}
+            </>
+          ) : undefined
+        }
+        decision={status === "pending" ? undefined : { choice: status === "approved" ? "allow" : "deny" }}
+        onDecision={(d) => {
+          onDecision?.(d);
+          if (d.choice === "deny") onDeny?.();
+          else onApprove?.();
+        }}
+        data-status={status}
+        className={className}
+        {...permissionProps}
+        {...(props as Omit<PermissionPromptProps, "title">)}
+      />
+    ) : (
     <div
       ref={ref}
       role="group"
@@ -265,6 +310,6 @@ export const ChatToolApproval = React.forwardRef<HTMLDivElement, ChatToolApprova
         )}
       </div>
     </div>
-  )
+    )
 );
 ChatToolApproval.displayName = "ChatToolApproval";

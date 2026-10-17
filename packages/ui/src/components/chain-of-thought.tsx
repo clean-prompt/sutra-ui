@@ -1,11 +1,12 @@
 import * as React from "react";
 import { Collapsible } from "radix-ui";
-import { RiArrowDownSLine, RiBrainLine, RiCheckLine } from "@remixicon/react";
+import { RiArrowDownSLine, RiBrainLine, RiCheckLine, RiExpandUpDownLine } from "@remixicon/react";
 import { Favicon, domainOf } from "./favicon";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Spinner } from "./spinner";
 import { TextShimmer } from "./text-shimmer";
+import { Button, type ButtonProps } from "./button";
 
 function formatDuration(seconds: number) {
   if (seconds < 1) return "a moment";
@@ -14,6 +15,88 @@ function formatDuration(seconds: number) {
   const s = Math.round(seconds % 60);
   return s ? `${m}m ${s}s` : `${m}m`;
 }
+
+/** "950 tokens", "1.2k tokens", "3.4M tokens". */
+export function formatTokenLabel(n: number) {
+  const a = Math.abs(n);
+  const trim = (v: number) => String(Math.round(v * 10) / 10);
+  if (a >= 1_000_000) return `${trim(n / 1_000_000)}M tokens`;
+  if (a >= 1000) return `${trim(n / 1000)}k tokens`;
+  return `${Math.round(n)} ${Math.round(a) === 1 ? "token" : "tokens"}`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Expand-all                                                          */
+/* ------------------------------------------------------------------ */
+
+export interface ThinkingExpandAllContextValue {
+  expanded: boolean;
+  setExpanded: (expanded: boolean) => void;
+  toggle: () => void;
+}
+
+const ThinkingExpandAllContext = React.createContext<ThinkingExpandAllContextValue | null>(null);
+
+export interface ThinkingExpandAllProviderProps {
+  expanded?: boolean;
+  defaultExpanded?: boolean;
+  onExpandedChange?: (expanded: boolean) => void;
+  children?: React.ReactNode;
+}
+
+/** Shares one "expand all thinking" switch with every ChainOfThought inside (e.g. a transcript). */
+export function ThinkingExpandAllProvider({
+  expanded: expandedProp,
+  defaultExpanded = false,
+  onExpandedChange,
+  children,
+}: ThinkingExpandAllProviderProps) {
+  const [expanded, setExpanded] = useControllableState<boolean>({
+    value: expandedProp,
+    defaultValue: defaultExpanded,
+    onChange: onExpandedChange,
+  });
+  const value = React.useMemo(
+    () => ({ expanded, setExpanded, toggle: () => setExpanded(!expanded) }),
+    [expanded, setExpanded]
+  );
+  return <ThinkingExpandAllContext.Provider value={value}>{children}</ThinkingExpandAllContext.Provider>;
+}
+
+/** The nearest ThinkingExpandAllProvider state, or null outside one. */
+export function useThinkingExpandAll() {
+  return React.useContext(ThinkingExpandAllContext);
+}
+
+export interface ThinkingToggleProps extends Omit<ButtonProps, "onClick"> {
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+/** Toggle button that expands / collapses every ChainOfThought under a ThinkingExpandAllProvider. */
+export const ThinkingToggle = React.forwardRef<HTMLButtonElement, ThinkingToggleProps>(
+  ({ onClick, children, variant = "ghost", size = "xs", ...props }, ref) => {
+    const ctx = useThinkingExpandAll();
+    if (!ctx) return null;
+    return (
+      <Button
+        ref={ref}
+        variant={variant}
+        size={size}
+        aria-pressed={ctx.expanded}
+        leadingIcon={<RiExpandUpDownLine />}
+        data-slot="thinking-toggle"
+        onClick={(e) => {
+          onClick?.(e);
+          if (!e.defaultPrevented) ctx.toggle();
+        }}
+        {...props}
+      >
+        {children ?? "Expand all thinking"}
+      </Button>
+    );
+  }
+);
+ThinkingToggle.displayName = "ThinkingToggle";
 
 export interface ChainOfThoughtProps
   extends Omit<React.ComponentPropsWithoutRef<typeof Collapsible.Root>, "title"> {
@@ -26,6 +109,10 @@ export interface ChainOfThoughtProps
   icon?: React.ReactNode;
   /** Open while streaming and collapse when done (default true, uncontrolled only). */
   autoCollapse?: boolean;
+  /** Live reasoning token count, shown as "1.2k tokens". */
+  tokenCount?: number;
+  /** Faint one-line summary shown under the header while collapsed. */
+  summary?: React.ReactNode;
 }
 
 /** Collapsible reasoning panel with a "Thinking… / Thought for Ns" header. */
@@ -37,6 +124,8 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
       title,
       icon,
       autoCollapse = true,
+      tokenCount,
+      summary,
       open: openProp,
       defaultOpen,
       onOpenChange,
@@ -46,11 +135,20 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
     },
     ref
   ) => {
+    const expandAll = useThinkingExpandAll();
     const [open, setOpen] = useControllableState<boolean>({
       value: openProp,
-      defaultValue: defaultOpen ?? streaming,
+      defaultValue: defaultOpen ?? (streaming || !!expandAll?.expanded),
       onChange: onOpenChange,
     });
+    const expandAllValue = expandAll?.expanded;
+    const seenExpandAll = React.useRef(expandAllValue);
+    React.useEffect(() => {
+      if (expandAllValue === undefined || seenExpandAll.current === expandAllValue) return;
+      seenExpandAll.current = expandAllValue;
+      setOpen(expandAllValue);
+    }, [expandAllValue, setOpen]);
+    const [now, setNow] = React.useState(() => Date.now());
     const startedAt = React.useRef<number | null>(null);
     const [measured, setMeasured] = React.useState<number | null>(null);
     const prevStreaming = React.useRef(streaming);
@@ -68,9 +166,19 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
       } else if (wasStreaming) {
         if (startedAt.current != null) setMeasured((Date.now() - startedAt.current) / 1000);
         startedAt.current = null;
-        if (autoCollapse && openProp === undefined) setOpen(false);
+        if (autoCollapse && openProp === undefined && !expandAllValue) setOpen(false);
       }
-    }, [streaming, autoCollapse, openProp, setOpen]);
+    }, [streaming, autoCollapse, openProp, setOpen, expandAllValue]);
+
+    React.useEffect(() => {
+      if (!streaming) return;
+      setNow(Date.now());
+      const id = setInterval(() => setNow(Date.now()), 1000);
+      return () => clearInterval(id);
+    }, [streaming]);
+
+    const elapsed =
+      streaming && startedAt.current != null ? Math.max(0, Math.floor((now - startedAt.current) / 1000)) : 0;
 
     const seconds = duration ?? measured;
     const label =
@@ -99,11 +207,26 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
           ) : (
             <span className="truncate font-medium">{label}</span>
           )}
+          {streaming && title == null && elapsed > 0 && (
+            <span data-slot="thinking-elapsed" className="shrink-0 tabular-nums">
+              {formatDuration(elapsed)}
+            </span>
+          )}
+          {tokenCount != null && (
+            <span data-slot="thinking-tokens" className="shrink-0 text-xs tabular-nums text-muted-foreground/80">
+              · {formatTokenLabel(tokenCount)}
+            </span>
+          )}
           <RiArrowDownSLine
             aria-hidden
             className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/cot:rotate-180"
           />
         </Collapsible.Trigger>
+        {summary != null && !open && (
+          <p data-slot="thinking-summary" className="truncate pl-6 text-xs text-muted-foreground/70">
+            {summary}
+          </p>
+        )}
         {children}
       </Collapsible.Root>
     );

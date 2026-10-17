@@ -240,7 +240,8 @@ const ansiBg: Record<AnsiColor, string> = {
   "bright-white": "bg-white/40",
 };
 
-function segmentClass(s: AnsiSegment) {
+/** Tailwind classes for a parsed ANSI segment (colors tuned for dark code surfaces). */
+export function ansiSegmentClassName(s: AnsiSegment) {
   return cn(
     s.fg && ansiFg[s.fg],
     s.bg && ansiBg[s.bg],
@@ -450,7 +451,7 @@ function renderMessage(message: string, ranges: [number, number][]) {
   let r = 0;
   let k = 0;
   for (const seg of segments) {
-    const cls = segmentClass(seg);
+    const cls = ansiSegmentClassName(seg);
     const segEnd = pos + seg.text.length;
     let cursor = pos;
     while (cursor < segEnd) {

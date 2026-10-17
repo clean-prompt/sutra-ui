@@ -211,3 +211,16 @@ export * from "./components/video-player";
 export * from "./components/audio-player";
 export * from "./components/media-cards";
 export * from "./components/cast-picker";
+
+/* Agent (coding-assistant UI) */
+export * from "./components/tool-timeline";
+export * from "./components/permission-prompt";
+export * from "./components/agent-mode";
+export * from "./components/plan-review";
+export * from "./components/rewind";
+export * from "./components/agent-composer";
+export * from "./components/agent-tasks";
+export * from "./components/agent-sessions";
+export * from "./components/agent-transcript";
+export * from "./components/agent-usage";
+export * from "./components/agent-onboarding";
