@@ -1,5 +1,7 @@
 import * as React from "react";
 import {
+  DialogProvider,
+  useDialogs,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -122,6 +124,27 @@ import {
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
+function PromiseDialogsDemo() {
+  const dialogs = useDialogs();
+  const [log, setLog] = React.useState("Nothing yet");
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap gap-2">
+        <Button variant="destructive" onClick={async () => setLog((await dialogs.confirm({ title: "Delete 3 files?", description: "They move to the trash for 30 days.", confirmLabel: "Delete", tone: "destructive" })) ? "Deleted" : "Kept")}>
+          Delete files…
+        </Button>
+        <Button variant="outline" onClick={async () => { const name = await dialogs.prompt({ title: "Rename folder", label: "Name", defaultValue: "Untitled folder", validate: (v) => (v.includes("/") ? "Names can't contain /" : undefined) }); setLog(name === null ? "Rename canceled" : `Renamed to “${name}”`); }}>
+          Rename…
+        </Button>
+        <Button variant="outline" onClick={async () => { const quality = await dialogs.choose({ title: "Export quality", options: [{ value: "high", label: "High", description: "Large files" }, { value: "medium", label: "Medium" }, { value: "low", label: "Low", description: "Small files" }], defaultValue: "medium" }); setLog(quality === null ? "Export canceled" : `Exporting at ${quality}`); }}>
+          Export…
+        </Button>
+      </div>
+      <p className="text-sm text-muted-foreground" aria-live="polite">Result: {log}</p>
+    </div>
+  );
+}
+
 export function OverlaysPage() {
   return (
     <PageIntro
@@ -139,6 +162,11 @@ export function OverlaysPage() {
       <DropdownMenuDemo />
       <ContextMenuDemo />
       <CommandDialogDemo />
+      <Demo id="promise-dialogs" title="Promise Dialogs" description="confirm(), prompt() and choose() from useDialogs() resolve with the answer, so a flow reads top to bottom. One DialogProvider is mounted once." align="start">
+        <DialogProvider>
+          <PromiseDialogsDemo />
+        </DialogProvider>
+      </Demo>
     </PageIntro>
   );
 }

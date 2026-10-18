@@ -6,9 +6,11 @@
 /* Foundations: lib/ and hooks/ modules (the same set as @sutra/ui/tokens) */
 export * from "./hooks/use-active-indicator";
 export * from "./hooks/use-async-action";
+export * from "./hooks/use-camera";
 export * from "./hooks/use-controllable-state";
 export * from "./hooks/use-copy";
 export * from "./hooks/use-iso-layout-effect";
+export * from "./hooks/use-marquee-selection";
 export * from "./hooks/use-media-query";
 export * from "./hooks/use-now";
 export * from "./hooks/use-resize-observer";
@@ -19,6 +21,7 @@ export * from "./hooks/use-theme";
 export * from "./lib/accent";
 export * from "./lib/breakdown";
 export * from "./lib/cn";
+export * from "./lib/crop";
 export * from "./lib/duration";
 export * from "./lib/encoding";
 export * from "./lib/format";
@@ -64,6 +67,7 @@ export * from "./primitives/checkbox";
 export * from "./primitives/chip";
 export * from "./primitives/close-button";
 export * from "./primitives/combobox";
+export * from "./primitives/confirm";
 export * from "./primitives/context-menu";
 export * from "./primitives/copy-button";
 export * from "./primitives/date-picker";
@@ -115,6 +119,7 @@ export * from "./primitives/tag-input";
 export * from "./primitives/text-link";
 export * from "./primitives/text-shimmer";
 export * from "./primitives/textarea";
+export * from "./primitives/time-picker";
 export * from "./primitives/toast";
 export * from "./primitives/tooltip";
 export * from "./primitives/typography";
@@ -127,6 +132,7 @@ export * from "./patterns/agent-avatar";
 export * from "./patterns/bar-list";
 export * from "./patterns/blog-content";
 export * from "./patterns/bottom-tab-bar";
+export * from "./patterns/camera-capture";
 export * from "./patterns/chart";
 export * from "./patterns/coachmarks";
 export * from "./patterns/code-block";
@@ -145,6 +151,7 @@ export * from "./patterns/gauge";
 export * from "./patterns/header-navigation";
 export * from "./patterns/heatmap";
 export * from "./patterns/identity-mark";
+export * from "./patterns/image-cropper";
 export * from "./patterns/json-viewer";
 export * from "./patterns/keybind-editor";
 export * from "./patterns/lightbox";
@@ -158,6 +165,7 @@ export * from "./patterns/recurrence-picker";
 export * from "./patterns/reorderable-list";
 export * from "./patterns/schema-form";
 export * from "./patterns/section-header";
+export * from "./patterns/selection-area";
 export * from "./patterns/settings";
 export * from "./patterns/shortcuts";
 export * from "./patterns/sidebar-navigation";
@@ -251,6 +259,7 @@ export * from "./kits/billing/payment-card";
 
 /* Kit: editor (src/kits/editor) */
 // not exported: kits/editor/code-editor (imports optional peer @codemirror/state)
+// not exported: kits/editor/pdf-viewer (imports optional peer pdfjs-dist)
 // not exported: kits/editor/rich-text-editor (imports optional peer @tiptap/react)
 export * from "./kits/editor/document-outline";
 export * from "./kits/editor/editor-status";

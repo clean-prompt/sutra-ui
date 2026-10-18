@@ -12,6 +12,8 @@ import {
 } from "@remixicon/react";
 import { cn } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { errorMessage } from "../../hooks/use-async-action";
+import { useCamera, type CameraStatus } from "../../hooks/use-camera";
 import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 
@@ -97,6 +99,16 @@ async function loadImage(file: File): Promise<HTMLImageElement | ImageBitmap> {
   }
 }
 
+const SCAN_CONSTRAINTS: MediaTrackConstraints = { width: { ideal: 1280 }, height: { ideal: 1280 } };
+
+const STATE_FOR_STATUS: Record<Exclude<CameraStatus, "idle">, Exclude<QRScannerState, "done">> = {
+  requesting: "requesting",
+  live: "scanning",
+  denied: "denied",
+  unavailable: "unsupported",
+  error: "error",
+};
+
 const SCAN_KEYFRAMES = `@keyframes sutra-qr-scanline{0%{top:6%;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:94%;opacity:0}}
 @keyframes sutra-qr-corners{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}`;
 
@@ -141,24 +153,56 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
     },
     ref
   ) => {
-    const videoRef = React.useRef<HTMLVideoElement>(null);
     const fileRef = React.useRef<HTMLInputElement>(null);
-    const streamRef = React.useRef<MediaStream | null>(null);
     const decoderRef = React.useRef<Promise<FrameDecoder> | null>(null);
     const doneRef = React.useRef(false);
-    const [state, setState] = React.useState<QRScannerState>("requesting");
-    const [facing, setFacing] = React.useState(initialFacing);
-    const [attempt, setAttempt] = React.useState(0);
-    const [torchSupported, setTorchSupported] = React.useState(false);
-    const [torchOn, setTorchOn] = React.useState(false);
-    const [canSwitch, setCanSwitch] = React.useState(false);
-    const [message, setMessage] = React.useState<string | null>(null);
+    const [done, setDone] = React.useState(false);
+    const [initialFacingMode] = React.useState(initialFacing);
+    const [uploadMessage, setUploadMessage] = React.useState<string | null>(null);
     const [lastResult, setLastResult] = React.useState<string | null>(null);
 
     const onResultRef = React.useRef(onResult);
     onResultRef.current = onResult;
     const onErrorRef = React.useRef(onError);
     onErrorRef.current = onError;
+
+    const camera = useCamera({
+      facingMode: initialFacingMode,
+      enabled: !paused,
+      constraints: SCAN_CONSTRAINTS,
+      onError: (err) => onErrorRef.current?.(err),
+    });
+    const videoRef = camera.videoRef;
+
+    // The scanner keeps showing its last camera state while paused or done (the hook reports "idle").
+    const [cameraState, setCameraState] = React.useState<Exclude<QRScannerState, "done">>("requesting");
+    const [prevStatus, setPrevStatus] = React.useState<CameraStatus>(camera.status);
+    if (camera.status !== prevStatus) {
+      setPrevStatus(camera.status);
+      if (camera.status === "requesting") setUploadMessage(null);
+      if (camera.status !== "idle") setCameraState(STATE_FOR_STATUS[camera.status]);
+    }
+    const state: QRScannerState = done ? "done" : cameraState;
+    const cameraMessage =
+      state === "unsupported" && camera.error
+        ? "No camera was found on this device."
+        : state === "error"
+          ? errorMessage(camera.error, "The camera could not be started.")
+          : null;
+    const message = uploadMessage ?? cameraMessage;
+
+    const track = camera.stream?.getVideoTracks()[0];
+    const torchSupported = React.useMemo(
+      () => Boolean(((track?.getCapabilities?.() ?? {}) as MediaTrackCapabilities & { torch?: boolean }).torch),
+      [track]
+    );
+    const [torchOn, setTorchOn] = React.useState(false);
+    const [torchTrack, setTorchTrack] = React.useState(track);
+    if (torchTrack !== track) {
+      setTorchTrack(track);
+      setTorchOn(false);
+    }
+    const canSwitch = camera.canSwitch;
 
     const getDecoder = React.useCallback(() => {
       decoderRef.current ??= createDecoder(detector);
@@ -168,83 +212,19 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
       decoderRef.current = null;
     }, [detector]);
 
-    const stopStream = React.useCallback(() => {
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    }, []);
-
+    const stopCamera = camera.stop;
     const deliver = React.useCallback(
       (text: string) => {
         if (doneRef.current) return;
         doneRef.current = true;
         setLastResult(text);
-        setState("done");
+        setDone(true);
         videoRef.current?.pause?.();
-        stopStream();
+        stopCamera();
         onResultRef.current(text);
       },
-      [stopStream]
+      [stopCamera, videoRef]
     );
-
-    // Camera lifecycle.
-    React.useEffect(() => {
-      if (paused || doneRef.current) return;
-      let alive = true;
-      const media = typeof navigator !== "undefined" ? navigator.mediaDevices : undefined;
-      if (!media?.getUserMedia) {
-        setState("unsupported");
-        return;
-      }
-      setState("requesting");
-      setMessage(null);
-      (async () => {
-        try {
-          const stream = await media.getUserMedia({
-            audio: false,
-            video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 1280 } },
-          });
-          if (!alive) {
-            stream.getTracks().forEach((t) => t.stop());
-            return;
-          }
-          streamRef.current = stream;
-          const track = stream.getVideoTracks()[0];
-          const caps = (track?.getCapabilities?.() ?? {}) as MediaTrackCapabilities & { torch?: boolean };
-          setTorchSupported(Boolean(caps.torch));
-          setTorchOn(false);
-          const video = videoRef.current;
-          if (video) {
-            video.srcObject = stream;
-            try {
-              await video.play?.();
-            } catch {
-              /* autoplay may need a gesture; the muted inline video usually plays */
-            }
-          }
-          if (!alive) return;
-          setState("scanning");
-          const devices = await media.enumerateDevices?.().catch(() => []);
-          if (alive) setCanSwitch((devices ?? []).filter((d) => d.kind === "videoinput").length > 1);
-        } catch (err) {
-          if (!alive) return;
-          const name = (err as { name?: string })?.name;
-          if (name === "NotAllowedError" || name === "SecurityError" || name === "PermissionDeniedError") {
-            setState("denied");
-          } else if (name === "NotFoundError" || name === "OverconstrainedError" || name === "DevicesNotFoundError") {
-            setState("unsupported");
-            setMessage("No camera was found on this device.");
-          } else {
-            setState("error");
-            setMessage((err as Error)?.message || "The camera could not be started.");
-          }
-          onErrorRef.current?.(err);
-        }
-      })();
-      return () => {
-        alive = false;
-        stopStream();
-      };
-    }, [facing, attempt, paused, stopStream]);
 
     // Decode loop (throttled).
     React.useEffect(() => {
@@ -274,10 +254,9 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
         alive = false;
         clearTimeout(timer);
       };
-    }, [state, paused, fps, getDecoder, deliver]);
+    }, [state, paused, fps, getDecoder, deliver, videoRef]);
 
     const toggleTorch = async () => {
-      const track = streamRef.current?.getVideoTracks()[0];
       if (!track) return;
       const next = !torchOn;
       try {
@@ -291,21 +270,23 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
     const scanAgain = () => {
       doneRef.current = false;
       setLastResult(null);
-      setAttempt((a) => a + 1);
+      setDone(false);
+      setCameraState("requesting");
+      camera.start();
     };
 
     const onFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       event.target.value = "";
       if (!file) return;
-      setMessage(null);
+      setUploadMessage(null);
       try {
         const [decode, image] = await Promise.all([getDecoder(), loadImage(file)]);
         const text = await decode(image);
         if (text) deliver(text);
-        else setMessage("No QR code was found in that image.");
+        else setUploadMessage("No QR code was found in that image.");
       } catch (err) {
-        setMessage("That image couldn't be read.");
+        setUploadMessage("That image couldn't be read.");
         onErrorRef.current?.(err);
       }
     };
@@ -347,7 +328,7 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
             className={cn(
               "absolute inset-0 size-full object-cover transition-opacity duration-300",
               state === "scanning" ? "opacity-100" : "opacity-0",
-              facing === "user" && "-scale-x-100"
+              camera.facingMode === "user" && "-scale-x-100"
             )}
           />
 
@@ -395,7 +376,7 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
                     : message}
               </p>
               {state !== "unsupported" && (
-                <Button size="sm" variant="inverse" className="mt-2 bg-white text-zinc-950 hover:bg-white/90" onClick={() => setAttempt((a) => a + 1)}>
+                <Button size="sm" variant="inverse" className="mt-2 bg-white text-zinc-950 hover:bg-white/90" onClick={camera.start}>
                   Try again
                 </Button>
               )}
@@ -434,7 +415,7 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
                   size="icon"
                   variant="ghost"
                   aria-label="Switch camera"
-                  onClick={() => setFacing((f) => (f === "environment" ? "user" : "environment"))}
+                  onClick={() => camera.switchCamera()}
                   className="rounded-full bg-black/40 text-white backdrop-blur hover:bg-black/60"
                 >
                   <RiCameraSwitchLine aria-hidden />

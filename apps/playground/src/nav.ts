@@ -66,7 +66,7 @@ export const nav: NavSection[] = [
         label: "Form Controls",
         items: items(
           "Input", "Password Input", "Search Input", "Input OTP", "Textarea", "Number Input", "Tag Input",
-          "Checkbox", "Radio", "Switch", "Select", "Date Picker", "Date Range Picker", "Calendar",
+          "Checkbox", "Radio", "Switch", "Select", "Date Picker", "Date Range Picker", "Date Time Picker", "Time Picker", "Calendar",
           "Segmented Control", "Slider", "Rating", "File Upload", "Dropzone", "Combobox",
           "Password Strength", "Field", "Input Group", "Label"
         ),
@@ -82,7 +82,7 @@ export const nav: NavSection[] = [
         label: "Overlays",
         items: items(
           "Tooltip", "Info Tooltip", "Popover", "Hover Card", "Dialog", "Alert Dialog", "Sheet",
-          "Dropdown Menu", "Context Menu", "Command Dialog"
+          "Dropdown Menu", "Context Menu", "Command Dialog", "Promise Dialogs"
         ),
       },
       {
@@ -131,6 +131,16 @@ export const nav: NavSection[] = [
           { id: "bar-list", label: "Bar List" },
           { id: "loading", label: "Loading States" },
           { id: "breakdown", label: "Breakdown Legends" },
+        ],
+      },
+      {
+        id: "files",
+        label: "Files & Capture",
+        items: [
+          { id: "image-cropper", label: "Image Cropper" },
+          { id: "camera-capture", label: "Camera Capture" },
+          { id: "selection-area", label: "Selection Area" },
+          { id: "pdf-viewer", label: "PDF Viewer" },
         ],
       },
       { id: "more", label: "More", items: items("Sparkline", "Mesh Gradient", "Text Shimmer") },

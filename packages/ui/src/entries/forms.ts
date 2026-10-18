@@ -13,6 +13,7 @@ export * from "../primitives/switch";
 export * from "../primitives/select";
 export * from "../primitives/calendar";
 export * from "../primitives/date-picker";
+export * from "../primitives/time-picker";
 export * from "../primitives/segmented-control";
 export * from "../primitives/slider";
 export * from "../primitives/volume-slider";

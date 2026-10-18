@@ -96,6 +96,7 @@ Subpath entries, generated from `src/entries/*.ts` (one barrel per subpath; modu
 | `@sutra/ui/social` | App launcher, identity marks, PWA install, calls, messenger, lists, counters, recurrence | `app-launcher`, `identity-mark`, `install-prompt`, `call-overlay`, `messenger`, `reorderable-list`, `counters`, `status-cycle` |
 | `@sutra/ui/editor` | Code and rich-text editors (need the optional @codemirror/* and @tiptap/* peers), plus toolbar, outline, status, diff, history and comments | `code-editor`, `rich-text-editor`, `editor-toolbar`, `document-outline`, `editor-status`, `diff-viewer`, `version-history`, `comments` |
 | `@sutra/ui/terminal` | xterm.js terminal (needs the optional @xterm/xterm and @xterm/addon-fit peers) | `terminal` |
+| `@sutra/ui/pdf` | PDF viewer, thumbnail and a `FileViewer` renderer (optional peer: `pdfjs-dist`) | `pdf-viewer` |
 
 Markdown math (`<Markdown math>`) needs the KaTeX stylesheet: `import "katex/dist/katex.min.css"`.
 
@@ -116,7 +117,7 @@ A single module is importable by its source path:
 
 ### Optional peers
 
-`@sutra/ui/editor` needs `@codemirror/*` (CodeEditor) and/or `@tiptap/*` (RichTextEditor); `@sutra/ui/terminal` needs `@xterm/xterm` and `@xterm/addon-fit` (plus `import "@xterm/xterm/css/xterm.css"`). They are optional peer dependencies and nothing reachable from the root imports them, so apps that don't use those entries don't install them.
+`@sutra/ui/editor` needs `@codemirror/*` (CodeEditor) and/or `@tiptap/*` (RichTextEditor); `@sutra/ui/terminal` needs `@xterm/xterm` and `@xterm/addon-fit` (plus `import "@xterm/xterm/css/xterm.css"`); `@sutra/ui/pdf` needs `pdfjs-dist` (pass its legacy worker URL as `workerSrc`). They are optional peer dependencies and nothing reachable from the root imports them, so apps that don't use those entries don't install them.
 
 ### Hard dependencies
 

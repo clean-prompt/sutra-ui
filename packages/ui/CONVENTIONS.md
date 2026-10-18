@@ -145,6 +145,10 @@ Before writing a new pill, list, banner or picker, check this table. A domain co
 | Compact reading with strain colour | `MetricReadout`, `MetricReadoutGroup` (thresholds in either direction) | — |
 | Area by size | `Treemap` (drill-down, keyboard, screen-reader table) | StorageMap |
 | File preview | `FileViewer` (`renderers` for pdf.js / office previews supplied by the app, `files` gallery, `actions`, `panel`, `blob`) | FilePreviewCard |
+| PDF | `PdfViewer`, `PdfThumbnail`, `pdfRenderer()` from `@sutra/ui/pdf` (pass `workerSrc` from `pdfjs-dist/legacy/build/pdf.worker.min.mjs?url`; under a strict CSP serve the worker from your own origin) | — |
+| Image edit and capture | `ImageCropper`, `CameraCapture` (on `useCamera`, shared with `QRScanner`) | — |
+| Rubber-band selection | `SelectionArea` / `useMarqueeSelection` | — |
+| Times and confirmations | `TimePicker`, `DateTimePicker`; `DialogProvider` + `useDialogs()` for `confirm`/`prompt`/`choose` | — |
 | Time series | `AreaChart` / `LineChart` with `xAxis.type="time"`, `domain`, `maxGap`, `connectNulls` | — |
 | Collaborative editing | `RichTextEditor` / `CodeEditor` with `history={false}` plus Yjs `extensions` | — |
 | Folder upload | `Dropzone` / `FileUploadTrigger` `directory`; read paths with `getFileRelativePath` | — |

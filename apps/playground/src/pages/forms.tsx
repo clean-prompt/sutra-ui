@@ -1,5 +1,7 @@
 import * as React from "react";
 import {
+  TimePicker,
+  DateTimePicker,
   Button,
   Calendar,
   Checkbox,
@@ -1242,6 +1244,23 @@ export function FormsPage() {
 
       <Demo id="label" title="Label" description="Form label with required marker and muted hint." align="start">
         <LabelDemo />
+      </Demo>
+      <Demo id="time-picker" title="Time Picker" description="Hour and minute segments that follow the locale (12/24-hour, order), with arrows, typing, step, min/max and clear." align="start">
+        <div className="flex flex-wrap gap-4">
+          <TimePicker defaultValue="09:30" aria-label="Start time" />
+          <TimePicker defaultValue="18:45" hourCycle={24} step={15} clearable aria-label="End time" />
+          <TimePicker granularity="second" defaultValue="07:05:30" aria-label="Alarm" />
+        </div>
+      </Demo>
+      <Demo id="date-time-picker" title="Date Time Picker" description="Calendar and time in one popover, with presets; replaces native datetime-local inputs." align="start">
+        <DateTimePicker
+          className="w-72"
+          placeholder="Due date"
+          presets={[
+            { label: "In 1 hour", getValue: () => new Date(Date.now() + 3_600_000) },
+            { label: "Tomorrow 9:00", getValue: () => { const d = new Date(); d.setDate(d.getDate() + 1); d.setHours(9, 0, 0, 0); return d; } },
+          ]}
+        />
       </Demo>
     </PageIntro>
   );

@@ -66,6 +66,7 @@ const pages: Record<string, React.ComponentType> = {
   "components/suite": lazyPage(() => import("./pages/suite"), "SuitePage"),
   "components/dataviz": lazyPage(() => import("./pages/dataviz"), "DataVizPage"),
   "components/metrics": lazyPage(() => import("./pages/metrics"), "MetricsPage"),
+  "components/files": lazyPage(() => import("./pages/files"), "FilesPage"),
   "components/system": lazyPage(() => import("./pages/system"), "SystemPage"),
   "components/identity": lazyPage(() => import("./pages/identity"), "IdentityPage"),
   "components/ops": lazyPage(() => import("./pages/ops"), "OpsPage"),

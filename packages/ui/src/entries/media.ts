@@ -4,3 +4,5 @@ export * from "../kits/media/video-player";
 export * from "../kits/media/audio-player";
 export * from "../kits/media/media-cards";
 export * from "../kits/media/cast-picker";
+export * from "../patterns/image-cropper";
+export * from "../patterns/camera-capture";
