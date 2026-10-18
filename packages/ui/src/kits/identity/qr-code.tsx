@@ -68,12 +68,27 @@ function finderPaths(x: number, y: number, style: QRCodeFinderStyle) {
 /* QRCode                                                              */
 /* ------------------------------------------------------------------ */
 
+const ECC_ORDER: QRCodeECC[] = ["L", "M", "Q", "H"];
+
+/** Encodes at `level`, stepping down to lower levels when the data doesn't fit. Null when nothing fits. */
+function encodeQR(value: string, level: QRCodeECC) {
+  for (let i = ECC_ORDER.indexOf(level); i >= 0; i--) {
+    const ecc = ECC_ORDER[i]!;
+    try {
+      return { qr: encode(value, { ecc, border: 0 }), level: ecc };
+    } catch {
+      /* too long for this level */
+    }
+  }
+  return null;
+}
+
 export interface QRCodeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children" | "title"> {
   /** Text or URL to encode. */
   value: string;
   /** Rendered width and height in pixels. */
   size?: number;
-  /** Error-correction level. Forced to `H` when a `logo` is shown. */
+  /** Error-correction level. Forced to `H` when a `logo` is shown. Data too long for the level falls back to a lower one (without the logo). */
   ecc?: QRCodeECC;
   moduleStyle?: QRCodeModuleStyle;
   finderStyle?: QRCodeFinderStyle;
@@ -114,17 +129,22 @@ export const QRCode = React.forwardRef<HTMLSpanElement, QRCodeProps>(
     },
     ref
   ) => {
-    const hasLogo = logo != null && logo !== false;
-    const level: QRCodeECC = hasLogo ? "H" : ecc;
+    const wantsLogo = logo != null && logo !== false;
+    const requested: QRCodeECC = wantsLogo ? "H" : ecc;
     const finder: QRCodeFinderStyle = finderStyle ?? (moduleStyle === "square" ? "square" : "rounded");
     const titleId = React.useId();
 
-    const qr = React.useMemo(() => encode(value, { ecc: level, border: 0 }), [value, level]);
-    const n = qr.size;
+    const encoded = React.useMemo(() => encodeQR(value, requested), [value, requested]);
+    const qr = encoded?.qr;
+    const level = encoded?.level ?? requested;
+    // A logo hides modules, which only level H tolerates; drop it when the data fits only at a lower level.
+    const hasLogo = wantsLogo && level === "H";
+    const n = qr?.size ?? 0;
     const plate = hasLogo ? Math.max(5, Math.round(n * Math.min(0.3, Math.max(0.1, logoSize)))) : 0;
     const plateStart = (n - plate) / 2;
 
     const { dataPath, finders } = React.useMemo(() => {
+      if (!qr) return { dataPath: "", finders: [] };
       const isFinder = (r: number, c: number) =>
         (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
       const underPlate = (r: number, c: number) =>
@@ -151,6 +171,26 @@ export const QRCode = React.forwardRef<HTMLSpanElement, QRCodeProps>(
 
     const total = n + quietZone * 2;
     const logoSrc = typeof logo === "string" ? logo : null;
+
+    if (!qr) {
+      return (
+        <span
+          ref={ref}
+          role="img"
+          aria-label={`${title}: too long to encode`}
+          data-slot="qr-code"
+          data-error="too-long"
+          className={cn(
+            "relative inline-flex shrink-0 items-center justify-center rounded-md border border-dashed border-border bg-muted p-3 text-center align-middle text-xs text-muted-foreground",
+            className
+          )}
+          style={{ width: size, height: size, ...style }}
+          {...props}
+        >
+          Too long for a QR code
+        </span>
+      );
+    }
 
     return (
       <span

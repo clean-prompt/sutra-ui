@@ -85,7 +85,7 @@ export const AgentMessageNotice = React.forwardRef<HTMLDivElement, AgentMessageN
         <button
           type="button"
           aria-expanded={expanded}
-          aria-controls={bodyId}
+          aria-controls={expanded ? bodyId : undefined}
           onClick={() => setExpanded(!expanded)}
           className={cn(
             "flex w-full min-w-0 items-center gap-2 rounded-control px-2 py-1 text-left text-muted-foreground hover:bg-accent hover:text-foreground",
@@ -126,7 +126,8 @@ AgentMessageNotice.displayName = "AgentMessageNotice";
 export function parseAgentMentions(text: string, members: AgentRoomMember[]): Array<string | { mention: AgentRoomMember; text: string }> {
   const names = [...members].sort((a, b) => b.name.length - a.name.length);
   if (!names.length) return [text];
-  const re = new RegExp(`@(${names.map((m) => escapeRegExp(m.name)).join("|")})\\b`, "gi");
+  // Unicode-aware boundaries: `\b` is ASCII-only, so it missed `@Zoë` and matched inside `foo@Planner.com`.
+  const re = new RegExp(`(?<![\\p{L}\\p{N}_])@(${names.map((m) => escapeRegExp(m.name)).join("|")})(?![\\p{L}\\p{N}\\p{M}_])`, "giu");
   const out: Array<string | { mention: AgentRoomMember; text: string }> = [];
   let last = 0;
   for (const m of text.matchAll(re)) {

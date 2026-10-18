@@ -371,18 +371,29 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
       now,
       autoScroll = true,
       className,
+      onScroll,
       ...props
     },
     ref
   ) => {
     const innerRef = React.useRef<HTMLDivElement>(null);
+    /** Whether the reader is at (or near) the bottom, as of their last scroll. */
+    const pinnedRef = React.useRef(true);
     React.useImperativeHandle(ref, () => innerRef.current as HTMLDivElement);
     const entries = React.useMemo(() => groupMessages(messages, { windowMs, firstUnreadId, now }), [messages, windowMs, firstUnreadId, now]);
 
+    // Follow the conversation only when a message is appended (not when history is prepended), and only
+    // if the reader was already at the bottom or just sent it themselves.
+    const last = messages[messages.length - 1];
+    const lastId = last?.id;
+    const lastMine = last?.senderId === currentUserId;
     React.useEffect(() => {
       const el = innerRef.current;
-      if (autoScroll && el) el.scrollTop = el.scrollHeight;
-    }, [messages.length, autoScroll]);
+      if (!autoScroll || !el || !(pinnedRef.current || lastMine)) return;
+      el.scrollTop = el.scrollHeight;
+      pinnedRef.current = true;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [lastId, autoScroll]);
 
     return (
       <div
@@ -392,6 +403,11 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
         aria-label={props["aria-label"] ?? "Messages"}
         tabIndex={0}
         className={cn("flex flex-col overflow-y-auto px-3 py-4 scrollbar-thin", focusRing, className)}
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          pinnedRef.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 48;
+          onScroll?.(e);
+        }}
         {...props}
       >
         {entries.map((entry) => {

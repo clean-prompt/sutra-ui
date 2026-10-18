@@ -122,7 +122,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
         <button
           type="button"
           aria-expanded={!collapsed}
-          aria-controls={listId}
+          aria-controls={collapsed ? undefined : listId}
           onClick={() => setCollapsed(!collapsed)}
           className={cn(
             "inline-flex h-6 w-fit items-center gap-1 rounded-control border border-border bg-subtle px-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground",
@@ -740,7 +740,8 @@ export interface ComposerHistory {
 
 /** Shell-style prompt history for composers: ↑/↓ recall previous prompts when the caret is at the start / end. */
 export function useComposerHistory({ value, onValueChange, initialEntries, max = 100 }: UseComposerHistoryOptions): ComposerHistory {
-  const [entries, setEntries] = React.useState<string[]>(() => (initialEntries ?? []).slice(-max));
+  const keepLast = (list: string[]) => (max > 0 ? list.slice(-max) : []);
+  const [entries, setEntries] = React.useState<string[]>(() => keepLast(initialEntries ?? []));
   const [index, setIndex] = React.useState<number | null>(null);
   const draft = React.useRef("");
   const lastSet = React.useRef<string | null>(null);
@@ -806,7 +807,7 @@ export function useComposerHistory({ value, onValueChange, initialEntries, max =
       lastSet.current = null;
       draft.current = "";
       if (!t) return;
-      setEntries((prev) => (prev[prev.length - 1] === t ? prev : [...prev, t].slice(-max)));
+      setEntries((prev) => (prev[prev.length - 1] === t ? prev : max > 0 ? [...prev, t].slice(-max) : []));
     },
     [max]
   );

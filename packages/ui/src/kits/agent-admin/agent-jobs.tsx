@@ -1184,11 +1184,41 @@ export interface Blueprint {
   appHref?: string;
 }
 
-/** Replace `{key}` placeholders with values (unknown keys are left as-is). */
-export function fillBlueprintTemplate(template: string, values: Record<string, BlueprintSlotValue | undefined>): string {
-  return template.replace(/\{(\w+)\}/g, (m, key: string) => {
+/** Quoting context at `end` in a POSIX shell command template. */
+function shellQuoteAt(template: string, end: number): "none" | "single" | "double" {
+  let q: "none" | "single" | "double" = "none";
+  for (let i = 0; i < end; i++) {
+    const c = template[i];
+    if (q === "single") {
+      if (c === "'") q = "none";
+    } else if (c === "\\") i++;
+    else if (c === '"') q = q === "double" ? "none" : "double";
+    else if (c === "'" && q === "none") q = "single";
+  }
+  return q;
+}
+
+/** Escape `value` so it stays one literal word in its quoting context (no expansion, no breaking out). */
+function shellEscape(value: string, quote: "none" | "single" | "double"): string {
+  if (quote === "single") return value.replace(/'/g, "'\\''");
+  // Inside double quotes \ " $ ` stay special; `!` (bash history) is closed out into single quotes.
+  if (quote === "double") return value.replace(/[\\"$`]/g, "\\$&").replace(/!/g, `"'!'"`);
+  return /^[\w@%+=:,./-]+$/.test(value) ? value : `'${value.replace(/'/g, "'\\''")}'`;
+}
+
+/**
+ * Replace `{key}` placeholders with values (unknown keys are left as-is).
+ * Pass `{ escape: "shell" }` for a command line: each value is escaped for the quoting around its placeholder.
+ */
+export function fillBlueprintTemplate(
+  template: string,
+  values: Record<string, BlueprintSlotValue | undefined>,
+  options: { escape?: "shell" } = {}
+): string {
+  return template.replace(/\{(\w+)\}/g, (m, key: string, offset: number) => {
     const v = values[key];
-    return v == null || v === "" ? m : String(v);
+    if (v == null || v === "") return m;
+    return options.escape === "shell" ? shellEscape(String(v), shellQuoteAt(template, offset)) : String(v);
   });
 }
 
@@ -1242,7 +1272,7 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
     const slots = blueprint.slots ?? [];
     const missing = slots.filter((s) => s.required && (values[s.id] == null || values[s.id] === ""));
     const scheduleText = describeSchedule(blueprint.schedule);
-    const command = blueprint.cliCommand ? fillBlueprintTemplate(blueprint.cliCommand, { ...values, schedule: blueprint.schedule, title: blueprint.title, id: blueprint.id }) : null;
+    const command = blueprint.cliCommand ? fillBlueprintTemplate(blueprint.cliCommand, { ...values, schedule: blueprint.schedule, title: blueprint.title, id: blueprint.id }, { escape: "shell" }) : null;
 
     const set = (k: string, v: BlueprintSlotValue) => setValues((p) => ({ ...p, [k]: v }));
 
@@ -1348,7 +1378,7 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
         ) : (
           <>
             {!expanded ? (
-              <Button type="button" size="sm" variant="secondary" className="self-start" aria-expanded={false} aria-controls={formId} onClick={() => setExpanded(true)}>
+              <Button type="button" size="sm" variant="secondary" className="self-start" aria-expanded={false} onClick={() => setExpanded(true)}>
                 Use template
               </Button>
             ) : (

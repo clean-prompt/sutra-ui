@@ -19,6 +19,8 @@ import {
   describeSchedule,
   nextScheduleRuns,
   formatScheduleRelative,
+  zonedWallTimeToDate,
+  dateToZonedWallTime,
   type CronIntervalUnit,
   type CronSchedule,
   type CronScheduleMode,
@@ -86,7 +88,19 @@ export function defaultCronBuilderState(mode: CronScheduleMode = "interval"): Cr
   return { mode, every: 30, unit: "m", minute: 0, time: "09:00", days: [1], day: 1, onceDate: undefined, onceTime: "09:00", expr: "0 9 * * 1-5" };
 }
 
-function applyScheduleToState(state: CronBuilderState, s: CronSchedule): CronBuilderState {
+/** `date`'s wall-clock time in `timeZone`, as a local Date with the same fields. */
+function toZoneWall(date: Date, timeZone: string): Date {
+  const wall = new Date(dateToZonedWallTime(date, timeZone));
+  if (Number.isNaN(wall.getTime())) return date;
+  return new Date(wall.getUTCFullYear(), wall.getUTCMonth(), wall.getUTCDate(), wall.getUTCHours(), wall.getUTCMinutes());
+}
+
+/** The instant whose wall-clock time in `timeZone` matches the fields of the local Date `wall`. */
+function fromZoneWall(wall: Date, timeZone: string): Date {
+  return zonedWallTimeToDate(Date.UTC(wall.getFullYear(), wall.getMonth(), wall.getDate(), wall.getHours(), wall.getMinutes()), timeZone);
+}
+
+function applyScheduleToState(state: CronBuilderState, s: CronSchedule, timeZone?: string): CronBuilderState {
   switch (s.mode) {
     case "interval":
       return { ...state, mode: s.mode, every: s.every, unit: s.unit };
@@ -100,7 +114,7 @@ function applyScheduleToState(state: CronBuilderState, s: CronSchedule): CronBui
     case "monthly":
       return { ...state, mode: s.mode, day: s.day, time: s.time };
     case "once": {
-      const d = s.at;
+      const d = timeZone ? toZoneWall(s.at, timeZone) : s.at;
       return { ...state, mode: s.mode, onceDate: new Date(d.getFullYear(), d.getMonth(), d.getDate()), onceTime: formatTimeValue(d.getHours(), d.getMinutes()) };
     }
     case "custom":
@@ -108,7 +122,8 @@ function applyScheduleToState(state: CronBuilderState, s: CronSchedule): CronBui
   }
 }
 
-function stateToSchedule(state: CronBuilderState): CronSchedule {
+/** Builder state → schedule. With `timeZone`, a one-shot date and time are wall-clock time in that zone. */
+function stateToSchedule(state: CronBuilderState, timeZone?: string): CronSchedule {
   switch (state.mode) {
     case "interval":
       return { mode: "interval", every: state.every ?? NaN, unit: state.unit };
@@ -124,7 +139,8 @@ function stateToSchedule(state: CronBuilderState): CronSchedule {
     case "once": {
       const [h, m] = parseTime(state.onceTime);
       const d = state.onceDate;
-      return { mode: "once", at: d ? new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m) : new Date(NaN) };
+      const wall = d ? new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m) : new Date(NaN);
+      return { mode: "once", at: timeZone ? fromZoneWall(wall, timeZone) : wall };
     }
     case "custom":
       return { mode: "custom", expr: state.expr };
@@ -197,34 +213,35 @@ export const CronScheduleField = React.forwardRef<HTMLFieldSetElement, CronSched
     const initial = value ?? defaultValue;
     const [state, setState] = React.useState<CronBuilderState>(() => {
       const base = defaultCronBuilderState(modes[0] ?? "interval");
-      return initial ? applyScheduleToState(base, valueToSchedule(initial)) : base;
+      return initial ? applyScheduleToState(base, valueToSchedule(initial), timeZone) : base;
     });
 
-    const schedule = stateToSchedule(state);
+    const schedule = stateToSchedule(state, timeZone);
     const error = cronScheduleError(schedule);
     const scheduleString = error ? null : scheduleToCron(schedule);
     const describeOpts = { locale, hour12 };
-    const summary = error ? error : describeSchedule(schedule, describeOpts);
+    // Summaries read the wall-clock fields, so describe the zone-less schedule (a one-shot run in `timeZone`).
+    const summary = error ? error : describeSchedule(stateToSchedule(state), describeOpts);
 
     const external = value == null ? null : typeof value === "string" ? value : toScheduleString(value);
     React.useEffect(() => {
       if (external == null) return;
       setState((prev) => {
-        const prevSchedule = stateToSchedule(prev);
+        const prevSchedule = stateToSchedule(prev, timeZone);
         if (!cronScheduleError(prevSchedule) && toScheduleString(scheduleToValue(prevSchedule)) === external) return prev;
-        return applyScheduleToState(prev, cronToSchedule(external));
+        return applyScheduleToState(prev, cronToSchedule(external), timeZone);
       });
-    }, [external]);
+    }, [external, timeZone]);
 
     const update = (patch: Partial<CronBuilderState>) => {
       const next = { ...state, ...patch };
       setState(next);
-      const s = stateToSchedule(next);
+      const s = stateToSchedule(next, timeZone);
       const err = cronScheduleError(s);
       onValueChange?.(err ? null : scheduleToValue(s), {
         schedule: s,
         error: err,
-        summary: err ?? describeSchedule(s, describeOpts),
+        summary: err ?? describeSchedule(stateToSchedule(next), describeOpts),
         scheduleString: err ? null : toScheduleString(scheduleToValue(s)),
       });
     };

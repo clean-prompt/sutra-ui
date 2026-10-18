@@ -104,6 +104,8 @@ interface LargePasteNotice {
   text: string;
   file?: File;
   selection: readonly [number, number];
+  /** The composer text when the paste happened; the selection is only valid while it's unchanged. */
+  base?: string;
 }
 
 /** Chat composer card. Compose with PromptInputAttachments, PromptInputTextarea and PromptInputToolbar. */
@@ -168,14 +170,14 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
         if (!largePasteThreshold || largePasteThreshold <= 0 || text.length <= largePasteThreshold) return false;
         if (onLargePaste) {
           onLargePaste(text);
-          setPasteNotice({ text, selection });
+          setPasteNotice({ text, selection, base: textareaRef.current?.value });
           return true;
         }
         if (onFilesAdded) {
           const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
           const file = new File([text], `pasted-text-${stamp}.txt`, { type: "text/plain" });
           onFilesAdded([file]);
-          setPasteNotice({ text, file, selection });
+          setPasteNotice({ text, file, selection, base: textareaRef.current?.value });
           return true;
         }
         return false;
@@ -191,7 +193,12 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
 
     const undoLargePaste = () => {
       if (!pasteNotice) return;
-      const [start, end] = pasteNotice.selection;
+      // If the text changed since the paste, the recorded selection is stale: insert at the caret instead.
+      const ta = textareaRef.current;
+      const [start, end] =
+        pasteNotice.base === undefined || pasteNotice.base === value || !ta
+          ? pasteNotice.selection
+          : [ta.selectionStart ?? value.length, ta.selectionEnd ?? value.length];
       const s0 = Math.min(start, value.length);
       const e0 = Math.min(Math.max(end, s0), value.length);
       setValue(value.slice(0, s0) + pasteNotice.text + value.slice(e0));

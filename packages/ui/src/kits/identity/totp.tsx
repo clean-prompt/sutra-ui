@@ -59,9 +59,14 @@ export async function generateTOTP(secret: string | Uint8Array, options: Generat
   return String(binary % 10 ** digits).padStart(digits, "0");
 }
 
-/** Group a code for reading: "123456" → "123 456", "12345678" → "1234 5678". */
+/** Default group size for a code of `length` digits: 3s or 4s when they divide evenly, else two halves. */
+function otpGroupSize(length: number) {
+  return length % 3 === 0 ? 3 : length % 4 === 0 ? 4 : Math.max(1, Math.ceil(length / 2));
+}
+
+/** Group a code for reading: "123456" → "123 456", "12345678" → "1234 5678", "12345" → "123 45". */
 export function formatOtpCode(code: string, groupSize?: number) {
-  const size = groupSize ?? (code.length % 3 === 0 ? 3 : 4);
+  const size = groupSize ?? otpGroupSize(code.length);
   const groups: string[] = [];
   for (let i = 0; i < code.length; i += size) groups.push(code.slice(i, i + size));
   return groups.join(" ");
@@ -110,8 +115,8 @@ export function parseOtpauthUri(uri: string): OtpauthParams | null {
     account,
     secret,
     algorithm: normalizeAlgorithm(params.get("algorithm") ?? undefined),
-    digits: Number.isFinite(digits) && digits > 0 ? digits : 6,
-    period: Number.isFinite(period) && period > 0 ? period : 30,
+    digits: Number.isInteger(digits) && digits >= 1 && digits <= 10 ? digits : 6,
+    period: Number.isInteger(period) && period > 0 ? period : 30,
     counter: type === "hotp" && counter != null ? Number(counter) : undefined,
   };
 }
@@ -181,8 +186,6 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
     const nearEnd = remaining <= nextThreshold;
     const [codes, setCodes] = React.useState<{ counter: number; current?: string; next?: string }>({ counter: -1 });
 
-    const getCodeRef = React.useRef(getCode);
-    getCodeRef.current = getCode;
     const rolloverRef = React.useRef(onRollover);
     rolloverRef.current = onRollover;
 
@@ -196,11 +199,11 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
 
     const resolve = React.useCallback(
       async (ts: number): Promise<string | undefined> => {
-        if (getCodeRef.current) return getCodeRef.current(ts);
+        if (getCode) return getCode(ts);
         if (secret) return generateTOTP(secret, { period, digits, algorithm, timestamp: ts });
         return undefined;
       },
-      [secret, period, digits, algorithm]
+      [getCode, secret, period, digits, algorithm]
     );
 
     React.useEffect(() => {
@@ -235,7 +238,7 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
 
     const current = codeProp ?? (codes.counter === counter ? codes.current : undefined);
     const next = codeProp !== undefined ? nextCodeProp : codes.counter === counter ? codes.next : undefined;
-    const groupSize = digits % 3 === 0 ? 3 : 4;
+    const groupSize = otpGroupSize(digits);
     const placeholder = formatOtpCode("•".repeat(digits), groupSize);
     const display = current ? formatOtpCode(current, groupSize) : placeholder;
 

@@ -210,16 +210,26 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
     },
     ref
   ) => {
-    const [draft, setDraft] = React.useState<WebhookRouteDraft>(() => ({
-      id: route?.id,
-      name: route?.name ?? "",
-      events: route?.events ?? [],
-      delivery: route?.delivery ?? { platform: "local" },
-      enabled: route?.enabled ?? true,
-    }));
+    const draftFor = (r: WebhookRoute | undefined): WebhookRouteDraft => ({
+      id: r?.id,
+      name: r?.name ?? "",
+      events: r?.events ?? [],
+      delivery: r?.delivery ?? { platform: "local" },
+      enabled: r?.enabled ?? true,
+    });
+    const [draft, setDraft] = React.useState<WebhookRouteDraft>(() => draftFor(route));
     const [secret, setSecret] = React.useState<string | null>(newSecret ?? null);
     const [submitted, setSubmitted] = React.useState(false);
     const [testResult, setTestResult] = React.useState<WebhookTestResult | null>(null);
+    // Selecting another route (master/detail) starts a fresh draft for it.
+    const [draftRouteId, setDraftRouteId] = React.useState(route?.id);
+    if (draftRouteId !== route?.id) {
+      setDraftRouteId(route?.id);
+      setDraft(draftFor(route));
+      setSecret(newSecret ?? null);
+      setSubmitted(false);
+      setTestResult(null);
+    }
     const saveAction = useAsyncAction((next: WebhookRouteDraft) => onSave?.(next), {
       fallbackMessage: "Could not save the route",
     });

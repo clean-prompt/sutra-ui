@@ -781,7 +781,7 @@ export function validateWorktreeName(name: string, existing: readonly string[] =
   if (/\s/.test(n)) return "No spaces allowed";
   if (/[~^:?*[\\\x00-\x1f\x7f]/.test(n)) return "Contains characters git doesn't allow";
   if (n.includes("..") || n.includes("@{") || n.includes("//")) return "Not a valid git ref name";
-  if (/^[-/.]|[/.]$|\.lock$/.test(n) || n === "@") return "Not a valid git ref name";
+  if (/^[-/]|[/.]$|(^|\/)\.|\.lock(\/|$)/.test(n) || n === "@") return "Not a valid git ref name";
   if (existing.includes(n)) return `“${n}” already exists`;
   return null;
 }

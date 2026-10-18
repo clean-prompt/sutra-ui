@@ -768,9 +768,13 @@ export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProp
           <p className="text-sm text-muted-foreground" aria-live="polite">
             Didn&apos;t receive a code?{" "}
             {remainingMs > 0 ? (
-              <span className="tabular-nums">
-                Resend in {formatCountdown(remainingMs)}
-              </span>
+              <>
+                {/* The countdown ticks every second; keep it out of the live region. */}
+                <span aria-hidden="true" className="tabular-nums">
+                  Resend in {formatCountdown(remainingMs)}
+                </span>
+                <span className="sr-only">You can resend it shortly.</span>
+              </>
             ) : (
               <button
                 type="button"

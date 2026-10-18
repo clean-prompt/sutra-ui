@@ -206,11 +206,22 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
     },
     ref
   ) => {
-    const [expanded, setExpanded] = useControllableState<string[]>({
+    // With neither `expanded` nor `defaultExpanded`, every parent is open unless the user collapsed it,
+    // so parents whose children stream in after mount open too.
+    const autoExpand = expandedProp === undefined && defaultExpanded === undefined;
+    const [collapsed, setCollapsed] = React.useState<string[]>([]);
+    const [expandedState, setExpandedState] = useControllableState<string[]>({
       value: expandedProp,
-      defaultValue: defaultExpanded ?? collectIds(nodes),
+      defaultValue: defaultExpanded ?? [],
       onChange: onExpandedChange,
     });
+    const autoExpanded = React.useMemo(() => (autoExpand ? collectIds(nodes).filter((id) => !collapsed.includes(id)) : null), [autoExpand, nodes, collapsed]);
+    const expanded = autoExpanded ?? expandedState;
+    const setExpanded = (next: string[]) => {
+      if (!autoExpand) return setExpandedState(next);
+      setCollapsed(collectIds(nodes).filter((id) => !next.includes(id)));
+      onExpandedChange?.(next);
+    };
     const [sort, setSort] = useControllableState<SubagentSort>({ value: sortProp, defaultValue: defaultSort, onChange: onSortChange });
     const [runningOnly, setRunningOnly] = useControllableState<boolean>({
       value: runningOnlyProp,
@@ -562,7 +573,7 @@ export const RunTicker = React.forwardRef<HTMLDivElement, RunTickerProps>(
         <button
           type="button"
           aria-expanded={expanded}
-          aria-controls={listId}
+          aria-controls={expanded ? listId : undefined}
           onClick={() => setExpanded(!expanded)}
           className={cn("flex h-9 w-full min-w-0 items-center gap-2 rounded-box px-3 text-left hover:bg-accent/50", focusRing)}
         >

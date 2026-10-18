@@ -267,7 +267,7 @@ function matchesHotkey(e: KeyboardEvent, hotkey: string) {
   const wantMeta = mods.has("meta") || mods.has("cmd") || (mod && isMac());
   const wantCtrl = mods.has("ctrl") || (mod && !isMac());
   return (
-    e.key.toLowerCase() === key &&
+    (e.key ?? "").toLowerCase() === key &&
     e.metaKey === wantMeta &&
     e.ctrlKey === wantCtrl &&
     e.altKey === mods.has("alt") &&

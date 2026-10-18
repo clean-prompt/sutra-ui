@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RiCalendarCheckLine, RiFireFill } from "@remixicon/react";
 import { cn, normalizeDensity, type Density } from "../../lib/cn";
-import { formatClockTime, toValidDate } from "../../lib/time";
+import { addDays, formatClockTime, startOfDay, toValidDate } from "../../lib/time";
 import { useNow } from "../../hooks/use-now";
 import { SutraAppIcon, sutraAppMeta, type SutraApp } from "../../assets/brand";
 import { Checkbox } from "../../primitives/checkbox";
@@ -165,14 +165,23 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
   ) => {
     const density = normalizeDensity(densityProp);
     const now = new Date(useNow({ interval: 60_000, fixed: nowProp }));
-    const { untimed, timed } = React.useMemo(() => layoutTimeline(items), [items]);
+    const { untimed, timed: allTimed } = React.useMemo(() => layoutTimeline(items), [items]);
     const hourHeight = density === "compact" ? 40 : 64;
 
-    const firstHour =
-      startHour ?? Math.min(8, ...timed.map((t) => t.start.getHours()));
-    const lastHour =
-      endHour ??
-      Math.max(20, ...timed.map((t) => Math.ceil((minutesOf(t.end) || 24 * 60) / 60)));
+    // Only items that overlap the displayed day, clamped to it: an event that crosses midnight
+    // runs to the edge of the rail instead of wrapping to the top.
+    const dayStart = startOfDay(now).getTime();
+    const dayEnd = addDays(dayStart, 1).getTime();
+    const timed = allTimed
+      .filter((t) => t.end.getTime() > dayStart && t.start.getTime() < dayEnd)
+      .map((t) => ({
+        ...t,
+        startMin: t.start.getTime() <= dayStart ? 0 : minutesOf(t.start),
+        endMin: t.end.getTime() >= dayEnd ? 24 * 60 : minutesOf(t.end),
+      }));
+
+    const firstHour = startHour ?? Math.min(8, ...timed.map((t) => Math.floor(t.startMin / 60)));
+    const lastHour = endHour ?? Math.max(20, ...timed.map((t) => Math.ceil(t.endMin / 60)));
     const hours = Array.from({ length: Math.max(lastHour - firstHour, 1) }, (_, i) => firstHour + i);
     const railHeight = hours.length * hourHeight;
     const toY = (mins: number) => ((mins - firstHour * 60) / 60) * hourHeight;
@@ -250,9 +259,9 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
             ))}
 
             <ol aria-label="Schedule" className="absolute inset-0">
-              {timed.map(({ item, start, end, column, columns }) => {
-                const top = toY(minutesOf(start));
-                const height = Math.max(toY(minutesOf(end) || 24 * 60) - top, density === "compact" ? 18 : 24);
+              {timed.map(({ item, start, end, startMin, endMin, column, columns }) => {
+                const top = toY(startMin);
+                const height = Math.max(toY(endMin) - top, density === "compact" ? 18 : 24);
                 const short = height < (density === "compact" ? 34 : 44);
                 return (
                   <li

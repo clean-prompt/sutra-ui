@@ -307,6 +307,13 @@ const host = (url: URL) => url.hostname.replace(/^www\./, "").toLowerCase();
 const seg = (url: URL) => url.pathname.split("/").filter(Boolean);
 const enc = encodeURIComponent;
 
+/** YouTube `t` / `start`: plain seconds ("90", "90s") or h/m/s ("1m30s", "1h2m3s"). 0 when unparseable. */
+function youTubeStart(t: string | null): number {
+  const m = t ? /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/i.exec(t.trim()) : null;
+  if (!m) return 0;
+  return Number(m[1] ?? 0) * 3600 + Number(m[2] ?? 0) * 60 + Number(m[3] ?? 0);
+}
+
 /** Built-in providers. Order matters: the first match wins. */
 export const embedProviders: EmbedProvider[] = [
   {
@@ -325,8 +332,7 @@ export const embedProviders: EmbedProvider[] = [
         else if (s[0] === "shorts" || s[0] === "embed" || s[0] === "live") id = s[1] ?? null;
       }
       if (!id || !/^[\w-]{6,20}$/.test(id)) return null;
-      const t = url.searchParams.get("t") ?? url.searchParams.get("start");
-      const start = t ? parseInt(t, 10) : 0;
+      const start = youTubeStart(url.searchParams.get("t") ?? url.searchParams.get("start"));
       return "https://www.youtube-nocookie.com/embed/" + enc(id) + (start > 0 ? "?start=" + start : "");
     },
   },

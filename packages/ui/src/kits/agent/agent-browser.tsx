@@ -62,11 +62,15 @@ export function inferBrowserSecurity(url: string | undefined): BrowserSecurity {
   return "unknown";
 }
 
-/** Turn address-bar input into a navigable URL string (adds https:// to bare hosts; `""` for script/data URLs). */
+/**
+ * Turn address-bar input into a navigable URL string (adds https:// to bare hosts and `host:port`;
+ * `""` for script/data URLs and for text with spaces, which isn't an address).
+ */
 export function normalizeBrowserInput(input: string): string {
   const v = input.trim();
-  if (!v) return "";
-  if (/^(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(v)) return `http://${v}`;
+  if (!v || /\s/.test(v)) return "";
+  if (/^(localhost|127\.0\.0\.1)(:\d+)?([/?#]|$)/i.test(v)) return `http://${v}`;
+  if (/^[a-z0-9.-]+:\d+([/?#]|$)/i.test(v)) return `https://${v}`;
   if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return isSafeHref(v) || /^(file|about):/i.test(v) ? v : "";
   return `https://${v}`;
 }
@@ -163,6 +167,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
 
     const submit = (e: React.FormEvent) => {
       e.preventDefault();
+      if (agentDriving) return;
       const next = normalizeBrowserInput(draft);
       if (!next) return;
       setEditing(false);
@@ -259,7 +264,10 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
                 placeholder="Search or enter address"
                 onFocus={() => setEditing(true)}
                 onBlur={() => setEditing(false)}
-                onChange={(e) => setDraft(e.target.value)}
+                onChange={(e) => {
+                  setEditing(true);
+                  setDraft(e.target.value);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Escape") {
                     setDraft(url);
@@ -442,7 +450,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
           <button
             type="button"
             aria-expanded={open}
-            aria-controls={listId}
+            aria-controls={open ? listId : undefined}
             onClick={() => setOpen(!open)}
             className={cn(
               "inline-flex h-7 items-center gap-1.5 rounded-control px-1.5 font-medium text-foreground hover:bg-accent [&_svg]:size-4",

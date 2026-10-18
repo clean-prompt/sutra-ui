@@ -16,10 +16,12 @@ describe("Toaster + toast()", () => {
     Element.prototype.setPointerCapture = original;
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     act(() => {
       toast.dismiss();
     });
+    // Sonner removes a dismissed toast after a 200ms exit timer; let it fire while jsdom still exists.
+    await act(() => new Promise((resolve) => setTimeout(resolve, 300)));
   });
 
   it("renders a toast message and description", async () => {

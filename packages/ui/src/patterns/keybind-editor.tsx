@@ -164,6 +164,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
     const [recording, setRecording] = React.useState<string | null>(null);
     const [pending, setPending] = React.useState<Pending | null>(null);
     const uid = React.useId();
+    const editButtons = React.useRef(new Map<string, HTMLButtonElement>());
 
     const defaultOf = (item: KeybindItem) => item.defaultKeys ?? item.keys;
     const keysOf = (item: KeybindItem) => (item.id in overrides ? overrides[item.id]! : item.keys);
@@ -180,26 +181,32 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
       for (const [id, keys] of Object.entries(changes)) onChange?.(id, keys);
     };
 
+    // The recorder unmounts when recording ends: hand focus back to the row's edit button instead of <body>.
+    const stopRecording = (item: KeybindItem) => {
+      editButtons.current.get(item.id)?.focus();
+      setRecording(null);
+    };
+
     const handleRecordKey = (item: KeybindItem, e: React.KeyboardEvent) => {
       e.preventDefault();
       e.stopPropagation();
       const plain = !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
       if (e.key === "Escape" && plain) {
-        setRecording(null);
+        stopRecording(item);
         return;
       }
       if ((e.key === "Backspace" || e.key === "Delete") && plain) {
-        setRecording(null);
+        stopRecording(item);
         apply({ [item.id]: "" });
         return;
       }
       if (e.key === "Tab" && plain) {
-        setRecording(null);
+        stopRecording(item);
         return;
       }
       const combo = recordKeyCombo(e.nativeEvent ?? e, { platform });
       if (!combo) return;
-      setRecording(null);
+      stopRecording(item);
       const conflict = items.find((other) => other.id !== item.id && keysOf(other) && norm(keysOf(other)) === norm(combo));
       if (conflict) setPending({ id: item.id, keys: combo, conflictId: conflict.id });
       else apply({ [item.id]: combo });
@@ -302,6 +309,10 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                             size="icon-sm"
                             variant="ghost"
                             aria-label={`Edit shortcut for ${item.label}`}
+                            ref={(el) => {
+                              if (el) editButtons.current.set(item.id, el);
+                              else editButtons.current.delete(item.id);
+                            }}
                             onClick={() => {
                               setPending(null);
                               setRecording(item.id);

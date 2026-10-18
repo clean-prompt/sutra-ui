@@ -161,8 +161,19 @@ export const languages: Language[] = [
 /** Look up a language by code (case-insensitive, falls back to the base subtag). */
 export function getLanguage(code: string | undefined, list: Language[] = languages): Language | undefined {
   if (!code) return undefined;
-  const c = code.toLowerCase();
-  return list.find((l) => l.code.toLowerCase() === c) ?? list.find((l) => l.code.toLowerCase() === c.split("-")[0]);
+  const c = code.toLowerCase().replace(/_/g, "-");
+  const parts = c.split("-");
+  const base = parts[0]!;
+  const byCode = (x: string) => list.find((l) => l.code.toLowerCase() === x);
+  const exact = byCode(c);
+  if (exact) return exact;
+  // Detectors often say "zh", "zh-Hans" or "zh-Hant-HK"; map script and region to the listed variant.
+  if (base === "zh") {
+    const traditional = parts.some((p) => p === "hant" || p === "tw" || p === "hk" || p === "mo");
+    const variant = byCode(traditional ? "zh-tw" : "zh-cn");
+    if (variant) return variant;
+  }
+  return byCode(base) ?? list.find((l) => l.code.toLowerCase().split("-")[0] === base);
 }
 
 /** "rtl" for right-to-left languages, else "ltr". */
@@ -270,7 +281,7 @@ export const LanguagePicker = React.forwardRef<HTMLDivElement, LanguagePickerPro
 
     const onKeyDown = (e: React.KeyboardEvent) => {
       const n = rows.length;
-      if (!n) return;
+      if (!n || e.nativeEvent.isComposing || e.keyCode === 229) return;
       if (e.key === "ArrowDown") {
         e.preventDefault();
         setActive((i) => (i + 1) % n);
@@ -787,7 +798,11 @@ export const TransliterationCandidates = React.forwardRef<HTMLDivElement, Transl
       };
       const result = getRef.current(word.text, lang);
       if (Array.isArray(result)) apply(result);
-      else result.then(apply, () => apply([]));
+      else {
+        // Hide the previous word's candidates while these load, so Enter/Space can't commit a stale one.
+        setItems([]);
+        result.then(apply, () => apply([]));
+      }
     }, [word, lang, enabled, max]);
 
     React.useEffect(() => {

@@ -244,11 +244,14 @@ export const CredentialDetail = React.forwardRef<HTMLDivElement, CredentialDetai
   ({ credential: c, selectable, value, defaultValue, onValueChange, showMeta = true, now, className, ...props }, ref) => {
     const claims = c.claims ?? [];
     const required = claims.filter((cl) => cl.required).map((cl) => cl.key);
-    const [selected, setSelected] = useControllableState({
+    const [chosen, setSelected] = useControllableState({
       value,
       defaultValue: defaultValue ?? required,
       onChange: onValueChange,
     });
+    // Required claims are always disclosed, even when `value`/`defaultValue` leaves them out.
+    const missing = required.filter((k) => !chosen.includes(k));
+    const selected = missing.length ? [...missing, ...chosen] : chosen;
     const status = credentialStatus(c, now);
     const meta: KeyValueItem[] = [
       {

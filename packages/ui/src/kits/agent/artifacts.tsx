@@ -208,9 +208,14 @@ function useVersion(
   onChange: ((i: number) => void) | undefined
 ) {
   const last = Math.max(0, versions.length - 1);
-  const [raw, setRaw] = useControllableState({ value, defaultValue: defaultValue ?? last, onChange });
-  const index = clamp(raw, 0, last);
-  return [index, setRaw] as const;
+  // Uncontrolled: `null` follows the latest version, so new versions show up as they arrive.
+  const [picked, setPicked] = React.useState<number | null>(defaultValue ?? null);
+  const index = clamp(value ?? picked ?? last, 0, last);
+  const setIndex = (i: number) => {
+    if (value === undefined) setPicked(i >= last ? null : i);
+    if (i !== index) onChange?.(i);
+  };
+  return [index, setIndex] as const;
 }
 
 function VersionSwitcher({ index, total, onChange }: { index: number; total: number; onChange: (i: number) => void }) {

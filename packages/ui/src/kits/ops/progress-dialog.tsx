@@ -51,6 +51,8 @@ export interface StreamingTaskEmitter {
   addEventListener(type: string, listener: (event: unknown) => void): void;
   removeEventListener(type: string, listener: (event: unknown) => void): void;
   close?: () => void;
+  /** EventSource `readyState`: a bare "error" while CONNECTING (0) is a reconnect and is not fatal. */
+  readonly readyState?: number;
 }
 
 export type StreamingTaskSource = AsyncIterable<StreamingTaskEvent> | StreamingTaskEmitter;
@@ -194,6 +196,9 @@ export function useStreamingTask(options: UseStreamingTaskOptions = {}): UseStre
           };
           const onError = (e: unknown) => {
             const data = parseMessage(e);
+            // A native EventSource fires a bare "error" while it reconnects (readyState CONNECTING);
+            // only a closed source or a server-sent error message ends the task.
+            if (!data?.error && source.readyState === 0) return;
             finish("failed", data?.error ? errorText(data.error) : "Connection lost");
             resolve();
           };

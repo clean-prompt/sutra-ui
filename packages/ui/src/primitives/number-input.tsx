@@ -120,6 +120,34 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       };
     }, [locale]);
 
+    /** Currency, percent and literal affixes to strip, and the locale's native digits mapped to ASCII. */
+    const parseInfo = React.useMemo(() => {
+      const affixTypes = new Set(["currency", "percentSign", "unit", "literal", "compact"]);
+      const affixes = [
+        ...new Set(
+          formatter
+            .formatToParts(-1234.5)
+            .filter((p) => affixTypes.has(p.type))
+            .map((p) => p.value.trim())
+            .filter(Boolean)
+        ),
+      ].sort((a, b) => b.length - a.length);
+      const digits = new Map<string, string>();
+      try {
+        const native = new Intl.NumberFormat(locale, {
+          numberingSystem: formatter.resolvedOptions().numberingSystem,
+          useGrouping: false,
+        });
+        for (let d = 0; d < 10; d++) {
+          const ch = native.format(d);
+          if (ch !== String(d)) digits.set(ch, String(d));
+        }
+      } catch {
+        /* ASCII digits only */
+      }
+      return { affixes, digits };
+    }, [formatter, locale]);
+
     const isPercent = formatOptions?.style === "percent";
 
     const format = React.useCallback((n: number | null) => (n == null ? "" : formatter.format(n)), [formatter]);
@@ -128,8 +156,11 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       (text: string): number | null => {
         let s = text.trim();
         if (!s) return null;
+        // Strip affixes first: a symbol such as "лв." would otherwise leave a stray decimal point.
+        for (const affix of parseInfo.affixes) s = s.split(affix).join("");
         s = s.split(separators.group).join("").replace(/[\s  ]/g, "");
         if (separators.decimal !== ".") s = s.split(separators.decimal).join(".");
+        if (parseInfo.digits.size) s = Array.from(s, (ch) => parseInfo.digits.get(ch) ?? ch).join("");
         s = s.replace(/[−‒–]/g, "-").replace(/[^0-9.\-]/g, "");
         const negative = s.startsWith("-");
         s = s.replace(/-/g, "");
@@ -137,7 +168,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
         if (!Number.isFinite(n) || s === "" || s === ".") return null;
         return isPercent ? n / 100 : n;
       },
-      [separators, isPercent]
+      [separators, parseInfo, isPercent]
     );
 
     const clamp = React.useCallback(

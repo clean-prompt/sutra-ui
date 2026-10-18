@@ -84,7 +84,8 @@ export function resolveModelRef(providers: RoutingProvider[], ref: ModelRef | nu
 
 /** "$3 / $15" style price per million tokens, or "" when unknown. */
 export function formatModelPrice(model: Pick<RoutingModel, "inputPrice" | "outputPrice">) {
-  const f = (n: number) => (n === 0 ? "Free" : formatCost(n, { minFraction: 0, locale: "en-US" }));
+  // Per-million prices are often sub-cent ($0.075), so keep up to four decimals instead of rounding to cents.
+  const f = (n: number) => (n === 0 ? "Free" : formatCost(n, { minFraction: 0, maxFraction: 4, tiny: 0.0001, locale: "en-US" }));
   if (model.inputPrice == null && model.outputPrice == null) return "";
   if (model.inputPrice === 0 && model.outputPrice === 0) return "Free";
   return [model.inputPrice, model.outputPrice].map((n) => (n == null ? "—" : f(n))).join(" / ");
@@ -753,6 +754,7 @@ export const TaskModelAssignment = React.forwardRef<HTMLDivElement, TaskModelAss
   ({ providers, tasks = defaultAuxiliaryTasks, value: valueProp, defaultValue = {}, onValueChange, autoLabel = "Auto (main model)", className, ...props }, ref) => {
     const [value, setValue] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChange });
     const [confirmTask, setConfirmTask] = React.useState<AuxiliaryTask | null>(null);
+    const uid = React.useId();
     const options = [
       { value: "auto", label: autoLabel },
       ...providers.filter((p) => p.configured).flatMap((p) => p.models.map((m) => ({ value: modelRefKey({ providerId: p.id, modelId: m.id }), label: `${m.name} · ${p.name}` }))),
@@ -769,7 +771,7 @@ export const TaskModelAssignment = React.forwardRef<HTMLDivElement, TaskModelAss
           {tasks.map((t) => {
             const v = value[t.id] ?? "auto";
             const key = v === "auto" ? "auto" : modelRefKey(v);
-            const labelId = `task-${t.id}-label`;
+            const labelId = `${uid}-task-${t.id}-label`;
             return (
               <li key={t.id} data-task={t.id} data-auto={v === "auto" || undefined} className="grid items-center gap-2 px-4 py-3 sm:grid-cols-[1fr_minmax(12rem,18rem)_auto]">
                 <div className="min-w-0">
@@ -863,6 +865,8 @@ export const EnsembleBuilder = React.forwardRef<HTMLDivElement, EnsembleBuilderP
     const [value, setValue] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChange });
     const [picking, setPicking] = React.useState<"reference" | "aggregator" | null>(null);
     const [error, setError] = React.useState<string | null>(null);
+    // Text being typed in the rounds field; null shows the committed value. Lets the field be cleared and retyped.
+    const [roundsDraft, setRoundsDraft] = React.useState<string | null>(null);
     const recursive = (r: ModelRef) => !!resolveModelRef(providers, r)?.model?.ensemble || !!isEnsemble?.(r);
     const nameOf = (r: ModelRef) => resolveModelRef(providers, r)?.model?.name ?? r.modelId;
 
@@ -933,11 +937,14 @@ export const EnsembleBuilder = React.forwardRef<HTMLDivElement, EnsembleBuilderP
             size="sm"
             min={1}
             max={maxRounds}
-            value={value.rounds}
+            value={roundsDraft ?? value.rounds}
             onChange={(e) => {
-              const n = Math.round(Number(e.target.value));
-              if (Number.isFinite(n)) setValue({ ...value, rounds: Math.max(1, Math.min(maxRounds, n)) });
+              const text = e.target.value;
+              setRoundsDraft(text);
+              const n = Math.round(Number(text));
+              if (text.trim() !== "" && Number.isFinite(n) && n >= 1) setValue({ ...value, rounds: Math.min(maxRounds, n) });
             }}
+            onBlur={() => setRoundsDraft(null)}
             className="w-20"
           />
           <span className="text-xs text-muted-foreground">Each round lets references see the previous answers.</span>

@@ -520,11 +520,15 @@ export function createKunjiClient(config: KunjiClientConfig): KunjiClient {
   const origin = typeof location !== "undefined" ? location.origin : "";
   let resolved: Promise<KunjiPayloadContext> | null = null;
 
+  const bodyMessage = (body: unknown, fallback: string) => {
+    const j = (body ?? {}) as { error?: { message?: string } | string; message?: string };
+    const msg = typeof j.error === "string" ? j.error : (j.error?.message ?? j.message);
+    return typeof msg === "string" && msg ? msg : fallback;
+  };
+
   const errorMessage = async (res: Response, fallback: string) => {
     try {
-      const j = (await res.clone().json()) as { error?: { message?: string } | string; message?: string };
-      const msg = typeof j.error === "string" ? j.error : (j.error?.message ?? j.message);
-      return msg || fallback;
+      return bodyMessage(await res.clone().json(), fallback);
     } catch {
       return fallback;
     }
@@ -639,7 +643,8 @@ export function createKunjiClient(config: KunjiClientConfig): KunjiClient {
       if (res.status === 410) return { status: "expired" };
       const raw = await res.json().catch(() => ({}));
       const body = unwrap(raw);
-      if (!res.ok) throw new KunjiError(await errorMessage(res, "That code didn't work."), { status: res.status, fatal: true });
+      // The body was already read above, so take the message from it (res.clone() would throw now).
+      if (!res.ok) throw new KunjiError(bodyMessage(raw, "That code didn't work."), { status: res.status, fatal: true });
       return resultFrom(body, body.status == null ? "approved" : normalizeKunjiStatus(body.status), raw);
     };
   }

@@ -324,7 +324,7 @@ export const PlatformConfigForm = React.forwardRef<HTMLFormElement, PlatformConf
     const [values, setValues] = React.useState<PlatformConfigValues>(() => ({ ...defaultValues }));
     const [errors, setErrors] = React.useState<Record<string, string | null>>({});
     const [rejects, setRejects] = React.useState<Record<string, string | null>>({});
-    const save = useAsyncAction(async (v: PlatformConfigValues) => onSubmit?.(v));
+    const save = useAsyncAction(async (v: PlatformConfigValues) => onSubmit?.(v), { fallbackMessage: "Could not save the settings" });
     const rejectRef = React.useRef<Record<string, string | null>>({});
 
     const set =(name: string, v: string | string[]) => {
@@ -401,6 +401,11 @@ export const PlatformConfigForm = React.forwardRef<HTMLFormElement, PlatformConf
           );
         })}
         <div className="flex justify-end gap-2 pt-1">
+          {save.error && (
+            <p role="alert" className="mr-auto self-center text-sm text-destructive">
+              {save.error}
+            </p>
+          )}
           {onCancel && (
             <Button type="button" variant="secondary" onClick={onCancel}>
               Cancel

@@ -19,20 +19,32 @@ export const defaultPasswordRequirements: PasswordRequirement[] = [
   { label: "One symbol", test: (p) => /[^A-Za-z0-9\s]/.test(p) },
 ];
 
-const COMMON = /^(password|passw0rd|qwerty|letmein|welcome|admin|iloveyou|abc123|123456|monkey|dragon)/i;
+const COMMON = new Set(["password", "passw0rd", "qwerty", "letmein", "welcome", "admin", "iloveyou", "abc123", "123456", "monkey", "dragon"]);
+
+/** A common password, possibly with digits or symbols around it ("Password123!"), but not a longer word that starts with one. */
+function isCommon(password: string) {
+  const lower = password.toLowerCase();
+  const core = lower.replace(/^[^a-z]+|[^a-z]+$/g, "");
+  return COMMON.has(core) || COMMON.has(lower.replace(/[^a-z0-9]+$/, ""));
+}
+
+/** Words in a passphrase ("correct horse battery staple"): runs of 2+ letters separated by spaces or punctuation. */
+const passphraseWords = (password: string) => password.split(/[\s\-_.,]+/).filter((w) => /^\p{L}{2,}$/u.test(w)).length;
 
 /** Scores a password from 0 (empty) to 4 (strong) using length and character variety. */
 export function getPasswordScore(password: string): 0 | 1 | 2 | 3 | 4 {
   if (!password) return 0;
   const variety = [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9\s]/].filter((re) => re.test(password)).length;
   const len = password.length;
-  if (len < 6 || /^(.)\1+$/.test(password) || COMMON.test(password)) return 1;
+  if (len < 6 || /^(.)\1+$/.test(password) || isCommon(password)) return 1;
+  // A long passphrase of several words is strong even in one character class.
+  const words = len >= 16 ? passphraseWords(password) : 0;
   let score = 0;
   if (len >= 8) score++;
   if (len >= 12) score++;
-  if (variety >= 3) score++;
-  if (variety === 4 || (len >= 16 && variety >= 2)) score++;
-  if (variety <= 1) score = Math.min(score, 1);
+  if (variety >= 3 || words >= 4) score++;
+  if (variety === 4 || (len >= 16 && variety >= 2) || words >= 5) score++;
+  if (variety <= 1 && words < 4) score = Math.min(score, 1);
   return clamp(score, 1, 4) as 1 | 2 | 3 | 4;
 }
 

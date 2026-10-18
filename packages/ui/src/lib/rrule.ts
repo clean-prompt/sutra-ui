@@ -61,15 +61,20 @@ export function toRRule(rule: RecurrenceRule, options: { prefix?: boolean } = {}
     if (rule.monthlyMode === "weekday" && rule.nthWeekday) parts.push(`BYDAY=${rule.nth ?? 1}${rule.nthWeekday}`);
     else if (rule.monthDay) parts.push(`BYMONTHDAY=${rule.monthDay}`);
   }
-  if (rule.freq === "yearly") {
-    if (rule.month) parts.push(`BYMONTH=${rule.month}`);
+  // BYMONTHDAY without BYMONTH would repeat monthly; without a month the rule follows DTSTART's date.
+  if (rule.freq === "yearly" && rule.month) {
+    parts.push(`BYMONTH=${rule.month}`);
     if (rule.monthDay) parts.push(`BYMONTHDAY=${rule.monthDay}`);
   }
   const end = rule.end;
   if (end?.type === "after") parts.push(`COUNT=${Math.max(1, Math.floor(end.count))}`);
-  if (end?.type === "on") {
+  if (end?.type === "on" && end.date instanceof Date && !Number.isNaN(end.date.getTime())) {
+    // UNTIL must match DTSTART's value type, usually a DATE-TIME: use the end of the chosen local day, in UTC,
+    // so the last day's occurrences are included.
     const d = end.date;
-    parts.push(`UNTIL=${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}`);
+    const last = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59);
+    const u = `${last.getUTCFullYear()}${pad2(last.getUTCMonth() + 1)}${pad2(last.getUTCDate())}`;
+    parts.push(`UNTIL=${u}T${pad2(last.getUTCHours())}${pad2(last.getUTCMinutes())}${pad2(last.getUTCSeconds())}Z`);
   }
   const value = parts.join(";");
   return options.prefix ? `RRULE:${value}` : value;

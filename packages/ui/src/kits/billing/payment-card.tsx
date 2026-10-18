@@ -103,11 +103,15 @@ export interface CardNumberValidation {
   valid: boolean;
 }
 
+/** Diners Club IIN ranges (300–305, 3095, 36, 38–39): no brand of their own, but 14-digit numbers are valid. */
+const DINERS = /^3(?:0[0-5]|095|[689])/;
+
 /** Brand + length + Luhn check. */
 export function validateCardNumber(number: string): CardNumberValidation {
   const d = digitsOf(number);
   const brand = detectCardBrand(d);
-  const complete = cardBrands[brand].lengths.includes(d.length);
+  const lengths = brand === "unknown" && DINERS.test(d) ? [14, 16, 19] : cardBrands[brand].lengths;
+  const complete = lengths.includes(d.length);
   return { brand, complete, valid: complete && luhnCheck(d) };
 }
 
@@ -512,7 +516,9 @@ export const PaymentCardInput = React.forwardRef<HTMLDivElement, PaymentCardInpu
               aria-describedby={expiryError ? `${id}-error` : undefined}
               className="font-mono tabular-nums"
               onChange={(e) => {
-                let d = digitsOf(e.target.value).slice(0, 4);
+                // A pasted or autofilled "12/2028" or "1/28" keeps its month and the year's last two digits.
+                const full = /^\s*(\d{1,2})\s*[/.-]\s*(\d{4}|\d{2})\s*$/.exec(e.target.value);
+                let d = full ? `${full[1]!.padStart(2, "0")}${full[2]!.slice(-2)}` : digitsOf(e.target.value).slice(0, 4);
                 const prev = digitsOf(value.expiry);
                 if (e.target.value.length < value.expiry.length && d === prev) d = d.slice(0, -1);
                 if (d.length === 1 && Number(d) > 1) d = `0${d}`;

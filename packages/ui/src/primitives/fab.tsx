@@ -142,6 +142,35 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
       [ref]
     );
 
+    const menuRef = React.useRef<HTMLUListElement>(null);
+    const focusFirstOnOpen = React.useRef(false);
+    const menuItems = () =>
+      Array.from(menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([aria-disabled="true"]):not(:disabled)') ?? []);
+
+    // Opening from the keyboard moves focus to the item nearest the trigger once the dial is interactive.
+    React.useEffect(() => {
+      if (!isOpen || !focusFirstOnOpen.current) return;
+      focusFirstOnOpen.current = false;
+      menuItems()[0]?.focus();
+    }, [isOpen]);
+
+    /** DOM order runs away from the trigger, so "away" is ArrowUp for bottom positions and ArrowDown for top ones. */
+    const onMenuKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {
+      const items = menuItems();
+      if (items.length === 0) return;
+      const current = items.indexOf(document.activeElement as HTMLElement);
+      const away = isTop ? "ArrowDown" : "ArrowUp";
+      const toward = isTop ? "ArrowUp" : "ArrowDown";
+      let next: number;
+      if (e.key === away) next = current < 0 ? 0 : (current + 1) % items.length;
+      else if (e.key === toward) next = current < 0 ? items.length - 1 : (current - 1 + items.length) % items.length;
+      else if (e.key === "Home") next = 0;
+      else if (e.key === "End") next = items.length - 1;
+      else return;
+      e.preventDefault();
+      items[next]?.focus();
+    };
+
     React.useEffect(() => {
       if (!isOpen) return;
       const onDocKey = (e: KeyboardEvent) => {
@@ -178,7 +207,16 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
           onClick?.(e);
           if (hasDial && !e.defaultPrevented) setOpen(!open);
         }}
-        onKeyDown={onKeyDown}
+        onKeyDown={(e) => {
+          onKeyDown?.(e);
+          if (!hasDial || e.defaultPrevented || e.key !== (isTop ? "ArrowDown" : "ArrowUp")) return;
+          e.preventDefault();
+          if (isOpen) menuItems()[0]?.focus();
+          else {
+            focusFirstOnOpen.current = true;
+            setOpen(true);
+          }
+        }}
         {...props}
       >
         <span
@@ -196,11 +234,13 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
 
     const dial = hasDial ? (
       <ul
+        ref={menuRef}
         id={menuId}
         role="menu"
         aria-label={label}
         aria-orientation="vertical"
         inert={!isOpen}
+        onKeyDown={onMenuKeyDown}
         className={cn(
           "flex gap-3",
           isTop ? "flex-col" : "flex-col-reverse",
@@ -240,6 +280,10 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
             </>
           );
           const handle = (e: React.MouseEvent<HTMLElement>) => {
+            if (action.disabled) {
+              e.preventDefault();
+              return;
+            }
             action.onClick?.(e);
             setOpen(false);
           };
@@ -256,8 +300,9 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
               {action.href ? (
                 <a
                   role="menuitem"
-                  href={action.href}
+                  href={action.disabled ? undefined : action.href}
                   aria-disabled={action.disabled || undefined}
+                  tabIndex={action.disabled ? -1 : undefined}
                   className={itemClass}
                   onClick={handle}
                 >

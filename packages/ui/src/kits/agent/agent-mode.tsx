@@ -342,7 +342,7 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
     const compact = density ? normalizeDensity(density) === "compact" : variant === "compact";
 
     const setIndex = (i: number) => {
-      if (disabled) return;
+      if (disabled || levels.length === 0) return;
       const clamped = clamp(i, 0, levels.length - 1);
       setValue(levels[clamped].value);
     };

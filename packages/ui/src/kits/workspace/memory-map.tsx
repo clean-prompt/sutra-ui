@@ -433,11 +433,13 @@ export const TimeScrubber = React.forwardRef<HTMLDivElement, TimeScrubberProps>(
     const extent = React.useMemo(() => timeExtent(nodes as MemoryNode[]), [nodes]);
     const min = minProp ?? extent[0];
     const max = maxProp ?? extent[1];
-    const [value, setValue] = useControllableState<[number, number]>({
+    // Uncontrolled and untouched, the range is "everything": it follows [min, max] as nodes arrive.
+    const [rangeState, setValue] = useControllableState<[number, number] | undefined>({
       value: valueProp,
-      defaultValue: defaultValue ?? [min, max],
-      onChange: onValueChange,
+      defaultValue,
+      onChange: onValueChange as ((range: [number, number] | undefined) => void) | undefined,
     });
+    const value: [number, number] = rangeState ?? [min, max];
     const [playing, setPlaying] = useControllableState<boolean>({
       value: playingProp,
       defaultValue: defaultPlaying ?? false,
@@ -860,11 +862,13 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
       defaultValue: defaultHiddenKinds ?? [],
       onChange: onHiddenKindsChange,
     });
-    const [range, setRange] = useControllableState<[number, number]>({
+    // Uncontrolled and untouched, the range is the full extent and keeps following it as nodes load.
+    const [rangeState, setRange] = useControllableState<[number, number] | undefined>({
       value: rangeProp,
-      defaultValue: defaultTimeRange ?? extent,
-      onChange: onTimeRangeChange,
+      defaultValue: defaultTimeRange,
+      onChange: onTimeRangeChange as ((range: [number, number] | undefined) => void) | undefined,
     });
+    const range: [number, number] = rangeState ?? extent;
     const [listView, setListView] = useControllableState<boolean>({
       value: listViewProp,
       defaultValue: defaultListView ?? false,

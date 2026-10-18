@@ -286,6 +286,15 @@ export function useKunjiSignIn({
       client.submitCode(code, signal, sessionRef.current?.sessionId).then(
         (result) => {
           if (signal?.aborted) return;
+          // Accepted but not decided yet: keep polling for the approval.
+          if (result.status === "pending" || result.status === "scanned") {
+            setState((s) => ({
+              ...s,
+              codeStatus: s.codeStatus === "submitting" ? "idle" : s.codeStatus,
+              status: result.status === "scanned" && s.status === "ready" ? "scanned" : s.status,
+            }));
+            return;
+          }
           c?.abort();
           finish(result);
         },

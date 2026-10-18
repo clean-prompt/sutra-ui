@@ -29,7 +29,7 @@ export type StatusStripStatus =
   | (StatusBase & { kind: "queued"; position: number; model?: string })
   | (StatusBase & {
       kind: "retrying" | "rate-limited";
-      /** Seconds until the next attempt, counted down from when this value arrives. */
+      /** Seconds until the next attempt, counted down from when this value (or a new `attempt`) arrives. */
       retryIn?: number;
       /** Epoch ms of the next attempt (overrides retryIn). */
       retryAt?: number;
@@ -71,12 +71,13 @@ const kindTone: Record<StatusStripStatus["kind"], StatusStripTone> = {
 function useCountdownTarget(status: StatusStripStatus | null | undefined) {
   const retryIn = status && "retryIn" in status ? status.retryIn : undefined;
   const retryAt = status && "retryAt" in status ? status.retryAt : undefined;
+  const attempt = status && "attempt" in status ? status.attempt : undefined;
   const [target, setTarget] = React.useState<number | null>(null);
   React.useEffect(() => {
     if (retryAt != null) setTarget(retryAt);
     else if (retryIn != null) setTarget(Date.now() + retryIn * 1000);
     else setTarget(null);
-  }, [retryIn, retryAt, status?.kind]);
+  }, [retryIn, retryAt, attempt, status?.kind]);
   if (retryAt != null) return retryAt;
   if (target == null && retryIn != null) return Date.now() + retryIn * 1000;
   return target;
@@ -87,7 +88,8 @@ const seconds = (s: number) => formatDuration(s * 1000);
 
 /**
  * Live infrastructure status above the composer: model warm-up, queue position, retry / rate-limit
- * countdown, offline and errors. Live region: `role="status"` (polite).
+ * countdown, offline and errors. Live region: `role="status"` (polite); ticking clocks and countdowns are
+ * hidden from screen readers so only state changes are announced.
  *
  * This covers the platform, not the agent: for what the agent itself is doing (thinking, running a tool,
  * waiting for permission) use `AgentStatusLine`, which sits in the same slot. Show one at a time.
@@ -103,6 +105,8 @@ export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
     const tone = toneProp ? normalizeTone(toneProp) : kindTone[status.kind];
     let icon: React.ReactNode = <Spinner size="xs" variant="ring" aria-hidden="true" />;
     let line: React.ReactNode;
+    /** Non-ticking text for screen readers when `line` contains a live clock. */
+    let spoken: string | null = null;
     let progress: number | null = null;
     let detail: React.ReactNode = status.message;
     let retryNow = false;
@@ -113,6 +117,7 @@ export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
         const elapsed = status.startedAt != null ? (Date.now() - status.startedAt) / 1000 : status.elapsed ?? 0;
         const who = status.model ?? "the model";
         const verb = status.kind === "waking" ? "Waking" : "Starting";
+        spoken = `${verb} ${who}…`;
         if (status.estimate) {
           const left = Math.max(0, Math.round(status.estimate - elapsed));
           progress = Math.min(96, (elapsed / status.estimate) * 100);
@@ -143,6 +148,7 @@ export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
         const left = target != null ? Math.max(0, Math.ceil((target - Date.now()) / 1000)) : null;
         icon = <RiRefreshLine aria-hidden="true" className="size-4" />;
         const attempt = status.attempt ? ` (attempt ${status.attempt}${status.maxAttempts ? ` of ${status.maxAttempts}` : ""})` : "";
+        if (target != null) spoken = status.kind === "rate-limited" ? "Rate limited" : `Retrying${attempt}`;
         if (status.kind === "rate-limited") {
           icon = <RiAlertLine aria-hidden="true" className="size-4" />;
           line = left != null && left > 0 ? `Rate limited. Try again in ${seconds(left)}` : "Rate limited";
@@ -176,9 +182,10 @@ export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
       >
         <span className="flex size-5 shrink-0 items-center justify-center">{icon}</span>
         <div className="min-w-0 flex-1">
-          <p data-slot="status-line" className="truncate font-medium tabular-nums">
+          <p data-slot="status-line" aria-hidden={spoken != null || undefined} className="truncate font-medium tabular-nums">
             {line}
           </p>
+          {spoken != null ? <span className="sr-only">{spoken}</span> : null}
           {detail ? <p className="truncate text-xs opacity-80">{detail}</p> : null}
           {progress != null ? (
             <div aria-hidden="true" className="mt-1.5 h-1 overflow-hidden rounded-full bg-current/15">

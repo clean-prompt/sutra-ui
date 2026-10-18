@@ -8,7 +8,10 @@ export interface SutraTheme {
   radius: RadiusMode;
 }
 
-/** Read and write Sutra theme attributes on <html>. */
+/**
+ * Read and write Sutra theme attributes on <html>. `initial` seeds the state on mount only (like `useState`);
+ * change the theme afterwards with `setTheme`. The attributes stay on <html> after unmount so the theme persists.
+ */
 export function useTheme(initial: Partial<SutraTheme> = {}) {
   const [theme, setThemeState] = React.useState<SutraTheme>({
     mode: "light",

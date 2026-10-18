@@ -341,7 +341,7 @@ export interface ConversationGroupHeaderProps extends React.HTMLAttributes<HTMLD
   count?: number;
   expanded: boolean;
   onExpandedChange?: (expanded: boolean) => void;
-  /** Id of the list this header expands (sets `aria-controls`). */
+  /** Id of the list this header expands (sets `aria-controls` while expanded). */
   controlsId?: string;
   /** Id for the toggle button. */
   triggerId?: string;
@@ -417,7 +417,7 @@ export const ConversationGroupHeader = React.forwardRef<HTMLDivElement, Conversa
               type="button"
               id={triggerId}
               aria-expanded={expanded}
-              aria-controls={controlsId}
+              aria-controls={expanded ? controlsId : undefined}
               onClick={() => onExpandedChange?.(!expanded)}
               onDoubleClick={onRename ? () => setEditing(true) : undefined}
               className={cn("flex min-w-0 flex-1 items-center gap-1.5 rounded-control px-2 py-1.5 text-left text-sm", focusRing, triggerClassName)}

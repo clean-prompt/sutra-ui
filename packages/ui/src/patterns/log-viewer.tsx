@@ -308,6 +308,22 @@ function normalize(line: LogLine, seq: number): NormalizedEntry {
   };
 }
 
+/**
+ * How many leading items of `raw` are the (possibly front-trimmed) tail of `prev`: the longest suffix of
+ * `prev` that `raw` starts with. -1 when `raw` doesn't continue `prev` at all. Matching the whole overlap,
+ * not just the last line, keeps repeated lines ("tick", heartbeats) that were appended after a trim.
+ */
+function keptPrefix(prev: readonly LogLine[], raw: readonly LogLine[]): number {
+  for (let dropped = 0; dropped < prev.length; dropped++) {
+    const overlap = prev.length - dropped;
+    if (overlap > raw.length) continue;
+    let i = 0;
+    while (i < overlap && raw[i] === prev[dropped + i]) i++;
+    if (i === overlap) return overlap;
+  }
+  return -1;
+}
+
 /** Diff the incoming array against the last one so appends keep their sequence numbers. */
 function useLogBuffer(raw: readonly LogLine[], maxLines: number) {
   const store = React.useRef<{ raw: readonly LogLine[] | null; entries: NormalizedEntry[]; seq: number; max: number }>({
@@ -326,13 +342,11 @@ function useLogBuffer(raw: readonly LogLine[], maxLines: number) {
       base = [];
       appended = raw;
     } else {
-      const lastPrev = prev[prev.length - 1];
-      const idx =
-        raw.length >= prev.length && raw[prev.length - 1] === lastPrev ? prev.length - 1 : raw.lastIndexOf(lastPrev);
-      if (idx < 0) {
+      const kept = keptPrefix(prev, raw);
+      if (kept < 0) {
         base = [];
         appended = raw;
-      } else appended = raw.slice(idx + 1);
+      } else appended = raw.slice(kept);
     }
     const tail = appended.length > maxLines ? appended.slice(appended.length - maxLines) : appended;
     if (appended.length > tail.length) s.seq += appended.length - tail.length;

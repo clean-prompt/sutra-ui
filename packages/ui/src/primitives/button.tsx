@@ -80,9 +80,30 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const classes = cn(buttonVariants({ variant, size, fullWidth }), className);
     if (asChild) {
+      // The child (often a link) can't take `disabled`, so mark it with aria-disabled and swallow
+      // activation in the capture phase, before the child's own handler (e.g. a router Link) runs.
+      const inert = disabled || loading;
       return (
-        <Slot.Root ref={ref} className={classes} {...props}>
-          {children}
+        <Slot.Root
+          ref={ref}
+          className={classes}
+          aria-disabled={inert || undefined}
+          aria-busy={loading || undefined}
+          data-disabled={inert ? "" : undefined}
+          tabIndex={inert ? -1 : undefined}
+          {...props}
+          onClickCapture={
+            inert
+              ? (e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              : props.onClickCapture
+          }
+        >
+          {loading ? <Spinner size="sm" className="text-current" /> : leadingIcon}
+          <Slot.Slottable>{children}</Slot.Slottable>
+          {trailingIcon}
         </Slot.Root>
       );
     }

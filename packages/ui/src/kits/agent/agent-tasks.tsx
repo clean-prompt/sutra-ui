@@ -160,7 +160,7 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
           <button
             type="button"
             aria-expanded={open}
-            aria-controls={listId}
+            aria-controls={expanded ? listId : undefined}
             onClick={() => setOpen(!open)}
             className={cn(
               "flex w-full items-center gap-2 text-left rounded-control",

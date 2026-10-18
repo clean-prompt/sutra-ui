@@ -62,10 +62,22 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
       entry: null,
     });
 
+    const stop = () => {
+      clearTimeout(press.current.timeout);
+      clearInterval(press.current.interval);
+      press.current.timeout = undefined;
+      press.current.interval = undefined;
+    };
+
     const apply = (dir: 1 | -1, merge: boolean) => {
       const current = valueRef.current;
       const next = Math.min(max, Math.max(min, current + dir * step));
       const delta = next - current;
+      // Hold-to-repeat ends at the bound: the button disables there and never gets pointerup/leave.
+      if (merge && (dir > 0 ? next >= max : next <= min)) {
+        stop();
+        press.current.repeated = false;
+      }
       if (delta === 0) return;
       valueRef.current = next;
       setValue(next);
@@ -80,12 +92,6 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
       });
     };
 
-    const stop = () => {
-      clearTimeout(press.current.timeout);
-      clearInterval(press.current.interval);
-      press.current.timeout = undefined;
-      press.current.interval = undefined;
-    };
     React.useEffect(() => stop, []);
 
     const pressHandlers = (dir: 1 | -1) => ({

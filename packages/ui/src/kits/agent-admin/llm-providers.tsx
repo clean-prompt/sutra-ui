@@ -22,6 +22,7 @@ import { toneClasses, type Tone } from "../../lib/tone";
 import { errorMessage, useAsyncAction, useMountedRef } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useCountdown } from "../../hooks/use-now";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { CopyButton } from "../../primitives/copy-button";
 import { Monogram, monogramInitials } from "../../primitives/monogram";
 import { Button } from "../../primitives/button";
@@ -394,6 +395,8 @@ function DeviceFlowPanel({
   const mounted = useMountedRef();
   const onDoneRef = React.useRef(onDone);
   onDoneRef.current = onDone;
+  // Held in a ref so an inline `onPoll` (new identity every parent render) doesn't restart the interval.
+  const onPollRef = useLatestRef(onPoll);
 
   const start = async () => {
     if (!onStart) return;
@@ -416,10 +419,11 @@ function DeviceFlowPanel({
     if (!grant) return;
     let inFlight = false;
     const poll = setInterval(async () => {
-      if (inFlight || !onPoll) return;
+      const fn = onPollRef.current;
+      if (inFlight || !fn) return;
       inFlight = true;
       try {
-        const result = await onPoll();
+        const result = await fn();
         if (!mounted.current) return;
         if (result === "approved") {
           setState((s) => (s.phase === "waiting" ? { phase: "approved" } : s));
@@ -434,7 +438,7 @@ function DeviceFlowPanel({
       }
     }, (grant.interval ?? 5) * 1000);
     return () => clearInterval(poll);
-  }, [grant, onPoll, mounted]);
+  }, [grant, onPollRef, mounted]);
 
   if (state.phase === "idle" || state.phase === "starting") {
     return (
@@ -488,9 +492,10 @@ function DeviceFlowPanel({
           <RiExternalLinkLine aria-hidden className="size-3.5" />
         </a>
       </div>
-      <div role="status" className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+      {/* Only the state text is live; the ticking countdown sits outside the region so it isn't re-announced every second. */}
+      <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
         <Spinner size="xs" label="" aria-hidden />
-        <span>Waiting for approval…</span>
+        <span role="status">Waiting for approval…</span>
         <span className="font-mono tabular-nums" data-slot="device-countdown">
           {formatCountdown(remainingMs)}
         </span>
@@ -588,7 +593,7 @@ function ApiKeyPanel({
   const [key, setKey] = React.useState("");
   const [result, setResult] = React.useState<ApiKeyValidation | null>(null);
   const [saved, setSaved] = React.useState(false);
-  const { run, busy } = useAsyncAction((value: string) => onValidate?.(value), {
+  const { run, busy, reset } = useAsyncAction((value: string) => onValidate?.(value), {
     onSuccess: (r) => setResult(typeof r === "boolean" ? { ok: r } : (r ?? { ok: true })),
     onError: (e) => setResult({ ok: false, message: e instanceof Error ? e.message : undefined }),
   });
@@ -634,6 +639,7 @@ function ApiKeyPanel({
           onChange={(e) => {
             setKey(e.target.value);
             setResult(null);
+            reset();
           }}
           placeholder="Paste your key"
           autoComplete="off"
@@ -796,6 +802,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
     const set = <K extends keyof CustomEndpointValues>(k: K, v: CustomEndpointValues[K]) => {
       setValues((s) => ({ ...s, [k]: v }));
       setResult(null);
+      resetTest();
     };
     const urlInvalid = values.baseUrl.trim() !== "" && !isHttpUrl(values.baseUrl.trim());
     const canSubmit = values.name.trim() !== "" && isHttpUrl(values.baseUrl.trim());
@@ -806,7 +813,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
       headers: values.headers.filter((h) => h.key.trim()),
     });
 
-    const { run: runTest, busy: testing } = useAsyncAction((v: CustomEndpointValues) => onTest?.(v), {
+    const { run: runTest, busy: testing, reset: resetTest } = useAsyncAction((v: CustomEndpointValues) => onTest?.(v), {
       onSuccess: (r) => {
         if (r) setResult(r);
       },

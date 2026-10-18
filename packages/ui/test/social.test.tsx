@@ -746,7 +746,8 @@ describe("toRRule / describeRecurrence", () => {
     ],
     [
       { freq: "yearly" as const, month: 3, monthDay: 14, end: { type: "on" as const, date: new Date(2030, 11, 31) } },
-      "FREQ=YEARLY;BYMONTH=3;BYMONTHDAY=14;UNTIL=20301231",
+      // UNTIL is the end of Dec 31 local time, as a UTC date-time.
+      `FREQ=YEARLY;BYMONTH=3;BYMONTHDAY=14;UNTIL=${new Date(2030, 11, 31, 23, 59, 59).toISOString().replace(/[-:]|\.\d{3}/g, "")}`,
       "Every year on March 14, until Dec 31, 2030",
     ],
   ])("%j", (rule, rrule, text) => {

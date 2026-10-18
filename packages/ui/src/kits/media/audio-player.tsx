@@ -464,7 +464,9 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
   const swipe = useSwipe({ onSwipeUp: () => onExpand?.(), axis: "y", enabled: !!onExpand });
   if (!track) return null;
 
-  const pct = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
+  // Live streams report an Infinity (or NaN) duration: no progress, no seeking.
+  const total = Number.isFinite(duration) && duration > 0 ? duration : 0;
+  const pct = total > 0 ? Math.min(100, (currentTime / total) * 100) : 0;
   const identity = (
     <>
       <TrackArtwork src={track.artwork} className="size-10" />
@@ -488,12 +490,12 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
         size="xs"
         value={pct}
         aria-label="Playback progress"
-        aria-valuemax={Math.round(duration)}
-        aria-valuenow={Math.round(Math.min(currentTime, duration))}
-        aria-valuetext={`${formatMediaTime(currentTime)} of ${formatMediaTime(duration)}`}
+        aria-valuemax={Math.round(total)}
+        aria-valuenow={Math.round(Math.min(currentTime, total))}
+        aria-valuetext={total > 0 ? `${formatMediaTime(currentTime)} of ${formatMediaTime(total)}` : formatMediaTime(currentTime)}
         onClick={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
-          if (rect.width > 0 && duration > 0) onSeek?.(((e.clientX - rect.left) / rect.width) * duration);
+          if (rect.width > 0 && total > 0) onSeek?.(((e.clientX - rect.left) / rect.width) * total);
         }}
         className="absolute inset-x-0 top-0 cursor-pointer rounded-none"
         indicatorClassName="rounded-none duration-200"

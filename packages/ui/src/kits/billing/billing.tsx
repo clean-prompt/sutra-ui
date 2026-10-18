@@ -711,7 +711,13 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
             Less than {lowRunwayDays} days of credits left at the current rate.
           </p>
         )}
-        <Button onClick={() => setOpen(true)} leadingIcon={<RiCoinsLine aria-hidden />}>
+        <Button
+          onClick={() => {
+            purchase.reset();
+            setOpen(true);
+          }}
+          leadingIcon={<RiCoinsLine aria-hidden />}
+        >
           Buy credits
         </Button>
         <Dialog open={open} onOpenChange={setOpen}>
@@ -743,6 +749,11 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
                 </button>
               ))}
             </div>
+            {purchase.error && (
+              <p role="alert" className="text-sm text-destructive">
+                {purchase.error}
+              </p>
+            )}
             <DialogFooter>
               <Button variant="secondary" onClick={() => setOpen(false)}>
                 Cancel
@@ -1157,6 +1168,7 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
     const [step, setStepState] = React.useState<CheckoutStep>(defaultStep);
     const [method, setMethod] = React.useState<string | null>(paymentMethods[0]?.id ?? null);
     const [error, setError] = React.useState<string | null>(null);
+    const methodName = React.useId();
     const headingRef = React.useRef<HTMLHeadingElement>(null);
     const shownStep = React.useRef(step);
     const setStep = (s: CheckoutStep) => {
@@ -1266,7 +1278,7 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
                       method === pm.id ? "border-primary bg-primary-soft/40" : "border-border hover:bg-accent"
                     )}
                   >
-                    <input type="radio" name="checkout-method" value={pm.id} checked={method === pm.id} onChange={() => setMethod(pm.id)} className="size-4 accent-[var(--color-primary)]" />
+                    <input type="radio" name={methodName} value={pm.id} checked={method === pm.id} onChange={() => setMethod(pm.id)} className="size-4 accent-[var(--color-primary)]" />
                     <CardBrandMark brand={pm.brand ?? "unknown"} />
                     <span className="flex-1 font-medium text-foreground">
                       {brandName(pm.brand ?? "unknown")} •••• {pm.last4}

@@ -2,7 +2,7 @@ import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { toPercent } from "../lib/math";
-import { addDays, dateKey, formatShortDate } from "../lib/time";
+import { addDays, dateKey, formatShortDate, toValidDate } from "../lib/time";
 import { meterLevel, type MeterThresholds } from "../primitives/meter";
 
 /* ------------------------------------------------------------------ */
@@ -203,9 +203,12 @@ function HeatmapMatrix({
         break;
       }
       case "Enter":
-      case " ":
         if (!onCellClick) return;
         onCellClick(cell);
+        break;
+      case " ":
+        // Space never scrolls the page from a grid cell.
+        onCellClick?.(cell);
         break;
       case "Escape":
         setHover(null);
@@ -495,11 +498,10 @@ export function calendarDateKey(d: Date): string {
   return dateKey(d);
 }
 
+/** Local calendar day: `YYYY-MM-DD` is a local date; a datetime string is an instant, bucketed by its local date like a Date. */
 function parseDay(d: string | Date): Date {
-  if (d instanceof Date) return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d);
-  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
-  const p = new Date(d);
+  const p = toValidDate(d);
+  if (!p) return new Date(NaN);
   return new Date(p.getFullYear(), p.getMonth(), p.getDate());
 }
 

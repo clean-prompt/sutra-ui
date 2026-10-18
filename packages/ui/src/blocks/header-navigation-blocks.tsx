@@ -18,6 +18,7 @@ import {
   RiArrowDownSLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { isSafeHref } from "../lib/validate";
 import { Button } from "../primitives/button";
 import { Badge } from "../primitives/badge";
 import { Kbd } from "../primitives/typography";
@@ -384,7 +385,7 @@ export const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>(
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <SearchTrigger onClick={() => setOpen(true)} placeholder={searchPlaceholder} className="w-60 lg:w-72" />
           {actions}
-          <NotificationsMenu defaultNotifications={notifications} />
+          <NotificationsMenu notifications={notifications} />
           <UserAccountMenu user={user} onSignOut={onSignOut} onSelect={onAccountSelect} />
         </div>
         <CommandDialog open={open} onOpenChange={setOpen}>
@@ -680,7 +681,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
                       onSelect={() => {
                         setOpen(false);
                         onSearchSelect?.(item);
-                        if (item.href && !onSearchSelect && typeof window !== "undefined") window.location.assign(item.href);
+                        if (item.href && !onSearchSelect && typeof window !== "undefined" && isSafeHref(item.href)) window.location.assign(item.href);
                       }}
                     >
                       {item.label}

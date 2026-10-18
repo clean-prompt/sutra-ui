@@ -124,7 +124,8 @@ export const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
     const tick = useNow({ active: now == null && savedAt != null && status === "saved", interval: 30_000 });
 
     const text = { ...defaultLabels, ...labels };
-    const label = status === "saved" && savedAt != null && !labels?.saved ? formatSavedAgo(savedAt, now ?? tick) : text[status];
+    const relative = status === "saved" && savedAt != null && !labels?.saved;
+    const label = relative ? formatSavedAgo(savedAt, now ?? tick) : text[status];
     const savedTitle = savedAt != null ? new Date(savedAt).toLocaleString() : undefined;
     const btn = size === "sm" ? "xs" : "sm";
 
@@ -146,7 +147,9 @@ export const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
         title={status === "saved" ? savedTitle : undefined}
       >
         {icon}
-        <span>{label}</span>
+        {/* The relative time ticks; keep it out of the live region so it isn't re-announced every 30 s. */}
+        <span aria-hidden={relative || undefined}>{label}</span>
+        {relative && <span className="sr-only">{text.saved}</span>}
       </span>
     );
 

@@ -101,7 +101,7 @@ export function describeRequestLog(record: RequestLogRecord) {
   const res = isObj(record.response) ? record.response : {};
   const choice = Array.isArray(res.choices) && isObj(res.choices[0]) ? (res.choices[0] as Record<string, unknown>) : null;
   const usage = isObj(res.usage) ? res.usage : {};
-  const params: Record<string, unknown> = record.params ?? {};
+  const params: Record<string, unknown> = { ...record.params };
   if (!record.params)
     for (const k of ["temperature", "top_p", "max_tokens", "max_completion_tokens", "stream", "seed"])
       if (req[k] !== undefined) params[k] = req[k];
@@ -401,6 +401,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
       onChange: onFiltersChange,
     });
     const [page, setPage] = React.useState(1);
+    const uid = React.useId();
     const [expanded, setExpanded] = useControllableState<string | null>({ value: expandedProp, defaultValue: null, onChange: onExpandedChange });
     const setFilter = (k: keyof RequestLogFilters, v: string) => {
       setFilters({ ...filters, [k]: v });
@@ -487,10 +488,10 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
                 </TableCell>
               </TableRow>
             ) : (
-              rows.map((r) => {
+              rows.map((r, i) => {
                 const open = expanded === r.id;
                 const err = errorText(r.error);
-                const detailId = `req-${r.id}`.replace(/[^\w-]/g, "_");
+                const detailId = `${uid}-detail-${i}`;
                 return (
                   <React.Fragment key={r.id}>
                     <TableRow

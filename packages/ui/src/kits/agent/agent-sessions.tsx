@@ -322,10 +322,12 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
           e.preventDefault();
           const next = order[Math.min(order.length - 1, Math.max(0, i + (e.key === "ArrowDown" ? 1 : -1)))];
           if (e.shiftKey && next) {
-            if (!anchor.current) anchor.current = id;
+            if (!anchor.current || !order.includes(anchor.current)) anchor.current = id;
             const a = order.indexOf(anchor.current);
             const b = order.indexOf(next);
             setSelected(order.slice(Math.min(a, b), Math.max(a, b) + 1));
+          } else if (next) {
+            anchor.current = next;
           }
           focusRow(next);
           break;

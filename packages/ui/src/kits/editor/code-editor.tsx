@@ -180,6 +180,16 @@ export function wrapSelectionCommand(view: EditorView, before: string, after: st
 
 const External = Annotation.define<boolean>();
 
+/** The previous array while every element is the same, so a fresh array literal doesn't trigger a reconfigure. */
+function useShallowStable<T>(list: T[] | undefined): T[] | undefined {
+  const ref = React.useRef(list);
+  const prev = ref.current;
+  const same =
+    prev === list || (!!prev && !!list && prev.length === list.length && prev.every((item, i) => Object.is(item, list[i])));
+  if (!same) ref.current = list;
+  return same ? prev : list;
+}
+
 /* ------------------------------------------------------------------ */
 /* CodeEditor                                                          */
 /* ------------------------------------------------------------------ */
@@ -234,7 +244,7 @@ export interface CodeEditorProps
   onChange?: (value: string, update: ViewUpdate) => void;
   /** "markdown" (built in) or "plain"; pass other languages through `extensions`. Default "markdown". */
   language?: "markdown" | "plain";
-  /** Extra CodeMirror extensions (languages, autocompletion, linting, collaboration…). */
+  /** Extra CodeMirror extensions (languages, autocompletion, linting, collaboration…). Re-applied when an element changes, so memoize them (an inline `[lang()]` builds new ones every render). */
   extensions?: Extension[];
   lineNumbers?: boolean;
   /** Soft-wrap long lines. Default true. */
@@ -245,7 +255,7 @@ export interface CodeEditorProps
   search?: boolean;
   /** Called on Mod-S. */
   onSave?: () => void;
-  /** Extra key bindings (take precedence over defaults). */
+  /** Extra key bindings (take precedence over defaults). Re-applied when an element changes; memoize them. */
   keyBindings?: KeyBinding[];
   onSelectionChange?: (selection: CodeEditorSelection) => void;
   /** Scroll position, for preview sync. */
@@ -296,6 +306,13 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
     const viewRef = React.useRef<EditorView | null>(null);
     const cb = React.useRef({ onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange });
     cb.current = { onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange };
+    // Options as of the latest render, read when the view is (re)created, e.g. after <Activity> hides and shows it.
+    const latest = React.useRef({ value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, spellCheck, label, extensions, autoFocus });
+    latest.current = { value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, spellCheck, label, extensions, autoFocus };
+    /** The document when the view was last destroyed, so a remount keeps unsaved text. */
+    const docRef = React.useRef<string | null>(null);
+    const stableExtensions = useShallowStable(extensions);
+    const stableKeyBindings = useShallowStable(keyBindings);
     const compartments = React.useMemo(
       () => ({
         lang: new Compartment(),
@@ -331,10 +348,25 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
 
     React.useEffect(() => {
       const host = hostRef.current!;
+      const {
+        value,
+        defaultValue,
+        language,
+        lineNumbers,
+        wrap,
+        placeholder,
+        readOnly,
+        searchEnabled,
+        keyBindings,
+        spellCheck,
+        label,
+        extensions,
+        autoFocus,
+      } = latest.current;
       const view = new EditorView({
         parent: host,
         state: EditorState.create({
-          doc: value ?? defaultValue,
+          doc: value ?? docRef.current ?? defaultValue,
           extensions: [
             compartments.gutter.of(gutterExt(lineNumbers)),
             highlightSpecialChars(),
@@ -406,6 +438,7 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
       return () => {
         cancelAnimationFrame(frame);
         view.scrollDOM.removeEventListener("scroll", handleScroll);
+        docRef.current = view.state.doc.toString();
         view.destroy();
         viewRef.current = null;
       };
@@ -420,13 +453,13 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
     React.useEffect(() => {
       if (first.current) return;
       reconfigure(compartments.lang, langExt(language));
-      reconfigure(compartments.keys, keysExt(language, keyBindings));
+      reconfigure(compartments.keys, keysExt(language, stableKeyBindings));
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [language, keyBindings]);
+    }, [language, stableKeyBindings]);
     React.useEffect(() => {
-      if (!first.current) reconfigure(compartments.extra, extensions ?? []);
+      if (!first.current) reconfigure(compartments.extra, stableExtensions ?? []);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [extensions]);
+    }, [stableExtensions]);
     React.useEffect(() => {
       if (!first.current) reconfigure(compartments.gutter, gutterExt(lineNumbers));
       // eslint-disable-next-line react-hooks/exhaustive-deps

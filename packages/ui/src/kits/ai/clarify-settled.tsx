@@ -39,7 +39,7 @@ export const ClarifySettled = React.forwardRef<HTMLDivElement, ClarifySettledPro
         <button
           type="button"
           aria-expanded={open}
-          aria-controls={listId}
+          aria-controls={open ? listId : undefined}
           onClick={() => setOpen(!open)}
           className={cn("flex w-full items-center gap-2 rounded-box px-3 py-2 text-left text-muted-foreground transition-colors hover:text-foreground", focusRing)}
         >

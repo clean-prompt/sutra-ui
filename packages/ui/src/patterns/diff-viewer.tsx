@@ -103,6 +103,8 @@ interface InlineLine {
   parts: LinePiece[];
   changed: boolean;
   changes: number[];
+  /** Line number in the new text; undefined for a line that only exists in the old text. */
+  newNo?: number;
 }
 
 function lineMeta(parts: LinePiece[]) {
@@ -112,17 +114,27 @@ function lineMeta(parts: LinePiece[]) {
 
 function toInlineLines(parts: DiffPart[]): InlineLine[] {
   const lines: LinePiece[][] = [[]];
+  // New-text line breaks seen before each display line (deleted breaks don't advance the new text).
+  const newBreaks: number[] = [0];
+  let breaks = 0;
   for (const p of parts) {
     const segs = p.text.split("\n");
     segs.forEach((seg, i) => {
-      if (i > 0) lines.push([]);
+      if (i > 0) {
+        if (p.type !== "delete") breaks++;
+        lines.push([]);
+        newBreaks.push(breaks);
+      }
       const cur = lines[lines.length - 1]!;
       if (seg) cur.push({ ...p, text: seg });
       else if (p.type !== "equal" && i < segs.length - 1) cur.push({ ...p, text: "", breakOnly: true });
     });
   }
   if (lines.length > 1 && lines[lines.length - 1]!.length === 0) lines.pop();
-  return lines.map((l) => ({ parts: l, ...lineMeta(l) }));
+  return lines.map((l, i) => {
+    const deletedOnly = l.length > 0 && l.every((p) => p.type === "delete");
+    return { parts: l, ...lineMeta(l), newNo: deletedOnly ? undefined : newBreaks[i]! + 1 };
+  });
 }
 
 interface SideLine {
@@ -166,11 +178,12 @@ function toSplitRows(parts: DiffPart[]): SplitRow[] {
           curOld = [];
           curNew = [];
         } else if (p.type === "delete") {
-          if (!curOld.length) curOld.push({ ...p, text: "", breakOnly: true });
+          // A break-only change (the line's text came from an earlier part) still shows as a change.
+          if (segs[i - 1] === "") curOld.push({ ...p, text: "", breakOnly: true });
           pendOld.push({ no: oldNo++, parts: curOld });
           curOld = [];
         } else {
-          if (!curNew.length) curNew.push({ ...p, text: "", breakOnly: true });
+          if (segs[i - 1] === "") curNew.push({ ...p, text: "", breakOnly: true });
           pendNew.push({ no: newNo++, parts: curNew });
           curNew = [];
         }
@@ -181,9 +194,10 @@ function toSplitRows(parts: DiffPart[]): SplitRow[] {
       }
     });
   }
+  // An unterminated last line pairs with any pending lines on the other side (e.g. only a trailing newline changed).
+  if (curOld.length) pendOld.push({ no: oldNo++, parts: curOld });
+  if (curNew.length) pendNew.push({ no: newNo++, parts: curNew });
   flushPending();
-  if (curOld.length || curNew.length)
-    rows.push(makeRow(curOld.length ? { no: oldNo++, parts: curOld } : undefined, curNew.length ? { no: newNo++, parts: curNew } : undefined));
   return rows;
 }
 
@@ -487,7 +501,7 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
               >
                 {lineNumbers && (
                   <span aria-hidden className="w-10 shrink-0 select-none pr-2 text-right text-muted-foreground/70 tabular-nums">
-                    {e.index + 1}
+                    {line.newNo}
                   </span>
                 )}
                 <span className="min-h-[1.6em] min-w-0 flex-1 whitespace-pre-wrap break-words px-3">{renderPieces(line.parts)}</span>

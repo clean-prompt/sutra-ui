@@ -7,7 +7,9 @@ import {
 } from "radix-ui";
 import { RiArrowDownSLine, RiCloseLine, RiMenuLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { breakpoints } from "../lib/tokens";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useMediaQuery } from "../hooks/use-media-query";
 import { Button } from "../primitives/button";
 import { containerVariants } from "../primitives/layout";
 
@@ -284,6 +286,11 @@ export const HeaderNavMobile = React.forwardRef<HTMLButtonElement, HeaderNavMobi
 ) {
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   const close = () => setOpen(false);
+  // The sheet is md:hidden: left open past the breakpoint, its modal scroll lock would freeze an invisible page.
+  const desktop = useMediaQuery(`(min-width: ${breakpoints.md}px)`);
+  React.useEffect(() => {
+    if (desktop && open) setOpen(false);
+  }, [desktop, open, setOpen]);
 
   const renderEntry = (item: HeaderNavMobileItem, key: React.Key, nested = false): React.ReactNode => {
     const rowClass = cn(
@@ -338,7 +345,7 @@ export const HeaderNavMobile = React.forwardRef<HTMLButtonElement, HeaderNavMobi
   };
 
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
+    <DialogPrimitive.Root open={open && !desktop} onOpenChange={setOpen}>
       <DialogPrimitive.Trigger asChild>
         <Button ref={ref} variant="ghost" size="icon" aria-label={label} className={cn("md:hidden", className)}>
           <RiMenuLine aria-hidden />

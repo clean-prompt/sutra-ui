@@ -82,7 +82,8 @@ export function niceTicks(min: number, max: number, count = 5): number[] {
   const step = niceStep((hi - lo) / Math.max(1, count - 1));
   const start = Math.floor(lo / step + 1e-9) * step;
   const end = Math.ceil(hi / step - 1e-9) * step;
-  const decimals = Math.max(0, -Math.floor(Math.log10(step)) + 1);
+  // toFixed accepts at most 100 digits.
+  const decimals = Math.min(100, Math.max(0, -Math.floor(Math.log10(step)) + 1));
   const n = Math.round((end - start) / step);
   const ticks: number[] = [];
   for (let i = 0; i <= n; i++) ticks.push(Number((start + i * step).toFixed(decimals)) || 0);
@@ -223,6 +224,24 @@ const tokenColor: Record<string, string> = {
 export const resolveChartColor = (color: string) => tokenColor[color] ?? color;
 
 const compactFormat = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
+
+/**
+ * Default value-axis labels: compact ("4K", "0.5") while that keeps every tick distinct; otherwise plain
+ * numbers with as many decimals as the tick step needs, so 0.05 steps or 1000–1010 don't repeat a label.
+ */
+function tickFormatter(ticks: number[]): (v: number) => string {
+  const distinct = (fmt: (v: number) => string) => new Set(ticks.map(fmt)).size === ticks.length;
+  const compact = (v: number) => compactFormat.format(v);
+  if (distinct(compact)) return compact;
+  const step = ticks.length > 1 ? Math.abs(ticks[1]! - ticks[0]!) : 0;
+  let digits = step > 0 && Number.isFinite(step) ? Math.min(20, Math.max(0, -Math.floor(Math.log10(step)))) : 0;
+  for (; digits <= 20; digits++) {
+    const nf = new Intl.NumberFormat(undefined, { maximumFractionDigits: digits });
+    const fmt = (v: number) => nf.format(v);
+    if (distinct(fmt) || digits === 20) return fmt;
+  }
+  return compact;
+}
 const plainFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
 
 const defaultValueFormatter = (v: number) => plainFormat.format(v);
@@ -721,7 +740,7 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
     const d1 = typeof yAxis.max === "number" ? yAxis.max : ticks[ticks.length - 1]!;
     const eps = (d1 - d0) * 1e-6;
     ticks = ticks.filter((t) => t >= d0 - eps && t <= d1 + eps);
-    const yFmt = yAxis.formatter ?? ((v: number) => compactFormat.format(v));
+    const yFmt = yAxis.formatter ?? tickFormatter(ticks);
 
     const motion = animate ? "motion-safe:transition-all motion-safe:duration-500 motion-safe:ease-out" : "";
 
@@ -1290,13 +1309,21 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
     const [active, setActive] = React.useState<number | null>(null);
     const [announce, setAnnounce] = React.useState("");
     const palette = colors ?? chartColors;
-    const items = data.map((d, i) => ({
-      key: String(d[index] ?? i),
-      label: String(d[index] ?? ""),
-      value: Math.max(0, toNumber(d[valueKey]) ?? 0),
-      color: resolveChartColor(colorFor?.(d, i) ?? palette[i % palette.length]!),
-      i,
-    }));
+    const usedKeys = new Set<string>();
+    const items = data.map((d, i) => {
+      // Duplicate labels still need distinct keys (React keys, legend toggles); the first keeps the plain label.
+      const base = String(d[index] ?? i);
+      let key = base;
+      for (let n = 1; usedKeys.has(key); n++) key = `${base}#${n}`;
+      usedKeys.add(key);
+      return {
+        key,
+        label: String(d[index] ?? ""),
+        value: Math.max(0, toNumber(d[valueKey]) ?? 0),
+        color: resolveChartColor(colorFor?.(d, i) ?? palette[i % palette.length]!),
+        i,
+      };
+    });
     const shown = items.filter((it) => !hidden.includes(it.key));
     const total = shown.reduce((a, b) => a + b.value, 0);
     const ariaLabel =

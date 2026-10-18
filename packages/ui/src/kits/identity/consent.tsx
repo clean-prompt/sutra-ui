@@ -139,6 +139,11 @@ export interface FormatScopeOptions {
   labels?: Record<string, string>;
 }
 
+/** Own-property lookup, so ids like "constructor" or "__proto__" don't hit Object.prototype. */
+function own<T>(record: Record<string, T> | undefined, key: string): T | undefined {
+  return record && Object.prototype.hasOwnProperty.call(record, key) ? record[key] : undefined;
+}
+
 /** Scope id from a string or object scope. */
 export function scopeIdOf(scope: ScopeInput) {
   return typeof scope === "string" ? scope : scope.id;
@@ -151,7 +156,7 @@ export function formatScope(scope: ScopeInput, options: FormatScopeOptions = {})
   const sep = id.indexOf(":");
   const action = sep >= 0 ? id.slice(0, sep) : id;
   const resource = sep >= 0 ? id.slice(sep + 1) : undefined;
-  const def = defs[id] ?? (sep >= 0 ? defs[`${action}:*`] : undefined);
+  const def = own(defs, id) ?? (sep >= 0 ? own(defs, `${action}:*`) : undefined);
   const constraints =
     typeof scope === "object"
       ? Object.entries(scope)
@@ -160,7 +165,8 @@ export function formatScope(scope: ScopeInput, options: FormatScopeOptions = {})
           .join(" · ")
       : "";
   const pick = (v: ScopeDefinition["label"] | undefined) => (typeof v === "function" ? v(resource) : v);
-  const fallback = options.labels?.[id] ?? (humanize(resource ? `${action} ${resource}` : id) || id);
+  const custom = own(options.labels, id);
+  const fallback = (typeof custom === "string" ? custom : undefined) ?? (humanize(resource ? `${action} ${resource}` : id) || id);
   const label = pick(def?.label) ?? fallback;
   return {
     id,
@@ -227,14 +233,15 @@ export const ScopeList = React.forwardRef<HTMLUListElement, ScopeListProps>(
     ref
   ) => {
     const [granted, setGranted] = useControllableState({ value, defaultValue, onChange: onValueChange });
+    const baseId = React.useId();
     return (
       <ul ref={ref} data-slot="scope-list" className={cn("flex flex-col divide-y divide-border", className)} {...props}>
-        {scopes.map((scope) => {
+        {scopes.map((scope, index) => {
           const f = formatScope(scope, { definitions, labels });
           const Icon = f.icon;
           const isOptional = !f.locked && optional.includes(f.id);
           const on = isOptional ? granted.includes(f.id) : true;
-          const labelId = `scope-${f.id.replace(/[^a-z0-9_-]/gi, "_")}`;
+          const labelId = `${baseId}-scope-${index}`;
           return (
             <li key={f.id} data-scope={f.id} data-risk={f.risk} className="flex items-center gap-3 py-3">
               <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-md [&_svg]:size-4", riskTile[f.risk])}>

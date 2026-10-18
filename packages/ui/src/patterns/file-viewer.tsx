@@ -33,14 +33,18 @@ export type FilePreviewKind = "image" | "pdf" | "video" | "audio" | "markdown" |
 
 /** Pick the renderer for a file from its MIME type, falling back to the extension. */
 export function getFilePreviewKind(file: Pick<ViewerFile, "name" | "mimeType">): FilePreviewKind {
-  const mime = file.mimeType?.toLowerCase() ?? "";
-  const ext = getFileExtension(file.name);
-  if (mime === "application/pdf" || ext === "pdf") return "pdf";
+  // Drop parameters: "application/json; charset=utf-8" → "application/json".
+  const mime = (file.mimeType ?? "").split(";")[0]!.trim().toLowerCase();
+  if (mime === "application/pdf") return "pdf";
   if (mime.startsWith("image/")) return "image";
   if (mime.startsWith("video/")) return "video";
   if (mime.startsWith("audio/")) return "audio";
-  if (mime === "text/markdown" || ext === "md" || ext === "mdx" || ext === "markdown") return "markdown";
-  if (mime === "application/json" || ext === "json") return "json";
+  if (mime === "text/markdown" || mime === "text/x-markdown") return "markdown";
+  if (mime === "application/json" || mime.endsWith("+json")) return "json";
+  const ext = getFileExtension(file.name);
+  if (ext === "pdf") return "pdf";
+  if (ext === "md" || ext === "mdx" || ext === "markdown") return "markdown";
+  if (ext === "json") return "json";
   const category = getFileCategory(file.name);
   if (category === "image" && ext !== "psd" && ext !== "ai") return "image";
   if (category === "video") return "video";

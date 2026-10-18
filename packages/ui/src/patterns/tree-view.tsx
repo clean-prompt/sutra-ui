@@ -238,7 +238,9 @@ export const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       const state = checkState(node.id);
       const target = (leavesMap.get(node.id) ?? []).filter((l) => !nodeMap.get(l)?.disabled);
       const leaves = new Set(checkedLeaves);
-      if (state === "checked") target.forEach((l) => leaves.delete(l));
+      // A disabled, unchecked descendant keeps the parent mixed: once every enabled leaf is on, toggle them off.
+      const allOn = target.length > 0 && target.every((l) => leaves.has(l));
+      if (state === "checked" || allOn) target.forEach((l) => leaves.delete(l));
       else target.forEach((l) => leaves.add(l));
       const out: string[] = [];
       allNodes.forEach((n) => {

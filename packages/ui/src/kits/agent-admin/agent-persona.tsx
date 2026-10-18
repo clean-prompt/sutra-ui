@@ -4,6 +4,7 @@ import { cn, focusRing } from "../../lib/cn";
 import { capitalize } from "../../lib/text";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useAsyncAction } from "../../hooks/use-async-action";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
 import { Input } from "../../primitives/input";
 import { Textarea } from "../../primitives/textarea";
@@ -110,10 +111,13 @@ export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBu
     const fileRef = React.useRef<HTMLInputElement>(null);
     const seedId = React.useId();
 
-    const upload = async (file: File | undefined) => {
-      if (!file) return;
-      const url = await (onUpload ? onUpload(file) : readAsDataUrl(file));
-      patch({ imageUrl: url });
+    // Applied to the spec as it is when the upload finishes, so edits made meanwhile are kept.
+    const uploadAction = useAsyncAction((file: File) => (onUpload ? onUpload(file) : readAsDataUrl(file)), {
+      onSuccess: (url) => setSpec((s) => ({ ...s, imageUrl: url })),
+      fallbackMessage: "Could not upload the image",
+    });
+    const upload = (file: File | undefined) => {
+      if (file) void uploadAction.run(file);
     };
 
     return (
@@ -193,7 +197,7 @@ export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBu
               aria-label="Upload avatar image"
               tabIndex={-1}
               onChange={(e) => {
-                void upload(e.target.files?.[0]);
+                upload(e.target.files?.[0]);
                 e.target.value = "";
               }}
             />
@@ -207,6 +211,11 @@ export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBu
                 </Button>
               )}
             </div>
+            {uploadAction.error && (
+              <p role="alert" className="text-xs text-destructive">
+                {uploadAction.error}
+              </p>
+            )}
             <p className="text-xs text-muted-foreground">Cropped to the selected shape. Square images work best.</p>
           </TabsContent>
         </Tabs>
@@ -345,16 +354,18 @@ export function CreateAgentDialog({
   submitLabel = "Create agent",
 }: CreateAgentDialogProps) {
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
-  const init = React.useCallback(
-    (): CreateAgentValues => ({
-      name: defaultValues?.name ?? "",
-      avatar: defaultValues?.avatar ?? randomAvatarSpec(newSeed()),
-      role: defaultValues?.role ?? "",
-      description: defaultValues?.description ?? "",
-      persona: defaultValues?.persona ?? "",
-    }),
-    [defaultValues]
-  );
+  // Read through a ref: an inline `defaultValues` object must not reset the form on every parent render.
+  const defaultsRef = useLatestRef(defaultValues);
+  const init = React.useCallback((): CreateAgentValues => {
+    const d = defaultsRef.current;
+    return {
+      name: d?.name ?? "",
+      avatar: d?.avatar ?? randomAvatarSpec(newSeed()),
+      role: d?.role ?? "",
+      description: d?.description ?? "",
+      persona: d?.persona ?? "",
+    };
+  }, [defaultsRef]);
   const [values, setValues] = React.useState<CreateAgentValues>(init);
   const [nameError, setNameError] = React.useState<string | null>(null);
   const create = useAsyncAction(async (v: CreateAgentValues) => onCreate?.(v), { onSuccess: () => setOpen(false) });

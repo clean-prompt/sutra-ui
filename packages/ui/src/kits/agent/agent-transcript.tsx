@@ -233,7 +233,7 @@ export const TranscriptSystemRow = React.forwardRef<HTMLDivElement, TranscriptSy
               <button
                 type="button"
                 aria-expanded={expanded}
-                aria-controls={summaryId}
+                aria-controls={expanded ? summaryId : undefined}
                 onClick={() => setExpanded(!expanded)}
                 className={cn("inline-flex items-center gap-0.5 rounded-xs text-primary hover:underline", focusRing)}
               >
@@ -603,7 +603,7 @@ export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps
                 <button
                   type="button"
                   aria-expanded={expanded}
-                  aria-controls={outputId}
+                  aria-controls={expanded ? outputId : undefined}
                   onClick={() => setExpanded(!expanded)}
                   className={cn("inline-flex items-center gap-0.5 rounded-xs text-xs font-medium underline-offset-2 hover:underline", focusRing)}
                 >

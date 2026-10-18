@@ -311,6 +311,34 @@ function fromWall(wall: number, timeZone?: string) {
   return new Date(valid.length ? Math.min(...valid) : Math.max(...candidates));
 }
 
+/**
+ * Wall-clock time of `date` in `timeZone` (default: the runtime's local zone), encoded as a UTC timestamp:
+ * read the fields with `getUTC*`. Inverse of `zonedWallTimeToDate`. An invalid date gives NaN.
+ */
+export function dateToZonedWallTime(date: Date, timeZone?: string): number {
+  if (Number.isNaN(date.getTime())) return NaN;
+  try {
+    return toWall(date, timeZone);
+  } catch {
+    return NaN;
+  }
+}
+
+/**
+ * Instant for a wall-clock time in `timeZone` (default: the runtime's local zone, minute precision).
+ * `wall` encodes the wall time as a UTC timestamp: `Date.UTC(2026, 2, 8, 9, 30)` means 09:30 on Mar 8 in that zone.
+ * A time skipped by a spring-forward gap resolves to the later (shifted) instant; a repeated time to the first.
+ * Non-finite input gives an invalid Date.
+ */
+export function zonedWallTimeToDate(wall: number, timeZone?: string): Date {
+  if (!Number.isFinite(wall)) return new Date(NaN);
+  try {
+    return fromWall(wall, timeZone);
+  } catch {
+    return new Date(NaN);
+  }
+}
+
 export interface NextCronRunsOptions {
   /** IANA zone the expression is evaluated in. Default: the runtime's local zone. */
   timeZone?: string;

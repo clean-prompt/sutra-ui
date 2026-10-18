@@ -221,6 +221,7 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
               /* autoplay may need a gesture; the muted inline video usually plays */
             }
           }
+          if (!alive) return;
           setState("scanning");
           const devices = await media.enumerateDevices?.().catch(() => []);
           if (alive) setCanSwitch((devices ?? []).filter((d) => d.kind === "videoinput").length > 1);

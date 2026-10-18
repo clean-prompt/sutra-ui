@@ -67,10 +67,16 @@ export function extractOutline(markdown: string): OutlineHeading[] {
   const push = (raw: string, level: number, line: number) => {
     const text = stripInline(raw);
     if (!text) return;
+    // github-slugger: bump the base's counter until the id is unused ("Foo", "Foo", "Foo 1" → foo, foo-1, foo-1-1).
     const base = slugifyHeading(text);
-    const n = seen.get(base) ?? 0;
-    seen.set(base, n + 1);
-    out.push({ id: n ? `${base}-${n}` : base, line, text, level });
+    let id = base;
+    while (seen.has(id)) {
+      const n = seen.get(base)! + 1;
+      seen.set(base, n);
+      id = `${base}-${n}`;
+    }
+    seen.set(id, 0);
+    out.push({ id, line, text, level });
   };
 
   for (let i = start; i < lines.length; i++) {

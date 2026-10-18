@@ -45,6 +45,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../primitives/tabs";
 import { SutraAppIcon, SutraMark, type SutraApp } from "../assets/brand";
 import { EmptyStateIllustration } from "../assets/misc";
 import { demoUser } from "./demo-data";
+import { useFollowListProp } from "../hooks/use-follow-list-prop";
 
 type Align = "start" | "center" | "end";
 type Side = "top" | "right" | "bottom" | "left";
@@ -390,6 +391,7 @@ export function NotificationsMenu({
     defaultValue: defaultNotificationsProp ?? notifications ?? defaultNotifications,
     onChange: onNotificationsChange,
   });
+  useFollowListProp(notifications, setItems, !onNotificationsChange);
   const [tab, setTab] = React.useState("all");
   const unread = items.filter((n) => n.unread).length;
   const visible = tab === "unread" ? items.filter((n) => n.unread) : items;

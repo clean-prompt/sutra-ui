@@ -23,7 +23,7 @@ import {
 import { cn, focusRing } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { useAsyncAction } from "../../hooks/use-async-action";
+import { errorMessage, useAsyncAction } from "../../hooks/use-async-action";
 import { Badge, type BadgeColor } from "../../primitives/badge";
 import { Button } from "../../primitives/button";
 import { Chip, ChipGroup } from "../../primitives/chip";
@@ -653,17 +653,23 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
         setTesting(false);
       }
     };
-    const connect = async () => {
+    // Each Connect / Retry supersedes the previous attempt, and Cancel drops it, so a stale result is ignored.
+    const connectAction = useAsyncAction(() => onConnect?.(), {
+      onSuccess: () => setOauth("idle"),
+      onError: (e) => {
+        setOauth("failed");
+        setOauthError(errorMessage(e, "Sign-in didn't complete"));
+      },
+    });
+    const connect = () => {
       if (!onConnect) return;
       setOauth("waiting");
       setOauthError(null);
-      try {
-        await onConnect();
-        setOauth("idle");
-      } catch (e) {
-        setOauth("failed");
-        setOauthError(e instanceof Error ? e.message : "Sign-in didn't complete");
-      }
+      void connectAction.run();
+    };
+    const cancelConnect = () => {
+      connectAction.reset();
+      setOauth("idle");
     };
 
     return (
@@ -736,7 +742,7 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
             <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine aria-hidden />} onClick={connect}>
               Retry
             </Button>
-            <Button size="xs" variant="ghost" onClick={() => setOauth("idle")}>
+            <Button size="xs" variant="ghost" onClick={cancelConnect}>
               Cancel
             </Button>
           </div>
@@ -1213,7 +1219,7 @@ export const ConnectorAccounts = React.forwardRef<HTMLDivElement, ConnectorAccou
             <button
               type="button"
               aria-expanded={showRetired}
-              aria-controls={retiredId}
+              aria-controls={showRetired ? retiredId : undefined}
               onClick={() => setShowRetired((s) => !s)}
               className={cn("flex w-full items-center gap-1.5 px-3 py-2 text-left text-xs font-medium text-muted-foreground hover:text-foreground", focusRing)}
             >

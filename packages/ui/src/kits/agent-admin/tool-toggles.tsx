@@ -613,7 +613,10 @@ function CredentialRow({
   const [editing, setEditing] = React.useState(!field.isSet);
   const [value, setValue] = React.useState("");
   const { run: save, busy, error } = useAsyncAction(async (next: string) => onSave?.(next), {
-    onSuccess: () => setValue(""),
+    onSuccess: () => {
+      setValue("");
+      setEditing(false);
+    },
     fallbackMessage: "Could not save the key",
   });
   const inputId = React.useId();
@@ -714,11 +717,14 @@ export const ToolsetProviderDrawer = React.forwardRef<HTMLDivElement, ToolsetPro
   className,
 }, ref) {
   const [enabled, setEnabled] = useControllableState({ value: enabledProp, defaultValue: defaultEnabled, onChange: onEnabledChange });
-  const [provider, setProvider] = useControllableState({
+  const [chosenProvider, setProvider] = useControllableState({
     value: providerProp,
     defaultValue: defaultProvider ?? providers[0]?.id ?? "",
     onChange: onProviderChange,
   });
+  // Uncontrolled with no valid choice yet (e.g. providers loaded after mount): fall back to the first one.
+  const provider =
+    providerProp === undefined && !providers.some((p) => p.id === chosenProvider) ? (providers[0]?.id ?? chosenProvider) : chosenProvider;
   const current = providers.find((p) => p.id === provider);
   const st = installStatusMeta[installStatus];
   return (

@@ -31,10 +31,17 @@ function printText(title: string, body: string) {
   iframe.setAttribute("aria-hidden", "true");
   iframe.style.cssText = "position:fixed;width:0;height:0;border:0;opacity:0";
   document.body.appendChild(iframe);
+  // print() doesn't block in every browser, so keep the frame until the dialog closes (with a long fallback).
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const remove = () => {
+    clearTimeout(timer);
+    iframe.remove();
+  };
   try {
     const doc = iframe.contentDocument;
     const win = iframe.contentWindow;
     if (doc && win) {
+      win.addEventListener("afterprint", remove, { once: true });
       doc.open();
       doc.write(
         `<!doctype html><title>${title.replace(/</g, "&lt;")}</title><body style="font-family:ui-monospace,monospace;padding:40px"><h1 style="font:600 18px system-ui">${title.replace(/</g, "&lt;")}</h1><pre style="font-size:20px;letter-spacing:0.08em;line-height:1.8">${body.replace(/</g, "&lt;")}</pre></body>`
@@ -46,7 +53,7 @@ function printText(title: string, body: string) {
   } catch {
     /* printing unavailable */
   } finally {
-    setTimeout(() => iframe.remove(), 1000);
+    timer = setTimeout(remove, 60_000);
   }
 }
 

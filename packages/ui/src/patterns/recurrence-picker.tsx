@@ -40,6 +40,37 @@ const jsDayToWeekday = (d: Date): RecurrenceWeekday => recurrenceWeekdays[(d.get
 
 type Preset = RecurrenceFrequency | "custom";
 
+interface RuleNumberInputProps extends Omit<React.ComponentProps<typeof Input>, "value" | "onChange" | "type"> {
+  value: number | "";
+  min: number;
+  max?: number;
+  onValueChange: (value: number) => void;
+}
+
+/** Number field that can be cleared while typing: commits whole numbers in range, shows the committed value on blur. */
+function RuleNumberInput({ value, min, max = Number.MAX_SAFE_INTEGER, onValueChange, onBlur, ...props }: RuleNumberInputProps) {
+  const [draft, setDraft] = React.useState<string | null>(null);
+  return (
+    <Input
+      {...props}
+      type="number"
+      min={min}
+      max={max === Number.MAX_SAFE_INTEGER ? undefined : max}
+      value={draft ?? value}
+      onChange={(e) => {
+        const text = e.target.value;
+        setDraft(text);
+        const n = Number(text);
+        if (text.trim() !== "" && Number.isFinite(n)) onValueChange(Math.min(max, Math.max(min, Math.round(n))));
+      }}
+      onBlur={(e) => {
+        setDraft(null);
+        onBlur?.(e);
+      }}
+    />
+  );
+}
+
 /** Repeat-rule editor: none / daily / weekly (weekday toggles) / monthly / yearly / custom interval, plus an end condition. */
 export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, RecurrencePickerProps>(
   (
@@ -48,7 +79,9 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
   ) => {
     const [rule, setRule] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChange });
     const [ref0] = React.useState(() => referenceDate ?? new Date());
-    const [customMode, setCustomMode] = React.useState((rule.interval ?? 1) > 1);
+    const [customChosen, setCustomMode] = React.useState(false);
+    // An interval above 1 is only expressible in custom mode, including one that arrives after mount.
+    const customMode = customChosen || (rule.interval ?? 1) > 1;
     const preset: Preset = rule.freq === "none" ? "none" : customMode ? "custom" : rule.freq;
     const id = React.useId();
     const nthOfMonth = Math.min(4, Math.ceil(ref0.getDate() / 7));
@@ -108,13 +141,15 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
         {preset === "custom" ? (
           <div className="flex items-center gap-2 text-sm">
             <label htmlFor={`${id}-interval`}>Every</label>
-            <Input
+            <RuleNumberInput
               id={`${id}-interval`}
-              type="number"
               size="sm"
               min={1}
               value={rule.interval ?? 1}
-              onChange={(e) => patch({ interval: Math.max(1, Number(e.target.value) || 1) })}
+              onValueChange={(interval) => {
+                setCustomMode(true);
+                patch({ interval });
+              }}
               className="w-20"
             />
             <SimpleSelect
@@ -168,14 +203,13 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
                 className="accent-[var(--primary)]"
               />
               On day
-              <Input
-                type="number"
+              <RuleNumberInput
                 size="sm"
                 min={1}
                 max={31}
                 aria-label="Day of month"
                 value={rule.monthDay ?? ref0.getDate()}
-                onChange={(e) => patch({ monthlyMode: "day", monthDay: Math.min(31, Math.max(1, Number(e.target.value) || 1)) })}
+                onValueChange={(monthDay) => patch({ monthlyMode: "day", monthDay })}
                 className="w-20"
               />
             </label>
@@ -221,14 +255,13 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
               options={monthNames.map((m, i) => ({ value: String(i + 1), label: m }))}
               className="w-36"
             />
-            <Input
-              type="number"
+            <RuleNumberInput
               size="sm"
               min={1}
               max={31}
               aria-label="Day"
               value={rule.monthDay ?? ref0.getDate()}
-              onChange={(e) => patch({ monthDay: Math.min(31, Math.max(1, Number(e.target.value) || 1)) })}
+              onValueChange={(monthDay) => patch({ monthDay })}
               className="w-20"
             />
           </div>
@@ -281,14 +314,13 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
                 />
                 After
               </label>
-              <Input
-                type="number"
+              <RuleNumberInput
                 size="sm"
                 min={1}
                 aria-label="Occurrences"
                 value={end.type === "after" ? end.count : ""}
                 placeholder="10"
-                onChange={(e) => patch({ end: { type: "after", count: Math.max(1, Number(e.target.value) || 1) } })}
+                onValueChange={(count) => patch({ end: { type: "after", count } })}
                 className="w-20"
               />
               <span>occurrences</span>

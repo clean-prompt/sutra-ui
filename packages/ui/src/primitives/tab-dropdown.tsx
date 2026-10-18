@@ -94,12 +94,16 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
     const overflow = items.slice(visibleCount);
     const activeOverflow = overflow.find((it) => it.value === selected);
 
-    const focusTab = (index: number) => {
-      const enabled = visible.map((it, i) => (it.disabled ? -1 : i)).filter((i) => i >= 0);
-      if (enabled.length === 0) return;
-      const target = enabled[(enabled.indexOf(index) + enabled.length) % enabled.length] ?? enabled[0];
-      tabRefs.current[target]?.focus();
-      setSelected(visible[target].value);
+    /** Focus and select the first enabled tab after `from` in `direction`, wrapping around. */
+    const focusTab = (from: number, direction: 1 | -1) => {
+      const n = visible.length;
+      for (let k = 1; k <= n; k++) {
+        const target = (((from + direction * k) % n) + n) % n;
+        if (visible[target]!.disabled) continue;
+        tabRefs.current[target]?.focus();
+        setSelected(visible[target]!.value);
+        return;
+      }
     };
 
     const tabClass = cn(
@@ -156,10 +160,10 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
                 data-state={active ? "active" : "inactive"}
                 onClick={() => setSelected(it.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "ArrowRight") focusTab(i + 1);
-                  else if (e.key === "ArrowLeft") focusTab(i - 1);
-                  else if (e.key === "Home") focusTab(0);
-                  else if (e.key === "End") focusTab(visible.length - 1);
+                  if (e.key === "ArrowRight") focusTab(i, 1);
+                  else if (e.key === "ArrowLeft") focusTab(i, -1);
+                  else if (e.key === "Home") focusTab(-1, 1);
+                  else if (e.key === "End") focusTab(visible.length, -1);
                   else return;
                   e.preventDefault();
                 }}

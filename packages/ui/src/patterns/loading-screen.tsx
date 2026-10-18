@@ -170,6 +170,11 @@ export const LockScreen = React.forwardRef<HTMLDivElement, LockScreenProps>(
     const lockEnd = Math.max(lockedUntil, lockedUntilProp ?? 0);
     const locked = lockEnd > now;
     const waitSeconds = (lockEnd - now) / 1000;
+    // Announced once per lockout; the visible countdown ticks outside the live region.
+    const lockNotice = React.useMemo(
+      () => (lockEnd > Date.now() ? formatWait((lockEnd - Date.now()) / 1000) : ""),
+      [lockEnd]
+    );
 
     React.useEffect(() => {
       if (lockEnd <= Date.now()) return;
@@ -365,7 +370,11 @@ export const LockScreen = React.forwardRef<HTMLDivElement, LockScreenProps>(
           <div role="alert" aria-live="assertive" className="min-h-5 text-sm">
             {locked ? (
               <span className="text-destructive">
-                Too many attempts. Try again in <span className="tabular-nums">{formatWait(waitSeconds)}</span>
+                Too many attempts. Try again in{" "}
+                <span aria-hidden="true" className="tabular-nums">
+                  {formatWait(waitSeconds)}
+                </span>
+                <span className="sr-only">{lockNotice}</span>
               </span>
             ) : error ? (
               <span className="text-destructive">{error}</span>

@@ -62,12 +62,16 @@ export function quantizationBits(quant: string | undefined): number {
   const q = quant.toUpperCase();
   if (/F32|FP32/.test(q)) return 32;
   if (/BF16|F16|FP16/.test(q)) return 16;
+  const bpw = q.match(/(\d+(?:\.\d+)?)\s*BPW/);
+  if (bpw) return Number(bpw[1]);
+  if (/(?:MX|NV)?FP4/.test(q)) return 4.25;
   const m = q.match(/(?:Q|IQ|INT|W)(\d)/);
   if (m) {
     const bits = Number(m[1]);
     return ({ 1: 1.8, 2: 2.7, 3: 3.5, 4: 4.6, 5: 5.5, 6: 6.6, 8: 8.5 } as Record<number, number>)[bits] ?? bits + 0.5;
   }
   if (/FP8|E4M3|E5M2/.test(q)) return 8;
+  if (/AWQ|GPTQ|NF4/.test(q)) return 4.5;
   return 16;
 }
 

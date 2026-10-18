@@ -253,7 +253,7 @@ describe("AvatarGroup", () => {
     expect(more).toHaveTextContent("+2");
   });
 
-  it("total overrides the overflow count and caps at 99", () => {
+  it("total overrides the overflow count and caps the label at 99+", () => {
     render(
       <AvatarGroup max={2} total={250}>
         <Avatar name="A B" />
@@ -261,7 +261,7 @@ describe("AvatarGroup", () => {
       </AvatarGroup>
     );
     const more = screen.getByRole("img", { name: "248 more" });
-    expect(more).toHaveTextContent("+99");
+    expect(more).toHaveTextContent("99+");
   });
 
   it("no overflow bubble when everything fits; add button fires", async () => {

@@ -259,8 +259,18 @@ const defaultComponents: Components = {
   },
 };
 
-/** Split markdown into top-level blocks at blank lines, never inside fenced code (or `$$` math when `math`). */
+/** A link reference or footnote definition (`[id]: url`, `[^1]: text`): it applies to the whole document. */
+const DEFINITION_RE = /^ {0,3}\[[^\]\n]+\]:/m;
+/** A block that may continue the previous one: indented (list continuation, nested code) or a list item. */
+const CONTINUATION_RE = /^(?:\s|[-*+][ \t]|\d{1,9}[.)][ \t])/;
+
+/**
+ * Split markdown into top-level blocks at blank lines, never inside fenced code (or `$$` math when `math`).
+ * Blocks that may belong to the previous one (indented continuations, list items) stay attached, and a
+ * document with reference or footnote definitions is not split, since those resolve across blocks.
+ */
 function splitBlocks(markdown: string, math = false): string[] {
+  if (DEFINITION_RE.test(markdown)) return markdown.trim() ? [markdown] : [];
   const lines = markdown.split("\n");
   const blocks: string[] = [];
   let current: string[] = [];
@@ -285,7 +295,12 @@ function splitBlocks(markdown: string, math = false): string[] {
     current.push(line);
   }
   if (current.length > 0) blocks.push(current.join("\n"));
-  return blocks;
+  const merged: string[] = [];
+  for (const block of blocks) {
+    if (merged.length > 0 && CONTINUATION_RE.test(block)) merged[merged.length - 1] += `\n\n${block}`;
+    else merged.push(block);
+  }
+  return merged;
 }
 
 interface MarkdownBlockProps {

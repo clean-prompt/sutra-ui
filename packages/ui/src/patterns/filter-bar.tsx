@@ -74,7 +74,8 @@ export const FilterBarSearch = React.forwardRef<HTMLInputElement, FilterBarSearc
           }}
           onKeyDown={(e) => {
             onKeyDown?.(e);
-            if (e.key === "Escape" && value) {
+            // Escape during IME composition cancels the composition, not the search.
+            if (e.key === "Escape" && value && !e.nativeEvent.isComposing && e.keyCode !== 229) {
               e.preventDefault();
               setValue("");
             }

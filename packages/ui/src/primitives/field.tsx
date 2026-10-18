@@ -19,7 +19,10 @@ export interface FieldContextValue {
   hasDescription: boolean;
   hasError: boolean;
   hasHint: boolean;
-  registerPart: (part: FieldPart) => () => void;
+  /** Ids of the mounted description, hint and error parts (custom ids included), in that order. */
+  describedByIds?: string[];
+  /** Registers a mounted part; pass its `id` when it doesn't use the generated one. Returns the unregister function. */
+  registerPart: (part: FieldPart, id?: string) => () => void;
 }
 
 export const FieldContext = React.createContext<FieldContextValue | null>(null);
@@ -63,12 +66,14 @@ export interface UseFieldReturn {
 export function useField(props: UseFieldProps = {}): UseFieldReturn {
   const ctx = React.useContext(FieldContext);
   const invalid = Boolean(props.invalid ?? (isAriaTrue(props["aria-invalid"]) || ctx?.invalid));
-  const describedBy = joinIds(
-    props["aria-describedby"],
-    ctx?.hasDescription && ctx.descriptionId,
-    ctx?.hasHint && ctx.hintId,
-    ctx?.hasError && ctx.errorId
-  );
+  const describedBy = ctx?.describedByIds
+    ? joinIds(props["aria-describedby"], ...ctx.describedByIds)
+    : joinIds(
+        props["aria-describedby"],
+        ctx?.hasDescription && ctx.descriptionId,
+        ctx?.hasHint && ctx.hintId,
+        ctx?.hasError && ctx.errorId
+      );
   const disabled = props.disabled ?? (ctx?.disabled || undefined);
   const required = props.required ?? (ctx?.required || undefined);
   return {
@@ -98,11 +103,17 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(
   ) => {
     const generated = useSafeId("field");
     const id = idProp ?? generated;
-    const [parts, setParts] = React.useState<Record<FieldPart, number>>({ description: 0, error: 0, hint: 0 });
+    /** Registered parts; `""` stands for the generated id, so it follows a changing field id. */
+    const [parts, setParts] = React.useState<Record<FieldPart, string[]>>({ description: [], error: [], hint: [] });
 
-    const registerPart = React.useCallback((part: FieldPart) => {
-      setParts((p) => ({ ...p, [part]: p[part] + 1 }));
-      return () => setParts((p) => ({ ...p, [part]: Math.max(0, p[part] - 1) }));
+    const registerPart = React.useCallback((part: FieldPart, partId?: string) => {
+      const key = partId ?? "";
+      setParts((p) => ({ ...p, [part]: [...p[part], key] }));
+      return () =>
+        setParts((p) => {
+          const i = p[part].indexOf(key);
+          return i === -1 ? p : { ...p, [part]: [...p[part].slice(0, i), ...p[part].slice(i + 1)] };
+        });
     }, []);
 
     const value = React.useMemo<FieldContextValue>(
@@ -115,9 +126,16 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(
         invalid,
         disabled,
         required,
-        hasDescription: parts.description > 0,
-        hasError: parts.error > 0,
-        hasHint: parts.hint > 0,
+        hasDescription: parts.description.length > 0,
+        hasError: parts.error.length > 0,
+        hasHint: parts.hint.length > 0,
+        describedByIds: [
+          ...new Set([
+            ...parts.description.map((p) => p || `${id}-description`),
+            ...parts.hint.map((p) => p || `${id}-hint`),
+            ...parts.error.map((p) => p || `${id}-error`),
+          ]),
+        ],
         registerPart,
       }),
       [id, invalid, disabled, required, parts, registerPart]
@@ -174,13 +192,13 @@ export const FieldLabel = React.forwardRef<React.ElementRef<typeof Label>, Field
 );
 FieldLabel.displayName = "FieldLabel";
 
-function useRegisterPart(part: FieldPart, active: boolean) {
+function useRegisterPart(part: FieldPart, active: boolean, id: string | undefined) {
   const ctx = React.useContext(FieldContext);
   const register = ctx?.registerPart;
   React.useEffect(() => {
     if (!active || !register) return;
-    return register(part);
-  }, [active, register, part]);
+    return register(part, id);
+  }, [active, register, part, id]);
   return ctx;
 }
 
@@ -189,7 +207,7 @@ export type FieldDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 /** Helper text describing the control. */
 export const FieldDescription = React.forwardRef<HTMLParagraphElement, FieldDescriptionProps>(
   ({ id, className, ...props }, ref) => {
-    const ctx = useRegisterPart("description", true);
+    const ctx = useRegisterPart("description", true, id);
     return (
       <p
         ref={ref}
@@ -211,7 +229,7 @@ export interface FieldHintProps extends React.HTMLAttributes<HTMLParagraphElemen
 /** Small secondary hint, typically placed under the control. */
 export const FieldHint = React.forwardRef<HTMLParagraphElement, FieldHintProps>(
   ({ id, icon, className, children, ...props }, ref) => {
-    const ctx = useRegisterPart("hint", true);
+    const ctx = useRegisterPart("hint", true, id);
     return (
       <p
         ref={ref}
@@ -264,7 +282,7 @@ export const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
         );
     }
     const active = content != null && content !== "";
-    const ctx = useRegisterPart("error", active);
+    const ctx = useRegisterPart("error", active, id);
     if (!active) return null;
     return (
       <div

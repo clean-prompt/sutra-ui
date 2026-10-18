@@ -529,6 +529,13 @@ export function ExtensionInstallDialog({
   const [url, setUrl] = React.useState(source);
   const [advanced, setAdvanced] = React.useState(false);
   const [acknowledged, setAcknowledged] = React.useState(false);
+  // The risk acknowledgement is per plugin and per opening: reset it when either changes.
+  const ackKey = `${open}\u0000${name ?? ""}\u0000${source}`;
+  const [ackFor, setAckFor] = React.useState(ackKey);
+  if (ackFor !== ackKey) {
+    setAckFor(ackKey);
+    setAcknowledged(false);
+  }
   React.useEffect(() => setUrl(source), [source]);
   const urlValid = mode === "catalog" || GIT_URL_RE.test(url.trim());
   const canInstall = urlValid && (verified || acknowledged) && !installing;
@@ -584,7 +591,7 @@ export function ExtensionInstallDialog({
               <button
                 type="button"
                 aria-expanded={advanced}
-                aria-controls={advId}
+                aria-controls={advanced ? advId : undefined}
                 onClick={() => setAdvanced((a) => !a)}
                 className={cn("flex w-full items-center gap-1.5 px-3 py-2 text-left text-sm font-medium text-foreground", focusRing)}
               >

@@ -75,6 +75,7 @@ import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/
 import { FeaturedIcon } from "../assets/icons";
 import { useBlockAction as useAsyncAction } from "./block-utils";
 import { isEmail } from "../lib/validate";
+import { useFollowListProp } from "../hooks/use-follow-list-prop";
 
 /** Open-state props shared by the dialog blocks. */
 export interface BlockDialogBaseProps {
@@ -342,6 +343,7 @@ export function InviteMembersDialog({
     defaultValue: defaultMembersProp ?? membersProp ?? defaultMembers,
     onChange: onMembersChange,
   });
+  useFollowListProp(membersProp, setMembers, !onMembersChange);
   const { copied, copy } = useCopy();
   const action = useAsyncAction();
 
@@ -647,6 +649,7 @@ export function ShareDialog({
     defaultValue: defaultPeopleProp ?? peopleProp ?? defaultPeople,
     onChange: onPeopleChange,
   });
+  useFollowListProp(peopleProp, setPeople, !onPeopleChange);
   const [linkRole, setLinkRole] = useControllableState<ShareLinkRole>({
     value: linkRoleProp,
     defaultValue: defaultLinkRole,
@@ -913,6 +916,7 @@ export function FeedbackDialog({
   const [message, setMessage] = React.useState("");
   const [contact, setContact] = React.useState(true);
   const [sent, setSent] = React.useState(false);
+  const ratingLabelId = React.useId();
   const action = useAsyncAction();
 
   React.useEffect(() => {
@@ -956,10 +960,10 @@ export function FeedbackDialog({
             <DialogBody>
               <FieldGroup>
                 <div className="flex flex-col items-center gap-2 rounded-box border border-border bg-subtle py-5">
-                  <span className="text-sm font-medium text-foreground" id="feedback-rating-label">
+                  <span className="text-sm font-medium text-foreground" id={ratingLabelId}>
                     How would you rate your experience?
                   </span>
-                  <Rating value={rating} onValueChange={setRating} size="lg" aria-labelledby="feedback-rating-label" />
+                  <Rating value={rating} onValueChange={setRating} size="lg" aria-labelledby={ratingLabelId} />
                   <span className="h-4 text-xs font-medium text-muted-foreground" aria-live="polite">
                     {ratingLabels[Math.round(rating)]}
                   </span>

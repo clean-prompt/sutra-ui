@@ -468,6 +468,12 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
       } else if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
         if (target.tagName === "BUTTON" && !target.hasAttribute("data-question-option")) return;
         e.preventDefault();
+        // Enter on an unticked option picks it (like a click); on a ticked one it continues.
+        const opt = optionRows[Number(target.getAttribute("data-option-index") ?? NaN)];
+        if (item && opt && target.getAttribute("aria-checked") !== "true") {
+          choose(item, opt.value);
+          return;
+        }
         if (onReview) submitAll();
         else if (item && isAnswered(draft[item.id])) go(active + 1);
       }
@@ -567,6 +573,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
                           role={item.multiSelect ? "checkbox" : "radio"}
                           aria-checked={checked}
                           data-question-option=""
+                          data-option-index={i}
                           onClick={() => choose(item, o.value)}
                           className={cn(
                             "flex w-full items-start gap-2.5 rounded-box border px-3 py-2 text-left text-sm transition-colors",

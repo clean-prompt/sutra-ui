@@ -747,6 +747,9 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
     const [typed, setTyped] = React.useState("");
     const [pairedAt, setPairedAt] = React.useState(0);
     const ctrl = React.useRef<AbortController | null>(null);
+    // Read through a ref: an inline `adapter` prop must not abort and restart pairing on every parent render.
+    const adapterRef = React.useRef(adapter);
+    adapterRef.current = adapter;
 
     const fail = (e: unknown) => {
       if (isKunjiAbortError(e)) return;
@@ -763,12 +766,12 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
       setPeer(null);
       void (async () => {
         try {
-          const p = await adapter.createPairing(c.signal);
+          const p = await adapterRef.current.createPairing(c.signal);
           if (c.signal.aborted) return;
           setPairing(p);
           setPairedAt(Date.now());
           setStep("code");
-          const found = await adapter.waitForPeer(p.code, c.signal);
+          const found = await adapterRef.current.waitForPeer(p.code, c.signal);
           if (c.signal.aborted) return;
           setPeer(found);
           setStep("compare");
@@ -776,7 +779,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
           if (!c.signal.aborted) fail(e);
         }
       })();
-    }, [adapter]);
+    }, []);
 
     const join = (code: string) => {
       if (!adapter.joinPairing) return;

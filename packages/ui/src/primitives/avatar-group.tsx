@@ -3,7 +3,7 @@ import { RiAddLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { AvatarContext, avatarVariants, type AvatarShape, type AvatarSize } from "./avatar";
 
-/** One step smaller text so 3-character counts like "+99" fit the circle. */
+/** One step smaller text so 3-character counts like "+42" or "99+" fit the circle. */
 const countText: Record<AvatarSize, string> = {
   xs: "text-[9px]",
   sm: "text-2xs",
@@ -93,7 +93,7 @@ export const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
               aria-label={`${hidden} more`}
               title={`${hidden} more`}
             >
-              +{hidden > 99 ? "99" : hidden}
+              {hidden > 99 ? "99+" : `+${hidden}`}
             </span>
           ) : null}
           {onAdd ? (

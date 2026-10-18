@@ -143,8 +143,12 @@ export const StatusStack = React.forwardRef<HTMLElement, StatusStackProps>(
     const [collapsed, setCollapsed] = useControllableState({ value: collapsedProp, defaultValue: defaultCollapsed, onChange: onCollapsedChange });
     const [dismissed, setDismissed] = React.useState<string[]>([]);
     const listId = React.useId();
-    const rows = React.Children.toArray(children)
-      .filter((c) => React.isValidElement(c) && !dismissed.includes(String(c.key)))
+    const all = React.Children.toArray(children).filter(React.isValidElement);
+    // Forget dismissals of rows that are gone, so a later row in the same slot (same key) shows again.
+    const liveDismissed = dismissed.filter((k) => all.some((c) => String(c.key) === k));
+    if (liveDismissed.length !== dismissed.length) setDismissed(liveDismissed);
+    const rows = all
+      .filter((c) => !liveDismissed.includes(String(c.key)))
       .map((c, i) => ({ node: c, i, p: rowPriority(c) }))
       .sort((a, b) => b.p - a.p || a.i - b.i)
       .map((r) => r.node as React.ReactElement);

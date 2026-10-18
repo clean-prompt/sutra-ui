@@ -49,7 +49,7 @@ export interface TextLinkProps
    * Default: `button` when there is an `onClick` but no `href`, otherwise `a`.
    */
   as?: "a" | "button";
-  /** Button mode only: disables the button. */
+  /** Disables the button, or in link mode renders an `aria-disabled` link without `href` that ignores clicks. */
   disabled?: boolean;
 }
 
@@ -89,16 +89,35 @@ export const TextLink = React.forwardRef<HTMLAnchorElement, TextLinkProps>(
       />
     ) : null;
 
+    // A link can't be disabled natively: drop the href (so Enter does nothing), mark it aria-disabled and
+    // swallow clicks in the capture phase, before the child's own handler (e.g. a router Link) runs.
+    const disabledProps = disabled
+      ? {
+          "aria-disabled": true as const,
+          tabIndex: -1,
+          onClickCapture: (e: React.MouseEvent<HTMLAnchorElement>) => {
+            e.preventDefault();
+            e.stopPropagation();
+          },
+        }
+      : {};
+
     if (asChild) {
       return (
-        <Slot.Root ref={ref} className={cn("group/text-link", classes)} {...externalProps} {...props}>
+        <Slot.Root ref={ref} className={cn("group/text-link", classes)} {...externalProps} {...props} {...disabledProps}>
           <Slot.Slottable>{children}</Slot.Slottable>
           {icon}
         </Slot.Root>
       );
     }
     return (
-      <a ref={ref} className={cn("group/text-link", classes)} {...externalProps} {...props}>
+      <a
+        ref={ref}
+        className={cn("group/text-link", classes)}
+        {...externalProps}
+        {...props}
+        {...(disabled ? { ...disabledProps, href: undefined, role: props.role ?? "link" } : null)}
+      >
         {children}
         {icon}
         {external && <span className="sr-only"> (opens in a new tab)</span>}

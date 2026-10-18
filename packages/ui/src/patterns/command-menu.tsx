@@ -322,7 +322,8 @@ export function useCommandMenuShortcut(
     if (hasProvider) return;
     const onKeyDown = (event: KeyboardEvent) => {
       // Several menus on one page: the first listener to handle the shortcut wins.
-      if (event.defaultPrevented) return;
+      // Autofill and some IMEs dispatch keydown events without a `key`.
+      if (event.defaultPrevented || typeof event.key !== "string") return;
       if (event.key.toLowerCase() === key.toLowerCase() && (event.metaKey || event.ctrlKey) && !event.altKey) {
         event.preventDefault();
         setOpenRef.current((open) => !open);

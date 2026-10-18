@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiUploadCloud2Line } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { formatBytes } from "../lib/format";
+import { getFileCategory } from "../assets/file-format";
 
 export type FileRejectionCode = "file-invalid-type" | "file-too-large" | "too-many-files";
 
@@ -29,13 +30,21 @@ function parseAccept(accept?: string) {
     .filter(Boolean);
 }
 
+/** Broad MIME family guessed from the extension, for files whose `type` the browser left empty (e.g. HEIC). */
+function guessMimeFamily(name: string | undefined) {
+  if (!name) return "";
+  const category = getFileCategory(name);
+  return category === "image" || category === "audio" || category === "video" ? `${category}/` : "";
+}
+
 function matchesType(type: string, name: string | undefined, tokens: string[]) {
   if (tokens.length === 0) return true;
   const mime = type.toLowerCase();
   const lower = name?.toLowerCase();
   return tokens.some((token) => {
+    if (token === "*" || token === "*/*") return true;
     if (token.startsWith(".")) return lower ? lower.endsWith(token) : true;
-    if (token.endsWith("/*")) return mime.startsWith(token.slice(0, -1));
+    if (token.endsWith("/*")) return (mime || guessMimeFamily(lower)).startsWith(token.slice(0, -1));
     return mime === token;
   });
 }
