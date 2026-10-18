@@ -8,6 +8,9 @@ import {
   RiRefreshLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { DAY_MS, formatRelative, toMs } from "../lib/time";
+import { useNow } from "../hooks/use-now";
 import { Button } from "./button";
 import { SimpleTooltip } from "./tooltip";
 
@@ -69,16 +72,10 @@ export function getTextStats(text: string, options: TextStatsOptions = {}): Text
 
 /** Compact "Saved …" label: "Saved just now", "Saved 2m ago", "Saved 3h ago", "Saved yesterday", "Saved Mar 3". */
 export function formatSavedAgo(value: Date | number | string, now: Date | number = Date.now()) {
-  const t = value instanceof Date ? value.getTime() : new Date(value).getTime();
-  const n = now instanceof Date ? now.getTime() : now;
-  const sec = Math.round((n - t) / 1000);
-  if (sec < 45) return "Saved just now";
-  const min = Math.round(sec / 60);
-  if (min < 60) return `Saved ${min}m ago`;
-  const h = Math.round(min / 60);
-  if (h < 24) return `Saved ${h}h ago`;
-  if (h < 48) return "Saved yesterday";
-  return `Saved ${new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric" })}`;
+  const t = toMs(value);
+  const n = toMs(now);
+  if (t !== undefined && n !== undefined && n - t >= DAY_MS && n - t < 2 * DAY_MS) return "Saved yesterday";
+  return `Saved ${formatRelative(value, { now, yesterday: true, maxRelativeDays: 1 })}`;
 }
 
 const nf = new Intl.NumberFormat();
@@ -124,13 +121,7 @@ export const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
     { status, savedAt, now, error, onRetry, onKeepMine, onLoadTheirs, onResolve, labels, size = "sm", className, ...props },
     ref
   ) => {
-    const [tick, setTick] = React.useState(() => Date.now());
-    React.useEffect(() => {
-      if (now != null || savedAt == null || status !== "saved") return;
-      setTick(Date.now());
-      const id = setInterval(() => setTick(Date.now()), 30_000);
-      return () => clearInterval(id);
-    }, [now, savedAt, status]);
+    const tick = useNow({ active: now == null && savedAt != null && status === "saved", interval: 30_000 });
 
     const text = { ...defaultLabels, ...labels };
     const label = status === "saved" && savedAt != null && !labels?.saved ? formatSavedAgo(savedAt, now ?? tick) : text[status];
@@ -285,18 +276,18 @@ export const EditorStatusBar = React.forwardRef<HTMLDivElement, EditorStatusBarP
 
     const items: React.ReactNode[] = [];
     if (showWords && words != null)
-      items.push(<StatusItem key="w">{`${nf.format(words)} ${words === 1 ? "word" : "words"}`}</StatusItem>);
+      items.push(<StatusItem key="w">{`${nf.format(words)} ${pluralize(words, "word")}`}</StatusItem>);
     if (showCharacters && chars != null)
       items.push(
         <StatusItem key="c" title={stats ? `${nf.format(stats.charactersNoSpaces)} without spaces` : undefined}>
-          {`${nf.format(chars)} ${chars === 1 ? "character" : "characters"}`}
+          {`${nf.format(chars)} ${pluralize(chars, "character")}`}
         </StatusItem>
       );
     if (showReadingTime && stats && stats.words > 0)
       items.push(<StatusItem key="r">{`${stats.readingMinutes} min read`}</StatusItem>);
     if (showPages && stats && stats.pages > 0)
       items.push(
-        <StatusItem key="p" title="Estimated printed pages">{`~${stats.pages} ${stats.pages === 1 ? "page" : "pages"}`}</StatusItem>
+        <StatusItem key="p" title="Estimated printed pages">{`~${stats.pages} ${pluralize(stats.pages, "page")}`}</StatusItem>
       );
     if (cursor)
       items.push(

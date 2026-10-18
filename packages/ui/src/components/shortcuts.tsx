@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiKeyboardBoxLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { Kbd } from "./typography";
 import { SearchInput } from "./input";
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./dialog";
@@ -193,6 +194,22 @@ export function isEditableTarget(target: EventTarget | null) {
     return !["checkbox", "radio", "button", "submit", "reset", "range", "color", "file", "image"].includes(type);
   }
   return el.closest('[contenteditable]:not([contenteditable="false"])') != null;
+}
+
+/**
+ * True when a single keyboard event matches `keys` ("mod+k", "/", "shift+?", or an array of alternatives),
+ * using the same rules as `useShortcut` (`mod` is ⌘ on macOS and Ctrl elsewhere). Sequences ("g t") never match.
+ */
+export function matchesShortcut(
+  event: KeyboardEvent | React.KeyboardEvent,
+  keys: string | string[],
+  platform: ShortcutPlatform = detectShortcutPlatform()
+): boolean {
+  const ev = eventCombo("nativeEvent" in event ? event.nativeEvent : event);
+  return toKeyList(keys).some((k) => {
+    const seq = parseSequence(k);
+    return seq.length === 1 && matchCombo(seq[0]!, ev, platform);
+  });
 }
 
 /** Detects macOS / iOS. Returns "other" on the server. */
@@ -753,19 +770,9 @@ export function ShortcutsDialog({
   extraGroups,
   className,
 }: ShortcutsDialogProps) {
-  const [openState, setOpenState] = React.useState(defaultOpen);
-  const open = openProp ?? openState;
-  const setOpen = React.useCallback(
-    (next: boolean) => {
-      if (openProp === undefined) setOpenState(next);
-      onOpenChange?.(next);
-    },
-    [openProp, onOpenChange]
-  );
-  const openRef = React.useRef(open);
-  openRef.current = open;
+  const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
 
-  useShortcut(keys, () => setOpen(!openRef.current), {
+  useShortcut(keys, () => setOpen((o) => !o), {
     id: "sutra:shortcuts-dialog",
     label: "Keyboard shortcuts",
     group: "General",

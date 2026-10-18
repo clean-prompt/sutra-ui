@@ -14,6 +14,7 @@ import {
   RiYoutubeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { isSafeHref } from "../lib/validate";
 import { Favicon, domainOf } from "./favicon";
 import { SplitButton } from "./primitives-extra";
 
@@ -489,7 +490,7 @@ export const LinkPreviewCard = React.forwardRef<HTMLAnchorElement, LinkPreviewCa
     return (
       <a
         ref={ref}
-        href={href}
+        href={isSafeHref(href) ? href : undefined}
         target={target}
         rel={rel ?? "noopener noreferrer nofollow"}
         data-slot="link-preview-card"

@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiBankCardLine, RiEyeLine, RiEyeOffLine, RiLoopLeftLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { Input } from "./input";
 
 /* ------------------------------------------------------------------ */
@@ -451,7 +452,7 @@ export const PaymentCardInput = React.forwardRef<HTMLDivElement, PaymentCardInpu
       if (valid && !allValid) onComplete?.(next, n.brand);
     };
 
-    React.useLayoutEffect(() => {
+    useIsoLayoutEffect(() => {
       if (caret.current && document.activeElement === caret.current.el) {
         caret.current.el.setSelectionRange(caret.current.pos, caret.current.pos);
       }

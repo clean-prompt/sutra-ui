@@ -11,6 +11,10 @@ import {
   RiPlugLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { formatRelative } from "../lib/time";
+import { useControllableState } from "../hooks/use-controllable-state";
+import { useResizeObserver } from "../hooks/use-resize-observer";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 
@@ -358,20 +362,12 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>(
       return () => mo.disconnect();
     }, [load.state, themeKey]);
 
-    React.useEffect(() => {
-      const host = hostRef.current;
-      if (load.state !== "ready" || !host || typeof ResizeObserver === "undefined") return;
-      let frame = 0;
-      const ro = new ResizeObserver(() => {
-        cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(fit);
-      });
-      ro.observe(host);
-      return () => {
-        cancelAnimationFrame(frame);
-        ro.disconnect();
-      };
-    }, [load.state, fit]);
+    const fitFrame = React.useRef(0);
+    useResizeObserver(load.state === "ready" ? hostRef : null, () => {
+      cancelAnimationFrame(fitFrame.current);
+      fitFrame.current = requestAnimationFrame(fit);
+    });
+    React.useEffect(() => () => cancelAnimationFrame(fitFrame.current), []);
 
     React.useEffect(() => {
       if (load.state !== "ready") return;
@@ -503,15 +499,6 @@ export interface TerminalSessionPickerProps extends Omit<React.HTMLAttributes<HT
   label?: string;
 }
 
-const relTime = (t: Date | number | string) => {
-  const ms = t instanceof Date ? t.getTime() : typeof t === "number" ? t : new Date(t).getTime();
-  const s = Math.round((Date.now() - ms) / 1000);
-  if (s < 60) return "just now";
-  if (s < 3600) return `${Math.round(s / 60)}m ago`;
-  if (s < 86400) return `${Math.round(s / 3600)}h ago`;
-  return `${Math.round(s / 86400)}d ago`;
-};
-
 /** tmux-style session list: name, windows, attached / active badges and "New session". */
 export const TerminalSessionPicker = React.forwardRef<HTMLDivElement, TerminalSessionPickerProps>(
   (
@@ -530,12 +517,11 @@ export const TerminalSessionPicker = React.forwardRef<HTMLDivElement, TerminalSe
     },
     ref
   ) => {
-    const [valueState, setValueState] = React.useState<string | null>(defaultValue);
-    const value = valueProp !== undefined ? valueProp : valueState;
-    const select = (id: string) => {
-      if (valueProp === undefined) setValueState(id);
-      onValueChange?.(id);
-    };
+    const [value, select] = useControllableState<string | null>({
+      value: valueProp,
+      defaultValue,
+      onChange: onValueChange as ((id: string | null) => void) | undefined,
+    });
     const baseId = React.useId();
     const selectedIdx = sessions.findIndex((s) => s.id === value);
     const [focusIdx, setFocusIdx] = React.useState(Math.max(0, selectedIdx));
@@ -597,9 +583,9 @@ export const TerminalSessionPicker = React.forwardRef<HTMLDivElement, TerminalSe
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-mono font-medium">{s.name}</div>
                     <div className="text-2xs text-muted-foreground">
-                      {s.windows != null ? `${s.windows} ${s.windows === 1 ? "window" : "windows"}` : null}
+                      {s.windows != null ? `${s.windows} ${pluralize(s.windows, "window")}` : null}
                       {s.windows != null && s.lastActivity != null ? " · " : null}
-                      {s.lastActivity != null ? relTime(s.lastActivity) : null}
+                      {s.lastActivity != null ? formatRelative(s.lastActivity, { justNowMs: 60_000 }) : null}
                     </div>
                   </div>
                   {s.attached ? (

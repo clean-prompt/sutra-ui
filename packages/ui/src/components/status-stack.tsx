@@ -1,12 +1,12 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiArrowUpSLine, RiCloseLine, RiPauseLine, RiPlayLine, RiSkipForwardLine, RiStopLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatRelative, toMs, type TimeInput } from "../lib/time";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { formatCountdownClock, formatInterval, parseInterval, useScheduleNow, type CronInterval } from "./cron";
 
-type TimeLike = Date | number | string;
-const toMs = (t: TimeLike) => new Date(t).getTime();
+type TimeLike = TimeInput;
 
 export type StatusStackTone = "neutral" | "primary" | "success" | "warning" | "destructive" | "info";
 
@@ -288,7 +288,8 @@ export const LoopStatusRow = React.forwardRef<HTMLDivElement, LoopStatusRowProps
   ({ every, runs, nextDueAt, paused, onRunNow, onStop, tone, ...props }, ref) => {
     const live = nextDueAt != null && !paused;
     const now = useScheduleNow(live, 1000);
-    const remaining = nextDueAt != null ? toMs(nextDueAt) - now : null;
+    const dueMs = toMs(nextDueAt);
+    const remaining = dueMs !== undefined ? dueMs - now : null;
     const next = paused ? "paused" : remaining == null ? null : remaining <= 0 ? "due now" : `next in ${formatCountdownClock(remaining)}`;
     return (
       <StatusStackRow
@@ -322,16 +323,6 @@ LoopStatusRow.displayName = "LoopStatusRow";
 /* HeartbeatStatusRow                                                  */
 /* ------------------------------------------------------------------ */
 
-/** "12s ago", "4m ago", "2h ago". */
-function formatAgo(ms: number) {
-  const s = Math.max(0, Math.round(ms / 1000));
-  if (s < 5) return "just now";
-  if (s < 60) return `${s}s ago`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
-  return `${Math.floor(m / 60)}h ago`;
-}
-
 export interface HeartbeatStatusRowProps extends Omit<StatusStackRowProps, "label" | "icon" | "meta"> {
   lastBeatAt?: TimeLike | null;
   /** Expected beat period; the row turns stale after two missed beats. */
@@ -343,7 +334,8 @@ export interface HeartbeatStatusRowProps extends Omit<StatusStackRowProps, "labe
 export const HeartbeatStatusRow = React.forwardRef<HTMLDivElement, HeartbeatStatusRowProps>(
   ({ lastBeatAt, intervalMs, label = "Heartbeat", tone, ...props }, ref) => {
     const now = useScheduleNow(lastBeatAt != null, 1000);
-    const since = lastBeatAt != null ? now - toMs(lastBeatAt) : null;
+    const beatMs = toMs(lastBeatAt);
+    const since = beatMs !== undefined ? now - beatMs : null;
     const stale = since == null || (intervalMs != null && since > intervalMs * 2);
     const t: StatusStackTone = tone ?? (stale ? "warning" : "success");
     return (
@@ -360,7 +352,7 @@ export const HeartbeatStatusRow = React.forwardRef<HTMLDivElement, HeartbeatStat
         tone={t}
         meta={[
           intervalMs != null ? intervalText(intervalMs) : null,
-          since == null ? "no beat yet" : <span data-slot="heartbeat-last">last beat {formatAgo(since)}</span>,
+          since == null ? "no beat yet" : <span data-slot="heartbeat-last">last beat {formatRelative(beatMs, { now, seconds: true, justNowMs: 5000 })}</span>,
           stale && since != null ? "missed" : null,
         ]}
         {...props}

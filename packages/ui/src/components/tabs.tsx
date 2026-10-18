@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Tabs as TabsPrimitive } from "radix-ui";
 import { cn, focusRing, type Size } from "../lib/cn";
+import { useActiveIndicator } from "../hooks/use-active-indicator";
 
 export type TabsVariant = "pill" | "underline" | "solid" | "ghost";
 
@@ -79,48 +80,6 @@ const indicatorClass: Record<Exclude<TabsVariant, "ghost">, string> = {
   underline: "rounded-full bg-foreground",
 };
 
-interface IndicatorRect {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-}
-
-function useActiveIndicator(listRef: React.RefObject<HTMLDivElement | null>, enabled: boolean) {
-  const [rect, setRect] = React.useState<IndicatorRect | null>(null);
-  const [animate, setAnimate] = React.useState(false);
-
-  React.useLayoutEffect(() => {
-    const list = listRef.current;
-    if (!enabled || !list) {
-      setRect(null);
-      return;
-    }
-    const measure = () => {
-      const active = list.querySelector<HTMLElement>('[role="tab"][data-state="active"]');
-      if (!active) {
-        setRect(null);
-        return;
-      }
-      setRect({ left: active.offsetLeft, top: active.offsetTop, width: active.offsetWidth, height: active.offsetHeight });
-    };
-    measure();
-    const raf = requestAnimationFrame(() => setAnimate(true));
-    const mo = new MutationObserver(measure);
-    mo.observe(list, { attributes: true, subtree: true, attributeFilter: ["data-state"], childList: true });
-    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
-    ro?.observe(list);
-    list.querySelectorAll<HTMLElement>('[role="tab"]').forEach((el) => ro?.observe(el));
-    return () => {
-      cancelAnimationFrame(raf);
-      mo.disconnect();
-      ro?.disconnect();
-    };
-  }, [enabled, listRef]);
-
-  return { rect, animate };
-}
-
 export interface TabsListProps extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> {
   /** Stretch triggers to fill the width. */
   fullWidth?: boolean;
@@ -140,7 +99,11 @@ export const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.L
       [forwardedRef]
     );
     const hasIndicator = variant !== "ghost";
-    const { rect, animate } = useActiveIndicator(listRef, hasIndicator);
+    const { rect, animate } = useActiveIndicator(listRef, '[role="tab"][data-state="active"]', [], {
+      enabled: hasIndicator,
+      itemSelector: '[role="tab"]',
+      watchAttributes: ["data-state"],
+    });
     const vertical = orientation === "vertical";
 
     let indicatorStyle: React.CSSProperties | undefined;

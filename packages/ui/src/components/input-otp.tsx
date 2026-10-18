@@ -1,6 +1,7 @@
 import * as React from "react";
 import { OTPInput, OTPInputContext, REGEXP_ONLY_DIGITS } from "input-otp";
 import { cn, type Size } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { useField } from "./field";
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
@@ -35,18 +36,11 @@ export const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, Inpu
     ...props
   } = allProps;
   // input-otp forwards `defaultValue` to its controlled <input>, so we own the uncontrolled state.
-  const [internal, setInternal] = React.useState(() =>
-    typeof defaultValue === "string" ? defaultValue : defaultValue != null ? String(defaultValue) : ""
-  );
-  const isControlled = valueProp !== undefined;
-  const value = isControlled ? valueProp : internal;
-  const handleChange = React.useCallback(
-    (next: string) => {
-      if (!isControlled) setInternal(next);
-      onChange?.(next);
-    },
-    [isControlled, onChange]
-  );
+  const [value, handleChange] = useControllableState<string>({
+    value: valueProp,
+    defaultValue: typeof defaultValue === "string" ? defaultValue : defaultValue != null ? String(defaultValue) : "",
+    onChange,
+  });
   const field = useField({
     id,
     disabled,

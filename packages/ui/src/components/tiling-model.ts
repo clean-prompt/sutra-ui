@@ -1,4 +1,5 @@
 /* Pure, immutable layout model for `TilingLayout` (no React). */
+import { clamp } from "../lib/math";
 
 export type TilingDirection = "row" | "column";
 export type TilingDropEdge = "center" | "left" | "right" | "top" | "bottom";
@@ -326,8 +327,8 @@ export function resizeSplit(tree: LayoutNode, splitId: string, index: number, de
   const sizes = fixSizes(node.sizes, node.children.length);
   const a = sizes[index];
   const pair = a + sizes[index + 1];
-  const lo = Math.min(Math.max(0, min), pair / 2);
-  const nextA = Math.min(pair - lo, Math.max(lo, a + deltaFraction));
+  const lo = clamp(min, 0, pair / 2);
+  const nextA = clamp(a + deltaFraction, lo, pair - lo);
   if (Math.abs(nextA - a) < 1e-9) return tree;
   sizes[index] = nextA;
   sizes[index + 1] = pair - nextA;

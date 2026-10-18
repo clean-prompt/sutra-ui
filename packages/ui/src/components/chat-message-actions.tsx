@@ -13,6 +13,9 @@ import {
   RiThumbUpLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
+import { formatRelative as formatRelativeLib, safeISO, toValidDate } from "../lib/time";
+import { useNow } from "../hooks/use-now";
 import { Button, type ButtonProps } from "./button";
 import { useCopy } from "../hooks/use-copy";
 import { useControllableState } from "../hooks/use-controllable-state";
@@ -226,7 +229,7 @@ export const ChatBranchSwitcher = React.forwardRef<HTMLDivElement, ChatBranchSwi
   ({ count, value, defaultValue = 0, onValueChange, className, ...props }, ref) => {
     const [index, setIndex] = useControllableState<number>({ value, defaultValue, onChange: onValueChange });
     if (count < 2) return null;
-    const current = Math.min(Math.max(index, 0), count - 1);
+    const current = clamp(index, 0, count - 1);
     return (
       <div
         ref={ref}
@@ -396,21 +399,12 @@ ChatReactions.displayName = "ChatReactions";
 /* MessageTimestampHover                                               */
 /* ------------------------------------------------------------------ */
 
-const toDate = (d: Date | number | string) => (d instanceof Date ? d : new Date(d));
+const toDate = (d: Date | number | string) => toValidDate(d) ?? new Date(NaN);
 
 /** Compact relative time: "just now", "5m ago", "3h ago", "Yesterday", "4d ago", then "Mar 5" / "Mar 5, 2024". */
 export function formatMessageRelativeTime(date: Date | number | string, now: Date | number = Date.now()) {
-  const d = toDate(date);
-  const n = now instanceof Date ? now.getTime() : now;
-  const diff = Math.round((n - d.getTime()) / 1000);
-  if (diff < 45) return "just now";
-  if (diff < 3600) return `${Math.max(1, Math.round(diff / 60))}m ago`;
-  if (diff < 86400) return `${Math.round(diff / 3600)}h ago`;
-  const days = Math.floor(diff / 86400);
-  if (days === 1) return "Yesterday";
-  if (days < 7) return `${days}d ago`;
-  const sameYear = new Date(n).getFullYear() === d.getFullYear();
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", ...(sameYear ? {} : { year: "numeric" }) });
+  const text = formatRelativeLib(date, { now, style: "short", yesterday: true, maxRelativeDays: 6 });
+  return text === "yesterday" ? "Yesterday" : text;
 }
 
 export interface MessageTimestampHoverProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
@@ -426,12 +420,7 @@ export interface MessageTimestampHoverProps extends Omit<React.HTMLAttributes<HT
 /** Relative message time revealed on hover/focus, with the full date in a tooltip. */
 export const MessageTimestampHover = React.forwardRef<HTMLElement, MessageTimestampHoverProps>(
   ({ date, now: nowProp, formatRelative, formatFull, alwaysVisible = false, className, ...props }, ref) => {
-    const [tick, setTick] = React.useState(() => Date.now());
-    React.useEffect(() => {
-      if (nowProp !== undefined) return;
-      const t = setInterval(() => setTick(Date.now()), 60_000);
-      return () => clearInterval(t);
-    }, [nowProp]);
+    const tick = useNow({ active: nowProp === undefined, interval: 60_000 });
     const d = toDate(date);
     const now = nowProp === undefined ? tick : nowProp instanceof Date ? nowProp.getTime() : nowProp;
     const relative = formatRelative ? formatRelative(d, now) : formatMessageRelativeTime(d, now);
@@ -442,7 +431,7 @@ export const MessageTimestampHover = React.forwardRef<HTMLElement, MessageTimest
       <SimpleTooltip content={full}>
         <time
           ref={ref as React.Ref<HTMLTimeElement>}
-          dateTime={Number.isNaN(d.getTime()) ? undefined : d.toISOString()}
+          dateTime={safeISO(d)}
           tabIndex={0}
           className={cn(
             "inline-flex cursor-default select-none rounded-xs text-xs tabular-nums text-muted-foreground transition-opacity duration-150",

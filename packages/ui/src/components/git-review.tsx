@@ -3,10 +3,8 @@ import {
   RiArrowDownLine,
   RiArrowDownSLine,
   RiArrowUpLine,
-  RiCheckLine,
   RiCheckboxCircleLine,
   RiErrorWarningLine,
-  RiFileCopyLine,
   RiFolderLine,
   RiGitBranchLine,
   RiGitCommitLine,
@@ -17,9 +15,10 @@ import {
   RiUploadCloud2Line,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useCopy } from "../hooks/use-copy";
 import { Button } from "./button";
+import { CopyButton } from "./copy-button";
 import { Spinner } from "./spinner";
 import { Textarea } from "./textarea";
 import { Input } from "./input";
@@ -138,7 +137,6 @@ const branchStatusMeta: Record<BranchStatus, { label: string; dot: string }> = {
 /** Branch name chip: icon, head-truncated name, optional status dot and copy button. */
 export const BranchPill = React.forwardRef<HTMLSpanElement, BranchPillProps>(
   ({ name, maxLength = 28, status, copyable = true, size = "md", className, ...props }, ref) => {
-    const { copied, copy } = useCopy();
     const shown = truncateBranchHead(name, maxLength);
     return (
       <span
@@ -164,14 +162,13 @@ export const BranchPill = React.forwardRef<HTMLSpanElement, BranchPillProps>(
           </span>
         )}
         {copyable && (
-          <button
-            type="button"
-            aria-label={copied ? "Copied branch name" : "Copy branch name"}
-            onClick={() => void copy(name)}
-            className={cn("-mr-1 flex shrink-0 items-center rounded-xs p-0.5 text-muted-foreground hover:text-foreground", focusRing)}
-          >
-            {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-          </button>
+          <CopyButton
+            value={name}
+            size="xs"
+            label="Copy branch name"
+            copiedLabel="Copied branch name"
+            className="-mr-1 size-auto rounded-xs p-0.5 hover:bg-transparent"
+          />
         )}
       </span>
     );
@@ -233,7 +230,7 @@ export const ChangedFilesCard = React.forwardRef<HTMLDivElement, ChangedFilesCar
         <div className="flex items-center gap-2 px-3 py-2">
           <RiGitCommitLine className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <span id={headingId} className="text-sm font-medium">
-            {title ?? `${files.length} ${files.length === 1 ? "file" : "files"} changed`}
+            {title ?? `${files.length} ${pluralize(files.length, "file")} changed`}
           </span>
           <DiffStat additions={totals.additions} deletions={totals.deletions} />
           {onReview && (
@@ -496,7 +493,7 @@ const shipActionMeta: Record<ShipAction, { label: string; description: string; i
 /** Why an action can't run right now, or null when it can. */
 export function getShipDisabledReason(action: ShipAction, s: ShipState): string | null {
   const conflicts = s.conflicts ?? 0;
-  if (conflicts > 0) return `Resolve ${conflicts} ${conflicts === 1 ? "conflict" : "conflicts"} first`;
+  if (conflicts > 0) return `Resolve ${conflicts} ${pluralize(conflicts, "conflict")} first`;
   const needsCommit = s.changedCount > 0;
   if (!needsCommit) {
     if (action === "pr" && (s.ahead ?? 0) > 0) return null;
@@ -621,7 +618,7 @@ export const ShipBar = React.forwardRef<HTMLDivElement, ShipBarProps>(
             {behind}
           </span>
           <span className="ml-auto tabular-nums">
-            {changedCount} {changedCount === 1 ? "file" : "files"}
+            {changedCount} {pluralize(changedCount, "file")}
           </span>
         </div>
 

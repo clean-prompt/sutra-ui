@@ -8,6 +8,7 @@ import {
   RiQuestionAnswerLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { CommentComposer } from "./comments";
@@ -317,7 +318,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
                 Kept planning
                 <span className="font-normal text-muted-foreground">
                   {" "}
-                  · sent {outcome.comments.length} comment{outcome.comments.length === 1 ? "" : "s"}
+                  · sent {outcome.comments.length} {pluralize(outcome.comments.length, "comment")}
                   {outcome.message ? " and a note" : ""}
                 </span>
               </span>

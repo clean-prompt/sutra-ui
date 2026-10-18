@@ -15,6 +15,9 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { formatClock } from "../lib/duration";
+import { clamp, toPercent } from "../lib/math";
 import { Slider } from "./slider";
 import { Spinner } from "./spinner";
 import {
@@ -37,12 +40,7 @@ export interface FormatMediaTimeOptions {
 
 /** Format seconds as `m:ss` or `h:mm:ss`. Non-finite or negative input renders `0:00`. */
 export function formatMediaTime(seconds: number, options: FormatMediaTimeOptions = {}): string {
-  const safe = Number.isFinite(seconds) && seconds > 0 ? Math.floor(seconds) : 0;
-  const h = Math.floor(safe / 3600);
-  const m = Math.floor((safe % 3600) / 60);
-  const s = safe % 60;
-  const ss = String(s).padStart(2, "0");
-  const body = h > 0 || options.forceHours ? `${h}:${String(m).padStart(2, "0")}:${ss}` : `${m}:${ss}`;
+  const body = formatClock(seconds, { forceHours: options.forceHours });
   return options.negative ? `-${body}` : body;
 }
 
@@ -226,7 +224,7 @@ export function useMediaElement(
   fallbackRef.current = mutedFallback;
 
   // Pick up the element after it mounts (refs are filled after render).
-  React.useLayoutEffect(() => {
+  useIsoLayoutEffect(() => {
     const next = resolveTarget(target as React.RefObject<MediaElementLike | null> | MediaElementLike | null);
     if (next !== elRef.current) {
       elRef.current = next;
@@ -317,7 +315,7 @@ export function useMediaElement(
     const media = elRef.current;
     if (!media) return;
     const max = Number.isFinite(media.duration) && media.duration > 0 ? media.duration : Number.MAX_SAFE_INTEGER;
-    const next = Math.min(max, Math.max(0, time));
+    const next = clamp(time, 0, max);
     media.currentTime = next;
     setState((s) => ({ ...s, currentTime: next, ended: false }));
   }, []);
@@ -330,7 +328,7 @@ export function useMediaElement(
   const setVolume = React.useCallback((volume: number) => {
     const media = elRef.current;
     if (!media) return;
-    const v = Math.min(1, Math.max(0, volume));
+    const v = clamp(volume, 0, 1);
     media.volume = v;
     // `muted` and `volume` are independent on a media element: raising the volume must also undo a mute.
     if (v > 0 && media.muted) media.muted = false;
@@ -647,8 +645,8 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
     const finite = Number.isFinite(duration) && duration > 0;
     const total = finite ? duration : 0;
     const shown = scrub ?? (Number.isFinite(value) ? Math.max(0, value) : 0);
-    const clampTime = (t: number) => Math.min(total, Math.max(0, t));
-    const pct = (t: number) => (total > 0 ? Math.min(100, Math.max(0, (t / total) * 100)) : 0);
+    const clampTime = (t: number) => clamp(t, 0, total);
+    const pct = (t: number) => toPercent(t, total);
     const forceHours = total >= 3600;
 
     const ranges: MediaTimeRange[] =
@@ -915,7 +913,7 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
     const Icon = silent ? RiVolumeMuteLine : volume < 0.5 ? RiVolumeDownLine : RiVolumeUpLine;
 
     const change = (v: number) => {
-      const next = Math.round(Math.min(1, Math.max(0, v)) * 100) / 100;
+      const next = Math.round(clamp(v, 0, 1) * 100) / 100;
       setVolume(next);
       if (next > 0 && muted) setMuted(false);
     };

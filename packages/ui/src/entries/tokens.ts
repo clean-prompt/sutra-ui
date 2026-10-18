@@ -18,3 +18,5 @@ export * from "../hooks/use-resize-observer";
 export * from "../hooks/use-iso-layout-effect";
 export * from "../hooks/use-async-action";
 export * from "../hooks/use-safe-id";
+export * from "../hooks/use-active-indicator";
+export * from "../hooks/use-scroll-edges";

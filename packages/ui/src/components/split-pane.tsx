@@ -1,5 +1,8 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
+import { useControllableState } from "../hooks/use-controllable-state";
+import { useElementWidth } from "../hooks/use-resize-observer";
 
 type Orientation = "horizontal" | "vertical";
 
@@ -30,8 +33,6 @@ function useSplitPane() {
   if (!ctx) throw new Error("SplitPane parts must be rendered inside <SplitPane>.");
   return ctx;
 }
-
-const clampSize = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 
 function readStored(key: string | undefined): number | undefined {
   if (!key || typeof window === "undefined") return undefined;
@@ -108,25 +109,25 @@ export const SplitPane = React.forwardRef<HTMLDivElement, SplitPaneProps>(
       },
       [forwardedRef]
     );
-    const [internal, setInternal] = React.useState(() => clampSize(readStored(storageKey) ?? defaultSize, min, max));
+    const [initialSize] = React.useState(() => clamp(readStored(storageKey) ?? defaultSize, min, max));
+    const [size, setSizeState] = useControllableState({
+      value: sizeProp === undefined ? undefined : clamp(sizeProp, min, max),
+      defaultValue: initialSize,
+      onChange: onSizeChange,
+    });
     const [collapsed, setCollapsed] = React.useState(false);
     const [dragging, setDragging] = React.useState(false);
-    const [width, setWidth] = React.useState(0);
     const [activePanel, setActivePanel] = React.useState(0);
     const primaryId = React.useId();
 
-    const controlled = sizeProp !== undefined;
-    const size = controlled ? clampSize(sizeProp, min, max) : internal;
-
     const setSize = React.useCallback(
       (next: number) => {
-        const value = clampSize(next, min, max);
+        const value = clamp(next, min, max);
         setCollapsed(false);
-        if (!controlled) setInternal(value);
         writeStored(storageKey, value);
-        if (value !== size) onSizeChange?.(value);
+        setSizeState(value);
       },
-      [min, max, controlled, storageKey, size, onSizeChange]
+      [min, max, storageKey, setSizeState]
     );
 
     const toggleCollapse = React.useCallback(() => {
@@ -136,18 +137,7 @@ export const SplitPane = React.forwardRef<HTMLDivElement, SplitPaneProps>(
 
     const reset = React.useCallback(() => setSize(defaultSize), [setSize, defaultSize]);
 
-    React.useEffect(() => {
-      const el = rootRef.current;
-      if (!el || !collapseBelow) return;
-      setWidth(el.getBoundingClientRect().width);
-      if (typeof ResizeObserver === "undefined") return;
-      const ro = new ResizeObserver((entries) => {
-        const w = entries[0]?.contentRect.width;
-        if (w !== undefined) setWidth(w);
-      });
-      ro.observe(el);
-      return () => ro.disconnect();
-    }, [collapseBelow]);
+    const width = useElementWidth(collapseBelow ? rootRef : null);
 
     // Width 0 means "not measured yet" (or hidden): don't collapse on it.
     const stacked = Boolean(collapseBelow && width > 0 && width < collapseBelow);

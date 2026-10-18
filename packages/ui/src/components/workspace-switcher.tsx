@@ -17,6 +17,8 @@ import {
   RiUserSettingsLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatDuration } from "../lib/duration";
+import { errorMessage, useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Badge } from "./badge";
@@ -419,8 +421,12 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
       onChange: onConnectionsChange,
     });
     const [draft, setDraft] = React.useState<{ value: SavedConnection; isNew: boolean } | null>(null);
-    const [testing, setTesting] = React.useState(false);
     const [result, setResult] = React.useState<ConnectionTestResult | null>(null);
+    const testAction = useAsyncAction((conn: SavedConnection) => onTest?.(conn), {
+      onSuccess: (r) => setResult(r ?? null),
+      onError: (err) => setResult({ ok: false, message: errorMessage(err, "Connection failed") }),
+    });
+    const testing = testAction.busy;
     const [removing, setRemoving] = React.useState<SavedConnection | null>(null);
     const [touched, setTouched] = React.useState(false);
     const uid = React.useId();
@@ -463,17 +469,10 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
       setDraft(null);
     };
 
-    const test = async () => {
+    const test = () => {
       if (!draft || !onTest) return;
-      setTesting(true);
       setResult(null);
-      try {
-        setResult(await onTest(cleaned(draft.value)));
-      } catch (err) {
-        setResult({ ok: false, message: err instanceof Error ? err.message : "Connection failed" });
-      } finally {
-        setTesting(false);
-      }
+      void testAction.run(cleaned(draft.value));
     };
 
     const setDefault = (conn: SavedConnection) => {
@@ -735,18 +734,6 @@ const runStateMeta: Record<GatewayRunState, { label: string; dot: string }> = {
   error: { label: "Error", dot: "bg-destructive" },
 };
 
-/** Human uptime: 3725 → "1h 2m". */
-function formatUptime(seconds: number) {
-  const s = Math.max(0, Math.floor(seconds));
-  const d = Math.floor(s / 86400);
-  const h = Math.floor((s % 86400) / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  if (d) return `${d}d ${h}h`;
-  if (h) return `${h}h ${m}m`;
-  if (m) return `${m}m ${s % 60}s`;
-  return `${s}s`;
-}
-
 export interface GatewayStatusPopoverProps {
   state: GatewayRunState;
   /** Gateway display name. Default "Gateway". */
@@ -803,7 +790,7 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
       const el = logRef.current;
       if (el) el.scrollTop = el.scrollHeight;
     }, [logLines, open]);
-    const uptimeText = typeof uptime === "number" ? formatUptime(uptime) : uptime;
+    const uptimeText = typeof uptime === "number" ? formatDuration(uptime * 1000, { round: "floor" }) : uptime;
     const rows: [string, React.ReactNode][] = [];
     if (uptimeText && state === "running") rows.push(["Uptime", uptimeText]);
     if (version) rows.push(["Version", version]);

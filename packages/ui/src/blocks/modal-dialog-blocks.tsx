@@ -8,7 +8,6 @@ import {
   RiCheckboxCircleLine,
   RiDeleteBin6Line,
   RiErrorWarningLine,
-  RiFileCopyLine,
   RiGlobalLine,
   RiHeartLine,
   RiKeyboardBoxLine,
@@ -24,6 +23,9 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useCopy } from "../hooks/use-copy";
+import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
+import { pluralize } from "../lib/format";
+import { CopyButton } from "../components/copy-button";
 import { Button } from "../components/button";
 import { Badge } from "../components/badge";
 import { Avatar } from "../components/avatar";
@@ -507,7 +509,7 @@ function formatExpiresIn(date: Date) {
   const ms = date.getTime() - Date.now();
   if (ms <= 0) return "Expired";
   const minutes = Math.round(ms / 60_000);
-  const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? "" : "s"}`;
+  const plural = (n: number, unit: string) => `${n} ${pluralize(n, unit)}`;
   if (minutes < 60) return `Expires in ${plural(Math.max(1, minutes), "minute")}`;
   const hours = Math.round(minutes / 60);
   if (hours < 24) return `Expires in ${plural(hours, "hour")}`;
@@ -647,7 +649,6 @@ export function ShareDialog({
   });
   const [email, setEmail] = React.useState("");
   const [inviteRole, setInviteRole] = React.useState<ShareLinkRole>(defaultInviteRole);
-  const { copied, copy } = useCopy();
   const action = useAsyncAction();
   const meta = accessMetaFor(general, workspaceName);
   const expiryId = React.useId();
@@ -846,16 +847,7 @@ export function ShareDialog({
           </section>
         </DialogBody>
         <DialogFooter bordered className="sm:justify-between">
-          <Button
-            variant="secondary"
-            leadingIcon={copied ? <RiCheckLine aria-hidden className="text-success" /> : <RiFileCopyLine aria-hidden />}
-            onClick={() => {
-              void copy(link);
-              onCopyLink?.(link);
-            }}
-          >
-            {copied ? "Copied" : "Copy link"}
-          </Button>
+          <CopyButton variant="button" size="md" value={link} label="Copy link" onClick={() => onCopyLink?.(link)} />
           <DialogClose asChild>
             <Button>Done</Button>
           </DialogClose>
@@ -1075,18 +1067,14 @@ export function UpgradeDialog({
     defaultValue: defaultBilling,
     onChange: onBillingChange,
   });
-  const [pending, setPending] = React.useState<string | null>(null);
+  const [chosen, setChosen] = React.useState<string | null>(null);
+  // Stays open if `onSelectPlan` throws.
+  const choose = useSharedAsyncAction((id: string) => onSelectPlan?.(id, cycle), { onSuccess: () => setOpen(false) });
+  const pending = choose.busy ? chosen : null;
 
   const select = async (id: string) => {
-    try {
-      setPending(id);
-      await onSelectPlan?.(id, cycle);
-      setOpen(false);
-    } catch {
-      /* stay open */
-    } finally {
-      setPending(null);
-    }
+    setChosen(id);
+    await choose.run(id);
   };
 
   return (

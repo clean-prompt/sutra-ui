@@ -16,6 +16,7 @@ import {
   RiVideoOnLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { EmojiPicker, EmojiReaction } from "../assets/emoji-reactions";
 import { Avatar, type AvatarStatus } from "./avatar";
@@ -24,7 +25,17 @@ import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Switch } from "./switch";
 import { Textarea } from "./textarea";
-import { safeISO, toValidDate } from "../lib/date";
+import {
+  calendarDayDiff,
+  dateKey,
+  formatClockTime,
+  formatDayLabel,
+  formatRelative,
+  HOUR_MS,
+  MINUTE_MS,
+  safeISO,
+  toValidDate,
+} from "../lib/time";
 
 /* ------------------------------------------------------------------ */
 /* Types & helpers                                                     */
@@ -73,36 +84,23 @@ export interface GroupMessagesOptions {
   now?: Date;
 }
 
-const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
 /** Day separator label: "Today", "Yesterday", a weekday within the last week, else "Oct 5" (with year if different). */
 export function formatMessageDay(date: Date, now: Date = new Date()) {
-  const startOf = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const diff = Math.round((startOf(now) - startOf(date)) / 86_400_000);
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Yesterday";
-  if (diff > 1 && diff < 7) return WEEKDAYS[date.getDay()]!;
-  const base = `${MONTHS[date.getMonth()]} ${date.getDate()}`;
-  return date.getFullYear() === now.getFullYear() ? base : `${base}, ${date.getFullYear()}`;
+  const diff = calendarDayDiff(now, date) ?? 0;
+  if (diff > 1 && diff < 7) return date.toLocaleDateString("en-US", { weekday: "long" });
+  return formatDayLabel(date, { now, weekdayWithinWeek: false, tomorrow: false, locale: "en-US" });
 }
 
 /** Short clock time, e.g. "9:41 AM". */
 export function formatMessageTime(date: Date | number | string) {
-  const d = toValidDate(date);
-  return d ? d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }) : "—";
+  return formatClockTime(date);
 }
 
 /** "last seen just now" / "5m ago" / "3h ago" / "yesterday" / "Oct 5". */
 export function formatLastSeen(date: Date | number | string, now: Date = new Date()) {
   const d = toValidDate(date);
   if (!d) return "last seen recently";
-  const mins = Math.floor((now.getTime() - d.getTime()) / 60_000);
-  if (mins < 1) return "last seen just now";
-  if (mins < 60) return `last seen ${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `last seen ${hours}h ago`;
+  if (now.getTime() - d.getTime() < 23.5 * HOUR_MS) return `last seen ${formatRelative(d, { now, justNowMs: MINUTE_MS })}`;
   const day = formatMessageDay(d, now);
   return `last seen ${day === "Yesterday" ? "yesterday" : day}`;
 }
@@ -123,7 +121,7 @@ export function groupMessages(messages: MessengerMessage[], options: GroupMessag
   messages.forEach((message, index) => {
     const parsed = toValidDate(message.createdAt);
     let breakGroup = false;
-    const key = parsed ? dayKey(parsed) : lastDay;
+    const key = parsed ? dateKey(parsed) : lastDay;
     if (parsed && key !== lastDay) {
       out.push({ type: "date", key: `date-${key}`, date: parsed, label: formatMessageDay(parsed, now) });
       lastDay = key;
@@ -405,7 +403,7 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
             return (
               <div key={entry.key} data-unread-divider className="my-3 flex items-center gap-3 text-xs font-medium text-primary">
                 <span className="h-px flex-1 bg-primary/40" />
-                {entry.count} new {entry.count === 1 ? "message" : "messages"}
+                {entry.count} new {pluralize(entry.count, "message")}
                 <span className="h-px flex-1 bg-primary/40" />
               </div>
             );

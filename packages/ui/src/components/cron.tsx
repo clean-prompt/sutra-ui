@@ -1,6 +1,11 @@
 import * as React from "react";
 import { RiCalendarScheduleLine, RiErrorWarningLine, RiGlobalLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatCountdown } from "../lib/duration";
+import { pluralize } from "../lib/format";
+import { capitalize } from "../lib/text";
+import { dateKey, formatClockTime as formatClockTimeLib, formatRelative, pad2 } from "../lib/time";
+import { useNow } from "../hooks/use-now";
 import { SegmentedControl } from "./segmented-control";
 import { NumberInput } from "./number-input";
 import { Input } from "./input";
@@ -103,7 +108,7 @@ function parseCronField(raw: string, spec: CronFieldSpec): number[] | string {
       lo = pa;
       hi = stepPart !== undefined ? spec.max : pa;
     }
-    if (lo < spec.min || hi > spec.max) return `${spec.label[0]!.toUpperCase()}${spec.label.slice(1)} must be between ${spec.min} and ${spec.max}`;
+    if (lo < spec.min || hi > spec.max) return `${capitalize(spec.label)} must be between ${spec.min} and ${spec.max}`;
     for (let v = lo; v <= hi; v += step) out.add(spec.key === "dayOfWeek" && v === 7 ? 0 : v);
   }
   return [...out].sort((a, b) => a - b);
@@ -157,16 +162,8 @@ function joinWords(items: string[], conj = "and") {
   return `${items.slice(0, -1).join(", ")} ${conj} ${items[items.length - 1]}`;
 }
 
-const capitalize = (s: string) => (s ? s[0]!.toUpperCase() + s.slice(1) : s);
-const pad2 = (n: number) => String(n).padStart(2, "0");
-
 function formatClockTime(h: number, m: number, opts: DescribeCronOptions) {
-  return new Intl.DateTimeFormat(opts.locale ?? "en-US", {
-    hour: opts.hour12 === false ? "2-digit" : "numeric",
-    minute: "2-digit",
-    hour12: opts.hour12,
-    timeZone: "UTC",
-  }).format(Date.UTC(2000, 0, 1, h, m));
+  return formatClockTimeLib(new Date(2000, 0, 1, h, m), { locale: opts.locale ?? "en-US", hour12: opts.hour12 });
 }
 
 function fieldStep(values: number[], min: number, max: number): number | null {
@@ -233,7 +230,7 @@ export function describeCron(expr: string, options: DescribeCronOptions = {}): s
   const isWeekdays = sameList(dow, [1, 2, 3, 4, 5]);
   const isWeekend = sameList(dow, [0, 6]);
   const domStep = domRestricted ? null : fieldStep(dom, 1, 31);
-  const dayList = domStep ? `every ${ordinal(domStep)} day` : `${dom.length === 1 ? "day" : "days"} ${joinWords(dom.map(String))}`;
+  const dayList = domStep ? `every ${ordinal(domStep)} day` : `${pluralize(dom.length, "day")} ${joinWords(dom.map(String))}`;
   const monthList = joinWords(month.map((m) => MONTH_NAMES[m - 1]!));
   const domLimited = dom.length !== 31;
   const dowLimited = dow.length !== 7;
@@ -454,7 +451,7 @@ const formatTimeValue = (h: number, m: number) => `${pad2(h)}:${pad2(m)}`;
 
 /** Local "YYYY-MM-DDTHH:MM" timestamp, the schedule-string form of a one-shot run. */
 export function formatLocalDateTime(d: Date) {
-  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  return `${dateKey(d)}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }
 
 /**
@@ -611,35 +608,18 @@ export function nextScheduleRuns(input: CronSchedule | CronScheduleValue | strin
 
 /** "44:12" or "1:02:03" for a remaining duration. */
 export function formatCountdownClock(ms: number): string {
-  const total = Math.max(0, Math.ceil(ms / 1000));
-  const h = Math.floor(total / 3600);
-  const m = Math.floor((total % 3600) / 60);
-  const s = total % 60;
-  return h ? `${h}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+  return formatCountdown(ms, { padMinutes: true });
 }
 
 /** Compact relative time: "in 5m", "in 3h", "2d ago", "now". */
 export function formatScheduleRelative(target: Date | number | string, now: Date | number = Date.now()): string {
-  const diff = new Date(target).getTime() - new Date(now).getTime();
-  const abs = Math.abs(diff);
-  if (abs < 30_000) return "now";
-  let text: string;
-  if (abs < 60 * MINUTE_MS) text = `${Math.max(1, Math.round(abs / MINUTE_MS))}m`;
-  else if (abs < DAY_MS) text = `${Math.round(abs / (60 * MINUTE_MS))}h`;
-  else text = `${Math.round(abs / DAY_MS)}d`;
-  return diff > 0 ? `in ${text}` : `${text} ago`;
+  const text = formatRelative(target, { now, future: true, justNowMs: 30_000 });
+  return text === "just now" ? "now" : text;
 }
 
 /** Re-render every `intervalMs` while `enabled`; returns the current timestamp. */
 export function useScheduleNow(enabled = true, intervalMs = 1000): number {
-  const [now, setNow] = React.useState(() => Date.now());
-  React.useEffect(() => {
-    if (!enabled) return;
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), intervalMs);
-    return () => clearInterval(id);
-  }, [enabled, intervalMs]);
-  return now;
+  return useNow({ active: enabled, interval: intervalMs });
 }
 
 /* ------------------------------------------------------------------ */

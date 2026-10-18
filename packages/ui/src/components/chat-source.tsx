@@ -2,7 +2,12 @@ import * as React from "react";
 import { Collapsible, HoverCard } from "radix-ui";
 import { RiArrowDownSLine, RiExternalLinkLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { isSafeHref } from "../lib/validate";
 import { Favicon, domainOf } from "./favicon";
+
+/** Drops `javascript:`/`data:` and other unsafe source links. */
+const safeHref = (href: string) => (isSafeHref(href) ? href : undefined);
 
 export interface ChatSourceData {
   href: string;
@@ -27,7 +32,7 @@ function SourcePreview({ href, title, snippet, favicon }: ChatSourceData) {
         <span className="truncate">{domain}</span>
       </div>
       <a
-        href={href}
+        href={safeHref(href)}
         target="_blank"
         rel="noopener noreferrer"
         className="line-clamp-2 text-sm font-medium leading-5 text-foreground hover:underline"
@@ -36,7 +41,7 @@ function SourcePreview({ href, title, snippet, favicon }: ChatSourceData) {
       </a>
       {snippet && <p className="line-clamp-3 text-xs leading-5 text-muted-foreground">{snippet}</p>}
       <a
-        href={href}
+        href={safeHref(href)}
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex min-w-0 items-center gap-1 text-xs text-primary hover:underline"
@@ -87,7 +92,7 @@ export const ChatSource = React.forwardRef<HTMLAnchorElement, ChatSourceProps>(
       <SourceHoverCard source={{ href, title, snippet, favicon }} disabled={disablePreview}>
         <a
           ref={ref}
-          href={href}
+          href={safeHref(href)}
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
@@ -140,7 +145,7 @@ export const ChatSourceList = React.forwardRef<HTMLDivElement, ChatSourceListPro
               <Favicon key={d} domain={d} src={sources.find((s) => domainOf(s.href) === d)?.favicon} className="size-5 ring-2 ring-background" />
             ))}
           </span>
-          <span>{label ?? `${sources.length} ${sources.length === 1 ? "source" : "sources"}`}</span>
+          <span>{label ?? `${sources.length} ${pluralize(sources.length, "source")}`}</span>
           <RiArrowDownSLine
             aria-hidden
             className="size-4 transition-transform duration-200 group-data-[state=open]/sources:rotate-180"
@@ -151,7 +156,7 @@ export const ChatSourceList = React.forwardRef<HTMLDivElement, ChatSourceListPro
             {sources.map((source, i) => (
               <li key={`${source.href}-${i}`}>
                 <a
-                  href={source.href}
+                  href={safeHref(source.href)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
@@ -201,7 +206,7 @@ export const ChatInlineCitation = React.forwardRef<HTMLElement, ChatInlineCitati
       <SourceHoverCard source={{ href, title, snippet }}>
         <a
           ref={ref as React.Ref<HTMLAnchorElement>}
-          href={href}
+          href={safeHref(href)}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Source ${index}${title ? `: ${title}` : ""}`}

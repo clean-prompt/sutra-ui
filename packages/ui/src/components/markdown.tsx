@@ -6,6 +6,7 @@ import rehypeKatex from "rehype-katex";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useCopy } from "../hooks/use-copy";
+import { isHttpUrl } from "../lib/validate";
 import { InlineCode } from "./typography";
 import { ChatInlineCitation, type ChatSourceData } from "./chat-source";
 
@@ -181,7 +182,7 @@ const defaultComponents: Components = {
   ),
   p: ({ node, className, ...props }) => <p className={cn("my-3 leading-7", className)} {...props} />,
   a: ({ node, className, href, ...props }) => {
-    const external = typeof href === "string" && /^https?:\/\//.test(href);
+    const external = isHttpUrl(href);
     return (
       <a
         href={href}

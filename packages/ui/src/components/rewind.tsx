@@ -1,6 +1,9 @@
 import * as React from "react";
 import { RiArrowGoBackLine, RiFileCodeLine, RiFlagLine, RiGitBranchLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { formatDateTime, safeISO, type TimeInput } from "../lib/time";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import {
@@ -59,15 +62,8 @@ export interface RewindRequest {
   scope: string;
 }
 
-function formatWhen(value: Date | string | number) {
-  const d = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(d.getTime())) return String(value);
-  return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
-}
-
-function isoOf(value: Date | string | number) {
-  const d = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
+function formatWhen(value: TimeInput) {
+  return formatDateTime(value, { year: "never", invalid: String(value) });
 }
 
 function totals(files: RewindFileChange[]) {
@@ -100,7 +96,7 @@ export interface RewindDialogProps {
   /** Preview of the target message. */
   message: React.ReactNode;
   /** When the target message was sent. */
-  timestamp?: Date | string | number;
+  timestamp?: TimeInput;
   /** Files that would be restored. */
   files?: RewindFileChange[];
   scopes?: RewindScopeOption[];
@@ -142,22 +138,16 @@ export function RewindDialog({
     defaultValue: defaultScope ?? scopes.find((s) => !s.disabled)?.value ?? "",
     onChange: onScopeChange,
   });
-  const [busy, setBusy] = React.useState(false);
+  const { run, busy } = useAsyncAction(async () => {
+    await onRewind?.({ scope });
+    setOpen(false);
+  });
   const groupLabelId = React.useId();
   const current = scopes.find((s) => s.value === scope);
   const sum = totals(files);
 
-  const confirm = async () => {
-    try {
-      setBusy(true);
-      await onRewind?.({ scope });
-      setOpen(false);
-    } catch {
-      /* keep open */
-    } finally {
-      setBusy(false);
-    }
-  };
+  // A failed rewind keeps the dialog open.
+  const confirm = () => void run();
 
   return (
     <Dialog open={open} onOpenChange={(o) => !busy && setOpen(o)}>
@@ -172,7 +162,7 @@ export function RewindDialog({
             <blockquote className="line-clamp-3 text-sm text-foreground">{message}</blockquote>
             {timestamp != null && (
               <figcaption className="mt-1 text-xs text-muted-foreground">
-                <time dateTime={isoOf(timestamp)}>{formatWhen(timestamp)}</time>
+                <time dateTime={safeISO(timestamp)}>{formatWhen(timestamp)}</time>
               </figcaption>
             )}
           </figure>
@@ -193,7 +183,7 @@ export function RewindDialog({
                       {s.description}
                       {s.restoresCode && files.length > 0 && (
                         <span className="mt-0.5 block text-xs">
-                          {files.length} file{files.length === 1 ? "" : "s"} · <span className="text-success">+{sum.add}</span>{" "}
+                          {files.length} {pluralize(files.length, "file")} · <span className="text-success">+{sum.add}</span>{" "}
                           <span className="text-destructive">−{sum.del}</span>
                         </span>
                       )}
@@ -290,7 +280,7 @@ export interface CheckpointMarkerProps extends React.HTMLAttributes<HTMLDivEleme
   label?: React.ReactNode;
   /** Changed files (count derived) or a plain count. */
   files?: RewindFileChange[] | number;
-  timestamp?: Date | string | number;
+  timestamp?: TimeInput;
   /** Rewind action (button click). */
   onRewind?: () => void;
   /** Wire the action to a `RewindDialog` instead; `files` are passed through. */
@@ -324,7 +314,7 @@ export const CheckpointMarker = React.forwardRef<HTMLDivElement, CheckpointMarke
         <span className="font-medium">{label}</span>
         {count > 0 && (
           <span>
-            · {count} file{count === 1 ? "" : "s"} changed
+            · {count} {pluralize(count, "file")} changed
           </span>
         )}
         {sum && (sum.add > 0 || sum.del > 0) && (

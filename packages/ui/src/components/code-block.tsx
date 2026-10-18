@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Tabs as TabsPrimitive } from "radix-ui";
-import { RiCheckLine, RiFileCodeLine, RiFileCopyLine, RiTerminalBoxLine, RiTextWrap } from "@remixicon/react";
+import { RiFileCodeLine, RiTerminalBoxLine, RiTextWrap } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { CopyButton, CopyField } from "./copy-button";
 
 /* ------------------------------------------------------------------ */
 /* Tokenizer                                                           */
@@ -243,7 +243,8 @@ const surface: Record<CodeBlockTheme, { root: string; header: string; muted: str
 /* Pieces                                                              */
 /* ------------------------------------------------------------------ */
 
-function CopyButton({
+/** The shared copy button, tinted for the code surface. */
+function CodeCopyButton({
   text,
   theme,
   className,
@@ -254,39 +255,7 @@ function CopyButton({
   className?: string;
   label?: string;
 }) {
-  const { copied, copy } = useCopy();
-  return (
-    <button
-      type="button"
-      onClick={() => void copy(text)}
-      aria-label={copied ? "Copied" : label}
-      title={copied ? "Copied" : label}
-      className={cn(
-        "relative inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-sm transition-colors",
-        surface[theme].button,
-        focusRing,
-        className
-      )}
-    >
-      <RiFileCopyLine
-        aria-hidden
-        className={cn(
-          "absolute size-4 transition-[opacity,transform] duration-200",
-          copied ? "scale-50 opacity-0" : "scale-100 opacity-100"
-        )}
-      />
-      <RiCheckLine
-        aria-hidden
-        className={cn(
-          "absolute size-4 text-success transition-[opacity,transform] duration-200",
-          copied ? "scale-100 opacity-100" : "scale-50 opacity-0"
-        )}
-      />
-      <span className="sr-only" aria-live="polite">
-        {copied ? "Copied to clipboard" : ""}
-      </span>
-    </button>
-  );
+  return <CopyButton value={text} label={label} className={cn(surface[theme].button, className)} />;
 }
 
 interface CodeBodyProps {
@@ -475,10 +444,10 @@ export const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
                 <RiTextWrap aria-hidden className="size-4" />
               </button>
             ) : null}
-            {copyable ? <CopyButton text={code} theme={theme} /> : null}
+            {copyable ? <CodeCopyButton text={code} theme={theme} /> : null}
           </div>
         ) : copyable ? (
-          <CopyButton
+          <CodeCopyButton
             text={code}
             theme={theme}
             className={cn(
@@ -589,7 +558,7 @@ export const CodeBlockTabs = React.forwardRef<HTMLDivElement, CodeBlockTabsProps
               </TabsPrimitive.Trigger>
             ))}
           </TabsPrimitive.List>
-          {copyable && active ? <CopyButton text={active.code.replace(/\n$/, "")} theme={theme} /> : null}
+          {copyable && active ? <CodeCopyButton text={active.code.replace(/\n$/, "")} theme={theme} /> : null}
         </div>
         {tabs.map((tab, i) => (
           <TabsPrimitive.Content key={keyOf(tab, i)} value={keyOf(tab, i)} className="outline-none">
@@ -628,25 +597,20 @@ export const InlineCopy = React.forwardRef<HTMLDivElement, InlineCopyProps>(
   ({ className, value, prompt = "$", theme = "light", size = "md", ...props }, ref) => {
     const s = surface[theme];
     return (
-      <div
+      <CopyField
         ref={ref}
+        value={value}
+        prefix={prompt !== false ? <span className={s.muted}>{prompt}</span> : undefined}
+        copyButtonProps={{ label: "Copy command", className: cn(s.button, size === "lg" && "size-8") }}
         className={cn(
-          "inline-flex max-w-full items-center gap-2 rounded-control border pl-3 pr-1 font-mono shadow-xs",
+          "w-auto",
           s.root,
           theme === "light" && "bg-background",
           size === "sm" ? "h-8 text-xs" : size === "md" ? "h-9 text-[13px]" : "h-11 pl-4 text-sm",
           className
         )}
         {...props}
-      >
-        {prompt !== false ? (
-          <span aria-hidden className={cn("shrink-0 select-none", s.muted)}>
-            {prompt}
-          </span>
-        ) : null}
-        <code className="min-w-0 flex-1 truncate">{value}</code>
-        <CopyButton text={value} theme={theme} label="Copy command" className={size === "lg" ? "size-8" : undefined} />
-      </div>
+      />
     );
   }
 );

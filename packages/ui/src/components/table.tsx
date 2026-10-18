@@ -8,6 +8,7 @@ import {
   RiSubtractLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
 
 export type TableDensity = "compact" | "normal" | "relaxed";
 export type TableAlign = "left" | "center" | "right";
@@ -410,19 +411,16 @@ export function DataTable<T>({
   className,
   tableClassName,
 }: DataTableProps<T>) {
-  const [innerSort, setInnerSort] = React.useState<DataTableSort | null>(defaultSort);
-  const sort = sortProp !== undefined ? sortProp : innerSort;
-  const [innerSelected, setInnerSelected] = React.useState<string[]>(defaultSelectedRowIds);
-  const selected = selectedRowIds ?? innerSelected;
-
-  const setSort = (next: DataTableSort | null) => {
-    if (sortProp === undefined) setInnerSort(next);
-    onSortChange?.(next);
-  };
-  const setSelected = (next: string[]) => {
-    if (selectedRowIds === undefined) setInnerSelected(next);
-    onSelectionChange?.(next);
-  };
+  const [sort, setSort] = useControllableState<DataTableSort | null>({
+    value: sortProp,
+    defaultValue: defaultSort,
+    onChange: onSortChange,
+  });
+  const [selected, setSelected] = useControllableState<string[]>({
+    value: selectedRowIds,
+    defaultValue: defaultSelectedRowIds,
+    onChange: onSelectionChange,
+  });
 
   const rows = React.useMemo(() => {
     const indexed = data.map((row, index) => ({ row, index, id: getRowId(row, index) }));

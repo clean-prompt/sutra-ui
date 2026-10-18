@@ -13,18 +13,17 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useNow } from "../hooks/use-now";
+import { formatClock } from "../lib/duration";
+import { toMs } from "../lib/time";
 import { Avatar } from "./avatar";
 
 export type CallType = "video" | "audio";
 
 /** `mm:ss`, or `h:mm:ss` past an hour. */
 export function formatCallDuration(totalSeconds: number) {
-  const s = Math.max(0, Math.floor(totalSeconds));
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+  return formatClock(totalSeconds, { padMinutes: true });
 }
 
 /* ------------------------------------------------------------------ */
@@ -215,8 +214,6 @@ export function CallQualityIndicator({ quality, className }: { quality: CallQual
   );
 }
 
-const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
-
 /** Callback ref that keeps `srcObject` in sync with the current `<video>` node and stream (survives remounts of the element). */
 function useStreamVideo(stream: MediaStream | null | undefined) {
   const [video, setVideo] = React.useState<HTMLVideoElement | null>(null);
@@ -322,12 +319,8 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
     const [corner, setCorner] = useControllableState({ value: cornerProp, defaultValue: defaultPipCorner, onChange: onPipCornerChange });
 
     const [mountedAt] = React.useState(() => Date.now());
-    const start = startedAt === undefined ? mountedAt : new Date(startedAt).getTime();
-    const [now, setNow] = React.useState(() => Date.now());
-    React.useEffect(() => {
-      const t = setInterval(() => setNow(Date.now()), 1000);
-      return () => clearInterval(t);
-    }, []);
+    const start = (startedAt === undefined ? undefined : toMs(startedAt)) ?? mountedAt;
+    const now = useNow();
     const seconds = Math.max(0, Math.floor((now - start) / 1000));
 
     const remoteRef = useStreamVideo(remoteStream);

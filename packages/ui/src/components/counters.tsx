@@ -9,7 +9,12 @@ import {
   RiSubtractLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatClock, formatDuration, splitDuration as splitDurationLib } from "../lib/duration";
+import { pluralize } from "../lib/format";
+import { formatClockTime, pad2 } from "../lib/time";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { usePrefersReducedMotion } from "../hooks/use-media-query";
+import { useCountdown, useNow } from "../hooks/use-now";
 import { Button } from "./button";
 
 /* ------------------------------------------------------------------ */
@@ -25,45 +30,24 @@ export interface DurationParts {
 
 /** Splits a millisecond duration into whole days / hours / minutes / seconds (rounded up to the second). */
 export function splitDuration(ms: number): DurationParts {
-  const total = Math.max(0, Math.ceil(ms / 1000));
-  return {
-    days: Math.floor(total / 86400),
-    hours: Math.floor((total % 86400) / 3600),
-    minutes: Math.floor((total % 3600) / 60),
-    seconds: total % 60,
-  };
+  const { days, hours, minutes, seconds } = splitDurationLib(ms, { round: "ceil" });
+  return { days, hours, minutes, seconds };
 }
 
 /** Compact duration: "3d 4h", "2h 14m", "5m 3s", "45s". */
 export function formatCompactDuration(ms: number) {
-  const { days, hours, minutes, seconds } = splitDuration(ms);
-  if (days > 0) return `${days}d ${hours}h`;
-  if (hours > 0) return `${hours}h ${minutes}m`;
-  if (minutes > 0) return `${minutes}m ${seconds}s`;
-  return `${seconds}s`;
+  // Round up to whole seconds (like `splitDuration`), then truncate to the two largest units.
+  return formatDuration(Math.ceil(ms / 1000) * 1000, { round: "floor", invalid: "0s" });
 }
 
 function spokenDuration({ days, hours, minutes, seconds }: DurationParts) {
   const parts: string[] = [];
-  const add = (n: number, unit: string) => n > 0 && parts.push(`${n} ${unit}${n === 1 ? "" : "s"}`);
+  const add = (n: number, unit: string) => n > 0 && parts.push(`${n} ${pluralize(n, unit)}`);
   add(days, "day");
   add(hours, "hour");
   add(minutes, "minute");
   if (days === 0) add(seconds, "second");
   return parts.length ? parts.join(" ") : "0 seconds";
-}
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = React.useState(false);
-  React.useEffect(() => {
-    const mql = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    if (!mql) return;
-    setReduced(mql.matches);
-    const on = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mql.addEventListener?.("change", on);
-    return () => mql.removeEventListener?.("change", on);
-  }, []);
-  return reduced;
 }
 
 /* ------------------------------------------------------------------ */
@@ -97,30 +81,11 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
     { target, format = "segments", hideSeconds, flip, onComplete, completeContent, size = "md", className, ...props },
     ref
   ) => {
-    const end = new Date(target).getTime();
-    const [now, setNow] = React.useState(() => Date.now());
-    const remaining = Math.max(0, end - now);
-    const completeRef = React.useRef(onComplete);
-    completeRef.current = onComplete;
-    const fired = React.useRef(false);
+    const { remainingMs: remaining } = useCountdown(target, {
+      interval: hideSeconds && format === "segments" ? 1000 : 250,
+      onExpire: onComplete,
+    });
     const reduced = usePrefersReducedMotion();
-
-    React.useEffect(() => {
-      fired.current = false;
-      setNow(Date.now());
-    }, [end]);
-
-    React.useEffect(() => {
-      if (remaining <= 0) {
-        if (!fired.current) {
-          fired.current = true;
-          completeRef.current?.();
-        }
-        return;
-      }
-      const t = setInterval(() => setNow(Date.now()), hideSeconds && format === "segments" ? 1000 : 250);
-      return () => clearInterval(t);
-    }, [remaining <= 0, hideSeconds, format]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const parts = splitDuration(remaining);
     const label = remaining > 0 ? `Time remaining: ${spokenDuration(parts)}` : "Time is up";
@@ -166,7 +131,7 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
         {...props}
       >
         {shown.map(([key, unit], i) => {
-          const value = String(parts[key]).padStart(2, "0");
+          const value = pad2(parts[key]);
           return (
             <React.Fragment key={key}>
               {i > 0 ? (
@@ -215,13 +180,7 @@ export interface StopwatchLap {
 
 /** `mm:ss.cc`, or `h:mm:ss.cc` past an hour. */
 export function formatStopwatch(ms: number) {
-  const t = Math.max(0, Math.floor(ms));
-  const h = Math.floor(t / 3_600_000);
-  const m = Math.floor((t % 3_600_000) / 60_000);
-  const s = Math.floor((t % 60_000) / 1000);
-  const cs = Math.floor((t % 1000) / 10);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${h > 0 ? `${h}:` : ""}${pad(m)}:${pad(s)}.${pad(cs)}`;
+  return formatClock(ms / 1000, { padMinutes: true, fractionDigits: 2 });
 }
 
 export interface UseStopwatchOptions {
@@ -234,31 +193,22 @@ export interface UseStopwatchOptions {
 export function useStopwatch({ interval = 50, autoStart = false }: UseStopwatchOptions = {}) {
   const [base, setBase] = React.useState(0);
   const [startedAt, setStartedAt] = React.useState<number | null>(() => (autoStart ? Date.now() : null));
-  const [now, setNow] = React.useState(() => Date.now());
   const [laps, setLaps] = React.useState<StopwatchLap[]>([]);
   const running = startedAt !== null;
-
-  React.useEffect(() => {
-    if (!running) return;
-    const t = setInterval(() => setNow(Date.now()), interval);
-    return () => clearInterval(t);
-  }, [running, interval]);
+  const now = useNow({ active: running, interval });
 
   const read = () => base + (startedAt !== null ? Date.now() - startedAt : 0);
   const elapsed = base + (startedAt !== null ? Math.max(0, now - startedAt) : 0);
 
   const start = () => {
     if (running) return;
-    const t = Date.now();
-    setStartedAt(t);
-    setNow(t);
+    setStartedAt(Date.now());
   };
   const pause = () => {
     if (!running) return;
     const total = read();
     setBase(total);
     setStartedAt(null);
-    setNow(Date.now());
   };
   const lap = () => {
     const total = read();
@@ -266,13 +216,11 @@ export function useStopwatch({ interval = 50, autoStart = false }: UseStopwatchO
       const last = prev.length ? prev[prev.length - 1]!.total : 0;
       return [...prev, { index: prev.length + 1, lap: total - last, total }];
     });
-    setNow(Date.now());
   };
   const reset = () => {
     setBase(0);
     setStartedAt(null);
     setLaps([]);
-    setNow(Date.now());
   };
   const toggle = () => (running ? pause() : start());
 
@@ -541,7 +489,7 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
                     <span className="text-muted-foreground">
                       → {entry.value} ·{" "}
                       <time dateTime={entry.at.toISOString()}>
-                        {entry.at.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+                        {formatClockTime(entry.at)}
                       </time>
                     </span>
                   </li>

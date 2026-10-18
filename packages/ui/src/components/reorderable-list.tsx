@@ -9,7 +9,9 @@ import {
   RiEyeOffLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
 import { Progress } from "./progress";
@@ -22,7 +24,7 @@ import { Progress } from "./progress";
 export function reorderArray<T>(items: readonly T[], from: number, to: number): T[] {
   const next = items.slice();
   if (from < 0 || from >= next.length) return next;
-  const target = Math.max(0, Math.min(next.length - 1, to));
+  const target = clamp(to, 0, next.length - 1);
   const [item] = next.splice(from, 1);
   next.splice(target, 0, item as T);
   return next;
@@ -115,7 +117,7 @@ export function ReorderableList<T>({
   const working = order ?? items;
   const total = working.length;
 
-  React.useLayoutEffect(() => {
+  useIsoLayoutEffect(() => {
     if (active?.mode !== "keyboard") return;
     const el = handles.current.get(active.key);
     if (el && document.activeElement !== el) el.focus();

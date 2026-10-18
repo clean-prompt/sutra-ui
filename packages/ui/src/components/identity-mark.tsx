@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
-import { chartColors } from "../lib/tokens";
+import { colorForSeed, hashString } from "../lib/hash";
 
 /* ------------------------------------------------------------------ */
 /* Pure helpers                                                        */
@@ -8,13 +8,7 @@ import { chartColors } from "../lib/tokens";
 
 /** FNV-1a 32-bit hash of a string. Stable across engines; for identity, not security. */
 export function identityHash(seed: string): number {
-  let h = 2166136261;
-  const s = String(seed);
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
+  return hashString(seed);
 }
 
 /**
@@ -35,7 +29,7 @@ export function identitySegments(seed: string, lit = 5, of = 12): number[] {
 
 /** Deterministic categorical color (from `chartColors`) for a seed. */
 export function identityColor(seed: string): string {
-  return chartColors[identityHash(`${seed}#color`) % chartColors.length]!;
+  return colorForSeed(`${seed}#color`);
 }
 
 /** First letter or digit of the handle part of a seed (`user:alice` → `A`). */

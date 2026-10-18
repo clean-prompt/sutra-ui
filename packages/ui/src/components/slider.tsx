@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Slider as SliderPrimitive } from "radix-ui";
 import { cn, type Size } from "../lib/cn";
+import { toPercent } from "../lib/math";
 
 const sizes: Record<Size, { track: string; thumb: string; thumbPx: number }> = {
   sm: { track: "h-1", thumb: "size-3.5", thumbPx: 14 },
@@ -64,7 +65,7 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
 
     const normalizedMarks = (marks ?? []).map((m) => (typeof m === "number" ? { value: m } : m));
     const hasMarkLabels = normalizedMarks.some((m) => m.label !== undefined);
-    const percent = (v: number) => (max === min ? 0 : ((v - min) / (max - min)) * 100);
+    const percent = (v: number) => toPercent(v, max, min);
     const inBounds = (p: number) => `calc(${p}% + ${(s.thumbPx / 2) * (1 - p / 50)}px)`;
 
     return (

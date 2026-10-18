@@ -2,7 +2,11 @@ import * as React from "react";
 import { RiDeleteBinLine, RiImageAddLine, RiShuffleLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { chartColors } from "../lib/tokens";
+import { seededRandom } from "../lib/hash";
+import { capitalize } from "../lib/text";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useAsyncAction } from "../hooks/use-async-action";
+import { useSafeId } from "../hooks/use-safe-id";
 import { identityHash } from "./identity-mark";
 import { Button } from "./button";
 import { Input } from "./input";
@@ -35,16 +39,6 @@ export const agentAvatarFaces: AgentAvatarFace[] = ["dots", "visor", "smile", "s
 /** Swatches offered by the builder. The first entry is the brand color. */
 export const agentAvatarColors: string[] = ["var(--primary)", ...chartColors];
 
-function rng(seed: string) {
-  let h = identityHash(seed) || 1;
-  return () => {
-    h ^= h << 13;
-    h ^= h >>> 17;
-    h ^= h << 5;
-    return ((h >>> 0) % 10000) / 10000;
-  };
-}
-
 /** Deterministic avatar spec for a seed. */
 export function randomAvatarSpec(seed: string): AgentAvatarSpec {
   const h = identityHash(seed);
@@ -57,7 +51,7 @@ export function randomAvatarSpec(seed: string): AgentAvatarSpec {
 }
 
 function blobPath(seed: string) {
-  const r = rng(`${seed}#blob`);
+  const r = seededRandom(`${seed}#blob`);
   const n = 8;
   const pts = Array.from({ length: n }, (_, i) => {
     const a = (i / n) * Math.PI * 2 - Math.PI / 2;
@@ -91,7 +85,7 @@ function shapePath(shape: AgentAvatarShape, seed: string) {
 }
 
 function Face({ face, seed }: { face: AgentAvatarFace; seed: string }) {
-  const r = rng(`${seed}#face`);
+  const r = seededRandom(`${seed}#face`);
   const spread = 13 + Math.round(r() * 4);
   const y = 44 + Math.round(r() * 4);
   const lx = 50 - spread;
@@ -162,10 +156,10 @@ export interface AgentAvatarProps extends Omit<React.SVGAttributes<SVGSVGElement
 /** Procedural agent avatar drawn as pure SVG from `{ shape, color, face, seed }`. */
 export const AgentAvatar = React.forwardRef<SVGSVGElement, AgentAvatarProps>(
   ({ spec, size = 40, label = "Agent avatar", className, ...props }, ref) => {
-    const uid = React.useId().replace(/:/g, "");
+    const uid = useSafeId("agent-avatar");
     const d = React.useMemo(() => shapePath(spec.shape, spec.seed), [spec.shape, spec.seed]);
     const hl = React.useMemo(() => {
-      const r = rng(`${spec.seed}#hl`);
+      const r = seededRandom(`${spec.seed}#hl`);
       return { cx: 30 + r() * 12, cy: 22 + r() * 8 };
     }, [spec.seed]);
     return (
@@ -264,7 +258,6 @@ function OptionGroup<T extends string>({
 }
 
 const colorName = (c: string) => (c === "var(--primary)" ? "Brand" : c);
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export interface AgentAvatarBuilderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   value?: AgentAvatarSpec;
@@ -314,7 +307,7 @@ export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBu
         <div className="flex flex-col items-center gap-2 rounded-box border border-border bg-subtle p-4">
           <AgentAvatar spec={spec} size={previewSize} label="Avatar preview" />
           <span className="text-2xs text-muted-foreground">
-            {cap(spec.shape)} · {cap(spec.face)}
+            {capitalize(spec.shape)} · {capitalize(spec.face)}
           </span>
         </div>
         <Tabs defaultValue="shape" variant="underline" size="sm" className="min-w-0 flex-1">
@@ -331,7 +324,7 @@ export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBu
               options={agentAvatarShapes}
               value={spec.shape}
               onChange={(shape) => patch({ shape })}
-              optionLabel={cap}
+              optionLabel={capitalize}
               render={(shape) => <AgentAvatar spec={{ ...spec, shape, imageUrl: undefined }} size={36} label="" />}
             />
           </TabsContent>
@@ -355,7 +348,7 @@ export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBu
               options={agentAvatarFaces}
               value={spec.face}
               onChange={(face) => patch({ face, imageUrl: undefined })}
-              optionLabel={cap}
+              optionLabel={capitalize}
               render={(face) => <AgentAvatar spec={{ ...spec, face, imageUrl: undefined }} size={36} label="" />}
             />
           </TabsContent>
@@ -550,7 +543,8 @@ export function CreateAgentDialog({
   );
   const [values, setValues] = React.useState<CreateAgentValues>(init);
   const [nameError, setNameError] = React.useState<string | null>(null);
-  const [saving, setSaving] = React.useState(false);
+  const create = useAsyncAction(async (v: CreateAgentValues) => onCreate?.(v), { onSuccess: () => setOpen(false) });
+  const saving = create.busy;
 
   React.useEffect(() => {
     if (open) {
@@ -564,15 +558,8 @@ export function CreateAgentDialog({
     const err = validateAgentName(values.name, existingNames);
     setNameError(err);
     if (err) return;
-    try {
-      setSaving(true);
-      await onCreate?.({ ...values, name: values.name.trim() });
-      setOpen(false);
-    } catch {
-      /* keep open */
-    } finally {
-      setSaving(false);
-    }
+    // Stays open if `onCreate` throws.
+    await create.run({ ...values, name: values.name.trim() });
   };
 
   return (

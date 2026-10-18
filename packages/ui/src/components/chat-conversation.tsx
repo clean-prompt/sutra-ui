@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useResizeObserver } from "../hooks/use-resize-observer";
 import { Button, type ButtonProps } from "./button";
 
 export interface UseStickToBottomOptions {
@@ -32,8 +33,6 @@ export function useStickToBottom({
   const [isAtBottom, setIsAtBottom] = React.useState(true);
   const stuck = React.useRef(true);
   const lastTop = React.useRef(0);
-  const resizeRef = React.useRef(resize);
-  resizeRef.current = resize;
 
   const scrollToBottom = React.useCallback(
     (behavior: ScrollBehavior = "smooth") => {
@@ -74,21 +73,17 @@ export function useStickToBottom({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollEl, threshold]);
 
-  React.useEffect(() => {
-    if (!scrollEl || typeof ResizeObserver === "undefined") return;
-    const target = contentEl ?? scrollEl;
-    const observer = new ResizeObserver(() => {
-      if (stuck.current) {
-        scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: resizeRef.current });
-      } else {
-        const distance = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight;
-        setIsAtBottom(distance <= threshold);
-      }
-    });
-    observer.observe(target);
-    if (target !== scrollEl) observer.observe(scrollEl);
-    return () => observer.disconnect();
-  }, [scrollEl, contentEl, threshold]);
+  const onResize = () => {
+    if (!scrollEl) return;
+    if (stuck.current) {
+      scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: resize });
+    } else {
+      const distance = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight;
+      setIsAtBottom(distance <= threshold);
+    }
+  };
+  useResizeObserver(contentEl ?? scrollEl, onResize);
+  useResizeObserver(contentEl ? scrollEl : null, onResize);
 
   return { scrollRef: setScrollEl, contentRef: setContentEl, isAtBottom, scrollToBottom };
 }

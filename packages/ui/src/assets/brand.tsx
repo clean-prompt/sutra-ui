@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { useSafeId } from "../hooks/use-safe-id";
 
 type SvgBaseProps = Omit<React.ComponentPropsWithoutRef<"svg">, "children"> & {
   /** Rendered pixel size (width and height). */
@@ -7,11 +8,6 @@ type SvgBaseProps = Omit<React.ComponentPropsWithoutRef<"svg">, "children"> & {
   /** Accessible title. When omitted, the graphic is hidden from assistive tech. */
   title?: string;
 };
-
-function useSvgId(prefix: string) {
-  const raw = React.useId();
-  return `${prefix}-${raw.replace(/[^a-zA-Z0-9_-]/g, "")}`;
-}
 
 function a11y(title: string | undefined, titleId: string) {
   return title
@@ -40,7 +36,7 @@ export interface SutraMarkProps extends SvgBaseProps {
 /** The Sutra logomark: a single thread tied into a flowing "S". */
 export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
   ({ variant = "tile", size = 32, title, className, ...props }, ref) => {
-    const id = useSvgId("sutra-mark");
+    const id = useSafeId("sutra-mark");
     const titleId = `${id}-title`;
     const threadColor = variant === "tile" ? "#ffffff" : "currentColor";
     return (
@@ -270,7 +266,7 @@ export interface SutraAppIconProps extends SvgBaseProps {
 /** App icon for a Sutra suite app: a gradient tile with a glyph and the shared thread motif. */
 export const SutraAppIcon = React.forwardRef<SVGSVGElement, SutraAppIconProps>(
   ({ app, shape = "rounded", size = 40, title, className, ...props }, ref) => {
-    const id = useSvgId(`sutra-app-${app}`);
+    const id = useSafeId(`sutra-app-${app}`);
     const titleId = `${id}-title`;
     const meta = sutraAppMeta[app];
     const rx = shape === "circle" ? 16 : shape === "squircle" ? 9.5 : 7.5;

@@ -1,21 +1,13 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
+import { formatDuration } from "../lib/duration";
+import { toMs, type TimeInput } from "../lib/time";
 import { SimpleTooltip } from "./tooltip";
-
-type TimeInput = Date | number | string;
-
-const toMs = (t: TimeInput) => (t instanceof Date ? t.getTime() : typeof t === "number" ? t : new Date(t).getTime());
 
 /** Compact duration: "45s", "12m", "2h 30m", "3d 4h". */
 export function formatTimelineDuration(ms: number): string {
-  const s = Math.max(0, Math.round(ms / 1000));
-  if (s < 60) return `${s}s`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return m % 60 ? `${h}h ${m % 60}m` : `${h}h`;
-  const d = Math.floor(h / 24);
-  return h % 24 ? `${d}d ${h % 24}h` : `${d}d`;
+  const rounded = Math.round(ms / 1000) * 1000;
+  return formatDuration(rounded, { units: rounded < 3_600_000 ? 1 : 2, keepZeros: false, round: "floor" });
 }
 
 /* ------------------------------------------------------------------ */
@@ -58,11 +50,12 @@ export interface TimelinePosition {
 export function timelinePosition(span: TimelineSpan, from: TimeInput, to: TimeInput, now: TimeInput = Date.now()): TimelinePosition | null {
   const f = toMs(from);
   const t = toMs(to);
+  const s = toMs(span.start);
+  if (f === undefined || t === undefined || s === undefined) return null;
   const range = t - f;
   if (range <= 0) return null;
-  const s = toMs(span.start);
-  const e = span.end != null ? toMs(span.end) : Math.max(s, toMs(now));
-  if (e < f || s > t) return null;
+  const e = span.end != null ? toMs(span.end) : Math.max(s, toMs(now) ?? Date.now());
+  if (e === undefined || e < f || s > t) return null;
   const cs = Math.max(s, f);
   const ce = Math.min(e, t);
   return {
@@ -79,6 +72,7 @@ export function timelinePosition(span: TimelineSpan, from: TimeInput, to: TimeIn
 export function timelineTicks(from: TimeInput, to: TimeInput, count = 6): number[] {
   const f = toMs(from);
   const t = toMs(to);
+  if (f === undefined || t === undefined) return [];
   const n = Math.max(1, count);
   return Array.from({ length: n + 1 }, (_, i) => f + ((t - f) * i) / n);
 }
@@ -148,9 +142,9 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
   ) => {
     const lanes: TimelineLane[] = lanesProp ?? [{ id: "default", label: null, spans: spans ?? [] }];
     const hasLabels = lanes.some((l) => l.label != null && l.label !== false);
-    const f = toMs(from);
-    const t = toMs(to);
-    const now = nowProp != null ? toMs(nowProp) : Date.now();
+    const f = toMs(from) ?? NaN;
+    const t = toMs(to) ?? NaN;
+    const now = toMs(nowProp) ?? Date.now();
     const range = t - f;
     const sameDay = range <= 36 * 3600 * 1000;
     const timeFmt = React.useMemo(

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
-import { chartColors } from "../lib/tokens";
+import { colorForSeed } from "../lib/hash";
+import { hostnameOf } from "../lib/validate";
 
 /** Maps a domain to an icon URL, or undefined to fall back to the monogram. */
 export type FaviconResolver = (domain: string) => string | undefined;
@@ -22,18 +23,9 @@ export function FaviconProvider({ resolve, children }: { resolve: FaviconResolve
 export const googleFaviconResolver: FaviconResolver = (domain) =>
   `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
 
+/** Display host of a URL (drops the scheme, path and a leading `www.`), or the input itself when it has none. */
 export function domainOf(url: string) {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
-}
-
-function hash(input: string) {
-  let h = 0;
-  for (let i = 0; i < input.length; i++) h = (h * 31 + input.charCodeAt(i)) | 0;
-  return Math.abs(h);
+  return hostnameOf(url) || url;
 }
 
 export interface FaviconProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -60,7 +52,7 @@ export const Favicon = React.forwardRef<HTMLSpanElement, FaviconProps>(
       );
     }
     const letter = (domain.match(/[a-z0-9]/i)?.[0] ?? "?").toUpperCase();
-    const color = chartColors[hash(domain) % chartColors.length];
+    const color = colorForSeed(domain);
     return (
       <span
         ref={ref}

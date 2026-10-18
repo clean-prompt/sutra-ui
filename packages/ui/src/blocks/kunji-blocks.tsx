@@ -30,6 +30,9 @@ import { formatKunjiSub, isKunjiAbortError, type KunjiClient, type KunjiPollResu
 import { FeaturedIcon, type FeaturedIconColor, type IconComponent } from "../assets/icons";
 import { AuthCenteredPage, type AuthPageBaseProps } from "./auth-pages";
 import { useAsyncAction } from "./block-utils";
+import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
+import { useCountdown } from "../hooks/use-now";
+import { formatCountdown } from "../lib/duration";
 
 /* ------------------------------------------------------------------ */
 /* Shared frame                                                        */
@@ -412,24 +415,16 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
     ref
   ) => {
     const [approved, setApproved] = React.useState(false);
-    const [checking, setChecking] = React.useState(false);
-    const cbs = React.useRef({ onCheck, onApproved });
-    cbs.current = { onCheck, onApproved };
-
-    const check = React.useCallback(async () => {
-      if (!cbs.current.onCheck) return;
-      setChecking(true);
-      try {
-        if (await cbs.current.onCheck()) {
-          setApproved(true);
-          cbs.current.onApproved?.();
-        }
-      } catch {
-        /* keep waiting */
-      } finally {
-        setChecking(false);
-      }
-    }, []);
+    // Errors keep waiting; a newer check supersedes a pending one.
+    const poll = useSharedAsyncAction(async () => (onCheck ? onCheck() : false), {
+      onSuccess: (ok) => {
+        if (!ok) return;
+        setApproved(true);
+        onApproved?.();
+      },
+    });
+    const checking = poll.busy;
+    const check = poll.run;
 
     React.useEffect(() => {
       if (!onCheck || approved) return;
@@ -750,7 +745,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
     const [peer, setPeer] = React.useState<DevicePairingPeer | null>(null);
     const [error, setError] = React.useState<string | null>(null);
     const [typed, setTyped] = React.useState("");
-    const [now, setNow] = React.useState(() => Date.now());
+    const [pairedAt, setPairedAt] = React.useState(0);
     const ctrl = React.useRef<AbortController | null>(null);
 
     const fail = (e: unknown) => {
@@ -771,7 +766,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
           const p = await adapter.createPairing(c.signal);
           if (c.signal.aborted) return;
           setPairing(p);
-          setNow(Date.now());
+          setPairedAt(Date.now());
           setStep("code");
           const found = await adapter.waitForPeer(p.code, c.signal);
           if (c.signal.aborted) return;
@@ -811,19 +806,12 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
       return () => ctrl.current?.abort();
     }, [side, startExisting]);
 
-    React.useEffect(() => {
-      if (step !== "code") return;
-      setNow(Date.now());
-      const id = setInterval(() => setNow(Date.now()), 1000);
-      return () => clearInterval(id);
-    }, [step]);
-
-    React.useEffect(() => {
-      if (step === "code" && pairing && now >= pairing.expiresAt) {
+    const countdown = useCountdown(step === "code" ? pairing?.expiresAt : undefined, {
+      onExpire: () => {
         ctrl.current?.abort();
         setStep("expired");
-      }
-    }, [step, pairing, now]);
+      },
+    });
 
     const decide = async (match: boolean) => {
       setStep("confirming");
@@ -839,7 +827,9 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
     };
 
     const restart = side === "existing" ? startExisting : () => (setTyped(""), setError(null), setStep("join"));
-    const remaining = pairing ? Math.max(0, Math.ceil((pairing.expiresAt - now) / 1000)) : 0;
+    // The countdown's clock is from before the code arrived until its first tick; cap at the TTL left on arrival.
+    const remainingMs = pairing ? Math.min(countdown.remainingMs, Math.max(0, pairing.expiresAt - pairedAt)) : 0;
+    const remaining = Math.ceil(remainingMs / 1000);
     const sasParts = peer ? (Array.isArray(peer.sas) ? peer.sas : peer.sas.split(/\s+/)) : [];
 
     let content: React.ReactNode;
@@ -883,7 +873,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
           {!expired ? (
             <p role="timer" aria-live="off" className={cn("inline-flex items-center gap-1.5 text-xs font-medium tabular-nums", remaining <= 20 ? "text-destructive" : "text-muted-foreground")}>
               <RiTimeLine aria-hidden className="size-3.5" />
-              Expires in {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}
+              Expires in {formatCountdown(remainingMs)}
             </p>
           ) : (
             <p className="text-xs text-muted-foreground">Pairing codes last 2 minutes.</p>

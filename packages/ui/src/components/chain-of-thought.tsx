@@ -4,25 +4,21 @@ import { RiArrowDownSLine, RiBrainLine, RiCheckLine, RiExpandUpDownLine } from "
 import { Favicon, domainOf } from "./favicon";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useNow } from "../hooks/use-now";
+import { formatDuration as formatDurationMs } from "../lib/duration";
+import { formatTokens } from "../lib/format";
 import { Spinner } from "./spinner";
 import { TextShimmer } from "./text-shimmer";
 import { Button, type ButtonProps } from "./button";
 
 function formatDuration(seconds: number) {
-  if (seconds < 1) return "a moment";
-  if (seconds < 60) return `${Math.round(seconds)}s`;
-  const m = Math.floor(seconds / 60);
-  const s = Math.round(seconds % 60);
-  return s ? `${m}m ${s}s` : `${m}m`;
+  if (!(seconds >= 1)) return "a moment";
+  return formatDurationMs(seconds * 1000, { maxUnit: "m", keepZeros: false });
 }
 
 /** "950 tokens", "1.2k tokens", "3.4M tokens". */
 export function formatTokenLabel(n: number) {
-  const a = Math.abs(n);
-  const trim = (v: number) => String(Math.round(v * 10) / 10);
-  if (a >= 1_000_000) return `${trim(n / 1_000_000)}M tokens`;
-  if (a >= 1000) return `${trim(n / 1000)}k tokens`;
-  return `${Math.round(n)} ${Math.round(a) === 1 ? "token" : "tokens"}`;
+  return formatTokens(n, { label: true });
 }
 
 /* ------------------------------------------------------------------ */
@@ -148,7 +144,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
       seenExpandAll.current = expandAllValue;
       setOpen(expandAllValue);
     }, [expandAllValue, setOpen]);
-    const [now, setNow] = React.useState(() => Date.now());
+    const now = useNow({ active: streaming });
     const startedAt = React.useRef<number | null>(null);
     const [measured, setMeasured] = React.useState<number | null>(null);
     const prevStreaming = React.useRef(streaming);
@@ -169,13 +165,6 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
         if (autoCollapse && openProp === undefined && !expandAllValue) setOpen(false);
       }
     }, [streaming, autoCollapse, openProp, setOpen, expandAllValue]);
-
-    React.useEffect(() => {
-      if (!streaming) return;
-      setNow(Date.now());
-      const id = setInterval(() => setNow(Date.now()), 1000);
-      return () => clearInterval(id);
-    }, [streaming]);
 
     const elapsed =
       streaming && startedAt.current != null ? Math.max(0, Math.floor((now - startedAt.current) / 1000)) : 0;

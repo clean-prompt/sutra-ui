@@ -16,6 +16,8 @@ import {
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { formatCost, pluralize } from "../lib/format";
+import { clamp } from "../lib/math";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import { Input } from "./input";
@@ -81,7 +83,7 @@ export function resolveModelRef(providers: RoutingProvider[], ref: ModelRef | nu
 
 /** "$3 / $15" style price per million tokens, or "" when unknown. */
 export function formatModelPrice(model: Pick<RoutingModel, "inputPrice" | "outputPrice">) {
-  const f = (n: number) => (n === 0 ? "Free" : `$${n < 1 ? n.toFixed(2).replace(/0$/, "") : Number(n.toFixed(2))}`);
+  const f = (n: number) => (n === 0 ? "Free" : formatCost(n, { minFraction: 0, locale: "en-US" }));
   if (model.inputPrice == null && model.outputPrice == null) return "";
   if (model.inputPrice === 0 && model.outputPrice === 0) return "Free";
   return [model.inputPrice, model.outputPrice].map((n) => (n == null ? "—" : f(n))).join(" / ");
@@ -200,7 +202,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
       onSelect?.(r, m);
     };
     const selectProvider = (i: number) => {
-      const p = providers[Math.max(0, Math.min(providers.length - 1, i))];
+      const p = providers[clamp(i, 0, providers.length - 1)];
       if (!p) return;
       setActiveProviderId(p.id);
       setActiveModelIndex(0);
@@ -933,8 +935,8 @@ export const EnsembleBuilder = React.forwardRef<HTMLDivElement, EnsembleBuilderP
             <span>Add reference models and an aggregator to finish the ensemble.</span>
           ) : (
             <span>
-              {value.references.length} reference {value.references.length === 1 ? "model" : "models"} × {value.rounds}{" "}
-              {value.rounds === 1 ? "round" : "rounds"}, combined by {nameOf(value.aggregator)}. About {calls} model calls per request.
+              {value.references.length} reference {pluralize(value.references.length, "model")} × {value.rounds}{" "}
+              {pluralize(value.rounds, "round")}, combined by {nameOf(value.aggregator)}. About {calls} model calls per request.
             </span>
           )}
         </div>

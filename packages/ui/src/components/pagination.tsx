@@ -3,6 +3,7 @@ import { RiArrowDownSLine, RiArrowLeftLine, RiArrowRightLine, RiMoreLine } from 
 import { cn, focusRing, type Size } from "../lib/cn";
 import { Button } from "./button";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { clamp } from "../lib/math";
 
 export type PaginationRangeItem = number | "ellipsis-start" | "ellipsis-end";
 
@@ -208,10 +209,10 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
   ) => {
     const [rawPage, setPage] = useControllableState({ value: pageProp, defaultValue: defaultPage, onChange: onPageChange });
     const total = Math.max(1, totalPages);
-    const page = Math.min(Math.max(1, rawPage), total);
+    const page = clamp(rawPage, 1, total);
     const items = usePagination({ page, totalPages: total, siblingCount, boundaryCount });
     const go = (p: number) => {
-      const next = Math.min(Math.max(1, p), total);
+      const next = clamp(p, 1, total);
       if (next !== page) setPage(next);
     };
     const canPrev = page > 1 && !disabled;

@@ -4,6 +4,8 @@ import { Popover as PopoverPrimitive } from "radix-ui";
 import { RiArrowRightSLine, RiCloseLine, RiLightbulbFlashLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { prefersReducedMotion } from "../hooks/use-media-query";
+import { useSafeId } from "../hooks/use-safe-id";
 import { Button } from "./button";
 
 /* ------------------------------------------------------------------ */
@@ -23,12 +25,6 @@ function resolveTarget(target: CoachmarkTarget | undefined): HTMLElement | null 
     }
   }
   return target.current ?? null;
-}
-
-function prefersReducedMotion() {
-  return typeof window !== "undefined" && typeof window.matchMedia === "function"
-    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    : false;
 }
 
 /* ------------------------------------------------------------------ */
@@ -161,7 +157,7 @@ export function CoachmarkTour({
   const [rect, setRect] = React.useState<Rect | null>(null);
   const [cardSize, setCardSize] = React.useState({ width: 0, height: 0 });
   const cardRef = React.useRef<HTMLDivElement>(null);
-  const uid = React.useId().replace(/:/g, "");
+  const uid = useSafeId("coachmark");
   const { next: nextLabel = "Next", back: backLabel = "Back", skip: skipLabel = "Skip tour", finish: finishLabel = "Finish" } = labels;
 
   const measure = React.useCallback(() => {

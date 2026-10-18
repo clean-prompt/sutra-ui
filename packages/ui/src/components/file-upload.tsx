@@ -6,6 +6,7 @@ import {
   RiUploadLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { formatBytes as formatBytesLib } from "../lib/format";
 import { Button, type ButtonProps } from "./button";
 import { Dropzone, validateFiles, type DropzoneProps, type FileRejection } from "./dropzone";
 
@@ -18,13 +19,15 @@ export interface UploadFile {
   error?: string;
 }
 
-/** Formats a byte count as a short human string, e.g. `1.4 MB`. */
+const TB = 1024 ** 4;
+
+/** Formats a byte count as a short human string, e.g. `1.4 MB` (`"0 B"` for zero, negative or non-numeric input). */
 export function formatBytes(bytes: number, decimals = 1) {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.min(units.length - 1, Math.floor(Math.log(bytes) / Math.log(1024)));
-  const n = bytes / Math.pow(1024, i);
-  return `${i === 0 ? n : n.toFixed(decimals).replace(/\.0+$/, "")} ${units[i]}`;
+  // TB is this API's largest unit ("1048576 TB").
+  if (bytes >= TB) return `${(bytes / TB).toFixed(decimals).replace(/\.0+$/, "")} TB`;
+  // Keep "1.50 MB" at decimals=2 but drop an all-zero fraction ("2.0 KB" → "2 KB").
+  return formatBytesLib(bytes, { decimals, trimZeros: false }).replace(/\.0+ /, " ");
 }
 
 let uid = 0;

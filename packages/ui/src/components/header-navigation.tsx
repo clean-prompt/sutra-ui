@@ -7,6 +7,7 @@ import {
 } from "radix-ui";
 import { RiArrowDownSLine, RiCloseLine, RiMenuLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { containerVariants } from "./layout";
 
@@ -287,12 +288,7 @@ export function HeaderNavMobile({
   className,
   label = "Open menu",
 }: HeaderNavMobileProps) {
-  const [uncontrolled, setUncontrolled] = React.useState(defaultOpen);
-  const open = openProp ?? uncontrolled;
-  const setOpen = (next: boolean) => {
-    if (openProp === undefined) setUncontrolled(next);
-    onOpenChange?.(next);
-  };
+  const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   const close = () => setOpen(false);
 
   const renderEntry = (item: HeaderNavMobileItem, key: React.Key, nested = false): React.ReactNode => {

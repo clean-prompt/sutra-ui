@@ -1,10 +1,14 @@
 import * as React from "react";
 import { RiArrowRightSLine, RiCheckLine, RiErrorWarningLine, RiFileCopyLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { safeISO, toValidDate } from "../lib/date";
+import { formatDuration } from "../lib/duration";
+import { pluralize } from "../lib/format";
+import { safeISO, toValidDate, type TimeInput } from "../lib/time";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { useCopy } from "../hooks/use-copy";
 import { CodeBlock } from "./code-block";
-import { JsonViewer } from "./json-viewer";
+import { CopyButton } from "./copy-button";
+import { JsonViewer, safeJsonStringify } from "./json-viewer";
 import { Pagination } from "./pagination";
 import { SimpleSelect } from "./select";
 import { SimpleTooltip } from "./tooltip";
@@ -33,7 +37,7 @@ export interface RequestLogError {
 
 export interface RequestLogRecord {
   id: string;
-  timestamp: Date | number | string;
+  timestamp: TimeInput;
   method?: string;
   path?: string;
   model?: string;
@@ -56,15 +60,12 @@ export interface RequestLogRecord {
   raw?: unknown;
 }
 
-const toMs = (t: Date | number | string) => (t instanceof Date ? t.getTime() : typeof t === "number" ? t : new Date(t).getTime());
-
 /** 850 → "850 ms", 1240 → "1.24 s", 65000 → "1m 5s". */
 export function formatRequestLatency(ms: number | null | undefined): string {
   if (ms == null || !Number.isFinite(ms)) return "—";
-  if (ms < 1000) return `${Math.round(ms)} ms`;
-  if (ms < 60000) return `${Number((ms / 1000).toFixed(2))} s`;
-  const m = Math.floor(ms / 60000);
-  return `${m}m ${Math.round((ms % 60000) / 1000)}s`;
+  // Below 59.995 s the value still reads as seconds once rounded to 2 decimals.
+  if (ms < 59_995) return formatDuration(ms, { ms: true, decimals: 2, decimalsBelow: 60_000, space: true });
+  return formatDuration(ms, { maxUnit: "m" });
 }
 
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
@@ -82,16 +83,16 @@ export function requestContentText(content: unknown): string {
           if (p.type === "image_url" || p.type === "image") return "[image]";
           if (p.type === "input_audio") return "[audio]";
         }
-        return JSON.stringify(p);
+        return safeJsonStringify(p, 0);
       })
       .join("\n");
-  return JSON.stringify(content, null, 2);
+  return safeJsonStringify(content);
 }
 
 function errorText(e: RequestLogRecord["error"]): string | null {
   if (!e) return null;
   if (typeof e === "string") return e;
-  return [e.type, e.message].filter(Boolean).join(": ") || JSON.stringify(e);
+  return [e.type, e.message].filter(Boolean).join(": ") || safeJsonStringify(e, 0);
 }
 
 /** Normalized view of a record: params, finish reason, tokens and messages. */
@@ -121,21 +122,7 @@ export function describeRequestLog(record: RequestLogRecord) {
 }
 
 function CopyIconButton({ text, label, className }: { text: string; label: string; className?: string }) {
-  const { copied, copy } = useCopy();
-  return (
-    <button
-      type="button"
-      onClick={() => copy(text)}
-      aria-label={copied ? "Copied" : label}
-      className={cn(
-        "inline-flex size-6 shrink-0 items-center justify-center rounded-control text-muted-foreground hover:bg-accent hover:text-foreground [&_svg]:size-3.5",
-        focusRing,
-        className
-      )}
-    >
-      {copied ? <RiCheckLine aria-hidden className="text-success" /> : <RiFileCopyLine aria-hidden />}
-    </button>
-  );
+  return <CopyButton value={text} label={label} copiedLabel="Copied" size="xs" className={cn("rounded-control", className)} />;
 }
 
 /** Click-to-copy request id chip. */
@@ -242,14 +229,14 @@ export interface RequestInspectorProps extends Omit<React.HTMLAttributes<HTMLDiv
 export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspectorProps>(
   ({ className, record, tab, defaultTab = "messages", onTabChange, hideHeader, locale, ...props }, ref) => {
     const info = describeRequestLog(record);
-    const time = toValidDate(toMs(record.timestamp));
+    const time = toValidDate(record.timestamp);
     const chips: { k: string; v: React.ReactNode }[] = [];
     for (const [k, v] of Object.entries(info.params)) {
       if (k === "stream") {
         if (v) chips.push({ k: "stream", v: null });
         continue;
       }
-      chips.push({ k, v: typeof v === "object" ? JSON.stringify(v) : String(v) });
+      chips.push({ k, v: typeof v === "object" ? safeJsonStringify(v, 0) : String(v) });
     }
     if (info.finishReason) chips.push({ k: "finish_reason", v: info.finishReason });
     if (info.tokensIn != null || info.tokensOut != null)
@@ -325,7 +312,7 @@ export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspecto
             )}
           </TabsContent>
           <TabsContent value="raw">
-            <CodeBlock code={JSON.stringify(record.raw ?? record, null, 2)} language="json" theme="light" maxHeight={420} />
+            <CodeBlock code={safeJsonStringify(record.raw ?? record)} language="json" theme="light" maxHeight={420} />
           </TabsContent>
         </Tabs>
       </div>
@@ -396,19 +383,15 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
     },
     ref
   ) => {
-    const [filtersState, setFiltersState] = React.useState<RequestLogFilters>({ status: "all", model: "all", latency: "all", ...defaultFilters });
-    const filters = filtersProp ?? filtersState;
+    const [filters, setFilters] = useControllableState<RequestLogFilters>({
+      value: filtersProp,
+      defaultValue: { status: "all", model: "all", latency: "all", ...defaultFilters },
+      onChange: onFiltersChange,
+    });
     const [page, setPage] = React.useState(1);
-    const [expandedState, setExpandedState] = React.useState<string | null>(null);
-    const expanded = expandedProp !== undefined ? expandedProp : expandedState;
-    const setExpanded = (id: string | null) => {
-      if (expandedProp === undefined) setExpandedState(id);
-      onExpandedChange?.(id);
-    };
+    const [expanded, setExpanded] = useControllableState<string | null>({ value: expandedProp, defaultValue: null, onChange: onExpandedChange });
     const setFilter = (k: keyof RequestLogFilters, v: string) => {
-      const next = { ...filters, [k]: v };
-      if (!filtersProp) setFiltersState(next);
-      onFiltersChange?.(next);
+      setFilters({ ...filters, [k]: v });
       setPage(1);
       setExpanded(null);
     };
@@ -421,6 +404,10 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
     const rows = filtered.slice((current - 1) * pageSize, current * pageSize);
     const colCount = 7 + (showIdentity ? 1 : 0);
     const timeFmt = new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const clockTime = (t: TimeInput) => {
+      const d = toValidDate(t);
+      return d ? timeFmt.format(d) : "—";
+    };
 
     return (
       <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
@@ -460,7 +447,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
             ]}
           />
           <span className="text-xs text-muted-foreground" aria-live="polite" data-record-count="">
-            {filtered.length.toLocaleString(locale)} {filtered.length === 1 ? "record" : "records"}
+            {filtered.length.toLocaleString(locale)} {pluralize(filtered.length, "record")}
           </span>
           {toolbar ? <div className="ml-auto flex items-center gap-2">{toolbar}</div> : null}
         </div>
@@ -515,7 +502,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
                         </button>
                       </TableCell>
                       <TableCell className="whitespace-nowrap font-mono text-xs tabular-nums text-muted-foreground">
-                        {Number.isFinite(toMs(r.timestamp)) ? timeFmt.format(new Date(toMs(r.timestamp))) : "—"}
+                        {clockTime(r.timestamp)}
                       </TableCell>
                       <TableCell>
                         <RequestIdCopy id={r.id} />

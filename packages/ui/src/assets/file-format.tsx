@@ -140,12 +140,15 @@ export const fileFormatColors: Record<string, string> = Object.fromEntries(
   Object.entries(formats).map(([ext, f]) => [ext, f.color])
 );
 
-/** Extract the lowercase extension from a filename, path or bare extension. */
+/** Extract the lowercase extension from a filename, path or bare extension (`""` for names like `"Dockerfile"`). */
 export function getFileExtension(filenameOrExt: string): string {
   const clean = filenameOrExt.trim().toLowerCase().split(/[?#]/)[0] ?? "";
   const base = clean.split(/[\\/]/).pop() ?? clean;
   const dot = base.lastIndexOf(".");
-  return dot === -1 ? base : base.slice(dot + 1);
+  if (dot !== -1) return base.slice(dot + 1);
+  // No dot: a bare extension ("pdf") or an extensionless file name ("Dockerfile", "src/readme").
+  if (base !== clean) return "";
+  return Object.prototype.hasOwnProperty.call(formats, base) || /^[a-z0-9]{1,5}$/.test(base) ? base : "";
 }
 
 /** Category for a filename or extension, e.g. `"report.pdf"` → `"document"`. */

@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiMicLine, RiStopFill, RiVolumeUpLine, RiStopCircleLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { formatClock } from "../lib/duration";
+import { useNow } from "../hooks/use-now";
 import { Button, type ButtonProps } from "./button";
 
 /* ------------------------------------------------------------------ */
@@ -282,11 +284,6 @@ AudioLevelMeter.displayName = "AudioLevelMeter";
 /* VoiceInput                                                          */
 /* ------------------------------------------------------------------ */
 
-function clock(s: number) {
-  const t = Math.max(0, Math.floor(s));
-  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
-}
-
 export interface VoiceInputProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onError"> {
   lang?: string;
   /** Called with each finalized phrase (`done: false`) and with the whole transcript when dictation stops (`done: true`). */
@@ -328,16 +325,10 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
     const alive = React.useRef(true);
     const level = useAudioLevel(stream);
     const [startedAt, setStartedAt] = React.useState<number | null>(null);
-    const [, tick] = React.useState(0);
+    const now = useNow({ active: sr.listening, interval: 250 });
     const transcriptRef = React.useRef("");
     transcriptRef.current = sr.transcript;
     const wasListening = React.useRef(false);
-
-    React.useEffect(() => {
-      if (!sr.listening) return;
-      const t = setInterval(() => tick((n) => n + 1), 250);
-      return () => clearInterval(t);
-    }, [sr.listening]);
 
     const releaseStream = React.useCallback(() => {
       startToken.current++;
@@ -372,7 +363,7 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
       };
     }, []);
 
-    const elapsed = startedAt != null ? (Date.now() - startedAt) / 1000 : 0;
+    const elapsed = startedAt != null ? Math.max(0, now - startedAt) / 1000 : 0;
     const left = Math.max(0, maxDuration - elapsed);
     React.useEffect(() => {
       if (sr.listening && startedAt != null && left <= 0) sr.stop();
@@ -437,8 +428,8 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
           <>
             {meter ? <AudioLevelMeter level={level} bars={5} size="sm" tone="destructive" /> : null}
             <span className={cn("font-mono text-xs tabular-nums", nearEnd ? "text-destructive" : "text-muted-foreground")} data-slot="voice-timer">
-              {clock(elapsed)}
-              <span className="text-muted-foreground/60"> / {clock(maxDuration)}</span>
+              {formatClock(elapsed)}
+              <span className="text-muted-foreground/60"> / {formatClock(maxDuration)}</span>
             </span>
             {nearEnd ? (
               <span className="text-xs text-destructive" role="status">

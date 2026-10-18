@@ -1,7 +1,11 @@
 import * as React from "react";
 import { RiAddLine, RiCheckLine, RiDeleteBinLine, RiErrorWarningLine, RiLockLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { capitalize } from "../lib/text";
+import { isEmail, isHttpUrl } from "../lib/validate";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useSafeId } from "../hooks/use-safe-id";
 import { Button } from "./button";
 import { Input, PasswordInput, SearchInput } from "./input";
 import { SegmentedControl } from "./segmented-control";
@@ -61,7 +65,14 @@ function inferType(schema: SchemaFormSchema): SchemaFormType | undefined {
   return undefined;
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Tests a schema `pattern`; an invalid pattern can't be checked, so it never fails (or throws). */
+function matchesPattern(pattern: string, value: string) {
+  try {
+    return new RegExp(pattern).test(value);
+  } catch {
+    return true;
+  }
+}
 
 function joinPath(base: string, seg: string | number) {
   return base ? `${base}.${seg}` : String(seg);
@@ -81,15 +92,9 @@ export function validateAgainstSchema(schema: SchemaFormSchema, value: unknown, 
       }
       if (schema.minLength != null && value.length < schema.minLength) errors[path] = `Must be at least ${schema.minLength} characters`;
       else if (schema.maxLength != null && value.length > schema.maxLength) errors[path] = `Must be at most ${schema.maxLength} characters`;
-      else if (schema.pattern && !new RegExp(schema.pattern).test(value)) errors[path] = "Invalid format";
-      else if (schema.format === "email" && !EMAIL_RE.test(value)) errors[path] = "Enter a valid email address";
-      else if (schema.format === "uri") {
-        try {
-          new URL(value);
-        } catch {
-          errors[path] = "Enter a valid URL";
-        }
-      }
+      else if (schema.pattern && !matchesPattern(schema.pattern, value)) errors[path] = "Invalid format";
+      else if (schema.format === "email" && !isEmail(value)) errors[path] = "Enter a valid email address";
+      else if (schema.format === "uri" && !isHttpUrl(value)) errors[path] = "Enter a valid URL";
       break;
     }
     case "number":
@@ -153,10 +158,7 @@ export function schemaDefaults(schema: SchemaFormSchema): unknown {
 }
 
 function humanize(key: string) {
-  return key
-    .replace(/[_-]+/g, " ")
-    .replace(/([a-z])([A-Z])/g, "$1 $2")
-    .replace(/^\w/, (c) => c.toUpperCase());
+  return capitalize(key.replace(/[_-]+/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2"));
 }
 
 /* ------------------------------------------------------------------ */
@@ -614,8 +616,10 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
     const [status, setStatus] = React.useState<Record<string, SchemaFieldSaveStatus>>({});
     const [query, setQuery] = React.useState("");
     const [activeSection, setActiveSection] = React.useState<string | null>(null);
-    const [busy, setBusy] = React.useState(false);
-    const idPrefix = React.useId().replace(/:/g, "");
+    const { run: runSubmit, busy } = useAsyncAction(async (v: Record<string, unknown>) => {
+      await onSubmit?.(v);
+    });
+    const idPrefix = useSafeId("sf");
     const errors = React.useMemo(() => validateAgainstSchema({ ...schema, type: "object" }, value), [schema, value]);
 
     const pending = React.useRef<Set<string>>(new Set());
@@ -697,16 +701,11 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
       .map((s) => ({ ...s, keys: s.keys.filter((k) => visibleKeys.includes(k)) }))
       .filter((s) => s.keys.length && (!showNav || q || !activeSection || s.id === activeSection));
 
-    const submit = async (e: React.FormEvent) => {
+    const submit = (e: React.FormEvent) => {
       e.preventDefault();
       setSubmitted(true);
       if (Object.keys(errors).length) return;
-      setBusy(true);
-      try {
-        await onSubmit?.(value);
-      } finally {
-        setBusy(false);
-      }
+      void runSubmit(value);
     };
 
     const errorCount = Object.keys(errors).length;

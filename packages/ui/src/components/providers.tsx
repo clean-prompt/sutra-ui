@@ -1,11 +1,9 @@
 import * as React from "react";
 import {
   RiAddLine,
-  RiCheckLine,
   RiCloseLine,
   RiDeleteBinLine,
   RiExternalLinkLine,
-  RiFileCopyLine,
   RiKey2Line,
   RiLinkM,
   RiPlugLine,
@@ -14,9 +12,17 @@ import {
   RiShieldKeyholeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { chartColors } from "../lib/tokens";
+import { formatCountdown, formatDuration } from "../lib/duration";
+import { pluralize } from "../lib/format";
+import { colorForSeed } from "../lib/hash";
+import { clamp } from "../lib/math";
+import { capitalize, initials } from "../lib/text";
+import { DAY_MS, HOUR_MS, toMs, type TimeInput } from "../lib/time";
+import { isHttpUrl, isSafeHref } from "../lib/validate";
+import { errorMessage, useAsyncAction, useMountedRef } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useCopy } from "../hooks/use-copy";
+import { useCountdown } from "../hooks/use-now";
+import { CopyButton } from "./copy-button";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import { StatusBadge, type StatusBadgeStatus } from "./status-badge";
@@ -36,13 +42,7 @@ import { InlineAlert } from "./inline-alert";
 /* Shared types + helpers                                              */
 /* ------------------------------------------------------------------ */
 
-type TimeValue = number | string | Date;
-
-const toMs = (t: TimeValue | undefined) => {
-  if (t == null) return undefined;
-  const v = t instanceof Date ? t.getTime() : typeof t === "string" ? Date.parse(t) : t;
-  return Number.isFinite(v) ? v : undefined;
-};
+type TimeValue = TimeInput;
 
 export type ProviderAuthMethod = "oauth" | "api-key" | "local" | "custom";
 export type ProviderStatus = "connected" | "expired" | "error" | "not-configured";
@@ -77,13 +77,7 @@ const authIcon: Record<ProviderAuthMethod, React.ComponentType<{ className?: str
 
 /** Short duration such as `12d`, `3h`, `25m`, `40s`. */
 function shortDuration(ms: number) {
-  const s = Math.max(0, Math.round(ms / 1000));
-  if (s < 60) return `${s}s`;
-  const m = Math.round(s / 60);
-  if (m < 60) return `${m}m`;
-  const h = Math.round(m / 60);
-  if (h < 48) return `${h}h`;
-  return `${Math.round(h / 24)}d`;
+  return formatDuration(ms, { units: 1, maxUnit: ms < 48 * HOUR_MS ? "h" : "d" });
 }
 
 /** "expires in 12d", "expired 3h ago", or "" when there is no expiry. */
@@ -94,17 +88,9 @@ export function formatTokenExpiry(expiresAt: TimeValue | undefined, now: number 
   return diff > 0 ? `expires in ${shortDuration(diff)}` : `expired ${shortDuration(-diff)} ago`;
 }
 
-function hashString(input: string) {
-  let h = 0;
-  for (let i = 0; i < input.length; i++) h = (h * 31 + input.charCodeAt(i)) | 0;
-  return Math.abs(h);
-}
-
 /** Up to two monogram letters for a provider name: "Nimbus AI" → "NA". */
 export function providerMonogram(name: string) {
-  const words = name.match(/[A-Za-z0-9]+/g) ?? ["?"];
-  const letters = words.length > 1 ? words[0]![0]! + words[1]![0]! : words[0]!.slice(0, 2);
-  return letters.toUpperCase();
+  return initials(String(name ?? "").replace(/[^\p{L}\p{N}]+/gu, " "), { mode: "first-two", singleWord: 2, fallback: "?" });
 }
 
 /* ------------------------------------------------------------------ */
@@ -134,7 +120,7 @@ export const ProviderLogo = React.forwardRef<HTMLSpanElement, ProviderLogoProps>
         logoSize[size],
         className
       )}
-      style={{ backgroundColor: color ?? chartColors[hashString(name) % chartColors.length], ...style }}
+      style={{ backgroundColor: color ?? colorForSeed(name), ...style }}
       {...props}
     >
       {monogram ?? providerMonogram(name)}
@@ -170,7 +156,7 @@ const quotaText: Record<MeterLevel, string> = {
 /** Compact remaining-quota bar with threshold colors and a reset-time tooltip. */
 export const ProviderQuotaChip = React.forwardRef<HTMLSpanElement, ProviderQuotaChipProps>(
   ({ used, resetsAt, resetLabel, thresholds = { warn: 75, danger: 90 }, label = "Quota", now, className, ...props }, ref) => {
-    const pct = Math.max(0, Math.min(100, used));
+    const pct = clamp(used, 0, 100);
     const remaining = Math.round(100 - pct);
     const level = meterLevel(pct, thresholds);
     const ms = toMs(resetsAt);
@@ -243,7 +229,7 @@ export const ProviderRow = React.forwardRef<HTMLDivElement, ProviderRowProps>(
     const expiry = configured ? formatTokenExpiry(p.tokenExpiresAt, now) : "";
     const expiringSoon = (() => {
       const t = toMs(p.tokenExpiresAt);
-      return t != null && t - (now ?? Date.now()) < 3 * 86_400_000;
+      return t != null && t - (now ?? Date.now()) < 3 * DAY_MS;
     })();
     return (
       <div
@@ -272,12 +258,12 @@ export const ProviderRow = React.forwardRef<HTMLDivElement, ProviderRowProps>(
             ) : null}
             {expiry && (
               <span data-slot="provider-expiry" className={cn((p.status === "expired" || expiringSoon) && "text-warning-soft-foreground")}>
-                {expiry.charAt(0).toUpperCase() + expiry.slice(1)}
+                {capitalize(expiry)}
               </span>
             )}
             {p.modelCount != null && (
               <span data-slot="provider-model-count">
-                {p.modelCount} {p.modelCount === 1 ? "model" : "models"}
+                {p.modelCount} {pluralize(p.modelCount, "model")}
               </span>
             )}
           </div>
@@ -402,12 +388,10 @@ export interface ProviderConnectDialogProps {
 
 const methodLabels: Record<ProviderConnectMethod, string> = { device: "Device code", pkce: "Paste code", "api-key": "API key" };
 
-const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.max(0, s) % 60).padStart(2, "0")}`;
-
 type DeviceState =
   | { phase: "idle" }
   | { phase: "starting" }
-  | { phase: "waiting"; grant: DeviceCodeGrant; remaining: number }
+  | { phase: "waiting"; grant: DeviceCodeGrant; deadline: number }
   | { phase: "approved" }
   | { phase: "expired" }
   | { phase: "error"; message: string };
@@ -424,40 +408,29 @@ function DeviceFlowPanel({
   onDone: () => void;
 }) {
   const [state, setState] = React.useState<DeviceState>({ phase: "idle" });
-  const { copied, copy } = useCopy(1500);
-  const mounted = React.useRef(true);
+  const mounted = useMountedRef();
   const onDoneRef = React.useRef(onDone);
   onDoneRef.current = onDone;
-  React.useEffect(() => {
-    // Set on every mount, not just initially: React may unmount and remount (StrictMode, <Activity>).
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
 
   const start = async () => {
     if (!onStart) return;
     setState({ phase: "starting" });
     try {
       const grant = await onStart();
-      if (mounted.current) setState({ phase: "waiting", grant, remaining: Math.round(grant.expiresIn) });
+      if (mounted.current) setState({ phase: "waiting", grant, deadline: Date.now() + grant.expiresIn * 1000 });
     } catch (e) {
-      if (mounted.current) setState({ phase: "error", message: e instanceof Error ? e.message : "Couldn't start sign-in." });
+      if (mounted.current) setState({ phase: "error", message: errorMessage(e, "Couldn't start sign-in.") });
     }
   };
 
   const waiting = state.phase === "waiting";
   const grant = waiting ? state.grant : null;
+  const { remainingMs } = useCountdown(waiting ? state.deadline : undefined, {
+    onExpire: () => setState((s) => (s.phase === "waiting" ? { phase: "expired" } : s)),
+  });
 
   React.useEffect(() => {
     if (!grant) return;
-    const tick = setInterval(() => {
-      setState((s) => {
-        if (s.phase !== "waiting") return s;
-        return s.remaining <= 1 ? { phase: "expired" } : { ...s, remaining: s.remaining - 1 };
-      });
-    }, 1000);
     let inFlight = false;
     const poll = setInterval(async () => {
       if (inFlight || !onPoll) return;
@@ -477,11 +450,8 @@ function DeviceFlowPanel({
         inFlight = false;
       }
     }, (grant.interval ?? 5) * 1000);
-    return () => {
-      clearInterval(tick);
-      clearInterval(poll);
-    };
-  }, [grant, onPoll]);
+    return () => clearInterval(poll);
+  }, [grant, onPoll, mounted]);
 
   if (state.phase === "idle" || state.phase === "starting") {
     return (
@@ -523,12 +493,10 @@ function DeviceFlowPanel({
           <span data-slot="device-user-code" className="font-mono text-2xl font-semibold tracking-[0.2em] text-foreground">
             {g.userCode}
           </span>
-          <Button variant="ghost" size="icon-sm" aria-label={copied ? "Copied" : "Copy code"} onClick={() => copy(g.userCode)}>
-            {copied ? <RiCheckLine className="text-success" /> : <RiFileCopyLine />}
-          </Button>
+          <CopyButton value={g.userCode} label="Copy code" copiedLabel="Copied" timeout={1500} />
         </div>
         <a
-          href={g.verificationUrl}
+          href={isSafeHref(g.verificationUrl) ? g.verificationUrl : undefined}
           target="_blank"
           rel="noreferrer noopener"
           className={cn("mt-2 inline-flex items-center gap-1 rounded-xs text-sm font-medium text-primary hover:underline", focusRing)}
@@ -541,7 +509,7 @@ function DeviceFlowPanel({
         <Spinner size="xs" label="" aria-hidden />
         <span>Waiting for approval…</span>
         <span className="font-mono tabular-nums" data-slot="device-countdown">
-          {mmss(state.remaining)}
+          {formatCountdown(remainingMs)}
         </span>
       </div>
     </div>
@@ -559,23 +527,23 @@ function PkcePanel({
 }) {
   const id = React.useId();
   const [code, setCode] = React.useState("");
-  const [busy, setBusy] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
   const [done, setDone] = React.useState(false);
-  const submit = async (e: React.FormEvent) => {
+  const { run, busy, error } = useAsyncAction(
+    async (value: string) => {
+      await onSubmit?.(value);
+    },
+    {
+      fallbackMessage: "That code didn't work.",
+      onSuccess: () => {
+        setDone(true);
+        onDone();
+      },
+    }
+  );
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!code.trim()) return;
-    setBusy(true);
-    setError(null);
-    try {
-      await onSubmit?.(code.trim());
-      setDone(true);
-      onDone();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "That code didn't work.");
-    } finally {
-      setBusy(false);
-    }
+    void run(code.trim());
   };
   if (done) return <InlineAlert variant="success">Signed in.</InlineAlert>;
   return (
@@ -583,7 +551,7 @@ function PkcePanel({
       <ol className="list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
         <li>
           Open the{" "}
-          {authorizeUrl ? (
+          {authorizeUrl && isSafeHref(authorizeUrl) ? (
             <a href={authorizeUrl} target="_blank" rel="noreferrer noopener" className={cn("rounded-xs font-medium text-primary hover:underline", focusRing)}>
               sign-in page
             </a>
@@ -635,25 +603,20 @@ function ApiKeyPanel({
 }) {
   const id = React.useId();
   const [key, setKey] = React.useState("");
-  const [busy, setBusy] = React.useState(false);
   const [result, setResult] = React.useState<ApiKeyValidation | null>(null);
   const [saved, setSaved] = React.useState(false);
+  const { run, busy } = useAsyncAction((value: string) => onValidate?.(value), {
+    onSuccess: (r) => setResult(typeof r === "boolean" ? { ok: r } : (r ?? { ok: true })),
+    onError: (e) => setResult({ ok: false, message: e instanceof Error ? e.message : undefined }),
+  });
 
-  const validate = async () => {
+  const validate = () => {
     if (!key.trim()) return;
     if (!onValidate) {
       setResult({ ok: true });
       return;
     }
-    setBusy(true);
-    try {
-      const r = await onValidate(key.trim());
-      setResult(typeof r === "boolean" ? { ok: r } : r);
-    } catch (e) {
-      setResult({ ok: false, message: e instanceof Error ? e.message : undefined });
-    } finally {
-      setBusy(false);
-    }
+    void run(key.trim());
   };
 
   if (saved) {
@@ -670,7 +633,7 @@ function ApiKeyPanel({
       <div className="grid gap-1.5">
         <div className="flex items-center justify-between gap-2">
           <Label htmlFor={`${id}-key`}>{providerName} API key</Label>
-          {getKeyUrl && (
+          {getKeyUrl && isSafeHref(getKeyUrl) && (
             <a
               href={getKeyUrl}
               target="_blank"
@@ -834,15 +797,6 @@ export const customEndpointApiModes: { value: CustomEndpointApiMode; label: stri
   { value: "other", label: "Other" },
 ];
 
-const isHttpUrl = (s: string) => {
-  try {
-    const u = new URL(s);
-    return u.protocol === "http:" || u.protocol === "https:";
-  } catch {
-    return false;
-  }
-};
-
 /** Form for an OpenAI/Anthropic-compatible endpoint with headers, key and a "Test connection" probe. */
 export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpointFormProps>(
   ({ defaultValues, onTest, onSave, onCancel, submitLabel = "Save endpoint", className, ...props }, ref) => {
@@ -854,7 +808,6 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
       headers: defaultValues?.headers ?? [],
       apiKey: defaultValues?.apiKey ?? "",
     });
-    const [testing, setTesting] = React.useState(false);
     const [result, setResult] = React.useState<CustomEndpointTestResult | null>(null);
     const [touched, setTouched] = React.useState(false);
     const set = <K extends keyof CustomEndpointValues>(k: K, v: CustomEndpointValues[K]) => {
@@ -870,17 +823,17 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
       headers: values.headers.filter((h) => h.key.trim()),
     });
 
-    const test = async () => {
+    const { run: runTest, busy: testing } = useAsyncAction((v: CustomEndpointValues) => onTest?.(v), {
+      onSuccess: (r) => {
+        if (r) setResult(r);
+      },
+      onError: (e) => setResult({ ok: false, error: e instanceof Error ? e.message : "Connection failed" }),
+    });
+
+    const test = () => {
       if (!onTest || !isHttpUrl(values.baseUrl.trim())) return;
-      setTesting(true);
       setResult(null);
-      try {
-        setResult(await onTest(clean()));
-      } catch (e) {
-        setResult({ ok: false, error: e instanceof Error ? e.message : "Connection failed" });
-      } finally {
-        setTesting(false);
-      }
+      void runTest(clean());
     };
 
     return (
@@ -998,7 +951,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
                   {result.models && (
                     <>
                       {" "}
-                      · {result.models.length} {result.models.length === 1 ? "model" : "models"} found
+                      · {result.models.length} {pluralize(result.models.length, "model")} found
                     </>
                   )}
                 </p>
@@ -1143,7 +1096,7 @@ export const ProviderKeysGroups = React.forwardRef<HTMLDivElement, ProviderKeysG
                 <Badge size="sm" color={setCount > 0 ? "success" : "neutral"}>
                   {setCount}/{g.keys.length} set
                 </Badge>
-                {g.docsUrl && (
+                {g.docsUrl && isSafeHref(g.docsUrl) && (
                   <a href={g.docsUrl} target="_blank" rel="noreferrer noopener" className={cn("inline-flex items-center gap-1 rounded-xs text-xs font-medium text-primary hover:underline", focusRing)}>
                     Get a key
                     <RiExternalLinkLine aria-hidden className="size-3" />

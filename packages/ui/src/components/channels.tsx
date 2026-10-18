@@ -4,7 +4,6 @@ import {
   RiCloseLine,
   RiErrorWarningLine,
   RiExternalLinkLine,
-  RiFileCopyLine,
   RiRefreshLine,
   RiSettings3Line,
   RiShieldUserLine,
@@ -12,7 +11,11 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useCopy } from "../hooks/use-copy";
+import { errorMessage, useAsyncAction } from "../hooks/use-async-action";
+import { useNow } from "../hooks/use-now";
+import { formatCountdown } from "../lib/duration";
+import { formatRelative } from "../lib/time";
+import { CopyButton } from "./copy-button";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { Switch } from "./switch";
@@ -321,7 +324,7 @@ export const PlatformConfigForm = React.forwardRef<HTMLFormElement, PlatformConf
     const [values, setValues] = React.useState<PlatformConfigValues>(() => ({ ...defaultValues }));
     const [errors, setErrors] = React.useState<Record<string, string | null>>({});
     const [rejects, setRejects] = React.useState<Record<string, string | null>>({});
-    const [saving, setSaving] = React.useState(false);
+    const save = useAsyncAction(async (v: PlatformConfigValues) => onSubmit?.(v));
     const rejectRef = React.useRef<Record<string, string | null>>({});
 
     const set =(name: string, v: string | string[]) => {
@@ -336,12 +339,7 @@ export const PlatformConfigForm = React.forwardRef<HTMLFormElement, PlatformConf
       for (const f of fields) next[f.name] = fieldError(platform, f, values[f.name]);
       setErrors(next);
       if (Object.values(next).some(Boolean)) return;
-      try {
-        setSaving(true);
-        await onSubmit?.(values);
-      } finally {
-        setSaving(false);
-      }
+      await save.run(values);
     };
 
     return (
@@ -408,7 +406,7 @@ export const PlatformConfigForm = React.forwardRef<HTMLFormElement, PlatformConf
               Cancel
             </Button>
           )}
-          <Button type="submit" loading={saving}>
+          <Button type="submit" loading={save.busy}>
             {submitLabel}
           </Button>
         </div>
@@ -473,24 +471,23 @@ export const PlatformConnectorCard = React.forwardRef<HTMLDivElement, PlatformCo
     const { platform, state } = connector;
     const name = connector.name ?? channelPlatforms[platform].label;
     const meta = connectorStateMeta[state];
-    const [testing, setTesting] = React.useState(false);
     const [result, setResult] = React.useState<ConnectorTestResult | null>(null);
     const [open, setOpen] = React.useState(false);
-    const { copied, copy } = useCopy();
     const failed = state === "fatal" || state === "startup_failed";
     const titleId = React.useId();
 
-    const runTest = async () => {
-      if (!onTest) return;
-      setTesting(true);
-      setResult(null);
-      try {
-        setResult(await onTest());
-      } catch (e) {
-        setResult({ ok: false, message: e instanceof Error ? e.message : "Test failed" });
-      } finally {
-        setTesting(false);
+    const test = useAsyncAction(
+      async () => {
+        setResult(null);
+        return onTest!();
+      },
+      {
+        onSuccess: setResult,
+        onError: (e) => setResult({ ok: false, message: errorMessage(e, "Test failed") }),
       }
+    );
+    const runTest = () => {
+      if (onTest) void test.run();
     };
 
     return (
@@ -534,21 +531,14 @@ export const PlatformConnectorCard = React.forwardRef<HTMLDivElement, PlatformCo
           <div className="flex items-center gap-2 rounded-lg border border-border bg-subtle py-1 pl-3 pr-1">
             <span className="shrink-0 text-2xs font-medium uppercase tracking-wide text-muted-foreground">Ingress</span>
             <code className="min-w-0 flex-1 truncate font-mono text-xs text-foreground">{connector.ingressUrl}</code>
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              aria-label={copied ? "Copied" : "Copy ingress URL"}
-              onClick={() => copy(connector.ingressUrl!)}
-            >
-              {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-            </Button>
+            <CopyButton value={connector.ingressUrl} label="Copy ingress URL" />
           </div>
         )}
 
         {(onTest || onSaveConfig) && (
           <div className="flex flex-wrap items-center gap-2">
             {onTest && (
-              <Button size="xs" variant="secondary" loading={testing} onClick={runTest} disabled={state === "not_configured"}>
+              <Button size="xs" variant="secondary" loading={test.busy} onClick={runTest} disabled={state === "not_configured"}>
                 Test
               </Button>
             )}
@@ -685,11 +675,6 @@ export interface RotatingQRPayload {
 
 export type RotatingQRPollResult = string | RotatingQRPayload | null | undefined;
 
-function fmtCountdown(sec: number) {
-  const s = Math.max(0, Math.ceil(sec));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-}
-
 export interface RotatingQRPairingProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Polled while waiting for a scan. Return the current pairing payload (or `{ connected: true }`). */
   getPayload: () => RotatingQRPollResult | Promise<RotatingQRPollResult>;
@@ -742,7 +727,10 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
     const [deadline, setDeadline] = React.useState<number | null>(() =>
       expiresAt ?? (ttl != null ? Date.now() + ttl * 1000 : null)
     );
-    const [now, setNow] = React.useState(() => Date.now());
+    const ticked = useNow({ active: deadline != null && phase === "waiting" });
+    // A refresh restarts the clock before the next tick.
+    const [refreshedAt, setRefreshedAt] = React.useState(0);
+    const now = Math.max(ticked, refreshedAt);
     const keyRef = React.useRef(0);
     const currentRef = React.useRef<string | null>(null);
     const getRef = React.useRef(getPayload);
@@ -801,13 +789,6 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
       return () => clearTimeout(t);
     }, [layers]);
 
-    React.useEffect(() => {
-      if (deadline == null || phase !== "waiting") return;
-      setNow(Date.now());
-      const id = setInterval(() => setNow(Date.now()), 1000);
-      return () => clearInterval(id);
-    }, [deadline, phase]);
-
     const remaining = deadline != null ? (deadline - now) / 1000 : null;
     React.useEffect(() => {
       if (phase === "waiting" && remaining != null && remaining <= 0) setPhase("expired");
@@ -817,7 +798,7 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
       currentRef.current = null;
       setLayers([]);
       if (expiresAt == null && ttl != null) setDeadline(Date.now() + ttl * 1000);
-      setNow(Date.now());
+      setRefreshedAt(Date.now());
       setPhase("waiting");
       onRefresh?.();
     };
@@ -908,7 +889,7 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
                 )}
               >
                 <RiTimeLine aria-hidden className="size-3.5" />
-                Expires in {fmtCountdown(remaining)}
+                Expires in {formatCountdown(remaining * 1000)}
               </p>
             )}
           </>
@@ -950,13 +931,10 @@ export interface GuidedSetupStepsProps extends Omit<React.HTMLAttributes<HTMLOLi
 }
 
 function StepCopy({ value, label }: { value: string; label?: string }) {
-  const { copied, copy } = useCopy();
   return (
     <div className="flex max-w-full items-center gap-1 rounded-lg border border-border bg-subtle py-1 pl-2.5 pr-1">
       <code className="min-w-0 truncate font-mono text-xs text-foreground">{value}</code>
-      <Button variant="ghost" size="icon-xs" aria-label={copied ? "Copied" : (label ?? `Copy ${value}`)} onClick={() => copy(value)}>
-        {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-      </Button>
+      <CopyButton value={value} label={label ?? `Copy ${value}`} />
     </div>
   );
 }
@@ -1070,12 +1048,7 @@ export interface ApprovedChannelUser {
 
 /** Compact relative time ("just now", "5m ago", "3h ago", "2d ago"). */
 export function formatChannelAgo(at: Date | number | string, now: number = Date.now()): string {
-  const t = at instanceof Date ? at.getTime() : typeof at === "number" ? at : new Date(at).getTime();
-  const s = Math.max(0, Math.round((now - t) / 1000));
-  if (s < 45) return "just now";
-  if (s < 3600) return `${Math.round(s / 60)}m ago`;
-  if (s < 86400) return `${Math.round(s / 3600)}h ago`;
-  return `${Math.round(s / 86400)}d ago`;
+  return formatRelative(at, { now });
 }
 
 export interface AccessRequestQueueProps extends React.HTMLAttributes<HTMLDivElement> {

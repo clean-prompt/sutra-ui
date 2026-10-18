@@ -1,9 +1,7 @@
 import * as React from "react";
 import {
   RiArrowDownLine,
-  RiCheckLine,
   RiDownloadLine,
-  RiFileCopyLine,
   RiListOrdered,
   RiPauseLine,
   RiPlayLine,
@@ -11,9 +9,12 @@ import {
   RiTimeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
+import { pluralize } from "../lib/format";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { escapeRegExp } from "../lib/text";
+import { pad2, toValidDate } from "../lib/time";
 import { Button } from "./button";
+import { CopyButton } from "./copy-button";
 import { Checkbox } from "./checkbox";
 import { SearchInput } from "./input";
 import { SimpleSelect } from "./select";
@@ -351,14 +352,12 @@ interface NormalizedEntry {
   plain: string;
 }
 
-const pad = (n: number, w = 2) => String(n).padStart(w, "0");
-
 function formatTs(ts: LogEntry["ts"]): string | undefined {
   if (ts == null || ts === "") return undefined;
   if (typeof ts === "string") return ts;
-  const d = ts instanceof Date ? ts : new Date(ts);
-  if (Number.isNaN(d.getTime())) return undefined;
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
+  const d = toValidDate(ts);
+  if (!d) return undefined;
+  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}.${String(d.getMilliseconds()).padStart(3, "0")}`;
 }
 
 function normalize(line: LogLine, seq: number): NormalizedEntry {
@@ -417,9 +416,6 @@ function useLogBuffer(raw: readonly LogLine[], maxLines: number) {
   }, [raw, maxLines]);
 }
 
-function escapeRegExp(s: string) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
 
 function buildMatcher(query: string, regex: boolean): { re: RegExp | null; invalid: boolean } {
   if (!query) return { re: null, invalid: false };
@@ -736,7 +732,6 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
     const isVirtual = !wrap && visible.length > virtualizeThreshold;
     const rows = visible.slice(virtual.start, virtual.end);
 
-    const { copied, copy } = useCopy();
     const asText = React.useCallback(
       () =>
         visible
@@ -869,17 +864,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
               >
                 {paused ? <RiPlayLine /> : <RiPauseLine />}
               </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                aria-label={copied ? "Copied" : "Copy visible lines"}
-                title={copied ? "Copied" : "Copy visible lines"}
-                onClick={() => void copy(asText())}
-                className="text-muted-foreground"
-              >
-                {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-              </Button>
+              <CopyButton value={asText} size="md" label="Copy visible lines" className="rounded-control" />
               <Button
                 type="button"
                 variant="ghost"
@@ -987,7 +972,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
                 )}
               >
                 <RiPlayLine className="size-3.5" aria-hidden />
-                {pendingCount} new {pendingCount === 1 ? "line" : "lines"}
+                {pendingCount} new {pluralize(pendingCount, "line")}
               </button>
             )}
             {!stick.isAtBottom && !(paused && pendingCount > 0) && visible.length > 0 && (

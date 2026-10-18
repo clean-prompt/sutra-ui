@@ -1,6 +1,11 @@
 import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine, RiInformationLine, RiPauseFill, RiPlayFill, RiPlayLargeFill } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { clamp } from "../lib/math";
+import { formatDuration } from "../lib/duration";
+import { prefersReducedMotion } from "../hooks/use-media-query";
+import { useResizeObserver } from "../hooks/use-resize-observer";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import { Spinner } from "./spinner";
@@ -100,7 +105,7 @@ function ActionsRow({ actions }: { actions: MediaCardAction[] }) {
 }
 
 function BusyOverlay({ busy }: { busy: MediaBusyState }) {
-  const pct = busy.progress === undefined ? undefined : Math.round(Math.min(100, Math.max(0, busy.progress)));
+  const pct = busy.progress === undefined ? undefined : Math.round(clamp(busy.progress, 0, 100));
   const label = busy.label ?? "Working…";
   return (
     <div
@@ -123,7 +128,7 @@ function BusyOverlay({ busy }: { busy: MediaBusyState }) {
 }
 
 function ProgressStrip({ value, label = "Watched" }: { value: number; label?: string }) {
-  const pct = Math.round(Math.min(100, Math.max(0, value)));
+  const pct = Math.round(clamp(value, 0, 100));
   return (
     <div
       role="progressbar"
@@ -353,9 +358,7 @@ export interface EpisodeCardProps extends Omit<PosterCardProps, "ratio" | "year"
 
 function formatRuntime(runtime: number | string) {
   if (typeof runtime === "string") return runtime;
-  const m = Math.round(runtime / 60);
-  if (m < 60) return `${m}m`;
-  return `${Math.floor(m / 60)}h ${m % 60}m`;
+  return formatDuration(runtime * 1000, { minUnit: "m", maxUnit: "h" });
 }
 
 /** Landscape 16:9 episode card with episode number, runtime, description, progress and actions. */
@@ -554,7 +557,7 @@ export interface PlaylistCardProps extends AlbumCardProps {
 export const PlaylistCard = React.forwardRef<HTMLDivElement, PlaylistCardProps>(({ image, artworks, count, subtitle, ...props }, ref) => (
   <CollectionCard
     {...props}
-    subtitle={subtitle ?? (count !== undefined ? `${count} ${count === 1 ? "track" : "tracks"}` : undefined)}
+    subtitle={subtitle ?? (count !== undefined ? `${count} ${pluralize(count, "track")}` : undefined)}
     images={image ? [image] : (artworks ?? [])}
     forwardedRef={ref}
   />
@@ -638,19 +641,14 @@ export const MediaShelf = React.forwardRef<HTMLElement, MediaShelfProps>(
       if (!el) return;
       update();
       el.addEventListener("scroll", update, { passive: true });
-      const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(update) : null;
-      ro?.observe(el);
-      return () => {
-        el.removeEventListener("scroll", update);
-        ro?.disconnect();
-      };
+      return () => el.removeEventListener("scroll", update);
     }, [update]);
+    useResizeObserver(listRef, update);
 
     const scrollByPage = (dir: 1 | -1) => {
       const el = listRef.current;
       if (!el) return;
-      const reduce = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-      el.scrollBy({ left: dir * Math.max(160, el.clientWidth * 0.9), behavior: reduce ? "auto" : "smooth" });
+      el.scrollBy({ left: dir * Math.max(160, el.clientWidth * 0.9), behavior: prefersReducedMotion() ? "auto" : "smooth" });
     };
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {
@@ -818,7 +816,7 @@ export const MediaHero = React.forwardRef<HTMLElement, MediaHeroProps>(
                 aria-valuenow={Math.round(progress)}
                 className="h-1 flex-1 overflow-hidden rounded-full bg-white/25"
               >
-                <div className="h-full bg-primary" style={{ width: `${Math.min(100, progress)}%` }} />
+                <div className="h-full bg-primary" style={{ width: `${clamp(progress, 0, 100)}%` }} />
               </div>
               {progressLabel && <span className="shrink-0 text-xs text-white/75">{progressLabel}</span>}
             </div>

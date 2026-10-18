@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
+import { formatBadgeCount } from "../lib/format";
 import { useControllableState } from "../hooks/use-controllable-state";
 
 /* ------------------------------------------------------------------ */
@@ -72,7 +73,7 @@ function TabBadge({ badge }: { badge: number | boolean | undefined }) {
       data-slot="badge-count"
       className="absolute -top-1 left-[calc(50%+4px)] flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none tabular-nums text-destructive-foreground ring-2 ring-background"
     >
-      {badge > 99 ? "99+" : badge}
+      {formatBadgeCount(badge)}
     </span>
   );
 }
@@ -379,7 +380,7 @@ export const AdaptiveTabs = React.forwardRef<HTMLDivElement, AdaptiveTabsProps>(
                   {item.label}
                   {typeof item.badge === "number" && item.badge > 0 ? (
                     <span aria-hidden className="rounded-full bg-primary-soft px-1.5 text-2xs font-semibold tabular-nums text-primary-soft-foreground">
-                      {item.badge > 99 ? "99+" : item.badge}
+                      {formatBadgeCount(item.badge)}
                     </span>
                   ) : item.badge === true ? (
                     <span aria-hidden className="size-1.5 rounded-full bg-destructive" />

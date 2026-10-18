@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiErrorWarningFill, RiInformationLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useSafeId } from "../hooks/use-safe-id";
 import { Label, type LabelProps } from "./label";
 
 type FieldPart = "description" | "error" | "hint";
@@ -95,8 +96,8 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(
     { id: idProp, invalid = false, disabled = false, required = false, orientation = "vertical", className, ...props },
     ref
   ) => {
-    const generated = React.useId();
-    const id = idProp ?? `field-${generated.replace(/:/g, "")}`;
+    const generated = useSafeId("field");
+    const id = idProp ?? generated;
     const [parts, setParts] = React.useState<Record<FieldPart, number>>({ description: 0, error: 0, hint: 0 });
 
     const registerPart = React.useCallback((part: FieldPart) => {

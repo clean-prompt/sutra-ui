@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { clamp } from "../lib/math";
 
 export interface TextShimmerProps extends React.HTMLAttributes<HTMLElement> {
   /** Element to render. Defaults to `span`. */
@@ -13,7 +14,7 @@ export interface TextShimmerProps extends React.HTMLAttributes<HTMLElement> {
 /** Text with an animated light sweep, used for "Thinking…" style status lines. */
 export const TextShimmer = React.forwardRef<HTMLElement, TextShimmerProps>(
   ({ as: Comp = "span", duration = 2, spread = 12, className, style, ...props }, ref) => {
-    const band = Math.min(Math.max(spread, 1), 50);
+    const band = clamp(spread, 1, 50);
     const shimmerStyle = {
       "--shimmer-duration": `${duration}s`,
       "--shimmer-spread": `${band}%`,

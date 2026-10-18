@@ -5,6 +5,7 @@ import { RiCloseLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { Button, type ButtonProps } from "./button";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useAsyncAction } from "../hooks/use-async-action";
 
 /* ------------------------------------------------------------------ */
 /* Shared pieces                                                       */
@@ -313,19 +314,16 @@ export function ConfirmDialog({
   className,
 }: ConfirmDialogProps) {
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
-  const [loading, setLoading] = React.useState(false);
+  // A rejected confirm keeps the dialog open so the caller can surface the error.
+  const confirm = useAsyncAction(async () => {
+    await onConfirm?.();
+    setOpen(false);
+  });
+  const loading = confirm.busy;
 
-  const handleConfirm = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleConfirm = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    try {
-      setLoading(true);
-      await onConfirm?.();
-      setOpen(false);
-    } catch {
-      /* keep open so the caller can surface the error */
-    } finally {
-      setLoading(false);
-    }
+    void confirm.run();
   };
 
   return (

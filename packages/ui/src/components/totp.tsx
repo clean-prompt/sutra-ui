@@ -1,33 +1,20 @@
 import * as React from "react";
-import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
-import { Button } from "./button";
+import { base32Decode as decodeBase32 } from "../lib/encoding";
+import { pluralize } from "../lib/format";
+import { useNow } from "../hooks/use-now";
+import { CopyButton } from "./copy-button";
 import { Favicon } from "./favicon";
 
 /* ------------------------------------------------------------------ */
 /* RFC 4648 base32 + RFC 6238 TOTP                                     */
 /* ------------------------------------------------------------------ */
 
-const BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-
-/** Decode an RFC 4648 base32 string (case-insensitive; spaces, dashes and `=` padding ignored). */
+/** Decode an RFC 4648 base32 string (case-insensitive; spaces, dashes and `=` padding ignored). Throws on a bad character. */
 export function base32Decode(input: string): Uint8Array {
-  const clean = input.toUpperCase().replace(/[\s-]/g, "").replace(/=+$/, "");
-  const out: number[] = [];
-  let bits = 0;
-  let value = 0;
-  for (const ch of clean) {
-    const idx = BASE32_ALPHABET.indexOf(ch);
-    if (idx === -1) throw new Error(`Invalid base32 character "${ch}"`);
-    value = (value << 5) | idx;
-    bits += 5;
-    if (bits >= 8) {
-      out.push((value >>> (bits - 8)) & 0xff);
-      bits -= 8;
-    }
-  }
-  return new Uint8Array(out);
+  const bytes = decodeBase32(input);
+  if (!bytes) throw new Error("Invalid base32 string");
+  return bytes;
 }
 
 export type TOTPAlgorithm = "SHA1" | "SHA256" | "SHA512";
@@ -109,11 +96,7 @@ export function parseOtpauthUri(uri: string): OtpauthParams | null {
   const params = new URLSearchParams(match[3] ?? "");
   const secret = (params.get("secret") ?? "").toUpperCase().replace(/[\s=]/g, "");
   if (!secret) return null;
-  try {
-    base32Decode(secret);
-  } catch {
-    return null;
-  }
+  if (!decodeBase32(secret)) return null;
   const colon = label.indexOf(":");
   const labelIssuer = colon >= 0 ? label.slice(0, colon).trim() : undefined;
   const account = (colon >= 0 ? label.slice(colon + 1) : label).trim();
@@ -136,15 +119,6 @@ export function parseOtpauthUri(uri: string): OtpauthParams | null {
 /* ------------------------------------------------------------------ */
 /* TOTPCode                                                            */
 /* ------------------------------------------------------------------ */
-
-function useNow(interval: number) {
-  const [now, setNow] = React.useState(() => Date.now());
-  React.useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), interval);
-    return () => clearInterval(id);
-  }, [interval]);
-  return now;
-}
 
 const codeSize = { sm: "text-lg", md: "text-2xl", lg: "text-display-xs" } as const;
 const ringSize = { sm: 22, md: 28, lg: 34 } as const;
@@ -200,13 +174,12 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
     },
     ref
   ) => {
-    const now = useNow(500);
+    const now = useNow({ interval: 500 });
     const counter = Math.floor(now / 1000 / period);
     const elapsed = (now / 1000) % period;
     const remaining = Math.max(1, Math.ceil(period - elapsed));
     const nearEnd = remaining <= nextThreshold;
     const [codes, setCodes] = React.useState<{ counter: number; current?: string; next?: string }>({ counter: -1 });
-    const { copied, copy } = useCopy();
 
     const getCodeRef = React.useRef(getCode);
     getCodeRef.current = getCode;
@@ -266,14 +239,9 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
     const placeholder = formatOtpCode("•".repeat(digits), groupSize);
     const display = current ? formatOtpCode(current, groupSize) : placeholder;
 
-    const timerLabel = `Code refreshes in ${remaining} second${remaining === 1 ? "" : "s"}`;
+    const timerLabel = `Code refreshes in ${remaining} ${pluralize(remaining, "second")}`;
     const pct = (remaining / period) * 100;
     const tone = nearEnd ? "text-destructive" : "text-primary";
-
-    const handleCopy = async () => {
-      if (!current) return;
-      if (await copy(current)) onCopy?.(current);
-    };
 
     const ring = countdown === "circular" && (
       <span
@@ -332,18 +300,14 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
           </span>
           {ring}
           {copyable && (
-            <Button
-              variant="ghost"
-              size={size === "sm" ? "icon-xs" : "icon-sm"}
-              aria-label={copied ? "Copied" : label ? `Copy ${label} code` : "Copy code"}
+            <CopyButton
+              value={current ?? ""}
+              size={size === "sm" ? "sm" : "md"}
+              label={label ? `Copy ${label} code` : "Copy code"}
               disabled={!current}
-              onClick={handleCopy}
-              className="ml-auto text-muted-foreground hover:text-foreground"
-            >
-              <span key={copied ? "check" : "copy"} className="inline-flex animate-in zoom-in-50 spin-in-12 duration-200">
-                {copied ? <RiCheckLine className="text-success" /> : <RiFileCopyLine />}
-              </span>
-            </Button>
+              onCopied={onCopy}
+              className="ml-auto"
+            />
           )}
         </div>
         {countdown === "linear" && (

@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { RiCheckLine, RiSubtractLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useSafeId } from "../hooks/use-safe-id";
 import { useField } from "./field";
 
 function joinIds(...ids: Array<string | undefined>) {
@@ -84,8 +85,8 @@ export interface CheckboxFieldProps extends CheckboxProps {
 /** Checkbox with a label and optional description. */
 export const CheckboxField = React.forwardRef<React.ElementRef<typeof CheckboxPrimitive.Root>, CheckboxFieldProps>(
   ({ label, description, labelClassName, wrapperClassName, className, id, size, ...props }, ref) => {
-    const generated = React.useId();
-    const inputId = id ?? `checkbox-${generated.replace(/:/g, "")}`;
+    const generated = useSafeId("checkbox");
+    const inputId = id ?? generated;
     const descriptionId = description ? `${inputId}-description` : undefined;
     if (label == null && description == null) {
       return <Checkbox ref={ref} id={id} size={size} className={className} {...props} />;
@@ -146,8 +147,8 @@ export interface CheckboxCardProps extends CheckboxProps {
 /** Bordered, selectable card that toggles a checkbox. Highlighted when checked. */
 export const CheckboxCard = React.forwardRef<React.ElementRef<typeof CheckboxPrimitive.Root>, CheckboxCardProps>(
   ({ label, description, icon, indicatorPosition = "end", className, checkboxClassName, id, ...props }, ref) => {
-    const generated = React.useId();
-    const inputId = id ?? `checkbox-card-${generated.replace(/:/g, "")}`;
+    const generated = useSafeId("checkbox-card");
+    const inputId = id ?? generated;
     const descriptionId = description ? `${inputId}-description` : undefined;
     return (
       <label
@@ -277,8 +278,7 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
       onChange: onValueChange,
     });
     const [items, setItems] = React.useState<Array<{ value: string; disabled: boolean }>>([]);
-    const generated = React.useId();
-    const baseId = `checkbox-group-${generated.replace(/:/g, "")}`;
+    const baseId = useSafeId("checkbox-group");
 
     const register = React.useCallback((item: string, itemDisabled: boolean) => {
       setItems((prev) => [...prev.filter((p) => p.value !== item), { value: item, disabled: itemDisabled }]);

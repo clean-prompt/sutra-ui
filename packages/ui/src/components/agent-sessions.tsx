@@ -19,6 +19,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { MINUTE_MS, formatRelative, type TimeInput } from "../lib/time";
 import { Button } from "./button";
 import {
   DropdownMenu,
@@ -110,21 +111,9 @@ AgentStatusDot.displayName = "AgentStatusDot";
 /* AgentSessionList                                                    */
 /* ------------------------------------------------------------------ */
 
-type TimeInput = Date | number | string;
-
 /** Compact relative time: "now", "5m", "3h", "2d", "Oct 4". */
 export function formatAgentRelativeTime(value: TimeInput | undefined, now: number = Date.now()) {
-  if (value == null) return "";
-  const t = value instanceof Date ? value.getTime() : typeof value === "number" ? value : new Date(value).getTime();
-  if (Number.isNaN(t)) return "";
-  const mins = Math.floor((now - t) / 60000);
-  if (mins < 1) return "now";
-  if (mins < 60) return `${mins}m`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d`;
-  return new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return formatRelative(value, { now, style: "narrow", justNowMs: MINUTE_MS, maxRelativeDays: 6, invalid: "" });
 }
 
 export type AgentSessionFilter = "waiting" | "running" | "unread" | "failed";

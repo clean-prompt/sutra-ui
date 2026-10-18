@@ -2,14 +2,12 @@ import * as React from "react";
 import {
   type RemixiconComponentType,
   RiCheckboxCircleFill,
-  RiCheckLine,
   RiCloseCircleFill,
   RiDeleteBinLine,
   RiDiscordFill,
   RiEditLine,
   RiErrorWarningLine,
   RiExternalLinkLine,
-  RiFileCopyLine,
   RiFileTextLine,
   RiGithubFill,
   RiInboxLine,
@@ -25,7 +23,10 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useCopy } from "../hooks/use-copy";
+import { useAsyncAction } from "../hooks/use-async-action";
+import { formatCost } from "../lib/format";
+import { formatDateTime, safeISO, toMs as toValidMs } from "../lib/time";
+import { CopyButton } from "./copy-button";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { Badge } from "./badge";
@@ -56,7 +57,7 @@ import {
 
 type TimeLike = Date | number | string;
 
-const toMs = (t: TimeLike) => new Date(t).getTime();
+const toMs = (t: TimeLike) => toValidMs(t) ?? NaN;
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -529,7 +530,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
     }));
     const [scheduleValid, setScheduleValid] = React.useState<string | null>(null);
     const [submitted, setSubmitted] = React.useState(false);
-    const [busy, setBusy] = React.useState(false);
+    const save = useAsyncAction(async (out: AgentJobDraft) => onSubmit?.(out));
     const nameRef = React.useRef<HTMLInputElement>(null);
     const promptRef = React.useRef<HTMLTextAreaElement>(null);
     const scriptRef = React.useRef<HTMLInputElement>(null);
@@ -553,12 +554,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
         out.skills = [];
         out.toolsets = [];
       }
-      try {
-        setBusy(true);
-        await onSubmit?.(out);
-      } finally {
-        setBusy(false);
-      }
+      await save.run(out);
     };
 
     const isEdit = !!defaultValue?.id;
@@ -690,7 +686,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
               Cancel
             </Button>
           ) : null}
-          <Button type="submit" loading={busy}>
+          <Button type="submit" loading={save.busy}>
             {submitLabel ?? (isEdit ? "Save changes" : "Create job")}
           </Button>
         </div>
@@ -731,7 +727,7 @@ export function JobNextRun({ at, className }: { at: TimeLike; className?: string
   const diff = target - now;
   const text = diff <= 0 ? "due now" : diff < 3_600_000 ? `in ${formatCountdownClock(diff)}` : formatScheduleRelative(target, now);
   return (
-    <time dateTime={new Date(target).toISOString()} data-slot="job-next-run" className={cn("tabular-nums", className)}>
+    <time dateTime={safeISO(target)} data-slot="job-next-run" className={cn("tabular-nums", className)}>
       {text}
     </time>
   );
@@ -896,7 +892,7 @@ JobList.displayName = "JobList";
 /* RunHistory                                                          */
 /* ------------------------------------------------------------------ */
 
-const usd = (n: number) => (n < 0.01 && n > 0 ? "<$0.01" : `$${n.toFixed(2)}`);
+const usd = (n: number) => formatCost(n, { locale: "en-US" });
 
 export interface RunHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
   runs: AgentJobRun[];
@@ -917,7 +913,7 @@ export const RunHistory = React.forwardRef<HTMLDivElement, RunHistoryProps>(
     const [shown, setShown] = React.useState(pageSize);
     const visible = runs.slice(0, shown);
     const localMore = runs.length > shown;
-    const fmt = new Intl.DateTimeFormat(locale ?? "en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    const formatStart = (t: number) => formatDateTime(t, { locale: locale ?? "en-US", year: "never" });
     const loadMore = () => {
       if (localMore) setShown((s) => s + pageSize);
       else {
@@ -931,14 +927,14 @@ export const RunHistory = React.forwardRef<HTMLDivElement, RunHistoryProps>(
         {runs.length ? (
           <ol aria-label="Run history" className="flex flex-col divide-y divide-border rounded-box border border-border">
             {visible.map((run) => {
-              const started = new Date(run.startedAt);
+              const started = toMs(run.startedAt);
               return (
                 <li key={run.id} className="flex flex-col gap-1.5 px-3 py-2.5 text-sm">
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                     <span className="inline-flex items-center gap-1.5">
                       <RunStatusGlyph status={run.status} />
-                      <time dateTime={started.toISOString()} className="font-medium tabular-nums">
-                        {fmt.format(started)}
+                      <time dateTime={safeISO(started)} className="font-medium tabular-nums">
+                        {formatStart(started)}
                       </time>
                     </span>
                     <span className="text-xs text-muted-foreground tabular-nums">{run.durationMs != null ? formatTimelineDuration(run.durationMs) : run.status === "running" ? "running…" : "—"}</span>
@@ -959,7 +955,7 @@ export const RunHistory = React.forwardRef<HTMLDivElement, RunHistoryProps>(
                         variant="ghost"
                         className="ml-auto"
                         leadingIcon={<RiFileTextLine />}
-                        aria-label={`Open transcript for run at ${fmt.format(started)}`}
+                        aria-label={`Open transcript for run at ${formatStart(started)}`}
                         onClick={() => onOpenTranscript(run)}
                       >
                         Transcript
@@ -1190,16 +1186,13 @@ export interface BlueprintCardProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 function CliCommandRow({ command }: { command: string }) {
-  const { copied, copy } = useCopy();
   return (
     <div className="flex min-w-0 items-center gap-2 rounded-md border border-border bg-muted/60 py-1 pl-2.5 pr-1">
       <code data-slot="blueprint-cli" className="min-w-0 flex-1 truncate font-mono text-xs" title={command}>
         <span aria-hidden className="select-none text-muted-foreground">$ </span>
         {command}
       </code>
-      <Button type="button" variant="ghost" size="icon-xs" aria-label={copied ? "Copied" : "Copy command"} onClick={() => copy(command)}>
-        {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-      </Button>
+      <CopyButton value={command} label="Copy command" />
     </div>
   );
 }
@@ -1210,7 +1203,7 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
     const [expanded, setExpanded] = useControllableState({ value: expandedProp, defaultValue: defaultExpanded, onChange: onExpandedChange });
     const [values, setValues] = React.useState<BlueprintValues>(() => initialSlotValues(blueprint.slots, channels));
     const [submitted, setSubmitted] = React.useState(false);
-    const [busy, setBusy] = React.useState(false);
+    const create = useAsyncAction(async (b: Blueprint, v: BlueprintValues) => onCreate?.(b, v));
     const id = React.useId();
     const titleId = `${id}-title`;
     const formId = `${id}-form`;
@@ -1225,12 +1218,7 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
       e.preventDefault();
       setSubmitted(true);
       if (missing.length) return;
-      try {
-        setBusy(true);
-        await onCreate?.(blueprint, values);
-      } finally {
-        setBusy(false);
-      }
+      await create.run(blueprint, values);
     };
 
     const renderSlot = (s: BlueprintSlot) => {
@@ -1339,7 +1327,7 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
                   <Button type="button" size="sm" variant="ghost" aria-expanded aria-controls={formId} onClick={() => setExpanded(false)}>
                     Cancel
                   </Button>
-                  <Button type="submit" size="sm" loading={busy}>
+                  <Button type="submit" size="sm" loading={create.busy}>
                     Create job
                   </Button>
                 </div>

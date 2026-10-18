@@ -1,18 +1,12 @@
 import * as React from "react";
-import {
-  RiCheckLine,
-  RiCheckboxCircleFill,
-  RiDownloadLine,
-  RiEyeLine,
-  RiEyeOffLine,
-  RiFileCopyLine,
-  RiPrinterLine,
-  RiShareLine,
-} from "@remixicon/react";
+import { RiCheckboxCircleFill, RiDownloadLine, RiEyeLine, RiEyeOffLine, RiPrinterLine, RiShareLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { formatCountdown } from "../lib/duration";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useCopy } from "../hooks/use-copy";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useCountdown } from "../hooks/use-now";
 import { Button } from "./button";
+import { CopyButton } from "./copy-button";
 import { Input, type InputProps } from "./input";
 import { downloadTextFile } from "./secret";
 
@@ -54,12 +48,6 @@ function printText(title: string, body: string) {
   } finally {
     setTimeout(() => iframe.remove(), 1000);
   }
-}
-
-function formatClock(seconds: number) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}:${String(s).padStart(2, "0")}`;
 }
 
 /* ------------------------------------------------------------------ */
@@ -126,10 +114,8 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
     const clean = groups.join("");
     const [step, setStep] = React.useState<RecoveryKeyStep>("show");
     const [visible, setVisible] = React.useState(true);
-    const [left, setLeft] = React.useState(Math.ceil(autoClearAfter / 1000));
     const [typed, setTyped] = React.useState("");
     const [error, setError] = React.useState<string>();
-    const { copied, copy } = useCopy(2000);
     const inputId = React.useId();
     const onHideRef = React.useRef(onHide);
     onHideRef.current = onHide;
@@ -139,20 +125,10 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
       onHideRef.current?.();
     }, []);
 
-    React.useEffect(() => {
-      if (!visible || autoClearAfter <= 0 || step !== "show") return;
-      const deadline = Date.now() + autoClearAfter;
-      setLeft(Math.ceil(autoClearAfter / 1000));
-      const id = setInterval(() => {
-        const s = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-        setLeft(s);
-        if (s === 0) {
-          clearInterval(id);
-          hide();
-        }
-      }, 250);
-      return () => clearInterval(id);
-    }, [visible, autoClearAfter, step, hide]);
+    const counting = visible && autoClearAfter > 0 && step === "show";
+    // A fresh deadline each time the key is (re)shown.
+    const deadline = React.useMemo(() => (counting ? Date.now() + autoClearAfter : undefined), [counting, autoClearAfter]);
+    const { remainingMs } = useCountdown(deadline, { onExpire: hide });
 
     const body = fileContent ?? `${title}\n\n${formatted}\n\nKeep this somewhere safe and offline. Anyone with this key can recover your account.\n`;
     const canShare = share && typeof navigator !== "undefined" && typeof navigator.share === "function";
@@ -191,7 +167,7 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
           <p className="text-sm font-semibold">{title}</p>
           {step === "show" && visible && autoClearAfter > 0 && (
             <span role="timer" aria-live="off" className="text-xs tabular-nums text-muted-foreground">
-              Hides in {formatClock(left)}
+              Hides in {formatCountdown(Math.min(remainingMs, autoClearAfter))}
             </span>
           )}
         </div>
@@ -230,16 +206,7 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
             )}
 
             <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                leadingIcon={copied ? <RiCheckLine className="text-success" /> : <RiFileCopyLine />}
-                onClick={async () => {
-                  if (await copy(formatted)) onCopy?.();
-                }}
-              >
-                {copied ? "Copied" : "Copy"}
-              </Button>
+              <CopyButton variant="button" value={formatted} label="Copy" copiedLabel="Copied" timeout={2000} onCopied={() => onCopy?.()} />
               {fileName !== false && (
                 <Button
                   variant="secondary"
@@ -407,7 +374,7 @@ export const RecoveryKeyInput = React.forwardRef<HTMLInputElement, RecoveryKeyIn
       if (valid) completeRef.current?.(value);
     }, [valid, value]);
 
-    React.useLayoutEffect(() => {
+    useIsoLayoutEffect(() => {
       const el = innerRef.current;
       if (el && caret.current != null && document.activeElement === el) {
         el.setSelectionRange(caret.current, caret.current);

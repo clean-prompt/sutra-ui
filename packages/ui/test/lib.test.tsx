@@ -688,6 +688,27 @@ describe("useNow / useCountdown", () => {
     expect(fixed.result.current).toBe(new Date(2024, 2, 5).getTime());
   });
 
+  it("useCountdown reads the live clock on the first render after a new deadline (no stale overstatement)", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    // Record every rendered value: the bug only showed in the render before the effect ticked.
+    const seen: number[] = [];
+    const { result, rerender } = renderHook(
+      (p: { deadline?: number }) => {
+        const state = useCountdown(p.deadline);
+        if (p.deadline !== undefined) seen.push(state.remainingMs);
+        return state;
+      },
+      { initialProps: {} as { deadline?: number } }
+    );
+    // Time passes with no deadline (no ticking), then a 30s deadline is set relative to the real clock.
+    vi.setSystemTime(NOW + 5000);
+    rerender({ deadline: NOW + 5000 + 30_000 });
+    expect(Math.max(...seen)).toBe(30_000);
+    expect(seen.map((ms) => formatCountdown(ms))).not.toContain("0:35");
+    expect(result.current.remainingMs).toBe(30_000);
+  });
+
   it("useCountdown counts from the wall clock and expires once", () => {
     vi.useFakeTimers();
     vi.setSystemTime(NOW);

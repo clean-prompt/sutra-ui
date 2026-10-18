@@ -44,7 +44,9 @@ export interface CountdownState {
 export function useCountdown(deadline: DateInput, options: UseCountdownOptions = {}): CountdownState {
   const deadlineMs = deadline === undefined || deadline === null ? undefined : toMs(deadline);
   const step = Number.isFinite(options.interval) ? Math.max(16, options.interval!) : 250;
-  const [now, setNow] = React.useState(() => Date.now());
+  // `now` is tagged with the deadline it was sampled for, so the first render after a new
+  // deadline reads the live clock instead of a stale sample (which overstated the time left).
+  const [sample, setSample] = React.useState<{ now: number; for: number | undefined }>(() => ({ now: Date.now(), for: deadlineMs }));
   const onExpire = useLatestRef(options.onExpire);
   const firedFor = React.useRef<number | undefined>(undefined);
 
@@ -53,7 +55,7 @@ export function useCountdown(deadline: DateInput, options: UseCountdownOptions =
     let id: ReturnType<typeof setInterval> | undefined;
     const tick = () => {
       const t = Date.now();
-      setNow(t);
+      setSample({ now: t, for: deadlineMs });
       if (t < deadlineMs) return false;
       if (id !== undefined) clearInterval(id);
       id = undefined;
@@ -70,6 +72,7 @@ export function useCountdown(deadline: DateInput, options: UseCountdownOptions =
   }, [deadlineMs, step, onExpire]);
 
   if (deadlineMs === undefined) return { remainingMs: 0, expired: false };
+  const now = sample.for === deadlineMs ? sample.now : Date.now();
   const remainingMs = Math.max(0, deadlineMs - now);
   return { remainingMs, expired: remainingMs <= 0 };
 }

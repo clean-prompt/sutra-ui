@@ -195,7 +195,9 @@ describe("getFileCategory / getFileExtension", () => {
 
   it("extracts lowercase extensions", () => {
     expect(getFileExtension("Photo.HEIC")).toBe("heic");
-    expect(getFileExtension("a/b.c/readme")).toBe("readme");
+    expect(getFileExtension("a/b.c/readme")).toBe("");
+    expect(getFileExtension("Dockerfile")).toBe("");
+    expect(getFileExtension("pdf")).toBe("pdf");
     expect(getFileExtension(" .env ")).toBe("env");
   });
 });

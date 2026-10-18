@@ -11,6 +11,7 @@ import {
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { errorMessage, useMountedRef } from "../hooks/use-async-action";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 
@@ -126,7 +127,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
     const [value, setValue] = useControllableState({ value: valueProp, defaultValue: defaultValue ?? backends[0]?.id ?? "", onChange: onValueChange });
     const [health, setHealth] = React.useState<Record<string, BackendHealth>>({});
     const runs = React.useRef<Record<string, number>>({});
-    const mounted = React.useRef(true);
+    const mounted = useMountedRef();
     const backendsRef = React.useRef(backends);
     backendsRef.current = backends;
 
@@ -151,7 +152,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
         const elapsed = (typeof performance !== "undefined" ? performance.now() : Date.now()) - started;
         next = { state: "healthy", latencyMs: r.latencyMs ?? elapsed, detail: r.detail };
       } catch (e) {
-        next = { state: "unreachable", reason: e instanceof Error ? e.message : typeof e === "string" ? e : "No response" };
+        next = { state: "unreachable", reason: errorMessage(e, "No response") };
       }
       if (mounted.current && runs.current[backendId] === run) setHealth((h) => ({ ...h, [backendId]: next }));
     }, []);
@@ -161,14 +162,10 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
     }, [check]);
 
     React.useEffect(() => {
-      mounted.current = true;
       if (autoProbe) checkAll();
       else {
         setHealth(Object.fromEntries(backendsRef.current.filter((b) => b.configured === false).map((b) => [b.id, { state: "not-configured" } as BackendHealth])));
       }
-      return () => {
-        mounted.current = false;
-      };
     }, [autoProbe, checkAll]);
 
     const anyChecking = Object.values(health).some((h) => h.state === "checking");

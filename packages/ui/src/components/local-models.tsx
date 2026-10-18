@@ -10,6 +10,7 @@ import {
   RiSearchLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Badge, type BadgeColor } from "./badge";
 import { Input } from "./input";
@@ -17,7 +18,8 @@ import { SimpleSelect } from "./select";
 import { Progress } from "./progress";
 import { Spinner } from "./spinner";
 import { SimpleTooltip } from "./tooltip";
-import { formatBytes } from "./file-upload";
+import { formatBytes, formatCompact } from "../lib/format";
+import { clamp, toPercent } from "../lib/math";
 import { formatEta, formatSpeed } from "./transfer-list";
 import { meterLevel, type MeterThresholds } from "./meter";
 
@@ -91,7 +93,7 @@ export function estimateModelFit(model: ModelFootprint, hardware: HardwareProfil
     };
   }
   if (vram > 0 && requiredGB <= usableVram + usableRam) {
-    const gpuFraction = Math.max(0, Math.min(1, usableVram / requiredGB));
+    const gpuFraction = clamp(usableVram / requiredGB, 0, 1);
     return {
       fit: "partial",
       requiredGB,
@@ -232,7 +234,7 @@ export const StagedSetupHero = React.forwardRef<HTMLDivElement, StagedSetupHeroP
     const current = stages.find((s) => s.status === "error") ?? stages.find((s) => s.status === "active") ?? stages.find((s) => s.status === "pending");
     const allDone = stages.every((s) => s.status === "done");
     const doneCount = stages.filter((s) => s.status === "done").length;
-    const pct = download && download.totalBytes > 0 ? Math.min(100, (download.receivedBytes / download.totalBytes) * 100) : 0;
+    const pct = download ? toPercent(download.receivedBytes, download.totalBytes) : 0;
     const eta = download && download.bytesPerSecond ? (download.totalBytes - download.receivedBytes) / download.bytesPerSecond : null;
     return (
       <div ref={ref} data-slot="staged-setup-hero" className={cn("w-full overflow-hidden rounded-box border border-border bg-card shadow-xs", className)} {...props}>
@@ -376,7 +378,7 @@ export interface LocalModelBrowserProps extends Omit<React.HTMLAttributes<HTMLDi
   onQueryChange?: (q: string) => void;
 }
 
-const compact = (n: number) => new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(n);
+const compact = (n: number) => formatCompact(n, { suffixCase: "upper" });
 
 function defaultVariant(m: LocalModelListing, hw?: HardwareProfile) {
   if (!hw) return m.variants[0]?.quant ?? "";
@@ -404,7 +406,7 @@ function LocalModelItem({
   const variant = m.variants.find((v) => v.quant === quant) ?? m.variants[0];
   const labelId = React.useId();
   const active = download?.status === "downloading";
-  const pct = active && download.totalBytes ? Math.min(100, ((download.receivedBytes ?? 0) / download.totalBytes) * 100) : 0;
+  const pct = active ? toPercent(download.receivedBytes ?? 0, download.totalBytes ?? 0) : 0;
   const eta = active && download.bytesPerSecond && download.totalBytes ? (download.totalBytes - (download.receivedBytes ?? 0)) / download.bytesPerSecond : null;
   return (
     <li data-slot="local-model-item" data-model={m.id} className="grid gap-2 px-4 py-3">
@@ -496,8 +498,7 @@ function LocalModelItem({
 /** Searchable list of downloadable local models with quant variants, fit hints and download progress. */
 export const LocalModelBrowser = React.forwardRef<HTMLDivElement, LocalModelBrowserProps>(
   ({ models, hardware, downloads = {}, onDownload, onCancelDownload, query: queryProp, onQueryChange, className, ...props }, ref) => {
-    const [internal, setInternal] = React.useState("");
-    const query = queryProp ?? internal;
+    const [query, setQuery] = useControllableState({ value: queryProp, defaultValue: "", onChange: onQueryChange });
     const q = query.trim().toLowerCase();
     const shown = models.filter(
       (m) => !q || m.name.toLowerCase().includes(q) || m.author?.toLowerCase().includes(q) || m.tags?.some((t) => t.toLowerCase().includes(q))
@@ -511,10 +512,7 @@ export const LocalModelBrowser = React.forwardRef<HTMLDivElement, LocalModelBrow
             aria-label="Search models"
             placeholder="Search models"
             value={query}
-            onChange={(e) => {
-              if (queryProp === undefined) setInternal(e.target.value);
-              onQueryChange?.(e.target.value);
-            }}
+            onChange={(e) => setQuery(e.target.value)}
             className="border-transparent shadow-none"
           />
         </div>
@@ -572,7 +570,7 @@ export const SystemResourcesBar = React.forwardRef<HTMLDivElement, SystemResourc
     return (
       <div ref={ref} role="group" aria-label="System resources" data-slot="system-resources-bar" className={cn("flex flex-wrap items-center gap-x-4 gap-y-1 text-2xs", className)} {...props}>
         {items.map((r) => {
-          const pct = r.max > 0 ? Math.max(0, Math.min(100, (r.value / r.max) * 100)) : 0;
+          const pct = toPercent(r.value, r.max);
           const level = meterLevel(pct, thresholds);
           const text = r.unit ? `${trim(r.value)} / ${trim(r.max)} ${r.unit}` : `${Math.round(pct)}%`;
           return (

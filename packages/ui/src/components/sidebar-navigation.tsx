@@ -3,26 +3,18 @@ import { Collapsible as CollapsiblePrimitive, Slot, Tooltip as TooltipPrimitive,
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiArrowRightSLine, RiExpandUpDownLine, RiLayoutLeftLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { colorForSeed } from "../lib/hash";
+import { initials } from "../lib/text";
+import { breakpoints } from "../lib/tokens";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useMediaQuery } from "../hooks/use-media-query";
 import { Button, type ButtonProps } from "./button";
 import { Tooltip, TooltipContent, TooltipProvider, useHasTooltipProvider } from "./tooltip";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./dialog";
-import { useHasShortcutProvider, useShortcut } from "./shortcuts";
+import { isEditableTarget, matchesShortcut, useHasShortcutProvider, useShortcut } from "./shortcuts";
 
-const MOBILE_QUERY = "(max-width: 767px)";
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState(false);
-  React.useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mql = window.matchMedia(MOBILE_QUERY);
-    const update = () => setIsMobile(mql.matches);
-    update();
-    mql.addEventListener("change", update);
-    return () => mql.removeEventListener("change", update);
-  }, []);
-  return isMobile;
-}
+/** Below the `md` breakpoint the sidebar becomes a sheet. */
+const MOBILE_QUERY = `(max-width: ${breakpoints.md - 1}px)`;
 
 export interface SidebarContextValue {
   state: "expanded" | "collapsed";
@@ -81,7 +73,7 @@ export const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderP
     },
     ref
   ) => {
-    const isMobile = useIsMobile();
+    const isMobile = useMediaQuery(MOBILE_QUERY);
     const [openMobile, setOpenMobile] = React.useState(false);
     const [collapsed, setCollapsed] = useControllableState({
       value: collapsedProp,
@@ -108,8 +100,9 @@ export const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderP
     React.useEffect(() => {
       if (!shortcut || hasShortcutProvider) return;
       const onKeyDown = (event: KeyboardEvent) => {
-        if (event.defaultPrevented) return;
-        if (event.key.toLowerCase() === shortcut.toLowerCase() && (event.metaKey || event.ctrlKey) && !event.altKey) {
+        // ⌘ on macOS, Ctrl elsewhere; never inside text fields (Ctrl+B is a text-editing key on macOS).
+        if (event.defaultPrevented || isEditableTarget(event.target)) return;
+        if (matchesShortcut(event, `mod+${shortcut.toLowerCase()}`)) {
           event.preventDefault();
           toggleRef.current();
         }
@@ -564,22 +557,6 @@ export const SidebarSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttri
 );
 SidebarSeparator.displayName = "SidebarSeparator";
 
-const avatarPalette = ["#615FFF", "#00A6F4", "#00A63E", "#F0B100", "#FF6900", "#FB2C36", "#8E51FF", "#FF2056", "#00B8DB"];
-
-function initialsOf(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "?";
-  const first = parts[0]![0] ?? "";
-  const last = parts.length > 1 ? (parts[parts.length - 1]![0] ?? "") : "";
-  return (first + last).toUpperCase();
-}
-
-function colorOf(name: string) {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) | 0;
-  return avatarPalette[Math.abs(h) % avatarPalette.length]!;
-}
-
 export interface SidebarUserCardProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   name: string;
   email?: string;
@@ -613,9 +590,9 @@ export const SidebarUserCard = React.forwardRef<HTMLButtonElement, SidebarUserCa
         <span
           aria-hidden
           className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
-          style={{ backgroundColor: avatarColor ?? colorOf(name), color: "#ffffff" }}
+          style={{ backgroundColor: avatarColor ?? colorForSeed(name), color: "#ffffff" }}
         >
-          {initialsOf(name)}
+          {initials(name, { fallback: "?" })}
         </span>
       )}
       <span className="grid min-w-0 flex-1 leading-tight">

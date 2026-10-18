@@ -21,6 +21,14 @@ import {
   RiWifiOffLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatCountdown } from "../lib/duration";
+import { toValidDate } from "../lib/time";
+import { capitalize } from "../lib/text";
+import { useNow } from "../hooks/use-now";
+import { useMediaQuery } from "../hooks/use-media-query";
+import { useSafeId } from "../hooks/use-safe-id";
+import { errorMessage as messageOf, useAsyncAction } from "../hooks/use-async-action";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import { Spinner } from "./spinner";
@@ -59,7 +67,7 @@ export interface KunjiMarkProps extends Omit<React.SVGProps<SVGSVGElement>, "ref
 /** An original key glyph for "Sign in with kunji": a ring bow, a diagonal shaft and stepped bit teeth. */
 export const KunjiMark = React.forwardRef<SVGSVGElement, KunjiMarkProps>(
   ({ variant = "glyph", size = 20, title, className, ...props }, ref) => {
-    const id = React.useId().replace(/:/g, "");
+    const id = useSafeId("kunji");
     const ink = variant === "tile" ? "#fffaf0" : "currentColor";
     return (
       <svg
@@ -151,7 +159,7 @@ export interface UseKunjiSignInReturn {
 
 const initialState: KunjiSignInState = { status: "idle", slow: false, codeStatus: "idle" };
 
-const messageOf = (e: unknown, fallback: string) => (e instanceof Error && e.message ? e.message : fallback);
+
 
 /** State machine for kunji sign-in: idle → loading → ready → scanned → success | expired | denied | notLinked | error. */
 export function useKunjiSignIn({
@@ -321,34 +329,6 @@ export function useKunjiSignIn({
 /* Shared bits                                                         */
 /* ------------------------------------------------------------------ */
 
-function useNow(active: boolean) {
-  const [now, setNow] = React.useState(() => Date.now());
-  React.useEffect(() => {
-    if (!active) return;
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [active]);
-  return now;
-}
-
-function useIsSmallScreen() {
-  const [small, setSmall] = React.useState(false);
-  React.useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia("(max-width: 639px)");
-    setSmall(mq.matches);
-    const on = (e: MediaQueryListEvent) => setSmall(e.matches);
-    mq.addEventListener?.("change", on);
-    return () => mq.removeEventListener?.("change", on);
-  }, []);
-  return small;
-}
-
-function formatCountdown(ms: number) {
-  const s = Math.max(0, Math.ceil(ms / 1000));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-}
 
 const formatCode = (code: string) => (code.length >= 6 ? code.replace(new RegExp(`(.{${Math.ceil(code.length / 2)}})`), "$1 ") : code);
 
@@ -473,11 +453,11 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
     const { status, session } = state;
     const compact = variant === "compact";
     const live = status === "ready" || status === "scanned";
-    const now = useNow(live && session != null);
+    const now = useNow({ active: live && session != null });
     const remaining = session ? session.expiresAt - now : null;
     const locallyExpired = live && remaining != null && remaining <= 0;
     const shown: KunjiSignInStatus = locallyExpired ? "expired" : status;
-    const small = useIsSmallScreen();
+    const small = useMediaQuery("(max-width: 639px)");
     const [codeOpen, setCodeOpen] = React.useState(false);
     const [qrOpen, setQrOpen] = React.useState(false);
     const [typed, setTyped] = React.useState("");
@@ -894,12 +874,7 @@ export interface KunjiButtonProps
 /** Brand "Sign in with kunji" button that opens `KunjiSignIn` in a dialog. */
 export const KunjiButton = React.forwardRef<HTMLButtonElement, KunjiButtonProps>(
   ({ client, onSuccess, onError, signInProps, open: openProp, onOpenChange, theme, size, fullWidth, className, children, ...props }, ref) => {
-    const [openState, setOpenState] = React.useState(false);
-    const open = openProp ?? openState;
-    const setOpen = (v: boolean) => {
-      if (openProp === undefined) setOpenState(v);
-      onOpenChange?.(v);
-    };
+    const [open, setOpen] = useControllableState({ value: openProp, defaultValue: false, onChange: onOpenChange });
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
@@ -1004,16 +979,11 @@ export const KunjiLink = React.forwardRef<HTMLDivElement, KunjiLinkProps>(
     },
     ref
   ) => {
-    const [linkedState, setLinkedState] = React.useState(defaultLinked);
-    const linked = linkedProp ?? linkedState;
+    const [linked, setLinked] = useControllableState({ value: linkedProp, defaultValue: defaultLinked, onChange: onLinkedChange });
     const [mode, setMode] = React.useState<"idle" | "scanning" | "linking" | "unlinking">("idle");
     const [error, setError] = React.useState<string | null>(null);
     const [justLinked, setJustLinked] = React.useState(false);
     const [linkedSub, setLinkedSub] = React.useState<string | undefined>(undefined);
-    const setLinked = (v: boolean) => {
-      if (linkedProp === undefined) setLinkedState(v);
-      onLinkedChange?.(v);
-    };
     const shownSub = sub ?? linkedSub;
 
     const confirm = async (result: KunjiPollResult) => {
@@ -1261,7 +1231,9 @@ export interface AccessGateProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   otherWays?: React.ReactNode;
 }
 
-const fmtDate = (v: Date | number | string | undefined) => (v == null ? null : new Date(v).toLocaleString());
+
+
+const fmtDate = (v: Date | number | string | undefined) => toValidDate(v)?.toLocaleString() ?? null;
 
 /** Request-access flow for admin-approved apps: request → pending → approved (collect key) | denied. */
 export const AccessGate = React.forwardRef<HTMLDivElement, AccessGateProps>(
@@ -1284,19 +1256,14 @@ export const AccessGate = React.forwardRef<HTMLDivElement, AccessGateProps>(
     },
     ref
   ) => {
-    const [recordState, setRecordState] = React.useState(defaultRecord);
-    const record = recordProp ?? recordState;
-    const setRecord = React.useCallback(
-      (r: AccessGateRecord) => {
-        if (recordProp === undefined) setRecordState(r);
-        onRecordChange?.(r);
-      },
-      [recordProp, onRecordChange]
-    );
+    const [record, setRecord] = useControllableState<AccessGateRecord>({
+      value: recordProp,
+      defaultValue: defaultRecord,
+      onChange: onRecordChange,
+    });
     const [purpose, setPurpose] = React.useState("");
     const [picked, setPicked] = React.useState<string[]>(defaultScopes);
-    const [busy, setBusy] = React.useState(false);
-    const [error, setError] = React.useState<string | null>(null);
+    const { run, busy, error } = useAsyncAction((fn: () => Promise<void>) => fn());
     const purposeId = React.useId();
     const status = record.status;
     const check = adapter.check;
@@ -1318,17 +1285,6 @@ export const AccessGate = React.forwardRef<HTMLDivElement, AccessGateProps>(
       };
     }, [status, check, pollInterval, setRecord]);
 
-    const run = async (fn: () => Promise<void>) => {
-      setBusy(true);
-      setError(null);
-      try {
-        await fn();
-      } catch (e) {
-        setError(messageOf(e, "Something went wrong. Please try again."));
-      } finally {
-        setBusy(false);
-      }
-    };
 
     const submit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -1580,7 +1536,7 @@ export const AuthProblem = React.forwardRef<HTMLDivElement, AuthProblemProps>(
       "sso-down": {
         icon: RiCloudOffLine,
         color: "destructive",
-        title: `${providerName.charAt(0).toUpperCase()}${providerName.slice(1)}'s sign-in is not answering`,
+        title: `${capitalize(providerName)}'s sign-in is not answering`,
         body: <>{appName} asked {providerName} who you are and got no answer. Nothing else is affected. This page tries again every few seconds.</>,
         actions: onRetry && (
           <Button variant="secondary" leadingIcon={<RiRefreshLine />} onClick={onRetry}>
@@ -1606,7 +1562,7 @@ export const AuthProblem = React.forwardRef<HTMLDivElement, AuthProblemProps>(
         title: `Signed in at ${providerName}, but not here`,
         body: (
           <>
-            {providerName.charAt(0).toUpperCase() + providerName.slice(1)} sent you straight back, yet {appName} still doesn&apos;t see a sign-in. Its
+            {capitalize(providerName)} sent you straight back, yet {appName} still doesn&apos;t see a sign-in. Its
             connection to {providerName} may be misconfigured; the server log says more.
           </>
         ),

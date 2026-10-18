@@ -1,16 +1,16 @@
 import * as React from "react";
 import {
-  RiCheckLine,
   RiCpuLine,
-  RiFileCopyLine,
   RiRefreshLine,
   RiServerLine,
   RiTimeLine,
   RiErrorWarningLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
+import { cn } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { toPercent } from "../lib/math";
 import { Button } from "./button";
+import { CopyButton } from "./copy-button";
 import { Meter, meterLevel, type MeterThresholds } from "./meter";
 import { Gauge } from "./gauge";
 import { Sparkline, type SparklineColor } from "./sparkline";
@@ -58,7 +58,7 @@ export interface NodeMetricTileProps extends Omit<React.HTMLAttributes<HTMLDivEl
 /** Compact metric tile: label, value and a threshold-colored Meter. */
 export const NodeMetricTile = React.forwardRef<HTMLDivElement, NodeMetricTileProps>(
   ({ className, label, value, max = 100, unit, valueText, thresholds, icon, caption, ...props }, ref) => {
-    const pct = value == null || max <= 0 ? 0 : (value / max) * 100;
+    const pct = value == null ? 0 : toPercent(value, max);
     const level = value == null ? "ok" : meterLevel(pct, thresholds ?? undefined);
     const text =
       valueText ??
@@ -93,7 +93,7 @@ export const NodeMetricTile = React.forwardRef<HTMLDivElement, NodeMetricTilePro
               "block h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none",
               level === "danger" ? "bg-destructive" : level === "warn" ? "bg-warning" : "bg-primary"
             )}
-            style={{ width: `${Math.min(100, Math.max(0, pct))}%` }}
+            style={{ width: `${pct}%` }}
           />
         </div>
         {caption ? <div className="mt-1 truncate text-2xs text-muted-foreground">{caption}</div> : null}
@@ -426,7 +426,7 @@ export const GpuCard = React.forwardRef<HTMLDivElement, GpuCardProps>(
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           {processes != null ? (
             <span data-gpu-processes="">
-              <span className="font-mono font-medium text-foreground tabular-nums">{processes}</span> {processes === 1 ? "process" : "processes"}
+              <span className="font-mono font-medium text-foreground tabular-nums">{processes}</span> {pluralize(processes, "process", "processes")}
             </span>
           ) : null}
           {power != null ? (
@@ -474,7 +474,6 @@ export const ResourceHero = React.forwardRef<HTMLDivElement, ResourceHeroProps>(
     { className, name, icon, status = "online", statusLabel, endpoint, uptime, ready, chips, actions, description, ...props },
     ref
   ) => {
-    const { copied, copy } = useCopy();
     const allReady = ready ? ready.ready >= ready.total : true;
     return (
       <div
@@ -500,17 +499,7 @@ export const ResourceHero = React.forwardRef<HTMLDivElement, ResourceHeroProps>(
             {endpoint ? (
               <div className="mt-2 inline-flex max-w-full items-center gap-1 rounded-control border border-border bg-subtle py-0.5 pl-2.5 pr-0.5">
                 <code className="truncate font-mono text-xs text-foreground">{endpoint}</code>
-                <button
-                  type="button"
-                  onClick={() => copy(endpoint)}
-                  aria-label={copied ? "Endpoint copied" : "Copy endpoint"}
-                  className={cn(
-                    "inline-flex size-6 shrink-0 items-center justify-center rounded-control text-muted-foreground hover:bg-accent hover:text-foreground",
-                    focusRing
-                  )}
-                >
-                  {copied ? <RiCheckLine aria-hidden className="size-3.5 text-success" /> : <RiFileCopyLine aria-hidden className="size-3.5" />}
-                </button>
+                <CopyButton value={endpoint} size="xs" label="Copy endpoint" copiedLabel="Endpoint copied" className="rounded-control" />
               </div>
             ) : null}
           </div>

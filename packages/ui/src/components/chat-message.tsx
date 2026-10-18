@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiSparklingFill } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { initials } from "../lib/text";
+import { formatClockTime, safeISO } from "../lib/time";
 import { Markdown, type MarkdownProps } from "./markdown";
 
 export type ChatMessageRole = "user" | "assistant" | "system";
@@ -84,13 +86,6 @@ export const ChatMessageBody = React.forwardRef<HTMLDivElement, React.HTMLAttrib
 );
 ChatMessageBody.displayName = "ChatMessageBody";
 
-function initialsOf(name?: string) {
-  if (!name) return "";
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  const letters = parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : (parts[0] ?? "").slice(0, 2);
-  return letters.toUpperCase();
-}
-
 export interface ChatMessageAvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
   src?: string;
   alt?: string;
@@ -119,7 +114,7 @@ export const ChatMessageAvatar = React.forwardRef<HTMLSpanElement, ChatMessageAv
     } else if (fallback !== undefined) {
       content = fallback;
     } else if (name) {
-      content = initialsOf(name);
+      content = initials(name, { singleWord: 2 });
     } else if (isAssistant) {
       content = <RiSparklingFill aria-hidden />;
     }
@@ -192,12 +187,6 @@ export const ChatMessageContent = React.forwardRef<HTMLDivElement, ChatMessageCo
 );
 ChatMessageContent.displayName = "ChatMessageContent";
 
-function formatTime(value: Date | string | number) {
-  const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value);
-  return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-}
-
 export interface ChatMessageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   name?: React.ReactNode;
   /** A Date / timestamp (formatted as a short time) or a preformatted string. */
@@ -208,7 +197,6 @@ export interface ChatMessageHeaderProps extends React.HTMLAttributes<HTMLDivElem
 export const ChatMessageHeader = React.forwardRef<HTMLDivElement, ChatMessageHeaderProps>(
   ({ name, timestamp, className, children, ...props }, ref) => {
     const { role, variant } = useChatMessage();
-    const date = timestamp instanceof Date ? timestamp : typeof timestamp === "number" ? new Date(timestamp) : null;
     return (
       <div
         ref={ref}
@@ -222,10 +210,10 @@ export const ChatMessageHeader = React.forwardRef<HTMLDivElement, ChatMessageHea
         {name != null && <span className="font-medium text-foreground">{name}</span>}
         {timestamp != null && (
           <time
-            dateTime={date && !Number.isNaN(date.getTime()) ? date.toISOString() : undefined}
+            dateTime={typeof timestamp === "string" ? undefined : safeISO(timestamp)}
             className="text-xs tabular-nums text-muted-foreground"
           >
-            {typeof timestamp === "string" ? timestamp : formatTime(timestamp)}
+            {typeof timestamp === "string" ? timestamp : formatClockTime(timestamp, { invalid: String(timestamp) })}
           </time>
         )}
         {children}

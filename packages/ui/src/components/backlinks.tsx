@@ -2,6 +2,7 @@ import * as React from "react";
 import { Collapsible as CollapsiblePrimitive } from "radix-ui";
 import { RiArrowRightSLine, RiLinksLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { escapeRegExp } from "../lib/text";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
 import { EntityChip, entityTypeLabel, type EntityRef, type EntityType } from "./entity-mention";
 
@@ -28,10 +29,6 @@ export interface BacklinksProps extends Omit<React.HTMLAttributes<HTMLElement>, 
   groupByApp?: boolean;
   onSelect?: (item: BacklinkItem) => void;
   emptyState?: React.ReactNode;
-}
-
-function escapeRegExp(s: string) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export interface BacklinkSnippetProps extends React.HTMLAttributes<HTMLParagraphElement> {

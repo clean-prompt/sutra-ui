@@ -45,6 +45,10 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useNow } from "../hooks/use-now";
+import { formatClock } from "../lib/duration";
+import { formatCompact } from "../lib/format";
+import { roundTo } from "../lib/math";
 
 /* ------------------------------------------------------------------ */
 /* Shared helpers                                                      */
@@ -52,31 +56,8 @@ import { useControllableState } from "../hooks/use-controllable-state";
 
 /** Compact token count: 950, 1.2K, 33K, 1.1M. */
 export function formatTokenCount(n: number) {
-  if (!Number.isFinite(n)) return "—";
-  const a = Math.abs(n);
-  if (a >= 1_000_000) return `${trimNum(n / 1_000_000)}M`;
-  if (a >= 10_000) return `${Math.round(n / 1000)}K`;
-  if (a >= 1000) return `${trimNum(n / 1000)}K`;
-  return String(Math.round(n));
-}
-const trimNum = (n: number) => String(Math.round(n * 10) / 10);
-
-function formatClock(totalSeconds: number) {
-  const s = Math.max(0, Math.floor(totalSeconds));
-  const m = Math.floor(s / 60);
-  const h = Math.floor(m / 60);
-  const ss = String(s % 60).padStart(2, "0");
-  return h > 0 ? `${h}:${String(m % 60).padStart(2, "0")}:${ss}` : `${m}:${ss}`;
-}
-
-/** Re-render every `ms` while active. */
-function useTicker(active: boolean, ms = 1000) {
-  const [, setN] = React.useState(0);
-  React.useEffect(() => {
-    if (!active) return;
-    const t = setInterval(() => setN((n) => n + 1), ms);
-    return () => clearInterval(t);
-  }, [active, ms]);
+  // Whole thousands from 10K up; millions keep one decimal.
+  return formatCompact(n, { suffixCase: "upper", wholeAbove: Math.abs(n) < 1_000_000 ? 10 : undefined });
 }
 
 /** Set a textarea/input value the way the browser does so React's onChange fires. */
@@ -394,7 +375,7 @@ export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
     const ticking =
       !!status &&
       (((status.kind === "cold-start" || status.kind === "waking") && status.startedAt != null) || target != null);
-    useTicker(ticking);
+    useNow({ active: ticking });
     if (!status) return null;
     const tone = toneProp ?? kindTone[status.kind];
     let icon: React.ReactNode = <Spinner size="xs" variant="ring" aria-hidden="true" />;
@@ -561,7 +542,7 @@ export const JobBanner = React.forwardRef<HTMLDivElement, JobBannerProps>(
     React.useEffect(() => {
       setEndedAt(running ? null : Date.now());
     }, [running]);
-    useTicker(running && startedAt != null);
+    useNow({ active: running && startedAt != null });
     const elapsed = startedAt != null ? ((endedAt ?? Date.now()) - startedAt) / 1000 : elapsedProp ?? 0;
     const idx = Math.max(0, phases.findIndex((p) => p.id === phase));
     const current = phases[idx];
@@ -1950,12 +1931,12 @@ export interface UsageSummaryProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 function formatDuration(ms: number) {
-  if (ms < 1000) return `${Math.round(ms)}ms`;
-  const s = ms / 1000;
-  if (s < 60) return `${trimNum(s)}s`;
-  const m = s / 60;
-  if (m < 60) return `${trimNum(m)}m`;
-  return `${trimNum(m / 60)}h`;
+  if (ms < 999.5) return `${Math.round(ms)}ms`;
+  const s = roundTo(ms / 1000, 1);
+  if (s < 60) return `${s}s`;
+  const m = roundTo(ms / 60_000, 1);
+  if (m < 60) return `${m}m`;
+  return `${roundTo(ms / 3_600_000, 1)}h`;
 }
 
 const finishLabels: Record<string, string> = { stop: "Completed", length: "Hit length limit", error: "Errored", cancelled: "Cancelled", tool_calls: "Tool calls" };

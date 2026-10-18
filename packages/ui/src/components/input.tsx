@@ -4,6 +4,7 @@ import { RiCloseCircleFill, RiEyeLine, RiEyeOffLine, RiSearchLine } from "@remix
 import { cn, focusRing, invalidRing, type Size } from "../lib/cn";
 import { Kbd } from "./typography";
 import { useField } from "./field";
+import { detectShortcutPlatform, getShortcutKeyLabels } from "./shortcuts";
 
 export const inputVariants = cva(
   [
@@ -246,9 +247,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
 );
 PasswordInput.displayName = "PasswordInput";
 
-function isMac() {
-  return typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent);
-}
+const isMac = () => detectShortcutPlatform() === "mac";
 
 function matchesHotkey(e: KeyboardEvent, hotkey: string) {
   const parts = hotkey.toLowerCase().split("+").map((p) => p.trim());
@@ -266,17 +265,6 @@ function matchesHotkey(e: KeyboardEvent, hotkey: string) {
   );
 }
 
-function formatHotkey(hotkey: string) {
-  return hotkey.split("+").map((p) => {
-    const k = p.trim().toLowerCase();
-    if (k === "mod") return isMac() ? "⌘" : "Ctrl";
-    if (k === "meta" || k === "cmd") return "⌘";
-    if (k === "ctrl") return "Ctrl";
-    if (k === "alt") return isMac() ? "⌥" : "Alt";
-    if (k === "shift") return "⇧";
-    return k.length === 1 ? k.toUpperCase() : p.trim();
-  });
-}
 
 export interface SearchInputProps extends Omit<InputProps, "type" | "leadingIcon"> {
   /**
@@ -304,7 +292,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     const [hint, setHint] = React.useState<string[] | null>(null);
 
     React.useEffect(() => {
-      setHint(hotkey ? formatHotkey(hotkey) : null);
+      setHint(hotkey ? (getShortcutKeyLabels(hotkey)[0] ?? null) : null);
       if (!hotkey) return;
       const onKey = (e: KeyboardEvent) => {
         if (e.isComposing || e.keyCode === 229 || !matchesHotkey(e, hotkey)) return;

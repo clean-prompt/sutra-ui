@@ -12,6 +12,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { escapeRegExp } from "../lib/text";
 import { IdentityMark, identityColor } from "./identity-mark";
 import { Avatar } from "./avatar";
 import { Button } from "./button";
@@ -121,15 +122,11 @@ AgentMessageNotice.displayName = "AgentMessageNotice";
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
 
-function escapeRe(s: string) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 /** Split text into plain strings and `@Name` mentions of known members. */
 export function parseAgentMentions(text: string, members: AgentRoomMember[]): Array<string | { mention: AgentRoomMember; text: string }> {
   const names = [...members].sort((a, b) => b.name.length - a.name.length);
   if (!names.length) return [text];
-  const re = new RegExp(`@(${names.map((m) => escapeRe(m.name)).join("|")})\\b`, "gi");
+  const re = new RegExp(`@(${names.map((m) => escapeRegExp(m.name)).join("|")})\\b`, "gi");
   const out: Array<string | { mention: AgentRoomMember; text: string }> = [];
   let last = 0;
   for (const m of text.matchAll(re)) {

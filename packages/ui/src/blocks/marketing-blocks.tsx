@@ -27,6 +27,11 @@ import {
   RiVerifiedBadgeFill,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatCompact } from "../lib/format";
+import { useSafeId } from "../hooks/use-safe-id";
+import { hashString } from "../lib/hash";
+import { initials } from "../lib/text";
+import { formatShortDate } from "../lib/time";
 import { Avatar } from "../components/avatar";
 import { Badge, type BadgeColor } from "../components/badge";
 import { Breadcrumbs, type BreadcrumbRenderLink } from "../components/breadcrumbs";
@@ -93,11 +98,7 @@ const tierMeta: Record<MarketplaceTier, { label: string; color: BadgeColor }> = 
   community: { label: "Community", color: "neutral" },
 };
 
-function hueOf(seed: string) {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
-  return Math.abs(h) % 360;
-}
+const hueOf = (seed: string) => hashString(seed) % 360;
 
 /** Deterministic gradient for a seed (no images, no network). */
 function seedGradient(seed: string) {
@@ -119,12 +120,7 @@ function GradientArt({ seed, className, children }: { seed: string; className?: 
 }
 
 function Monogram({ name, className }: { name: string; className?: string }) {
-  const letters = name
-    .split(/\s+/)
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
+  const letters = initials(name, { mode: "first-two" });
   return (
     <span
       aria-hidden
@@ -136,10 +132,9 @@ function Monogram({ name, className }: { name: string; className?: string }) {
   );
 }
 
-const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+const formatDate = (iso: string) => formatShortDate(iso, { locale: "en-US", year: "always" });
 
-const formatCount = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10_000 ? 0 : 1)}k` : String(n));
+const formatCount = (n: number) => formatCompact(n, { wholeAbove: 10 });
 
 function Pill({ children, className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
@@ -1087,7 +1082,7 @@ function Mark({ value }: { value: string | undefined }) {
 /** Product-vs-alternatives matrix with check / cross / partial marks and numbered footnotes. */
 export const ComparisonTable = React.forwardRef<HTMLDivElement, ComparisonTableProps>(
   ({ products, rows, footnotes = [], caption = "Product comparison", className, ...props }, ref) => {
-    const uid = React.useId().replace(/:/g, "");
+    const uid = useSafeId("comparison");
     const fnNumber = (id: string) => footnotes.findIndex((f) => f.id === id) + 1;
     return (
       <div ref={ref} className={cn("flex flex-col gap-3", className)} {...props}>

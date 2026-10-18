@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { clamp, toPercent } from "../lib/math";
 import { defaultMeterThresholds, meterLevel, type MeterColor, type MeterLevel, type MeterThresholds } from "./meter";
 
 export interface GaugeColorStop {
@@ -116,8 +117,8 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
     const s = gaugeSizes[size];
     const stroke = thickness ?? s.stroke;
     const empty = value === null || !Number.isFinite(value);
-    const v = empty ? min : Math.min(max, Math.max(min, value as number));
-    const pct = empty || max <= min ? 0 : ((v - min) / (max - min)) * 100;
+    const v = empty ? min : clamp(value as number, min, max);
+    const pct = empty ? 0 : toPercent(v, max, min);
     const { color: fill, level } = pickColor(empty ? min : (value as number), pct, thresholds, colorStops, color);
     const c = s.box / 2;
     const r = c - stroke / 2 - (glow ? 3 : 1);
@@ -215,7 +216,7 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
     },
     ref
   ) => {
-    const pct = max <= 0 ? 0 : Math.min(100, Math.max(0, (value / max) * 100));
+    const pct = toPercent(value, max);
     const level = meterLevel(pct, thresholds);
     const fill = level === "ok" ? resolve(color) : levelColor[level];
     const sw = thickness ?? Math.max(2, size / 8);

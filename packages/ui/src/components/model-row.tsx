@@ -8,6 +8,9 @@ import {
   RiCloseLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
+import { formatDuration } from "../lib/duration";
+import { clamp } from "../lib/math";
 import { Button } from "./button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, type TableSortDirection } from "./table";
 
@@ -105,7 +108,7 @@ export interface DownloadBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanEl
 /** Weights cache state: downloading 42% (with bar), cached, partial, failed, not downloaded. */
 export const DownloadBadge = React.forwardRef<HTMLSpanElement, DownloadBadgeProps>(
   ({ className, status, progress, size, ...props }, ref) => {
-    const pct = Math.max(0, Math.min(100, Math.round(progress ?? 0)));
+    const pct = Math.round(clamp(progress ?? 0, 0, 100));
     const label =
       status === "downloading"
         ? `Downloading ${pct}%`
@@ -240,7 +243,8 @@ const actionVariant: Partial<Record<ModelAction, "primary" | "secondary" | "ghos
   test: "outline",
 };
 
-const fmtMs = (ms?: number) => (ms == null ? "—" : ms < 1000 ? `${Math.round(ms)} ms` : `${Number((ms / 1000).toFixed(1))} s`);
+const fmtMs = (ms?: number) =>
+  ms == null ? "—" : formatDuration(ms, { ms: true, space: true, decimals: 1, decimalsBelow: 60_000, maxUnit: "s" });
 const fmtIdle = (s: number) => (s < 90 ? `${Math.round(s)}s` : s < 5400 ? `${Math.round(s / 60)}m` : `${(s / 3600).toFixed(1)}h`);
 
 export interface ModelRowProps extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "children"> {
@@ -433,12 +437,7 @@ export const ModelTable = React.forwardRef<HTMLDivElement, ModelTableProps>(
     },
     ref
   ) => {
-    const [filterState, setFilterState] = React.useState<ModelFilter>(defaultFilter);
-    const filter = filterProp ?? filterState;
-    const setFilter = (f: ModelFilter) => {
-      if (filterProp === undefined) setFilterState(f);
-      onFilterChange?.(f);
-    };
+    const [filter, setFilter] = useControllableState<ModelFilter>({ value: filterProp, defaultValue: defaultFilter, onChange: onFilterChange });
     const [sort, setSort] = React.useState(defaultSort);
     const shown = models.filter(filterTest[filter]);
     const sorted = sort

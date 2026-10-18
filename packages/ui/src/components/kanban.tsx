@@ -35,7 +35,8 @@ import {
   RiSparkling2Line,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { safeISO, toValidDate } from "../lib/date";
+import { calendarDayDiff, formatRelative, formatShortDate, safeISO, toMs, toValidDate } from "../lib/time";
+import { formatDuration } from "../lib/duration";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Badge, type BadgeColor } from "./badge";
@@ -364,16 +365,11 @@ export function KanbanRunBadge({ status, className }: { status: KanbanRunStatus;
   );
 }
 
-const toDate = (d: Date | number | string) => (d instanceof Date ? d : new Date(d));
-const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 
 /** True when `due` is before today and the card is not done. */
 export function isKanbanOverdue(card: Pick<KanbanCardData, "dueDate" | "completed">, now: Date | number = Date.now(), done = false) {
   if (!card.dueDate || card.completed || done) return false;
-  const due = toValidDate(card.dueDate);
-  const today = toValidDate(now);
-  if (!due || !today) return false;
-  return startOfDay(due) < startOfDay(today);
+  return (calendarDayDiff(now, card.dueDate) ?? 0) > 0;
 }
 
 /* ------------------------------------------------------------------ */
@@ -425,7 +421,7 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
     const metaId = React.useId();
     const overdue = isKanbanOverdue(card, now ?? Date.now(), done);
     const due = toValidDate(card.dueDate);
-    const dueText = due ? new Intl.DateTimeFormat(locale, { month: "short", day: "numeric" }).format(due) : "";
+    const dueText = due ? formatShortDate(due, { locale, year: "never" }) : "";
     const cardLabels = (card.labels ?? []).map((id) => labels.find((l) => l.id === id) ?? { id, name: id });
     const { "aria-describedby": dndDescribedBy, role: _role, ...restActivator } = activatorProps ?? {};
     return (
@@ -1544,24 +1540,12 @@ export interface TaskDetailDialogProps {
 const NONE = "__none";
 
 export function formatKanbanDuration(ms: number) {
-  if (!Number.isFinite(ms) || ms < 0) return "—";
-  const s = Math.round(ms / 1000);
-  if (s < 60) return `${s}s`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ${s % 60}s`;
-  return `${Math.floor(m / 60)}h ${m % 60}m`;
+  if (ms < 0) return "—";
+  return formatDuration(ms, { maxUnit: "h" });
 }
 
-function relTime(at: Date | number | string, now: number) {
-  const diff = (now - toDate(at).getTime()) / 1000;
-  if (!Number.isFinite(diff)) return "—";
-  const abs = Math.abs(diff);
-  const fmt = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
-  if (abs < 60) return fmt.format(-Math.round(diff), "second");
-  if (abs < 3600) return fmt.format(-Math.round(diff / 60), "minute");
-  if (abs < 86400) return fmt.format(-Math.round(diff / 3600), "hour");
-  return fmt.format(-Math.round(diff / 86400), "day");
-}
+const relTime = (at: Date | number | string, now: number, locale?: string) =>
+  formatRelative(at, { now, locale, style: "long", seconds: true, future: true });
 
 function PropertyRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -1829,7 +1813,7 @@ function TaskDetailBody({
                     <span aria-hidden className={cn("absolute -left-[21px] top-1.5 size-2 rounded-full ring-2 ring-background", a.actorKind === "agent" ? "bg-primary" : "bg-muted-foreground")} />
                     <span className="font-medium">{a.actor}</span> <span className="text-muted-foreground">{a.action}</span>
                     <time dateTime={safeISO(a.at)} className="ml-1.5 text-xs text-muted-foreground">
-                      {relTime(a.at, nowMs)}
+                      {relTime(a.at, nowMs, locale)}
                     </time>
                   </li>
                 ))}
@@ -1843,8 +1827,8 @@ function TaskDetailBody({
               <ul aria-label="Agent runs" className="flex flex-col gap-2">
                 {runs.map((r) => {
                   const agent = people.find((p) => p.id === r.agentId);
-                  const end = r.endedAt ? toDate(r.endedAt).getTime() : r.status === "running" ? nowMs : NaN;
-                  const duration = formatKanbanDuration(end - toDate(r.startedAt).getTime());
+                  const end = r.endedAt ? (toMs(r.endedAt) ?? NaN) : r.status === "running" ? nowMs : NaN;
+                  const duration = formatKanbanDuration(end - (toMs(r.startedAt) ?? NaN));
                   const isOpen = openLog === r.id;
                   return (
                     <li key={r.id} className="rounded-box border border-border bg-card p-2.5">
@@ -1854,7 +1838,7 @@ function TaskDetailBody({
                         <KanbanRunBadge status={r.status} />
                         {r.model && <span className="font-mono text-xs text-muted-foreground">{r.model}</span>}
                         <span className="text-xs text-muted-foreground">
-                          {relTime(r.startedAt, nowMs)} · <span className="tabular-nums">{duration}</span>
+                          {relTime(r.startedAt, nowMs, locale)} · <span className="tabular-nums">{duration}</span>
                         </span>
                         {r.log && (
                           <Button

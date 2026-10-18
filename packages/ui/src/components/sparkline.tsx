@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { useSafeId } from "../hooks/use-safe-id";
 
 export type SparklineColor =
   | "primary"
@@ -22,7 +23,6 @@ const tokenColor: Record<string, string> = {
 };
 
 const resolveColor = (color: string) => tokenColor[color] ?? color;
-const safeId = (id: string) => id.replace(/[^a-zA-Z0-9_-]/g, "");
 
 type Point = readonly [number, number];
 
@@ -131,7 +131,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
     ref
   ) => {
     const stroke = strokeFor(data, color, trend);
-    const gradientId = `sutra-spark-${safeId(React.useId())}`;
+    const gradientId = useSafeId("sutra-spark");
 
     if (type === "bar") {
       return (

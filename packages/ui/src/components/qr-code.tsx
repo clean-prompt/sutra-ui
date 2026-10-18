@@ -1,9 +1,12 @@
 import * as React from "react";
 import { encode } from "uqr";
-import { RiCheckLine, RiFileCopyLine, RiRefreshLine, RiTimeLine } from "@remixicon/react";
+import { RiRefreshLine, RiTimeLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
+import { formatCountdown } from "../lib/duration";
+import { toMs, type TimeInput } from "../lib/time";
+import { useCountdown } from "../hooks/use-now";
 import { Button } from "./button";
+import { CopyButton } from "./copy-button";
 
 /* ------------------------------------------------------------------ */
 /* Geometry helpers                                                    */
@@ -214,16 +217,6 @@ QRCode.displayName = "QRCode";
 /* QRCodeCard                                                          */
 /* ------------------------------------------------------------------ */
 
-function toMs(v: Date | number | string) {
-  return v instanceof Date ? v.getTime() : typeof v === "number" ? v : new Date(v).getTime();
-}
-
-function formatCountdown(seconds: number) {
-  const s = Math.max(0, Math.ceil(seconds));
-  const m = Math.floor(s / 60);
-  return `${m}:${String(s % 60).padStart(2, "0")}`;
-}
-
 export interface QRCodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   value: string;
   /** Heading above the code, e.g. "Link a device". */
@@ -233,7 +226,7 @@ export interface QRCodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /** URL shown in the copy row. Defaults to `value`; pass `false` to hide the row. */
   url?: string | false;
   /** When the code stops being valid. Shows "Expires in m:ss". */
-  expiresAt?: Date | number | string;
+  expiresAt?: TimeInput;
   /** Called once when the countdown reaches zero. */
   onExpire?: () => void;
   /** Shows a refresh button on the expired overlay. */
@@ -265,29 +258,9 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
     },
     ref
   ) => {
-    const deadline = expiresAt != null ? toMs(expiresAt) : null;
-    const [now, setNow] = React.useState(() => Date.now());
-    const remaining = deadline != null ? (deadline - now) / 1000 : null;
-    const expired = remaining != null && remaining <= 0;
-    const onExpireRef = React.useRef(onExpire);
-    onExpireRef.current = onExpire;
-    const firedFor = React.useRef<number | null>(null);
-    const { copied, copy } = useCopy();
+    const deadline = toMs(expiresAt);
+    const { remainingMs, expired } = useCountdown(deadline, { onExpire });
     const shownUrl = url === false ? null : (url ?? value);
-
-    React.useEffect(() => {
-      if (deadline == null) return;
-      setNow(Date.now());
-      const id = setInterval(() => setNow(Date.now()), 1000);
-      return () => clearInterval(id);
-    }, [deadline]);
-
-    React.useEffect(() => {
-      if (expired && deadline != null && firedFor.current !== deadline) {
-        firedFor.current = deadline;
-        onExpireRef.current?.();
-      }
-    }, [expired, deadline]);
 
     return (
       <div
@@ -322,17 +295,17 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
           )}
         </div>
         {caption != null && <p className="text-sm text-muted-foreground">{caption}</p>}
-        {remaining != null && !expired && (
+        {deadline !== undefined && !expired && (
           <p
             role="timer"
             aria-live="off"
             className={cn(
               "inline-flex items-center gap-1.5 text-xs font-medium tabular-nums",
-              remaining <= 15 ? "text-destructive" : "text-muted-foreground"
+              remainingMs <= 15_000 ? "text-destructive" : "text-muted-foreground"
             )}
           >
             <RiTimeLine aria-hidden className="size-3.5" />
-            Expires in {formatCountdown(remaining)}
+            Expires in {formatCountdown(remainingMs)}
           </p>
         )}
         {shownUrl && (
@@ -340,14 +313,7 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
             <span className="min-w-0 flex-1 truncate text-left font-mono text-xs text-muted-foreground" title={shownUrl}>
               {shownUrl}
             </span>
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              aria-label={copied ? "Copied" : "Copy link"}
-              onClick={() => void copy(shownUrl)}
-            >
-              {copied ? <RiCheckLine className="text-success" /> : <RiFileCopyLine />}
-            </Button>
+            <CopyButton value={shownUrl} size="xs" label="Copy link" copiedLabel="Copied" />
           </div>
         )}
       </div>

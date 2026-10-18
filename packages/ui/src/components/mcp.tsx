@@ -21,7 +21,9 @@ import {
   RiToolsLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { Badge, type BadgeColor } from "./badge";
 import { Button } from "./button";
 import { Chip, ChipGroup } from "./chip";
@@ -362,7 +364,7 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
     const [pasteOpen, setPasteOpen] = React.useState(false);
     const [pasteText, setPasteText] = React.useState("");
     const [pasteMsg, setPasteMsg] = React.useState<{ ok: boolean; text: string } | null>(null);
-    const [busy, setBusy] = React.useState(false);
+    const { run: runSubmit, busy } = useAsyncAction(async (c: McpServerConfig) => onSubmit?.(c));
     const id = React.useId();
     const errors = touched ? validateMcpServerConfig(config, existingNames) : {};
     const set = (p: Partial<McpServerConfig>) => setConfig({ ...config, ...p });
@@ -387,12 +389,7 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
       setTouched(true);
       const errs = validateMcpServerConfig(config, existingNames);
       if (Object.keys(errs).length) return;
-      setBusy(true);
-      try {
-        await onSubmit?.(config);
-      } finally {
-        setBusy(false);
-      }
+      await runSubmit(config);
     };
     const http = config.transport !== "stdio";
 
@@ -696,7 +693,7 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
           {toolCount != null && (
             <span className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground tabular-nums">
               <RiToolsLine aria-hidden className="size-3.5" />
-              {toolCount} {toolCount === 1 ? "tool" : "tools"}
+              {toolCount} {pluralize(toolCount, "tool")}
             </span>
           )}
         </div>
@@ -925,17 +922,9 @@ function ConnectorDirectoryCard({
   onInstall?: ConnectorDirectoryProps["onInstall"];
   onManage?: ConnectorDirectoryProps["onManage"];
 }) {
-  const [busy, setBusy] = React.useState(false);
+  const { run, busy } = useAsyncAction(async () => onInstall?.(entry));
   const titleId = React.useId();
   const action = entry.ways.includes("hosted") ? "Connect" : "Install";
-  const run = async () => {
-    setBusy(true);
-    try {
-      await onInstall?.(entry);
-    } finally {
-      setBusy(false);
-    }
-  };
   return (
     <li
       aria-labelledby={titleId}

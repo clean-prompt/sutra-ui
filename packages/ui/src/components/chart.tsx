@@ -2,6 +2,9 @@ import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { chartColors } from "../lib/tokens";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useElementWidth } from "../hooks/use-resize-observer";
+import { useSafeId } from "../hooks/use-safe-id";
+import { formatShortDate } from "../lib/time";
 
 /* ------------------------------------------------------------------------------------------------
  * Types
@@ -219,15 +222,13 @@ const tokenColor: Record<string, string> = {
 /** Resolve a token name (primary, success, …) to its CSS variable; pass other colors through. */
 export const resolveChartColor = (color: string) => tokenColor[color] ?? color;
 
-const safeId = (id: string) => id.replace(/[^a-zA-Z0-9_-]/g, "");
-
 const compactFormat = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
 const plainFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
 
 const defaultValueFormatter = (v: number) => plainFormat.format(v);
 
 function defaultIndexFormatter(v: ChartValue) {
-  if (v instanceof Date) return v.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  if (v instanceof Date) return formatShortDate(v, { year: "never" });
   if (v === null || v === undefined) return "";
   return String(v);
 }
@@ -242,22 +243,9 @@ function useMergedRef<T>(...refs: (React.Ref<T> | undefined)[]) {
   }, refs);
 }
 
-function useElementWidth(ref: React.RefObject<HTMLElement | null>, fallback: number) {
-  const [width, setWidth] = React.useState(fallback);
-  React.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const measured = Math.round(el.getBoundingClientRect().width);
-    if (measured > 0) setWidth(measured);
-    if (typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver((entries) => {
-      const w = Math.round(entries[0]?.contentRect.width ?? 0);
-      if (w > 0) setWidth(w);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [ref]);
-  return width;
+function useChartWidth(ref: React.RefObject<HTMLElement | null>, fallback: number) {
+  const measured = Math.round(useElementWidth(ref));
+  return measured > 0 ? measured : fallback;
 }
 
 /* ------------------------------------------------------------------------------------------------
@@ -289,7 +277,7 @@ export interface ChartContainerProps extends Omit<React.HTMLAttributes<HTMLDivEl
 export const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerProps>(
   ({ label, height = 240, defaultWidth = 600, table, children, className, style, ...props }, ref) => {
     const innerRef = React.useRef<HTMLDivElement>(null);
-    const width = useElementWidth(innerRef, defaultWidth);
+    const width = useChartWidth(innerRef, defaultWidth);
     const mergedRef = useMergedRef(ref, innerRef);
     return (
       <>
@@ -593,7 +581,7 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
     },
     ref
   ) => {
-    const uid = `sutra-chart-${safeId(React.useId())}`;
+    const uid = useSafeId("sutra-chart");
     const [hidden, setHidden] = useControllableState<string[]>({
       value: hiddenSeries,
       defaultValue: defaultHiddenSeries ?? [],

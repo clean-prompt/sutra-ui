@@ -1,19 +1,11 @@
 import * as React from "react";
-import {
-  RiAlertLine,
-  RiCheckLine,
-  RiDownloadLine,
-  RiEyeLine,
-  RiEyeOffLine,
-  RiFileCopyLine,
-  RiKey2Line,
-} from "@remixicon/react";
+import { RiAlertLine, RiDownloadLine, RiEyeLine, RiEyeOffLine, RiKey2Line } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useCopy } from "../hooks/use-copy";
 import { Button } from "./button";
 import { Badge, type BadgeColor } from "./badge";
 import { CheckboxField } from "./checkbox";
+import { CopyButton } from "./copy-button";
 import { getPasswordScore } from "./password-strength";
 
 /* ------------------------------------------------------------------ */
@@ -189,7 +181,6 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
       defaultValue: defaultRevealed,
       onChange: onRevealedChange,
     });
-    const { copied, copy } = useCopy(2000);
     const [clearNote, setClearNote] = React.useState(false);
     // Only hides the "Clipboard clears in…" note; the clear itself is scheduled at module level.
     const noteTimer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -201,9 +192,7 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
       return () => clearTimeout(id);
     }, [revealed, revealFor, setRevealed]);
 
-    const handleCopy = async () => {
-      const ok = await copy(value);
-      if (!ok) return;
+    const handleCopied = () => {
       onCopy?.();
       if (clipboardClearAfter > 0) {
         setClearNote(true);
@@ -264,15 +253,7 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
             </Button>
           )}
           {copyable && (
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              aria-label={copied ? "Copied" : `Copy ${label.toLowerCase()}`}
-              onClick={handleCopy}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              {copied ? <RiCheckLine className="text-success" /> : <RiFileCopyLine />}
-            </Button>
+            <CopyButton value={value} size="xs" label={`Copy ${label.toLowerCase()}`} copiedLabel="Copied" timeout={2000} onCopied={handleCopied} />
           )}
         </div>
         {clearNote && (
@@ -352,7 +333,6 @@ export const SecretRevealOnce = React.forwardRef<HTMLDivElement, SecretRevealOnc
     ref
   ) => {
     const [ack, setAck] = React.useState(false);
-    const { copied, copy } = useCopy(2000);
     const titleId = React.useId();
     return (
       <div
@@ -379,16 +359,7 @@ export const SecretRevealOnce = React.forwardRef<HTMLDivElement, SecretRevealOnc
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            leadingIcon={copied ? <RiCheckLine className="text-success" /> : <RiFileCopyLine />}
-            onClick={async () => {
-              if (await copy(secret)) onCopy?.();
-            }}
-          >
-            {copied ? "Copied" : "Copy"}
-          </Button>
+          <CopyButton variant="button" value={secret} label="Copy" copiedLabel="Copied" timeout={2000} onCopied={() => onCopy?.()} />
           {fileName !== false && (
             <Button
               variant="secondary"

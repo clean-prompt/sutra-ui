@@ -14,6 +14,8 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { errorMessage, useAsyncAction } from "../hooks/use-async-action";
+import { formatCost } from "../lib/format";
 import { Badge, type BadgeColor } from "./badge";
 import { Button } from "./button";
 import {
@@ -33,13 +35,11 @@ import { Spinner } from "./spinner";
 import { Steps } from "./step-indicator";
 import { Switch } from "./switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
-import { isValidDate, safeISO, toValidDate } from "../lib/date";
+import { DAY_MS, formatShortDate, isValidDate, safeISO } from "../lib/time";
 
 /* ------------------------------------------------------------------ */
 /* Pure helpers                                                        */
 /* ------------------------------------------------------------------ */
-
-const DAY_MS = 86_400_000;
 
 function currencyDigits(currency: string, locale?: string) {
   try {
@@ -53,13 +53,7 @@ function currencyDigits(currency: string, locale?: string) {
 export function formatPrice(amountMinor: number, currency = "USD", locale = "en-US"): string {
   const digits = currencyDigits(currency, locale);
   const major = amountMinor / 10 ** digits;
-  const whole = Number.isInteger(major);
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency,
-    minimumFractionDigits: whole ? 0 : digits,
-    maximumFractionDigits: digits,
-  }).format(major);
+  return formatCost(major, { currency, locale, maxFraction: digits, minFraction: Number.isInteger(major) ? 0 : digits, tiny: 0 });
 }
 
 /** Percent saved by paying `yearly` once instead of `monthly` × 12 (rounded, never negative). */
@@ -76,10 +70,7 @@ export function projectRunOut(balance: number, dailyBurn: number, from: Date = n
   return isValidDate(out) ? out : null;
 }
 
-const formatDay = (d: Date | string, locale = "en-US") => {
-  const date = toValidDate(d);
-  return date ? date.toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" }) : "—";
-};
+const formatDay = (d: Date | string, locale = "en-US") => formatShortDate(d, { locale, year: "always" });
 
 const formatNumber = (n: number, locale = "en-US") => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(n);
 
@@ -660,7 +651,8 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
     const titleId = React.useId();
     const [open, setOpen] = React.useState(false);
     const [selected, setSelected] = React.useState(0);
-    const [busy, setBusy] = React.useState(false);
+    const purchase = useAsyncAction(async (preset: CreditPreset) => onBuy?.(preset), { onSuccess: () => setOpen(false) });
+    const busy = purchase.busy;
     const from = now ?? new Date();
     const runOut = projectRunOut(balance, dailyBurn, from);
     const runwayDays = dailyBurn > 0 ? balance / dailyBurn : Infinity;
@@ -669,13 +661,7 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
     const buy = async () => {
       const preset = presets[selected];
       if (!preset) return;
-      setBusy(true);
-      try {
-        await onBuy?.(preset);
-        setOpen(false);
-      } finally {
-        setBusy(false);
-      }
+      await purchase.run(preset);
     };
 
     return (
@@ -1153,7 +1139,6 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
   ) => {
     const [step, setStepState] = React.useState<CheckoutStep>(defaultStep);
     const [method, setMethod] = React.useState<string | null>(paymentMethods[0]?.id ?? null);
-    const [busy, setBusy] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
     const headingRef = React.useRef<HTMLHeadingElement>(null);
     const shownStep = React.useRef(step);
@@ -1173,38 +1158,44 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
     const per = plan.interval === "yearly" ? "year" : "month";
     const canPay = paymentMethods.length === 0 || method != null;
 
-    const confirm = async () => {
-      setBusy(true);
-      setError(null);
-      try {
-        const outcome = onConfirm ? await onConfirm(method) : "succeeded";
-        if (outcome === "succeeded") setStep("success");
-        else if (outcome === "requires_action") setStep("authenticate");
-        else {
-          setError(outcome.message ?? "Your card was declined.");
+    const confirmAction = useAsyncAction(
+      async (): Promise<CheckoutOutcome> => {
+        setError(null);
+        return onConfirm ? onConfirm(method) : "succeeded";
+      },
+      {
+        onSuccess: (outcome) => {
+          if (outcome === "succeeded") setStep("success");
+          else if (outcome === "requires_action") setStep("authenticate");
+          else {
+            setError(outcome.message ?? "Your card was declined.");
+            setStep("failure");
+          }
+        },
+        onError: (e) => {
+          setError(errorMessage(e, "Something went wrong."));
           setStep("failure");
-        }
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Something went wrong.");
-        setStep("failure");
-      } finally {
-        setBusy(false);
+        },
       }
-    };
+    );
 
-    const authenticate = async () => {
-      setBusy(true);
-      try {
-        const r = onAuthenticate ? await onAuthenticate() : "succeeded";
+    const authFailed = "Authentication failed. Your bank didn't approve the payment.";
+    const authAction = useAsyncAction(async () => (onAuthenticate ? onAuthenticate() : "succeeded"), {
+      onSuccess: (r) => {
         if (r === "succeeded") setStep("success");
         else {
-          setError("Authentication failed. Your bank didn't approve the payment.");
+          setError(authFailed);
           setStep("failure");
         }
-      } finally {
-        setBusy(false);
-      }
-    };
+      },
+      onError: (e) => {
+        setError(errorMessage(e, authFailed));
+        setStep("failure");
+      },
+    });
+    const busy = confirmAction.busy || authAction.busy;
+    const confirm = confirmAction.run;
+    const authenticate = authAction.run;
 
     const titles: Record<CheckoutStep, string> = {
       plan: "Review your plan",

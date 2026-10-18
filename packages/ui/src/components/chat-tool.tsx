@@ -11,6 +11,7 @@ import {
   RiToolsLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatDuration } from "../lib/duration";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { PermissionPrompt, type PermissionDecision, type PermissionPromptProps } from "./permission-prompt";
@@ -63,12 +64,9 @@ function formatValue(value: unknown) {
   }
 }
 
-function formatToolDuration(ms: number) {
-  if (ms < 1000) return `${Math.round(ms)}ms`;
-  const s = ms / 1000;
-  if (s < 60) return `${s < 10 ? s.toFixed(1) : Math.round(s)}s`;
-  return `${Math.floor(s / 60)}m ${Math.round(s % 60)}s`;
-}
+/** "850ms", "2.0s", "12s", "1m 5s". */
+const formatToolDuration = (ms: number) =>
+  formatDuration(ms, { ms: true, decimals: 1, decimalsBelow: 10_000, trimZeros: false, maxUnit: "m" });
 
 function JsonBlock({ label, value, tone }: { label: string; value: unknown; tone?: "error" }) {
   return (

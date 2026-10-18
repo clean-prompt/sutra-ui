@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiAlertLine, RiArrowGoBackLine, RiEditLine, RiKeyboardLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { SearchInput } from "./input";
 import {
@@ -153,12 +154,11 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
       [shortcutsProp, registry.shortcuts]
     );
 
-    const [internal, setInternal] = React.useState<Record<string, string>>(defaultValue);
-    const overrides = valueProp ?? internal;
-    const commitOverrides = (next: Record<string, string>) => {
-      if (valueProp === undefined) setInternal(next);
-      onValueChange?.(next);
-    };
+    const [overrides, commitOverrides] = useControllableState<Record<string, string>>({
+      value: valueProp,
+      defaultValue,
+      onChange: onValueChange,
+    });
 
     const [query, setQuery] = React.useState("");
     const [recording, setRecording] = React.useState<string | null>(null);

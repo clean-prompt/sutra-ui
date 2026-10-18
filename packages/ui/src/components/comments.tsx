@@ -17,7 +17,7 @@ import { Markdown } from "./markdown";
 import { EmptyState } from "./empty-state";
 import { SegmentedControl } from "./segmented-control";
 import { formatRelativeTime } from "./sync-status";
-import { safeISO, toValidDate } from "../lib/date";
+import { safeISO, toValidDate } from "../lib/time";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 

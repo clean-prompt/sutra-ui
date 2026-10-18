@@ -11,6 +11,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { clamp } from "../lib/math";
 import { useSwipe } from "./drawer";
 
 /* ------------------------------------------------------------------ */
@@ -223,7 +224,7 @@ export interface LightboxProps {
 }
 
 const MIN_ZOOM = 1;
-const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
+
 
 const chromeButton = cn(
   "inline-flex size-10 shrink-0 items-center justify-center rounded-full text-white/85 transition-colors hover:bg-white/15 hover:text-white disabled:pointer-events-none disabled:opacity-35 [&_svg]:size-5",

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiHashtag, RiSlashCommands2, RiUser3Line } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatDateTime, formatShortDate, toValidDate } from "../lib/time";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
 import { HoverCard, HoverCardContent, HoverCardTrigger, Popover, PopoverAnchor, PopoverContent } from "./popover";
 import { Spinner } from "./spinner";
@@ -33,22 +34,11 @@ export function entityTypeLabel(type: EntityType) {
   return type === "person" ? "Person" : "Tag";
 }
 
-function toDate(value: Date | string | undefined) {
-  if (value == null) return undefined;
-  const d = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(d.getTime()) ? undefined : d;
-}
-
 function formatEntityDate(value: Date | string | undefined) {
-  const d = toDate(value);
+  const d = toValidDate(value);
   if (!d) return undefined;
   const hasTime = d.getHours() !== 0 || d.getMinutes() !== 0;
-  return d.toLocaleString(undefined, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    ...(hasTime ? { hour: "numeric", minute: "2-digit" } : {}),
-  });
+  return hasTime ? formatDateTime(d, { weekday: true, year: "never" }) : formatShortDate(d, { weekday: true, year: "never" });
 }
 
 /* ------------------------------------------------------------------ */

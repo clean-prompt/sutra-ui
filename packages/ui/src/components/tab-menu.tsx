@@ -1,6 +1,8 @@
 import * as React from "react";
 import { cn, focusRing, type Size } from "../lib/cn";
+import { useActiveIndicator } from "../hooks/use-active-indicator";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useScrollEdges } from "../hooks/use-scroll-edges";
 
 export interface TabMenuItem {
   value: string;
@@ -64,39 +66,9 @@ export const TabMenu = React.forwardRef<HTMLElement, TabMenuProps>(
 
     const scrollerRef = React.useRef<HTMLDivElement | null>(null);
     const itemRefs = React.useRef(new Map<string, HTMLElement>());
-    const [indicator, setIndicator] = React.useState<{ left: number; width: number } | null>(null);
-    const [animate, setAnimate] = React.useState(false);
-    const [fade, setFade] = React.useState({ start: false, end: false });
-
-    const updateFade = React.useCallback(() => {
-      const el = scrollerRef.current;
-      if (!el) return;
-      const max = el.scrollWidth - el.clientWidth;
-      setFade({ start: el.scrollLeft > 1, end: el.scrollLeft < max - 1 });
-    }, []);
-
-    const measure = React.useCallback(() => {
-      const el = itemRefs.current.get(value);
-      setIndicator(el ? { left: el.offsetLeft, width: el.offsetWidth } : null);
-      updateFade();
-    }, [value, updateFade]);
-
-    React.useLayoutEffect(() => {
-      measure();
-    }, [measure, items]);
-
-    React.useEffect(() => {
-      const raf = requestAnimationFrame(() => setAnimate(true));
-      const el = scrollerRef.current;
-      if (!el || typeof ResizeObserver === "undefined") return () => cancelAnimationFrame(raf);
-      const ro = new ResizeObserver(() => measure());
-      ro.observe(el);
-      if (el.firstElementChild) ro.observe(el.firstElementChild);
-      return () => {
-        cancelAnimationFrame(raf);
-        ro.disconnect();
-      };
-    }, [measure]);
+    const { rect: indicator, animate } = useActiveIndicator(scrollerRef, () => itemRefs.current.get(value), [value, items]);
+    const edges = useScrollEdges(scrollerRef);
+    const fade = { start: edges.left, end: edges.right };
 
     React.useEffect(() => {
       // Scroll only the tab strip (scrollIntoView would also scroll the page).
@@ -125,7 +97,6 @@ export const TabMenu = React.forwardRef<HTMLElement, TabMenuProps>(
       >
         <div
           ref={scrollerRef}
-          onScroll={updateFade}
           className="relative overflow-x-auto overflow-y-hidden scrollbar-none"
         >
           <ul className="relative flex w-max min-w-full items-stretch gap-6 px-px">

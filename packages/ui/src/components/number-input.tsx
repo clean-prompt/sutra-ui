@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiAddLine, RiArrowDownSLine, RiArrowUpSLine, RiSubtractLine } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { roundTo } from "../lib/math";
 import { useField } from "./field";
 
 export interface NumberInputProps
@@ -42,10 +43,6 @@ function decimalsOf(n: number) {
   return i === -1 ? 0 : s.length - i - 1;
 }
 
-function roundTo(n: number, decimals: number) {
-  const f = 10 ** decimals;
-  return Math.round(n * f) / f;
-}
 
 const heights: Record<Size, string> = { sm: "h-8", md: "h-9", lg: "h-10" };
 const splitButton: Record<Size, string> = { sm: "w-8", md: "w-9", lg: "w-10" };

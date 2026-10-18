@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiComputerLine, RiMoonClearLine, RiSunLine } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useMediaQuery } from "../hooks/use-media-query";
 import { Button } from "./button";
 import { SegmentedControl, type SegmentedControlProps } from "./segmented-control";
 
@@ -17,24 +18,6 @@ function readStored(key: string | null): ThemeToggleMode | undefined {
   } catch {
     return undefined;
   }
-}
-
-function systemPrefersDark() {
-  return typeof window !== "undefined" && Boolean(window.matchMedia?.(DARK_QUERY).matches);
-}
-
-/** Tracks the OS colour scheme while `enabled`. */
-function useSystemDark(enabled: boolean) {
-  const [dark, setDark] = React.useState(systemPrefersDark);
-  React.useEffect(() => {
-    if (!enabled || typeof window === "undefined" || !window.matchMedia) return;
-    const mql = window.matchMedia(DARK_QUERY);
-    setDark(mql.matches);
-    const onChange = (e: MediaQueryListEvent) => setDark(e.matches);
-    mql.addEventListener?.("change", onChange);
-    return () => mql.removeEventListener?.("change", onChange);
-  }, [enabled]);
-  return dark;
 }
 
 const labels: Record<ThemeToggleMode, string> = { light: "Light", dark: "Dark", system: "System" };
@@ -88,7 +71,7 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement & HTMLDivElement, 
       return typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "dark" : "light";
     });
     const [mode, setMode] = useControllableState<ThemeToggleMode>({ value, defaultValue: initial, onChange: onValueChange });
-    const systemDark = useSystemDark(mode === "system");
+    const systemDark = useMediaQuery(DARK_QUERY);
     const resolved: "light" | "dark" = mode === "system" ? (systemDark ? "dark" : "light") : mode;
 
     React.useEffect(() => {

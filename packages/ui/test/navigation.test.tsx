@@ -555,16 +555,55 @@ describe("Sidebar", () => {
     expect(aside()).toHaveAttribute("data-state", "expanded");
   });
 
-  it("Ctrl+B and Meta+B toggle collapsed state", async () => {
+  it("mod+B toggles collapsed state (Ctrl off macOS; Meta+B is left alone)", async () => {
     const user = userEvent.setup();
     render(<SidebarHarness />);
     await user.keyboard("{Control>}b{/Control}");
     expect(aside()).toHaveAttribute("data-state", "collapsed");
     await user.keyboard("{Meta>}b{/Meta}");
+    expect(aside()).toHaveAttribute("data-state", "collapsed");
+    await user.keyboard("{Control>}b{/Control}");
     expect(aside()).toHaveAttribute("data-state", "expanded");
     // Plain "b" does nothing.
     await user.keyboard("b");
     expect(aside()).toHaveAttribute("data-state", "expanded");
+  });
+
+  it("mod+B does not fire inside a text field", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <input aria-label="Notes" />
+        <SidebarHarness />
+      </>
+    );
+    await user.click(screen.getByLabelText("Notes"));
+    await user.keyboard("{Control>}b{/Control}");
+    expect(aside()).toHaveAttribute("data-state", "expanded");
+  });
+
+  it("on macOS, ⌘B toggles and Ctrl+B (a text-editing key there) is ignored, including in inputs", async () => {
+    const platform = vi.spyOn(navigator, "platform", "get").mockReturnValue("MacIntel");
+    try {
+      const user = userEvent.setup();
+      render(
+        <>
+          <input aria-label="Notes" />
+          <SidebarHarness />
+        </>
+      );
+      await user.keyboard("{Control>}b{/Control}");
+      expect(aside()).toHaveAttribute("data-state", "expanded");
+      await user.keyboard("{Meta>}b{/Meta}");
+      expect(aside()).toHaveAttribute("data-state", "collapsed");
+      await user.click(screen.getByLabelText("Notes"));
+      await user.keyboard("{Control>}b{/Control}");
+      expect(aside()).toHaveAttribute("data-state", "collapsed");
+      await user.keyboard("{Meta>}b{/Meta}");
+      expect(aside()).toHaveAttribute("data-state", "collapsed");
+    } finally {
+      platform.mockRestore();
+    }
   });
 
   it("marks the active menu button with aria-current", () => {

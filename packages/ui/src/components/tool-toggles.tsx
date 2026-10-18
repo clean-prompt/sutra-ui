@@ -15,6 +15,7 @@ import {
   RiToolsLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Badge, type BadgeColor } from "./badge";
 import { Button } from "./button";
@@ -250,8 +251,14 @@ export const ToolToggleList = React.forwardRef<HTMLDivElement, ToolToggleListPro
     const [query, setQuery] = React.useState("");
     const [hintFilter, setHintFilter] = React.useState<ToolHint[]>([]);
     const [expanded, setExpanded] = React.useState<string | null>(null);
-    const [saving, setSaving] = React.useState(false);
-    const [error, setError] = React.useState<string | null>(null);
+    const saveAction = useAsyncAction(
+      async () => {
+        await onSave?.(draft, changed);
+        setBaseline(draft);
+      },
+      { fallbackMessage: "Could not save changes" }
+    );
+    const { busy: saving, error, setError } = saveAction;
     const [showDeprecated, setShowDeprecated] = useControllableState({
       value: showDeprecatedProp,
       defaultValue: defaultShowDeprecated,
@@ -292,18 +299,7 @@ export const ToolToggleList = React.forwardRef<HTMLDivElement, ToolToggleListPro
       setError(null);
       onDiscard?.();
     };
-    const save = async () => {
-      setSaving(true);
-      setError(null);
-      try {
-        await onSave?.(draft, changed);
-        setBaseline(draft);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Could not save changes");
-      } finally {
-        setSaving(false);
-      }
-    };
+    const save = () => void saveAction.run();
     const enabledCount = tools.filter((t) => draft[t.id]).length;
     const togglable = visible.filter((t) => !t.locked);
 
@@ -585,7 +581,10 @@ function CredentialRow({
 }) {
   const [editing, setEditing] = React.useState(!field.isSet);
   const [value, setValue] = React.useState("");
-  const [busy, setBusy] = React.useState(false);
+  const { run: save, busy, error } = useAsyncAction(async (next: string) => onSave?.(next), {
+    onSuccess: () => setValue(""),
+    fallbackMessage: "Could not save the key",
+  });
   const inputId = React.useId();
   React.useEffect(() => setEditing(!field.isSet), [field.isSet]);
   const link = field.getKeyUrl ? (
@@ -620,13 +619,7 @@ function CredentialRow({
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!value.trim()) return;
-    setBusy(true);
-    try {
-      await onSave?.(value.trim());
-      setValue("");
-    } finally {
-      setBusy(false);
-    }
+    await save(value.trim());
   };
   return (
     <form className="space-y-1.5" data-credential={field.key} data-set="false" onSubmit={submit}>
@@ -648,6 +641,12 @@ function CredentialRow({
           </Button>
         )}
       </div>
+      {error && (
+        <p role="alert" className="inline-flex items-center gap-1 text-xs text-destructive">
+          <RiErrorWarningLine aria-hidden className="size-3.5" />
+          {error}
+        </p>
+      )}
       {!field.isSet && <p className="text-xs text-warning-soft-foreground">Not set</p>}
       {field.description != null && <p className="text-xs text-muted-foreground">{field.description}</p>}
     </form>

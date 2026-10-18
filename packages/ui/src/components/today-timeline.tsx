@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiCalendarCheckLine, RiFireFill } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { formatClockTime, toValidDate } from "../lib/time";
+import { useNow } from "../hooks/use-now";
 import { SutraAppIcon, sutraAppMeta, type SutraApp } from "../assets/brand";
 import { Checkbox } from "./checkbox";
 
@@ -38,23 +40,17 @@ export interface TimelineLayout {
 
 const DEFAULT_DURATION_MIN = 30;
 
-function toDate(value: Date | string | undefined) {
-  if (value == null) return undefined;
-  const d = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(d.getTime()) ? undefined : d;
-}
-
 /** Splits items into untimed and timed, and assigns side-by-side columns to overlapping timed items. */
 export function layoutTimeline(items: TimelineItem[], defaultDurationMinutes = DEFAULT_DURATION_MIN): TimelineLayout {
   const untimed: TimelineItem[] = [];
   const timed: TimelineLayoutItem[] = [];
   for (const item of items) {
-    const start = toDate(item.start);
+    const start = toValidDate(item.start);
     if (item.allDay || !start) {
       untimed.push(item);
       continue;
     }
-    let end = toDate(item.end);
+    let end = toValidDate(item.end);
     if (!end || end <= start) end = new Date(start.getTime() + defaultDurationMinutes * 60000);
     timed.push({ item, start, end, column: 0, columns: 1 });
   }
@@ -102,20 +98,6 @@ export interface TodayTimelineProps extends Omit<React.HTMLAttributes<HTMLDivEle
   emptyState?: React.ReactNode;
 }
 
-function useNow(fixed?: Date) {
-  const [now, setNow] = React.useState(() => fixed ?? new Date());
-  React.useEffect(() => {
-    if (fixed) {
-      setNow(fixed);
-      return;
-    }
-    const id = setInterval(() => setNow(new Date()), 60_000);
-    return () => clearInterval(id);
-  }, [fixed]);
-  return fixed ?? now;
-}
-
-const fmtTime = (d: Date) => d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 const fmtHour = (h: number) => new Date(2000, 0, 1, h).toLocaleTimeString(undefined, { hour: "numeric" });
 const minutesOf = (d: Date) => d.getHours() * 60 + d.getMinutes();
 
@@ -177,7 +159,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
     },
     ref
   ) => {
-    const now = useNow(nowProp);
+    const now = new Date(useNow({ interval: 60_000, fixed: nowProp }));
     const { untimed, timed } = React.useMemo(() => layoutTimeline(items), [items]);
     const hourHeight = density === "compact" ? 40 : 64;
 
@@ -293,8 +275,8 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
                       {item.streak != null && <Streak days={item.streak} />}
                     </div>
                     <span className="truncate text-xs tabular-nums opacity-80">
-                      {fmtTime(start)}
-                      {item.end ? ` – ${fmtTime(end)}` : ""}
+                      {formatClockTime(start)}
+                      {item.end ? ` – ${formatClockTime(end)}` : ""}
                       {item.meta && !short ? <> · {item.meta}</> : null}
                     </span>
                   </li>
@@ -310,7 +292,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
               >
                 <span aria-hidden className="-ml-1 size-2 rounded-full bg-destructive" />
                 <span aria-hidden className="h-px flex-1 bg-destructive" />
-                <span className="sr-only">Now, {fmtTime(now)}</span>
+                <span className="sr-only">Now, {formatClockTime(now)}</span>
               </div>
             )}
           </div>

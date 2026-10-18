@@ -26,6 +26,7 @@ import {
 import { highlightSelectionMatches, search, searchKeymap } from "@codemirror/search";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { cn } from "../lib/cn";
+import { clamp } from "../lib/math";
 
 /* ------------------------------------------------------------------ */
 /* Theme                                                               */
@@ -523,7 +524,7 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
         scrollToLine(n) {
           const view = viewRef.current;
           if (!view) return;
-          const ln = view.state.doc.line(Math.min(Math.max(1, Math.floor(n)), view.state.doc.lines));
+          const ln = view.state.doc.line(clamp(Math.floor(n), 1, view.state.doc.lines));
           view.dispatch({ selection: { anchor: ln.from }, effects: EditorView.scrollIntoView(ln.from, { y: "start", yMargin: 24 }) });
           view.focus();
         },

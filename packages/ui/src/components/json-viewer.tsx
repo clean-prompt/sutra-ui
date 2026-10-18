@@ -10,6 +10,8 @@ import {
   RiSearchLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { useCopy } from "../hooks/use-copy";
 import { safeISO } from "../lib/date";
 import { CodeBlock } from "./code-block";
@@ -265,7 +267,7 @@ function JsonNode({ name, value, segs, depth, ancestors, last }: JsonNodeProps) 
   const entries = entriesOf(value);
   const isArray = kind === "array";
   const [open, close] = isArray ? ["[", "]"] : ["{", "}"];
-  const countText = isArray ? `${entries.length} ${entries.length === 1 ? "item" : "items"}` : `${entries.length} ${entries.length === 1 ? "key" : "keys"}`;
+  const countText = isArray ? `${entries.length} ${pluralize(entries.length, "item")}` : `${entries.length} ${pluralize(entries.length, "key")}`;
   const expanded = entries.length > 0 && ctx.isExpanded(path, depth);
   const shown = expanded ? Math.min(entries.length, ctx.visible(path)) : 0;
   const nextAncestors = expanded ? new Map(ancestors).set(value as object, path) : ancestors;
@@ -410,18 +412,8 @@ export const JsonViewer = React.forwardRef<HTMLDivElement, JsonViewerProps>(
       }
     }, [json, dataProp]);
 
-    const [modeState, setModeState] = React.useState<JsonViewerMode>(defaultMode);
-    const mode = modeProp ?? modeState;
-    const setMode = (m: JsonViewerMode) => {
-      if (modeProp === undefined) setModeState(m);
-      onModeChange?.(m);
-    };
-    const [searchState, setSearchState] = React.useState(defaultSearch);
-    const search = searchProp ?? searchState;
-    const setSearch = (q: string) => {
-      if (searchProp === undefined) setSearchState(q);
-      onSearchChange?.(q);
-    };
+    const [mode, setMode] = useControllableState<JsonViewerMode>({ value: modeProp, defaultValue: defaultMode, onChange: onModeChange });
+    const [search, setSearch] = useControllableState({ value: searchProp, defaultValue: defaultSearch, onChange: onSearchChange });
     const query = search.trim().toLowerCase();
 
     const [bulk, setBulk] = React.useState<"default" | "all" | "none">("default");
@@ -490,7 +482,7 @@ export const JsonViewer = React.forwardRef<HTMLDivElement, JsonViewerProps>(
                 />
                 {matches ? (
                   <span className="ml-2 whitespace-nowrap text-2xs text-muted-foreground" aria-live="polite" data-match-count="">
-                    {matches.count} {matches.count === 1 ? "match" : "matches"}
+                    {matches.count} {pluralize(matches.count, "match", "matches")}
                   </span>
                 ) : null}
               </label>

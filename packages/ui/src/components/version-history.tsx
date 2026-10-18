@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiBookmarkLine, RiCheckLine, RiCloseLine, RiHistoryLine, RiPriceTag3Line, RiResetLeftLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { dateKey, formatClockTime, formatDateTime, formatDayLabel } from "../lib/time";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { Avatar } from "./avatar";
 import { Button } from "./button";
 import { ConfirmDialog } from "./dialog";
@@ -42,28 +44,16 @@ export interface VersionSelection {
 
 export type VersionHistoryTab = "all" | "named";
 
-const toDate = (v: Date | number | string) => (v instanceof Date ? v : new Date(v));
-
 /** "Today", "Yesterday", or a short date. */
 export function formatVersionDay(value: Date | number | string, now: Date | number = Date.now()) {
-  const d = toDate(value);
-  const today = toDate(now);
-  const yesterday = new Date(today.getTime() - 86_400_000);
-  if (d.toDateString() === today.toDateString()) return "Today";
-  if (d.toDateString() === yesterday.toDateString()) return "Yesterday";
-  return d.toLocaleDateString(undefined, {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: d.getFullYear() === today.getFullYear() ? undefined : "numeric",
-  });
+  return formatDayLabel(value, { now, weekdayWithinWeek: false, tomorrow: false, weekday: true });
 }
 
 /** Versions (newest first) grouped by calendar day. */
 export function groupVersionsByDay<T extends Pick<DocumentVersion, "createdAt">>(versions: T[], now: Date | number = Date.now()) {
   const groups: { key: string; label: string; versions: T[] }[] = [];
   for (const v of versions) {
-    const key = toDate(v.createdAt).toDateString();
+    const key = dateKey(v.createdAt);
     let g = groups[groups.length - 1];
     if (!g || g.key !== key) {
       g = { key, label: formatVersionDay(v.createdAt, now), versions: [] };
@@ -73,10 +63,6 @@ export function groupVersionsByDay<T extends Pick<DocumentVersion, "createdAt">>
   }
   return groups;
 }
-
-const time = (v: Date | number | string) => toDate(v).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-const full = (v: Date | number | string) =>
-  toDate(v).toLocaleString(undefined, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
 
 /* ------------------------------------------------------------------ */
 /* VersionHistory                                                      */
@@ -132,26 +118,17 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
     ref
   ) => {
     const first = versions[0];
-    const [selInner, setSelInner] = React.useState<VersionSelection | null>(
-      defaultSelection ?? (first ? { from: first.id, to: first.id } : null)
-    );
-    const selection = selectionProp !== undefined ? selectionProp : selInner;
-    const setSelection = (s: VersionSelection) => {
-      if (selectionProp === undefined) setSelInner(s);
-      onSelectionChange?.(s);
-    };
-    const [tabInner, setTabInner] = React.useState<VersionHistoryTab>(defaultTab);
-    const tab = tabProp ?? tabInner;
-    const setTab = (t: VersionHistoryTab) => {
-      if (tabProp === undefined) setTabInner(t);
-      onTabChange?.(t);
-    };
-    const [modeInner, setModeInner] = React.useState<DiffMode>("inline");
-    const diffMode = diffModeProp ?? modeInner;
-    const setDiffMode = (m: DiffMode) => {
-      if (diffModeProp === undefined) setModeInner(m);
-      onDiffModeChange?.(m);
-    };
+    const [selection, setSelection] = useControllableState<VersionSelection | null>({
+      value: selectionProp,
+      defaultValue: defaultSelection ?? (first ? { from: first.id, to: first.id } : null),
+      onChange: onSelectionChange as ((s: VersionSelection | null) => void) | undefined,
+    });
+    const [tab, setTab] = useControllableState<VersionHistoryTab>({ value: tabProp, defaultValue: defaultTab, onChange: onTabChange });
+    const [diffMode, setDiffMode] = useControllableState<DiffMode>({
+      value: diffModeProp,
+      defaultValue: "inline",
+      onChange: onDiffModeChange,
+    });
     const [view, setView] = React.useState<"changes" | "preview">("changes");
     const [naming, setNaming] = React.useState<{ id: string; text: string } | null>(null);
     const [confirmRestore, setConfirmRestore] = React.useState(false);
@@ -225,8 +202,8 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
     const heading = !target
       ? "No version selected"
       : single
-        ? target.label ?? full(target.createdAt)
-        : `${full(older!.createdAt)} → ${full(target.createdAt)}`;
+        ? target.label ?? formatDateTime(target.createdAt)
+        : `${formatDateTime(older!.createdAt)} → ${formatDateTime(target.createdAt)}`;
     const canRestore = onRestore && target && single && lo > 0;
 
     return (
@@ -286,8 +263,8 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
                 mode={diffMode}
                 onModeChange={setDiffMode}
                 font="sans"
-                oldLabel={base ? full(base.createdAt) : "Empty"}
-                newLabel={full(target.createdAt)}
+                oldLabel={base ? formatDateTime(base.createdAt) : "Empty"}
+                newLabel={formatDateTime(target.createdAt)}
                 className="h-full"
               />
             )}
@@ -349,7 +326,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
                         >
                           <span className="flex w-full items-center gap-2">
                             <span className={cn("text-sm tabular-nums", selected ? "text-primary-soft-foreground" : "text-foreground")}>
-                              {time(v.createdAt)}
+                              {formatClockTime(v.createdAt)}
                             </span>
                             {i0(versions, v) && (
                               <span className="rounded-xs bg-muted px-1 text-2xs font-medium text-muted-foreground">Current</span>
@@ -380,7 +357,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
                             <Button
                               size="icon-xs"
                               variant="ghost"
-                              aria-label={v.label ? `Rename version ${v.label}` : `Name version from ${full(v.createdAt)}`}
+                              aria-label={v.label ? `Rename version ${v.label}` : `Name version from ${formatDateTime(v.createdAt)}`}
                               onClick={() => setNaming({ id: v.id, text: v.label ?? "" })}
                               className="absolute right-1 top-1 opacity-0 focus-visible:opacity-100 group-hover/version:opacity-100"
                             >
@@ -432,7 +409,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
             open={confirmRestore}
             onOpenChange={setConfirmRestore}
             title="Restore this version?"
-            description={`The document will be replaced by the version from ${full(target.createdAt)}. The current text stays in the history.`}
+            description={`The document will be replaced by the version from ${formatDateTime(target.createdAt)}. The current text stays in the history.`}
             confirmLabel="Restore"
             onConfirm={() => onRestore(target)}
           />

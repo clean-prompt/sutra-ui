@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiCheckLine, RiCloseCircleLine, RiErrorWarningLine, RiLoader4Line } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Progress, type ProgressColor } from "./progress";
@@ -351,7 +352,7 @@ export function ProgressDialog({
   };
 
   const indeterminate = running && progress === null;
-  const pct = progress == null ? null : Math.round(Math.max(0, Math.min(100, progress)));
+  const pct = progress == null ? null : Math.round(clamp(progress, 0, 100));
   const phaseText = phase ?? stateLabel[state];
   const logsVisible = showLogs ?? (logs != null && logs.length > 0);
   const tone = stateTone[state];

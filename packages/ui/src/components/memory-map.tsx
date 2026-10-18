@@ -12,9 +12,7 @@ import {
   type SimulationNodeDatum,
 } from "d3-force";
 import {
-  RiCheckLine,
   RiCloseLine,
-  RiFileCopyLine,
   RiFocus3Line,
   RiListUnordered,
   RiMoreLine,
@@ -26,8 +24,12 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { chartColors } from "../lib/tokens";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useCopy } from "../hooks/use-copy";
+import { usePrefersReducedMotion } from "../hooks/use-media-query";
+import { seededRandom } from "../lib/hash";
+import { base64UrlDecode, base64UrlEncode } from "../lib/encoding";
+import { formatClockTime, formatShortDate, toMs, type TimeInput } from "../lib/time";
 import { Button } from "./button";
+import { CopyButton } from "./copy-button";
 import { Input } from "./input";
 import { RangeSlider } from "./slider";
 import { SimpleSelect } from "./select";
@@ -45,7 +47,7 @@ export interface MemoryNode {
   id: string;
   label: string;
   kind: MemoryNodeKind;
-  createdAt: Date | number | string;
+  createdAt: TimeInput;
   /** Importance; scales the node radius. Default 1. */
   weight?: number;
   /** Ids of related nodes (undirected). */
@@ -105,7 +107,7 @@ export interface MemoryTimeBucket {
   ids: string[];
 }
 
-export const memoryTime = (d: Date | number | string) => (d instanceof Date ? d.getTime() : typeof d === "number" ? d : new Date(d).getTime());
+export const memoryTime = (d: TimeInput) => toMs(d) ?? NaN;
 
 /** Split nodes into `buckets` equal time spans (over `range`, default min–max createdAt). The last bucket includes its end. */
 export function bucketByTime(
@@ -135,25 +137,6 @@ export function bucketByTime(
   return out;
 }
 
-function hashSeed(seed: number | string) {
-  const s = String(seed);
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-
-function mulberry32(a: number) {
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 export type MemoryRadialTime = boolean | "old-center" | "old-outer";
 
@@ -203,7 +186,7 @@ function radialFrac(t: number, [lo, hi]: [number, number], radial: MemoryRadialT
 }
 
 function createSimulation(nodes: readonly MemoryNode[], options: MemoryLayoutOptions) {
-  const rnd = mulberry32(hashSeed(options.seed ?? 1));
+  const rnd = seededRandom(options.seed ?? 1);
   const R = options.radius ?? 300;
   const extent = timeExtent(nodes);
   const maxWeight = Math.max(1, ...nodes.map((n) => n.weight ?? 1));
@@ -461,8 +444,11 @@ export const TimeScrubber = React.forwardRef<HTMLDivElement, TimeScrubberProps>(
     const fmt = React.useMemo(() => {
       if (formatTime) return formatTime;
       const span = max - min;
-      const f = new Intl.DateTimeFormat(locale, span > 2 * 864e5 ? { month: "short", day: "numeric", year: span > 300 * 864e5 ? "numeric" : undefined } : { hour: "numeric", minute: "2-digit" });
-      return (t: number) => f.format(new Date(t));
+      if (span > 2 * 864e5) {
+        const year = span > 300 * 864e5 ? "always" : "never";
+        return (t: number) => formatShortDate(t, { locale, year });
+      }
+      return (t: number) => formatClockTime(t, { locale });
     }, [formatTime, locale, min, max]);
 
     const valueRef = React.useRef(value);
@@ -596,18 +582,6 @@ export interface MemoryMapViewState {
 
 const SHARE_PREFIX = "mm1.";
 
-function toBase64Url(text: string) {
-  const bytes = new TextEncoder().encode(text);
-  let bin = "";
-  for (const b of bytes) bin += String.fromCharCode(b);
-  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-function fromBase64Url(code: string) {
-  const b64 = code.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((code.length + 3) % 4);
-  const bin = atob(b64);
-  return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
-}
 
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
@@ -618,7 +592,7 @@ export function encodeMemoryShareCode(state: MemoryMapViewState): string {
   if (state.range) o.r = state.range.map((t) => Math.round(t / 1000).toString(36));
   if (state.selectedId) o.s = state.selectedId;
   if (state.zoom) o.z = [r2(state.zoom.k), Math.round(state.zoom.x), Math.round(state.zoom.y)];
-  return SHARE_PREFIX + toBase64Url(JSON.stringify(o));
+  return SHARE_PREFIX + base64UrlEncode(JSON.stringify(o));
 }
 
 export type MemoryShareDecodeResult = { ok: true; state: MemoryMapViewState } | { ok: false; error: string };
@@ -632,7 +606,7 @@ export function decodeMemoryShareCode(code: string): MemoryShareDecodeResult {
   if (!/^[A-Za-z0-9_-]+$/.test(body)) return { ok: false, error: "The code contains invalid characters." };
   let o: unknown;
   try {
-    o = JSON.parse(fromBase64Url(body));
+    o = JSON.parse(base64UrlDecode(body) ?? "");
   } catch {
     return { ok: false, error: "The code is corrupted." };
   }
@@ -671,7 +645,6 @@ export interface ShareCodeControlsProps extends React.HTMLAttributes<HTMLDivElem
 /** Copy the current view as a compact base64url share code, or load one (validated). */
 export const ShareCodeControls = React.forwardRef<HTMLDivElement, ShareCodeControlsProps>(({ state, onImport, className, ...props }, ref) => {
   const code = React.useMemo(() => encodeMemoryShareCode(state), [state]);
-  const { copied, copy } = useCopy();
   const [input, setInput] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [loaded, setLoaded] = React.useState(false);
@@ -684,9 +657,7 @@ export const ShareCodeControls = React.forwardRef<HTMLDivElement, ShareCodeContr
         </label>
         <div className="flex gap-2">
           <Input id={ids.code} readOnly value={code} size="sm" className="font-mono text-xs" onFocus={(e) => e.currentTarget.select()} />
-          <Button size="sm" variant="secondary" leadingIcon={copied ? <RiCheckLine /> : <RiFileCopyLine />} onClick={() => copy(code)}>
-            {copied ? "Copied" : "Copy"}
-          </Button>
+          <CopyButton value={code} variant="button" size="sm" />
         </div>
       </div>
       <form
@@ -806,19 +777,6 @@ export interface MemoryMapProps extends Omit<React.HTMLAttributes<HTMLDivElement
   "aria-label"?: string;
 }
 
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = React.useState(() =>
-    typeof window !== "undefined" && typeof window.matchMedia === "function" ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false
-  );
-  React.useEffect(() => {
-    if (typeof window.matchMedia !== "function") return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const on = () => setReduced(mq.matches);
-    mq.addEventListener?.("change", on);
-    return () => mq.removeEventListener?.("change", on);
-  }, []);
-  return reduced;
-}
 
 const WORLD_R = 300;
 const DEFAULT_ZOOM: MemoryMapZoom = { k: 1, x: 0, y: 0 };
@@ -920,7 +878,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
       });
     }, [nodes, hiddenKinds, range]);
     const visibleIds = React.useMemo(() => new Set(visible.map((n) => n.id)), [visible]);
-    const fmtDate = React.useMemo(() => new Intl.DateTimeFormat(locale, { dateStyle: "medium" }), [locale]);
+    const fmtDate = React.useCallback((d: TimeInput) => formatShortDate(d, { locale, year: "always" }), [locale]);
 
     /* ---------- layout ---------- */
     const positionsRef = React.useRef<Map<string, MemoryPoint>>(new Map());
@@ -1402,7 +1360,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
                                 {item?.label ?? n.kind}
                               </span>
                             </td>
-                            <td className="px-3 py-1.5 tabular-nums text-muted-foreground">{fmtDate.format(new Date(memoryTime(n.createdAt)))}</td>
+                            <td className="px-3 py-1.5 tabular-nums text-muted-foreground">{fmtDate(n.createdAt)}</td>
                             <td className="px-3 py-1.5 text-right tabular-nums">{neighbours.get(n.id)?.size ?? 0}</td>
                           </tr>
                         );
@@ -1450,14 +1408,14 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
                   >
                     <div className="font-medium">{hoverNode.label}</div>
                     <div className="opacity-75">
-                      {legendByKind.get(hoverNode.kind)?.label ?? hoverNode.kind} · {fmtDate.format(new Date(memoryTime(hoverNode.createdAt)))}
+                      {legendByKind.get(hoverNode.kind)?.label ?? hoverNode.kind} · {fmtDate(hoverNode.createdAt)}
                     </div>
                   </div>
                 )}
                 <ul className="sr-only" aria-label={`${ariaLabel} nodes`}>
                   {visible.map((n) => (
                     <li key={n.id} data-memory-node={n.id}>
-                      {n.label}, {legendByKind.get(n.kind)?.label ?? n.kind}, created {fmtDate.format(new Date(memoryTime(n.createdAt)))},{" "}
+                      {n.label}, {legendByKind.get(n.kind)?.label ?? n.kind}, created {fmtDate(n.createdAt)},{" "}
                       {neighbours.get(n.id)?.size ?? 0} links{n.id === selectedId ? ", selected" : ""}
                     </li>
                   ))}
@@ -1482,7 +1440,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
                   links={Array.from(neighbours.get(selected.id) ?? []).map((id) => byId.get(id)!)}
                   onSelect={select}
                   actions={detailActions}
-                  dateText={fmtDate.format(new Date(memoryTime(selected.createdAt)))}
+                  dateText={fmtDate(selected.createdAt)}
                 />
               )}
             </aside>

@@ -3,6 +3,7 @@ import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui";
 import { cva } from "class-variance-authority";
 import { cn, focusRing, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 
 const SegmentedControlContext = React.createContext<{ size: Size; fullWidth: boolean }>({
   size: "md",
@@ -107,7 +108,7 @@ export const SegmentedControl = React.forwardRef<
       );
     }, []);
 
-    React.useLayoutEffect(() => {
+    useIsoLayoutEffect(() => {
       measure();
     }, [measure, value, size, fullWidth, options]);
 

@@ -1,7 +1,6 @@
 import * as React from "react";
-import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
+import { CopyButton } from "./copy-button";
 
 export type KeyValueLayout = "rows" | "stacked" | "grid";
 
@@ -96,7 +95,6 @@ function isEmpty(v: React.ReactNode) {
 export const KeyValue = React.forwardRef<HTMLDivElement, KeyValueProps>(
   ({ label, value, children, copyable, mono, truncate, className, ...props }, ref) => {
     const ctx = React.useContext(KeyValueContext);
-    const { copied, copy } = useCopy();
     const content = value ?? children;
     const empty = isEmpty(content);
     const text = typeof content === "string" || typeof content === "number" ? String(content) : undefined;
@@ -129,14 +127,7 @@ export const KeyValue = React.forwardRef<HTMLDivElement, KeyValueProps>(
             {empty ? ctx.empty : content}
           </span>
           {copyText && !empty && (
-            <button
-              type="button"
-              onClick={() => void copy(copyText)}
-              aria-label={copied ? "Copied" : `Copy ${labelText}`}
-              className="inline-flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50 [&_svg]:size-3.5"
-            >
-              {copied ? <RiCheckLine className="text-success" /> : <RiFileCopyLine />}
-            </button>
+            <CopyButton value={copyText} size="xs" label={`Copy ${labelText}`} className="rounded-md" />
           )}
         </dd>
       </div>

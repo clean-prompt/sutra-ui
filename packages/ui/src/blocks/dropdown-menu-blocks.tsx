@@ -20,6 +20,7 @@ import {
   RiRefreshLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { initials } from "../lib/text";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "../components/button";
 import { Avatar } from "../components/avatar";
@@ -246,7 +247,7 @@ function WorkspaceLogo({ workspace, size }: { workspace: Workspace; size: number
       className="inline-flex shrink-0 items-center justify-center rounded-md bg-inverse text-xs font-semibold text-inverse-foreground"
       style={{ width: size, height: size }}
     >
-      {workspace.name.charAt(0).toUpperCase()}
+      {initials(workspace.name, { max: 1 })}
     </span>
   );
 }

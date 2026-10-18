@@ -14,6 +14,9 @@ import {
   type RemixiconComponentType,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { formatShortDate, MINUTE_MS, toMs, type TimeInput } from "../lib/time";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { Avatar } from "./avatar";
 import { Badge } from "./badge";
 import { Button } from "./button";
@@ -35,7 +38,7 @@ export interface Session {
   os?: string;
   location?: string;
   ip?: string;
-  lastActive?: Date | number | string;
+  lastActive?: TimeInput;
   /** The session you are using right now. */
   current?: boolean;
 }
@@ -50,20 +53,25 @@ const deviceIcons: Record<SessionDeviceType, RemixiconComponentType> = {
   server: RiServerLine,
 };
 
+/** Seen within the last two minutes (or in the future). */
+function isActiveNow(value: TimeInput | undefined, now: number) {
+  const t = toMs(value);
+  return t !== undefined && now - t < 2 * MINUTE_MS;
+}
+
 /** "Active now", "5 min ago", "3h ago", "Yesterday", "4 days ago" or a date. */
 export function formatSessionLastActive(value: Date | number | string | undefined, now: number = Date.now()) {
-  if (value == null) return "Unknown";
-  const t = value instanceof Date ? value.getTime() : typeof value === "number" ? value : new Date(value).getTime();
-  if (Number.isNaN(t)) return "Unknown";
-  const mins = Math.floor((now - t) / 60000);
-  if (mins < 2) return "Active now";
+  const t = toMs(value);
+  if (t === undefined) return "Unknown";
+  if (isActiveNow(t, now)) return "Active now";
+  const mins = Math.floor((now - t) / MINUTE_MS);
   if (mins < 60) return `${mins} min ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;
   const days = Math.floor(hours / 24);
   if (days === 1) return "Yesterday";
   if (days < 30) return `${days} days ago`;
-  return new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  return formatShortDate(t, { year: "always" });
 }
 
 /* ------------------------------------------------------------------ */
@@ -83,22 +91,17 @@ export interface SessionRowProps extends React.HTMLAttributes<HTMLLIElement> {
 export const SessionRow = React.forwardRef<HTMLLIElement, SessionRowProps>(
   ({ session, onRevoke, now, revokeLabel = "Sign out", className, ...props }, ref) => {
     const [confirming, setConfirming] = React.useState(false);
-    const [revoking, setRevoking] = React.useState(false);
+    const { run: runRevoke, busy: revoking } = useAsyncAction((id: string) => onRevoke?.(id), {
+      onSuccess: () => setConfirming(false),
+    });
     const Icon = deviceIcons[session.device ?? "browser"] ?? RiGlobalLine;
     const last = formatSessionLastActive(session.lastActive, now);
     const meta = [session.browser, session.os].filter(Boolean).join(" · ");
     const place = [session.location, session.ip].filter(Boolean).join(" · ");
     const titleId = React.useId();
 
-    const revoke = async () => {
-      if (!onRevoke) return;
-      setRevoking(true);
-      try {
-        await onRevoke(session.id);
-        setConfirming(false);
-      } finally {
-        setRevoking(false);
-      }
+    const revoke = () => {
+      if (onRevoke) void runRevoke(session.id);
     };
 
     return (
@@ -141,7 +144,7 @@ export const SessionRow = React.forwardRef<HTMLLIElement, SessionRowProps>(
             <span className="inline-flex items-center gap-1.5">
               <span
                 aria-hidden
-                className={cn("size-1.5 rounded-full", last === "Active now" ? "bg-success" : "bg-muted-foreground/50")}
+                className={cn("size-1.5 rounded-full", isActiveNow(session.lastActive, now ?? Date.now()) ? "bg-success" : "bg-muted-foreground/50")}
               />
               {last}
             </span>
@@ -241,7 +244,7 @@ export const SessionList = React.forwardRef<HTMLDivElement, SessionListProps>(
               tone="destructive"
               icon={<RiShieldCheckLine />}
               title="Sign out all other sessions?"
-              description={`${others} other ${others === 1 ? "session" : "sessions"} will be signed out and need to sign in again. You'll stay signed in on this device.`}
+              description={`${others} other ${pluralize(others, "session")} will be signed out and need to sign in again. You'll stay signed in on this device.`}
               confirmLabel="Sign out others"
               onConfirm={onRevokeOthers}
               trigger={
@@ -307,16 +310,7 @@ export interface AccountPanelProps extends Omit<React.HTMLAttributes<HTMLDivElem
 /** Signed-in summary: avatar, name, role, app launch links, and sign out / sign out everywhere. */
 export const AccountPanel = React.forwardRef<HTMLDivElement, AccountPanelProps>(
   ({ name, handle, avatarSrc, role, apps, onSignOut, onSignOutEverywhere, className, children, ...props }, ref) => {
-    const [signingOut, setSigningOut] = React.useState(false);
-    const signOut = async () => {
-      if (!onSignOut) return;
-      setSigningOut(true);
-      try {
-        await onSignOut();
-      } finally {
-        setSigningOut(false);
-      }
-    };
+    const { run: signOut, busy: signingOut } = useAsyncAction(onSignOut);
     return (
       <div
         ref={ref}
@@ -369,7 +363,7 @@ export const AccountPanel = React.forwardRef<HTMLDivElement, AccountPanelProps>(
         {(onSignOut || onSignOutEverywhere) && (
           <div className="flex flex-col gap-2 border-t border-border pt-4 sm:flex-row">
             {onSignOut && (
-              <Button variant="primary" className="flex-1" leadingIcon={<RiLogoutBoxRLine />} loading={signingOut} onClick={signOut}>
+              <Button variant="primary" className="flex-1" leadingIcon={<RiLogoutBoxRLine />} loading={signingOut} onClick={() => void signOut()}>
                 Sign out
               </Button>
             )}

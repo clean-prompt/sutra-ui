@@ -16,6 +16,7 @@ import {
   RiVerifiedBadgeLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { initials } from "../lib/text";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Badge, type BadgeColor } from "./badge";
 import { Button } from "./button";
@@ -470,12 +471,7 @@ CapabilitiesShell.displayName = "CapabilitiesShell";
 
 /** Monogram tile used when a capability has no icon. */
 export function CapabilityMonogram({ name, className }: { name: string; className?: string }) {
-  const letters = name
-    .split(/[\s\-_.]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]!.toUpperCase())
-    .join("");
+  const letters = initials(name.replace(/[-_.]+/g, " "), { mode: "first-two" });
   return (
     <span
       aria-hidden

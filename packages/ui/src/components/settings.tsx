@@ -3,6 +3,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 import { RiArrowLeftLine, RiArrowRightSLine, RiCloseLine, RiLockLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useElementWidth } from "../hooks/use-resize-observer";
 import { Button } from "./button";
 import { Switch } from "./switch";
 
@@ -43,20 +44,8 @@ export interface SettingsShellProps extends Omit<React.HTMLAttributes<HTMLDivEle
 }
 
 function useContainerNarrow(ref: React.RefObject<HTMLElement | null>, breakpoint: number, enabled: boolean) {
-  const [narrow, setNarrow] = React.useState(false);
-  React.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!enabled || !el) return;
-    const measure = (width: number) => {
-      if (width > 0) setNarrow(width < breakpoint);
-    };
-    measure(el.getBoundingClientRect().width);
-    if (typeof ResizeObserver === "undefined") return;
-    const ro = new ResizeObserver((entries) => measure(entries[0]?.contentRect.width ?? 0));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [ref, breakpoint, enabled]);
-  return narrow;
+  const width = useElementWidth(enabled ? ref : null);
+  return width > 0 && width < breakpoint;
 }
 
 const navItemClass = cn(

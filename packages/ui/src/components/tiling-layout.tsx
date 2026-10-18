@@ -14,7 +14,10 @@ import {
   RiSave3Line,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useSafeId } from "../hooks/use-safe-id";
 import { Button } from "./button";
 import { Input } from "./input";
 import {
@@ -53,8 +56,7 @@ import {
 
 export * from "./tiling-model";
 
-const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
-
+/** Pane ids are user strings; make them safe inside generated element ids. */
 const safeId = (value: string) => value.replace(/[^\w-]/g, "_");
 
 function textOf(node: React.ReactNode, fallback: string): string {
@@ -257,8 +259,8 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
         ...rect,
         width: w,
         height: h,
-        x: Math.min(Math.max(0, rect.x), Math.max(0, bounds.width - w)),
-        y: Math.min(Math.max(0, rect.y), Math.max(0, bounds.height - h)),
+        x: clamp(rect.x, 0, Math.max(0, bounds.width - w)),
+        y: clamp(rect.y, 0, Math.max(0, bounds.height - h)),
       };
     };
 
@@ -533,7 +535,7 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
     },
     forwardedRef
   ) => {
-    const uid = safeId(React.useId());
+    const uid = useSafeId("tiling");
     const rootRef = React.useRef<HTMLDivElement | null>(null);
     const setRefs = (node: HTMLDivElement | null) => {
       rootRef.current = node;
@@ -1452,7 +1454,7 @@ export const ZoneEditor = React.forwardRef<HTMLDivElement, ZoneEditorProps>(
     const [zones, setZonesState] = React.useState(initial);
     const zonesRef = React.useRef(zones);
     zonesRef.current = zones;
-    const uid = safeId(React.useId());
+    const uid = useSafeId("zone");
     const setZones = (fn: (z: LayoutNode) => LayoutNode) => {
       const next = fn(zonesRef.current);
       if (next === zonesRef.current) return;

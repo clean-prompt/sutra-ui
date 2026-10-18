@@ -2,6 +2,7 @@ import * as React from "react";
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { RiCloseLine } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
+import { escapeRegExp, matchRanges } from "../lib/text";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useField } from "./field";
 
@@ -409,20 +410,20 @@ const SEPARATOR_KEYS = new Set(["Enter", "Tab"]);
 function separatorPattern(separators: string[], extraClass = ""): RegExp | null {
   const textSeps = separators.filter((s) => s && !SEPARATOR_KEYS.has(s));
   const chars = textSeps.filter((s) => s.length === 1).map(escapeForClass).join("") + extraClass;
-  const strings = textSeps.filter((s) => s.length > 1).map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const strings = textSeps.filter((s) => s.length > 1).map(escapeRegExp);
   const alts = [...strings, ...(chars ? [`[${chars}]`] : [])];
   return alts.length ? new RegExp(alts.join("|")) : null;
 }
 
 function Highlight({ text, query }: { text: string; query: string }) {
-  if (!query) return <>{text}</>;
-  const i = text.toLowerCase().indexOf(query.toLowerCase());
-  if (i === -1) return <>{text}</>;
+  const [range] = matchRanges(text, query, { all: false });
+  if (!range) return <>{text}</>;
+  const [start, end] = range;
   return (
     <>
-      {text.slice(0, i)}
-      <span className="font-semibold">{text.slice(i, i + query.length)}</span>
-      {text.slice(i + query.length)}
+      {text.slice(0, start)}
+      <span className="font-semibold">{text.slice(start, end)}</span>
+      {text.slice(end)}
     </>
   );
 }

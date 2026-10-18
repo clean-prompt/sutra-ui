@@ -2,6 +2,10 @@ import * as React from "react";
 import { OTPInputContext, REGEXP_ONLY_DIGITS } from "input-otp";
 import { RiFingerprintLine, RiKey2Line, RiLockLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { formatClock, formatDuration } from "../lib/duration";
+
+import { prefersReducedMotion } from "../hooks/use-media-query";
 import { SutraMark } from "../assets/brand";
 import { Button } from "./button";
 import { Input, PasswordInput } from "./input";
@@ -104,12 +108,7 @@ const defaultLockout = (n: number) => [30, 60, 300, 900, 3600][Math.min(n - 1, 4
 
 function formatWait(seconds: number) {
   const s = Math.max(0, Math.ceil(seconds));
-  if (s >= 3600) return `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m`;
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-}
-
-function prefersReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  return s >= 3600 ? formatDuration(s * 1000, { round: "floor", maxUnit: "h" }) : formatClock(s);
 }
 
 function PinSlot({ index }: { index: number }) {
@@ -221,7 +220,7 @@ export const LockScreen = React.forwardRef<HTMLDivElement, LockScreenProps>(
         setFailures(nextFailures);
         const left = maxAttempts - nextFailures;
         setError(
-          `${message ?? `Incorrect ${noun}.`} ${left} ${left === 1 ? "attempt" : "attempts"} remaining.`
+          `${message ?? `Incorrect ${noun}.`} ${left} ${pluralize(left, "attempt")} remaining.`
         );
       }
       requestAnimationFrame(() => inputRef.current?.focus());

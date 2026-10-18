@@ -1,9 +1,7 @@
 import * as React from "react";
 import {
   RiArrowLeftLine,
-  RiCheckLine,
   RiDownloadLine,
-  RiFileCopyLine,
   RiKey2Line,
   RiLockPasswordLine,
   RiMailLine,
@@ -13,7 +11,10 @@ import {
   RiUserLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
+import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
+import { useCountdown } from "../hooks/use-now";
+import { formatCountdown } from "../lib/duration";
+import { CopyButton } from "../components/copy-button";
 import { Button } from "../components/button";
 import { SocialButton, socialProviders, type SocialProvider } from "../components/social-button";
 import { Input, PasswordInput } from "../components/input";
@@ -147,17 +148,14 @@ function AuthSocialButtons({ providers, layout, pending, disabled, onSelect }: A
 }
 
 function useSocial(onSocial?: (provider: SocialProvider) => unknown) {
-  const [pending, setPending] = React.useState<SocialProvider | null>(null);
-  const select = async (p: SocialProvider) => {
+  const [provider, setProvider] = React.useState<SocialProvider | null>(null);
+  const action = useSharedAsyncAction((p: SocialProvider) => onSocial?.(p));
+  const select = (p: SocialProvider) => {
     if (!onSocial) return;
-    try {
-      setPending(p);
-      await onSocial(p);
-    } finally {
-      setPending(null);
-    }
+    setProvider(p);
+    void action.run(p);
   };
-  return { pending, select };
+  return { pending: action.busy ? provider : null, error: action.error, select };
 }
 
 function BackLink({ href, label, renderLink }: { href: string; label: React.ReactNode; renderLink?: BlockLinkRenderer }) {
@@ -258,7 +256,7 @@ export const LoginCard = React.forwardRef<HTMLFormElement, LoginCardProps>(
         }
         {...props}
       >
-        <FormError>{error ?? action.error}</FormError>
+        <FormError>{error ?? action.error ?? social.error}</FormError>
         {providers.length > 0 && (
           <>
             <AuthSocialButtons
@@ -418,7 +416,7 @@ export const SignUpCard = React.forwardRef<HTMLFormElement, SignUpCardProps>(
         }
         {...props}
       >
-        <FormError>{error ?? action.error}</FormError>
+        <FormError>{error ?? action.error ?? social.error}</FormError>
         {providers.length > 0 && (
           <>
             <AuthSocialButtons
@@ -705,15 +703,11 @@ export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProp
     ref
   ) => {
     const [code, setCode] = React.useState("");
-    const [remaining, setRemaining] = React.useState(resendSeconds);
+    const [resendAt, setResendAt] = React.useState(() => Date.now() + resendSeconds * 1000);
+    // Capped: right after a resend the countdown still holds its clock from the previous expiry.
+    const remainingMs = Math.min(useCountdown(resendAt).remainingMs, resendSeconds * 1000);
     const action = useAsyncAction(loading);
     const resend = useAsyncAction();
-
-    React.useEffect(() => {
-      if (remaining <= 0) return;
-      const t = setTimeout(() => setRemaining((r) => r - 1), 1000);
-      return () => clearTimeout(t);
-    }, [remaining]);
 
     const verify = (value: string) => {
       if (value.length < length) return;
@@ -724,13 +718,11 @@ export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProp
       const ok = await resend.run(onResend);
       if (ok) {
         setCode("");
-        setRemaining(resendSeconds);
+        setResendAt(Date.now() + resendSeconds * 1000);
       }
     };
 
     const shownError = error ?? action.error;
-    const mm = String(Math.floor(remaining / 60)).padStart(1, "0");
-    const ss = String(remaining % 60).padStart(2, "0");
 
     return (
       <AuthFrame
@@ -774,9 +766,9 @@ export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProp
           </Button>
           <p className="text-sm text-muted-foreground" aria-live="polite">
             Didn&apos;t receive a code?{" "}
-            {remaining > 0 ? (
+            {remainingMs > 0 ? (
               <span className="tabular-nums">
-                Resend in {mm}:{ss}
+                Resend in {formatCountdown(remainingMs)}
               </span>
             ) : (
               <button
@@ -1080,7 +1072,7 @@ export const SSOOnlyCard = React.forwardRef<HTMLDivElement, SSOOnlyCardProps>(
         {...props}
       >
         <div ref={ref}>
-          <FormError>{error ?? saml.error}</FormError>
+          <FormError>{error ?? saml.error ?? social.error}</FormError>
           <AuthSocialButtons
             providers={providers}
             layout="stack"
@@ -1172,8 +1164,6 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
     const [code, setCode] = React.useState("");
     const [done, setDone] = React.useState(false);
     const action = useAsyncAction(loading);
-    const secretCopy = useCopy();
-    const codesCopy = useCopy();
 
     const verify = async (value: string) => {
       if (value.length < 6) return;
@@ -1202,13 +1192,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
               ))}
             </ul>
             <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="secondary"
-                leadingIcon={codesCopy.copied ? <RiCheckLine aria-hidden /> : <RiFileCopyLine aria-hidden />}
-                onClick={() => void codesCopy.copy(recoveryCodes.join("\n"))}
-              >
-                {codesCopy.copied ? "Copied" : "Copy codes"}
-              </Button>
+              <CopyButton variant="button" size="md" value={recoveryCodes.join("\n")} label="Copy codes" />
               <Button
                 variant="secondary"
                 leadingIcon={<RiDownloadLine aria-hidden />}
@@ -1275,14 +1259,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
             {step(2, "Or enter this setup key manually")}
             <div className="flex h-10 items-center gap-2 rounded-control border border-border bg-subtle pl-3 pr-1">
               <code className="min-w-0 flex-1 truncate font-mono text-sm tracking-wider text-foreground">{secret}</code>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={secretCopy.copied ? "Copied" : "Copy setup key"}
-                onClick={() => void secretCopy.copy(secret.replace(/\s+/g, ""))}
-              >
-                {secretCopy.copied ? <RiCheckLine className="text-success" /> : <RiFileCopyLine />}
-              </Button>
+              <CopyButton size="md" value={secret.replace(/\s+/g, "")} label="Copy setup key" />
             </div>
           </section>
           <section className="flex flex-col gap-3">

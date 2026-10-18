@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine, RiCheckDoubleLine, RiCloseLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
 import { Button } from "./button";
 import { useControllableState } from "../hooks/use-controllable-state";
 
@@ -53,7 +54,7 @@ function ApprovalStackInner<T>(
   const [rawIndex, setIndex] = useControllableState<number>({ value: indexProp, defaultValue: defaultIndex, onChange: onIndexChange });
   const total = items.length;
   if (total === 0) return <>{empty}</>;
-  const index = Math.min(Math.max(rawIndex, 0), total - 1);
+  const index = clamp(rawIndex, 0, total - 1);
   const item = items[index];
   const behind = Math.min(depth, total - 1);
   const more = total - 1;

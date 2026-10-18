@@ -12,7 +12,11 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { Button, type ButtonProps } from "./button";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { usePrefersReducedMotion } from "../hooks/use-media-query";
+import { useResizeObserver } from "../hooks/use-resize-observer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,26 +27,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
-
-const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
-const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = React.useState(() =>
-    typeof window !== "undefined" && typeof window.matchMedia === "function"
-      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      : false
-  );
-  React.useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    update();
-    mq.addEventListener?.("change", update);
-    return () => mq.removeEventListener?.("change", update);
-  }, []);
-  return reduced;
-}
 
 function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
   if (typeof ref === "function") ref(value);
@@ -891,13 +875,7 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
       measure();
     }, [measure, items]);
 
-    React.useEffect(() => {
-      const root = rootRef.current;
-      if (!root || typeof ResizeObserver === "undefined") return;
-      const ro = new ResizeObserver(() => measure());
-      ro.observe(root);
-      return () => ro.disconnect();
-    }, [measure]);
+    useResizeObserver(rootRef, () => measure());
 
     const text = (it: TabDropdownItem) => it.textValue ?? (typeof it.label === "string" ? it.label : it.value);
     const visible = items.slice(0, visibleCount);
@@ -1089,13 +1067,7 @@ export const FadeText = React.forwardRef<HTMLSpanElement, FadeTextProps>(
       setOverflowing(multi ? el.scrollHeight > el.clientHeight + 1 : el.scrollWidth > el.clientWidth + 1);
     }, [multi]);
     useIsoLayoutEffect(() => check(), [check, children]);
-    React.useEffect(() => {
-      const el = ref.current;
-      if (!el || typeof ResizeObserver === "undefined") return;
-      const ro = new ResizeObserver(() => check());
-      ro.observe(el);
-      return () => ro.disconnect();
-    }, [check]);
+    useResizeObserver(ref, () => check());
 
     const mask = overflowing
       ? multi

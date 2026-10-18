@@ -24,6 +24,9 @@ import {
   RiStarLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatCompact } from "../lib/format";
+import { isSafeHref } from "../lib/validate";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Badge, type BadgeColor } from "./badge";
 import { Button } from "./button";
@@ -53,7 +56,7 @@ import { CapabilityMonogram, ProvenancePill, TrustBadge, type CapabilityProvenan
 function ExternalLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <a
-      href={href}
+      href={isSafeHref(href) ? href : undefined}
       target="_blank"
       rel="noreferrer"
       className={cn("inline-flex items-center gap-1 rounded-sm text-xs font-medium text-muted-foreground hover:text-foreground [&_svg]:size-3.5", focusRing)}
@@ -96,9 +99,7 @@ export interface CatalogCardProps extends Omit<React.HTMLAttributes<HTMLElement>
   onOpen?: () => void;
 }
 
-function formatStars(n: number) {
-  return n >= 1000 ? `${(n / 1000).toFixed(n >= 10_000 ? 0 : 1)}k` : String(n);
-}
+const formatStars = (n: number) => formatCompact(n, { decimals: 1, wholeAbove: 10, trimZeros: false });
 
 /** Plugin/skill catalog entry with tier, trust, capabilities, platforms, stars and install/update states. */
 export const CatalogCard = React.forwardRef<HTMLElement, CatalogCardProps>(
@@ -128,18 +129,14 @@ export const CatalogCard = React.forwardRef<HTMLElement, CatalogCardProps>(
     },
     ref
   ) => {
-    const [busy, setBusy] = React.useState(false);
+    const installAction = useAsyncAction(async () => {
+      await onInstall?.();
+    });
+    const busy = installAction.busy;
     const titleId = React.useId();
     const shownCaps = capabilities.slice(0, maxCapabilities);
     const extra = capabilities.length - shownCaps.length;
-    const install = async () => {
-      setBusy(true);
-      try {
-        await onInstall?.();
-      } finally {
-        setBusy(false);
-      }
-    };
+    const install = () => void installAction.run();
     return (
       <article
         ref={ref}

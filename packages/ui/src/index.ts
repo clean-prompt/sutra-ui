@@ -20,6 +20,8 @@ export * from "./hooks/use-resize-observer";
 export * from "./hooks/use-iso-layout-effect";
 export * from "./hooks/use-async-action";
 export * from "./hooks/use-safe-id";
+export * from "./hooks/use-active-indicator";
+export * from "./hooks/use-scroll-edges";
 // Older component exports keep these root names (different defaults); the lib versions are in @sutra/ui/tokens.
 export { formatBytes } from "./components/file-upload";
 export { splitDuration } from "./components/counters";

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { chartColors } from "../lib/tokens";
+import { toPercent } from "../lib/math";
 
 /** Percent thresholds at which a meter turns warning / danger. */
 export interface MeterThresholds {
@@ -36,8 +37,6 @@ const fillClass: Record<MeterColor, string> = {
 const levelFill: Record<MeterLevel, string> = { ok: "", warn: "bg-warning", danger: "bg-destructive" };
 const levelText: Record<MeterLevel, string> = { ok: "text-foreground", warn: "text-warning", danger: "text-destructive" };
 
-const clampPct = (value: number, min: number, max: number) =>
-  max <= min ? 0 : Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
 
 const trim = (n: number) => Number(n.toFixed(n !== 0 && Math.abs(n) < 10 ? 1 : n % 1 === 0 ? 0 : 1)).toString();
 
@@ -96,7 +95,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
     const labelId = React.useId();
     const empty = value === null || !Number.isFinite(value);
     const v = empty ? min : (value as number);
-    const pct = empty ? 0 : clampPct(v, min, max);
+    const pct = empty ? 0 : toPercent(v, max, min);
     const level = empty ? "ok" : meterLevel(pct, thresholds);
     const fill = level === "ok" ? fillClass[color] : levelFill[level];
 

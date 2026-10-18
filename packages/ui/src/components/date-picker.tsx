@@ -4,6 +4,7 @@ import { cva } from "class-variance-authority";
 import type { DateRange, Matcher } from "react-day-picker";
 import { RiCalendarLine, RiCloseCircleFill } from "@remixicon/react";
 import { cn, focusRing, invalidRing, type Size } from "../lib/cn";
+import { addDays, calendarDayDiff, dateKey, startOfDay } from "../lib/time";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { useField } from "./field";
@@ -14,16 +15,11 @@ export type { DateRange } from "react-day-picker";
 /* Date helpers                                                      */
 /* ---------------------------------------------------------------- */
 
-const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
-const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+/** Local midnight `n` calendar days from `d`. */
+const dayOffset = (d: Date, n: number) => startOfDay(addDays(d, n));
 const startOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth(), 1);
 const endOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth() + 1, 0);
-const isSameDay = (a?: Date, b?: Date) =>
-  !!a &&
-  !!b &&
-  a.getFullYear() === b.getFullYear() &&
-  a.getMonth() === b.getMonth() &&
-  a.getDate() === b.getDate();
+const isSameDay = (a?: Date, b?: Date) => !!a && !!b && calendarDayDiff(a, b) === 0;
 const isSameRange = (a?: DateRange, b?: DateRange) =>
   !!a && !!b && isSameDay(a.from, b.from) && (isSameDay(a.to, b.to) || (!a.to && !b.to));
 
@@ -228,7 +224,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
           </button>
         </PopoverPrimitive.Trigger>
         {showClear && <ClearButton size={size} onClear={() => setValue(undefined)} />}
-        {name && <input type="hidden" name={name} value={value ? toISODate(value) : ""} />}
+        {name && <input type="hidden" name={name} value={value ? dateKey(value) : ""} />}
       </div>
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
@@ -258,11 +254,6 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
 });
 DatePicker.displayName = "DatePicker";
 
-function toISODate(d: Date) {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-
 /* ---------------------------------------------------------------- */
 /* DateRangePicker                                                   */
 /* ---------------------------------------------------------------- */
@@ -279,12 +270,12 @@ export const defaultDateRangePresets: DateRangePreset[] = [
   {
     label: "Yesterday",
     getRange: () => {
-      const d = addDays(new Date(), -1);
+      const d = dayOffset(new Date(), -1);
       return { from: d, to: d };
     },
   },
-  { label: "Last 7 days", getRange: () => ({ from: addDays(new Date(), -6), to: startOfDay(new Date()) }) },
-  { label: "Last 30 days", getRange: () => ({ from: addDays(new Date(), -29), to: startOfDay(new Date()) }) },
+  { label: "Last 7 days", getRange: () => ({ from: dayOffset(new Date(), -6), to: startOfDay(new Date()) }) },
+  { label: "Last 30 days", getRange: () => ({ from: dayOffset(new Date(), -29), to: startOfDay(new Date()) }) },
   {
     label: "This month",
     getRange: () => ({ from: startOfMonth(new Date()), to: endOfMonth(new Date()) }),
@@ -428,8 +419,8 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
           {showClear && <ClearButton size={size} onClear={() => setValue(undefined)} />}
           {name && (
             <>
-              <input type="hidden" name={`${name}[from]`} value={value?.from ? toISODate(value.from) : ""} />
-              <input type="hidden" name={`${name}[to]`} value={value?.to ? toISODate(value.to) : ""} />
+              <input type="hidden" name={`${name}[from]`} value={value?.from ? dateKey(value.from) : ""} />
+              <input type="hidden" name={`${name}[to]`} value={value?.to ? dateKey(value.to) : ""} />
             </>
           )}
         </div>

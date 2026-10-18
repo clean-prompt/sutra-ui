@@ -1,5 +1,6 @@
 import * as React from "react";
 import { RiAddBoxLine, RiDownloadLine, RiShare2Line } from "@remixicon/react";
+import { useMediaQuery } from "../hooks/use-media-query";
 import { Button, type ButtonProps } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
@@ -23,10 +24,9 @@ export interface UseInstallPromptResult {
   promptInstall: () => Promise<InstallOutcome>;
 }
 
-function detectStandalone() {
+function detectIOSStandalone() {
   if (typeof window === "undefined") return false;
-  const nav = window.navigator as Navigator & { standalone?: boolean };
-  return Boolean(window.matchMedia?.("(display-mode: standalone)").matches || nav.standalone);
+  return Boolean((window.navigator as Navigator & { standalone?: boolean }).standalone);
 }
 
 function detectIOS() {
@@ -39,7 +39,9 @@ function detectIOS() {
 export function useInstallPrompt(): UseInstallPromptResult {
   const deferred = React.useRef<BeforeInstallPromptEvent | null>(null);
   const [canInstall, setCanInstall] = React.useState(false);
-  const [installed, setInstalled] = React.useState(detectStandalone);
+  const standalone = useMediaQuery("(display-mode: standalone)");
+  const [installedFlag, setInstalled] = React.useState(detectIOSStandalone);
+  const installed = installedFlag || standalone;
   const [isIOS] = React.useState(detectIOS);
 
   React.useEffect(() => {
@@ -55,13 +57,9 @@ export function useInstallPrompt(): UseInstallPromptResult {
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
     window.addEventListener("appinstalled", onInstalled);
-    const mql = window.matchMedia?.("(display-mode: standalone)");
-    const onMode = (e: MediaQueryListEvent) => e.matches && setInstalled(true);
-    mql?.addEventListener?.("change", onMode);
     return () => {
       window.removeEventListener("beforeinstallprompt", onPrompt);
       window.removeEventListener("appinstalled", onInstalled);
-      mql?.removeEventListener?.("change", onMode);
     };
   }, []);
 

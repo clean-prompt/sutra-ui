@@ -10,27 +10,16 @@ import {
   RiWifiOffLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatRelative } from "../lib/time";
 import { Button } from "./button";
 import { SimpleTooltip } from "./tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
 
 export type SyncState = "synced" | "syncing" | "offline" | "error" | "conflict";
 
-/** Short relative time: "just now", "5 min ago", "2 h ago", "yesterday", "3 days ago". */
+/** Short relative time: "just now", "5 min ago", "2 h ago", "yesterday", "3 days ago" ("—" for unparseable input). */
 export function formatRelativeTime(value: Date | number | string, now: Date | number = Date.now()) {
-  const t = value instanceof Date ? value.getTime() : new Date(value).getTime();
-  const n = now instanceof Date ? now.getTime() : now;
-  const sec = Math.round((n - t) / 1000);
-  if (sec < 0) return "just now";
-  if (sec < 45) return "just now";
-  const min = Math.round(sec / 60);
-  if (min < 60) return `${min} min ago`;
-  const h = Math.round(min / 60);
-  if (h < 24) return `${h} h ago`;
-  const d = Math.round(h / 24);
-  if (d === 1) return "yesterday";
-  if (d < 30) return `${d} days ago`;
-  return new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return formatRelative(value, { now, style: "long", maxRelativeDays: 29 }).replace(/^(\d+) hours? ago$/, "$1 h ago");
 }
 
 /** Tracks `navigator.onLine` with online/offline events. */

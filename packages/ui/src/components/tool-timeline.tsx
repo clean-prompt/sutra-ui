@@ -4,9 +4,7 @@ import {
   RiArrowDownSLine,
   RiArrowRightSLine,
   RiBrainLine,
-  RiCheckLine,
   RiEditLine,
-  RiFileCopyLine,
   RiFileTextLine,
   RiFolderOpenLine,
   RiGlobalLine,
@@ -19,8 +17,12 @@ import {
   RiToolsLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
+import { formatDuration } from "../lib/duration";
+import { isSafeHref } from "../lib/validate";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useNow } from "../hooks/use-now";
+import { useResizeObserver } from "../hooks/use-resize-observer";
+import { CopyButton } from "./copy-button";
 import { Spinner } from "./spinner";
 import { TextShimmer } from "./text-shimmer";
 import { parseAnsi, ansiSegmentClassName } from "./log-viewer";
@@ -42,19 +44,6 @@ const statusLabel: Record<ToolTimelineStatus, string> = {
   warning: "Warning",
   pending: "Pending",
 };
-
-function formatMs(ms: number) {
-  if (ms < 1000) return `${Math.round(ms)}ms`;
-  const s = ms / 1000;
-  if (s < 60) return `${s < 10 ? s.toFixed(1) : Math.round(s)}s`;
-  return `${Math.floor(s / 60)}m ${Math.round(s % 60)}s`;
-}
-
-function formatSeconds(s: number) {
-  if (s < 60) return `${s}s`;
-  const m = Math.floor(s / 60);
-  return `${m}m ${s % 60}s`;
-}
 
 const toolIcons: [RegExp, React.ElementType][] = [
   [/^(read|view|cat|open)/i, RiFileTextLine],
@@ -283,7 +272,7 @@ export const ToolTimelineItem = React.forwardRef<HTMLLIElement, ToolTimelineItem
               exit {exitCode}
             </span>
           )}
-          {duration != null && !running && <span className="tabular-nums">{formatMs(duration)}</span>}
+          {duration != null && !running && <span className="tabular-nums">{formatDuration(duration, { ms: true, decimals: 1, trimZeros: false })}</span>}
         </span>
       </>
     );
@@ -512,15 +501,12 @@ export const ExpandableContent = React.forwardRef<HTMLDivElement, ExpandableCont
     const [overflows, setOverflows] = React.useState(false);
     const id = React.useId();
 
-    React.useLayoutEffect(() => {
+    const measure = React.useCallback(() => {
       const el = innerRef.current;
-      if (!el) return;
-      const measure = () => setOverflows(el.scrollHeight > collapsedHeight + 4);
-      measure();
-      const ro = new ResizeObserver(measure);
-      ro.observe(el);
-      return () => ro.disconnect();
-    }, [collapsedHeight, children]);
+      if (el) setOverflows(el.scrollHeight > collapsedHeight + 4);
+    }, [collapsedHeight]);
+    React.useLayoutEffect(measure, [measure, children]);
+    useResizeObserver(innerRef, measure);
 
     const capped = overflows && !expanded;
     return (
@@ -653,7 +639,6 @@ export interface BashToolBodyProps extends Omit<React.HTMLAttributes<HTMLDivElem
 /** Shell call body: `$ command` with copy, ANSI output, separate stderr and an exit code chip. */
 export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
   ({ command, output, stderr, exitCode, maxLines = 12, streaming, className, ...props }, ref) => {
-    const { copied, copy } = useCopy();
     return (
       <div
         ref={ref}
@@ -682,17 +667,12 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
               exit {exitCode}
             </span>
           )}
-          <button
-            type="button"
-            aria-label={copied ? "Copied" : "Copy command"}
-            onClick={() => copy(command)}
-            className={cn(
-              "inline-flex size-6 shrink-0 items-center justify-center rounded-sm text-zinc-400 transition-colors hover:bg-white/10 hover:text-zinc-100",
-              focusRing
-            )}
-          >
-            {copied ? <RiCheckLine aria-hidden className="size-3.5" /> : <RiFileCopyLine aria-hidden className="size-3.5" />}
-          </button>
+          <CopyButton
+            value={command}
+            label="Copy command"
+            size="xs"
+            className="text-zinc-400 hover:bg-white/10 hover:text-zinc-100"
+          />
         </div>
         {output ? <TruncatedOutput text={output} maxLines={maxLines} /> : null}
         {streaming && (
@@ -867,7 +847,7 @@ export const WebToolBody = React.forwardRef<HTMLDivElement, WebToolBodyProps>(
           <span className="truncate">{domain}</span>
         </div>
         <a
-          href={url}
+          href={isSafeHref(url) ? url : undefined}
           target="_blank"
           rel="noopener noreferrer"
           className={cn("truncate text-sm font-medium text-foreground hover:underline", focusRing)}
@@ -957,20 +937,12 @@ const defaultStatusLabel = (state: AgentStatusState, tool?: string) =>
 export const AgentStatusLine = React.forwardRef<HTMLDivElement, AgentStatusLineProps>(
   ({ state, tool, label, startedAt, elapsed: elapsedProp, tokenCount, hint, className, ...props }, ref) => {
     const [since, setSince] = React.useState(() => startedAt ?? Date.now());
-    const [now, setNow] = React.useState(() => Date.now());
     const active = state !== "idle";
+    const now = useNow({ active: active && elapsedProp == null });
 
     React.useEffect(() => {
-      const t = Date.now();
-      setSince(startedAt ?? t);
-      setNow(t);
+      setSince(startedAt ?? Date.now());
     }, [state, tool, startedAt]);
-
-    React.useEffect(() => {
-      if (!active || elapsedProp != null) return;
-      const id = setInterval(() => setNow(Date.now()), 1000);
-      return () => clearInterval(id);
-    }, [active, elapsedProp]);
 
     if (!active) return null;
     const seconds = elapsedProp ?? Math.max(0, Math.floor((now - since) / 1000));
@@ -999,7 +971,7 @@ export const AgentStatusLine = React.forwardRef<HTMLDivElement, AgentStatusLineP
           <TextShimmer className="truncate font-medium">{text}</TextShimmer>
         )}
         <span aria-hidden data-slot="agent-status-elapsed" className="shrink-0 text-xs tabular-nums">
-          {formatSeconds(seconds)}
+          {formatDuration(seconds * 1000)}
         </span>
         {tokenCount != null && (
           <span aria-hidden data-slot="agent-status-tokens" className="shrink-0 text-xs tabular-nums">

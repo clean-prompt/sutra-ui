@@ -1,6 +1,11 @@
 import * as React from "react";
 import { RiCloseCircleLine, RiSkullLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatDuration } from "../lib/duration";
+import { formatBytes, pluralize } from "../lib/format";
+import { safeISO, toMs, type TimeInput } from "../lib/time";
+import { useAsyncAction } from "../hooks/use-async-action";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { SimpleTooltip } from "./tooltip";
@@ -28,18 +33,10 @@ export interface KillButtonProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
   ({ className, pid, name, onKill, pending: pendingProp, disabled, onConfirmingChange, ...props }, ref) => {
     const [confirming, setConfirmingState] = React.useState<KillSignal | null>(null);
-    const [busy, setBusy] = React.useState(false);
+    const kill = useAsyncAction((result: PromiseLike<unknown>) => result);
     const confirmRef = React.useRef<HTMLButtonElement>(null);
     const termRef = React.useRef<HTMLButtonElement>(null);
-    const mounted = React.useRef(true);
-    React.useEffect(() => {
-      // Set on every mount: React may unmount and remount (StrictMode, <Activity>).
-      mounted.current = true;
-      return () => {
-        mounted.current = false;
-      };
-    }, []);
-    const pending = pendingProp || busy;
+    const pending = pendingProp || kill.busy;
 
     const setConfirming = (s: KillSignal | null) => {
       setConfirmingState(s);
@@ -50,19 +47,13 @@ export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
       if (confirming) confirmRef.current?.focus();
     }, [confirming]);
 
-    const confirm = async () => {
+    const confirm = () => {
       if (!confirming) return;
       const signal = confirming;
       setConfirming(null);
+      // Only an async kill shows "Killing…"; a synchronous one returns straight to the buttons.
       const result = onKill(signal);
-      if (result && typeof (result as Promise<unknown>).then === "function") {
-        setBusy(true);
-        try {
-          await result;
-        } finally {
-          if (mounted.current) setBusy(false);
-        }
-      }
+      if (result && typeof (result as PromiseLike<unknown>).then === "function") void kill.run(result as PromiseLike<unknown>);
     };
 
     const cancel = () => {
@@ -164,7 +155,7 @@ export interface ProcessInfo {
   vram?: number | null;
   gpuIndex?: number;
   state?: "running" | "sleeping" | "idle" | "stopped" | "zombie" | (string & {});
-  startedAt?: Date | number | string;
+  startedAt?: TimeInput;
 }
 
 export type ProcessColumn = "pid" | "name" | "user" | "cpu" | "memory" | "vram" | "state" | "started";
@@ -176,28 +167,11 @@ export interface ProcessSort {
 
 /** Human bytes: 1536 → "1.5 KB" (base 1024). */
 export function formatProcessBytes(bytes: number | null | undefined): string {
-  if (bytes == null || !Number.isFinite(bytes)) return "—";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  let v = bytes;
-  let i = 0;
-  while (Math.abs(v) >= 1024 && i < units.length - 1) {
-    v /= 1024;
-    i++;
-  }
-  return `${i === 0 ? v : v >= 100 ? Math.round(v) : Number(v.toFixed(1))} ${units[i]}`;
+  return formatBytes(bytes, { decimals: 1, wholeAbove: 100 });
 }
 
-const toMs = (t: Date | number | string) => (t instanceof Date ? t.getTime() : typeof t === "number" ? t : new Date(t).getTime());
-
-function formatElapsed(ms: number): string {
-  const s = Math.max(0, Math.floor(ms / 1000));
-  if (s < 60) return `${s}s`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ${m % 60}m`;
-  return `${Math.floor(h / 24)}d ${h % 24}h`;
-}
+/** Elapsed time: "45s", "5m", "2h 5m", "3d 4h" (floored). */
+const formatElapsed = (ms: number) => formatDuration(ms, { round: "floor", minUnit: ms < 60_000 ? "s" : "m" });
 
 const sortValue = (p: ProcessInfo, key: ProcessColumn): number | string => {
   switch (key) {
@@ -216,7 +190,7 @@ const sortValue = (p: ProcessInfo, key: ProcessColumn): number | string => {
     case "state":
       return p.state ?? "";
     case "started":
-      return p.startedAt != null ? toMs(p.startedAt) : 0;
+      return toMs(p.startedAt) ?? 0;
   }
 };
 
@@ -354,12 +328,7 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
     },
     ref
   ) => {
-    const [sortState, setSortState] = React.useState<ProcessSort | null>(defaultSort);
-    const sort = sortProp !== undefined ? sortProp : sortState;
-    const setSort = (s: ProcessSort | null) => {
-      if (sortProp === undefined) setSortState(s);
-      onSortChange?.(s);
-    };
+    const [sort, setSort] = useControllableState<ProcessSort | null>({ value: sortProp, defaultValue: defaultSort, onChange: onSortChange });
     const [confirmingPid, setConfirmingPid] = React.useState<number | null>(null);
     const sorted = React.useMemo(() => sortProcesses(processes, sort), [processes, sort]);
     const rows = usePresence(sorted, exitDuration);
@@ -428,10 +397,10 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
             <span className="text-xs text-muted-foreground">—</span>
           );
         case "started": {
-          if (p.startedAt == null) return <span className="text-xs text-muted-foreground">—</span>;
           const ms = toMs(p.startedAt);
+          if (ms === undefined) return <span className="text-xs text-muted-foreground">—</span>;
           return (
-            <time dateTime={new Date(ms).toISOString()} title={new Date(ms).toLocaleString()} className="font-mono text-xs text-muted-foreground tabular-nums">
+            <time dateTime={safeISO(ms)} title={new Date(ms).toLocaleString()} className="font-mono text-xs text-muted-foreground tabular-nums">
               {formatElapsed(now - ms)} ago
             </time>
           );
@@ -522,7 +491,7 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
                     <span className="font-mono text-xs tabular-nums">{totals.vram ? formatProcessBytes(totals.vram) : "—"}</span>
                   ) : i === 0 ? (
                     <span className="text-xs">
-                      {processes.length} {processes.length === 1 ? "process" : "processes"}
+                      {processes.length} {pluralize(processes.length, "process", "processes")}
                     </span>
                   ) : null}
                 </TableCell>

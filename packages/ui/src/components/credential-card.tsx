@@ -7,15 +7,15 @@ import {
   RiVerifiedBadgeFill,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { formatShortDate, toMs, type TimeInput as DateInput } from "../lib/time";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Badge, type BadgeColor } from "./badge";
 import { Checkbox } from "./checkbox";
 import { Favicon } from "./favicon";
 import { KeyValueList, type KeyValueItem } from "./key-value";
 
-type DateInput = Date | number | string;
-const toMs = (v: DateInput) => (v instanceof Date ? v.getTime() : typeof v === "number" ? v : new Date(v).getTime());
-const fmtDate = (v: DateInput) => new Date(toMs(v)).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+const fmtDate = (v: DateInput) => formatShortDate(v, { year: "always" });
 
 export type CredentialStatus = "valid" | "expired" | "revoked";
 export type CredentialKind = "identity" | "age" | "membership" | "education" | "employment" | "license" | "health" | "custom";
@@ -51,7 +51,8 @@ export interface Credential {
 /** Status from explicit value or expiry. */
 export function credentialStatus(c: Pick<Credential, "status" | "expiresAt">, now: number = Date.now()): CredentialStatus {
   if (c.status) return c.status;
-  if (c.expiresAt != null && toMs(c.expiresAt) <= now) return "expired";
+  const expires = toMs(c.expiresAt);
+  if (expires !== undefined && expires <= now) return "expired";
   return "valid";
 }
 
@@ -84,7 +85,7 @@ function CredentialChips({ c, inverse }: { c: Credential; inverse?: boolean }) {
       )}
       {c.oneTime && (
         <Badge size="sm" variant={inverse ? "outline" : "soft"} color="neutral" className={chipClass} leadingIcon={<RiTicket2Line aria-hidden />}>
-          {c.remainingUses != null ? `${c.remainingUses} use${c.remainingUses === 1 ? "" : "s"} left` : "One-time"}
+          {c.remainingUses != null ? `${c.remainingUses} ${pluralize(c.remainingUses, "use")} left` : "One-time"}
         </Badge>
       )}
     </>

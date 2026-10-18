@@ -1,7 +1,8 @@
 import * as React from "react";
 import { RiLoader4Line, RiWifiOffLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { chartColors } from "../lib/tokens";
+import { formatList, pluralize } from "../lib/format";
+import { colorForSeed } from "../lib/hash";
 import { Avatar, type AvatarSize } from "./avatar";
 import { SimpleTooltip } from "./tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
@@ -25,9 +26,7 @@ export interface PresenceUser {
 
 /** Deterministic collaborator color for an id (stable across sessions and clients). */
 export function getPresenceColor(id: string) {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-  return chartColors[hash % chartColors.length]!;
+  return colorForSeed(id);
 }
 
 const statusDot: Record<PresenceStatus, string> = {
@@ -98,7 +97,7 @@ export const PresenceAvatars = React.forwardRef<HTMLDivElement, PresenceAvatarsP
       <div
         ref={ref}
         role="group"
-        aria-label={`${users.length} ${users.length === 1 ? "person" : "people"} here`}
+        aria-label={`${users.length} ${pluralize(users.length, "person", "people")} here`}
         data-slot="presence-avatars"
         className={cn("flex items-center -space-x-1.5", className)}
         {...props}
@@ -225,7 +224,7 @@ export const PresenceIndicator = React.forwardRef<HTMLSpanElement, PresenceIndic
       <span>{label ?? connectionLabel[status]}</span>
       {pending && status !== "live" ? (
         <span className="tabular-nums opacity-80">
-          · {pending} {pending === 1 ? "change" : "changes"} pending
+          · {pending} {pluralize(pending, "change")} pending
         </span>
       ) : null}
     </span>
@@ -314,16 +313,17 @@ export interface TypingIndicatorProps extends React.HTMLAttributes<HTMLDivElemen
   hideDots?: boolean;
 }
 
+/** British-English list style: "Aiko, Ben and Chen" (no serial comma). */
+const typingList = { locale: "en-GB" } as const;
+
 /** "Aiko is typing…" / "Aiko and Ben are typing…" / "Aiko, Ben and 3 others are typing…". */
 export function formatTypingText(names: string[], maxNames = 2) {
   if (names.length === 0) return "";
   if (names.length === 1) return `${names[0]} is typing…`;
-  if (names.length <= maxNames + 1 && names.length <= 3) {
-    return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]} are typing…`;
-  }
+  if (names.length <= maxNames + 1 && names.length <= 3) return `${formatList(names, typingList)} are typing…`;
   const shown = names.slice(0, maxNames);
   const rest = names.length - shown.length;
-  return `${shown.join(", ")} and ${rest} ${rest === 1 ? "other" : "others"} are typing…`;
+  return `${formatList([...shown, `${rest} ${pluralize(rest, "other")}`], typingList)} are typing…`;
 }
 
 /** Polite live region announcing who is typing, with bouncing dots. */

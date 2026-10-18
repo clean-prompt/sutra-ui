@@ -19,17 +19,11 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { usePrefersReducedMotion } from "../hooks/use-media-query";
+import { formatClockTime, formatDayLabel, toMs, type TimeInput } from "../lib/time";
 import { Button } from "./button";
 import { TextShimmer } from "./text-shimmer";
 import { formatAgentElapsed, formatAgentTokens, useAgentNow } from "./agent-tasks";
-
-type TimeInput = Date | number | string;
-
-function toMs(value: TimeInput | undefined): number | undefined {
-  if (value == null) return undefined;
-  const t = value instanceof Date ? value.getTime() : typeof value === "number" ? value : new Date(value).getTime();
-  return Number.isNaN(t) ? undefined : t;
-}
 
 function textOf(node: React.ReactNode): string {
   if (node == null || typeof node === "boolean") return "";
@@ -37,19 +31,6 @@ function textOf(node: React.ReactNode): string {
   if (Array.isArray(node)) return node.map(textOf).join("");
   if (React.isValidElement<{ children?: React.ReactNode }>(node)) return textOf(node.props.children);
   return "";
-}
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = React.useState(false);
-  React.useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const on = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener?.("change", on);
-    return () => mq.removeEventListener?.("change", on);
-  }, []);
-  return reduced;
 }
 
 /* ------------------------------------------------------------------ */
@@ -180,19 +161,7 @@ export interface TranscriptSystemRowProps extends Omit<React.HTMLAttributes<HTML
 
 /** "Today", "Yesterday" or "Mon, Oct 12". */
 export function formatTranscriptDay(value: TimeInput, now: number = Date.now()) {
-  const t = toMs(value) ?? now;
-  const d = new Date(t);
-  const today = new Date(now);
-  const startOf = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
-  const diff = Math.round((startOf(today) - startOf(d)) / 86_400_000);
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Yesterday";
-  return d.toLocaleDateString(undefined, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: d.getFullYear() === today.getFullYear() ? undefined : "numeric",
-  });
+  return formatDayLabel(toMs(value) ?? now, { now, weekdayWithinWeek: false, tomorrow: false, weekday: true });
 }
 
 /** System rows in a transcript: compaction, interruption, slash commands, errors, dividers and day changes. */
@@ -396,8 +365,7 @@ export function useTranscriptBookmarks(initial: TranscriptBookmark[] = []) {
 }
 
 function formatBookmarkTime(t: number | undefined) {
-  if (t == null) return "";
-  return new Date(t).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  return formatClockTime(t, { invalid: "" });
 }
 
 export interface BookmarksPaneProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {

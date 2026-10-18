@@ -1,21 +1,17 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { chartColors } from "../lib/tokens";
+import { formatDuration } from "../lib/duration";
+import { formatCost } from "../lib/format";
+import { roundTo } from "../lib/math";
+import { MINUTE_MS, toMs, type TimeInput } from "../lib/time";
 import { Button } from "./button";
 import { Meter, meterLevel, type MeterThresholds } from "./meter";
 import { formatAgentTokens } from "./agent-tasks";
 
-type TimeInput = Date | number | string;
-
-function toMs(value: TimeInput | undefined): number | undefined {
-  if (value == null) return undefined;
-  const t = value instanceof Date ? value.getTime() : typeof value === "number" ? value : new Date(value).getTime();
-  return Number.isNaN(t) ? undefined : t;
-}
-
 function pctText(n: number) {
   if (n > 0 && n < 0.1) return "<0.1%";
-  return `${Number(n.toFixed(n < 10 ? 1 : 0))}%`;
+  return `${roundTo(n, n < 10 ? 1 : 0)}%`;
 }
 
 /* ------------------------------------------------------------------ */
@@ -159,9 +155,8 @@ export function formatResetCaption(resetsAt: TimeInput, now: number = Date.now()
   if (t == null) return "";
   const diff = t - now;
   if (diff <= 0) return "Resets now";
-  const mins = Math.ceil(diff / 60000);
-  if (mins < 60) return `Resets in ${mins}m`;
-  if (mins < 24 * 60) return `Resets in ${Math.floor(mins / 60)}h ${mins % 60}m`;
+  const mins = Math.ceil(diff / MINUTE_MS);
+  if (mins < 24 * 60) return `Resets in ${formatDuration(mins * MINUTE_MS, { maxUnit: "h", minUnit: "m" })}`;
   return `Resets ${new Date(t).toLocaleDateString(undefined, { weekday: "short" })}`;
 }
 
@@ -303,14 +298,7 @@ UsageLimitBars.displayName = "UsageLimitBars";
 
 /** "850ms", "42s", "4m 12s", "1h 03m". */
 export function formatAgentDuration(ms: number) {
-  if (ms < 1000) return `${Math.round(ms)}ms`;
-  const total = Math.round(ms / 1000);
-  const h = Math.floor(total / 3600);
-  const m = Math.floor((total % 3600) / 60);
-  const s = total % 60;
-  if (h) return `${h}h ${String(m).padStart(2, "0")}m`;
-  if (m) return `${m}m ${String(s).padStart(2, "0")}s`;
-  return `${s}s`;
+  return formatDuration(ms, { ms: true, pad: true });
 }
 
 export interface SessionStatsItem {
@@ -337,7 +325,7 @@ export const SessionStats = React.forwardRef<HTMLDListElement, SessionStatsProps
     if (cost != null) {
       rows.push({
         label: "Total cost",
-        value: new Intl.NumberFormat("en-US", { style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: cost < 1 ? 4 : 2 }).format(cost),
+        value: formatCost(cost, { currency, locale: "en-US", maxFraction: cost < 1 ? 4 : 2, tiny: 0 }),
       });
     }
     if (apiDurationMs != null) rows.push({ label: "API duration", value: formatAgentDuration(apiDurationMs) });

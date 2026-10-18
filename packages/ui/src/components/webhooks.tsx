@@ -1,9 +1,10 @@
 import * as React from "react";
-import { RiAddLine, RiCheckLine, RiFileCopyLine, RiKey2Line, RiRefreshLine, RiReplyLine, RiSendPlaneLine } from "@remixicon/react";
+import { RiAddLine, RiKey2Line, RiRefreshLine, RiReplyLine, RiSendPlaneLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { safeISO, toValidDate } from "../lib/date";
-import { useCopy } from "../hooks/use-copy";
+import { safeISO, toValidDate, type TimeInput } from "../lib/time";
+import { errorMessage, useAsyncAction } from "../hooks/use-async-action";
 import { Button } from "./button";
+import { CopyButton } from "./copy-button";
 import { Badge } from "./badge";
 import { Input } from "./input";
 import { Switch, SwitchField } from "./switch";
@@ -22,8 +23,6 @@ import {
   type NameCheckboxOption,
 } from "./agent-jobs";
 
-type TimeLike = Date | number | string;
-
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
 /* ------------------------------------------------------------------ */
@@ -33,7 +32,7 @@ export interface WebhookDelivery {
   event?: string;
   /** HTTP status; `null` for a network error / timeout. */
   statusCode: number | null;
-  at: TimeLike;
+  at: TimeInput;
   durationMs?: number;
   error?: string;
 }
@@ -84,18 +83,12 @@ export interface WebhookUrlCopyProps extends React.HTMLAttributes<HTMLDivElement
 
 /** Read-only monospace value with a copy button (endpoint URLs). */
 export const WebhookUrlCopy = React.forwardRef<HTMLDivElement, WebhookUrlCopyProps>(({ url, copyLabel = "Copy URL", className, ...props }, ref) => {
-  const { copied, copy } = useCopy();
   return (
     <div ref={ref} className={cn("flex min-w-0 items-center gap-1 rounded-control border border-input bg-subtle py-0.5 pl-2.5 pr-0.5", className)} {...props}>
       <code className="min-w-0 flex-1 truncate font-mono text-xs text-foreground" title={url}>
         {url}
       </code>
-      <Button type="button" variant="ghost" size="icon-xs" aria-label={copied ? "Copied" : copyLabel} onClick={() => copy(url)}>
-        {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-      </Button>
-      <span className="sr-only" aria-live="polite">
-        {copied ? "Copied to clipboard" : ""}
-      </span>
+      <CopyButton value={url} label={copyLabel} />
     </div>
   );
 });
@@ -223,9 +216,16 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
     }));
     const [secret, setSecret] = React.useState<string | null>(newSecret ?? null);
     const [submitted, setSubmitted] = React.useState(false);
-    const [saving, setSaving] = React.useState(false);
-    const [testing, setTesting] = React.useState(false);
     const [testResult, setTestResult] = React.useState<WebhookTestResult | null>(null);
+    const saveAction = useAsyncAction((next: WebhookRouteDraft) => onSave?.(next), {
+      fallbackMessage: "Could not save the route",
+    });
+    const testAction = useAsyncAction(() => onTestSend?.(), {
+      onSuccess: (result) => setTestResult(result ?? null),
+      onError: (err) => setTestResult({ ok: false, message: errorMessage(err, "Test failed") }),
+    });
+    const saving = saveAction.busy;
+    const testing = testAction.busy;
     const nameRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
@@ -245,25 +245,13 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
         if (errors.name) nameRef.current?.focus();
         return;
       }
-      try {
-        setSaving(true);
-        await onSave?.({ ...draft, name: draft.name.trim() });
-      } finally {
-        setSaving(false);
-      }
+      await saveAction.run({ ...draft, name: draft.name.trim() });
     };
 
-    const runTest = async () => {
+    const runTest = () => {
       if (!onTestSend) return;
-      setTesting(true);
       setTestResult(null);
-      try {
-        setTestResult(await onTestSend());
-      } catch (err) {
-        setTestResult({ ok: false, message: err instanceof Error ? err.message : "Test failed" });
-      } finally {
-        setTesting(false);
-      }
+      void testAction.run();
     };
 
     const deliveries = route?.deliveries ?? [];
@@ -406,6 +394,11 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
         ) : null}
 
         <div className="flex justify-end gap-2">
+          {saveAction.error ? (
+            <p role="alert" className="mr-auto self-center text-sm text-destructive">
+              {saveAction.error}
+            </p>
+          ) : null}
           {onCancel ? (
             <Button type="button" variant="ghost" onClick={onCancel}>
               Cancel

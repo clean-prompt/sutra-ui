@@ -9,7 +9,10 @@ import {
   RiTimeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatDuration } from "../lib/duration";
+import { formatCost, formatTokens } from "../lib/format";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useNow } from "../hooks/use-now";
 import { heatmapColor, heatmapLevel } from "./heatmap";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
@@ -72,15 +75,14 @@ export function subagentElapsed(node: SubagentNode, now: number): number {
 
 /** "42s", "3m 05s", "1h 02m". */
 export function formatSubagentElapsed(ms: number): string {
-  const s = Math.floor(ms / 1000);
-  if (s < 60) return `${s}s`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ${String(s % 60).padStart(2, "0")}s`;
-  return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}m`;
+  return formatDuration(ms, { pad: true, round: "floor" });
 }
 
-const fmtTokens = (n: number) => (n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1)}M` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
-const fmtCost = (n: number) => `$${n < 1 ? n.toFixed(3) : n.toFixed(2)}`;
+/** "$0.123" under a dollar, "$1.23" above. */
+function fmtCost(n: number) {
+  const digits = n < 1 ? 3 : 2;
+  return formatCost(n, { maxFraction: digits, minFraction: digits, tiny: 0.001 });
+}
 
 const statusLabel: Record<SubagentStatus, string> = { running: "Running", done: "Done", failed: "Failed", waiting: "Waiting" };
 const statusRank: Record<SubagentStatus, number> = { running: 0, waiting: 1, failed: 2, done: 3 };
@@ -210,13 +212,8 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
       defaultValue: defaultRunningOnly,
       onChange: onRunningOnlyChange,
     });
-    const [tick, setTick] = React.useState(() => Date.now());
     const anyRunning = nodes.some(hasRunning);
-    React.useEffect(() => {
-      if (nowProp != null || !anyRunning) return;
-      const id = setInterval(() => setTick(Date.now()), 1000);
-      return () => clearInterval(id);
-    }, [nowProp, anyRunning]);
+    const tick = useNow({ active: nowProp == null && anyRunning });
     const now = nowProp ?? tick;
 
     const [focusId, setFocusId] = React.useState<string | null>(null);
@@ -390,7 +387,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                 <span className="ml-auto flex shrink-0 items-center gap-2 text-2xs tabular-nums text-muted-foreground">
                   <span title="Tools">{roll.tools} tools</span>
                   {roll.agents > 0 && <span title="Child agents">{roll.agents} agents</span>}
-                  {roll.tokens > 0 && <span title="Tokens">{fmtTokens(roll.tokens)} tok</span>}
+                  {roll.tokens > 0 && <span title="Tokens">{formatTokens(roll.tokens, { trimZeros: false })} tok</span>}
                   {roll.cost > 0 && <span title="Cost">{fmtCost(roll.cost)}</span>}
                   <span title="Elapsed" className="min-w-10 text-right">
                     {formatSubagentElapsed(elapsed)}

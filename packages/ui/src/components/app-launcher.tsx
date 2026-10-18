@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiAppsLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatBadgeCount } from "../lib/format";
+import { initials } from "../lib/text";
 import { SutraAppIcon, type SutraApp } from "../assets/brand";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
@@ -31,10 +33,6 @@ export function filterLauncherItems(items: AppLauncherItem[], query: string) {
   return items.filter((item) =>
     [item.label, item.app ?? "", ...(item.keywords ?? [])].some((s) => s.toLowerCase().includes(q))
   );
-}
-
-function formatBadge(n: number) {
-  return n > 99 ? "99+" : String(n);
 }
 
 export type AppLauncherVariant = "grid" | "dock" | "popover";
@@ -91,7 +89,7 @@ const AppLauncherTile = ({ item, iconSize, tabIndex, hideLabel, compact, onActiv
             style={{ width: iconSize, height: iconSize, fontSize: iconSize * 0.4 }}
             aria-hidden
           >
-            {item.label.charAt(0).toUpperCase()}
+            {initials(item.label, { max: 1 })}
           </span>
         )}
         {item.badge ? (
@@ -99,7 +97,7 @@ const AppLauncherTile = ({ item, iconSize, tabIndex, hideLabel, compact, onActiv
             aria-hidden
             className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-2xs font-semibold text-destructive-foreground tabular-nums ring-2 ring-background"
           >
-            {formatBadge(item.badge)}
+            {formatBadgeCount(item.badge)}
           </span>
         ) : null}
       </span>

@@ -23,6 +23,11 @@ import {
   RiVerifiedBadgeFill,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { formatCountdown } from "../lib/duration";
+import { capitalize } from "../lib/text";
+import { useCountdown } from "../hooks/use-now";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Badge, type BadgeColor } from "./badge";
@@ -118,7 +123,7 @@ export function formatScopeConstraint(key: string, value: unknown) {
       return `resource ${value}`;
     case "maxUses": {
       const n = Number(value);
-      return Number.isFinite(n) ? `${n} use${n === 1 ? "" : "s"}` : `max uses ${value}`;
+      return Number.isFinite(n) ? `${n} ${pluralize(n, "use")}` : `max uses ${value}`;
     }
     case "rateBudget":
       return `rate ${value}`;
@@ -161,7 +166,7 @@ export function formatScope(scope: ScopeInput, options: FormatScopeOptions = {})
     id,
     action,
     resource,
-    label: label.charAt(0).toUpperCase() + label.slice(1),
+    label: capitalize(label),
     description: pick(def?.description),
     constraints,
     icon: def?.icon ?? RiShieldLine,
@@ -350,24 +355,6 @@ export interface ConsentScreenProps extends Omit<React.HTMLAttributes<HTMLDivEle
   onDeny?: () => void | Promise<void>;
 }
 
-function useCountdown(expiresAt?: number | Date) {
-  const target = expiresAt == null ? undefined : expiresAt instanceof Date ? expiresAt.getTime() : expiresAt;
-  const calc = () => (target == null ? undefined : Math.max(0, Math.ceil((target - Date.now()) / 1000)));
-  const [left, setLeft] = React.useState(calc);
-  React.useEffect(() => {
-    setLeft(calc());
-    if (target == null) return;
-    const id = setInterval(() => {
-      const s = calc();
-      setLeft(s);
-      if (s === 0) clearInterval(id);
-    }, 250);
-    return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [target]);
-  return left;
-}
-
 /** Authorization/approval screen: who is asking, what they want, and an expiring Approve. */
 export const ConsentScreen = React.forwardRef<HTMLDivElement, ConsentScreenProps>(
   (
@@ -399,36 +386,31 @@ export const ConsentScreen = React.forwardRef<HTMLDivElement, ConsentScreenProps
     const [granted, setGranted] = React.useState<string[]>(defaultOptionalGranted);
     const [shareProfile, setShareProfile] = React.useState(defaultShareProfile);
     const [credentialId, setCredentialId] = React.useState<string>("");
-    const [busy, setBusy] = React.useState<"approve" | "deny" | null>(null);
-    const left = useCountdown(expiresAt);
-    const expired = left === 0;
+    const [busyKind, setBusyKind] = React.useState<"approve" | "deny" | null>(null);
+    const countdown = useCountdown(expiresAt, { onExpire });
+    const left = expiresAt == null ? undefined : Math.ceil(countdown.remainingMs / 1000);
+    const expired = countdown.expired;
     const titleId = React.useId();
 
-    const expireRef = React.useRef(onExpire);
-    expireRef.current = onExpire;
-    React.useEffect(() => {
-      if (expired) expireRef.current?.();
-    }, [expired]);
-
     const needsCredential = !!credentials?.length && (credentialRequired ?? true);
-    const canApprove = !expired && !busy && (!needsCredential || !!credentialId);
 
-    const run = async (kind: "approve" | "deny") => {
-      setBusy(kind);
-      try {
-        if (kind === "approve") {
-          const ids = scopes
-            .map((s) => formatScope(s, { definitions }))
-            .filter((f) => f.locked || !optionalScopes.includes(f.id) || granted.includes(f.id))
-            .map((f) => f.id);
-          await onApprove?.({ scopes: ids, shareProfile: !!profile && shareProfile, credentialId: credentialId || undefined });
-        } else {
-          await onDeny?.();
-        }
-      } finally {
-        setBusy(null);
+    const action = useAsyncAction(async (kind: "approve" | "deny") => {
+      if (kind === "approve") {
+        const ids = scopes
+          .map((s) => formatScope(s, { definitions }))
+          .filter((f) => f.locked || !optionalScopes.includes(f.id) || granted.includes(f.id))
+          .map((f) => f.id);
+        await onApprove?.({ scopes: ids, shareProfile: !!profile && shareProfile, credentialId: credentialId || undefined });
+      } else {
+        await onDeny?.();
       }
+    });
+    const busy = action.busy ? busyKind : null;
+    const run = (kind: "approve" | "deny") => {
+      setBusyKind(kind);
+      void action.run(kind);
     };
+    const canApprove = !expired && !busy && (!needsCredential || !!credentialId);
 
     return (
       <div
@@ -548,7 +530,7 @@ export const ConsentScreen = React.forwardRef<HTMLDivElement, ConsentScreenProps
               )}
             >
               <RiTimeLine aria-hidden className="size-3.5" />
-              {expired ? "Request expired" : `Expires in ${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`}
+              {expired ? "Request expired" : `Expires in ${formatCountdown(countdown.remainingMs)}`}
             </p>
           )}
           {needsCredential && !credentialId && !expired && (

@@ -7,6 +7,8 @@
  * and never loads anything until one of its methods is called.
  */
 
+import { base32Decode, base32Encode, base64UrlDecodeBytes, base64UrlEncode } from "../lib/encoding";
+
 /**
  * The official hosted widget. THIRD-PARTY REQUEST: only fetched when an app
  * calls `createRpScriptAdapter().load()` / `.render()` / `.signIn()`.
@@ -312,71 +314,19 @@ export async function runKunjiPoll(
 /* QR codecs (K1 / KC), byte-compatible with kunji's src/lib/qrCodec.js */
 /* ------------------------------------------------------------------ */
 
-const B32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const F_S_RAW = 1;
 const F_C_RAW = 2;
 const F_HAS_N = 4;
 const F_HAS_K = 8;
 const F_HAS_P = 16;
 
-function base32Encode(bytes: Uint8Array) {
-  let out = "";
-  let bits = 0;
-  let value = 0;
-  for (let i = 0; i < bytes.length; i++) {
-    value = ((value << 8) | bytes[i]) & 0xffff;
-    bits += 8;
-    while (bits >= 5) {
-      out += B32[(value >>> (bits - 5)) & 31];
-      bits -= 5;
-    }
-  }
-  if (bits > 0) out += B32[(value << (5 - bits)) & 31];
-  return out;
-}
-
-function base32Decode(str: string) {
-  const bytes: number[] = [];
-  let bits = 0;
-  let value = 0;
-  for (const ch of str) {
-    const idx = B32.indexOf(ch);
-    if (idx === -1) throw new Error("bad_base32");
-    value = ((value << 5) | idx) & 0xffff;
-    bits += 5;
-    if (bits >= 8) {
-      bytes.push((value >>> (bits - 8)) & 0xff);
-      bits -= 8;
-    }
-  }
-  return new Uint8Array(bytes);
-}
-
-function bytesToBase64(bytes: Uint8Array) {
-  let bin = "";
-  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-  return btoa(bin);
-}
-
 function b64urlToBytes(str: string): Uint8Array | null {
-  if (!/^[A-Za-z0-9_-]+$/.test(str)) return null;
-  let b64 = str.replace(/-/g, "+").replace(/_/g, "/");
-  while (b64.length % 4) b64 += "=";
-  try {
-    const bin = atob(b64);
-    const out = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-    return out;
-  } catch {
-    return null;
-  }
+  return /^[A-Za-z0-9_-]+$/.test(str) ? base64UrlDecodeBytes(str) : null;
 }
-
-const bytesToB64url = (bytes: Uint8Array) => bytesToBase64(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
 /** base64url of a UTF-8 string (safe for any characters). */
 export function kunjiBase64Url(text: string) {
-  return bytesToB64url(new TextEncoder().encode(text));
+  return base64UrlEncode(text);
 }
 
 function packStruct(flags: number, fields: Uint8Array[]) {
@@ -402,7 +352,7 @@ export function encodeKunjiCompactQr(payload: Omit<KunjiQrPayload, "kunjiAuth">)
   let flags = 0;
   const packToken = (str: string, bit: number) => {
     const bytes = b64urlToBytes(str);
-    if (bytes && bytesToB64url(bytes) === str) {
+    if (bytes && base64UrlEncode(bytes) === str) {
       flags |= bit;
       return bytes;
     }
@@ -433,6 +383,7 @@ export function encodeKunjiCompactQr(payload: Omit<KunjiQrPayload, "kunjiAuth">)
 export function decodeKunjiCompactQr(str: string): KunjiQrPayload {
   if (!str.startsWith("K1:")) throw new Error("not_compact_qr");
   const buf = base32Decode(str.slice(3));
+  if (!buf) throw new Error("bad_base32");
   const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
   const dec = new TextDecoder();
   let o = 0;
@@ -452,8 +403,8 @@ export function decodeKunjiCompactQr(str: string): KunjiQrPayload {
   const e = read();
   const out: KunjiQrPayload = {
     kunjiAuth: "v2",
-    sessionId: flags & F_S_RAW ? bytesToB64url(s) : dec.decode(s),
-    challenge: flags & F_C_RAW ? bytesToB64url(c) : dec.decode(c),
+    sessionId: flags & F_S_RAW ? base64UrlEncode(s) : dec.decode(s),
+    challenge: flags & F_C_RAW ? base64UrlEncode(c) : dec.decode(c),
     audience: dec.decode(a),
     expiresAt: Number(dec.decode(e)),
   };

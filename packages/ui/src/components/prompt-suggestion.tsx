@@ -1,28 +1,28 @@
 import * as React from "react";
 import { RiArrowRightUpLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { matchRanges } from "../lib/text";
 
 type PromptSuggestionLayout = "wrap" | "list";
 
 const PromptSuggestionGroupContext = React.createContext<PromptSuggestionLayout>("wrap");
 
-function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 function highlightText(text: string, query: string) {
-  const q = query.trim();
-  if (!q) return text;
-  const parts = text.split(new RegExp(`(${escapeRegExp(q)})`, "gi"));
-  return parts.map((part, i) =>
-    part.toLowerCase() === q.toLowerCase() ? (
-      <mark key={i} className="bg-transparent font-semibold text-foreground">
-        {part}
+  const ranges = matchRanges(text, query.trim());
+  if (ranges.length === 0) return text;
+  const parts: React.ReactNode[] = [];
+  let last = 0;
+  ranges.forEach(([start, end], i) => {
+    if (start > last) parts.push(<React.Fragment key={`t${i}`}>{text.slice(last, start)}</React.Fragment>);
+    parts.push(
+      <mark key={`m${i}`} className="bg-transparent font-semibold text-foreground">
+        {text.slice(start, end)}
       </mark>
-    ) : (
-      <React.Fragment key={i}>{part}</React.Fragment>
-    )
-  );
+    );
+    last = end;
+  });
+  if (last < text.length) parts.push(<React.Fragment key="rest">{text.slice(last)}</React.Fragment>);
+  return parts;
 }
 
 export interface PromptSuggestionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

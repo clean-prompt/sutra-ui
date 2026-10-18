@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiUploadCloud2Line } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatBytes } from "../lib/format";
 
 export type FileRejectionCode = "file-invalid-type" | "file-too-large" | "too-many-files";
 
@@ -44,17 +45,6 @@ export function isFileAccepted(file: File, accept?: string) {
   return matchesType(file.type, file.name, parseAccept(accept));
 }
 
-function formatSize(bytes: number) {
-  const units = ["B", "KB", "MB", "GB"];
-  let i = 0;
-  let n = bytes;
-  while (n >= 1024 && i < units.length - 1) {
-    n /= 1024;
-    i++;
-  }
-  return `${Number.isInteger(n) ? n : n.toFixed(1)} ${units[i]}`;
-}
-
 /** Splits files into accepted files and rejections with reasons. */
 export function validateFiles(
   files: File[],
@@ -71,7 +61,7 @@ export function validateFiles(
       errors.push({ code: "file-invalid-type", message: `${file.name} isn't a supported file type.` });
     }
     if (maxSize !== undefined && file.size > maxSize) {
-      errors.push({ code: "file-too-large", message: `${file.name} is larger than ${formatSize(maxSize)}.` });
+      errors.push({ code: "file-too-large", message: `${file.name} is larger than ${formatBytes(maxSize)}.` });
     }
     if (errors.length === 0 && currentCount + accepted.length >= limit) {
       errors.push({
@@ -103,7 +93,7 @@ export function describeFileConstraints({ accept, maxSize, maxFiles }: FileValid
   );
   const parts: string[] = [];
   if (types.length) parts.push([...new Set(types)].join(", "));
-  if (maxSize !== undefined) parts.push(`up to ${formatSize(maxSize)}`);
+  if (maxSize !== undefined) parts.push(`up to ${formatBytes(maxSize)}`);
   if (maxFiles !== undefined && maxFiles > 1) parts.push(`max ${maxFiles} files`);
   return parts.join(" · ");
 }

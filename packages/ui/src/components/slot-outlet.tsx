@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiErrorWarningLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 
 /* ------------------------------------------------------------------ */
 /* Registry                                                            */
@@ -244,8 +245,6 @@ function createFillStore(initial: React.ReactNode): FillStore {
     },
   };
 }
-
-const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
 
 /**
  * Declaratively contribute `children` to a slot while mounted. Renders nothing in place.

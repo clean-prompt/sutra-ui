@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiStarFill } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
+import { pluralize } from "../lib/format";
+import { clamp, toPercent } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 
 const iconSizes: Record<Size, string> = { sm: "size-4", md: "size-5", lg: "size-6" };
@@ -30,7 +32,7 @@ export interface RatingProps
 }
 
 const defaultGetLabel = (value: number, max: number) =>
-  `${value} ${value === 1 ? "star" : "stars"} out of ${max}`;
+  `${value} ${pluralize(value, "star")} out of ${max}`;
 
 /** Star rating input with hover preview, half steps and radiogroup keyboard support. */
 export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
@@ -76,7 +78,7 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
     };
 
     const commit = (next: number) => {
-      const clamped = Math.min(max, Math.max(0, next));
+      const clamped = clamp(next, 0, max);
       setValue(clamped);
       const focusIndex = Math.max(0, Math.ceil(clamped) - 1);
       starRefs.current[focusIndex]?.focus();
@@ -121,7 +123,7 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
             <RatingStar
               key={i}
               Icon={Icon}
-              fill={Math.min(1, Math.max(0, display - i))}
+              fill={clamp(display - i, 0, 1)}
               sizeClass={iconSizes[size]}
               activeClassName={activeClassName}
               inactiveClassName={inactiveClassName}
@@ -170,7 +172,7 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
             >
               <RatingStar
                 Icon={Icon}
-                fill={Math.min(1, Math.max(0, display - i))}
+                fill={clamp(display - i, 0, 1)}
                 sizeClass={iconSizes[size]}
                 activeClassName={cn(activeClassName, hover !== null && "opacity-90")}
                 inactiveClassName={inactiveClassName}
@@ -231,7 +233,7 @@ export const RatingSummary = React.forwardRef<HTMLDivElement, RatingSummaryProps
       count,
       distribution,
       max = 5,
-      countLabel = (n) => `${n === 1 ? "rating" : "ratings"}`,
+      countLabel = (n) => pluralize(n, "rating"),
       locale,
       className,
       ...props
@@ -263,7 +265,7 @@ export const RatingSummary = React.forwardRef<HTMLDivElement, RatingSummaryProps
           <ul className="flex flex-1 flex-col gap-1.5" aria-label="Rating distribution">
             {rows.map((star) => {
               const n = distribution[star] ?? 0;
-              const pct = sum > 0 ? (n / sum) * 100 : 0;
+              const pct = toPercent(n, sum);
               return (
                 <li key={star} className="flex items-center gap-3 text-sm">
                   <span className="flex w-8 shrink-0 items-center gap-1 text-muted-foreground tabular-nums">

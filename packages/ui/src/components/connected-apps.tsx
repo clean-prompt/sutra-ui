@@ -19,6 +19,7 @@ import {
   RiUserForbidLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import { ConfirmDialog } from "./dialog";
@@ -28,10 +29,9 @@ import { KeyValueList, type KeyValueItem } from "./key-value";
 import { Switch } from "./switch";
 import { ScopeList, type ScopeDefinition, type ScopeInput } from "./consent";
 import { formatRelativeDate } from "./api-keys";
-import { isValidDate, safeISO, toValidDate } from "../lib/date";
+import { calendarDayDiff, dateKey, safeISO, toMs as toMsOrUndefined, toValidDate, type TimeInput as DateInput } from "../lib/time";
 
-type DateInput = Date | number | string;
-const toMs = (v: DateInput) => (v instanceof Date ? v.getTime() : typeof v === "number" ? v : new Date(v).getTime());
+const toMs = (v: DateInput) => toMsOrUndefined(v) ?? NaN;
 
 /* ------------------------------------------------------------------ */
 /* ActivityFeed                                                        */
@@ -88,18 +88,16 @@ const eventIcon: Record<string, { icon: IconType; tone: string }> = {
 };
 
 function dayLabel(t: number, now: number) {
-  const d = new Date(t);
-  if (!isValidDate(d)) return "Unknown date";
-  const today = new Date(now);
-  const startOf = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
-  const diff = Math.round((startOf(today) - startOf(d)) / 86_400_000);
+  const d = toValidDate(t);
+  const diff = calendarDayDiff(now, t);
+  if (!d || diff === undefined) return "Unknown date";
   if (diff === 0) return "Today";
   if (diff === 1) return "Yesterday";
   return d.toLocaleDateString(undefined, {
     weekday: diff < 7 ? "long" : undefined,
     month: "short",
     day: "numeric",
-    year: d.getFullYear() !== today.getFullYear() ? "numeric" : undefined,
+    year: d.getFullYear() !== new Date(now).getFullYear() ? "numeric" : undefined,
   });
 }
 
@@ -108,8 +106,7 @@ export function groupEventsByDay<T extends { at: DateInput }>(events: T[], now: 
   const sorted = [...events].sort((a, b) => toMs(b.at) - toMs(a.at));
   const groups: { key: string; label: string; events: T[] }[] = [];
   for (const e of sorted) {
-    const d = new Date(toMs(e.at));
-    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const key = dateKey(e.at);
     let g = groups[groups.length - 1];
     if (!g || g.key !== key) {
       g = { key, label: dayLabel(toMs(e.at), now), events: [] };
@@ -266,7 +263,7 @@ export const ConnectedAppRow = React.forwardRef<HTMLButtonElement, ConnectedAppR
     const now = nowProp ?? Date.now();
     const expired = app.expiresAt != null && toMs(app.expiresAt) <= now;
     const meta = [
-      `${app.scopes.length} permission${app.scopes.length === 1 ? "" : "s"}`,
+      `${app.scopes.length} ${pluralize(app.scopes.length, "permission")}`,
       app.lastActiveAt != null ? `Active ${formatRelativeDate(app.lastActiveAt, now)}` : undefined,
       expiryText(app.expiresAt, now),
     ].filter(Boolean);

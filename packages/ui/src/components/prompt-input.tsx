@@ -22,6 +22,8 @@ import { cn, focusRing } from "../lib/cn";
 import { Button, type ButtonProps } from "./button";
 import { Spinner } from "./spinner";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useResizeObserver } from "../hooks/use-resize-observer";
 import { DropdownMenu as Menu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./dropdown-menu";
 
 interface PromptInputContextValue {
@@ -51,7 +53,6 @@ export function usePromptInput() {
   return ctx;
 }
 
-const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
 
 export interface PromptInputProps
   extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue"> {
@@ -438,13 +439,7 @@ export function useTextareaMirror(
     if (enabled) sync();
   }, [enabled, value, sync]);
 
-  React.useEffect(() => {
-    const ta = textareaRef.current;
-    if (!enabled || !ta || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() => sync());
-    observer.observe(ta);
-    return () => observer.disconnect();
-  }, [enabled, sync, textareaRef]);
+  useResizeObserver(enabled ? textareaRef : null, () => sync());
 
   return { mirrorRef, sync, onScroll: sync };
 }
@@ -520,19 +515,13 @@ export const PromptInputTextarea = React.forwardRef<HTMLTextAreaElement, PromptI
       resize();
     }, [value, resize]);
 
-    React.useEffect(() => {
-      const el = textareaRef.current;
-      if (!el || typeof ResizeObserver === "undefined") return;
-      let width = el.clientWidth;
-      const observer = new ResizeObserver(() => {
-        if (el.clientWidth !== width) {
-          width = el.clientWidth;
-          resize();
-        }
-      });
-      observer.observe(el);
-      return () => observer.disconnect();
-    }, [resize, textareaRef]);
+    const widthRef = React.useRef<number | undefined>(undefined);
+    useResizeObserver(textareaRef, (entry) => {
+      const width = (entry.target as HTMLElement).clientWidth;
+      if (width === widthRef.current) return;
+      widthRef.current = width;
+      resize();
+    });
 
     const rules = React.useMemo(() => resolveHighlightRules(highlight), [highlight]);
     const highlighting = rules.length > 0;

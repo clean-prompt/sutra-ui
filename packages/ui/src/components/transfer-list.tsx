@@ -17,9 +17,11 @@ import {
   RiUploadLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { formatDuration } from "../lib/duration";
+import { formatBytes } from "../lib/format";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { FileFormatIcon } from "../assets/file-format";
-import { formatBytes } from "./file-upload";
 import { Button } from "./button";
 import { Progress, type ProgressColor } from "./progress";
 
@@ -30,22 +32,7 @@ import { Progress, type ProgressColor } from "./progress";
 /** Seconds remaining as a short string: `45s`, `2m 5s`, `1h 2m`, `—` when unknown. */
 export function formatEta(seconds: number | null | undefined): string {
   if (seconds == null || !Number.isFinite(seconds) || seconds < 0) return "—";
-  const s = Math.round(seconds);
-  if (s < 1) return "<1s";
-  if (s < 60) return `${s}s`;
-  if (s < 3600) {
-    const m = Math.floor(s / 60);
-    const r = s % 60;
-    return r ? `${m}m ${r}s` : `${m}m`;
-  }
-  if (s < 86400) {
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    return m ? `${h}h ${m}m` : `${h}h`;
-  }
-  const d = Math.floor(s / 86400);
-  const h = Math.floor((s % 86400) / 3600);
-  return h ? `${d}d ${h}h` : `${d}d`;
+  return formatDuration(Math.round(seconds) * 1000, { round: "floor", keepZeros: false, zero: "<1s" });
 }
 
 /** Bytes per second as a short string, e.g. `12.4 MB/s`. */
@@ -108,9 +95,9 @@ export function getTransferStats(item: TransferItemData, now: number = Date.now(
     item.status === "completed"
       ? 100
       : item.progress != null
-        ? Math.max(0, Math.min(100, item.progress))
+        ? clamp(item.progress, 0, 100)
         : bytes != null && total
-          ? Math.max(0, Math.min(100, (bytes / total) * 100))
+          ? clamp((bytes / total) * 100, 0, 100)
           : null;
   let speed: number | null = item.speed ?? null;
   if (speed == null && item.samples && item.samples.length >= 2) {

@@ -18,6 +18,9 @@ import { cn, focusRing } from "../lib/cn";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useElementWidth } from "../hooks/use-resize-observer";
+import { clamp } from "../lib/math";
 import { Lightbox, useLightbox, type LightboxItem } from "./lightbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { SimpleTooltip } from "./tooltip";
@@ -25,8 +28,6 @@ import { FileFormatIcon } from "../assets/file-format";
 import { formatAttachmentSize } from "./chat-attachment";
 import { PromptInput, PromptInputSubmit, PromptInputTextarea } from "./prompt-input";
 
-const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
-const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 
 const iconAction = cn(
   "inline-flex size-6 shrink-0 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-3.5",
@@ -522,7 +523,8 @@ export const ComposerToolbar = React.forwardRef<HTMLDivElement, ComposerToolbarP
     ref
   ) => {
     const rootRef = React.useRef<HTMLDivElement | null>(null);
-    const [narrow, setNarrow] = React.useState(false);
+    const width = useElementWidth(rootRef);
+    const narrow = width > 0 && width < collapseBelow;
     const setRefs = React.useCallback(
       (node: HTMLDivElement | null) => {
         rootRef.current = node;
@@ -531,20 +533,6 @@ export const ComposerToolbar = React.forwardRef<HTMLDivElement, ComposerToolbarP
       },
       [ref]
     );
-
-    useIsoLayoutEffect(() => {
-      const el = rootRef.current;
-      if (collapse !== "auto" || !el) return;
-      const measure = () => {
-        const w = el.getBoundingClientRect().width;
-        if (w > 0) setNarrow(w < collapseBelow);
-      };
-      measure();
-      if (typeof ResizeObserver === "undefined") return;
-      const observer = new ResizeObserver(measure);
-      observer.observe(el);
-      return () => observer.disconnect();
-    }, [collapse, collapseBelow]);
 
     const collapsed = collapse === "auto" ? narrow : collapse;
     const collapsible = [mode, effort, tools, meta].filter((n) => n != null && n !== false);

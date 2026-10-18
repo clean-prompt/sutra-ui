@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Progress as ProgressPrimitive } from "radix-ui";
 import { cn } from "../lib/cn";
+import { clamp, toPercent } from "../lib/math";
+import { useSafeId } from "../hooks/use-safe-id";
 
 export type ProgressColor = "primary" | "success" | "warning" | "destructive" | "info" | "neutral";
 
@@ -21,11 +23,6 @@ const strokeColor: Record<ProgressColor, string> = {
   info: "stroke-info",
   neutral: "stroke-foreground",
 };
-
-const clampPercent = (value: number, max: number) =>
-  max <= 0 ? 0 : Math.min(100, Math.max(0, (value / max) * 100));
-
-const safeId = (id: string) => id.replace(/[^a-zA-Z0-9_-]/g, "");
 
 export interface ProgressProps
   extends Omit<React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>, "value" | "color"> {
@@ -62,7 +59,7 @@ export const Progress = React.forwardRef<
     ref
   ) => {
     const isIndeterminate = indeterminate || value === null || value === undefined;
-    const pct = isIndeterminate ? 0 : clampPercent(value as number, max);
+    const pct = isIndeterminate ? 0 : toPercent(value as number, max);
     const valueText = isIndeterminate
       ? null
       : formatValue
@@ -74,7 +71,7 @@ export const Progress = React.forwardRef<
     const bar = (
       <ProgressPrimitive.Root
         ref={ref}
-        value={isIndeterminate ? null : Math.min(max, Math.max(0, value as number))}
+        value={isIndeterminate ? null : clamp(value as number, 0, max)}
         max={max}
         aria-labelledby={label ? labelId : undefined}
         className={cn(
@@ -166,11 +163,11 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
     },
     ref
   ) => {
-    const pct = clampPercent(value, max);
+    const pct = toPercent(value, max);
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
     const offset = circumference * (1 - pct / 100);
-    const gradientId = `sutra-pc-${safeId(React.useId())}`;
+    const gradientId = useSafeId("sutra-pc");
 
     return (
       <div
@@ -178,7 +175,7 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={max}
-        aria-valuenow={Math.min(max, Math.max(0, value))}
+        aria-valuenow={clamp(value, 0, max)}
         aria-label={label}
         className={cn("relative inline-flex shrink-0 items-center justify-center", className)}
         style={{ width: size, height: size, ...style }}
@@ -248,14 +245,14 @@ export const ProgressSegments = React.forwardRef<HTMLDivElement, ProgressSegment
   ({ className, segments = 4, value, max, color = "primary", size = "md", label, ...props }, ref) => {
     const total = Math.max(1, Math.round(segments));
     const limit = max ?? total;
-    const filled = Math.round((clampPercent(value, limit) / 100) * total);
+    const filled = Math.round((toPercent(value, limit) / 100) * total);
     return (
       <div
         ref={ref}
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={limit}
-        aria-valuenow={Math.min(limit, Math.max(0, value))}
+        aria-valuenow={clamp(value, 0, limit)}
         aria-label={label}
         className={cn("flex w-full items-center gap-1", className)}
         {...props}

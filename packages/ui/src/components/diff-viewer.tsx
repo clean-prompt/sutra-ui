@@ -9,6 +9,7 @@ import {
   RiSparkling2Line,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { pluralize } from "../lib/format";
 import { Button } from "./button";
 import { SegmentedControl } from "./segmented-control";
 import { getPresenceColor } from "./presence";
@@ -305,7 +306,7 @@ function GapButton({ count, onClick, className }: { count: number; onClick: () =
       )}
     >
       <RiExpandUpDownLine aria-hidden className="size-3.5" />
-      {`Show ${count} unchanged ${count === 1 ? "line" : "lines"}`}
+      {`Show ${count} unchanged ${pluralize(count, "line")}`}
     </button>
   );
 }
@@ -585,7 +586,7 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
         {showHeader && (
           <div className="flex flex-wrap items-center gap-2 border-b border-border bg-subtle/60 px-3 py-1.5 text-xs text-muted-foreground">
             <span className="font-medium text-foreground">
-              {changeCount ? `${changeCount} ${changeCount === 1 ? "change" : "changes"}` : "No changes"}
+              {changeCount ? `${changeCount} ${pluralize(changeCount, "change")}` : "No changes"}
             </span>
             {usedAuthors.length > 0 && (
               <span className="flex flex-wrap items-center gap-2" aria-label="Authors">
@@ -747,7 +748,7 @@ export const SuggestionDiff = React.forwardRef<HTMLDivElement, SuggestionDiffPro
           <span className="ml-auto text-xs text-muted-foreground" aria-live="polite">
             {hunkCount === 0
               ? "No changes"
-              : `${hunkCount} ${hunkCount === 1 ? "change" : "changes"}${accepted ? ` · ${accepted} accepted` : ""}${rejected ? ` · ${rejected} rejected` : ""}`}
+              : `${hunkCount} ${pluralize(hunkCount, "change")}${accepted ? ` · ${accepted} accepted` : ""}${rejected ? ` · ${rejected} rejected` : ""}`}
           </span>
         </div>
         <div className="whitespace-pre-wrap break-words px-4 py-3 text-sm leading-7 text-foreground">
@@ -877,7 +878,7 @@ export interface DiffStatProps extends React.HTMLAttributes<HTMLSpanElement> {
 export const DiffStat = React.forwardRef<HTMLSpanElement, DiffStatProps>(
   ({ additions, deletions, showBar = true, blocks = 5, className, ...props }, ref) => {
     const { add, del } = statBlocks(additions, deletions, blocks);
-    const label = `${additions} ${additions === 1 ? "addition" : "additions"}, ${deletions} ${deletions === 1 ? "deletion" : "deletions"}`;
+    const label = `${additions} ${pluralize(additions, "addition")}, ${deletions} ${pluralize(deletions, "deletion")}`;
     return (
       <span
         ref={ref}

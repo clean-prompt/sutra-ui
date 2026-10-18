@@ -9,6 +9,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { clamp } from "../lib/math";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -336,7 +337,7 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
 
     const setIndex = (i: number) => {
       if (disabled) return;
-      const clamped = Math.max(0, Math.min(levels.length - 1, i));
+      const clamped = clamp(i, 0, levels.length - 1);
       setValue(levels[clamped].value);
     };
 

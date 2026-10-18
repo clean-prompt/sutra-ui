@@ -3,7 +3,8 @@ import { Avatar as AvatarPrimitive } from "radix-ui";
 import { cva } from "class-variance-authority";
 import { RiUserLine, RiVerifiedBadgeFill } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { chartColors } from "../lib/tokens";
+import { colorForSeed } from "../lib/hash";
+import { initials } from "../lib/text";
 
 export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type AvatarShape = "circle" | "square";
@@ -66,25 +67,6 @@ export const AvatarContext = React.createContext<{
   ring?: boolean;
 }>({});
 
-/** Up to two initials from a display name. */
-function getInitials(name?: string) {
-  if (!name) return "";
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "";
-  const first = parts[0]!.charAt(0);
-  const last = parts.length > 1 ? parts[parts.length - 1]!.charAt(0) : "";
-  return (first + last).toUpperCase();
-}
-
-/** Deterministic categorical color for a string. */
-function colorFor(seed: string) {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = (hash * 31 + seed.charCodeAt(i)) | 0;
-  }
-  return chartColors[Math.abs(hash) % chartColors.length]!;
-}
-
 export interface AvatarProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
   size?: AvatarSize;
@@ -130,8 +112,8 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
     const size = sizeProp ?? ctx.size ?? "md";
     const shape = shapeProp ?? ctx.shape ?? "circle";
     const ring = ringProp ?? ctx.ring ?? false;
-    const initials = getInitials(name);
-    const tint = name && colorful && !fallback ? colorFor(name) : undefined;
+    const monogram = initials(name);
+    const tint = name && colorful && !fallback ? colorForSeed(name) : undefined;
     const square = shape === "square";
 
     return (
@@ -157,7 +139,7 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
                 role={name ? "img" : undefined}
                 aria-label={name}
               >
-                {fallback ?? (initials || <RiUserLine aria-hidden />)}
+                {fallback ?? (monogram || <RiUserLine aria-hidden />)}
               </AvatarFallback>
             </>
           )}

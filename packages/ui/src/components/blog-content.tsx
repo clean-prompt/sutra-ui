@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
-import { safeISO, toValidDate } from "../lib/date";
+import { formatShortDate, safeISO, toValidDate } from "../lib/time";
 import { Eyebrow } from "./typography";
 
 const proseBase = [
@@ -89,9 +89,7 @@ export interface BlogPostHeaderProps extends Omit<React.HTMLAttributes<HTMLEleme
 }
 
 function formatDate(date: string | Date) {
-  const d = toValidDate(date);
-  if (!d) return typeof date === "string" ? date : "—";
-  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  return formatShortDate(date, { year: "always", invalid: typeof date === "string" ? date : "—" });
 }
 
 /** Article heading: category, title, subtitle and meta row. */

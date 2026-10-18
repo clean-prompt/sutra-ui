@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiMoreLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useResizeObserver } from "../hooks/use-resize-observer";
 import { Button } from "./button";
 import { SimpleTooltip } from "./tooltip";
 import { formatShortcut, isShortcutKeys } from "./shortcuts";
@@ -56,17 +58,15 @@ interface ToolbarContextValue {
 
 const ToolbarContext = React.createContext<ToolbarContextValue | null>(null);
 
-const useIso = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
-
 function useToolbarItem(meta: ItemMeta) {
   const ctx = React.useContext(ToolbarContext);
   const id = React.useId();
   const metaRef = React.useRef(meta);
   metaRef.current = meta;
-  useIso(() => {
+  useIsoLayoutEffect(() => {
     ctx?.register(id, metaRef.current);
   });
-  useIso(() => () => ctx?.register(id, null), [ctx, id]);
+  useIsoLayoutEffect(() => () => ctx?.register(id, null), [ctx, id]);
   return { id, hidden: ctx?.hidden.has(id) ?? false, size: ctx?.size ?? "sm" };
 }
 
@@ -181,18 +181,12 @@ export const EditorToolbar = React.forwardRef<HTMLDivElement, EditorToolbarProps
       setHidden((prev) => (prev.size === next.size && [...next].every((id) => prev.has(id)) ? prev : next));
     }, [overflow]);
 
-    useIso(() => {
+    useIsoLayoutEffect(() => {
       measure();
       syncTabIndex();
     });
 
-    React.useEffect(() => {
-      const list = listRef.current;
-      if (!list || !overflow || typeof ResizeObserver === "undefined") return;
-      const ro = new ResizeObserver(() => measure());
-      ro.observe(list);
-      return () => ro.disconnect();
-    }, [measure, overflow]);
+    useResizeObserver(overflow ? listRef : null, () => measure());
 
     const move = (e: React.KeyboardEvent<HTMLDivElement>) => {
       onKeyDown?.(e);

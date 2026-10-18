@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiCheckLine, RiCloseLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { clamp } from "../lib/math";
 
 export interface PasswordRequirement {
   label: React.ReactNode;
@@ -30,7 +31,7 @@ export function getPasswordScore(password: string): 0 | 1 | 2 | 3 | 4 {
   if (variety >= 3) score++;
   if (variety === 4 || (len >= 16 && variety >= 2)) score++;
   if (variety <= 1) score = Math.min(score, 1);
-  return Math.max(1, Math.min(4, score)) as 1 | 2 | 3 | 4;
+  return clamp(score, 1, 4) as 1 | 2 | 3 | 4;
 }
 
 const levels = [

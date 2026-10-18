@@ -14,6 +14,8 @@ import {
   RiImageLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatBytes } from "../lib/format";
+import { clamp } from "../lib/math";
 
 type FileKind = "image" | "pdf" | "doc" | "sheet" | "slides" | "archive" | "code" | "audio" | "video" | "text";
 
@@ -65,21 +67,13 @@ function kindOf(name: string, mimeType?: string): FileKind {
 /** Format bytes as "12 KB", "1.4 MB". */
 export function formatAttachmentSize(bytes: number) {
   if (!Number.isFinite(bytes) || bytes < 0) return "";
-  if (bytes < 1024) return `${bytes} B`;
-  const units = ["KB", "MB", "GB", "TB"];
-  let value = bytes / 1024;
-  let unit = 0;
-  while (value >= 1024 && unit < units.length - 1) {
-    value /= 1024;
-    unit++;
-  }
-  return `${value < 10 ? value.toFixed(1) : Math.round(value)} ${units[unit]}`;
+  return formatBytes(bytes, { decimals: 1, wholeAbove: 10, trimZeros: false });
 }
 
 function ProgressRing({ value, className }: { value: number; className?: string }) {
   const r = 9;
   const c = 2 * Math.PI * r;
-  const clamped = Math.min(Math.max(value, 0), 100);
+  const clamped = clamp(value, 0, 100);
   return (
     <svg viewBox="0 0 24 24" className={cn("-rotate-90", className)} aria-hidden>
       <circle cx="12" cy="12" r={r} fill="none" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2.5" />

@@ -1,5 +1,7 @@
 import * as React from "react";
 import { cn, focusRing, invalidRing } from "../lib/cn";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useResizeObserver } from "../hooks/use-resize-observer";
 import { useField } from "./field";
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -13,8 +15,6 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   /** Class for the wrapper rendered when `showCount` is on. */
   wrapperClassName?: string;
 }
-
-const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
 
 /** Multi-line text input with optional auto-resize and character counter. Consumes `Field` context. */
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -76,20 +76,13 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       resize();
     }, [resize, value]);
 
-    React.useEffect(() => {
-      if (!autoResize) return;
-      const el = innerRef.current;
-      if (!el || typeof ResizeObserver === "undefined") return;
-      let width = el.offsetWidth;
-      const ro = new ResizeObserver(() => {
-        if (el.offsetWidth !== width) {
-          width = el.offsetWidth;
-          resize();
-        }
-      });
-      ro.observe(el);
-      return () => ro.disconnect();
-    }, [autoResize, resize]);
+    const widthRef = React.useRef<number | null>(null);
+    useResizeObserver(autoResize ? innerRef : null, (entry) => {
+      const width = (entry.target as HTMLElement).offsetWidth;
+      if (width === widthRef.current) return;
+      widthRef.current = width;
+      resize();
+    });
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       if (!isControlled) setUncontrolledLength(e.target.value.length);

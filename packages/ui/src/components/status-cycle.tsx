@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatList } from "../lib/format";
+import { dateKey, formatShortDate, pad2, toValidDate } from "../lib/time";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Input } from "./input";
 import { SegmentedControl } from "./segmented-control";
@@ -202,8 +204,6 @@ const monthNames = ["January", "February", "March", "April", "May", "June", "Jul
 const nthNames: Record<string, string> = { "1": "first", "2": "second", "3": "third", "4": "fourth", "-1": "last" };
 const unitNames: Record<Exclude<RecurrenceFrequency, "none">, string> = { daily: "day", weekly: "week", monthly: "month", yearly: "year" };
 
-const pad2 = (n: number) => String(n).padStart(2, "0");
-
 function sortDays(days: RecurrenceWeekday[]) {
   return [...new Set(days)].sort((a, b) => recurrenceWeekdays.indexOf(a) - recurrenceWeekdays.indexOf(b));
 }
@@ -233,11 +233,6 @@ export function toRRule(rule: RecurrenceRule, options: { prefix?: boolean } = {}
   return options.prefix ? `RRULE:${value}` : value;
 }
 
-function joinList(items: string[]) {
-  if (items.length <= 1) return items.join("");
-  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
-}
-
 /** Plain-English summary, e.g. "Every 2 weeks on Monday and Wednesday, 10 times". */
 export function describeRecurrence(rule: RecurrenceRule): string {
   if (rule.freq === "none") return "Does not repeat";
@@ -250,7 +245,7 @@ export function describeRecurrence(rule: RecurrenceRule): string {
     const isWeekdays = days.length === 5 && days.every((d) => !["SA", "SU"].includes(d));
     if (isWeekdays && interval === 1) text = "Every weekday";
     else if (days.length === 7) text = interval === 1 ? "Every day" : `${text} on every day`;
-    else text += ` on ${joinList(days.map((d) => weekdayNames[d]))}`;
+    else text += ` on ${formatList(days.map((d) => weekdayNames[d]), { locale: "en-GB" })}`;
   }
   if (rule.freq === "monthly") {
     if (rule.monthlyMode === "weekday" && rule.nthWeekday) text += ` on the ${nthNames[String(rule.nth ?? 1)]} ${weekdayNames[rule.nthWeekday]}`;
@@ -262,8 +257,7 @@ export function describeRecurrence(rule: RecurrenceRule): string {
   const end = rule.end;
   if (end?.type === "after") text += `, ${end.count} ${end.count === 1 ? "time" : "times"}`;
   if (end?.type === "on") {
-    const d = end.date;
-    text += `, until ${monthNames[d.getMonth()]!.slice(0, 3)} ${d.getDate()}, ${d.getFullYear()}`;
+    text += `, until ${formatShortDate(end.date, { year: "always", locale: "en-US" })}`;
   }
   return text;
 }
@@ -284,11 +278,6 @@ export interface RecurrencePickerProps extends Omit<React.HTMLAttributes<HTMLFie
 }
 
 const jsDayToWeekday = (d: Date): RecurrenceWeekday => recurrenceWeekdays[(d.getDay() + 6) % 7]!;
-const toDateInput = (d: Date) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
-const fromDateInput = (s: string) => {
-  const [y, m, d] = s.split("-").map(Number);
-  return new Date(y!, (m ?? 1) - 1, d ?? 1);
-};
 
 type Preset = RecurrenceFrequency | "custom";
 
@@ -514,8 +503,11 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
                 type="date"
                 size="sm"
                 aria-label="End date"
-                value={end.type === "on" ? toDateInput(end.date) : ""}
-                onChange={(e) => e.target.value && patch({ end: { type: "on", date: fromDateInput(e.target.value) } })}
+                value={end.type === "on" ? dateKey(end.date) : ""}
+                onChange={(e) => {
+                  const date = toValidDate(e.target.value);
+                  if (date) patch({ end: { type: "on", date } });
+                }}
                 className="w-40"
               />
             </div>

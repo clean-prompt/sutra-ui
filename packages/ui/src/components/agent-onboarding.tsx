@@ -5,13 +5,12 @@ import {
   RiCloseLine,
   RiErrorWarningLine,
   RiExternalLinkLine,
-  RiFileCopyLine,
   RiLinkUnlinkM,
   RiPlugLine,
   RiRefreshLine,
 } from "@remixicon/react";
 import { cn, focusRing, invalidRing } from "../lib/cn";
-import { useCopy } from "../hooks/use-copy";
+import { CopyButton } from "./copy-button";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 
@@ -270,7 +269,6 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
     const [code, setCode] = React.useState("");
     const [localError, setLocalError] = React.useState<string | null>(null);
     const [localStatus, setLocalStatus] = React.useState<PasteCodeAuthStatus>("idle");
-    const { copied, copy } = useCopy();
     const inputId = React.useId();
     const errorId = React.useId();
     const status = statusProp ?? localStatus;
@@ -332,14 +330,7 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
                 <code className="min-w-0 flex-1 truncate rounded-control border border-border bg-subtle px-2 py-1.5 font-mono text-xs text-muted-foreground" title={url}>
                   {url}
                 </code>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={copied ? "Link copied" : "Copy link"}
-                  onClick={() => void copy(url)}
-                >
-                  {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-                </Button>
+                <CopyButton value={url} size="md" label="Copy link" copiedLabel="Link copied" />
                 {onOpenUrl ? (
                   <Button variant="secondary" size="sm" trailingIcon={<RiExternalLinkLine />} onClick={() => onOpenUrl(url)}>
                     Open

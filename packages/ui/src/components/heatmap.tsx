@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { toPercent } from "../lib/math";
+import { addDays, dateKey, formatShortDate } from "../lib/time";
 import { meterLevel, type MeterThresholds } from "./meter";
 
 /* ------------------------------------------------------------------ */
@@ -442,7 +444,7 @@ export const HeatmapGrid = React.forwardRef<HTMLDivElement, HeatmapGridProps>(
           shape === "bar" && cell.value != null
             ? heatmapColor(Math.max(cell.value, min + (max - min) / 1000), colorOpts)
             : heatmapColor(cell.value, colorOpts),
-        fill: cell.value == null || max <= min ? 0 : Math.max(0, Math.min(100, ((cell.value - min) / (max - min)) * 100)),
+        fill: cell.value == null ? 0 : toPercent(cell.value, max, min),
         label: `${name}: ${text}`,
         tooltip: typeof tooltip === "function" ? tooltip(cell, i) : `${name}: ${text}`,
       };
@@ -488,11 +490,9 @@ export interface CalendarHeatmapDatum {
   value: number;
 }
 
-const pad = (n: number) => String(n).padStart(2, "0");
-
 /** Local `YYYY-MM-DD` key for a date. */
 export function calendarDateKey(d: Date): string {
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  return dateKey(d);
 }
 
 function parseDay(d: string | Date): Date {
@@ -503,7 +503,6 @@ function parseDay(d: string | Date): Date {
   return new Date(p.getFullYear(), p.getMonth(), p.getDate());
 }
 
-const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
 const startOfWeek = (d: Date, weekStartsOn: number) => addDays(d, -((d.getDay() - weekStartsOn + 7) % 7));
 
 export interface CalendarLayout {
@@ -643,9 +642,8 @@ export const CalendarHeatmap = React.forwardRef<HTMLDivElement, CalendarHeatmapP
       }
     const max = maxProp ?? Math.max(observedMax, 1);
     const colorOpts: HeatmapColorOptions = { min, max, scale, steps, colorStops };
-    const dayFmt = new Intl.DateTimeFormat(locale, { month: "short", day: "numeric" });
     const fullFmt = new Intl.DateTimeFormat(locale, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
-    const tip = formatTooltip ?? ((v: number, d: Date) => `${formatValue(v)}${unit ? ` ${unit}` : ""} on ${dayFmt.format(d)}`);
+    const tip = formatTooltip ?? ((v: number, d: Date) => `${formatValue(v)}${unit ? ` ${unit}` : ""} on ${formatShortDate(d, { locale, year: "never" })}`);
     const dayNumbers = showDayNumbers ?? mode === "month";
     const size = cellSize ?? (mode === "month" ? 32 : 11);
 

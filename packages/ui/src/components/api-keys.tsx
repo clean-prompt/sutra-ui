@@ -9,6 +9,7 @@ import {
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { DAY_MS, MINUTE_MS, formatRelative, formatShortDate, toMs, type TimeInput } from "../lib/time";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import { CheckboxField } from "./checkbox";
@@ -41,27 +42,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
 
-type DateInput = Date | number | string;
-const toMs = (v: DateInput) => (v instanceof Date ? v.getTime() : typeof v === "number" ? v : new Date(v).getTime());
-const DAY = 86_400_000;
+type DateInput = TimeInput;
 
-/** "just now", "5 min ago", "in 3 days", "2 mo ago". */
+/** "just now", "5 min ago", "3h ago", "in 3 days", "2 mo ago". */
 export function formatRelativeDate(value: DateInput, now: number = Date.now()) {
-  const diff = toMs(value) - now;
-  const abs = Math.abs(diff);
-  const future = diff > 0;
-  const wrap = (s: string) => (future ? `in ${s}` : `${s} ago`);
-  if (abs < 60_000) return future ? "in under a minute" : "just now";
-  const mins = Math.round(abs / 60_000);
-  if (mins < 60) return wrap(`${mins} min`);
-  const hours = Math.round(abs / 3_600_000);
-  if (hours < 24) return wrap(`${hours}h`);
-  const days = Math.round(abs / DAY);
-  if (days === 1) return future ? "tomorrow" : "yesterday";
-  if (days < 30) return wrap(`${days} days`);
-  const months = Math.round(days / 30);
-  if (months < 12) return wrap(`${months} mo`);
-  return wrap(`${Math.round(days / 365)}y`);
+  const t = toMs(value);
+  if (t !== undefined && t > now && t - now < MINUTE_MS) return "in under a minute";
+  // Long style with this list's compact hour/month/year units.
+  return formatRelative(t, { now, style: "long", future: true, justNowMs: MINUTE_MS })
+    .replace(/ hours?\b/, "h")
+    .replace(/ months?\b/, " mo")
+    .replace(/ years?\b/, "y");
 }
 
 /** Mask a key for display: "sk-live-abc…a1b2" → "sk-…a1b2". */
@@ -73,7 +64,7 @@ export function maskApiKey(key: { key?: string; prefix?: string; last4?: string 
   return `${prefix}…${last4}`;
 }
 
-const shortDate = (v: DateInput) => new Date(toMs(v)).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+const shortDate = (v: DateInput) => formatShortDate(v, { year: "always" });
 
 /* ------------------------------------------------------------------ */
 /* ApiKeyList                                                          */
@@ -112,7 +103,7 @@ export interface ApiKeyListProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function ExpiryCell({ expiresAt, now, soonDays }: { expiresAt?: DateInput | null; now: number; soonDays: number }) {
   if (expiresAt == null) return <span className="text-muted-foreground">Never</span>;
-  const t = toMs(expiresAt);
+  const t = toMs(expiresAt) ?? NaN;
   if (t <= now) {
     return (
       <Badge size="sm" color="destructive" title={shortDate(t)}>
@@ -120,7 +111,7 @@ function ExpiryCell({ expiresAt, now, soonDays }: { expiresAt?: DateInput | null
       </Badge>
     );
   }
-  if (t - now <= soonDays * DAY) {
+  if (t - now <= soonDays * DAY_MS) {
     return (
       <Badge size="sm" color="warning" leadingIcon={<RiAlertLine aria-hidden />} title={shortDate(t)}>
         Expires {formatRelativeDate(t, now)}

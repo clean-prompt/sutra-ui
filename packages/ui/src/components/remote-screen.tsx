@@ -13,6 +13,7 @@ import {
   RiUserLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
@@ -271,20 +272,10 @@ export const PermissionPreflightCard = React.forwardRef<HTMLDivElement, Permissi
     },
     ref
   ) => {
-    const [checking, setChecking] = React.useState(false);
+    const { run: recheck, busy: checking } = useAsyncAction(onRecheck);
     const granted = permissions.filter((p) => p.state === "granted").length;
     const ready = permissions.every((p) => p.optional || p.state === "granted");
     const titleId = React.useId();
-
-    const recheck = async () => {
-      if (!onRecheck) return;
-      setChecking(true);
-      try {
-        await onRecheck();
-      } finally {
-        setChecking(false);
-      }
-    };
 
     return (
       <div
@@ -304,7 +295,7 @@ export const PermissionPreflightCard = React.forwardRef<HTMLDivElement, Permissi
             {description && <p className="text-xs text-muted-foreground">{description}</p>}
           </div>
           {onRecheck && (
-            <Button size="xs" variant="secondary" leadingIcon={<RiRefreshLine />} loading={checking} onClick={recheck}>
+            <Button size="xs" variant="secondary" leadingIcon={<RiRefreshLine />} loading={checking} onClick={() => void recheck()}>
               Re-check
             </Button>
           )}

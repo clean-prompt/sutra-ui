@@ -21,6 +21,7 @@ import {
   RiStrikethrough,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { isEmail } from "../lib/validate";
 import { BlogContent } from "./blog-content";
 import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
@@ -85,7 +86,7 @@ function normalizeUrl(raw: string) {
   const url = raw.trim();
   if (!url) return "";
   if (/^(https?:|mailto:|tel:|\/|#)/i.test(url)) return url;
-  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(url)) return `mailto:${url}`;
+  if (isEmail(url)) return `mailto:${url}`;
   return `https://${url}`;
 }
 

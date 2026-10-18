@@ -10,6 +10,7 @@ import {
   RiSparkling2Line,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { usePrefersReducedMotion } from "../hooks/use-media-query";
 
 export type NoticeTone = "info" | "warn" | "error" | "promo";
 
@@ -119,21 +120,6 @@ export function useNoticeQueue(source: NoticeItem[] = [], { initialDismissed, on
 /* RotatingNoticeBar                                                   */
 /* ------------------------------------------------------------------ */
 
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = React.useState(() =>
-    typeof window !== "undefined" && typeof window.matchMedia === "function"
-      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      : false
-  );
-  React.useEffect(() => {
-    if (typeof window.matchMedia !== "function") return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    mq.addEventListener?.("change", update);
-    return () => mq.removeEventListener?.("change", update);
-  }, []);
-  return reduced;
-}
 
 export interface RotatingNoticeBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   notices: NoticeItem[];

@@ -2,14 +2,12 @@ import * as React from "react";
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
-  RiCheckLine,
   RiCloseLine,
   RiCodeSSlashLine,
   RiDatabase2Line,
   RiDownloadLine,
   RiExternalLinkLine,
   RiEyeLine,
-  RiFileCopyLine,
   RiFileTextLine,
   RiFlowChart,
   RiFullscreenExitLine,
@@ -24,7 +22,10 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useCopy } from "../hooks/use-copy";
+import { formatRelative, toMs } from "../lib/time";
+import { slugify } from "../lib/text";
+import { clamp } from "../lib/math";
+import { CopyButton } from "./copy-button";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import { CodeBlock } from "./code-block";
@@ -103,26 +104,9 @@ export function svgToDataUrl(svg: string) {
 
 const safeImageSrc = (src: string) => (/^(data:image\/|blob:)/i.test(src.trim()) ? src.trim() : null);
 
-function toDate(v: string | number | Date | undefined) {
-  if (v == null) return null;
-  const d = v instanceof Date ? v : new Date(v);
-  return Number.isNaN(d.getTime()) ? null : d;
-}
-
 /** "just now", "5m ago", "3h ago", "2d ago" or a short date. */
 export function formatArtifactTime(v: string | number | Date | undefined, now = Date.now()) {
-  const d = toDate(v);
-  if (!d) return "";
-  const s = Math.max(0, Math.round((now - d.getTime()) / 1000));
-  if (s < 45) return "just now";
-  if (s < 3600) return `${Math.round(s / 60)}m ago`;
-  if (s < 86400) return `${Math.round(s / 3600)}h ago`;
-  if (s < 86400 * 7) return `${Math.round(s / 86400)}d ago`;
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
-
-function slugify(s: string) {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "artifact";
+  return formatRelative(v, { now, maxRelativeDays: 6, invalid: "" });
 }
 
 function defaultDownload(title: string, kind: ArtifactKind, content: string) {
@@ -131,7 +115,7 @@ function defaultDownload(title: string, kind: ArtifactKind, content: string) {
   const href = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = href;
-  a.download = `${slugify(title)}.${kindMeta[kind].ext}`;
+  a.download = `${slugify(title, { fallback: "artifact" })}.${kindMeta[kind].ext}`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(href), 0);
 }
@@ -215,7 +199,7 @@ function useVersion(
 ) {
   const last = Math.max(0, versions.length - 1);
   const [raw, setRaw] = useControllableState({ value, defaultValue: defaultValue ?? last, onChange });
-  const index = Math.min(Math.max(0, raw), last);
+  const index = clamp(raw, 0, last);
   return [index, setRaw] as const;
 }
 
@@ -255,22 +239,19 @@ function VersionSwitcher({ index, total, onChange }: { index: number; total: num
 }
 
 function CopyAction({ onCopy, content, disabled }: { onCopy?: () => void; content: string; disabled?: boolean }) {
-  const { copied, copy } = useCopy();
   return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon-xs"
-      aria-label={copied ? "Copied" : "Copy"}
-      title="Copy"
+    <CopyButton
+      value={content}
       disabled={disabled}
-      onClick={() => {
-        if (onCopy) onCopy();
-        else void copy(content);
-      }}
-    >
-      {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-    </Button>
+      onClick={
+        onCopy
+          ? (e) => {
+              e.preventDefault();
+              onCopy();
+            }
+          : undefined
+      }
+    />
   );
 }
 
@@ -692,7 +673,7 @@ const sortOptions = [
 ];
 
 const updatedMs = (a: ArtifactData) =>
-  toDate(a.updatedAt ?? a.versions[a.versions.length - 1]?.createdAt)?.getTime() ?? 0;
+  toMs(a.updatedAt ?? a.versions[a.versions.length - 1]?.createdAt) ?? 0;
 
 /** Searchable grid / list of artifacts with kind filter chips and sorting. */
 export const ArtifactLibrary = React.forwardRef<HTMLDivElement, ArtifactLibraryProps>(

@@ -27,7 +27,9 @@ import {
   RiTerminalBoxLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { isValidDate } from "../lib/date";
+import { clamp, roundTo } from "../lib/math";
+import { pad2, toValidDate } from "../lib/time";
+import { isSafeHref } from "../lib/validate";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Textarea } from "./textarea";
@@ -59,12 +61,12 @@ export function inferBrowserSecurity(url: string | undefined): BrowserSecurity {
   return "unknown";
 }
 
-/** Turn address-bar input into a navigable URL string (adds https:// to bare hosts). */
+/** Turn address-bar input into a navigable URL string (adds https:// to bare hosts; `""` for script/data URLs). */
 export function normalizeBrowserInput(input: string): string {
   const v = input.trim();
   if (!v) return "";
   if (/^(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(v)) return `http://${v}`;
-  if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return v;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return isSafeHref(v) || /^(file|about):/i.test(v) ? v : "";
   return `https://${v}`;
 }
 
@@ -293,7 +295,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
               {progress != null ? (
                 <div
                   className="h-full bg-primary transition-[width] duration-300"
-                  style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+                  style={{ width: `${clamp(progress, 0, 100)}%` }}
                 />
               ) : (
                 <div className="h-full w-1/3 animate-indeterminate bg-primary" />
@@ -399,10 +401,9 @@ const levelStyle: Record<BrowserConsoleLevel, { row: string; text: string; icon:
 function formatConsoleTs(ts: BrowserConsoleEntry["ts"]) {
   if (ts == null) return null;
   if (typeof ts === "string") return ts;
-  const d = ts instanceof Date ? ts : new Date(ts);
-  if (!isValidDate(d)) return null;
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  const d = toValidDate(ts);
+  if (!d) return null;
+  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
 }
 
 /** Collapsible page console with level toggles and a text filter. */
@@ -586,7 +587,7 @@ export interface AnnotationLayerProps extends Omit<React.HTMLAttributes<HTMLDivE
   children?: React.ReactNode;
 }
 
-const clampPct = (n: number) => Math.round(Math.min(100, Math.max(0, n)) * 10) / 10;
+const clampPct = (n: number) => roundTo(clamp(n, 0, 100), 1);
 
 let annotationSeq = 0;
 

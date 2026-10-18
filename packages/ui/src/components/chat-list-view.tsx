@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiDeleteBinLine, RiPencilLine, RiPushpinFill, RiSearchLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { calendarDayDiff, toMs } from "../lib/time";
 import { useControllableState } from "../hooks/use-controllable-state";
 
 export interface ChatListItemData {
@@ -23,19 +24,17 @@ const groupLabels: Record<ChatListGroupKey, string> = {
 
 const groupOrder: ChatListGroupKey[] = ["pinned", "today", "yesterday", "previous7", "previous30", "older"];
 
-const DAY = 86_400_000;
-
 function toTime(value: Date | string | number) {
-  const t = value instanceof Date ? value.getTime() : new Date(value).getTime();
-  return Number.isNaN(t) ? 0 : t;
+  return toMs(value) ?? 0;
 }
 
 function bucketOf(time: number, now: Date): Exclude<ChatListGroupKey, "pinned"> {
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  if (time >= startOfToday) return "today";
-  if (time >= startOfToday - DAY) return "yesterday";
-  if (time >= startOfToday - 7 * DAY) return "previous7";
-  if (time >= startOfToday - 30 * DAY) return "previous30";
+  // Calendar days, so DST changes don't shift the boundaries.
+  const days = calendarDayDiff(now, time) ?? 0;
+  if (days <= 0) return "today";
+  if (days === 1) return "yesterday";
+  if (days <= 7) return "previous7";
+  if (days <= 30) return "previous30";
   return "older";
 }
 

@@ -11,6 +11,10 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useNow } from "../hooks/use-now";
+import { formatDuration } from "../lib/duration";
+import { formatCompact } from "../lib/format";
+import { toMs, type TimeInput } from "../lib/time";
 import { Button } from "./button";
 import { TextShimmer } from "./text-shimmer";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
@@ -19,45 +23,19 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 /* Shared helpers                                                      */
 /* ------------------------------------------------------------------ */
 
-type TimeInput = Date | number | string;
-
-function toMs(value: TimeInput | undefined): number | undefined {
-  if (value == null) return undefined;
-  const t = value instanceof Date ? value.getTime() : typeof value === "number" ? value : new Date(value).getTime();
-  return Number.isNaN(t) ? undefined : t;
-}
-
 /** "8s", "1m 05s", "2h 03m". */
 export function formatAgentElapsed(ms: number) {
-  const total = Math.max(0, Math.floor(ms / 1000));
-  const h = Math.floor(total / 3600);
-  const m = Math.floor((total % 3600) / 60);
-  const s = total % 60;
-  if (h > 0) return `${h}h ${String(m).padStart(2, "0")}m`;
-  if (m > 0) return `${m}m ${String(s).padStart(2, "0")}s`;
-  return `${s}s`;
+  return formatDuration(ms, { pad: true, round: "floor", invalid: "0s" });
 }
 
 /** "980", "12.4k", "1.2M". */
 export function formatAgentTokens(n: number) {
-  if (n < 1000) return String(Math.round(n));
-  if (n < 1_000_000) {
-    const k = n / 1000;
-    return `${k >= 100 ? Math.round(k) : Number(k.toFixed(1))}k`;
-  }
-  return `${Number((n / 1_000_000).toFixed(1))}M`;
+  return formatCompact(n, { wholeAbove: 100 });
 }
 
 /** Current time, re-rendered every `interval` ms while `active`. */
 export function useAgentNow(active = true, interval = 1000) {
-  const [now, setNow] = React.useState(() => Date.now());
-  React.useEffect(() => {
-    if (!active) return;
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), interval);
-    return () => clearInterval(id);
-  }, [active, interval]);
-  return now;
+  return useNow({ active, interval });
 }
 
 /* ------------------------------------------------------------------ */

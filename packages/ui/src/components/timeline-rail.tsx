@@ -1,5 +1,8 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
+import { formatClockTime, toValidDate } from "../lib/time";
+import { prefersReducedMotion } from "../hooks/use-media-query";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 export interface TimelineRailTurn {
@@ -29,16 +32,9 @@ export interface TranscriptTimelineRailProps extends Omit<React.HTMLAttributes<H
 }
 
 function formatTime(time: TimelineRailTurn["time"]) {
-  if (time == null) return null;
   if (typeof time === "string") return time;
-  const d = time instanceof Date ? time : new Date(time);
-  return Number.isNaN(d.getTime()) ? null : d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-}
-
-function prefersReducedMotion() {
-  return typeof window !== "undefined" && typeof window.matchMedia === "function"
-    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    : false;
+  const d = toValidDate(time);
+  return d ? formatClockTime(d) : null;
 }
 
 /** Minimap rail beside a long transcript: one tick per user turn, hover previews, jump and in-view sync. */
@@ -82,7 +78,7 @@ export const TranscriptTimelineRail = React.forwardRef<HTMLDivElement, Transcrip
         const el = resolve(t.id);
         if (!el) continue;
         const top = el.getBoundingClientRect().top - rootTop;
-        next[t.id] = Math.max(0, Math.min(1, top / total));
+        next[t.id] = clamp(top / total, 0, 1);
         if (top > 0) any = true;
       }
       setMeasured(any ? next : {});

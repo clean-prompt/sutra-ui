@@ -9,7 +9,7 @@ import {
   RiShieldFlashLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { isValidDate, safeISO } from "../lib/date";
+import { formatRelative, safeISO, toMs } from "../lib/time";
 
 export type AlertSeverity = "critical" | "warning" | "info";
 
@@ -30,12 +30,11 @@ export interface AlertItem {
 
 const severityRank: Record<AlertSeverity, number> = { critical: 0, warning: 1, info: 2 };
 
-const toMs = (t: Date | number | string | undefined) =>
-  t == null ? 0 : t instanceof Date ? t.getTime() : typeof t === "number" ? t : new Date(t).getTime();
+const timeOf = (t: Date | number | string | undefined) => toMs(t) ?? 0;
 
 /** Sort alerts: critical → warning → info, newest first within a severity. */
 export function sortAlerts<T extends Pick<AlertItem, "severity" | "time">>(alerts: T[]): T[] {
-  return [...alerts].sort((a, b) => severityRank[a.severity] - severityRank[b.severity] || toMs(b.time) - toMs(a.time));
+  return [...alerts].sort((a, b) => severityRank[a.severity] - severityRank[b.severity] || timeOf(b.time) - timeOf(a.time));
 }
 
 /** "2 critical · 3 warnings · 1 info". */
@@ -48,16 +47,6 @@ export function summarizeAlerts(alerts: Pick<AlertItem, "severity">[]): string {
   if (w) parts.push(`${w} ${w === 1 ? "warning" : "warnings"}`);
   if (i) parts.push(`${i} info`);
   return parts.join(" · ") || "No alerts";
-}
-
-function relativeTime(ms: number, now: number): string {
-  const s = Math.round((now - ms) / 1000);
-  if (s < 45) return "just now";
-  const m = Math.round(s / 60);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return `${Math.round(h / 24)}d ago`;
 }
 
 const severityIcon: Record<AlertSeverity, React.ReactNode> = {
@@ -191,8 +180,7 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
           >
             <ul className="divide-y divide-border border-t border-border bg-card/60">
               {visible.map((a) => {
-                const rawMs = a.time != null ? toMs(a.time) : null;
-                const ms = rawMs != null && isValidDate(new Date(rawMs)) ? rawMs : null;
+                const ms = toMs(a.time) ?? null;
                 return (
                   <li key={a.id} data-severity={a.severity} className="group/alert flex items-start gap-3 px-4 py-2.5 transition-colors hover:bg-accent/50">
                     <span className={cn("mt-0.5 shrink-0 [&_svg]:size-4", severityText[a.severity])}>
@@ -222,7 +210,7 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
                         ) : null}
                         {ms != null ? (
                           <time dateTime={safeISO(ms)} className="text-muted-foreground">
-                            {formatTime ? formatTime(new Date(ms)) : relativeTime(ms, now)}
+                            {formatTime ? formatTime(new Date(ms)) : formatRelative(ms, { now })}
                           </time>
                         ) : null}
                         {a.detail ? <span className="truncate text-muted-foreground">{a.detail}</span> : null}

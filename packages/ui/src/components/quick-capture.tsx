@@ -1,6 +1,9 @@
 import * as React from "react";
 import { RiCalendarLine, RiFlag2Line, RiHashtag, RiMoneyDollarCircleLine, RiTimeLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { addDays, calendarDayDiff, dateKey, formatClockTime, formatShortDate, pad2 } from "../lib/time";
+import { useAsyncAction } from "../hooks/use-async-action";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { SutraAppIcon, sutraAppMeta, type SutraApp } from "../assets/brand";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "./dialog";
 import { ShortcutKeys, useShortcut } from "./shortcuts";
@@ -96,10 +99,6 @@ const WEEKDAY_FULL = "(?<wd>sunday|monday|tuesday|wednesday|thursday|friday|satu
 const PREP = "(?:(?:on|by|due|at|for)\\s+)?";
 const END = "(?=[\\s,.;!?]|$)";
 
-const pad = (n: number) => String(n).padStart(2, "0");
-const ymd = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
-
 /** Pure intent parser for quick capture: app prefix, #tags, !priority, dates, times and amounts. */
 export function parseCapture(text: string, now: Date = new Date(), options: ParseCaptureOptions = {}): CaptureResult {
   let rest = ` ${text} `;
@@ -173,12 +172,12 @@ export function parseCapture(text: string, now: Date = new Date(), options: Pars
       const pm = (ampm[3] ?? ampm[4]).toLowerCase() === "p";
       if (h === 12) h = pm ? 12 : 0;
       else if (pm) h += 12;
-      time = `${pad(h)}:${ampm[2] ?? "00"}`;
+      time = `${pad2(h)}:${ampm[2] ?? "00"}`;
     }
   }
   if (!time) {
     const h24 = take(new RegExp(`\\s(?:at\\s+)?([01]?\\d|2[0-3]):([0-5]\\d)${END}`));
-    if (h24) time = `${pad(parseInt(h24[1], 10))}:${h24[2]}`;
+    if (h24) time = `${pad2(parseInt(h24[1], 10))}:${h24[2]}`;
   }
 
   // Date.
@@ -246,7 +245,7 @@ export function parseCapture(text: string, now: Date = new Date(), options: Pars
   return {
     app,
     title,
-    ...(date ? { date: ymd(date) } : {}),
+    ...(date ? { date: dateKey(date) } : {}),
     ...(time ? { time } : {}),
     ...(priority ? { priority } : {}),
     tags,
@@ -288,18 +287,15 @@ const priorityStyle: Record<CapturePriority, string> = {
 };
 
 function formatCaptureDate(value: string, now: Date) {
-  const [y, m, d] = value.split("-").map(Number);
-  const date = new Date(y, m - 1, d);
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const diff = Math.round((date.getTime() - today.getTime()) / 86400000);
+  const diff = calendarDayDiff(value, now);
   if (diff === 0) return "Today";
   if (diff === 1) return "Tomorrow";
-  return date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+  return formatShortDate(value, { weekday: true, year: "never", now });
 }
 
 function formatCaptureTime(value: string) {
   const [h, m] = value.split(":").map(Number);
-  return new Date(2000, 0, 1, h, m).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  return formatClockTime(new Date(2000, 0, 1, h, m));
 }
 
 const PreviewChip = ({ icon, children, className }: { icon?: React.ReactNode; children: React.ReactNode; className?: string }) => (
@@ -323,21 +319,22 @@ export function QuickCapture({
   now: nowProp,
   className,
 }: QuickCaptureProps) {
-  const [openState, setOpenState] = React.useState(defaultOpen);
-  const open = openProp ?? openState;
-  const openRef = React.useRef(open);
-  openRef.current = open;
-  const setOpen = React.useCallback(
-    (next: boolean) => {
-      if (openProp === undefined) setOpenState(next);
-      onOpenChange?.(next);
-    },
-    [openProp, onOpenChange]
-  );
+  const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
 
   const [text, setText] = React.useState("");
   const [override, setOverride] = React.useState<SutraApp | null>(null);
-  const [busy, setBusy] = React.useState(false);
+  const { run: capture, busy } = useAsyncAction(
+    async (value: QuickCaptureValue, keepOpen: boolean) => {
+      await onCapture?.(value);
+      return keepOpen;
+    },
+    {
+      onSuccess: (keepOpen) => {
+        reset();
+        if (variant === "dialog" && !keepOpen) setOpen(false);
+      },
+    }
+  );
   const inputRef = React.useRef<HTMLInputElement>(null);
   const previewId = `${React.useId()}-preview`;
   const now = nowProp ?? new Date();
@@ -345,7 +342,7 @@ export function QuickCapture({
   const app = override ?? parsed.app;
 
   const hasModifier = shortcut ? /(^|\+)(mod|ctrl|control|cmd|command|meta|alt|opt|option)\+/i.test(shortcut) : false;
-  useShortcut(variant === "dialog" ? shortcut : null, () => setOpen(!openRef.current), {
+  useShortcut(variant === "dialog" ? shortcut : null, () => setOpen((o) => !o), {
     id: "sutra:quick-capture",
     label: "Quick capture",
     group: "Create",
@@ -363,18 +360,11 @@ export function QuickCapture({
     setOverride(next);
   };
 
-  const submit = async (keepOpen: boolean) => {
+  const submit = (keepOpen: boolean) => {
     if (!parsed.title || busy) return;
     const { explicitApp: _explicit, ...rest } = parsed;
     const value: QuickCaptureValue = { ...rest, app, raw: text };
-    try {
-      setBusy(true);
-      await onCapture?.(value);
-      reset();
-      if (variant === "dialog" && !keepOpen) setOpen(false);
-    } finally {
-      setBusy(false);
-    }
+    void capture(value, keepOpen);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -384,7 +374,7 @@ export function QuickCapture({
       cycle(e.key === "ArrowDown" ? 1 : -1);
     } else if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       e.preventDefault();
-      void submit(e.shiftKey);
+      submit(e.shiftKey);
     }
   };
 

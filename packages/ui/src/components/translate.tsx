@@ -5,7 +5,6 @@ import {
   RiArrowLeftRightLine,
   RiCheckLine,
   RiCloseLine,
-  RiFileCopyLine,
   RiMicLine,
   RiSearchLine,
   RiShareLine,
@@ -14,11 +13,13 @@ import {
   RiVolumeUpLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { formatDuration } from "../lib/duration";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { Button } from "./button";
+import { CopyButton } from "./copy-button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { AudioLevelMeter, SpeakButton } from "./voice";
 import { replaceTextRange, useCaretAnchor } from "./ai-extras";
-import { useCopy } from "../hooks/use-copy";
 
 /* ------------------------------------------------------------------ */
 /* Languages                                                           */
@@ -479,7 +480,6 @@ LanguageBar.displayName = "LanguageBar";
 /* SourcePane / TargetPane                                             */
 /* ------------------------------------------------------------------ */
 
-const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
 
 export interface SourcePaneProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange"> {
   value: string;
@@ -608,7 +608,6 @@ export interface TargetPaneProps extends React.HTMLAttributes<HTMLElement> {
 /** Translation output: streaming caret, romanization, alternatives, senses, copy/share/speak and latency. */
 export const TargetPane = React.forwardRef<HTMLElement, TargetPaneProps>(
   ({ text, lang, streaming = false, romanization, alternatives = [], onPickAlternative, latencyMs, onShare, speak, senses = [], placeholder = "Translation", className, ...props }, ref) => {
-    const { copied, copy } = useCopy();
     const [showSenses, setShowSenses] = React.useState(false);
     const sensesId = React.useId();
     const dir = languageDir(lang);
@@ -658,9 +657,7 @@ export const TargetPane = React.forwardRef<HTMLElement, TargetPaneProps>(
           {speak ?? <SpeakButton text={streaming ? "" : text} lang={lang} />}
           {text && !streaming ? (
             <>
-              <Button type="button" variant="ghost" size="icon-sm" aria-label={copied ? "Copied" : "Copy translation"} onClick={() => copy(text)}>
-                {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-              </Button>
+              <CopyButton value={text} label="Copy translation" size="md" />
               {onShare ? (
                 <Button type="button" variant="ghost" size="icon-sm" aria-label="Share translation" onClick={() => onShare(text)}>
                   <RiShareLine />
@@ -670,7 +667,7 @@ export const TargetPane = React.forwardRef<HTMLElement, TargetPaneProps>(
           ) : null}
           {latencyMs != null && !streaming && text ? (
             <span className="ml-auto pr-2 font-mono text-xs tabular-nums text-muted-foreground" data-slot="latency">
-              {latencyMs < 1000 ? `${Math.round(latencyMs)} ms` : `${(latencyMs / 1000).toFixed(1)} s`}
+              {formatDuration(latencyMs, { ms: true, space: true, decimals: 1, decimalsBelow: 60_000, trimZeros: false })}
             </span>
           ) : null}
         </div>

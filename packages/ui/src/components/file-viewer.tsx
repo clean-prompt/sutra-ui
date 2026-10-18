@@ -3,6 +3,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 import { RiCloseLine, RiDownloadLine, RiExternalLinkLine, RiZoomInLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { formatBytes } from "../lib/format";
 import { FileFormatIcon, getFileCategory, getFileExtension } from "../assets/file-format";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
@@ -51,16 +52,7 @@ export function getFilePreviewKind(file: Pick<ViewerFile, "name" | "mimeType">):
 
 /** Human-readable byte size, e.g. `1.4 MB`. */
 export function formatFileSize(bytes: number | undefined) {
-  if (bytes === undefined || !Number.isFinite(bytes)) return "";
-  if (bytes < 1024) return `${bytes} B`;
-  const units = ["KB", "MB", "GB", "TB"];
-  let n = bytes / 1024;
-  let i = 0;
-  while (n >= 1024 && i < units.length - 1) {
-    n /= 1024;
-    i++;
-  }
-  return `${n >= 10 ? Math.round(n) : n.toFixed(1)} ${units[i]}`;
+  return formatBytes(bytes, { trimZeros: false, wholeAbove: 10, invalid: "" });
 }
 
 const isTextKind = (k: FilePreviewKind) => k === "markdown" || k === "json" || k === "code" || k === "text";

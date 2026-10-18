@@ -2,6 +2,7 @@ import * as React from "react";
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { RiEmotionLine, RiSearchLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 
 /* ------------------------------------------------------------------ */
@@ -345,7 +346,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
       const index = cells.indexOf(document.activeElement as HTMLButtonElement);
       if (index === -1) return;
       event.preventDefault();
-      const next = cells[Math.min(Math.max(index + delta, 0), cells.length - 1)];
+      const next = cells[clamp(index + delta, 0, cells.length - 1)];
       next?.focus();
     };
 
