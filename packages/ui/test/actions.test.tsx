@@ -1,14 +1,10 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  Button,
-  ButtonGroup,
-  ButtonGroupItem,
-  ButtonGroupSeparator,
-  CloseButton,
-  TextLink,
-  FloatingActionButton,
-} from "../src";
+import { Button } from "../src/primitives/button";
+import { ButtonGroup, ButtonGroupItem, ButtonGroupSeparator } from "../src/primitives/button-group";
+import { CloseButton } from "../src/primitives/close-button";
+import { FloatingActionButton } from "../src/primitives/fab";
+import { TextLink } from "../src/primitives/text-link";
 import { axeViolations } from "./a11y";
 
 describe("Button", () => {

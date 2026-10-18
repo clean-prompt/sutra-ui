@@ -1,4 +1,3 @@
-import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import {
   EmbedConsent,
@@ -18,21 +17,10 @@ import {
   formatMessageRelativeTime,
   toggleChatReaction,
 } from "../src/kits/ai/chat-message-actions";
-import { QueuedMessages } from "../src/kits/agent/agent-composer";
 import { PromptInput, PromptInputRestoredDraft, PromptInputTextarea } from "../src/kits/ai/prompt-input";
 import { ApprovalStack } from "../src/kits/ai/approval-stack";
-import {
-  ClarifySettled,
-  DecodeText,
-  FadeText,
-  FanMenu,
-  GlyphSpinner,
-  SplitButton,
-  TabDropdown,
-  UndeliveredNotice,
-  ZoomPan,
-  glyphSpinnerFrames,
-} from "../src/kits/ai/primitives-extra";
+import { ClarifySettled } from "../src/kits/ai/clarify-settled";
+import { UndeliveredNotice } from "../src/kits/ai/undelivered-notice";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {
@@ -253,27 +241,6 @@ describe("MessageTimestampHover", () => {
 
 /* ------------------------------------------------------------------ */
 
-describe("QueuedMessages steer", () => {
-  it("adds a Steer action next to Send now", async () => {
-    const onSteer = vi.fn();
-    const onSendNow = vi.fn();
-    const { container } = render(
-      <QueuedMessages items={[{ id: "a", text: "Use pnpm instead" }]} onSteer={onSteer} onSendNow={onSendNow} />
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Steer" }));
-    expect(onSteer).toHaveBeenCalledWith("a");
-    expect(onSendNow).not.toHaveBeenCalled();
-    fireEvent.focus(screen.getByRole("button", { name: "Steer" }));
-    expect((await screen.findAllByText(/without stopping/)).length).toBeGreaterThan(0);
-    expect(await axeViolations(container)).toEqual([]);
-  });
-
-  it("omits Steer when onSteer is unset", () => {
-    render(<QueuedMessages items={[{ id: "a", text: "x" }]} onSendNow={() => {}} />);
-    expect(screen.queryByRole("button", { name: "Steer" })).toBeNull();
-  });
-});
-
 describe("PromptInput large paste", () => {
   const paste = (el: HTMLElement, text: string) =>
     fireEvent.paste(el, { clipboardData: { files: [], getData: (t: string) => (t === "text/plain" ? text : "") } });
@@ -401,190 +368,6 @@ describe("ApprovalStack", () => {
   it("renders the empty slot when there are no items", () => {
     render(<ApprovalStack items={[]} renderItem={() => null} empty={<p>All clear</p>} />);
     expect(screen.getByText("All clear")).toBeInTheDocument();
-  });
-});
-
-describe("SplitButton", () => {
-  it("runs the primary action and opens the secondary menu", async () => {
-    const onClick = vi.fn();
-    const onDraft = vi.fn();
-    const { container } = render(
-      <SplitButton onClick={onClick} actions={[{ id: "draft", label: "Save as draft", onSelect: onDraft }]}>
-        Publish
-      </SplitButton>
-    );
-    expect(await axeViolations(container)).toEqual([]);
-    fireEvent.click(screen.getByRole("button", { name: "Publish" }));
-    expect(onClick).toHaveBeenCalled();
-    openMenu(screen.getByRole("button", { name: "More options" }));
-    fireEvent.click(screen.getByRole("menuitem", { name: "Save as draft" }));
-    expect(onDraft).toHaveBeenCalled();
-  });
-});
-
-describe("FanMenu", () => {
-  const items = [
-    { id: "dictate", label: "Dictate", icon: <span>D</span> },
-    { id: "talk", label: "Talk", icon: <span>T</span> },
-    { id: "translate", label: "Translate", icon: <span>L</span>, disabled: true },
-    { id: "listen", label: "Listen", icon: <span>H</span> },
-  ];
-  it("opens as a menu, roves with arrows, selects and closes with Escape", async () => {
-    const onSelect = vi.fn();
-    const { container } = render(<FanMenu items={items} icon={<span>M</span>} label="Voice modes" onSelect={onSelect} />);
-    const hub = screen.getByRole("button", { name: "Voice modes" });
-    expect(hub).toHaveAttribute("aria-haspopup", "menu");
-    expect(screen.queryByRole("menu")).toBeNull();
-    fireEvent.click(hub);
-    expect(hub).toHaveAttribute("aria-expanded", "true");
-    const menu = screen.getByRole("menu", { name: "Voice modes" });
-    expect(within(menu).getAllByRole("menuitem")).toHaveLength(4);
-    expect(document.activeElement).toBe(within(menu).getByRole("menuitem", { name: "Dictate" }));
-    expect(await axeViolations(container)).toEqual([]);
-    fireEvent.keyDown(document.activeElement!, { key: "ArrowRight" });
-    expect(document.activeElement).toHaveAccessibleName("Talk");
-    fireEvent.keyDown(document.activeElement!, { key: "ArrowRight" });
-    expect(document.activeElement).toHaveAccessibleName("Listen");
-    fireEvent.keyDown(document.activeElement!, { key: "Escape" });
-    expect(screen.queryByRole("menu")).toBeNull();
-    expect(document.activeElement).toBe(hub);
-    fireEvent.keyDown(hub, { key: "ArrowUp" });
-    expect(document.activeElement).toHaveAccessibleName("Listen");
-    fireEvent.click(document.activeElement!);
-    expect(onSelect).toHaveBeenCalledWith("listen");
-    expect(screen.queryByRole("menu")).toBeNull();
-  });
-});
-
-describe("DecodeText", () => {
-  it("exposes the final text as its label and settles on it", async () => {
-    vi.useFakeTimers();
-    const onComplete = vi.fn();
-    const { container } = render(<DecodeText text="Hello world" duration={200} interval={20} onComplete={onComplete} />);
-    const el = screen.getByLabelText("Hello world");
-    act(() => vi.advanceTimersByTime(260));
-    expect(el).toHaveTextContent("Hello world");
-    expect(el).not.toHaveAttribute("data-decoding");
-    expect(onComplete).toHaveBeenCalled();
-    vi.useRealTimers();
-    expect(await axeViolations(container)).toEqual([]);
-  });
-
-  it("hover trigger renders the final text until hovered", () => {
-    render(<DecodeText text="Agent" trigger="hover" />);
-    expect(screen.getByLabelText("Agent")).toHaveTextContent("Agent");
-  });
-});
-
-describe("ZoomPan", () => {
-  it("zooms with keys and buttons, resets with 0 and double-click", async () => {
-    const onChange = vi.fn();
-    const { container } = render(
-      <ZoomPan label="Diagram" onChange={onChange} className="h-40">
-        <svg role="img" aria-label="Boxes" viewBox="0 0 10 10" />
-      </ZoomPan>
-    );
-    const vp = screen.getByRole("group", { name: /Diagram/ });
-    expect(vp).toHaveAttribute("data-scale", "1");
-    fireEvent.keyDown(vp, { key: "+" });
-    expect(vp).toHaveAttribute("data-scale", "1.25");
-    expect(screen.getByRole("toolbar", { name: "Zoom controls" })).toHaveTextContent("125%");
-    fireEvent.keyDown(vp, { key: "-" });
-    fireEvent.keyDown(vp, { key: "-" });
-    expect(vp).toHaveAttribute("data-scale", "0.8");
-    fireEvent.keyDown(vp, { key: "0" });
-    expect(vp).toHaveAttribute("data-scale", "1");
-    fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
-    fireEvent.keyDown(vp, { key: "ArrowLeft" });
-    expect(onChange).toHaveBeenLastCalledWith({ scale: 1.25, x: 40, y: 0 });
-    fireEvent.doubleClick(vp);
-    expect(vp).toHaveAttribute("data-scale", "1");
-    for (let i = 0; i < 20; i++) fireEvent.keyDown(vp, { key: "=" });
-    expect(vp).toHaveAttribute("data-scale", "4");
-    expect(screen.getByRole("button", { name: "Zoom in" })).toBeDisabled();
-    expect(await axeViolations(container)).toEqual([]);
-  });
-});
-
-describe("TabDropdown", () => {
-  it("collapses overflowing tabs into More", async () => {
-    const desc = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth")!;
-    Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
-      configurable: true,
-      get(this: HTMLElement) {
-        if (this.hasAttribute("data-tab-dropdown-root")) return 330;
-        if (this.hasAttribute("data-tab-measure") || this.hasAttribute("data-tab-measure-more")) return 100;
-        return 0;
-      },
-    });
-    try {
-      const onValueChange = vi.fn();
-      const items = ["Overview", "Files", "Activity", "Settings", "Billing"].map((l) => ({ value: l.toLowerCase(), label: l }));
-      const { container } = render(<TabDropdown items={items} label="Project" onValueChange={onValueChange} />);
-      const list = screen.getByRole("tablist", { name: "Project" });
-      expect(within(list).getAllByRole("tab").map((t) => t.textContent)).toEqual(["Overview", "Files"]);
-      const more = screen.getByRole("button", { name: "More tabs" });
-      expect(more).toHaveTextContent("3");
-      expect(await axeViolations(container)).toEqual([]);
-      openMenu(more);
-      fireEvent.click(screen.getByRole("menuitemradio", { name: "Billing" }));
-      expect(onValueChange).toHaveBeenCalledWith("billing");
-      expect(screen.getByRole("button", { name: "More tabs, current: Billing" })).toHaveAttribute("data-state", "active");
-      fireEvent.keyDown(within(list).getAllByRole("tab")[0], { key: "ArrowRight" });
-      expect(onValueChange).toHaveBeenLastCalledWith("files");
-    } finally {
-      Object.defineProperty(HTMLElement.prototype, "offsetWidth", desc);
-    }
-  });
-
-  it("shows all tabs when they fit", () => {
-    const items = ["A", "B"].map((l) => ({ value: l, label: l }));
-    render(<TabDropdown items={items} />);
-    expect(screen.getAllByRole("tab")).toHaveLength(2);
-    expect(screen.queryByRole("button", { name: /More/ })).toBeNull();
-  });
-});
-
-describe("GlyphSpinner", () => {
-  it("cycles frames with a status label", async () => {
-    vi.useFakeTimers();
-    const { container } = render(<GlyphSpinner variant="line" interval={100} label="Thinking" />);
-    const status = screen.getByRole("status");
-    expect(status).toHaveTextContent("Thinking");
-    expect(status).toHaveTextContent(glyphSpinnerFrames.line[0]);
-    act(() => vi.advanceTimersByTime(100));
-    expect(status).toHaveAttribute("data-frame", "1");
-    act(() => vi.advanceTimersByTime(300));
-    expect(status).toHaveAttribute("data-frame", "0");
-    vi.useRealTimers();
-    expect(await axeViolations(container)).toEqual([]);
-  });
-
-  it("holds still under reduced motion", () => {
-    vi.useFakeTimers();
-    vi.spyOn(window, "matchMedia").mockImplementation(
-      (q: string) => ({ matches: q.includes("reduce"), media: q, addEventListener() {}, removeEventListener() {} }) as unknown as MediaQueryList
-    );
-    render(<GlyphSpinner interval={50} />);
-    act(() => vi.advanceTimersByTime(500));
-    expect(screen.getByRole("status")).toHaveAttribute("data-frame", "0");
-  });
-});
-
-describe("FadeText", () => {
-  it("applies the fade only when overflowing", async () => {
-    const sw = vi.spyOn(HTMLElement.prototype, "scrollWidth", "get").mockReturnValue(300);
-    const cw = vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(100);
-    const { container, rerender } = render(<FadeText>A very long conversation title that overflows</FadeText>);
-    const el = screen.getByText(/A very long/);
-    expect(el).toHaveAttribute("data-overflowing");
-    expect(el).toHaveAttribute("title", "A very long conversation title that overflows");
-    expect(el.style.maskImage || el.getAttribute("style")).toMatch(/linear-gradient/);
-    expect(await axeViolations(container)).toEqual([]);
-    sw.mockReturnValue(50);
-    cw.mockReturnValue(100);
-    rerender(<FadeText>Short</FadeText>);
-    expect(screen.getByText("Short")).not.toHaveAttribute("data-overflowing");
   });
 });
 

@@ -1,19 +1,12 @@
 import * as React from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  Badge,
-  Chip,
-  ChipGroup,
-  Progress,
-  ProgressCircle,
-  ProgressSegments,
-  Spinner,
-  StatusBadge,
-  StatusDot,
-  StepIndicator,
-  Steps,
-} from "../src";
+import { Badge } from "../src/primitives/badge";
+import { Chip, ChipGroup } from "../src/primitives/chip";
+import { Progress, ProgressCircle, ProgressSegments } from "../src/primitives/progress";
+import { Spinner } from "../src/primitives/spinner";
+import { StatusBadge, StatusDot } from "../src/primitives/status-badge";
+import { StepIndicator, Steps } from "../src/primitives/step-indicator";
 import { axeViolations } from "./a11y";
 
 describe("Chip", () => {

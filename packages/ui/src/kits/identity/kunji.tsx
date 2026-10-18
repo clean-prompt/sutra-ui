@@ -468,10 +468,14 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
     const mobileHero = deepLink === "always" || (deepLink === "auto" && small);
     const hasQr = session != null && (shown === "ready" || shown === "scanned" || shown === "expired");
 
-    React.useEffect(() => {
+    // Reset the code UI when a new session starts. Done during render, not in an effect: a deferred effect
+    // could run after the user already opened the code for the new session and close it again.
+    const [codeSession, setCodeSession] = React.useState(session?.sessionId);
+    if (codeSession !== session?.sessionId) {
+      setCodeSession(session?.sessionId);
       setCodeOpen(false);
       setTyped("");
-    }, [session?.sessionId]);
+    }
 
     const texts = { ...kunjiStatusText, ...statusText };
     let liveText = shown === "error" && state.error ? state.error : texts[shown];

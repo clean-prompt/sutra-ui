@@ -7,13 +7,22 @@ export interface NavItem {
 export interface NavPage {
   id: string;
   label: string;
+  /** Route section in the URL (`#/<route>/<id>`) when it differs from the group's. */
+  route?: string;
   /** Components documented on the page; each maps to a `<Demo id>`. */
   items?: NavItem[];
 }
 
+/**
+ * A sidebar group. Groups follow the package layers (foundations, primitives, patterns,
+ * one per kit, blocks); `route` keeps the URL stable, so every component page still
+ * lives at `#/components/<page>` whatever group it is listed under.
+ */
 export interface NavSection {
   id: string;
   label: string;
+  /** Route section for the group's pages. Defaults to `id`. */
+  route?: string;
   pages: NavPage[];
 }
 
@@ -31,24 +40,26 @@ export const nav: NavSection[] = [
       { id: "shadows", label: "Shadows & Effects" },
       { id: "radius", label: "Corner Radius" },
       { id: "spacing", label: "Spacing" },
+      {
+        id: "assets",
+        route: "components",
+        label: "Assets",
+        items: items(
+          "Logo", "App Icons", "Placeholder Logos", "Featured Icon", "Icons", "Country Flags",
+          "Emoji Reactions", "File Format Icons", "Empty State", "Device Frame", "Background Pattern"
+        ),
+      },
     ],
   },
   {
-    id: "components",
-    label: "Components",
+    id: "primitives",
+    label: "Primitives",
+    route: "components",
     pages: [
       {
         id: "buttons",
         label: "Buttons & Actions",
         items: items("Button", "Button Group", "App Store Badge", "Close Button", "Text Link", "Social Button", "Floating Action Button"),
-      },
-      { id: "feedback", label: "Feedback", items: items("Inline Alert", "Toast", "Snackbar", "Alert Banner") },
-      { id: "utility", label: "Utility", items: items("Aspect Ratio", "Scroll Area") },
-      { id: "media", label: "Media", items: items("Accordion", "FAQ", "Blog Content", "Code Block", "Code Block Tabs") },
-      {
-        id: "data-display",
-        label: "Data Display",
-        items: items("Avatar", "Avatar Group", "Separator", "Filter Bar", "Table", "Data Table"),
       },
       {
         id: "forms",
@@ -60,15 +71,11 @@ export const nav: NavSection[] = [
           "Password Strength", "Field", "Input Group", "Label"
         ),
       },
+      { id: "feedback", label: "Feedback", items: items("Inline Alert", "Toast", "Snackbar", "Alert Banner") },
       {
         id: "indicators",
         label: "Indicators",
         items: items("Chip", "Badge", "Status Badge", "Spinner", "Progress", "Skeleton", "Steps"),
-      },
-      {
-        id: "navigation",
-        label: "Navigation",
-        items: items("Breadcrumbs", "Pagination", "Tab Menu", "Tabs", "Header Nav", "Sidebar", "Section Header", "Tree View"),
       },
       {
         id: "overlays",
@@ -79,13 +86,125 @@ export const nav: NavSection[] = [
         ),
       },
       {
+        id: "data-display",
+        label: "Data Display",
+        items: items("Avatar", "Avatar Group", "Separator", "Filter Bar", "Table", "Data Table"),
+      },
+      { id: "utility", label: "Utility", items: items("Aspect Ratio", "Scroll Area") },
+    ],
+  },
+  {
+    id: "patterns",
+    label: "Patterns",
+    route: "components",
+    pages: [
+      {
+        id: "navigation",
+        label: "Navigation",
+        items: items("Breadcrumbs", "Pagination", "Tab Menu", "Tabs", "Header Nav", "Sidebar", "Section Header", "Tree View"),
+      },
+      { id: "content", label: "Content", items: items("Accordion", "FAQ", "Blog Content", "Code Block", "Code Block Tabs") },
+      {
+        id: "dataviz",
+        label: "Data Viz",
+        items: [
+          { id: "stat-card", label: "Stat Card" },
+          { id: "area-chart", label: "Area Chart" },
+          { id: "stacked-area", label: "Stacked Area" },
+          { id: "live-chart", label: "Live Chart" },
+          { id: "bar-chart", label: "Bar Chart" },
+          { id: "stacked-bar", label: "Stacked Bar" },
+          { id: "line-chart", label: "Line Chart" },
+          { id: "donut-chart", label: "Donut Chart" },
+          { id: "meter", label: "Meter" },
+          { id: "stacked-meter", label: "Stacked Meter" },
+          { id: "gauge", label: "Gauge" },
+          { id: "ring-meter", label: "Ring Meter" },
+        ],
+      },
+      { id: "more", label: "More", items: items("Sparkline", "Mesh Gradient", "Text Shimmer") },
+      {
+        id: "mobile",
+        label: "Mobile & Viewers",
+        items: [
+          { id: "bottom-tab-bar", label: "Bottom Tab Bar" },
+          { id: "adaptive-tabs", label: "Adaptive Tabs" },
+          { id: "drawer", label: "Drawer" },
+          { id: "lightbox", label: "Lightbox" },
+          { id: "image-with-fallback", label: "Image With Fallback" },
+          { id: "file-viewer", label: "File Viewer" },
+          { id: "split-pane", label: "Split Pane" },
+          { id: "presence", label: "Presence" },
+          { id: "share-dialog", label: "Share Dialog" },
+        ],
+      },
+      {
+        id: "tiling",
+        label: "Tiling Layout",
+        items: [
+          { id: "workspace", label: "Workspace" },
+          { id: "layout-json", label: "Layout JSON" },
+          { id: "preset-picker", label: "Preset Picker" },
+          { id: "zone-editor", label: "Zone Editor" },
+          { id: "floating-panes", label: "Floating Panes" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ai",
+    label: "AI",
+    route: "components",
+    pages: [
+      {
         id: "ai",
         label: "AI",
         items: items("Chat", "Chain of Thought", "Chat Tool", "Chat Source", "Chat Loader", "Prompt Input", "Prompt Suggestion"),
       },
       {
+        id: "ai-extras",
+        label: "AI Extras",
+        items: [
+          { id: "context-meter", label: "Context Meter" },
+          { id: "status-strip", label: "Status Strip" },
+          { id: "job-banner", label: "Job Banner" },
+          { id: "question-card", label: "Question Card" },
+          { id: "slash-menu", label: "Slash Menu" },
+          { id: "model-picker", label: "Model Picker" },
+          { id: "usage-summary", label: "Usage Summary" },
+          { id: "conversation-sidebar", label: "Conversation Sidebar" },
+        ],
+      },
+      {
+        id: "chat-extras",
+        label: "Chat Extras",
+        items: [
+          { id: "embeds", label: "Embeds" },
+          { id: "reactions", label: "Reactions" },
+          { id: "queued-steer", label: "Queued Steer" },
+          { id: "large-paste", label: "Large Paste" },
+          { id: "restored-draft", label: "Restored Draft" },
+          { id: "approval-stack", label: "Approval Stack" },
+          { id: "split-button", label: "Split Button" },
+          { id: "fan-menu", label: "Fan Menu" },
+          { id: "decode-text", label: "Decode Text" },
+          { id: "zoom-pan", label: "Zoom & Pan" },
+          { id: "tab-dropdown", label: "Tab Dropdown" },
+          { id: "glyph-spinner", label: "Glyph Spinner" },
+          { id: "fade-text", label: "Fade Text" },
+          { id: "clarify-settled", label: "Clarify Settled" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "agent",
+    label: "Agent",
+    route: "components",
+    pages: [
+      {
         id: "agent-timeline",
-        label: "Agent: Timeline & Diffs",
+        label: "Timeline & Diffs",
         items: [
           { id: "agent-turn", label: "Agent Turn" },
           { id: "tool-timeline", label: "Tool Timeline" },
@@ -101,7 +220,7 @@ export const nav: NavSection[] = [
       },
       {
         id: "agent-permissions",
-        label: "Agent: Permissions & Plans",
+        label: "Permissions & Plans",
         items: [
           { id: "edit-permission", label: "Edit Permission" },
           { id: "bash-permission", label: "Bash Permission" },
@@ -116,7 +235,7 @@ export const nav: NavSection[] = [
       },
       {
         id: "agent-composer",
-        label: "Agent: Composer",
+        label: "Composer",
         items: [
           { id: "full-composer", label: "Full Composer" },
           { id: "mention-highlight", label: "Mention Highlight" },
@@ -133,7 +252,7 @@ export const nav: NavSection[] = [
       },
       {
         id: "agent-sessions",
-        label: "Agent: Tasks & Sessions",
+        label: "Tasks & Sessions",
         items: [
           { id: "agent-session-list", label: "Session List" },
           { id: "agent-status-dot", label: "Status Dot" },
@@ -154,87 +273,8 @@ export const nav: NavSection[] = [
         ],
       },
       {
-        id: "kanban-memory",
-        label: "Kanban & Memory Map",
-        items: [
-          { id: "kanban-board", label: "Kanban Board" },
-          { id: "kanban-card", label: "Kanban Card" },
-          { id: "task-detail-dialog", label: "Task Detail" },
-          { id: "orchestration-panel", label: "Orchestration Panel" },
-          { id: "memory-map", label: "Memory Map" },
-          { id: "memory-map-outer", label: "Memory Map (newest centre)" },
-          { id: "time-scrubber", label: "Time Scrubber" },
-        ],
-      },
-      {
-        id: "tiling",
-        label: "Tiling Layout",
-        items: [
-          { id: "workspace", label: "Workspace" },
-          { id: "layout-json", label: "Layout JSON" },
-          { id: "preset-picker", label: "Preset Picker" },
-          { id: "zone-editor", label: "Zone Editor" },
-          { id: "floating-panes", label: "Floating Panes" },
-        ],
-      },
-      {
-        id: "chat-extras",
-        label: "Chat Extras & Primitives",
-        items: [
-          { id: "embeds", label: "Embeds" },
-          { id: "reactions", label: "Reactions" },
-          { id: "queued-steer", label: "Queued Steer" },
-          { id: "large-paste", label: "Large Paste" },
-          { id: "restored-draft", label: "Restored Draft" },
-          { id: "approval-stack", label: "Approval Stack" },
-          { id: "split-button", label: "Split Button" },
-          { id: "fan-menu", label: "Fan Menu" },
-          { id: "decode-text", label: "Decode Text" },
-          { id: "zoom-pan", label: "Zoom & Pan" },
-          { id: "tab-dropdown", label: "Tab Dropdown" },
-          { id: "glyph-spinner", label: "Glyph Spinner" },
-          { id: "fade-text", label: "Fade Text" },
-          { id: "clarify-settled", label: "Clarify Settled" },
-        ],
-      },
-      {
-        id: "workspace",
-        label: "Workspace & Shell",
-        items: [
-          { id: "workspace-switcher", label: "Workspace Switcher" },
-          { id: "profile-scope-banner", label: "Profile Scope Banner" },
-          { id: "connection-registry", label: "Connection Registry" },
-          { id: "gateway-status", label: "Gateway Status" },
-          { id: "notice-bar", label: "Notice Bar" },
-          { id: "coachmarks", label: "Coachmark Tour" },
-          { id: "tip-bubble", label: "Tip Bubble" },
-          { id: "keybind-editor", label: "Keybind Editor" },
-          { id: "timeline-rail", label: "Timeline Rail" },
-        ],
-      },
-      {
-        id: "billing-marketing",
-        label: "Billing & Marketing",
-        items: [
-          { id: "billing-banners", label: "Billing Banners" },
-          { id: "plan-picker", label: "Plan Picker" },
-          { id: "plan-comparison", label: "Plan Comparison" },
-          { id: "current-plan", label: "Current Plan" },
-          { id: "credits", label: "Credits & Auto-reload" },
-          { id: "invoices", label: "Invoices" },
-          { id: "checkout-steps", label: "Checkout Steps" },
-          { id: "marketplace", label: "Marketplace" },
-          { id: "extension-detail", label: "Extension Detail" },
-          { id: "author-shelf", label: "Author Shelf" },
-          { id: "testimonial-wall", label: "Testimonial Wall" },
-          { id: "feature-grid", label: "Feature Grid" },
-          { id: "install-snippet", label: "Install Snippet" },
-          { id: "comparison-table", label: "Comparison Table" },
-        ],
-      },
-      {
         id: "browser-review",
-        label: "Agent: Browser, Artifacts & Review",
+        label: "Browser, Artifacts & Review",
         items: [
           { id: "agent-browser", label: "Agent Browser" },
           { id: "browser-console", label: "Browser Console" },
@@ -251,9 +291,16 @@ export const nav: NavSection[] = [
           { id: "branch-pill", label: "Branch Pill" },
         ],
       },
+    ],
+  },
+  {
+    id: "agent-admin",
+    label: "Agent admin",
+    route: "components",
+    pages: [
       {
         id: "capabilities",
-        label: "Agent: Capabilities",
+        label: "Capabilities",
         items: [
           { id: "capabilities-hub", label: "Capabilities Hub" },
           { id: "provenance-trust", label: "Provenance & Trust" },
@@ -278,7 +325,7 @@ export const nav: NavSection[] = [
       },
       {
         id: "automation",
-        label: "Agent: Automation",
+        label: "Automation",
         items: [
           { id: "cron-manager", label: "Cron Manager" },
           { id: "job-form", label: "Job Form" },
@@ -292,7 +339,7 @@ export const nav: NavSection[] = [
       },
       {
         id: "channels",
-        label: "Agent: Channels & Multi-agent",
+        label: "Channels & Multi-agent",
         items: [
           { id: "platform-connectors", label: "Platform Connectors" },
           { id: "platform-icons", label: "Platform Icons" },
@@ -313,7 +360,7 @@ export const nav: NavSection[] = [
       },
       {
         id: "providers",
-        label: "Agent: Providers & Models",
+        label: "Providers & Models",
         items: [
           { id: "provider-list", label: "Provider List" },
           { id: "provider-quota-chip", label: "Quota Chip" },
@@ -334,53 +381,13 @@ export const nav: NavSection[] = [
           { id: "system-resources", label: "System Resources" },
         ],
       },
-      {
-        id: "ai-extras",
-        label: "AI Extras",
-        items: [
-          { id: "context-meter", label: "Context Meter" },
-          { id: "status-strip", label: "Status Strip" },
-          { id: "job-banner", label: "Job Banner" },
-          { id: "question-card", label: "Question Card" },
-          { id: "slash-menu", label: "Slash Menu" },
-          { id: "model-picker", label: "Model Picker" },
-          { id: "usage-summary", label: "Usage Summary" },
-          { id: "conversation-sidebar", label: "Conversation Sidebar" },
-        ],
-      },
-      {
-        id: "voice",
-        label: "Voice & Translation",
-        items: [
-          { id: "translator", label: "Translator" },
-          { id: "language-picker", label: "Language Picker" },
-          { id: "transliteration", label: "Transliteration" },
-          { id: "dictionary", label: "Dictionary" },
-          { id: "conversation", label: "Conversation" },
-          { id: "voice-input", label: "Voice Input" },
-          { id: "speak-button", label: "Speak Button" },
-          { id: "audio-level", label: "Audio Level" },
-        ],
-      },
-      { id: "more", label: "More", items: items("Sparkline", "Mesh Gradient", "Text Shimmer") },
-      {
-        id: "dataviz",
-        label: "Data Viz",
-        items: [
-          { id: "stat-card", label: "Stat Card" },
-          { id: "area-chart", label: "Area Chart" },
-          { id: "stacked-area", label: "Stacked Area" },
-          { id: "live-chart", label: "Live Chart" },
-          { id: "bar-chart", label: "Bar Chart" },
-          { id: "stacked-bar", label: "Stacked Bar" },
-          { id: "line-chart", label: "Line Chart" },
-          { id: "donut-chart", label: "Donut Chart" },
-          { id: "meter", label: "Meter" },
-          { id: "stacked-meter", label: "Stacked Meter" },
-          { id: "gauge", label: "Gauge" },
-          { id: "ring-meter", label: "Ring Meter" },
-        ],
-      },
+    ],
+  },
+  {
+    id: "identity",
+    label: "Identity & security",
+    route: "components",
+    pages: [
       {
         id: "identity",
         label: "Identity & Settings",
@@ -399,6 +406,83 @@ export const nav: NavSection[] = [
         ],
       },
       {
+        id: "security",
+        label: "Security",
+        items: items(
+          "Authenticator", "TOTP Code", "Secret Field", "Secret Reveal Once", "Recovery Key", "Recovery Key Input",
+          "Consent Screen", "Scope List", "Scope Matrix", "API Keys", "Credential Card", "Credential Detail",
+          "Payment Card", "Payment Card Input", "Connected Apps", "Activity Feed"
+        ),
+      },
+      {
+        id: "kunji",
+        label: "kunji Sign-in",
+        items: [
+          { id: "kunji-sign-in", label: "Sign-in (live)" },
+          { id: "kunji-variants", label: "Variants" },
+          { id: "kunji-states", label: "States" },
+          { id: "kunji-button", label: "kunji Button" },
+          { id: "kunji-link", label: "Link kunji" },
+          { id: "kunji-sign-in-page", label: "Sign-in Page" },
+          { id: "sign-in-methods", label: "Sign-in Methods" },
+          { id: "register-with-kunji", label: "Register" },
+          { id: "awaiting-approval", label: "Awaiting Approval" },
+          { id: "signed-in-panel", label: "Signed-in Panel" },
+          { id: "device-pairing", label: "Device Pairing" },
+          { id: "access-gate", label: "Access Gate" },
+          { id: "auth-problem", label: "Auth Problems" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "workspace",
+    label: "Workspace",
+    route: "components",
+    pages: [
+      {
+        id: "workspace",
+        label: "Workspace & Shell",
+        items: [
+          { id: "workspace-switcher", label: "Workspace Switcher" },
+          { id: "profile-scope-banner", label: "Profile Scope Banner" },
+          { id: "connection-registry", label: "Connection Registry" },
+          { id: "gateway-status", label: "Gateway Status" },
+          { id: "notice-bar", label: "Notice Bar" },
+          { id: "coachmarks", label: "Coachmark Tour" },
+          { id: "tip-bubble", label: "Tip Bubble" },
+          { id: "keybind-editor", label: "Keybind Editor" },
+          { id: "timeline-rail", label: "Timeline Rail" },
+        ],
+      },
+      {
+        id: "kanban-memory",
+        label: "Kanban & Memory Map",
+        items: [
+          { id: "kanban-board", label: "Kanban Board" },
+          { id: "kanban-card", label: "Kanban Card" },
+          { id: "task-detail-dialog", label: "Task Detail" },
+          { id: "orchestration-panel", label: "Orchestration Panel" },
+          { id: "memory-map", label: "Memory Map" },
+          { id: "memory-map-outer", label: "Memory Map (newest centre)" },
+          { id: "time-scrubber", label: "Time Scrubber" },
+        ],
+      },
+      {
+        id: "suite",
+        label: "Suite",
+        items: items(
+          "Shortcuts", "Entity Chip", "Mention Input", "Backlinks", "Quick Capture", "Today Timeline", "Sync Status", "App Theming"
+        ),
+      },
+    ],
+  },
+  {
+    id: "ops",
+    label: "Ops",
+    route: "components",
+    pages: [
+      {
         id: "ops",
         label: "Ops & Data",
         items: [
@@ -408,24 +492,6 @@ export const nav: NavSection[] = [
           { id: "transfer-tray", label: "Transfer Tray" },
           { id: "progress-dialog", label: "Progress Dialog" },
           { id: "markdown-math", label: "Markdown Math" },
-        ],
-      },
-      {
-        id: "media-player",
-        label: "Media Player",
-        items: [
-          { id: "video-player", label: "Video Player" },
-          { id: "mini-player", label: "Mini Player" },
-          { id: "now-playing", label: "Now Playing" },
-          { id: "queue-list", label: "Queue List" },
-          { id: "track-row", label: "Track Row" },
-          { id: "poster-card", label: "Poster Card" },
-          { id: "episode-card", label: "Episode Card" },
-          { id: "media-shelf", label: "Media Shelf" },
-          { id: "media-hero", label: "Media Hero" },
-          { id: "album-card", label: "Album Card" },
-          { id: "cast-picker", label: "Cast Picker" },
-          { id: "media-controls", label: "Media Controls" },
         ],
       },
       {
@@ -447,40 +513,102 @@ export const nav: NavSection[] = [
           { id: "terminal", label: "Terminal" },
         ],
       },
+    ],
+  },
+  {
+    id: "media",
+    label: "Media",
+    route: "components",
+    pages: [
       {
-        id: "mobile",
-        label: "Mobile & Viewers",
+        id: "media-player",
+        label: "Media Player",
         items: [
-          { id: "bottom-tab-bar", label: "Bottom Tab Bar" },
-          { id: "adaptive-tabs", label: "Adaptive Tabs" },
-          { id: "drawer", label: "Drawer" },
-          { id: "lightbox", label: "Lightbox" },
-          { id: "image-with-fallback", label: "Image With Fallback" },
-          { id: "file-viewer", label: "File Viewer" },
-          { id: "split-pane", label: "Split Pane" },
-          { id: "presence", label: "Presence" },
-          { id: "share-dialog", label: "Share Dialog" },
+          { id: "video-player", label: "Video Player" },
+          { id: "mini-player", label: "Mini Player" },
+          { id: "now-playing", label: "Now Playing" },
+          { id: "queue-list", label: "Queue List" },
+          { id: "track-row", label: "Track Row" },
+          { id: "poster-card", label: "Poster Card" },
+          { id: "episode-card", label: "Episode Card" },
+          { id: "media-shelf", label: "Media Shelf" },
+          { id: "media-hero", label: "Media Hero" },
+          { id: "album-card", label: "Album Card" },
+          { id: "cast-picker", label: "Cast Picker" },
+          { id: "media-controls", label: "Media Controls" },
         ],
       },
+    ],
+  },
+  {
+    id: "voice",
+    label: "Voice",
+    route: "components",
+    pages: [
       {
-        id: "kunji",
-        label: "kunji Sign-in",
+        id: "voice",
+        label: "Voice & Translation",
         items: [
-          { id: "kunji-sign-in", label: "Sign-in (live)" },
-          { id: "kunji-variants", label: "Variants" },
-          { id: "kunji-states", label: "States" },
-          { id: "kunji-button", label: "kunji Button" },
-          { id: "kunji-link", label: "Link kunji" },
-          { id: "kunji-sign-in-page", label: "Sign-in Page" },
-          { id: "sign-in-methods", label: "Sign-in Methods" },
-          { id: "register-with-kunji", label: "Register" },
-          { id: "awaiting-approval", label: "Awaiting Approval" },
-          { id: "signed-in-panel", label: "Signed-in Panel" },
-          { id: "device-pairing", label: "Device Pairing" },
-          { id: "access-gate", label: "Access Gate" },
-          { id: "auth-problem", label: "Auth Problems" },
+          { id: "translator", label: "Translator" },
+          { id: "language-picker", label: "Language Picker" },
+          { id: "transliteration", label: "Transliteration" },
+          { id: "dictionary", label: "Dictionary" },
+          { id: "conversation", label: "Conversation" },
+          { id: "voice-input", label: "Voice Input" },
+          { id: "speak-button", label: "Speak Button" },
+          { id: "audio-level", label: "Audio Level" },
         ],
       },
+    ],
+  },
+  {
+    id: "social",
+    label: "Social",
+    route: "components",
+    pages: [
+      {
+        id: "social",
+        label: "Apps & Social",
+        items: items(
+          "App Launcher", "Identity Mark", "Text Button", "Install Button", "Incoming Call", "Call Screen",
+          "Messenger", "Group Info Panel", "Reorderable List", "Checklist", "Countdown", "Stopwatch",
+          "Tally Counter", "Status Cycle", "Recurrence Picker", "Pinned Note"
+        ),
+      },
+    ],
+  },
+  {
+    id: "billing",
+    label: "Billing",
+    route: "components",
+    pages: [
+      {
+        id: "billing-marketing",
+        label: "Billing & Marketing",
+        items: [
+          { id: "billing-banners", label: "Billing Banners" },
+          { id: "plan-picker", label: "Plan Picker" },
+          { id: "plan-comparison", label: "Plan Comparison" },
+          { id: "current-plan", label: "Current Plan" },
+          { id: "credits", label: "Credits & Auto-reload" },
+          { id: "invoices", label: "Invoices" },
+          { id: "checkout-steps", label: "Checkout Steps" },
+          { id: "marketplace", label: "Marketplace" },
+          { id: "extension-detail", label: "Extension Detail" },
+          { id: "author-shelf", label: "Author Shelf" },
+          { id: "testimonial-wall", label: "Testimonial Wall" },
+          { id: "feature-grid", label: "Feature Grid" },
+          { id: "install-snippet", label: "Install Snippet" },
+          { id: "comparison-table", label: "Comparison Table" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "editor",
+    label: "Editor",
+    route: "components",
+    pages: [
       {
         id: "editor",
         label: "Editor",
@@ -497,45 +625,26 @@ export const nav: NavSection[] = [
           { id: "comments-panel", label: "Comments Panel" },
         ],
       },
-      {
-        id: "security",
-        label: "Security",
-        items: items(
-          "Authenticator", "TOTP Code", "Secret Field", "Secret Reveal Once", "Recovery Key", "Recovery Key Input",
-          "Consent Screen", "Scope List", "Scope Matrix", "API Keys", "Credential Card", "Credential Detail",
-          "Payment Card", "Payment Card Input", "Connected Apps", "Activity Feed"
-        ),
-      },
-      {
-        id: "social",
-        label: "Apps & Social",
-        items: items(
-          "App Launcher", "Identity Mark", "Text Button", "Install Button", "Incoming Call", "Call Screen",
-          "Messenger", "Group Info Panel", "Reorderable List", "Checklist", "Countdown", "Stopwatch",
-          "Tally Counter", "Status Cycle", "Recurrence Picker", "Pinned Note"
-        ),
-      },
-      {
-        id: "suite",
-        label: "Suite",
-        items: items(
-          "Shortcuts", "Entity Chip", "Mention Input", "Backlinks", "Quick Capture", "Today Timeline", "Sync Status", "App Theming"
-        ),
-      },
-      {
-        id: "assets",
-        label: "Assets",
-        items: items(
-          "Logo", "App Icons", "Placeholder Logos", "Featured Icon", "Icons", "Country Flags",
-          "Emoji Reactions", "File Format Icons", "Empty State", "Device Frame", "Background Pattern"
-        ),
-      },
     ],
   },
   { id: "blocks", label: "Blocks", pages: [{ id: "gallery", label: "Block Gallery" }] },
 ];
 
+/** The URL section a page is served under. */
+export function routeOf(section: NavSection, page: NavPage) {
+  return page.route ?? section.route ?? section.id;
+}
+
+/** Old `section/page` routes that moved, so existing links keep working. */
+export const routeAliases: Record<string, string> = {
+  "components/media": "components/content",
+};
+
+/** Finds the nav group and page for a route. */
 export function findPage(section: string, page: string) {
-  const s = nav.find((n) => n.id === section);
-  return { section: s, page: s?.pages.find((p) => p.id === page) };
+  for (const s of nav) {
+    const p = s.pages.find((candidate) => candidate.id === page && routeOf(s, candidate) === section);
+    if (p) return { section: s, page: p };
+  }
+  return { section: undefined, page: undefined };
 }

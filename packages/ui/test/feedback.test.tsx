@@ -1,15 +1,9 @@
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  AlertBanner,
-  InlineAlert,
-  InlineAlertDescription,
-  InlineAlertTitle,
-  Snackbar,
-  Toaster,
-  toast,
-} from "../src";
+import { AlertBanner } from "../src/primitives/alert-banner";
+import { InlineAlert, InlineAlertDescription, InlineAlertTitle } from "../src/primitives/inline-alert";
+import { Snackbar, Toaster, toast } from "../src/primitives/toast";
 import { axeViolations } from "./a11y";
 
 describe("Toaster + toast()", () => {

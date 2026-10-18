@@ -31,7 +31,6 @@ import { Countdown, splitDuration } from "../src/patterns/countdown";
 import { Stopwatch, useStopwatch as useStopwatchFromComponent } from "../src/patterns/stopwatch";
 import { useStopwatch } from "../src/hooks/use-stopwatch";
 import { TallyCounter } from "../src/patterns/tally-counter";
-import { splitDuration as rootSplitDuration } from "../src";
 
 import * as statusCycle from "../src/patterns/status-cycle";
 import { RecurrencePicker } from "../src/patterns/recurrence-picker";
@@ -173,7 +172,6 @@ describe("counters split", () => {
     expect(counters.useStopwatch).toBe(useStopwatch);
     expect(useStopwatchFromComponent).toBe(useStopwatch);
     expect(counters.splitDuration).toBe(splitDuration);
-    expect(rootSplitDuration).toBe(splitDuration);
   });
 
   it("splitDuration rounds up to the second", () => {

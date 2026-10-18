@@ -31,6 +31,7 @@ import {
   type MediaChapter,
   type MediaTrackOption,
 } from "./media-controls";
+import { assignRef } from "../../lib/refs";
 
 export interface VideoTextTrack {
   id: string;
@@ -114,11 +115,6 @@ type WebkitDocument = Document & {
 };
 
 type WebkitElement = HTMLElement & { webkitRequestFullscreen?: () => void };
-
-function assignRef<T>(ref: React.Ref<T> | undefined, value: T) {
-  if (typeof ref === "function") ref(value);
-  else if (ref) (ref as React.MutableRefObject<T>).current = value;
-}
 
 const INTERACTIVE = 'button, a[href], input, select, textarea, [role="slider"], [role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"]';
 

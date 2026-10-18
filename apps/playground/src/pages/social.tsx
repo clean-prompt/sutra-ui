@@ -445,7 +445,7 @@ function RecurrenceDemo() {
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
-export function MiscPage() {
+export function SocialPage() {
   const [newYear] = React.useState(() => new Date(new Date().getFullYear() + 1, 0, 1));
   const [soon, setSoon] = React.useState(() => Date.now() + 15_000);
   const [done, setDone] = React.useState(false);
@@ -568,4 +568,4 @@ export function MiscPage() {
   );
 }
 
-export default MiscPage;
+export default SocialPage;

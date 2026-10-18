@@ -129,7 +129,7 @@ export function App() {
   },
 ];
 
-export function MediaPage() {
+export function ContentPage() {
   return (
     <PageIntro
       eyebrow="Components"

@@ -1,15 +1,9 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { render } from "@testing-library/react";
-import {
-  ChainOfThoughtSearchResult,
-  ChainOfThoughtSearchResults,
-  ChatSource,
-  ChatSourceList,
-  Favicon,
-  FaviconProvider,
-  googleFaviconResolver,
-} from "../src";
+import { ChainOfThoughtSearchResult, ChainOfThoughtSearchResults } from "../src/kits/ai/chain-of-thought";
+import { ChatSource, ChatSourceList } from "../src/kits/ai/chat-source";
+import { Favicon, FaviconProvider, googleFaviconResolver } from "../src/primitives/favicon";
 import { blockRegistry } from "../src/blocks/registry";
 import { renderBlock } from "./blocks-helpers";
 

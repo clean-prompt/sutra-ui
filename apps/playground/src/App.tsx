@@ -35,7 +35,7 @@ import {
   RiSpace,
   RiCheckboxBlankLine,
 } from "@sutra/ui/icons";
-import { nav, findPage } from "./nav";
+import { nav, findPage, routeOf } from "./nav";
 import { href, useHashRoute } from "./router";
 import { ThemeControls, usePersistedTheme } from "./components/theme-controls";
 /** Lazy-load a named page export so each page ships as its own chunk. */
@@ -55,7 +55,7 @@ const pages: Record<string, React.ComponentType> = {
   "components/buttons": lazyPage(() => import("./pages/buttons"), "ButtonsPage"),
   "components/feedback": lazyPage(() => import("./pages/feedback"), "FeedbackPage"),
   "components/utility": lazyPage(() => import("./pages/utility"), "UtilityPage"),
-  "components/media": lazyPage(() => import("./pages/media"), "MediaPage"),
+  "components/content": lazyPage(() => import("./pages/content"), "ContentPage"),
   "components/data-display": lazyPage(() => import("./pages/data-display"), "DataDisplayPage"),
   "components/forms": lazyPage(() => import("./pages/forms"), "FormsPage"),
   "components/indicators": lazyPage(() => import("./pages/indicators"), "IndicatorsPage"),
@@ -68,7 +68,7 @@ const pages: Record<string, React.ComponentType> = {
   "components/identity": lazyPage(() => import("./pages/identity"), "IdentityPage"),
   "components/ops": lazyPage(() => import("./pages/ops"), "OpsPage"),
   "components/mobile": lazyPage(() => import("./pages/mobile"), "MobilePage"),
-  "components/social": lazyPage(() => import("./pages/misc"), "MiscPage"),
+  "components/social": lazyPage(() => import("./pages/social"), "SocialPage"),
   "components/security": lazyPage(() => import("./pages/security"), "SecurityPage"),
   "components/editor": lazyPage(() => import("./pages/editor"), "EditorPage"),
   "components/kunji": lazyPage(() => import("./pages/kunji"), "KunjiPage"),
@@ -120,14 +120,15 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
             <SidebarGroupLabel>{s.label}</SidebarGroupLabel>
             <SidebarMenu>
               {s.pages.map((p) => {
-                const active = s.id === section && p.id === page;
+                const route = routeOf(s, p);
+                const active = route === section && p.id === page;
                 if (!p.items) {
                   const icon =
                     s.id === "foundations" ? foundationIcons[p.id] : s.id === "blocks" ? <RiLayoutMasonryLine /> : <RiBrushLine />;
                   return (
                     <SidebarMenuItem key={p.id}>
                       <SidebarMenuButton asChild active={active} icon={icon}>
-                        <a href={href(s.id, p.id)}>{p.label}</a>
+                        <a href={href(route, p.id)}>{p.label}</a>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
@@ -138,7 +139,7 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                       open={active}
                       trigger={
                         <SidebarMenuButton asChild active={active && !anchor} icon={<RiCodeBoxLine />}>
-                          <a href={href(s.id, p.id)}>
+                          <a href={href(route, p.id)}>
                             <span className="min-w-0 flex-1 truncate">{p.label}</span>
                             <RiArrowRightSLine
                               aria-hidden
@@ -152,7 +153,7 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                         <SidebarMenuSubButton
                           key={item.id}
                           size="sm"
-                          href={href(s.id, p.id, item.id)}
+                          href={href(route, p.id, item.id)}
                           active={active && anchor === item.id}
                         >
                           {item.label}

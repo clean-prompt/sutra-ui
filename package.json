@@ -6,6 +6,7 @@
     "build": "pnpm --filter @sutra/ui build",
     "dev": "pnpm --filter @sutra/ui dev",
     "playground": "pnpm --filter playground dev",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "verify": "pnpm --filter @sutra/ui verify && pnpm --filter playground typecheck && pnpm --filter playground build"
   }
 }

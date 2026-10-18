@@ -25,7 +25,6 @@ import {
   formatTypingText,
   type PresenceUser,
 } from "../src/kits/social/presence";
-import { ShareDialog } from "../src/blocks/modal-dialog-blocks";
 import { axeViolations } from "./a11y";
 
 // jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY.
@@ -604,88 +603,6 @@ describe("Presence", () => {
     await waitFor(() => expect(cursor).toHaveAttribute("data-idle", "true"));
     rerender(<RemoteCursor x={40} y={20} name="Aiko" idleTimeout={30} />);
     expect(cursor).not.toHaveAttribute("data-idle");
-  });
-});
-
-/* ------------------------------------------------------------------ */
-/* ShareDialog                                                         */
-/* ------------------------------------------------------------------ */
-
-describe("ShareDialog", () => {
-  it("changes a person's role and the link expiry, with callbacks", async () => {
-    const user = userEvent.setup();
-    const onRoleChange = vi.fn();
-    const onExpiryChange = vi.fn();
-    const onLinkRoleChange = vi.fn();
-    const onAllowCommentsChange = vi.fn();
-    render(
-      <ShareDialog
-        defaultOpen
-        onRoleChange={onRoleChange}
-        onExpiryChange={onExpiryChange}
-        onLinkRoleChange={onLinkRoleChange}
-        onAllowCommentsChange={onAllowCommentsChange}
-      />
-    );
-    const dialog = screen.getByRole("dialog");
-    expect(within(dialog).getByText("Owner")).toBeInTheDocument();
-    expect(within(dialog).getByText(/Expires in 7 days/)).toBeInTheDocument();
-    expect(await axeViolations(document.body)).toEqual([]);
-
-    await user.click(within(dialog).getByRole("button", { name: "Role for Priya Shah: Editor" }));
-    await user.click(await screen.findByRole("menuitemradio", { name: /Viewer/ }));
-    expect(onRoleChange).toHaveBeenCalledWith("p2", "viewer");
-    await waitFor(() => expect(within(dialog).getByRole("button", { name: "Role for Priya Shah: Viewer" })).toBeInTheDocument());
-
-    await user.click(within(dialog).getByRole("combobox", { name: "Link expiry" }));
-    await user.click(await screen.findByRole("option", { name: "30 days" }));
-    expect(onExpiryChange).toHaveBeenCalledWith("30d", expect.any(Date));
-    const [, date] = onExpiryChange.mock.calls[0]!;
-    expect(Math.round(((date as Date).getTime() - Date.now()) / 86_400_000)).toBe(30);
-    expect(within(dialog).getByText(/Expires in 30 days/)).toBeInTheDocument();
-
-    await user.click(within(dialog).getByRole("combobox", { name: "Link expiry" }));
-    await user.click(await screen.findByRole("option", { name: "Never expires" }));
-    expect(onExpiryChange).toHaveBeenLastCalledWith("never", null);
-
-    await user.click(within(dialog).getByRole("combobox", { name: "Link permission" }));
-    await user.click(await screen.findByRole("option", { name: "Can comment" }));
-    expect(onLinkRoleChange).toHaveBeenCalledWith("commenter");
-
-    await user.click(within(dialog).getByRole("switch", { name: "Allow comments on public link" }));
-    expect(onAllowCommentsChange).toHaveBeenCalledWith(true);
-  });
-
-  it("offers Leave for yourself when you are not the owner and invites with a role", async () => {
-    const user = userEvent.setup();
-    const onLeave = vi.fn();
-    const onInvite = vi.fn();
-    render(<ShareDialog defaultOpen currentUserId="p3" onLeave={onLeave} onInvite={onInvite} defaultAccess="restricted" />);
-    const dialog = screen.getByRole("dialog");
-    expect(within(dialog).getByText("(you)")).toBeInTheDocument();
-    expect(within(dialog).queryByRole("combobox", { name: "Link expiry" })).not.toBeInTheDocument();
-    await user.click(within(dialog).getByRole("button", { name: "Leave" }));
-    expect(onLeave).toHaveBeenCalled();
-    expect(within(dialog).queryByText("Lena Okafor")).not.toBeInTheDocument();
-
-    await user.type(within(dialog).getByRole("textbox", { name: "Email address" }), "sam@northwind.co");
-    await user.click(within(dialog).getByRole("button", { name: "Invite" }));
-    await waitFor(() => expect(onInvite).toHaveBeenCalledWith("sam@northwind.co", "editor"));
-    expect(await within(dialog).findByText("sam@northwind.co")).toBeInTheDocument();
-  });
-
-  it("keeps legacy role values working", () => {
-    render(
-      <ShareDialog
-        defaultOpen
-        currentUserId=""
-        people={[
-          { id: "a", name: "Ada", email: "ada@x.co", role: "edit", owner: true },
-          { id: "b", name: "Bo", email: "bo@x.co", role: "comment" },
-        ]}
-      />
-    );
-    expect(screen.getByRole("button", { name: "Role for Bo: Commenter" })).toBeInTheDocument();
   });
 });
 

@@ -29,7 +29,7 @@ import {
   marketingDemoData,
   type MarketplaceExtension,
 } from "../src/blocks/marketing-blocks";
-import { blockRegistry } from "../src";
+import { blockRegistry } from "../src/blocks/registry";
 import { axeViolations } from "./a11y";
 
 const plans: BillingPlan[] = [

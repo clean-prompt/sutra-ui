@@ -1,6 +1,8 @@
 import { act, render, renderHook, screen } from "@testing-library/react";
-import { brands, breakpoints, chartColors, cn, colors, neutrals, radii, radiusModes, spacing, typography, useTheme } from "../src";
-import { Heading, Text } from "../src";
+import { useTheme } from "../src/hooks/use-theme";
+import { cn } from "../src/lib/cn";
+import { brands, breakpoints, chartColors, colors, neutrals, radii, radiusModes, spacing, typography } from "../src/lib/tokens";
+import { Heading, Text } from "../src/primitives/typography";
 
 describe("tokens", () => {
   it("exports the theme axes as non-empty unique string tuples", () => {

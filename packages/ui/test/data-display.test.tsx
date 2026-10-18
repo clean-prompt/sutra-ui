@@ -1,29 +1,12 @@
 import * as React from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  Avatar,
-  AvatarGroup,
-  DataTable,
-  FAQ,
-  FilterBar,
-  FilterBarActive,
-  FilterBarChip,
-  FilterBarClear,
-  FilterBarSearch,
-  Separator,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  type DataTableColumn,
-} from "../src";
+import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "../src/patterns/filter-bar";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, FAQ } from "../src/primitives/accordion";
+import { Avatar } from "../src/primitives/avatar";
+import { AvatarGroup } from "../src/primitives/avatar-group";
+import { Separator } from "../src/primitives/separator";
+import { DataTable, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, type DataTableColumn } from "../src/primitives/table";
 import { axeViolations } from "./a11y";
 
 interface Person {

@@ -1,26 +1,21 @@
 import * as React from "react";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { KeyboardShortcutsDialog } from "../src/blocks/modal-dialog-blocks";
+import { formatShortcut, getShortcutKeyLabels, isShortcutKeys, type ShortcutPlatform } from "../src/lib/shortcuts";
+import { CommandPaletteFromRegistry, useCommandMenuShortcut } from "../src/patterns/command-menu";
+import { KeybindEditor } from "../src/patterns/keybind-editor";
 import {
-  CommandPaletteFromRegistry,
-  KeyboardShortcutsDialog,
-  ShortcutKeys,
   ShortcutProvider,
   ShortcutScope,
   ShortcutsDialog,
-  SidebarProvider,
-  SimpleTooltip,
-  TooltipProvider,
-  formatShortcut,
-  getShortcutKeyLabels,
-  isShortcutKeys,
-  useCommandMenuShortcut,
   useShortcut,
   useShortcutRegistry,
   useShortcuts,
-  useSidebar,
-  type ShortcutPlatform,
-} from "../src";
+} from "../src/patterns/shortcuts";
+import { SidebarProvider, useSidebar } from "../src/patterns/sidebar-navigation";
+import { ShortcutKeys } from "../src/primitives/shortcut-keys";
+import { SimpleTooltip, TooltipProvider } from "../src/primitives/tooltip";
 import { axeViolations } from "./a11y";
 
 function press(key: string, init: KeyboardEventInit = {}, target: Element | Document = document.body) {
@@ -464,5 +459,20 @@ describe("integrations", () => {
     await user.hover(screen.getByRole("button", { name: "Search" }));
     const tip = await screen.findAllByText("⌘");
     expect(tip.length).toBeGreaterThan(0);
+  });
+
+  it("KeybindEditor reads shortcuts from the registry inside a ShortcutProvider", () => {
+    function Registered() {
+      useShortcut("mod+b", () => {}, { id: "toggle-sidebar", label: "Toggle sidebar", group: "View" });
+      return null;
+    }
+    render(
+      <ShortcutProvider platform="mac">
+        <Registered />
+        <KeybindEditor />
+      </ShortcutProvider>
+    );
+    expect(screen.getByText("Toggle sidebar")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "View" })).toBeInTheDocument();
   });
 });

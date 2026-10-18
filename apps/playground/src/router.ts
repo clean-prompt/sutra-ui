@@ -1,5 +1,5 @@
 import * as React from "react";
-import { nav } from "./nav";
+import { nav, routeAliases, routeOf } from "./nav";
 
 export interface Route {
   section: string;
@@ -14,9 +14,15 @@ export function parseHash(hash: string): Route {
   const [section, page, anchor] = hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   if (!section) return DEFAULT_ROUTE;
   if (!page) {
-    // "#/blocks" → first page of the section.
-    const first = nav.find((s) => s.id === section)?.pages[0];
+    // "#/blocks" → first page served under that section.
+    const first = nav.flatMap((s) => s.pages.filter((p) => routeOf(s, p) === section))[0];
     return first ? { section, page: first.id } : DEFAULT_ROUTE;
+  }
+  // Renamed pages: "#/components/media/faq" still opens the Content page at #faq.
+  const alias = routeAliases[`${section}/${page}`];
+  if (alias) {
+    const [aliasSection, aliasPage] = alias.split("/");
+    return { section: aliasSection!, page: aliasPage!, anchor };
   }
   return { section, page, anchor };
 }

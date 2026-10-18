@@ -7,6 +7,7 @@ import {
   RiArrowUpSLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { assignRef } from "../lib/refs";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -87,11 +88,6 @@ const baseClassNames: Partial<ClassNames> = {
 };
 
 type CalendarRootProps = React.HTMLAttributes<HTMLDivElement> & { rootRef?: React.Ref<HTMLDivElement> };
-
-function assignRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
-  if (typeof ref === "function") ref(node);
-  else if (ref) (ref as React.MutableRefObject<T | null>).current = node;
-}
 
 /** Date calendar built on react-day-picker v9. Supports single, multiple and range modes. The ref goes to the root element. */
 export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calendar(

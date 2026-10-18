@@ -1,15 +1,9 @@
 import * as React from "react";
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react";
-import {
-  QuickCapture,
-  TagInput,
-  cronToSchedule,
-  describeCron,
-  nextCronRuns,
-  parseCapture,
-  scheduleToCron,
-  useControllableState,
-} from "../src";
+import { useControllableState } from "../src/hooks/use-controllable-state";
+import { QuickCapture, parseCapture } from "../src/kits/workspace/quick-capture";
+import { cronToSchedule, describeCron, nextCronRuns, scheduleToCron } from "../src/lib/cron";
+import { TagInput } from "../src/primitives/tag-input";
 import { InviteMembersDialog } from "../src/blocks/modal-dialog-blocks";
 
 /** Wednesday, 14 October 2026, 10:00 local time. */

@@ -135,6 +135,11 @@
       "import": "./dist/entries/tokens.js",
       "default": "./dist/entries/tokens.js"
     },
+    "./core": {
+      "types": "./dist/entries/core.d.ts",
+      "import": "./dist/entries/core.js",
+      "default": "./dist/entries/core.js"
+    },
     "./primitives/*": {
       "types": "./dist/primitives/*.d.ts",
       "import": "./dist/primitives/*.js",
@@ -1340,10 +1345,13 @@
   "scripts": {
     "build": "tsup",
     "check:exports": "node scripts/check-exports.mjs",
+    "check:index": "node scripts/gen-index.mjs --check",
     "dev": "tsup --watch",
+    "gen:index": "node scripts/gen-index.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "verify": "tsc --noEmit && node scripts/gen-index.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs"
   },
   "peerDependencies": {
     "@codemirror/commands": "^6",

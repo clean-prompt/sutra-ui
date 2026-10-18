@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ScrollArea as ScrollAreaPrimitive } from "radix-ui";
 import { cn } from "../lib/cn";
+import { assignRef as setRef } from "../lib/refs";
 
 type FadeEdges = boolean | "vertical" | "horizontal";
 
@@ -22,11 +23,6 @@ interface Edges {
 }
 
 const noEdges: Edges = { top: false, bottom: false, left: false, right: false };
-
-function setRef<T>(ref: React.Ref<T> | undefined, value: T) {
-  if (typeof ref === "function") ref(value);
-  else if (ref) (ref as React.MutableRefObject<T>).current = value;
-}
 
 function buildMask(edges: Edges, fade: FadeEdges): string | undefined {
   const size = "24px";

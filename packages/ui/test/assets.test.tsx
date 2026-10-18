@@ -1,20 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  AcmeLogo,
-  CountryFlag,
-  EmojiReaction,
-  EmojiReactionBar,
-  FileFormatIcon,
-  LogoCloud,
-  SutraAppIcon,
-  SutraLogo,
-  SutraMark,
-  getFileCategory,
-  getFileExtension,
-  getFlagEmoji,
-  placeholderLogos,
-} from "../src";
+import { SutraAppIcon, SutraLogo, SutraMark } from "../src/assets/brand";
+import { CountryFlag, getFlagEmoji } from "../src/assets/country-flags";
+import { EmojiReaction, EmojiReactionBar } from "../src/assets/emoji-reactions";
+import { FileFormatIcon, getFileCategory, getFileExtension } from "../src/assets/file-format";
+import { AcmeLogo, LogoCloud, placeholderLogos } from "../src/assets/placeholder-logos";
 import { axeViolations } from "./a11y";
 
 /* ------------------------------------------------------------------ */

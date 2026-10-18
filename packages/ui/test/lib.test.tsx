@@ -40,13 +40,12 @@ import { useElementSize, useElementWidth, useResizeObserver } from "../src/hooks
 import { useIsoLayoutEffect } from "../src/hooks/use-iso-layout-effect";
 import { errorMessage, useAsyncAction, useMountedRef } from "../src/hooks/use-async-action";
 import { useSafeId } from "../src/hooks/use-safe-id";
+import { useCopy } from "../src/hooks/use-copy";
 import { useAsyncAction as useBlockAsyncAction, isEmail as blockIsEmail } from "../src/blocks/block-utils";
 import { CopyButton, CopyField } from "../src/primitives/copy-button";
 import { identityHash } from "../src/patterns/identity-mark";
 import { base32Decode as totpBase32Decode } from "../src/kits/identity/totp";
 import { kunjiBase64Url } from "../src/kits/identity/kunji-client";
-import * as root from "../src";
-import * as tokensEntry from "../src/entries/tokens";
 import { axeViolations } from "./a11y";
 
 /** Wednesday, 14 October 2026, 10:00 local time. */
@@ -643,19 +642,6 @@ describe("lib/encoding", () => {
   });
 });
 
-describe("barrels", () => {
-  it("exports the shared helpers from the root and @sutra/ui/tokens", () => {
-    for (const name of ["formatRelative", "formatDuration", "formatCompact", "hashString", "initials", "isSafeHref", "clamp", "base64UrlEncode", "useNow", "useMediaQuery", "useAsyncAction", "useSafeId", "CopyButton", "CopyField", "toValidDate"]) {
-      expect(root).toHaveProperty(name);
-    }
-    expect(tokensEntry.formatBytes).toBe(formatBytes);
-    expect(tokensEntry.splitDuration).toBe(splitDuration);
-    expect(tokensEntry.base32Decode).toBe(base32Decode);
-    // Root keeps the older component bindings for these three names.
-    expect(root.base32Decode).toBe(totpBase32Decode);
-  });
-});
-
 /* ------------------------------------------------------------------ */
 /* Hooks                                                               */
 /* ------------------------------------------------------------------ */
@@ -1023,6 +1009,34 @@ describe("useMountedRef / useAsyncAction / useSafeId", () => {
     expect(a).toMatch(/^grad-/);
     expect(new Set([a, b, c]).size).toBe(3);
     expect(useIsoLayoutEffect).toBe(React.useLayoutEffect);
+  });
+});
+
+describe("useCopy", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("writes to the clipboard, flips copied for the timeout, and reports failure", async () => {
+    vi.useFakeTimers();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+    const { result } = renderHook(() => useCopy(500));
+    expect(result.current.copied).toBe(false);
+    let ok: boolean | undefined;
+    await act(async () => {
+      ok = await result.current.copy("hello");
+    });
+    expect(ok).toBe(true);
+    expect(writeText).toHaveBeenCalledWith("hello");
+    expect(result.current.copied).toBe(true);
+    act(() => vi.advanceTimersByTime(500));
+    expect(result.current.copied).toBe(false);
+
+    writeText.mockRejectedValue(new Error("denied"));
+    await act(async () => {
+      ok = await result.current.copy("again");
+    });
+    expect(ok).toBe(false);
+    expect(result.current.copied).toBe(false);
   });
 });
 

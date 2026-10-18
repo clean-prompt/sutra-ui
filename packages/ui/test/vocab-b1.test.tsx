@@ -1,24 +1,18 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
-import {
-  AgentTodoList,
-  AlertBanner,
-  AppLauncher,
-  AppSidebar,
-  Badge,
-  BillingBanner,
-  ChainOfThoughtStep,
-  EffortSlider,
-  FAQ,
-  JobBanner,
-  JobList,
-  NowPlaying,
-  RunHistory,
-  SidebarProvider,
-  UsageInvoiceTable,
-  usePlayerQueue,
-  type PlayerTrack,
-} from "../src";
+import { AppSidebar } from "../src/blocks/sidebar-navigation-blocks";
+import { JobList, RunHistory } from "../src/kits/agent-admin/agent-jobs";
+import { EffortSlider } from "../src/kits/agent/agent-mode";
+import { AgentTodoList } from "../src/kits/agent/agent-tasks";
+import { ChainOfThoughtStep } from "../src/kits/ai/chain-of-thought";
+import { JobBanner } from "../src/kits/ai/job-banner";
+import { BillingBanner, UsageInvoiceTable } from "../src/kits/billing/billing";
+import { NowPlaying, usePlayerQueue, type PlayerTrack } from "../src/kits/media/audio-player";
+import { AppLauncher } from "../src/kits/workspace/app-launcher";
+import { SidebarProvider } from "../src/patterns/sidebar-navigation";
+import { FAQ } from "../src/primitives/accordion";
+import { AlertBanner } from "../src/primitives/alert-banner";
+import { Badge } from "../src/primitives/badge";
 
 describe("AlertBanner tone", () => {
   it("tone and the deprecated variant render the same", () => {

@@ -1,28 +1,22 @@
 import * as React from "react";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Backlinks } from "../src/kits/workspace/backlinks";
 import {
-  Backlinks,
-  ConflictResolver,
   EntityChip,
   MentionInput,
   MentionText,
-  OfflineBanner,
-  QuickCapture,
-  ShortcutProvider,
-  SyncStatus,
-  TodayTimeline,
   extractMentions,
   formatMention,
-  formatRelativeTime,
-  layoutTimeline,
   mentionsToPlainText,
-  parseCapture,
   parseMentions,
   type MentionSuggestion,
-  type SyncState,
-  type TimelineItem,
-} from "../src";
+} from "../src/kits/workspace/entity-mention";
+import { QuickCapture, parseCapture } from "../src/kits/workspace/quick-capture";
+import { ConflictResolver, OfflineBanner, SyncStatus, type SyncState } from "../src/kits/workspace/sync-status";
+import { TodayTimeline, layoutTimeline, type TimelineItem } from "../src/kits/workspace/today-timeline";
+import { formatRelativeTime } from "../src/lib/relative-time";
+import { ShortcutProvider } from "../src/patterns/shortcuts";
 import { axeViolations } from "./a11y";
 
 /** Wednesday, 14 October 2026, 10:00 local time. */

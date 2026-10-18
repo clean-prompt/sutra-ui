@@ -1,38 +1,18 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  ChainOfThought,
-  ChainOfThoughtContent,
-  ChainOfThoughtStep,
-  ChatAttachment,
-  ChatConversation,
-  ChatConversationContent,
-  ChatCopyAction,
-  ChatFeedbackActions,
-  ChatListView,
-  ChatMessage,
-  ChatMessageActions,
-  ChatMessageAvatar,
-  ChatMessageBody,
-  ChatMessageContent,
-  ChatMessageHeader,
-  ChatScrollButton,
-  ChatSource,
-  ChatSourceList,
-  ChatTool,
-  CodeBlock,
-  Markdown,
-  PromptInput,
-  PromptInputSubmit,
-  PromptInputTextarea,
-  PromptInputToolbar,
-  PromptSuggestion,
-  PromptSuggestionGroup,
-  TextShimmer,
-  groupChatsByDate,
-  type ChatListItemData,
-} from "../src";
+import { ChainOfThought, ChainOfThoughtContent, ChainOfThoughtStep } from "../src/kits/ai/chain-of-thought";
+import { ChatAttachment } from "../src/kits/ai/chat-attachment";
+import { ChatConversation, ChatConversationContent, ChatScrollButton } from "../src/kits/ai/chat-conversation";
+import { ChatListView, groupChatsByDate, type ChatListItemData } from "../src/kits/ai/chat-list-view";
+import { ChatMessage, ChatMessageAvatar, ChatMessageBody, ChatMessageContent, ChatMessageHeader } from "../src/kits/ai/chat-message";
+import { ChatCopyAction, ChatFeedbackActions, ChatMessageActions } from "../src/kits/ai/chat-message-actions";
+import { ChatSource, ChatSourceList } from "../src/kits/ai/chat-source";
+import { ChatTool } from "../src/kits/ai/chat-tool";
+import { PromptInput, PromptInputSubmit, PromptInputTextarea, PromptInputToolbar } from "../src/kits/ai/prompt-input";
+import { PromptSuggestion, PromptSuggestionGroup } from "../src/kits/ai/prompt-suggestion";
+import { CodeBlock } from "../src/patterns/code-block";
+import { TextShimmer } from "../src/primitives/text-shimmer";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {
@@ -483,64 +463,6 @@ describe("ChainOfThought", () => {
       </ChainOfThought>
     );
     expect(screen.getByRole("button")).toHaveAttribute("aria-expanded", "true");
-  });
-});
-
-/* ------------------------------------------------------------------ */
-/* Markdown                                                            */
-/* ------------------------------------------------------------------ */
-
-describe("Markdown", () => {
-  const source = [
-    "# Title",
-    "",
-    "Some **bold** text and a [link](https://example.com).",
-    "",
-    "| Name | Qty |",
-    "| ---- | --: |",
-    "| Apple | 3 |",
-    "| Pear | 5 |",
-    "",
-    "```ts",
-    "const a = 1;",
-    "",
-    "const b = 2;",
-    "```",
-  ].join("\n");
-
-  it("renders a GFM table and a fenced code block", () => {
-    render(<Markdown>{source}</Markdown>);
-    expect(screen.getByRole("heading", { level: 1, name: "Title" })).toBeInTheDocument();
-    const table = screen.getByRole("table");
-    expect(within(table).getAllByRole("columnheader").map((c) => c.textContent)).toEqual(["Name", "Qty"]);
-    expect(within(table).getAllByRole("row")).toHaveLength(3);
-    expect(within(table).getByRole("cell", { name: "5" })).toHaveStyle({ textAlign: "right" });
-
-    const code = document.querySelector("pre code");
-    // The blank line inside the fence must not split the block.
-    expect(code?.textContent).toBe("const a = 1;\n\nconst b = 2;");
-    expect(screen.getByText("ts")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Copy code" })).toBeInTheDocument();
-  });
-
-  it("opens external links in a new tab", () => {
-    render(<Markdown>{"[ext](https://example.com) and [int](/docs)"}</Markdown>);
-    expect(screen.getByRole("link", { name: "ext" })).toHaveAttribute("target", "_blank");
-    expect(screen.getByRole("link", { name: "int" })).not.toHaveAttribute("target");
-  });
-
-  it("copies fenced code", async () => {
-    const user = userEvent.setup();
-    const writeText = mockClipboard();
-    render(<Markdown>{"```\nnpm i\n```"}</Markdown>);
-    await user.click(screen.getByRole("button", { name: "Copy code" }));
-    expect(writeText).toHaveBeenCalledWith("npm i");
-    expect(await screen.findByRole("button", { name: "Copied" })).toBeInTheDocument();
-  });
-
-  it("has no axe violations", async () => {
-    const { container } = render(<Markdown>{source}</Markdown>);
-    expect(await axeViolations(container)).toEqual([]);
   });
 });
 

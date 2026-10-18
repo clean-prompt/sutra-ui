@@ -27,6 +27,7 @@ import { useResizeObserver } from "../../hooks/use-resize-observer";
 import { ModelSelectOption, type PickerModel } from "./model-select";
 import { DropdownMenu as Menu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../primitives/dropdown-menu";
 import { useTextareaMirror } from "../../hooks/use-textarea-mirror";
+import { assignRef } from "../../lib/refs";
 
 interface PromptInputContextValue {
   value: string;
@@ -418,11 +419,6 @@ export interface PromptInputTextareaProps
   highlight?: PromptInputHighlight;
   /** Class for the mirror layer (rarely needed). */
   mirrorClassName?: string;
-}
-
-function assignRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
-  if (typeof ref === "function") ref(value);
-  else if (ref) (ref as React.RefObject<T | null>).current = value;
 }
 
 /** Auto-growing textarea (1 → 8 rows). Enter submits, Shift+Enter adds a line, IME composition is respected. */

@@ -4,6 +4,7 @@ import { cn } from "../../lib/cn";
 import { type StickToBottomState, type UseStickToBottomOptions, useStickToBottom } from "../../hooks/use-stick-to-bottom";
 import { Button, type ButtonProps } from "../../primitives/button";
 import { EmptyState } from "../../primitives/empty-state";
+import { assignRef as setRef } from "../../lib/refs";
 
 export { useStickToBottom, type StickToBottomState, type UseStickToBottomOptions } from "../../hooks/use-stick-to-bottom";
 
@@ -14,11 +15,6 @@ export function useChatConversation() {
   const ctx = React.useContext(ChatConversationContext);
   if (!ctx) throw new Error("useChatConversation must be used within <ChatConversation>");
   return ctx;
-}
-
-function setRef<T>(ref: React.Ref<T> | undefined, value: T | null) {
-  if (typeof ref === "function") ref(value);
-  else if (ref) (ref as React.RefObject<T | null>).current = value;
 }
 
 export interface ChatConversationProps extends React.HTMLAttributes<HTMLDivElement>, UseStickToBottomOptions {}

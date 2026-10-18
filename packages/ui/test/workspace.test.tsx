@@ -2,7 +2,6 @@ import * as React from "react";
 import { act, fireEvent, render, renderHook, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { ShortcutProvider, useShortcut } from "../src/patterns/shortcuts";
 import {
   ConnectionRegistry,
   GatewayStatusPopover,
@@ -603,20 +602,6 @@ describe("KeybindEditor", () => {
     expect(screen.getByRole("button", { name: "Reset all" })).toBeDisabled();
   });
 
-  it("reads shortcuts from the registry inside a ShortcutProvider", () => {
-    function Registered() {
-      useShortcut("mod+b", () => {}, { id: "toggle-sidebar", label: "Toggle sidebar", group: "View" });
-      return null;
-    }
-    render(
-      <ShortcutProvider platform="mac">
-        <Registered />
-        <KeybindEditor />
-      </ShortcutProvider>
-    );
-    expect(screen.getByText("Toggle sidebar")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "View" })).toBeInTheDocument();
-  });
 });
 
 /* ------------------------------------------------------------------ */

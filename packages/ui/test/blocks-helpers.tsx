@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within, type RenderResult } from "@testing-library/react";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
-import type { BlockRegistryEntry } from "../src";
+import type { BlockRegistryEntry } from "../src/blocks/registry";
 
 /** Categories whose demo renders a trigger that opens floating content. */
 export const OPENABLE: BlockRegistryEntry["category"][] = ["dialog", "dropdown"];

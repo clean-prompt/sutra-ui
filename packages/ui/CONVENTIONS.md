@@ -2,20 +2,40 @@
 
 Stack: **React 19 + TypeScript (strict) + Tailwind CSS v4 + Radix UI** (`radix-ui` unified package), `class-variance-authority`, `@remixicon/react` icons. Built with tsup; there is no path alias at build time, so **use relative imports**.
 
-## Files
-- One component family per file in `src/components/<kebab-name>.tsx` (blocks in `src/blocks/`, assets in `src/assets/`).
+## Layers and folders
+Everything lives in `src/`, one component family per kebab-case file. Pick the lowest layer that fits:
+
+| Folder | Put here | May import (enforced by `test/layering.test.ts`) |
+|---|---|---|
+| `lib/` | Pure, typed functions and constants. No React components (type-only React imports are fine) | `lib` |
+| `hooks/` | Generic hooks, `use-<name>.ts` | `lib`, `hooks` |
+| `assets/` | Brand marks, logos, flags, icon wrappers, illustrations | `lib`, `hooks`, `assets` |
+| `primitives/` | Basic controls with no domain knowledge (Button, Input, Dialog, Badge, StatusBadge …) | `lib`, `hooks`, `assets`, `styles`, `primitives` |
+| `patterns/` | Composed, domain-neutral views (Markdown, DiffViewer, TilingLayout, SchemaForm …) | the above + `patterns` |
+| `kits/<domain>/` | Domain features: `ai`, `agent`, `agent-admin`, `identity`, `billing`, `workspace`, `ops`, `media`, `voice`, `social`, `editor`, `terminal` | the above + `patterns`, the same kit, and the kits listed for it in `KIT_DEPS` |
+| `blocks/` | Composed sections and pages; `registry.tsx` + `demo-data.ts` are the demo registry (`@sutra/ui/blocks/registry`) | anything |
+| `entries/` | One barrel per public subpath (`@sutra/ui/<name>`) | anything |
+
+- Kit-to-kit imports are allowed only along the edges in the `KIT_DEPS` table at the top of `test/layering.test.ts`. A new edge means adding it there (the test also fails on listed edges that are no longer used). If a kit needs something from a kit it may not import, move that piece down to `patterns/` instead.
+- A new kit folder needs a `KIT_DEPS` entry; otherwise the layering test reports its files as strays.
+- **`src/index.ts` and `src/entries/core.ts` are generated** by `scripts/gen-index.mjs` from the folders. Never edit them by hand: after adding, moving or removing a module run `pnpm gen:index` (`pnpm check:index` fails when they are stale). The root re-exports every asset, primitive, pattern, kit module and block, plus the lib/hooks modules listed in `entries/tokens.ts`. It leaves out modules that reach an optional peer (`@codemirror/*`, `@tiptap/*`, `@xterm/*`), back-compat barrels, and the modules in the script's `INTERNAL` table. Name collisions between `export *` lines are resolved in its `OVERRIDES` table.
+- The other entries in `src/entries/` are hand-written. Add a new module to the domain entry it belongs to. Each entry needs a matching `package.json` `exports` key, and `test/api-surface.test.ts` checks that every module in primitives/patterns/kits is reachable from some public barrel (exceptions go in its `INTERNAL_MODULES` list). After an intended root API change, update its snapshot with `npx vitest run test/api-surface.test.ts -u`.
+- Deep imports (`@sutra/ui/primitives/<file>`, `patterns/<file>`, `kits/<domain>/<file>`, `blocks/<file>`, `assets/<file>`) come from wildcard `exports`, so new files need no `package.json` change. The `@sutra/ui/components/<name>` aliases are frozen back-compat for the old flat folder. Don't add new ones.
+- **Back-compat barrels:** `kits/ai/ai-extras`, `kits/ai/primitives-extra`, `kits/workspace/kanban`, `patterns/counters` and `assets/misc` only re-export modules that used to live in one file. Never import from them inside the package. Import the real module (e.g. `./status-strip`, `./kanban-board`, `./countdown`). Don't add code to them.
 - Named exports only, no default exports. Export prop types (`export interface XProps`).
-- Never create or edit `src/index.ts`. It is assembled from the files.
-- Export names must be globally unique across the package. Prefix generic sub-parts with the family (`TableRow`, `ChatMessageAvatar`).
+- Export names must be unique across the package, because the root barrel uses `export *` and silently drops a name exported twice. Prefix generic sub-parts with the family (`TableRow`, `ChatMessageAvatar`). A prefix is not a reason to copy, though: a new component that resembles an existing one builds on that base (see [Build on the existing base](#build-on-the-existing-base-dont-add-a-parallel-copy)) instead of becoming a prefixed duplicate.
+- Tests live in `test/*.test.tsx` (Vitest, jsdom, `<StrictMode>`). Before committing run `pnpm verify` (typecheck, index check, tests, build, `check:exports`). There is no CI.
 
 ## Shared building blocks (import, do not re-implement)
-- `cn`, `focusRing`, `invalidRing`, `type Size` from `../lib/cn`
-- `Button`, `buttonVariants` from `./button` (variants: primary, secondary, tertiary, soft, ghost, outline, destructive, destructive-soft, inverse, link; sizes: xs, sm, md, lg, xl, icon-xs, icon-sm, icon, icon-lg, icon-xl; props `loading`, `leadingIcon`, `trailingIcon`, `asChild`)
-- `Spinner` from `./spinner` (variants ring | dots | bars | pulse | glyph; sizes xs–xl; `label=""` makes it decorative)
-- `Label` from `./label` (`required`, `hint`)
-- `Heading`, `Text`, `Eyebrow`, `Kbd`, `InlineCode` from `./typography`
-- `Container`, `Grid`, `GridItem`, `Stack`, `HStack`, `Card` from `./layout`
-- `useControllableState` from `../hooks/use-controllable-state`; `useCopy` from `../hooks/use-copy`
+Paths are relative to `src/`.
+- `cn`, `focusRing`, `invalidRing`, `type Size` from `lib/cn`
+- `Button`, `buttonVariants` from `primitives/button` (variants: primary, secondary, tertiary, soft, ghost, outline, destructive, destructive-soft, inverse, link; sizes: xs, sm, md, lg, xl, icon-xs, icon-sm, icon, icon-lg, icon-xl; props `loading`, `leadingIcon`, `trailingIcon`, `asChild`)
+- `Spinner` from `primitives/spinner` (variants ring | dots | bars | pulse | glyph; sizes xs–xl; `label=""` makes it decorative)
+- `Label` from `primitives/label` (`required`, `hint`)
+- `Heading`, `Text`, `Eyebrow`, `Kbd`, `InlineCode` from `primitives/typography`
+- `Container`, `Grid`, `GridItem`, `Stack`, `HStack`, `Card` from `primitives/layout`
+- `CopyButton`, `CopyField` from `primitives/copy-button`
+- `useControllableState` from `hooks/use-controllable-state`; `useCopy` from `hooks/use-copy`
 - Radix: `import { Dialog as DialogPrimitive } from "radix-ui"` (the namespaces are Accordion, AlertDialog, AspectRatio, Avatar, Checkbox, Collapsible, ContextMenu, Dialog, DropdownMenu, HoverCard, Label, NavigationMenu, Popover, Progress, RadioGroup, ScrollArea, Select, Separator, Slider, Slot (`Slot.Root`), Switch, Tabs, Toast, Toggle, ToggleGroup, Tooltip, VisuallyHidden …)
 - Icons: `import { RiCloseLine } from "@remixicon/react"`. Icons inherit `currentColor`; size them with `size-4` etc.
 
@@ -59,9 +79,19 @@ Tests render everything inside `<StrictMode>` (see `test/setup.ts`), which mount
 - `lib/text`: `escapeRegExp`, `matchRanges`, `slugify`, `initials`, `capitalize`, `truncateMiddle`, `graphemes`.
 - `lib/validate`: `isEmail`, `isHttpUrl`, `hostnameOf`, `isSafeHref` (check user-supplied hrefs with it).
 - `lib/math`: `clamp`, `toPercent`, `roundTo`. `lib/encoding`: `base64UrlEncode/Decode(Bytes)`, `base32Encode/Decode`.
+- `lib/relative-time`: `formatRelativeTime` (short: "just now", "5 min ago", "yesterday"). `lib/token-count`: `formatTokenCount` ("1.2K"), `formatAgentTokens` ("12.4k").
+- `lib/shortcuts`: parse, match and format key combos and sequences (`matchesShortcut`, `formatShortcut`, `formatShortcutSpoken`, `getShortcutKeyLabels`, `isEditableTarget`, `detectShortcutPlatform`, `ShortcutManager`).
+- `lib/text-field`: `replaceTextRange` (sets a field's value so React's `onChange` fires), `getTextareaCaretRect`.
+- `lib/reorder`: `reorderArray`, `reorderBy`. `lib/pagination`: `getPaginationRange` (`[1, "ellipsis-start", 4, 5, 6, "ellipsis-end", 10]`). `lib/refs`: `assignRef` (merge callback/object refs).
+- `lib/cron`: `parseCron`, `describeCron`, `nextCronRuns`, intervals (`parseInterval`, `formatInterval`, `intervalToMs`) and builder schedules (`scheduleToCron`, `cronToSchedule`, `describeSchedule`, `nextScheduleRuns` …). `lib/rrule`: `RecurrenceRule`, `toRRule` (RFC 5545), `describeRecurrence`.
+- `lib/tone` (`Tone`, `normalizeTone`, `toneClasses`, `toneClass`), `lib/status` (`TaskStatus`, `normalizeTaskStatus`), `lib/tokens` (design tokens as JS values). See Vocabulary below.
 - `hooks/use-now`: `useNow`, `useCountdown` (wall-clock based). `hooks/use-media-query`: `useMediaQuery`, `usePrefersReducedMotion`, `prefersReducedMotion`, `useBreakpoint`. `hooks/use-resize-observer`: `useResizeObserver`, `useElementSize`, `useElementWidth`. `hooks/use-iso-layout-effect`: `useIsoLayoutEffect`, `useLatestRef`. `hooks/use-async-action`: `useAsyncAction` (busy/error, stale-run and unmount safe), `useMountedRef`, `errorMessage`. `hooks/use-safe-id`: `useSafeId` (ids safe for `url(#id)`).
-- `components/copy-button`: `CopyButton` (icon/button/ghost, announces "Copied to clipboard") and `CopyField` (value + copy button, optional `$` prefix).
-- Root-barrel note: `formatBytes`, `splitDuration` and `base32Decode` from the root are still the older component versions (file-upload, counters, totp); the lib versions are exported from `@sutra/ui/tokens`. Inside the package, import from `../lib/*` directly.
+- Scrolling and layout: `hooks/use-stick-to-bottom` (keep a scroller pinned to the bottom until the user scrolls up), `hooks/use-virtual-rows` (fixed-height windowing), `hooks/use-scroll-edges` (which edges still have overflow), `hooks/use-active-indicator` (measure the active tab for a sliding indicator), `hooks/use-zoom-pan` (wheel/pinch zoom, drag pan, keyboard).
+- Input and gestures: `hooks/use-swipe` (flick detection that doesn't fight native scroll), `hooks/use-textarea-mirror` (an overlay laid out exactly like a textarea), `hooks/use-caret-anchor` (position a popup at a field's caret), `hooks/use-shortcut-manager` (`useShortcutManager`, `useShortcutPlatform`; the provider is in `patterns/shortcuts`).
+- State: `hooks/use-reorder` (controlled/uncontrolled list with move helpers), `hooks/use-pagination`, `hooks/use-stopwatch` (laps), `hooks/use-online-status`, `hooks/use-theme`.
+- `primitives/copy-button`: `CopyButton` (icon/button/ghost, announces "Copied to clipboard") and `CopyField` (value + copy button, optional `$` prefix).
+- Only the lib/hooks modules in `entries/tokens.ts` are public (`@sutra/ui/tokens` and the root). The rest are internal helpers: import them inside the package, and add a module to `entries/tokens.ts` (then `pnpm gen:index`) only when it should become public API.
+- Root-barrel note: `formatBytes`, `splitDuration` and `base32Decode` from the root are still the older component versions (`patterns/file-upload`, `patterns/countdown`, `kits/identity/totp`; see `OVERRIDES` in `scripts/gen-index.mjs`). The lib versions are exported from `@sutra/ui/tokens`. Inside the package, import from `lib/*` directly.
 
 ## Vocabulary (props and values)
 One spelling per concept. Old spellings stay accepted as **deprecated aliases** (typed via the `Legacy*` / `*Input` unions and mapped with the normalizers), so existing call sites keep compiling. Docs, defaults, examples and new code use the canonical form.
@@ -86,7 +116,7 @@ Before writing a new pill, list, banner or picker, check this table. A domain co
 | Categorical label | `Badge` (`color`, or `tone` for semantics) | KanbanRunBadge, ToolsetHealthPill, DownloadBadge |
 | Loading indicator | `Spinner` | ChatLoader, GlyphSpinner, TypingIndicator, MediaBufferingIndicator |
 | Live "agent is working" line | `AgentStatusLine` (`state`, `verbs`, `tokens`, `startedAt`) | SpinnerVerbs. Infrastructure waits (cold start, retry, offline) use `StatusStrip` instead |
-| Model lifecycle | `ModelState` / `ModelStateGlyph` (`model-state.tsx`) | — |
+| Model lifecycle | `ModelState` / `ModelStateGlyph` (`kits/ai/model-state`) | — |
 | Pick a model | `ModelSelect` (flat list), `ProviderModelPicker` (two columns), rows via `ModelSelectOption` | ModelPicker, PromptInputModelSelect |
 | Conversation sidebar | `ConversationList` (`groupBy`, `searchable`, `rowActions`) | ChatListView, ConversationSidebarList; AgentSessionList reuses its row and header |
 | Rename in place | `InlineEditText` | conversation and session rename |

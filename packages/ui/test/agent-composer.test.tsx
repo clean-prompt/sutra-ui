@@ -391,6 +391,27 @@ describe("QueuedMessages", () => {
   });
 });
 
+describe("QueuedMessages steer", () => {
+  it("adds a Steer action next to Send now", async () => {
+    const onSteer = vi.fn();
+    const onSendNow = vi.fn();
+    const { container } = render(
+      <QueuedMessages items={[{ id: "a", text: "Use pnpm instead" }]} onSteer={onSteer} onSendNow={onSendNow} />
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Steer" }));
+    expect(onSteer).toHaveBeenCalledWith("a");
+    expect(onSendNow).not.toHaveBeenCalled();
+    fireEvent.focus(screen.getByRole("button", { name: "Steer" }));
+    expect((await screen.findAllByText(/without stopping/)).length).toBeGreaterThan(0);
+    expect(await axeViolations(container)).toEqual([]);
+  });
+
+  it("omits Steer when onSteer is unset", () => {
+    render(<QueuedMessages items={[{ id: "a", text: "x" }]} onSendNow={() => {}} />);
+    expect(screen.queryByRole("button", { name: "Steer" })).toBeNull();
+  });
+});
+
 describe("SideThread", () => {
   const exchanges: SideThreadExchange[] = [
     { id: "a", question: "What does useMemo do?", answer: "It caches a computed value." },

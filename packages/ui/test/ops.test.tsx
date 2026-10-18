@@ -12,7 +12,6 @@ import {
   type TransferItemData,
 } from "../src/patterns/transfer-list";
 import { ProgressDialog, useStreamingTask, type StreamingTaskEvent } from "../src/kits/ops/progress-dialog";
-import { Markdown } from "../src/patterns/markdown";
 import { axeViolations } from "./a11y";
 
 // jsdom has no Element#scrollTo; useStickToBottom calls it.
@@ -457,65 +456,5 @@ describe("ProgressDialog / useStreamingTask", () => {
     );
     expect(screen.getByText("42%")).toBeInTheDocument();
     expect(await axeViolations(document.body)).toEqual([]);
-  });
-});
-
-/* ------------------------------------------------------------------ */
-/* Markdown math + citations                                           */
-/* ------------------------------------------------------------------ */
-
-describe("Markdown math", () => {
-  it("renders inline and display math with KaTeX", () => {
-    const { container } = render(
-      <Markdown math>{"Energy $x^2$ here.\n\n$$\n\\begin{aligned}\na &= b \\\\\n\nc &= d\n\\end{aligned}\n$$\n\nAfter."}</Markdown>
-    );
-    expect(container.querySelectorAll(".katex").length).toBeGreaterThanOrEqual(2);
-    expect(container.querySelectorAll(".katex-display")).toHaveLength(1);
-    expect(container.textContent).not.toContain("$$");
-    expect(container).toHaveTextContent("After.");
-  });
-
-  it("leaves dollars alone without the math prop", () => {
-    const { container } = render(<Markdown>{"Cost $x^2$"}</Markdown>);
-    expect(container.querySelector(".katex")).toBeNull();
-    expect(container).toHaveTextContent("$x^2$");
-  });
-});
-
-describe("Markdown citations", () => {
-  const md = "Rust is fast [1] and safe [2,3]. Not [9].\n\nCode `arr[1]` stays.\n\n```\nx = a[2]\n```";
-
-  it("renders pills and calls onCite, skipping code", () => {
-    const onCite = vi.fn();
-    const { container } = render(
-      <Markdown citeCount={3} sources={[{ title: "Rust book" }, { title: "Nomicon" }, { title: "Blog" }]} onCite={onCite}>
-        {md}
-      </Markdown>
-    );
-    const pills = container.querySelectorAll("[data-citation]");
-    expect(Array.from(pills).map((p) => p.textContent)).toEqual(["1", "2", "3"]);
-    const first = screen.getByRole("button", { name: "Source 1: Rust book" });
-    expect(first).toHaveAttribute("title", "Rust book");
-    fireEvent.click(screen.getByRole("button", { name: "Source 3: Blog" }));
-    expect(onCite).toHaveBeenCalledWith(3);
-    expect(container).toHaveTextContent("Not [9].");
-    expect(container.querySelector("code")).toHaveTextContent("arr[1]");
-    expect(container.querySelector("pre")).toHaveTextContent("x = a[2]");
-  });
-
-  it("uses sources length and renders link pills without onCite", () => {
-    const { container } = render(
-      <Markdown sources={[{ href: "https://example.com", title: "Example" }]}>{"See [1]."}</Markdown>
-    );
-    expect(container.querySelector("a[data-citation]")).toHaveAttribute("href", "https://example.com");
-  });
-
-  it("works together with math and passes axe", async () => {
-    const { container } = render(
-      <Markdown math citeCount={1} onCite={() => {}}>{"Area $\\pi r^2$ [1]."}</Markdown>
-    );
-    expect(container.querySelector(".katex")).not.toBeNull();
-    expect(container.querySelectorAll("[data-citation]")).toHaveLength(1);
-    expect(await axeViolations(container)).toEqual([]);
   });
 });
