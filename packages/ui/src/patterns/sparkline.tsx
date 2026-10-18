@@ -2,6 +2,8 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { useSafeId } from "../hooks/use-safe-id";
+import { resolveAccent, type Accent } from "../lib/accent";
+import { clamp } from "../lib/math";
 
 export type SparklineColor =
   | "primary"
@@ -34,9 +36,9 @@ const toneColor: Record<Tone, string> = {
   info: "var(--info)",
 };
 
-/** `tone` wins over `color`; `color` stays for arbitrary CSS colours. */
-const colorFor = (tone: ToneInput | undefined, color: string | undefined) =>
-  tone ? toneColor[normalizeTone(tone)] : color;
+/** `tone` wins over `color`, which wins over `accent`; `color` stays for arbitrary CSS colours. */
+const colorFor = (tone: ToneInput | undefined, color: string | undefined, accent?: Accent) =>
+  tone ? toneColor[normalizeTone(tone)] : (color ?? resolveAccent(accent));
 
 type Point = readonly [number, number];
 
@@ -107,6 +109,11 @@ export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>,
   tone?: ToneInput;
   /** Any CSS colour (token names such as "primary" still work; prefer `tone` for those). */
   color?: SparklineColor;
+  /**
+   * Categorical colour (`blue`, `amber`, …, a semantic token or any CSS colour). `tone` and `color` take
+   * precedence. Pass `color="var(--sutra-accent, var(--primary))"` to follow an accent set by a parent instead.
+   */
+  accent?: Accent;
   /** Color green when the series ends higher than it started, red otherwise. */
   trend?: boolean;
   smooth?: boolean;
@@ -133,6 +140,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
       responsive,
       tone,
       color: colorProp,
+      accent,
       trend,
       smooth = true,
       strokeWidth = 1.5,
@@ -147,7 +155,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
     },
     ref
   ) => {
-    const color = colorFor(tone, colorProp);
+    const color = colorFor(tone, colorProp, accent);
     const stroke = strokeFor(data, color, trend);
     const gradientId = useSafeId("sutra-spark");
 
@@ -161,6 +169,8 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
           responsive={responsive}
           color={color ?? (trend ? stroke : undefined)}
           highlightLast={highlightLast}
+          min={minProp}
+          max={maxProp}
           label={label}
           className={className}
           wrapperClassName={wrapperClassName}
@@ -259,6 +269,12 @@ export interface SparkBarProps extends Omit<React.SVGAttributes<SVGSVGElement>, 
   tone?: ToneInput;
   /** Any CSS colour (token names still work; prefer `tone` for those). Default primary. */
   color?: SparklineColor;
+  /** Categorical colour (`blue`, `amber`, …, a semantic token or any CSS colour). `tone` and `color` take precedence. */
+  accent?: Accent;
+  /** Fixed scale bottom (e.g. 0). Defaults to the smaller of 0 and the data minimum. */
+  min?: number;
+  /** Fixed scale top (e.g. 100 for percentages). Defaults to the larger of 0 and the data maximum. */
+  max?: number;
   /** Color for non-highlighted bars when `highlightLast` is on. Defaults to a faded `color`. */
   mutedColor?: string;
   highlightLast?: boolean;
@@ -278,7 +294,10 @@ export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
       height = 32,
       responsive,
       tone,
-      color = "primary",
+      color,
+      accent,
+      min: minProp,
+      max: maxProp,
       mutedColor,
       highlightLast,
       gap = 2,
@@ -290,13 +309,17 @@ export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
     },
     ref
   ) => {
-    const fill = resolveColor(colorFor(tone, color) ?? "primary");
+    const fill = resolveColor(colorFor(tone, color, accent) ?? "primary");
     const n = data.length;
-    const hi = Math.max(0, ...data);
-    const lo = Math.min(0, ...data);
+    const finite = data.filter(Number.isFinite);
+    let hi = Number.isFinite(maxProp) ? maxProp! : Math.max(0, ...finite);
+    let lo = Number.isFinite(minProp) ? minProp! : Math.min(0, ...finite);
+    if (lo > hi) [lo, hi] = [hi, lo];
     const span = hi - lo || 1;
+    /* Bars grow from 0, or from the nearest edge of the scale when 0 is outside it. */
+    const base = clamp(0, lo, hi);
     const barW = n > 0 ? Math.max(1, (width - gap * (n - 1)) / n) : 0;
-    const zeroY = (hi / span) * height;
+    const zeroY = ((hi - base) / span) * height;
     const faded = mutedColor ?? `color-mix(in oklab, ${fill} 35%, transparent)`;
 
     return (
@@ -315,9 +338,10 @@ export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
           className={cn("block", className)}
           {...props}
         >
-          {data.map((v, i) => {
-            const h = Math.max(1, (Math.abs(v) / span) * height);
-            const y = v >= 0 ? zeroY - h : zeroY;
+          {data.map((raw, i) => {
+            const v = Number.isFinite(raw) ? clamp(raw, lo, hi) : base;
+            const h = Math.max(1, (Math.abs(v - base) / span) * height);
+            const y = v >= base ? zeroY - h : zeroY;
             const isLast = i === n - 1;
             return (
               <rect

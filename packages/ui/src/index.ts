@@ -12,9 +12,12 @@ export * from "./hooks/use-iso-layout-effect";
 export * from "./hooks/use-media-query";
 export * from "./hooks/use-now";
 export * from "./hooks/use-resize-observer";
+export * from "./hooks/use-rolling-series";
 export * from "./hooks/use-safe-id";
 export * from "./hooks/use-scroll-edges";
 export * from "./hooks/use-theme";
+export * from "./lib/accent";
+export * from "./lib/breakdown";
 export * from "./lib/cn";
 export * from "./lib/duration";
 export * from "./lib/encoding";
@@ -114,6 +117,7 @@ export * from "./primitives/typography";
 // not exported: patterns/counters (back-compat barrel, all targets exported)
 // not exported: patterns/inline-citation (internal: helpers; public names come from kits/ai/chat-source)
 export * from "./patterns/agent-avatar";
+export * from "./patterns/bar-list";
 export * from "./patterns/blog-content";
 export * from "./patterns/bottom-tab-bar";
 export * from "./patterns/chart";
@@ -140,6 +144,7 @@ export * from "./patterns/lightbox";
 export * from "./patterns/loading-screen";
 export * from "./patterns/log-viewer";
 export * from "./patterns/markdown";
+export * from "./patterns/metric-hero";
 export * from "./patterns/notice-bar";
 export * from "./patterns/password-strength";
 export * from "./patterns/recurrence-picker";

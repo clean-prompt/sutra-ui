@@ -122,6 +122,15 @@ export const nav: NavSection[] = [
           { id: "ring-meter", label: "Ring Meter" },
         ],
       },
+      {
+        id: "metrics",
+        label: "Metrics Dashboard",
+        items: [
+          { id: "dashboard", label: "Live Dashboard" },
+          { id: "bar-list", label: "Bar List" },
+          { id: "breakdown", label: "Breakdown Legends" },
+        ],
+      },
       { id: "more", label: "More", items: items("Sparkline", "Mesh Gradient", "Text Shimmer") },
       {
         id: "mobile",

@@ -1,7 +1,9 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { cn, focusRing } from "../lib/cn";
 import { chartColors } from "../lib/tokens";
 import { toPercent } from "../lib/math";
+import { breakdownValue, formatShare } from "../lib/breakdown";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 
 /** Percent thresholds at which a meter turns warning / danger. */
@@ -211,6 +213,8 @@ export interface StackedMeterPart {
   value: number;
   /** Token name or CSS color. Defaults to chartColors in order. */
   color?: string;
+  /** Leading icon in the `legend="list"` rows (decorative). */
+  icon?: React.ReactNode;
 }
 
 const tokenColor: Record<string, string> = {
@@ -222,6 +226,176 @@ const tokenColor: Record<string, string> = {
   muted: "var(--muted-foreground)",
 };
 
+export interface BreakdownListItem {
+  /** Stable id, used for hidden-series toggling. Defaults to the label when it is a string, else the index. */
+  key?: string;
+  label: React.ReactNode;
+  /** Dot colour: a token name (primary, success, warning, destructive, info, muted) or any CSS colour. */
+  color: string;
+  /** Leading icon (an app icon, a monogram). Decorative: the label names the row. */
+  icon?: React.ReactNode;
+  value?: number;
+  /** Replaces the formatted value. */
+  valueText?: React.ReactNode;
+  /** Share of the whole (0–1) for the percent column. Defaults to `value / total`. */
+  share?: number;
+}
+
+export interface BreakdownListProps extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+  items: BreakdownListItem[];
+  valueFormatter?: (value: number) => string;
+  /** Show the value column. Default true. */
+  showValue?: boolean;
+  /** Show the percent column. Default false. */
+  showPercent?: boolean;
+  /** Formats a share (0–1). Default whole percent ("46%", "<1%"). */
+  percentFormatter?: (share: number) => string;
+  /** Denominator for the default shares. Defaults to the sum of the visible values. */
+  total?: number;
+  /** Keys currently hidden (dimmed, struck through, left out of the default total). */
+  hiddenSeries?: string[];
+  defaultHiddenSeries?: string[];
+  onHiddenSeriesChange?: (hidden: string[]) => void;
+  /** Rows are toggle buttons. Defaults to true when `onHiddenSeriesChange` is set. Alt-click, Alt+Enter or double-click isolates a row. */
+  interactive?: boolean;
+  /** Swatch shape. Default "dot". */
+  marker?: "dot" | "square";
+  /** Row text size: "sm" (text-xs) or "md" (text-sm). Default "md". */
+  size?: "sm" | "md";
+}
+
+const breakdownColor = (color: string) => tokenColor[color] ?? color;
+
+/**
+ * Legend rows for a breakdown: colour dot, optional icon, label, right-aligned value and optional percent
+ * ("● Google Chrome 21.23 GB", "● postgres 312 MB 46%"). The last numeric column is muted. Rows can toggle series.
+ */
+export const BreakdownList = React.forwardRef<HTMLUListElement, BreakdownListProps>(
+  (
+    {
+      items,
+      valueFormatter = (v) => trim(v),
+      showValue = true,
+      showPercent = false,
+      percentFormatter = formatShare,
+      total,
+      hiddenSeries,
+      defaultHiddenSeries,
+      onHiddenSeriesChange,
+      interactive = onHiddenSeriesChange !== undefined,
+      marker = "dot",
+      size = "md",
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const [hidden, setHidden] = useControllableState<string[]>({
+      value: hiddenSeries,
+      defaultValue: defaultHiddenSeries ?? [],
+      onChange: onHiddenSeriesChange,
+    });
+    const prevHidden = React.useRef<string[]>(hidden);
+    const rows = items.map((item, i) => ({
+      ...item,
+      key: item.key ?? (typeof item.label === "string" ? item.label : String(i)),
+      color: breakdownColor(item.color),
+    }));
+    const keys = rows.map((r) => r.key);
+    const denominator =
+      total ?? rows.reduce((sum, r) => (hidden.includes(r.key) ? sum : sum + breakdownValue(r.value)), 0);
+
+    const isolate = (key: string, from: string[]) => {
+      const others = keys.filter((k) => k !== key);
+      const alreadyIsolated = !from.includes(key) && others.every((k) => from.includes(k));
+      setHidden(alreadyIsolated ? [] : others);
+    };
+    const toggle = (key: string) => setHidden(hidden.includes(key) ? hidden.filter((k) => k !== key) : [...hidden, key]);
+
+    const text = size === "sm" ? "text-xs" : "text-sm";
+    return (
+      <ul ref={ref} data-slot="breakdown-list" className={cn("flex min-w-0 flex-col", size === "sm" ? "gap-1" : "gap-0.5", text, className)} {...props}>
+        {rows.map((row) => {
+          const off = hidden.includes(row.key);
+          const share = row.share ?? (denominator > 0 ? breakdownValue(row.value) / denominator : 0);
+          const valueText = row.valueText ?? (row.value !== undefined ? valueFormatter(row.value) : null);
+          const content = (
+            <>
+              <span
+                aria-hidden
+                data-slot="breakdown-list-marker"
+                className={cn("shrink-0 border-2", marker === "dot" ? "size-2 rounded-full" : "size-2.5 rounded-[3px]")}
+                style={{ borderColor: row.color, backgroundColor: off ? "transparent" : row.color }}
+              />
+              {row.icon ? (
+                <span
+                  aria-hidden
+                  data-slot="breakdown-list-icon"
+                  className="flex size-4 shrink-0 items-center justify-center overflow-hidden rounded-[4px] [&>img]:size-full [&>svg]:size-4"
+                >
+                  {row.icon}
+                </span>
+              ) : null}
+              <span
+                data-slot="breakdown-list-label"
+                className={cn("min-w-0 flex-1 truncate text-left", off ? "text-muted-foreground line-through decoration-muted-foreground/50" : "text-foreground")}
+              >
+                {row.label}
+              </span>
+              {showValue && valueText !== null ? (
+                <span
+                  data-slot="breakdown-list-value"
+                  className={cn(
+                    "shrink-0 text-right tabular-nums",
+                    showPercent && !off ? "font-medium text-foreground" : "text-muted-foreground"
+                  )}
+                >
+                  {valueText}
+                </span>
+              ) : null}
+              {showPercent ? (
+                <span data-slot="breakdown-list-percent" className="w-10 shrink-0 text-right tabular-nums text-muted-foreground">
+                  {off && row.share === undefined ? "—" : percentFormatter(share)}
+                </span>
+              ) : null}
+            </>
+          );
+          const rowClass = cn("flex w-full min-w-0 items-center gap-2", size === "sm" ? "py-0" : "py-0.5", off && "opacity-70");
+          return (
+            <li key={row.key} data-slot="breakdown-list-item" data-state={off ? "hidden" : "visible"} className="min-w-0">
+              {interactive ? (
+                <button
+                  type="button"
+                  aria-pressed={!off}
+                  title="Click to toggle · Alt-click or double-click to isolate"
+                  onClick={(e) => {
+                    if (e.altKey) return isolate(row.key, hidden);
+                    if (e.detail === 2) return isolate(row.key, prevHidden.current);
+                    prevHidden.current = hidden;
+                    toggle(row.key);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.altKey && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      isolate(row.key, hidden);
+                    }
+                  }}
+                  className={cn(rowClass, "-mx-1.5 w-[calc(100%+0.75rem)] rounded-control px-1.5 transition-colors hover:bg-accent", focusRing)}
+                >
+                  {content}
+                </button>
+              ) : (
+                <div className={rowClass}>{content}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+);
+BreakdownList.displayName = "BreakdownList";
+
 export interface StackedMeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   label?: React.ReactNode;
   parts: StackedMeterPart[];
@@ -230,9 +404,12 @@ export interface StackedMeterProps extends Omit<React.HTMLAttributes<HTMLDivElem
   valueFormatter?: (value: number) => string;
   /** Text beside the label. Defaults to "used / max" when `max` is set. */
   valueText?: React.ReactNode;
-  /** Legend under the bar. Default true. */
-  legend?: boolean;
-  /** Show each part's percentage in the legend. */
+  /**
+   * Legend under the bar. `true` / `"inline"` (default): wrapping chips. `"list"`: one `BreakdownList` row per
+   * part with the value right-aligned and a percent column. `false` hides it.
+   */
+  legend?: boolean | "inline" | "list";
+  /** Show each part's percentage (of `max`, else of the total) in the legend. Default false inline, true for `"list"`. */
   showPercent?: boolean;
   size?: "sm" | "md" | "lg";
   caption?: React.ReactNode;
@@ -312,7 +489,15 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
             ) : null
           )}
         </div>
-        {legend ? (
+        {legend === "list" ? (
+          <BreakdownList
+            className="mt-3"
+            size={size === "sm" ? "sm" : "md"}
+            showPercent={showPercent ?? true}
+            valueFormatter={valueFormatter}
+            items={resolved.map((p) => ({ key: p.key, label: p.label, color: p.color, icon: p.icon, value: p.value, share: p.pct / 100 }))}
+          />
+        ) : legend ? (
           <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
             {resolved.map((p) => (
               <li key={p.key} className="inline-flex items-center gap-1.5 text-muted-foreground">

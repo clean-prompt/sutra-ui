@@ -101,6 +101,7 @@ One spelling per concept. Old spellings stay accepted as **deprecated aliases** 
 - **Controlled state:** the primary value is always `value` / `defaultValue` / `onValueChange(value, meta?)`; open state is `open` / `defaultOpen` / `onOpenChange`; checked state is `checked` / `defaultChecked` / `onCheckedChange`. Every controlled prop ships with its `default*` partner. Components that used `onChange` (editors, forms) add `onValueChange` with the extra data as a second argument and keep `onChange` as a deprecated alias.
 - **Booleans are bare adjectives:** `loading` (not `isLoading` / `busy` / `pending` for the same idea), `active` (not `isActive`), `disabled`. Keep old names as deprecated aliases.
 - **Dismissal:** notification-like components use `onDismiss` (keep `onClose` as an alias where it existed).
+- **Categorical colour → `accent`.** A section or metric colour with no meaning (CPU blue, Memory purple): `accent?: Accent` from `lib/accent.ts` (named palette, semantic token or any CSS colour). Put `accentStyle(accent, style)` on the root and use `accentClasses` inside, so children inherit `--sutra-accent`. Use `tone` when the colour means good or bad.
 - **Density:** `density?: Density` (`compact | normal | relaxed`, in `lib/cn.ts`). A legacy `compact?: boolean` stays as an alias via `normalizeDensity()`.
 - **Empty states:** the prop is `emptyState?: React.ReactNode` (keep `empty` / `emptyText` / `emptyMessage` / `emptyLabel` as aliases). Short empty strings have no trailing period ("No results").
 - **Words:** "Sign in" (not "Log in"), "canceled", "…" for ellipses.
@@ -131,5 +132,10 @@ Before writing a new pill, list, banner or picker, check this table. A domain co
 | Copy a value | `CopyButton`, `CopyField` | — |
 | Task progress | `Progress` (bar, sizes down to `2xs`), `ProgressSegments` (`role="meter"` option), `ProgressCircle` | PasswordStrength and every upload, playback and step bar |
 | Level against thresholds | `Meter`, `StackedMeter`, `RingMeter` (rings share `ProgressRingSvg`) | ContextMeter, ContextUsageBreakdown |
+| Metric tile | `StatCard` (`accent`, `href`/`onClick` + chevron, `caption`, `status`, `stats`, `trendPlacement="footer"` with `trendMin`/`trendMax`, `progress`, `children` body, `valueFont`) | TopItemCard |
+| Metric page header | `MetricHero` (big value, detail rows, live area chart) | — |
+| Ranked list with bars | `BarList` (icon, name, description, value + proportional bar, `highlightFirst`, `limit`) | — |
+| Breakdown legend | `BreakdownList` (dot, icon, label, value, percent; toggles series); `topWithOther` for an "Other" row | DonutChart `legendValues`/`iconFor`, StackedMeter `legend="list"` |
+| Live series | `useRollingSeries`, `useSampler` (last N readings, optional interval sampling) | — |
 | Attachment tile | `ChatAttachment` (`status`, `progress`, `onRetry`, `onPreview`) | AttachmentThumbnails |
 | Bottom or side panel | `Dialog` (centred, sheet on mobile), `Sheet` (edge panel), `Drawer` (gesture bottom sheet; shares Sheet's parts) | — |

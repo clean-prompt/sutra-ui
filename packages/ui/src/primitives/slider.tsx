@@ -2,6 +2,8 @@ import * as React from "react";
 import { Slider as SliderPrimitive } from "radix-ui";
 import { cn, focusRing, type Size } from "../lib/cn";
 import { toPercent } from "../lib/math";
+import { accentClasses, accentStyle, type Accent } from "../lib/accent";
+import { normalizeTone, type ToneInput } from "../lib/tone";
 
 const sizes: Record<Size, { track: string; thumb: string; thumbPx: number }> = {
   sm: { track: "h-1", thumb: "size-3.5", thumbPx: 14 },
@@ -24,6 +26,10 @@ export interface SliderProps extends React.ComponentPropsWithoutRef<typeof Slide
   /** Accessible labels per thumb, e.g. `["Minimum", "Maximum"]`. */
   thumbLabels?: string[];
   invalid?: boolean;
+  /** Categorical colour for the range, thumb border and active marks. Default primary. */
+  accent?: Accent;
+  /** Semantic colour (`success`, `warning`, …). Takes precedence over `accent`. */
+  tone?: ToneInput;
 }
 
 /** Range input with one or more thumbs, optional value bubble and labeled marks. */
@@ -37,6 +43,8 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
       formatValue = (v) => v,
       thumbLabels,
       invalid,
+      accent: accentProp,
+      tone,
       min = 0,
       max = 100,
       value,
@@ -51,6 +59,9 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
     const current = value ?? internal;
     const [dragging, setDragging] = React.useState(false);
     const s = sizes[size];
+    const accent: Accent | undefined = tone ? normalizeTone(tone) : accentProp;
+    /* `invalid` wins over the accent. */
+    const accented = Boolean(accent) && !invalid;
 
     React.useEffect(() => {
       if (!dragging) return;
@@ -69,7 +80,7 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
     const inBounds = (p: number) => `calc(${p}% + ${(s.thumbPx / 2) * (1 - p / 50)}px)`;
 
     return (
-      <div className={cn("relative w-full", className)}>
+      <div className={cn("relative w-full", className)} style={accentStyle(accent)}>
         <SliderPrimitive.Root
           ref={ref}
           min={min}
@@ -103,8 +114,8 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
           >
             <SliderPrimitive.Range
               className={cn(
-                "absolute h-full rounded-full bg-primary data-[orientation=vertical]:w-full",
-                invalid && "bg-destructive"
+                "absolute h-full rounded-full data-[orientation=vertical]:w-full",
+                invalid ? "bg-destructive" : accented ? accentClasses.solid : "bg-primary"
               )}
             />
           </SliderPrimitive.Track>
@@ -113,8 +124,11 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
               key={i}
               aria-label={thumbLabels?.[i] ?? (current.length > 1 ? (i === 0 ? "Minimum" : "Maximum") : undefined)}
               className={cn(
-                "group/thumb relative block rounded-full border-2 border-primary bg-background shadow-sm",
-                "transition-[box-shadow,transform] duration-150 hover:ring-[3px] hover:ring-primary/15 active:scale-110",
+                "group/thumb relative block rounded-full border-2 bg-background shadow-sm",
+                "transition-[box-shadow,transform] duration-150 hover:ring-[3px] active:scale-110",
+                accented
+                  ? "border-[var(--sutra-accent,var(--primary))] hover:ring-[color-mix(in_oklab,var(--sutra-accent,var(--primary))_15%,transparent)]"
+                  : "border-primary hover:ring-primary/15",
                 focusRing,
                 "data-[disabled]:pointer-events-none",
                 invalid && "border-destructive",
@@ -158,7 +172,16 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
                   className="absolute top-0 flex -translate-x-1/2 flex-col items-center gap-1"
                   style={{ left: inBounds(p) }}
                 >
-                  <span className={cn("h-1.5 w-px", active ? "bg-primary/60" : "bg-border-strong")} />
+                  <span
+                    className={cn(
+                      "h-1.5 w-px",
+                      active
+                        ? accented
+                          ? "bg-[color-mix(in_oklab,var(--sutra-accent,var(--primary))_60%,transparent)]"
+                          : "bg-primary/60"
+                        : "bg-border-strong"
+                    )}
+                  />
                   {mark.label !== undefined && (
                     <span className="whitespace-nowrap text-xs text-muted-foreground tabular-nums">{mark.label}</span>
                   )}

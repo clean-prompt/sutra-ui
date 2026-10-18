@@ -75,7 +75,7 @@ Subpath entries, generated from `src/entries/*.ts` (one barrel per subpath; modu
 | `@sutra/ui/forms` | Form controls | `label`, `field`, `input`, `input-group`, `input-otp`, `textarea`, `number-input`, `tag-input`, `checkbox`, `radio`, `switch`, `select`, `calendar`, `date-picker`, `segmented-control`, `slider`, `rating`, `file-upload`, `dropzone`, `combobox`, `password-strength` |
 | `@sutra/ui/overlays` | Tooltips, popovers, dialogs, menus and the command palette | `tooltip`, `info-tooltip`, `popover`, `dialog`, `dropdown-menu`, `context-menu`, `command-menu` |
 | `@sutra/ui/navigation` | Breadcrumbs, pagination, tabs, headers, sidebars and trees | `breadcrumbs`, `pagination`, `tab-menu`, `tabs`, `header-navigation`, `sidebar-navigation`, `section-header`, `tree-view` |
-| `@sutra/ui/dataviz` | Charts, stat cards, meters and gauges | `chart`, `stat-card`, `meter`, `gauge`, `sparkline` |
+| `@sutra/ui/dataviz` | Charts, stat cards, ranked bar lists, metric heroes, meters and gauges | `chart`, `stat-card`, `bar-list`, `metric-hero`, `meter`, `gauge`, `sparkline` |
 | `@sutra/ui/mobile` | Bottom tab bar, drawer, lightbox, file viewer, split pane, presence | `bottom-tab-bar`, `drawer`, `lightbox`, `file-viewer`, `split-pane`, `presence` |
 | `@sutra/ui/assets` | Brand marks, logos, flags, file formats and icon wrappers (Remix icons live in @sutra/ui/icons) | `brand`, `placeholder-logos`, `icons`, `country-flags`, `emoji-reactions`, `file-format`, `misc` |
 | `@sutra/ui/icons` | Icon, FeaturedIcon and the full Remix Icon set | `icons`, `@remixicon/react` |

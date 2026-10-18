@@ -5,6 +5,7 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { useElementWidth } from "../hooks/use-resize-observer";
 import { useSafeId } from "../hooks/use-safe-id";
 import { formatShortDate } from "../lib/time";
+import { BreakdownList } from "../primitives/meter";
 
 /* ------------------------------------------------------------------------------------------------
  * Types
@@ -1252,6 +1253,16 @@ export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /** Center value. Defaults to the formatted total. Pass null to hide. */
   centerValue?: React.ReactNode;
   legend?: boolean | "bottom" | "right";
+  /**
+   * Show values in the legend: it becomes a `BreakdownList` (one row per segment, value right-aligned).
+   * `true` / `"value"`: the formatted value; `"percent"`: the share of the visible total; `"both"`: value and percent.
+   * Default false (the compact chip legend).
+   */
+  legendValues?: boolean | "value" | "percent" | "both";
+  /** Let legend entries toggle segments. Default true. */
+  legendInteractive?: boolean;
+  /** Icon per segment (an app icon) shown in the legend rows. Setting it switches the legend to a `BreakdownList`. */
+  iconFor?: (datum: ChartDatum, index: number) => React.ReactNode;
   tooltip?: boolean;
   animate?: boolean;
   emptyState?: React.ReactNode;
@@ -1289,6 +1300,9 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
       centerLabel,
       centerValue,
       legend = "bottom",
+      legendValues = false,
+      legendInteractive = true,
+      iconFor,
       tooltip = true,
       animate = true,
       emptyState,
@@ -1331,11 +1345,30 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
     const pct = (v: number) => (total > 0 ? `${Math.round((v / total) * 100)}%` : "0%");
     const activeItem = active !== null ? shown.find((s) => s.i === active) ?? null : null;
 
-    const legendEl = legend ? (
+    const listLegend = !!legend && (!!legendValues || iconFor !== undefined);
+    const valueMode = legendValues === true ? "value" : legendValues;
+    const legendEl = listLegend ? (
+      <BreakdownList
+        aria-label="Legend"
+        className={legend === "right" ? "min-w-48 flex-1" : "w-full"}
+        items={items.map((it) => ({
+          key: it.key,
+          label: it.label,
+          color: it.color,
+          icon: iconFor?.(data[it.i]!, it.i),
+          value: it.value,
+        }))}
+        valueFormatter={valueFormatter}
+        showValue={valueMode !== "percent" && valueMode !== false}
+        showPercent={valueMode === "percent" || valueMode === "both"}
+        hiddenSeries={hidden}
+        onHiddenSeriesChange={legendInteractive ? setHidden : undefined}
+      />
+    ) : legend ? (
       <ChartLegend
         items={items.map((it) => ({ key: it.key, label: it.label, color: it.color }))}
         hidden={hidden}
-        onHiddenChange={setHidden}
+        onHiddenChange={legendInteractive ? setHidden : undefined}
         className={legend === "right" ? "flex-col items-start" : undefined}
         align={legend === "right" ? "start" : "center"}
       />
@@ -1390,7 +1423,11 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
     return (
       <div
         ref={ref}
-        className={cn("flex w-full gap-4", legend === "right" ? "flex-row flex-wrap items-center justify-center" : "flex-col items-center", className)}
+        className={cn(
+          "flex w-full gap-4",
+          legend === "right" ? cn("flex-row flex-wrap items-center", listLegend ? "justify-start gap-x-6" : "justify-center") : "flex-col items-center",
+          className
+        )}
         {...props}
       >
         <ChartContainer
@@ -1428,11 +1465,21 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
           {centerValue !== null || centerLabel ? (
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
               {centerValue !== null ? (
-                <span className={cn("font-semibold tracking-tight text-foreground", size >= 180 ? "text-display-xs" : "text-lg")}>
+                <span
+                  data-slot="chart-center-value"
+                  className={cn(
+                    "font-semibold leading-tight tracking-tight tabular-nums text-foreground",
+                    size >= 180 ? "text-display-xs" : size >= 112 ? "text-lg" : "text-base"
+                  )}
+                >
                   {centerValue ?? valueFormatter(total)}
                 </span>
               ) : null}
-              {centerLabel ? <span className="text-xs text-muted-foreground">{centerLabel}</span> : null}
+              {centerLabel ? (
+                <span data-slot="chart-center-label" className="text-xs leading-tight text-muted-foreground">
+                  {centerLabel}
+                </span>
+              ) : null}
             </div>
           ) : null}
           {tooltip && activeArc ? (
