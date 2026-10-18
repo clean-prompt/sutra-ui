@@ -17,8 +17,6 @@ import {
   SignedInPanel,
   SignInMethods,
   buildKunjiSession,
-  createMockKunjiClient,
-  createMockPairingAdapter,
   defaultKunjiCallbackUrl,
   type AccessGateAdapter,
   type AccessGateRecord,
@@ -27,6 +25,7 @@ import {
   type KunjiSignInState,
   type KunjiSignInStatus,
 } from "@sutra/ui";
+import { createMockKunjiClient, createMockPairingAdapter } from "@sutra/ui/blocks/registry";
 import { RiRefreshLine } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 

@@ -23,7 +23,8 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { Kbd } from "./typography";
-import { isEditableTarget, useShortcuts } from "./shortcuts";
+import { isEditableTarget } from "../lib/shortcuts";
+import { useShortcuts } from "./shortcuts";
 
 /** Controls that own the Enter / arrow keys when focused. */
 const INTERACTIVE_SELECTOR = [

@@ -18,7 +18,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { Progress } from "./progress";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useSwipe } from "./drawer";
+import { useSwipe } from "../hooks/use-swipe";
 import { ImageWithFallback } from "./lightbox";
 import {
   NowPlayingBars,

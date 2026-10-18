@@ -1,10 +1,10 @@
 import * as React from "react";
-import * as Sutra from "@sutra/ui";
 import { cn, Badge, Button, Heading, Text } from "@sutra/ui";
+import { blockRegistry as registryEntries } from "@sutra/ui/blocks/registry";
 import { RiCollapseDiagonalLine, RiExpandDiagonalLine } from "@sutra/ui/icons";
 import { PageIntro } from "../components/demo";
 
-/** Shape of an entry in `blockRegistry` (packages/ui/src/blocks/index.ts). */
+/** Shape of an entry in `blockRegistry` (packages/ui/src/blocks/registry.tsx). */
 interface BlockEntry {
   id: string;
   name: string;
@@ -15,12 +15,7 @@ interface BlockEntry {
   fullPage?: boolean;
 }
 
-/*
- * The registry is read off the namespace so this page compiles whether or not the
- * blocks module exports it yet; it renders an empty state until it does.
- */
-const blockRegistry: readonly BlockEntry[] =
-  (Sutra as unknown as { blockRegistry?: readonly BlockEntry[] }).blockRegistry ?? [];
+const blockRegistry: readonly BlockEntry[] = registryEntries;
 
 /** Width full-page blocks are laid out at before being scaled down to fit the frame. */
 const PAGE_WIDTH = 1280;

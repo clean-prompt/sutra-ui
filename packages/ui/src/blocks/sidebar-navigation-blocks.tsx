@@ -47,7 +47,7 @@ import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/
 import { UserAccountMenu, WorkspaceSwitcher, type UserAccountMenuUser, type Workspace } from "./dropdown-menu-blocks";
 import { AppHeader, type AppHeaderProps } from "./header-navigation-blocks";
 import { PageHeaderWithStats } from "./section-header-blocks";
-import { demoUser } from "./block-utils";
+import { demoUser } from "./demo-data";
 
 /* ------------------------------------------------------------------ */
 /* AppSidebar                                                          */

@@ -28,7 +28,8 @@ import { textLinkVariants } from "../components/text-link";
 import { SutraMark } from "../assets/brand";
 import { FeaturedIcon, type IconComponent, type FeaturedIconColor } from "../assets/icons";
 import { QRCode } from "../components/qr-code";
-import { BlockLink, isEmail, useAsyncAction, type BlockLinkRenderer } from "./block-utils";
+import { BlockLink, useBlockAction as useAsyncAction, type BlockLinkRenderer } from "./block-utils";
+import { isEmail } from "../lib/validate";
 
 /* ------------------------------------------------------------------ */
 /* Shared frame                                                        */

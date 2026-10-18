@@ -58,7 +58,8 @@ import { SimpleTooltip } from "../components/tooltip";
 import { MeshGradient } from "../components/mesh-gradient";
 import { SutraAppIcon, SutraLogo, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
 import { NotificationsMenu, UserAccountMenu, type NotificationItem, type UserAccountMenuUser } from "./dropdown-menu-blocks";
-import { BlockLink, demoUser, sutraAppDescriptions, type BlockLinkRenderer } from "./block-utils";
+import { BlockLink, sutraAppDescriptions, type BlockLinkRenderer } from "./block-utils";
+import { demoUser } from "./demo-data";
 
 export interface HeaderLink {
   label: React.ReactNode;

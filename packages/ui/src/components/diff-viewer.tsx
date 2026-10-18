@@ -12,7 +12,7 @@ import { cn, focusRing } from "../lib/cn";
 import { pluralize } from "../lib/format";
 import { Button } from "./button";
 import { SegmentedControl } from "./segmented-control";
-import { getPresenceColor } from "./presence";
+import { colorForSeed } from "../lib/hash";
 import { FileFormatIcon } from "../assets/file-format";
 
 /* ------------------------------------------------------------------ */
@@ -230,7 +230,7 @@ function resolveAuthor(
   const id = part.author ?? (part.change >= 0 ? changeAuthors?.[part.change] : undefined);
   if (!id) return undefined;
   const a = authors?.[id];
-  return { id, name: a?.name ?? id, color: a?.color ?? getPresenceColor(id) };
+  return { id, name: a?.name ?? id, color: a?.color ?? colorForSeed(id) };
 }
 
 function Piece({

@@ -1,5 +1,5 @@
 import { screen } from "@testing-library/react";
-import { blockCategoryLabels, blockRegistry } from "../src";
+import { blockCategoryLabels, blockRegistry } from "../src/blocks/registry";
 import { axeViolations } from "./a11y";
 import { OPENABLE, renderBlock } from "./blocks-helpers";
 

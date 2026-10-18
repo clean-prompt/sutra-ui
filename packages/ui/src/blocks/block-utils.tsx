@@ -1,6 +1,8 @@
 import * as React from "react";
 import type { SutraApp } from "../assets/brand";
 import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
+import * as validate from "../lib/validate";
+import * as demoData from "./demo-data";
 
 /* Internal helpers shared by the blocks. Not part of the public API. */
 
@@ -34,8 +36,11 @@ export function BlockLink({
   );
 }
 
-/** Blocks' action tracker: `run(fn)` resolves true on success; `busy` also reflects `externalLoading`. Wraps `hooks/use-async-action`. */
-export function useAsyncAction(externalLoading?: boolean) {
+/**
+ * Blocks' action tracker: `run(fn)` resolves true on success; `busy` also reflects `externalLoading`. Wraps `hooks/use-async-action`.
+ * Internal to the blocks; app code should use `useAsyncAction` from `@sutra/ui` (src/hooks/use-async-action.ts).
+ */
+export function useBlockAction(externalLoading?: boolean) {
   const action = useSharedAsyncAction((fn: () => unknown) => fn());
   const { run: runShared, busy, error, setError } = action;
   const run = React.useCallback(
@@ -65,12 +70,12 @@ export const sutraAppDescriptions: Record<SutraApp, string> = {
   habits: "Build routines with streaks and reminders.",
 };
 
-/** Demo user used as the default across blocks. */
-export const demoUser = {
-  name: "Maya Patel",
-  email: "maya@sutra.app",
-  avatarSrc: undefined as string | undefined,
-};
 
-/** Simple email check for demo validation (see `lib/validate`). */
-export { isEmail } from "../lib/validate";
+/** @deprecated Demo fixture. Import `demoUser` from `@sutra/ui/blocks/registry` (src/blocks/demo-data.ts). */
+export const demoUser = demoData.demoUser;
+
+/** @deprecated Import `isEmail` from `@sutra/ui` (src/lib/validate.ts). */
+export const isEmail = validate.isEmail;
+
+/** @deprecated Internal to the blocks. In app code use `useAsyncAction` from `@sutra/ui` (src/hooks/use-async-action.ts). */
+export const useAsyncAction = useBlockAction;

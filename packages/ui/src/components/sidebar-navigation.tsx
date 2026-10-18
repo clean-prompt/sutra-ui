@@ -10,7 +10,9 @@ import { Avatar } from "./avatar";
 import { Button, type ButtonProps } from "./button";
 import { Tooltip, TooltipContent, TooltipProvider, useHasTooltipProvider } from "./tooltip";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./dialog";
-import { isEditableTarget, matchesShortcut, useHasShortcutProvider, useShortcut } from "./shortcuts";
+import { isEditableTarget, matchesShortcut } from "../lib/shortcuts";
+import { useHasShortcutProvider } from "../hooks/use-shortcut-manager";
+import { useShortcut } from "./shortcuts";
 
 /** Below the `md` breakpoint the sidebar becomes a sheet. */
 const MOBILE_QUERY = `(max-width: ${breakpoints.md - 1}px)`;

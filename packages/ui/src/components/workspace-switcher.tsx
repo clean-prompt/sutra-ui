@@ -27,7 +27,7 @@ import { Input } from "./input";
 import { Spinner } from "./spinner";
 import { SegmentedControl } from "./segmented-control";
 import { ConfirmDialog } from "./dialog";
-import { AgentAvatar, randomAvatarSpec, type AgentAvatarSpec } from "./agent-persona";
+import { AgentAvatar, randomAvatarSpec, type AgentAvatarSpec } from "./agent-avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./command-menu";
 

@@ -9,34 +9,16 @@ import {
   RiWifiOffLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { formatRelative } from "../lib/time";
+import { formatRelativeTime } from "../lib/relative-time";
+import { useOnlineStatus } from "../hooks/use-online-status";
 import { Button } from "./button";
 import { InlineAlert } from "./inline-alert";
 import { SimpleTooltip } from "./tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
 
 export type SyncState = "synced" | "syncing" | "offline" | "error" | "conflict";
-
-/** Short relative time: "just now", "5 min ago", "2 h ago", "yesterday", "3 days ago" ("—" for unparseable input). */
-export function formatRelativeTime(value: Date | number | string, now: Date | number = Date.now()) {
-  return formatRelative(value, { now, style: "long", maxRelativeDays: 29 }).replace(/^(\d+) hours? ago$/, "$1 h ago");
-}
-
-/** Tracks `navigator.onLine` with online/offline events. */
-export function useOnlineStatus() {
-  const [online, setOnline] = React.useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
-  React.useEffect(() => {
-    const on = () => setOnline(true);
-    const off = () => setOnline(false);
-    window.addEventListener("online", on);
-    window.addEventListener("offline", off);
-    return () => {
-      window.removeEventListener("online", on);
-      window.removeEventListener("offline", off);
-    };
-  }, []);
-  return online;
-}
+export { formatRelativeTime } from "../lib/relative-time";
+export { useOnlineStatus } from "../hooks/use-online-status";
 
 export const syncStateLabels: Record<SyncState, string> = {
   synced: "Synced",

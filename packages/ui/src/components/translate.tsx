@@ -20,7 +20,8 @@ import { Button } from "./button";
 import { CopyButton } from "./copy-button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { AudioLevelMeter, SpeakButton } from "./voice";
-import { replaceTextRange, useCaretAnchor } from "./ai-extras";
+import { replaceTextRange } from "../lib/text-field";
+import { useCaretAnchor } from "../hooks/use-caret-anchor";
 
 /* ------------------------------------------------------------------ */
 /* Languages                                                           */

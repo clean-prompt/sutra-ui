@@ -8,9 +8,9 @@ import {
   ChatSourceList,
   Favicon,
   FaviconProvider,
-  blockRegistry,
   googleFaviconResolver,
 } from "../src";
+import { blockRegistry } from "../src/blocks/registry";
 import { renderBlock } from "./blocks-helpers";
 
 /**

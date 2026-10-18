@@ -8,7 +8,7 @@ import { cn, focusRing } from "../lib/cn";
 import { useCopy } from "../hooks/use-copy";
 import { isHttpUrl } from "../lib/validate";
 import { InlineCode } from "./typography";
-import { ChatInlineCitation, type ChatSourceData } from "./chat-source";
+import { ChatInlineCitation, type ChatSourceData } from "./inline-citation";
 
 /* ------------------------------------------------------------------ */
 /* Citations                                                           */

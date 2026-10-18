@@ -4,7 +4,7 @@ import { ContextUsageBreakdown, type ContextUsageCategory } from "./agent-usage"
 import { RingMeter } from "./gauge";
 import { defaultMeterThresholds, meterLevel, type MeterLevel, type MeterThresholds } from "./meter";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { formatTokenCount } from "./text-caret";
+import { formatTokenCount } from "../lib/token-count";
 
 /* ------------------------------------------------------------------ */
 /* ContextMeter                                                        */

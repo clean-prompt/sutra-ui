@@ -44,7 +44,7 @@ import { ConfirmDialog } from "./dialog";
 import { Field, FieldDescription, FieldError, FieldLabel } from "./field";
 import { KeyValueList, type KeyValueItem } from "./key-value";
 import { TimelineBar, formatTimelineDuration, type TimelineSpan } from "./timeline-bar";
-import { formatTokenCount } from "./ai-extras";
+import { formatTokenCount } from "../lib/token-count";
 import {
   CronScheduleField,
   cronScheduleError,

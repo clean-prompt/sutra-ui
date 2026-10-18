@@ -44,7 +44,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../components/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/tabs";
 import { SutraAppIcon, SutraMark, type SutraApp } from "../assets/brand";
 import { EmptyStateIllustration } from "../assets/misc";
-import { demoUser } from "./block-utils";
+import { demoUser } from "./demo-data";
 
 type Align = "start" | "center" | "end";
 type Side = "top" | "right" | "bottom" | "left";

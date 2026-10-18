@@ -3,6 +3,7 @@ import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "
 import { createRequire } from "node:module";
 import path from "node:path";
 import { defineConfig, type Options } from "tsup";
+import { applyEdits, needsUseClient, prependDirective, treeShakeEdits } from "./scripts/dist-transforms";
 
 type EsbuildPlugin = NonNullable<Options["esbuildPlugins"]>[number];
 
@@ -40,6 +41,31 @@ function walk(dir: string): string[] {
   );
 }
 
+/**
+ * Post-process every emitted module: make each export tree-shakeable (pure annotations, displayName
+ * folded into the declaration) and add `"use client"` only where the source needs it. Source maps follow.
+ */
+function postProcessModules() {
+  const srcRoot = path.resolve("src");
+  const distRoot = path.resolve("dist");
+  for (const file of walk(distRoot).filter((f) => f.endsWith(".js"))) {
+    const rel = path.relative(distRoot, file).replace(/\.js$/, "");
+    const srcFile = SOURCE_EXTS.map((ext) => path.join(srcRoot, rel + ext)).find((f) => existsSync(f));
+    if (!srcFile) continue;
+    const mapFile = `${file}.map`;
+    const code = readFileSync(file, "utf8");
+    const map = existsSync(mapFile) ? JSON.parse(readFileSync(mapFile, "utf8")) : null;
+    let next = applyEdits(code, map, treeShakeEdits(code, file));
+    if (needsUseClient(path.relative(srcRoot, srcFile), readFileSync(srcFile, "utf8"))) {
+      next = prependDirective(next.code, next.map);
+    }
+    if (next.code !== code) {
+      writeFileSync(file, next.code);
+      if (next.map) writeFileSync(mapFile, JSON.stringify(next.map));
+    }
+  }
+}
+
 /** Emit declarations with tsc, then add `.js` extensions to their relative imports too. */
 function emitDeclarations() {
   execFileSync(process.execPath, [require.resolve("typescript/bin/tsc"), "-p", "tsconfig.build.json"], {
@@ -73,7 +99,9 @@ export default defineConfig({
   skipNodeModulesBundle: true,
   external: ["react", "react-dom", "react/jsx-runtime"],
   esbuildPlugins: [preserveModules],
-  banner: { js: '"use client";' },
   dts: false,
-  onSuccess: async () => emitDeclarations(),
+  onSuccess: async () => {
+    postProcessModules();
+    emitDeclarations();
+  },
 });

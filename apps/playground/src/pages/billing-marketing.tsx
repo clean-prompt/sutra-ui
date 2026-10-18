@@ -10,10 +10,10 @@ import {
   MarketplaceGrid,
   MarketplaceHero,
   TestimonialWall,
-  marketingDemoData,
   type LightboxItem,
   type MarketplaceExtension,
 } from "@sutra/ui";
+import { marketingDemoData } from "@sutra/ui/blocks/registry";
 import {
   BillingBanner,
   CheckoutSteps,

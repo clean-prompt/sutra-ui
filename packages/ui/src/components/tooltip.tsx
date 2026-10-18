@@ -3,7 +3,7 @@ import { Tooltip as TooltipPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { Kbd } from "./typography";
-import { ShortcutKeys, isShortcutKeys } from "./shortcuts";
+import { ShortcutKeys, isShortcutKeys } from "./shortcut-keys";
 
 const TooltipProviderPresence = React.createContext(false);
 

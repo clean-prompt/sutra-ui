@@ -4,7 +4,7 @@ import { RiCloseCircleFill, RiEyeLine, RiEyeOffLine, RiSearchLine } from "@remix
 import { cn, focusRing, invalidRing, type Size } from "../lib/cn";
 import { Kbd } from "./typography";
 import { useField } from "./field";
-import { detectShortcutPlatform, getShortcutKeyLabels } from "./shortcuts";
+import { detectShortcutPlatform, getShortcutKeyLabels } from "../lib/shortcuts";
 
 export const inputVariants = cva(
   [

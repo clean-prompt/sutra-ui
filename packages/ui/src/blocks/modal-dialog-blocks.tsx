@@ -73,7 +73,8 @@ import {
 } from "../components/dropdown-menu";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
 import { FeaturedIcon } from "../assets/icons";
-import { isEmail, useAsyncAction } from "./block-utils";
+import { useBlockAction as useAsyncAction } from "./block-utils";
+import { isEmail } from "../lib/validate";
 
 /** Open-state props shared by the dialog blocks. */
 export interface BlockDialogBaseProps {

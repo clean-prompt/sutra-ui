@@ -6,7 +6,7 @@ import { StatCard, StatGroup } from "./stat-card";
 import { BarChart } from "./chart";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { roundTo } from "../lib/math";
-import { formatTokenCount } from "./text-caret";
+import { formatTokenCount } from "../lib/token-count";
 
 /* ------------------------------------------------------------------ */
 /* UsageSummary                                                        */

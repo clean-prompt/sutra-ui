@@ -8,7 +8,7 @@ import { Button } from "./button";
 import { ConfirmDialog } from "./dialog";
 import { SegmentedControl } from "./segmented-control";
 import { SimpleTooltip } from "./tooltip";
-import { getPresenceColor } from "./presence";
+import { colorForSeed } from "../lib/hash";
 import { DiffViewer, type DiffAuthor, type DiffMode, computeDiff } from "./diff-viewer";
 
 /* ------------------------------------------------------------------ */
@@ -169,7 +169,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
     const authorMap = React.useMemo(() => {
       const map: Record<string, DiffAuthor> = {};
       for (const v of versions)
-        for (const c of v.contributors ?? []) map[c.id] = { name: c.name, color: c.color ?? getPresenceColor(c.id) };
+        for (const c of v.contributors ?? []) map[c.id] = { name: c.name, color: c.color ?? colorForSeed(c.id) };
       return map;
     }, [versions]);
 

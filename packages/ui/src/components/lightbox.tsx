@@ -12,7 +12,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { clamp } from "../lib/math";
-import { useSwipe } from "./drawer";
+import { useSwipe } from "../hooks/use-swipe";
 
 /* ------------------------------------------------------------------ */
 /* ImageWithFallback                                                   */

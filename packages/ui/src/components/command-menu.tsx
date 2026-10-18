@@ -6,15 +6,9 @@ import { cn } from "../lib/cn";
 import { Kbd } from "./typography";
 import { Spinner } from "./spinner";
 import { DialogOverlay } from "./dialog";
-import {
-  ShortcutKeys,
-  isShortcutKeys,
-  useHasShortcutProvider,
-  useShortcut,
-  useShortcutRegistry,
-  type ShortcutRegistryGroup,
-  type ShortcutRegistryItem,
-} from "./shortcuts";
+import { ShortcutKeys, isShortcutKeys } from "./shortcut-keys";
+import { useHasShortcutProvider } from "../hooks/use-shortcut-manager";
+import { useShortcut, useShortcutRegistry, type ShortcutRegistryGroup, type ShortcutRegistryItem } from "./shortcuts";
 
 /** Command palette root (cmdk). Handles filtering and keyboard navigation. */
 export const Command = React.forwardRef<

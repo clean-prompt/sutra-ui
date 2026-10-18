@@ -12,115 +12,143 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./icons": {
       "types": "./dist/entries/icons.d.ts",
-      "import": "./dist/entries/icons.js"
+      "import": "./dist/entries/icons.js",
+      "default": "./dist/entries/icons.js"
     },
     "./ai": {
       "types": "./dist/entries/ai.d.ts",
-      "import": "./dist/entries/ai.js"
+      "import": "./dist/entries/ai.js",
+      "default": "./dist/entries/ai.js"
     },
     "./suite": {
       "types": "./dist/entries/suite.d.ts",
-      "import": "./dist/entries/suite.js"
+      "import": "./dist/entries/suite.js",
+      "default": "./dist/entries/suite.js"
     },
     "./dataviz": {
       "types": "./dist/entries/dataviz.d.ts",
-      "import": "./dist/entries/dataviz.js"
+      "import": "./dist/entries/dataviz.js",
+      "default": "./dist/entries/dataviz.js"
     },
     "./identity": {
       "types": "./dist/entries/identity.d.ts",
-      "import": "./dist/entries/identity.js"
+      "import": "./dist/entries/identity.js",
+      "default": "./dist/entries/identity.js"
     },
     "./ops": {
       "types": "./dist/entries/ops.d.ts",
-      "import": "./dist/entries/ops.js"
+      "import": "./dist/entries/ops.js",
+      "default": "./dist/entries/ops.js"
     },
     "./mobile": {
       "types": "./dist/entries/mobile.d.ts",
-      "import": "./dist/entries/mobile.js"
+      "import": "./dist/entries/mobile.js",
+      "default": "./dist/entries/mobile.js"
     },
     "./workspace": {
       "types": "./dist/entries/workspace.d.ts",
-      "import": "./dist/entries/workspace.js"
+      "import": "./dist/entries/workspace.js",
+      "default": "./dist/entries/workspace.js"
     },
     "./billing": {
       "types": "./dist/entries/billing.d.ts",
-      "import": "./dist/entries/billing.js"
+      "import": "./dist/entries/billing.js",
+      "default": "./dist/entries/billing.js"
     },
     "./agent-admin": {
       "types": "./dist/entries/agent-admin.d.ts",
-      "import": "./dist/entries/agent-admin.js"
+      "import": "./dist/entries/agent-admin.js",
+      "default": "./dist/entries/agent-admin.js"
     },
     "./agent": {
       "types": "./dist/entries/agent.d.ts",
-      "import": "./dist/entries/agent.js"
+      "import": "./dist/entries/agent.js",
+      "default": "./dist/entries/agent.js"
     },
     "./kunji": {
       "types": "./dist/entries/kunji.d.ts",
-      "import": "./dist/entries/kunji.js"
+      "import": "./dist/entries/kunji.js",
+      "default": "./dist/entries/kunji.js"
     },
     "./security": {
       "types": "./dist/entries/security.d.ts",
-      "import": "./dist/entries/security.js"
+      "import": "./dist/entries/security.js",
+      "default": "./dist/entries/security.js"
     },
     "./media": {
       "types": "./dist/entries/media.d.ts",
-      "import": "./dist/entries/media.js"
+      "import": "./dist/entries/media.js",
+      "default": "./dist/entries/media.js"
     },
     "./editor": {
       "types": "./dist/entries/editor.d.ts",
-      "import": "./dist/entries/editor.js"
+      "import": "./dist/entries/editor.js",
+      "default": "./dist/entries/editor.js"
     },
     "./terminal": {
       "types": "./dist/entries/terminal.d.ts",
-      "import": "./dist/entries/terminal.js"
+      "import": "./dist/entries/terminal.js",
+      "default": "./dist/entries/terminal.js"
     },
     "./voice": {
       "types": "./dist/entries/voice.d.ts",
-      "import": "./dist/entries/voice.js"
+      "import": "./dist/entries/voice.js",
+      "default": "./dist/entries/voice.js"
     },
     "./social": {
       "types": "./dist/entries/social.d.ts",
-      "import": "./dist/entries/social.js"
+      "import": "./dist/entries/social.js",
+      "default": "./dist/entries/social.js"
     },
     "./blocks": {
       "types": "./dist/entries/blocks.d.ts",
-      "import": "./dist/entries/blocks.js"
+      "import": "./dist/entries/blocks.js",
+      "default": "./dist/entries/blocks.js"
     },
     "./assets": {
       "types": "./dist/entries/assets.d.ts",
-      "import": "./dist/entries/assets.js"
+      "import": "./dist/entries/assets.js",
+      "default": "./dist/entries/assets.js"
     },
     "./forms": {
       "types": "./dist/entries/forms.d.ts",
-      "import": "./dist/entries/forms.js"
+      "import": "./dist/entries/forms.js",
+      "default": "./dist/entries/forms.js"
     },
     "./overlays": {
       "types": "./dist/entries/overlays.d.ts",
-      "import": "./dist/entries/overlays.js"
+      "import": "./dist/entries/overlays.js",
+      "default": "./dist/entries/overlays.js"
     },
     "./navigation": {
       "types": "./dist/entries/navigation.d.ts",
-      "import": "./dist/entries/navigation.js"
+      "import": "./dist/entries/navigation.js",
+      "default": "./dist/entries/navigation.js"
     },
     "./tokens": {
       "types": "./dist/entries/tokens.d.ts",
-      "import": "./dist/entries/tokens.js"
+      "import": "./dist/entries/tokens.js",
+      "default": "./dist/entries/tokens.js"
     },
     "./components/*": {
       "types": "./dist/components/*.d.ts",
-      "import": "./dist/components/*.js"
+      "import": "./dist/components/*.js",
+      "default": "./dist/components/*.js"
     },
     "./blocks/*": {
       "types": "./dist/blocks/*.d.ts",
-      "import": "./dist/blocks/*.js"
+      "import": "./dist/blocks/*.js",
+      "default": "./dist/blocks/*.js"
     },
     "./assets/*": {
       "types": "./dist/assets/*.d.ts",
-      "import": "./dist/assets/*.js"
+      "import": "./dist/assets/*.js",
+      "default": "./dist/assets/*.js"
     },
     "./styles.css": "./src/styles/sutra.css",
     "./package.json": "./package.json"
@@ -131,6 +159,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "check:exports": "node scripts/check-exports.mjs",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

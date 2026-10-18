@@ -9,51 +9,15 @@ import {
   RiEyeOffLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
 import { Progress } from "./progress";
+import { reorderArray } from "../lib/reorder";
 
-/* ------------------------------------------------------------------ */
-/* Pure helpers                                                        */
-/* ------------------------------------------------------------------ */
-
-/** Returns a copy of `items` with the element at `from` moved to `to` (indices are clamped). */
-export function reorderArray<T>(items: readonly T[], from: number, to: number): T[] {
-  const next = items.slice();
-  if (from < 0 || from >= next.length) return next;
-  const target = clamp(to, 0, next.length - 1);
-  const [item] = next.splice(from, 1);
-  next.splice(target, 0, item as T);
-  return next;
-}
-
-/** Moves the element at `index` by `delta` positions (negative = up). */
-export function reorderBy<T>(items: readonly T[], index: number, delta: number): T[] {
-  return reorderArray(items, index, index + delta);
-}
-
-export interface UseReorderOptions<T> {
-  items?: T[];
-  defaultItems?: T[];
-  onItemsChange?: (items: T[]) => void;
-}
-
-/** Controlled/uncontrolled list state with move helpers. */
-export function useReorder<T>({ items: itemsProp, defaultItems = [], onItemsChange }: UseReorderOptions<T> = {}) {
-  const [items, setItems] = useControllableState<T[]>({ value: itemsProp, defaultValue: defaultItems, onChange: onItemsChange });
-  return {
-    items,
-    setItems,
-    move: (from: number, to: number) => setItems(reorderArray(items, from, to)),
-    moveUp: (index: number) => setItems(reorderBy(items, index, -1)),
-    moveDown: (index: number) => setItems(reorderBy(items, index, 1)),
-    moveToTop: (index: number) => setItems(reorderArray(items, index, 0)),
-    moveToBottom: (index: number) => setItems(reorderArray(items, index, items.length - 1)),
-  };
-}
+export { reorderArray, reorderBy } from "../lib/reorder";
+export { useReorder, type UseReorderOptions } from "../hooks/use-reorder";
 
 /* ------------------------------------------------------------------ */
 /* ReorderableList                                                     */
