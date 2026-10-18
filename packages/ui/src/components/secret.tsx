@@ -39,6 +39,57 @@ export function downloadTextFile(text: string, fileName: string, mimeType = "tex
   }
 }
 
+/**
+ * Pending clipboard clears, keyed by the copied value. Module-level on purpose: a clear must still
+ * happen after the component that scheduled it unmounts, or the secret would stay on the clipboard.
+ */
+const pendingClipboardClears = new Map<string, ReturnType<typeof setTimeout>>();
+
+/** Can we read the clipboard without prompting? Falls back to "yes" only where no Permissions API exists. */
+function canReadClipboard(): Promise<boolean> {
+  const permissions = typeof navigator !== "undefined" ? navigator.permissions : undefined;
+  if (!permissions?.query) return Promise.resolve(true);
+  try {
+    return permissions.query({ name: "clipboard-read" as PermissionName }).then(
+      (status) => status.state === "granted",
+      () => false
+    );
+  } catch {
+    return Promise.resolve(false);
+  }
+}
+
+/** Empty the clipboard, but only if it still holds `value` when that can be checked. */
+function clearClipboardIfUnchanged(value: string) {
+  const clipboard = typeof navigator !== "undefined" ? navigator.clipboard : undefined;
+  if (!clipboard?.writeText) return;
+  const wipe = () => {
+    clipboard.writeText("").catch(() => undefined);
+  };
+  if (typeof clipboard.readText !== "function") {
+    wipe();
+    return;
+  }
+  void canReadClipboard().then((readable) => {
+    if (!readable) return wipe();
+    return clipboard.readText().then((current) => {
+      if (current === value) wipe();
+    }, wipe);
+  });
+}
+
+/** Schedule a clipboard clear for `value` in `ms`. Survives unmounts; re-copying the same value restarts it. */
+function scheduleClipboardClear(value: string, ms: number) {
+  clearTimeout(pendingClipboardClears.get(value));
+  pendingClipboardClears.set(
+    value,
+    setTimeout(() => {
+      pendingClipboardClears.delete(value);
+      clearClipboardIfUnchanged(value);
+    }, ms)
+  );
+}
+
 const strengthMeta: Record<0 | 1 | 2 | 3 | 4, { label: string; color: BadgeColor }> = {
   0: { label: "Very weak", color: "destructive" },
   1: { label: "Weak", color: "destructive" },
@@ -140,8 +191,9 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
     });
     const { copied, copy } = useCopy(2000);
     const [clearNote, setClearNote] = React.useState(false);
-    const clearTimer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
-    React.useEffect(() => () => clearTimeout(clearTimer.current), []);
+    // Only hides the "Clipboard clears in…" note; the clear itself is scheduled at module level.
+    const noteTimer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
+    React.useEffect(() => () => clearTimeout(noteTimer.current), []);
 
     React.useEffect(() => {
       if (!revealed || !revealFor) return;
@@ -155,11 +207,9 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
       onCopy?.();
       if (clipboardClearAfter > 0) {
         setClearNote(true);
-        clearTimeout(clearTimer.current);
-        clearTimer.current = setTimeout(() => {
-          setClearNote(false);
-          navigator.clipboard?.writeText("").catch(() => undefined);
-        }, clipboardClearAfter);
+        scheduleClipboardClear(value, clipboardClearAfter);
+        clearTimeout(noteTimer.current);
+        noteTimer.current = setTimeout(() => setClearNote(false), clipboardClearAfter);
       }
     };
 

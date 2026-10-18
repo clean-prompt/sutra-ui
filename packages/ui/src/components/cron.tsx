@@ -51,7 +51,10 @@ export interface ParsedCron {
   raw: Record<CronFieldName, string>;
   /** Expanded, sorted, de-duplicated values per field (day of week: 0 = Sunday … 6 = Saturday). */
   fields: Record<CronFieldName, number[]>;
-  /** Day-of-month is restricted (not `*` / `?`). When both day fields are restricted a day matches either (Vixie cron). */
+  /**
+   * Day-of-month is not star-prefixed (`*`, `*\/N`, `?`). Vixie cron: when both day fields are restricted a day
+   * matches either; when either is star-prefixed a day must match both (so `*\/2` still filters).
+   */
   domRestricted: boolean;
   dowRestricted: boolean;
 }
@@ -177,6 +180,12 @@ function contiguous(values: number[]) {
   return values.length > 2 && values.every((v, i) => i === 0 || v === values[i - 1]! + 1);
 }
 
+function ordinal(n: number) {
+  const tens = n % 100;
+  const suffix = tens >= 11 && tens <= 13 ? "th" : ["th", "st", "nd", "rd"][n % 10] ?? "th";
+  return `${n}${suffix}`;
+}
+
 const sameList = (a: number[], b: number[]) => a.length === b.length && a.every((v, i) => v === b[i]);
 
 /** Plain-English summary of a cron expression, e.g. "Every weekday at 9:00 AM", "Every 15 minutes", "At 8:30 AM on day 1 of the month". */
@@ -223,12 +232,28 @@ export function describeCron(expr: string, options: DescribeCronOptions = {}): s
   const dowNames = joinWords(dow.map((d) => DOW_NAMES[d]!));
   const isWeekdays = sameList(dow, [1, 2, 3, 4, 5]);
   const isWeekend = sameList(dow, [0, 6]);
-  const dayList = `${dom.length === 1 ? "day" : "days"} ${joinWords(dom.map(String))}`;
+  const domStep = domRestricted ? null : fieldStep(dom, 1, 31);
+  const dayList = domStep ? `every ${ordinal(domStep)} day` : `${dom.length === 1 ? "day" : "days"} ${joinWords(dom.map(String))}`;
   const monthList = joinWords(month.map((m) => MONTH_NAMES[m - 1]!));
+  const domLimited = dom.length !== 31;
+  const dowLimited = dow.length !== 7;
+  /* Vixie cron: OR when neither day field is star-prefixed, otherwise AND of the value sets. */
+  const dayMode =
+    domRestricted && dowRestricted
+      ? domLimited && dowLimited
+        ? "or"
+        : "none"
+      : domLimited && dowLimited
+        ? "and"
+        : domLimited
+          ? "dom"
+          : dowLimited
+            ? "dow"
+            : "none";
   let dateEvery = "";
   let dateOn = "";
   let leading = false;
-  if (dowRestricted && !domRestricted) {
+  if (dayMode === "dow") {
     dateEvery = isWeekdays ? "every weekday" : isWeekend ? "every Saturday and Sunday" : `every ${dowNames}`;
     dateOn = isWeekdays ? "on weekdays" : isWeekend ? "on weekends" : `on ${dowNames}`;
     if (monthRestricted) {
@@ -236,11 +261,14 @@ export function describeCron(expr: string, options: DescribeCronOptions = {}): s
       dateOn += ` in ${monthList}`;
     }
     leading = true;
-  } else if (domRestricted && !dowRestricted) {
+  } else if (dayMode === "dom") {
     if (monthRestricted && dom.length === 1 && month.length === 1) dateOn = `on ${MONTH_NAMES[month[0]! - 1]} ${dom[0]}`;
     else dateOn = `on ${dayList} of ${monthRestricted ? monthList : "the month"}`;
-  } else if (domRestricted && dowRestricted) {
+  } else if (dayMode === "or") {
     dateOn = `on ${dayList} of ${monthRestricted ? monthList : "the month"} or every ${dowNames}`;
+  } else if (dayMode === "and") {
+    const which = isWeekdays ? "weekday" : isWeekend ? "weekend day" : joinWords(dow.map((d) => DOW_NAMES[d]!), "or");
+    dateOn = `on ${dayList} of ${monthRestricted ? monthList : "the month"} if it's a ${which}`;
   } else if (monthRestricted) {
     dateOn = `every day in ${monthList}`;
   }
@@ -281,14 +309,15 @@ function toWall(date: Date, timeZone?: string) {
   return zoneParts(date, timeZone);
 }
 
+/** Instant for a wall-clock time. A time skipped by a spring-forward gap resolves to the later (shifted) instant; a repeated time to the first. */
 function fromWall(wall: number, timeZone?: string) {
   const w = new Date(wall);
   if (!timeZone) return new Date(w.getUTCFullYear(), w.getUTCMonth(), w.getUTCDate(), w.getUTCHours(), w.getUTCMinutes());
-  const offset = zoneParts(new Date(wall), timeZone) - wall;
-  let instant = wall - offset;
-  const offset2 = zoneParts(new Date(instant), timeZone) - instant;
-  if (offset2 !== offset) instant = wall - offset2;
-  return new Date(instant);
+  const first = wall - (zoneParts(new Date(wall), timeZone) - wall);
+  const second = wall - (zoneParts(new Date(first), timeZone) - first);
+  const candidates = first === second ? [first] : [first, second];
+  const valid = candidates.filter((i) => zoneParts(new Date(i), timeZone) === wall);
+  return new Date(valid.length ? Math.min(...valid) : Math.max(...candidates));
 }
 
 export interface NextCronRunsOptions {
@@ -299,8 +328,8 @@ export interface NextCronRunsOptions {
 /**
  * The next `count` times (strictly after `from`) the expression fires.
  * Steps through wall-clock time in the target zone and converts each match back to an instant;
- * it is DST-naive: a wall time skipped by a spring-forward shift resolves to the shifted instant,
- * and a repeated fall-back hour fires once. Returns `[]` for invalid expressions and stops after
+ * a wall time skipped by a spring-forward shift resolves to the shifted (later) instant (runs that
+ * would then repeat or go backwards are dropped), and a repeated fall-back hour fires once. Returns `[]` for invalid expressions and stops after
  * ~8 years without a match (e.g. "0 0 30 2 *").
  */
 export function nextCronRuns(expr: string, from: Date | number = new Date(), count = 5, options: NextCronRunsOptions = {}): Date[] {
@@ -312,17 +341,14 @@ export function nextCronRuns(expr: string, from: Date | number = new Date(), cou
   const doms = new Set(fields.dayOfMonth);
   const months = new Set(fields.month);
   const dows = new Set(fields.dayOfWeek);
-  const dayOk = (dom: number, dow: number) => {
-    if (domRestricted && dowRestricted) return doms.has(dom) || dows.has(dow);
-    if (domRestricted) return doms.has(dom);
-    if (dowRestricted) return dows.has(dow);
-    return true;
-  };
+  const dayOk = (dom: number, dow: number) =>
+    domRestricted && dowRestricted ? doms.has(dom) || dows.has(dow) : doms.has(dom) && dows.has(dow);
 
   const { timeZone } = options;
   const start = Math.floor(toWall(new Date(from), timeZone) / MINUTE_MS) * MINUTE_MS + MINUTE_MS;
   const limit = start + 8 * 366 * DAY_MS;
   const out: Date[] = [];
+  let last = new Date(from).getTime();
   let t = start;
   while (out.length < count && t < limit) {
     const d = new Date(t);
@@ -342,7 +368,14 @@ export function nextCronRuns(expr: string, from: Date | number = new Date(), cou
       t = Date.UTC(y, mo, day, h + 1);
       continue;
     }
-    if (minutes.has(d.getUTCMinutes())) out.push(fromWall(t, timeZone));
+    if (minutes.has(d.getUTCMinutes())) {
+      const run = fromWall(t, timeZone);
+      /* wall times shifted by DST can land on (or before) an earlier run; keep the list strictly increasing */
+      if (run.getTime() > last) {
+        out.push(run);
+        last = run.getTime();
+      }
+    }
     t += MINUTE_MS;
   }
   return out;
@@ -480,10 +513,13 @@ export function cronToSchedule(expr: string): CronSchedule {
   const allStar = (...keys: CronFieldName[]) => keys.every((k) => raw[k] === "*");
   const stepMatch = (s: string) => /^\*\/(\d+)$/.exec(s);
 
+  /* `*\/N` is only a true interval when N divides the cycle (`*\/45` fires at :00 and :45, not every 45m). */
   const mStep = stepMatch(raw.minute);
-  if (mStep && allStar("hour", "dayOfMonth", "month", "dayOfWeek")) return { mode: "interval", every: Number(mStep[1]), unit: "m" };
+  const mEvery = mStep ? Number(mStep[1]) : 0;
+  if (mEvery && mEvery < 60 && 60 % mEvery === 0 && allStar("hour", "dayOfMonth", "month", "dayOfWeek")) return { mode: "interval", every: mEvery, unit: "m" };
   const hStep = stepMatch(raw.hour);
-  if (raw.minute === "0" && hStep && allStar("dayOfMonth", "month", "dayOfWeek")) return { mode: "interval", every: Number(hStep[1]), unit: "h" };
+  const hEvery = hStep ? Number(hStep[1]) : 0;
+  if (raw.minute === "0" && hEvery && hEvery < 24 && 24 % hEvery === 0 && allStar("dayOfMonth", "month", "dayOfWeek")) return { mode: "interval", every: hEvery, unit: "h" };
   if (single(raw.minute) && allStar("hour", "dayOfMonth", "month", "dayOfWeek")) return { mode: "hourly", minute: fields.minute[0]! };
   if (single(raw.minute) && single(raw.hour) && allStar("month")) {
     const time = formatTimeValue(fields.hour[0]!, fields.minute[0]!);

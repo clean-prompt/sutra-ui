@@ -26,7 +26,7 @@ import { InlineAlert } from "../components/inline-alert";
 import { textLinkVariants } from "../components/text-link";
 import { SutraMark } from "../assets/brand";
 import { FeaturedIcon, type IconComponent, type FeaturedIconColor } from "../assets/icons";
-import { QRCodePlaceholder } from "../assets/misc";
+import { QRCode } from "../components/qr-code";
 import { BlockLink, isEmail, useAsyncAction, type BlockLinkRenderer } from "./block-utils";
 
 /* ------------------------------------------------------------------ */
@@ -1120,6 +1120,13 @@ export interface TwoFactorSetupCardProps extends AuthCardBaseProps {
   secret?: string;
   /** Account label shown under the QR code. */
   account?: string;
+  /** Issuer (service name) shown in the authenticator app. Defaults to "Sutra". */
+  issuer?: string;
+  /**
+   * Full `otpauth://` provisioning URI encoded in the QR code. Defaults to one built from
+   * `issuer`, `account` and `secret` (TOTP). Pass your server's URI to include digits/period/algorithm.
+   */
+  otpauthUri?: string;
   onVerify?: (code: string) => unknown;
   onCancel?: () => void;
   onDone?: () => void;
@@ -1131,6 +1138,13 @@ export interface TwoFactorSetupCardProps extends AuthCardBaseProps {
 
 const defaultRecoveryCodes = ["7KQ2-M9XD", "P4LW-8ZRT", "Y3HN-C6VB", "2FJE-Q7SK", "W8TA-N5UG", "D9MC-R4PL"];
 
+/** Builds a TOTP provisioning URI (Key Uri Format) for authenticator apps. Spaces in the secret are dropped. */
+export function buildOtpauthUri({ issuer, account, secret }: { issuer: string; account: string; secret: string }) {
+  const enc = encodeURIComponent;
+  const key = secret.replace(/\s+/g, "").toUpperCase();
+  return `otpauth://totp/${enc(issuer)}:${enc(account)}?secret=${enc(key)}&issuer=${enc(issuer)}`;
+}
+
 /** Authenticator app setup: scan a QR code or copy the secret, then confirm with a 6-digit code. */
 export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetupCardProps>(
   (
@@ -1139,6 +1153,8 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
       description = "Protect your account with an authenticator app like 1Password, Authy or Google Authenticator.",
       secret = "JBSW Y3DP EHPK 3PXP K4ZQ",
       account = "maya@sutra.app",
+      issuer = "Sutra",
+      otpauthUri,
       onVerify,
       onCancel,
       onDone,
@@ -1241,8 +1257,18 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
           <section className="flex flex-col gap-3">
             {step(1, "Scan this QR code with your authenticator app")}
             <div className="flex flex-col items-center gap-2 rounded-box border border-border bg-subtle py-5">
-              <QRCodePlaceholder value={secret} size={156} logo={<SutraMark size={30} />} />
-              <span className="text-xs text-muted-foreground">Sutra · {account}</span>
+              <span className="rounded-box border border-border bg-white p-3 shadow-xs">
+                <QRCode
+                  value={otpauthUri ?? buildOtpauthUri({ issuer, account, secret })}
+                  size={156}
+                  quietZone={0}
+                  logo={<SutraMark size={30} />}
+                  title={`QR code to add ${issuer} (${account}) to your authenticator app`}
+                />
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {issuer} · {account}
+              </span>
             </div>
           </section>
           <section className="flex flex-col gap-3">

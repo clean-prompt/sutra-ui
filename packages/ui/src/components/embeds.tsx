@@ -92,9 +92,14 @@ export interface EmbedConsentProps extends Omit<React.HTMLAttributes<HTMLDivElem
   defaultConsented?: boolean;
   /** Fired when the user clicks Load (or Always allow). */
   onConsent?: () => void;
-  /** Fired with the provider id when the user picks "Always allow". */
+  /**
+   * Fired with the consent key (`providerId`) when the user picks "Always allow". For providers whose
+   * server is user-controlled (e.g. Mastodon) RichEmbed passes an origin-scoped key, `"<id>:<origin>"`.
+   */
   onAllowAlways?: (providerId: string) => void;
   loadLabel?: string;
+  /** Label of the "Always allow" menu action. Defaults to "Always allow {provider}". */
+  allowAlwaysLabel?: string;
   /** The embed, rendered only after consent. */
   children?: React.ReactNode | (() => React.ReactNode);
 }
@@ -114,6 +119,7 @@ export const EmbedConsent = React.forwardRef<HTMLDivElement, EmbedConsentProps>(
       onConsent,
       onAllowAlways,
       loadLabel = "Load",
+      allowAlwaysLabel,
       className,
       children,
       ...props
@@ -174,7 +180,7 @@ export const EmbedConsent = React.forwardRef<HTMLDivElement, EmbedConsentProps>(
             actions={[
               {
                 id: "always",
-                label: `Always allow ${provider}`,
+                label: allowAlwaysLabel ?? `Always allow ${provider}`,
                 icon: <RiShieldCheckLine />,
                 onSelect: () => {
                   onAllowAlways?.(id);
@@ -199,6 +205,11 @@ EmbedConsent.displayName = "EmbedConsent";
 
 /** Default sandbox tokens for third-party players: scripts run in their own origin, no top navigation, no forms. */
 export const EMBED_SANDBOX = "allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-presentation";
+/**
+ * Stricter sandbox for embeds from arbitrary, user-supplied origins (e.g. Mastodon servers):
+ * popups stay sandboxed (no `allow-popups-to-escape-sandbox`).
+ */
+export const EMBED_SANDBOX_STRICT = "allow-scripts allow-same-origin allow-popups allow-presentation";
 /** Default permissions policy for embeds. */
 export const EMBED_ALLOW = "encrypted-media; picture-in-picture; fullscreen; clipboard-write";
 
@@ -267,8 +278,14 @@ export interface EmbedProvider {
   match: (url: URL) => string | null;
   aspectRatio?: number;
   height?: number;
+  /** Sandbox override for this provider's iframe. Defaults to `EMBED_SANDBOX`. */
   sandbox?: string;
   allow?: string;
+  /**
+   * The embed's server is chosen by the URL (any origin can match), e.g. Mastodon. Consent is then
+   * remembered per origin (`"<id>:<origin>"`) and the consent notice names the actual host.
+   */
+  originScoped?: boolean;
 }
 
 export interface EmbedMatch {
@@ -276,6 +293,13 @@ export interface EmbedMatch {
   /** Iframe src (only rendered after consent). */
   src: string;
   url: string;
+  /**
+   * Key used for remembered consent: the provider id, or `"<id>:<origin>"` for `originScoped`
+   * providers, so allowing one Mastodon server never allows another.
+   */
+  consentKey: string;
+  /** Host named in the consent notice: the provider's domain, or the URL's host for `originScoped` providers. */
+  domain: string;
 }
 
 const host = (url: URL) => url.hostname.replace(/^www\./, "").toLowerCase();
@@ -365,7 +389,10 @@ export const embedProviders: EmbedProvider[] = [
     domain: "the Mastodon server",
     icon: <RiMastodonLine />,
     height: 360,
+    originScoped: true,
+    sandbox: EMBED_SANDBOX_STRICT,
     match: (url) => {
+      if (url.protocol !== "https:" || url.username || url.password) return null;
       const s = seg(url);
       if (s.length !== 2 || !/^@[\w.]+$/.test(s[0]) || !/^\d{6,}$/.test(s[1])) return null;
       return url.origin + "/" + s[0] + "/" + s[1] + "/embed";
@@ -412,7 +439,10 @@ export const embedProviders: EmbedProvider[] = [
   },
 ];
 
-/** Resolve a URL against a provider registry. Returns null for unsupported or non-http(s) URLs. */
+/**
+ * Resolve a URL against a provider registry. Returns null for unsupported or non-http(s) URLs, and
+ * for matches whose iframe src would not be https.
+ */
 export function resolveEmbed(href: string, providers: readonly EmbedProvider[] = embedProviders): EmbedMatch | null {
   let url: URL;
   try {
@@ -423,7 +453,14 @@ export function resolveEmbed(href: string, providers: readonly EmbedProvider[] =
   if (url.protocol !== "https:" && url.protocol !== "http:") return null;
   for (const provider of providers) {
     const src = provider.match(url);
-    if (src) return { provider, src, url: href };
+    if (!src || !/^https:/i.test(src)) continue;
+    return {
+      provider,
+      src,
+      url: href,
+      consentKey: provider.originScoped ? `${provider.id}:${url.origin}` : provider.id,
+      domain: provider.originScoped ? url.host : provider.domain,
+    };
   }
   return null;
 }
@@ -503,10 +540,14 @@ export interface RichEmbedProps extends Omit<React.HTMLAttributes<HTMLDivElement
   /** Image slot for the link-card fallback (app-provided). */
   image?: React.ReactNode;
   providers?: readonly EmbedProvider[];
-  /** Fired with the provider id when the user picks "Always allow". */
+  /**
+   * Fired with the consent key when the user picks "Always allow": the provider id (e.g. `"youtube"`),
+   * or `"<id>:<origin>"` for origin-scoped providers such as Mastodon (`"mastodon:<origin>"`).
+   * Store it as-is in `EmbedConsentProvider`'s `allowed` list.
+   */
   onAllowAlways?: (providerId: string) => void;
-  /** Fired when the embed is loaded after consent. */
-  onConsent?: (providerId: string) => void;
+  /** Fired when the embed is loaded after consent, with the provider id and the consent key. */
+  onConsent?: (providerId: string, consentKey: string) => void;
   /** Skip the consent gate (only when your app already obtained consent). */
   consented?: boolean;
 }
@@ -522,18 +563,19 @@ export const RichEmbed = React.forwardRef<HTMLDivElement, RichEmbedProps>(
         </div>
       );
     }
-    const { provider, src } = match;
+    const { provider, src, consentKey } = match;
     const domain = domainOf(url);
     return (
       <div ref={ref} data-slot="rich-embed" data-provider={provider.id} className={cn("w-full", className)} {...props}>
         <EmbedConsent
           provider={provider.name}
-          providerId={provider.id}
-          domain={provider.id === "mastodon" ? domain : provider.domain}
+          providerId={consentKey}
+          domain={match.domain}
+          allowAlwaysLabel={provider.originScoped ? `Always allow ${match.domain}` : undefined}
           icon={provider.icon}
           consented={consented}
           onAllowAlways={onAllowAlways}
-          onConsent={() => onConsent?.(provider.id)}
+          onConsent={() => onConsent?.(provider.id, consentKey)}
           preview={
             <div className="flex items-center gap-2.5 rounded-control border border-dashed border-border bg-subtle px-2.5 py-2">
               <Favicon domain={domain} className="size-5" />
@@ -560,7 +602,7 @@ export const RichEmbed = React.forwardRef<HTMLDivElement, RichEmbedProps>(
               title={title ?? `${provider.name} embed`}
               aspectRatio={provider.aspectRatio}
               height={provider.height}
-              sandbox={provider.sandbox}
+              sandbox={provider.sandbox ?? EMBED_SANDBOX}
               allow={provider.allow}
             />
           )}

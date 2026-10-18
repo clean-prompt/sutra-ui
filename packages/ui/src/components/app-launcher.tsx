@@ -178,6 +178,8 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
     };
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLUListElement>) => {
+      // Keys from portaled content (tile context menus) bubble through React; leave them alone.
+      if (event.defaultPrevented || !event.currentTarget.contains(event.target as Node)) return;
       const keys: Record<string, number> = {
         ArrowRight: current + 1,
         ArrowLeft: current - 1,
@@ -194,6 +196,7 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
     };
 
     const onSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.nativeEvent.isComposing || event.keyCode === 229) return;
       if (event.key === "ArrowDown" && visible.length) {
         event.preventDefault();
         focusAt(0);

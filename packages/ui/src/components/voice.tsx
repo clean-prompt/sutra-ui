@@ -90,7 +90,15 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}):
   optsRef.current = options;
 
   React.useEffect(() => setSupported(getRecognitionCtor() != null), []);
-  React.useEffect(() => () => recRef.current?.abort(), []);
+  React.useEffect(
+    () => () => {
+      // Detach first so the aborted recognizer's late onend/onerror are ignored.
+      const rec = recRef.current;
+      recRef.current = null;
+      rec?.abort();
+    },
+    []
+  );
 
   const start = React.useCallback(() => {
     const Ctor = getRecognitionCtor();
@@ -103,7 +111,10 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}):
     rec.lang = lang ?? (typeof document !== "undefined" ? document.documentElement.lang : "") ?? "";
     rec.continuous = continuous;
     rec.interimResults = interimResults;
+    // Every handler checks it still belongs to the current recognizer: after a restart the old
+    // one's late events (onend especially) must not flip the new session's state.
     rec.onresult = (e) => {
+      if (recRef.current !== rec) return;
       let partial = "";
       let finalChunk = "";
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -119,13 +130,15 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}):
       }
     };
     rec.onerror = (e) => {
+      if (recRef.current !== rec) return;
       setError(e.error);
       optsRef.current.onError?.(e.error);
     };
     rec.onend = () => {
+      if (recRef.current !== rec) return;
+      recRef.current = null;
       setListening(false);
       setInterim("");
-      if (recRef.current === rec) recRef.current = null;
       optsRef.current.onEnd?.();
     };
     recRef.current = rec;
@@ -293,6 +306,10 @@ export interface VoiceInputProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 
 const micSize = { sm: "icon-sm", md: "icon", lg: "icon-lg" } as const;
 
+function stopTracks(stream: MediaStream | null | undefined) {
+  stream?.getTracks().forEach((t) => t.stop());
+}
+
 /** Mic toggle with a live input-level ring, timer + max-duration countdown and interim transcript preview. */
 export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
   ({ lang, onTranscript, onError, maxDuration = 60, fallback = null, showTranscript = true, meter = true, size = "md", disabled, className, ...props }, ref) => {
@@ -304,6 +321,11 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
       onError,
     });
     const [stream, setStream] = React.useState<MediaStream | null>(null);
+    // The live mic stream, owned here (not in state) so cleanup can always stop its tracks.
+    const streamRef = React.useRef<MediaStream | null>(null);
+    // Bumped on every start and every release: a getUserMedia result for an older token is stale.
+    const startToken = React.useRef(0);
+    const alive = React.useRef(true);
     const level = useAudioLevel(stream);
     const [startedAt, setStartedAt] = React.useState<number | null>(null);
     const [, tick] = React.useState(0);
@@ -318,10 +340,11 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
     }, [sr.listening]);
 
     const releaseStream = React.useCallback(() => {
-      setStream((s) => {
-        s?.getTracks().forEach((t) => t.stop());
-        return null;
-      });
+      startToken.current++;
+      const s = streamRef.current;
+      streamRef.current = null;
+      stopTracks(s);
+      setStream(null);
     }, []);
 
     React.useEffect(() => {
@@ -333,7 +356,21 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
       wasListening.current = sr.listening;
     }, [sr.listening, releaseStream]);
 
-    React.useEffect(() => () => releaseStream(), [releaseStream]);
+    // A failed start (error without ever listening) must not leave a pending mic request behind.
+    React.useEffect(() => {
+      if (sr.error && !sr.listening) releaseStream();
+    }, [sr.error, sr.listening, releaseStream]);
+
+    React.useEffect(() => {
+      alive.current = true;
+      return () => {
+        alive.current = false;
+        startToken.current++;
+        const s = streamRef.current;
+        streamRef.current = null;
+        stopTracks(s);
+      };
+    }, []);
 
     const elapsed = startedAt != null ? (Date.now() - startedAt) / 1000 : 0;
     const left = Math.max(0, maxDuration - elapsed);
@@ -344,16 +381,31 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
     if (!sr.supported) return <>{fallback}</>;
 
     const start = () => {
+      releaseStream();
       sr.start();
       setStartedAt(Date.now());
       if (meter && typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia) {
+        const token = ++startToken.current;
         navigator.mediaDevices
           .getUserMedia({ audio: true })
-          .then((s) => setStream(s))
+          .then((s) => {
+            // Dictation stopped, restarted or the component unmounted while we waited: drop the stream.
+            if (!alive.current || token !== startToken.current) {
+              stopTracks(s);
+              return;
+            }
+            streamRef.current = s;
+            setStream(s);
+          })
           .catch(() => {});
       }
     };
-    const toggle = () => (sr.listening ? sr.stop() : start());
+    const toggle = () => {
+      if (sr.listening) {
+        sr.stop();
+        releaseStream();
+      } else start();
+    };
     const listening = sr.listening;
     const nearEnd = listening && left <= 10;
 

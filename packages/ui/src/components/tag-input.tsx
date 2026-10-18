@@ -23,7 +23,7 @@ export interface TagInputProps
   onReject?: (tag: string, reason: TagRejectReason) => void;
   /** Allow the same tag more than once (case-insensitive comparison otherwise). */
   allowDuplicates?: boolean;
-  /** Extra characters that commit a tag. Enter and Tab always do. Default `[","]`. */
+  /** Extra characters (or strings) that commit a tag. Enter and Tab always do; key names like "Enter" are treated as keys, not characters. Default `[","]`. */
   separators?: string[];
   /** Transform text before it becomes a tag. Default trims whitespace. */
   normalize?: (text: string) => string;
@@ -230,7 +230,8 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const v = e.target.value;
-      const parts = separators.length ? v.split(new RegExp(`[${separators.map(escapeForClass).join("")}]`)) : [v];
+      const splitter = separatorPattern(separators);
+      const parts = splitter ? v.split(splitter) : [v];
       if (parts.length > 1) {
         const rest = parts.pop() ?? "";
         addTags(parts);
@@ -246,7 +247,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onPaste?.(e);
       if (e.defaultPrevented || !interactive) return;
       const data = e.clipboardData.getData("text");
-      const splitter = new RegExp(`[\\r\\n${separators.map(escapeForClass).join("")}]`);
+      const splitter = separatorPattern(separators, "\\r\\n")!;
       if (!splitter.test(data)) return;
       e.preventDefault();
       const parts = data.split(splitter);
@@ -399,6 +400,18 @@ TagInput.displayName = "TagInput";
 
 function escapeForClass(ch: string) {
   return ch.replace(/[\\\]\[^-]/g, "\\$&");
+}
+
+/** Key names that may appear in `separators`; they commit on keydown and are never split characters. */
+const SEPARATOR_KEYS = new Set(["Enter", "Tab"]);
+
+/** Regex splitting text on the character separators (single chars in a class, longer strings by alternation). */
+function separatorPattern(separators: string[], extraClass = ""): RegExp | null {
+  const textSeps = separators.filter((s) => s && !SEPARATOR_KEYS.has(s));
+  const chars = textSeps.filter((s) => s.length === 1).map(escapeForClass).join("") + extraClass;
+  const strings = textSeps.filter((s) => s.length > 1).map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const alts = [...strings, ...(chars ? [`[${chars}]`] : [])];
+  return alts.length ? new RegExp(alts.join("|")) : null;
 }
 
 function Highlight({ text, query }: { text: string; query: string }) {

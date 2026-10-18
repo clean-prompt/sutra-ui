@@ -23,7 +23,21 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { Kbd } from "./typography";
-import { useShortcuts } from "./shortcuts";
+import { isEditableTarget, useShortcuts } from "./shortcuts";
+
+/** Controls that own the Enter / arrow keys when focused. */
+const INTERACTIVE_SELECTOR = [
+  "button",
+  "a[href]",
+  "input",
+  "textarea",
+  "select",
+  "summary",
+  '[contenteditable]:not([contenteditable="false"])',
+  ...["button", "link", "menuitem", "menuitemcheckbox", "menuitemradio", "tab", "option", "checkbox", "switch", "radio", "combobox", "slider", "textbox", "treeitem", "gridcell"].map(
+    (r) => `[role="${r}"]`
+  ),
+].join(",");
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -277,6 +291,27 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
       return !!el && typeof document !== "undefined" && el.contains(document.activeElement);
     };
     const keysUsable = () => isActive() && feedbackFor == null;
+    /**
+     * Where focus is relative to the prompt: "inside", "idle" (nothing interactive focused, e.g. body),
+     * "editable" (a text field elsewhere) or "interactive" (another control elsewhere on the page).
+     * Enter / arrows only act for "inside" and "idle", so pressing Enter on e.g. a "Stop agent" button
+     * never approves the highlighted option.
+     */
+    const focusZone = (): "inside" | "idle" | "editable" | "interactive" => {
+      if (typeof document === "undefined") return "idle";
+      const el = document.activeElement as HTMLElement | null;
+      if (!el || el === document.body || el === document.documentElement) return "idle";
+      if (rootRef.current?.contains(el)) return "inside";
+      if (isEditableTarget(el)) return "editable";
+      if (typeof el.matches === "function" && el.matches(INTERACTIVE_SELECTOR)) return "interactive";
+      return "idle";
+    };
+    const navUsable = () => {
+      if (!keysUsable()) return false;
+      const zone = focusZone();
+      return zone === "inside" || zone === "idle";
+    };
+    const digitUsable = () => keysUsable() && focusZone() !== "editable";
     const focusOption = (i: number) => {
       setHighlight(i);
       if (rootRef.current?.contains(document.activeElement)) optionRefs.current[i]?.focus();
@@ -296,17 +331,17 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
       ...options.slice(0, 9).map((_, i) => ({
         keys: String(i + 1),
         handler: () => choose(i),
-        when: keysUsable,
+        when: digitUsable,
         id: `${uid}-opt-${i}`,
       })),
-      { keys: "up", handler: () => move(-1), when: keysUsable, id: `${uid}-up` },
-      { keys: "down", handler: () => move(1), when: keysUsable, id: `${uid}-down` },
+      { keys: "up", handler: () => move(-1), when: navUsable, id: `${uid}-up` },
+      { keys: "down", handler: () => move(1), when: navUsable, id: `${uid}-down` },
       {
         keys: "enter",
         handler: () => choose(highlight),
         id: `${uid}-enter`,
         when: () => {
-          if (!keysUsable()) return false;
+          if (!navUsable()) return false;
           const el = typeof document !== "undefined" ? (document.activeElement as HTMLElement | null) : null;
           if (el && rootRef.current?.contains(el) && el.getAttribute("role") !== "radio" && el !== rootRef.current) return false;
           return true;

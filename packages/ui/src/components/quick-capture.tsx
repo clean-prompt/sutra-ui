@@ -91,7 +91,8 @@ const weekdays: Record<string, number> = {
 
 const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 const MONTH = "(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)";
-const WEEKDAY = "(sun(?:day)?|mon(?:day)?|tue(?:s(?:day)?)?|wed(?:s|nesday)?|thu(?:r(?:s(?:day)?)?)?|fri(?:day)?|sat(?:urday)?)";
+const WEEKDAY = "(?<wd>sun(?:day)?|mon(?:day)?|tue(?:s(?:day)?)?|wed(?:s|nesday)?|thu(?:r(?:s(?:day)?)?)?|fri(?:day)?|sat(?:urday)?)";
+const WEEKDAY_FULL = "(?<wd>sunday|monday|tuesday|wednesday|thursday|friday|saturday)";
 const PREP = "(?:(?:on|by|due|at|for)\\s+)?";
 const END = "(?=[\\s,.;!?]|$)";
 
@@ -106,11 +107,18 @@ export function parseCapture(text: string, now: Date = new Date(), options: Pars
   let explicitApp = false;
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  const take = (re: RegExp): RegExpMatchArray | null => {
-    const m = rest.match(re);
-    if (m && m.index != null) rest = `${rest.slice(0, m.index)} ${rest.slice(m.index + m[0].length)}`;
-    return m;
+  /** Remove and return the first match of `re` that `accept` approves; text that doesn't parse stays in the title. */
+  const take = (re: RegExp, accept?: (m: RegExpMatchArray) => boolean): RegExpMatchArray | null => {
+    const flags = re.flags.includes("g") ? re.flags : `${re.flags}g`;
+    for (const m of rest.matchAll(new RegExp(re.source, flags))) {
+      if (m.index == null || (accept && !accept(m))) continue;
+      rest = `${rest.slice(0, m.index)} ${rest.slice(m.index + m[0].length)}`;
+      return m;
+    }
+    return null;
   };
+  const validDay = (y: number, month: number, day: number) =>
+    month >= 0 && month < 12 && day >= 1 && day <= new Date(y, month + 1, 0).getDate();
 
   // App prefix: "task: …", or a bare "event …" / "todo …".
   const prefix = rest.match(/^\s*([a-z]+)\s*:\s*/i);
@@ -144,23 +152,28 @@ export function parseCapture(text: string, now: Date = new Date(), options: Pars
 
   // Amount.
   let amount: number | undefined;
-  const am = take(/\s\$(\d+(?:\.\d{1,2})?)(?=[\s,.;!?]|$)/);
-  if (am) amount = parseFloat(am[1]);
+  const am = take(/\s\$((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,2})?)(?=[\s;!?]|[,.](?!\d)|$)/);
+  if (am) amount = parseFloat(am[1].replace(/,/g, ""));
 
   // Time.
   let time: string | undefined;
   const named = take(new RegExp(`\\s(?:at\\s+)?(noon|midnight)${END}`, "i"));
   if (named) time = named[1].toLowerCase() === "noon" ? "12:00" : "00:00";
   if (!time) {
-    const ampm = take(new RegExp(`\\s(?:at\\s+)?(\\d{1,2})(?::([0-5]\\d))?\\s?(am|pm|a|p)${END}`, "i"));
+    // "3pm", "3p", "3 pm", "3 p.m." — a spaced bare "a"/"p" needs an "m" or a period, so "chapter 3 a bit" is not a time.
+    const ampm = take(
+      new RegExp(`\\s(?:at\\s+)?(\\d{1,2})(?::([0-5]\\d))?(?:([ap])(?:\\.?m\\.?|\\.)?|\\s([ap])(?:\\.?m\\.?|\\.))${END}`, "i"),
+      (m) => {
+        const h = parseInt(m[1], 10);
+        return h >= 1 && h <= 12;
+      }
+    );
     if (ampm) {
       let h = parseInt(ampm[1], 10);
-      const pm = ampm[3].toLowerCase().startsWith("p");
-      if (h >= 1 && h <= 12) {
-        if (h === 12) h = pm ? 12 : 0;
-        else if (pm) h += 12;
-        time = `${pad(h)}:${ampm[2] ?? "00"}`;
-      }
+      const pm = (ampm[3] ?? ampm[4]).toLowerCase() === "p";
+      if (h === 12) h = pm ? 12 : 0;
+      else if (pm) h += 12;
+      time = `${pad(h)}:${ampm[2] ?? "00"}`;
     }
   }
   if (!time) {
@@ -170,7 +183,7 @@ export function parseCapture(text: string, now: Date = new Date(), options: Pars
 
   // Date.
   let date: Date | undefined;
-  const iso = take(new RegExp(`\\s${PREP}(\\d{4})-(\\d{2})-(\\d{2})${END}`, "i"));
+  const iso = take(new RegExp(`\\s${PREP}(\\d{4})-(\\d{2})-(\\d{2})${END}`, "i"), (m) => validDay(+m[1], +m[2] - 1, +m[3]));
   if (iso) date = new Date(+iso[1], +iso[2] - 1, +iso[3]);
   if (!date) {
     const rel = take(new RegExp(`\\s${PREP}(today|tonight|tomorrow|tmrw?|next week|next month|this weekend|weekend)${END}`, "i"));
@@ -189,8 +202,9 @@ export function parseCapture(text: string, now: Date = new Date(), options: Pars
     if (inN) date = addDays(today, parseInt(inN[1], 10) * (inN[2].toLowerCase().startsWith("w") ? 7 : 1));
   }
   if (!date) {
-    const md = take(new RegExp(`\\s${PREP}${MONTH}\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?${END}`, "i"));
-    const dm = md ? null : take(new RegExp(`\\s${PREP}(\\d{1,2})(?:st|nd|rd|th)?\\s+${MONTH}${END}`, "i"));
+    const monthDay = (word: string, day: string) => validDay(2024, months.indexOf(word.slice(0, 3).toLowerCase()), parseInt(day, 10));
+    const md = take(new RegExp(`\\s${PREP}${MONTH}\\.?\\s+(\\d{1,2})(?:st|nd|rd|th)?${END}`, "i"), (m) => monthDay(m[1], m[2]));
+    const dm = md ? null : take(new RegExp(`\\s${PREP}(\\d{1,2})(?:st|nd|rd|th)?\\s+${MONTH}${END}`, "i"), (m) => monthDay(m[2], m[1]));
     const monthWord = md?.[1] ?? dm?.[2];
     const dayNum = md?.[2] ?? dm?.[1];
     if (monthWord && dayNum) {
@@ -201,11 +215,17 @@ export function parseCapture(text: string, now: Date = new Date(), options: Pars
     }
   }
   if (!date) {
-    const wd = take(new RegExp(`\\s${PREP}(next\\s+)?${WEEKDAY}${END}`, "i"));
-    if (wd) {
-      const target = weekdays[wd[2].toLowerCase()];
+    // Weekdays need a cue ("on fri", "next tue", "due friday"), a full name, or to end the text ("Review PR fri"),
+    // so words like "sun cream" or "I sat there" are left alone.
+    const wd =
+      take(new RegExp(`\\s(?:(?:on|by|due|until|till)\\s+)(?:(?<rel>next|this)\\s+)?${WEEKDAY}${END}`, "i")) ??
+      take(new RegExp(`\\s(?<rel>next|this)\\s+${WEEKDAY}${END}`, "i")) ??
+      take(new RegExp(`\\s${PREP}${WEEKDAY_FULL}${END}`, "i")) ??
+      take(new RegExp(`\\s${PREP}${WEEKDAY}[\\s.!?]*$`, "i"));
+    if (wd?.groups) {
+      const target = weekdays[wd.groups.wd.toLowerCase()];
       const offset = (target - today.getDay() + 7) % 7;
-      date = addDays(today, offset + (wd[1] ? 7 : 0));
+      date = addDays(today, offset + (wd.groups.rel?.toLowerCase() === "next" ? 7 : 0));
     }
   }
   if (time && !date) date = today;
@@ -244,7 +264,7 @@ export type QuickCaptureValue = Omit<CaptureResult, "explicitApp"> & { raw: stri
 export interface QuickCaptureProps {
   /** Called on Enter with the parsed capture. May return a promise. */
   onCapture?: (value: QuickCaptureValue) => unknown;
-  /** Target apps the Tab key cycles through. */
+  /** Target apps that Alt+↑ / Alt+↓ cycle through. */
   apps?: SutraApp[];
   defaultApp?: SutraApp;
   /** "dialog" (default) opens on the shortcut; "inline" renders the bar in place. */
@@ -289,7 +309,7 @@ const PreviewChip = ({ icon, children, className }: { icon?: React.ReactNode; ch
   </span>
 );
 
-/** Global quick-capture bar: type naturally, see the parsed preview, Tab to switch app, Enter to save. */
+/** Global quick-capture bar: type naturally, see the parsed preview, Alt+↑/↓ to switch app, Enter to save. */
 export function QuickCapture({
   onCapture,
   apps = ["tasks", "notes", "calendar", "journal"],
@@ -358,9 +378,10 @@ export function QuickCapture({
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Tab") {
+    // Tab is never intercepted (no keyboard trap); Alt+↑/↓ leave ⌥/Ctrl+←/→ word navigation intact.
+    if (e.altKey && !e.metaKey && !e.ctrlKey && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
-      cycle(e.shiftKey ? -1 : 1);
+      cycle(e.key === "ArrowDown" ? 1 : -1);
     } else if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       e.preventDefault();
       void submit(e.shiftKey);
@@ -384,8 +405,9 @@ export function QuickCapture({
           aria-label="Quick capture"
           aria-describedby={showPreview ? previewId : undefined}
           autoFocus={variant === "dialog"}
-          disabled={busy}
-          className="h-8 min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-60"
+          readOnly={busy}
+          aria-busy={busy || undefined}
+          className="h-8 min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground aria-busy:opacity-60"
         />
       </div>
       {showPreview && (
@@ -439,7 +461,7 @@ export function QuickCapture({
         </div>
         <span className="ml-auto hidden items-center gap-3 pr-1 text-xs text-muted-foreground sm:flex">
           <span className="inline-flex items-center gap-1">
-            <ShortcutKeys keys="tab" /> switch
+            <ShortcutKeys keys="alt+up" />/<ShortcutKeys keys="alt+down" /> switch
           </span>
           <span className="inline-flex items-center gap-1">
             <ShortcutKeys keys="enter" /> save
@@ -464,7 +486,7 @@ export function QuickCapture({
       >
         <DialogTitle className="sr-only">Quick capture</DialogTitle>
         <DialogDescription className="sr-only">
-          Type a task, note or event. Tab switches the target app, Enter saves.
+          Type a task, note or event. Alt+Up and Alt+Down switch the target app, Enter saves.
         </DialogDescription>
         {panel}
       </DialogContent>

@@ -11,6 +11,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useCopy } from "../hooks/use-copy";
+import { safeISO } from "../lib/date";
 import { CodeBlock } from "./code-block";
 
 /* ------------------------------------------------------------------ */
@@ -35,16 +36,26 @@ export function formatJsonPath(segments: JsonPathSegment[]): string {
 /** JSON.stringify that survives circular refs, BigInt, undefined and functions. */
 export function safeJsonStringify(value: unknown, space: number | string = 2): string {
   const stack: object[] = [];
+  // Converted Map/Set stand-ins → the original collection, so the ancestor stack tracks the original.
+  const original = new WeakMap<object, object>();
   const replacer = function (this: unknown, _key: string, v: unknown) {
     if (typeof v === "bigint") return `${v}n`;
     if (typeof v === "function") return `[Function ${(v as { name?: string }).name || "anonymous"}]`;
-    if (v instanceof Map) return Object.fromEntries([...v.entries()].map(([k, x]) => [String(k), x]));
-    if (v instanceof Set) return [...v];
     if (v && typeof v === "object") {
-      const holder = this as object;
+      const holder = original.get(this as object) ?? (this as object);
       while (stack.length && stack[stack.length - 1] !== holder) stack.pop();
       if (stack.includes(v as object)) return "[Circular]";
       stack.push(v as object);
+      if (v instanceof Map) {
+        const obj = Object.fromEntries([...v.entries()].map(([k, x]) => [String(k), x]));
+        original.set(obj, v);
+        return obj;
+      }
+      if (v instanceof Set) {
+        const arr = [...v];
+        original.set(arr, v);
+        return arr;
+      }
     }
     return v;
   };
@@ -80,7 +91,7 @@ function primitiveText(v: unknown, kind: Kind): string {
     case "string":
       return JSON.stringify(v);
     case "date":
-      return JSON.stringify((v as Date).toISOString?.() ?? String(v));
+      return JSON.stringify(safeISO(v as Date) ?? "Invalid Date");
     case "bigint":
       return `${String(v)}n`;
     case "function":

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowRightSLine, RiCheckLine, RiErrorWarningLine, RiFileCopyLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { safeISO, toValidDate } from "../lib/date";
 import { useCopy } from "../hooks/use-copy";
 import { CodeBlock } from "./code-block";
 import { JsonViewer } from "./json-viewer";
@@ -241,7 +242,7 @@ export interface RequestInspectorProps extends Omit<React.HTMLAttributes<HTMLDiv
 export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspectorProps>(
   ({ className, record, tab, defaultTab = "messages", onTabChange, hideHeader, locale, ...props }, ref) => {
     const info = describeRequestLog(record);
-    const time = new Date(toMs(record.timestamp));
+    const time = toValidDate(toMs(record.timestamp));
     const chips: { k: string; v: React.ReactNode }[] = [];
     for (const [k, v] of Object.entries(info.params)) {
       if (k === "stream") {
@@ -265,8 +266,8 @@ export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspecto
             <span className="font-mono text-xs tabular-nums text-muted-foreground" data-latency="">
               {formatRequestLatency(record.latencyMs)}
             </span>
-            <time dateTime={time.toISOString()} className="text-xs text-muted-foreground">
-              {time.toLocaleString(locale)}
+            <time dateTime={safeISO(time)} className="text-xs text-muted-foreground">
+              {time ? time.toLocaleString(locale) : "—"}
             </time>
             <RequestIdCopy id={record.id} className="ml-auto" />
           </div>
@@ -514,7 +515,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
                         </button>
                       </TableCell>
                       <TableCell className="whitespace-nowrap font-mono text-xs tabular-nums text-muted-foreground">
-                        {timeFmt.format(new Date(toMs(r.timestamp)))}
+                        {Number.isFinite(toMs(r.timestamp)) ? timeFmt.format(new Date(toMs(r.timestamp))) : "—"}
                       </TableCell>
                       <TableCell>
                         <RequestIdCopy id={r.id} />

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { safeISO, toValidDate } from "../lib/date";
 import { Eyebrow } from "./typography";
 
 const proseBase = [
@@ -88,8 +89,8 @@ export interface BlogPostHeaderProps extends Omit<React.HTMLAttributes<HTMLEleme
 }
 
 function formatDate(date: string | Date) {
-  const d = typeof date === "string" ? new Date(date) : date;
-  if (Number.isNaN(d.getTime())) return String(date);
+  const d = toValidDate(date);
+  if (!d) return typeof date === "string" ? date : "—";
   return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
@@ -100,7 +101,7 @@ export const BlogPostHeader = React.forwardRef<HTMLElement, BlogPostHeaderProps>
     if (author) meta.push(<span key="author" className="font-medium text-foreground">{author}</span>);
     if (date)
       meta.push(
-        <time key="date" dateTime={typeof date === "string" ? date : date.toISOString()}>
+        <time key="date" dateTime={typeof date === "string" ? (toValidDate(date) ? date : undefined) : safeISO(date)}>
           {formatDate(date)}
         </time>
       );

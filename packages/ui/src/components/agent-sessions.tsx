@@ -236,6 +236,7 @@ function InlineRename({
       onClick={(e) => e.stopPropagation()}
       onKeyDown={(e) => {
         e.stopPropagation();
+        if (e.nativeEvent.isComposing || e.keyCode === 229) return;
         if (e.key === "Enter") {
           e.preventDefault();
           commit();

@@ -333,7 +333,7 @@ describe("QuickCapture", () => {
     await waitFor(() => expect(input).toHaveValue(""));
   });
 
-  it("cycles the target app with Tab / Shift+Tab and ignores empty submits", async () => {
+  it("cycles the target app with Alt+Down / Alt+Up and ignores empty submits", async () => {
     const user = userEvent.setup();
     const onCapture = vi.fn();
     render(<QuickCapture variant="inline" now={NOW} onCapture={onCapture} />);
@@ -343,10 +343,10 @@ describe("QuickCapture", () => {
     expect(onCapture).not.toHaveBeenCalled();
     await user.type(input, "Buy milk");
     expect(screen.getByRole("button", { name: "Tasks" })).toHaveAttribute("aria-pressed", "true");
-    await user.keyboard("{Tab}");
+    await user.keyboard("{Alt>}{ArrowDown}{/Alt}");
     expect(screen.getByRole("button", { name: "Notes" })).toHaveAttribute("aria-pressed", "true");
     expect(input).toHaveFocus();
-    await user.keyboard("{Tab}{Shift>}{Tab}{/Shift}");
+    await user.keyboard("{Alt>}{ArrowDown}{/Alt}{Alt>}{ArrowUp}{/Alt}");
     expect(screen.getByRole("button", { name: "Notes" })).toHaveAttribute("aria-pressed", "true");
     await user.keyboard("{Enter}");
     expect(onCapture).toHaveBeenCalledWith(expect.objectContaining({ app: "notes", title: "Buy milk" }));

@@ -335,6 +335,11 @@ export interface ApiKeyCreateDialogProps {
   onCreate: (input: ApiKeyCreateInput) => string | { secret: string } | Promise<string | { secret: string }>;
   /** File name for the show-once download. */
   fileName?: string;
+  /**
+   * Called when `onCreate` resolves after the dialog was closed (or unmounted) mid-request. The key
+   * exists server-side but its secret was never shown, so apps should revoke it.
+   */
+  onCreateDiscarded?: (result: string | { secret: string }, input: ApiKeyCreateInput) => void;
 }
 
 /** Create-key dialog: name, scopes, expiry and permissions, then a show-once secret. */
@@ -351,6 +356,7 @@ export function ApiKeyCreateDialog({
   defaultExpiryIndex = 1,
   onCreate,
   fileName = "api-key.txt",
+  onCreateDiscarded,
 }: ApiKeyCreateDialogProps) {
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   const [name, setName] = React.useState("");
@@ -362,8 +368,14 @@ export function ApiKeyCreateDialog({
   const [error, setError] = React.useState<string>();
   const [touched, setTouched] = React.useState(false);
   const id = React.useId();
+  // Bumped on every submit, reset and unmount; a request whose token is stale has its result discarded.
+  const requestRef = React.useRef(0);
+  const discardedRef = React.useRef(onCreateDiscarded);
+  discardedRef.current = onCreateDiscarded;
 
   const reset = () => {
+    requestRef.current += 1;
+    setBusy(false);
     setName("");
     setSelected([]);
     setPerms([]);
@@ -379,6 +391,18 @@ export function ApiKeyCreateDialog({
     if (!next) reset();
   };
 
+  // Also reset when a controlled parent closes the dialog without going through onOpenChange.
+  React.useEffect(() => {
+    if (!open) reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+  React.useEffect(
+    () => () => {
+      requestRef.current += 1;
+    },
+    []
+  );
+
   const nameError = touched && !name.trim() ? "Give the key a name." : undefined;
   const scopeError = touched && selected.length === 0 ? "Pick at least one scope." : undefined;
 
@@ -386,20 +410,27 @@ export function ApiKeyCreateDialog({
     e.preventDefault();
     setTouched(true);
     if (!name.trim() || selected.length === 0) return;
+    const token = ++requestRef.current;
+    const input: ApiKeyCreateInput = {
+      name: name.trim(),
+      scopes: selected,
+      expiresInDays: expiryOptions[Number(expiry)]?.days ?? null,
+      permissions: perms,
+    };
     setBusy(true);
     setError(undefined);
     try {
-      const result = await onCreate({
-        name: name.trim(),
-        scopes: selected,
-        expiresInDays: expiryOptions[Number(expiry)]?.days ?? null,
-        permissions: perms,
-      });
+      const result = await onCreate(input);
+      if (token !== requestRef.current) {
+        discardedRef.current?.(result, input);
+        return;
+      }
       setSecret(typeof result === "string" ? result : result.secret);
     } catch (err) {
+      if (token !== requestRef.current) return;
       setError(err instanceof Error ? err.message : "Couldn't create the key.");
     } finally {
-      setBusy(false);
+      if (token === requestRef.current) setBusy(false);
     }
   };
 

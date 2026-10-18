@@ -28,7 +28,12 @@ export interface SlotRegistry {
   subscribe: (listener: () => void) => () => void;
   /** Changes whenever the registry does (for useSyncExternalStore). */
   version: () => number;
+  /** Changes only when the given slot's contributions do. Optional for custom registries. */
+  slotVersion?: (slot: string) => number;
 }
+
+const sameContribution = (a: SlotContribution, b: SlotContribution) =>
+  a.slot === b.slot && a.order === b.order && a.source === b.source && a.render === b.render;
 
 /** Create a standalone slot registry (pass it to `SlotProvider registry`). Lets extensions register outside React. */
 export function createSlotRegistry(initial: SlotContribution[] = []): SlotRegistry {
@@ -36,19 +41,30 @@ export function createSlotRegistry(initial: SlotContribution[] = []): SlotRegist
   const listeners = new Set<() => void>();
   let seq = 0;
   let ver = 0;
+  const slotVers = new Map<string, number>();
   const cache = new Map<string, SlotContribution[]>();
-  const emit = () => {
+  const emit = (...slots: string[]) => {
     ver += 1;
-    cache.clear();
+    for (const slot of slots) {
+      slotVers.set(slot, (slotVers.get(slot) ?? 0) + 1);
+      cache.delete(slot);
+    }
     listeners.forEach((l) => l());
   };
   const unregister = (id: string) => {
-    if (entries.delete(id)) emit();
+    const prev = entries.get(id);
+    if (prev && entries.delete(id)) emit(prev.c.slot);
   };
   const register = (c: SlotContribution) => {
     const prev = entries.get(c.id);
-    entries.set(c.id, { c, seq: prev?.seq ?? seq++ });
-    emit();
+    if (prev && sameContribution(prev.c, c)) {
+      // Equivalent re-registration: adopt the new object without notifying anyone.
+      prev.c = c;
+    } else {
+      entries.set(c.id, { c, seq: prev?.seq ?? seq++ });
+      if (prev && prev.c.slot !== c.slot) emit(prev.c.slot, c.slot);
+      else emit(c.slot);
+    }
     return () => {
       if (entries.get(c.id)?.c === c) unregister(c.id);
     };
@@ -73,6 +89,7 @@ export function createSlotRegistry(initial: SlotContribution[] = []): SlotRegist
       return () => listeners.delete(l);
     },
     version: () => ver,
+    slotVersion: (slot) => slotVers.get(slot) ?? 0,
   };
 }
 
@@ -102,7 +119,11 @@ export function useSlotRegistry(): SlotRegistry {
 /** Contributions for one slot, re-rendering when the registry changes. */
 export function useSlotContributions(slot: string): SlotContribution[] {
   const registry = useSlotRegistry();
-  React.useSyncExternalStore(registry.subscribe, registry.version, registry.version);
+  const snapshot = React.useCallback(
+    () => (registry.slotVersion ? registry.slotVersion(slot) : registry.version()),
+    [registry, slot]
+  );
+  React.useSyncExternalStore(registry.subscribe, snapshot, snapshot);
   return registry.get(slot);
 }
 
@@ -201,14 +222,53 @@ export interface SlotFillProps {
   children?: React.ReactNode;
 }
 
-/** Declaratively contribute `children` to a slot while mounted. Renders nothing in place. */
+interface FillStore {
+  get: () => React.ReactNode;
+  set: (next: React.ReactNode) => void;
+  subscribe: (listener: () => void) => () => void;
+}
+
+function createFillStore(initial: React.ReactNode): FillStore {
+  let value = initial;
+  const listeners = new Set<() => void>();
+  return {
+    get: () => value,
+    set: (next) => {
+      if (Object.is(next, value)) return;
+      value = next;
+      listeners.forEach((l) => l());
+    },
+    subscribe: (l) => {
+      listeners.add(l);
+      return () => listeners.delete(l);
+    },
+  };
+}
+
+const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
+
+/**
+ * Declaratively contribute `children` to a slot while mounted. Renders nothing in place.
+ * Registers once per slot/id/order/source; later `children` updates re-render only the filled content.
+ */
 export function SlotFill({ slot, id, order, source, children }: SlotFillProps) {
   const registry = useSlotRegistry();
   const generated = React.useId();
   const fillId = id ?? `fill-${generated}`;
+  const [store] = React.useState(() => createFillStore(children));
+  const [Content] = React.useState(() => {
+    function SlotFillContent() {
+      const node = React.useSyncExternalStore(store.subscribe, store.get, store.get);
+      return <>{node}</>;
+    }
+    return SlotFillContent;
+  });
+  useIsoLayoutEffect(() => {
+    store.set(children);
+  }, [store, children]);
   React.useEffect(() => {
-    registry.register({ id: fillId, slot, order, source, render: children });
-  }, [registry, fillId, slot, order, source, children]);
+    registry.register({ id: fillId, slot, order, source, render: Content });
+  }, [registry, fillId, slot, order, source, Content]);
   React.useEffect(() => () => registry.unregister(fillId), [registry, fillId]);
   return null;
 }

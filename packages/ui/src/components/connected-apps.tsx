@@ -28,6 +28,7 @@ import { KeyValueList, type KeyValueItem } from "./key-value";
 import { Switch } from "./switch";
 import { ScopeList, type ScopeDefinition, type ScopeInput } from "./consent";
 import { formatRelativeDate } from "./api-keys";
+import { isValidDate, safeISO, toValidDate } from "../lib/date";
 
 type DateInput = Date | number | string;
 const toMs = (v: DateInput) => (v instanceof Date ? v.getTime() : typeof v === "number" ? v : new Date(v).getTime());
@@ -88,6 +89,7 @@ const eventIcon: Record<string, { icon: IconType; tone: string }> = {
 
 function dayLabel(t: number, now: number) {
   const d = new Date(t);
+  if (!isValidDate(d)) return "Unknown date";
   const today = new Date(now);
   const startOf = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
   const diff = Math.round((startOf(today) - startOf(d)) / 86_400_000);
@@ -170,7 +172,7 @@ export const ActivityFeed = React.forwardRef<HTMLDivElement, ActivityFeedProps>(
                     ...(e.device ? [{ key: "device", label: "Device", value: e.device }] : []),
                     ...(e.ip ? [{ key: "ip", label: "IP address", value: e.ip, mono: true, copyable: true }] : []),
                     ...(e.location ? [{ key: "loc", label: "Location", value: e.location }] : []),
-                    { key: "time", label: "Time", value: new Date(toMs(e.at)).toLocaleString() },
+                    { key: "time", label: "Time", value: toValidDate(toMs(e.at))?.toLocaleString() ?? "—" },
                     ...(e.details ?? []),
                   ];
                   return (
@@ -194,8 +196,8 @@ export const ActivityFeed = React.forwardRef<HTMLDivElement, ActivityFeedProps>(
                           <span className="block text-sm text-foreground">{e.description}</span>
                           {sub && <span className="block truncate text-xs text-muted-foreground">{sub}</span>}
                         </span>
-                        <time dateTime={new Date(toMs(e.at)).toISOString()} className="shrink-0 whitespace-nowrap pt-0.5 text-xs text-muted-foreground">
-                          {formatRelativeDate(e.at, now)}
+                        <time dateTime={safeISO(toMs(e.at))} className="shrink-0 whitespace-nowrap pt-0.5 text-xs text-muted-foreground">
+                          {Number.isFinite(toMs(e.at)) ? formatRelativeDate(e.at, now) : "—"}
                         </time>
                         {!onEventClick && (
                           <RiArrowDownSLine aria-hidden className={cn("mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform", expanded && "rotate-180")} />

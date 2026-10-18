@@ -406,7 +406,18 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
       fieldRef.current.setSelectionRange(pos, pos);
     });
 
+    // Inline `onSearch` / `suggestions` props change identity every parent render; read them through refs
+    // so the search only re-runs when the mention query itself changes.
+    const onSearchRef = React.useRef(onSearch);
+    const suggestionsRef = React.useRef(suggestions);
+    React.useLayoutEffect(() => {
+      onSearchRef.current = onSearch;
+      suggestionsRef.current = suggestions;
+    });
+
     React.useEffect(() => {
+      const onSearch = onSearchRef.current;
+      const suggestions = suggestionsRef.current;
       if (!active) {
         setItems([]);
         setLoading(false);
@@ -442,7 +453,7 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
           if (current === requestId.current) setLoading(false);
         });
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [active?.trigger, active?.query, active?.start, onSearch, suggestions, maxSuggestions]);
+    }, [active?.trigger, active?.query, active?.start, maxSuggestions]);
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
       const nextDisplay = e.target.value;
@@ -505,6 +516,7 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement & HTMLInputElement>) => {
       onKeyDown?.(e as React.KeyboardEvent<HTMLTextAreaElement>);
       if (e.defaultPrevented) return;
+      if (e.nativeEvent.isComposing || e.keyCode === 229) return;
       if (open) {
         if (e.key === "ArrowDown" && items.length) {
           e.preventDefault();

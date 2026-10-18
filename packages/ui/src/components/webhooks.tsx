@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiAddLine, RiCheckLine, RiFileCopyLine, RiKey2Line, RiRefreshLine, RiReplyLine, RiSendPlaneLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { safeISO, toValidDate } from "../lib/date";
 import { useCopy } from "../hooks/use-copy";
 import { Button } from "./button";
 import { Badge } from "./badge";
@@ -157,7 +158,7 @@ export const WebhookRouteList = React.forwardRef<HTMLDivElement, WebhookRouteLis
                     {r.events.length} {r.events.length === 1 ? "event" : "events"}
                   </span>
                   <span>→ {formatDeliveryTarget(r.delivery, deliveryStatus)}</span>
-                  {last ? <span>last {formatScheduleRelative(last.at)}</span> : null}
+                  {last && toValidDate(last.at) ? <span>last {formatScheduleRelative(last.at)}</span> : null}
                 </div>
               </li>
             );
@@ -369,14 +370,14 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
             {deliveries.length ? (
               <ol aria-label="Recent deliveries" className="flex flex-col divide-y divide-border rounded-box border border-border">
                 {deliveries.map((d) => {
-                  const when = formatScheduleRelative(d.at);
+                  const when = toValidDate(d.at) ? formatScheduleRelative(d.at) : "—";
                   return (
                     <li key={d.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 text-sm">
                       <Badge size="sm" color={statusTone(d.statusCode)} className="tabular-nums">
                         {d.statusCode ?? "ERR"}
                       </Badge>
                       {d.event ? <code className="font-mono text-xs">{d.event}</code> : null}
-                      <time dateTime={new Date(d.at).toISOString()} className="text-xs text-muted-foreground">
+                      <time dateTime={safeISO(d.at)} className="text-xs text-muted-foreground">
                         {when}
                       </time>
                       {d.durationMs != null ? <span className="text-xs text-muted-foreground tabular-nums">{d.durationMs < 1000 ? `${Math.round(d.durationMs)}ms` : formatTimelineDuration(d.durationMs)}</span> : null}

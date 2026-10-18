@@ -372,7 +372,7 @@ export function InviteMembersDialog({
                 onReject={(tag, reason) =>
                   setRejected(reason === "invalid" ? `“${tag}” isn't a valid email.` : reason === "duplicate" ? `${tag} is already added.` : null)
                 }
-                separators={[",", " ", "Enter"]}
+                separators={[",", " "]}
                 addOnBlur
                 placeholder={emails.length ? "Add more…" : "name@company.com"}
                 wrapperClassName="flex-1"

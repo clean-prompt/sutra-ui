@@ -35,6 +35,7 @@ import {
   RiSparkling2Line,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { safeISO, toValidDate } from "../lib/date";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Badge, type BadgeColor } from "./badge";
@@ -369,7 +370,10 @@ const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDat
 /** True when `due` is before today and the card is not done. */
 export function isKanbanOverdue(card: Pick<KanbanCardData, "dueDate" | "completed">, now: Date | number = Date.now(), done = false) {
   if (!card.dueDate || card.completed || done) return false;
-  return startOfDay(toDate(card.dueDate)) < startOfDay(toDate(now));
+  const due = toValidDate(card.dueDate);
+  const today = toValidDate(now);
+  if (!due || !today) return false;
+  return startOfDay(due) < startOfDay(today);
 }
 
 /* ------------------------------------------------------------------ */
@@ -420,7 +424,7 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
   ) => {
     const metaId = React.useId();
     const overdue = isKanbanOverdue(card, now ?? Date.now(), done);
-    const due = card.dueDate ? toDate(card.dueDate) : undefined;
+    const due = toValidDate(card.dueDate);
     const dueText = due ? new Intl.DateTimeFormat(locale, { month: "short", day: "numeric" }).format(due) : "";
     const cardLabels = (card.labels ?? []).map((id) => labels.find((l) => l.id === id) ?? { id, name: id });
     const { "aria-describedby": dndDescribedBy, role: _role, ...restActivator } = activatorProps ?? {};
@@ -1550,6 +1554,7 @@ export function formatKanbanDuration(ms: number) {
 
 function relTime(at: Date | number | string, now: number) {
   const diff = (now - toDate(at).getTime()) / 1000;
+  if (!Number.isFinite(diff)) return "—";
   const abs = Math.abs(diff);
   const fmt = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
   if (abs < 60) return fmt.format(-Math.round(diff), "second");
@@ -1823,7 +1828,7 @@ function TaskDetailBody({
                   <li key={a.id} className="relative text-sm">
                     <span aria-hidden className={cn("absolute -left-[21px] top-1.5 size-2 rounded-full ring-2 ring-background", a.actorKind === "agent" ? "bg-primary" : "bg-muted-foreground")} />
                     <span className="font-medium">{a.actor}</span> <span className="text-muted-foreground">{a.action}</span>
-                    <time dateTime={toDate(a.at).toISOString()} className="ml-1.5 text-xs text-muted-foreground">
+                    <time dateTime={safeISO(a.at)} className="ml-1.5 text-xs text-muted-foreground">
                       {relTime(a.at, nowMs)}
                     </time>
                   </li>
@@ -1945,7 +1950,7 @@ function TaskDetailBody({
             aria-label="Due date"
             clearable
             locale={locale}
-            value={task.dueDate ? toDate(task.dueDate) : undefined}
+            value={toValidDate(task.dueDate)}
             onValueChange={(d) => onChange?.({ dueDate: d })}
           />
         </PropertyRow>

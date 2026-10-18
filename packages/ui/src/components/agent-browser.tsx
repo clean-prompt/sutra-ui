@@ -27,6 +27,7 @@ import {
   RiTerminalBoxLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { isValidDate } from "../lib/date";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Textarea } from "./textarea";
@@ -399,7 +400,9 @@ function formatConsoleTs(ts: BrowserConsoleEntry["ts"]) {
   if (ts == null) return null;
   if (typeof ts === "string") return ts;
   const d = ts instanceof Date ? ts : new Date(ts);
-  return d.toISOString().slice(11, 19);
+  if (!isValidDate(d)) return null;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
 /** Collapsible page console with level toggles and a text filter. */

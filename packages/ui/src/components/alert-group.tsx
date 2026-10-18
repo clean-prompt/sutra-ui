@@ -9,6 +9,7 @@ import {
   RiShieldFlashLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { isValidDate, safeISO } from "../lib/date";
 
 export type AlertSeverity = "critical" | "warning" | "info";
 
@@ -190,7 +191,8 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
           >
             <ul className="divide-y divide-border border-t border-border bg-card/60">
               {visible.map((a) => {
-                const ms = a.time != null ? toMs(a.time) : null;
+                const rawMs = a.time != null ? toMs(a.time) : null;
+                const ms = rawMs != null && isValidDate(new Date(rawMs)) ? rawMs : null;
                 return (
                   <li key={a.id} data-severity={a.severity} className="group/alert flex items-start gap-3 px-4 py-2.5 transition-colors hover:bg-accent/50">
                     <span className={cn("mt-0.5 shrink-0 [&_svg]:size-4", severityText[a.severity])}>
@@ -219,7 +221,7 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
                           </span>
                         ) : null}
                         {ms != null ? (
-                          <time dateTime={new Date(ms).toISOString()} className="text-muted-foreground">
+                          <time dateTime={safeISO(ms)} className="text-muted-foreground">
                             {formatTime ? formatTime(new Date(ms)) : relativeTime(ms, now)}
                           </time>
                         ) : null}

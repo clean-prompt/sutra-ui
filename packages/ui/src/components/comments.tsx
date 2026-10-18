@@ -17,6 +17,7 @@ import { Markdown } from "./markdown";
 import { EmptyState } from "./empty-state";
 import { SegmentedControl } from "./segmented-control";
 import { formatRelativeTime } from "./sync-status";
+import { safeISO, toValidDate } from "../lib/date";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
@@ -213,15 +214,15 @@ function CommentItem({
   const [editing, setEditing] = React.useState(false);
   const [pickerOpen, setPickerOpen] = React.useState(false);
   const showMenu = (canEdit && onEdit) || (canDelete && onDelete);
-  const created = new Date(comment.createdAt);
+  const created = toValidDate(comment.createdAt);
   return (
     <li data-comment={comment.id} className="group/comment flex gap-2.5">
       <Avatar name={comment.author.name} src={comment.author.avatarSrc} size="xs" className="mt-0.5" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
           <span className="truncate text-sm font-medium text-foreground">{comment.author.name}</span>
-          <time dateTime={created.toISOString()} title={created.toLocaleString()} className="shrink-0 text-xs text-muted-foreground">
-            {formatRelativeTime(comment.createdAt, now ?? Date.now())}
+          <time dateTime={safeISO(created)} title={created?.toLocaleString()} className="shrink-0 text-xs text-muted-foreground">
+            {created ? formatRelativeTime(created, now ?? Date.now()) : "—"}
           </time>
           {comment.editedAt && <span className="text-xs text-muted-foreground">(edited)</span>}
           {showMenu && !editing && (

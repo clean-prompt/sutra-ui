@@ -233,7 +233,10 @@ export function CoachmarkTour({
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented) return;
+      if (e.defaultPrevented || e.isComposing || e.keyCode === 229) return;
+      // Leave keys alone in text fields (the spotlighted target may be one): arrows move the caret there.
+      const t = e.target as HTMLElement | null;
+      if (t && (t.isContentEditable || (t.closest && t.closest("input, textarea, select, [contenteditable]:not([contenteditable='false'])")))) return;
       if (e.key === "Escape") {
         e.preventDefault();
         skip();

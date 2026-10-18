@@ -271,6 +271,27 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
       const pane = list.find((p) => p.id === id);
       if (pane) onPanesChange([...list.filter((p) => p.id !== id), pane]);
     };
+    const bringToFrontRef = React.useRef(bringToFront);
+    bringToFrontRef.current = bringToFront;
+
+    // Native capture listeners: window content may be portalled in (e.g. TilingLayout keep-alive hosts),
+    // and React events from a portal don't propagate through the window wrapper.
+    React.useEffect(() => {
+      const layer = layerRef.current;
+      if (!layer) return;
+      const onActivate = (event: Event) => {
+        let el = event.target instanceof Element ? event.target : null;
+        while (el && el.parentElement !== layer) el = el.parentElement;
+        const id = el?.getAttribute("data-slot") === "floating-pane" ? el.getAttribute("data-pane-id") : null;
+        if (id != null) bringToFrontRef.current(id);
+      };
+      layer.addEventListener("pointerdown", onActivate, true);
+      layer.addEventListener("focusin", onActivate, true);
+      return () => {
+        layer.removeEventListener("pointerdown", onActivate, true);
+        layer.removeEventListener("focusin", onActivate, true);
+      };
+    }, []);
 
     const begin = (id: string, mode: "move" | "resize") => (event: React.PointerEvent<HTMLElement>) => {
       if (event.pointerType === "mouse" && event.button !== 0) return;
@@ -335,8 +356,6 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
                 front ? "border-border-strong" : "border-border"
               )}
               style={{ left: pane.x, top: pane.y, width: pane.width, height: pane.height, zIndex: z + 1 }}
-              onPointerDownCapture={() => bringToFront(pane.id)}
-              onFocusCapture={() => bringToFront(pane.id)}
             >
               <div className="flex h-8 shrink-0 items-center gap-0.5 border-b border-border bg-subtle pr-1">
                 <div
@@ -691,6 +710,48 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
       for (const id of [...hostsRef.current.keys()]) if (!keep.has(id)) hostsRef.current.delete(id);
     }, [mountedKey]);
 
+    /* ---- focus tracking & Escape (native: pane content is portalled into keep-alive hosts) ---- */
+    const maximizedRef = React.useRef(maximized);
+    maximizedRef.current = maximized;
+    const setMaximizedRef = React.useRef(setMaximized);
+    setMaximizedRef.current = setMaximized;
+    React.useEffect(() => {
+      const root = rootRef.current;
+      if (!root) return;
+      // The group of *this* layout containing `target` (skipping groups of nested layouts).
+      const groupOf = (target: EventTarget | null): string | null => {
+        let found: string | null = null;
+        let el = target instanceof Element ? target : null;
+        for (; el && el !== root; el = el.parentElement) {
+          const slot = el.getAttribute("data-slot");
+          if (slot === "tiling-layout") found = null;
+          else if (slot === "tiling-group" && found === null) found = el.getAttribute("data-group-id");
+        }
+        return el === root ? found : null;
+      };
+      const onActivate = (event: Event) => {
+        const id = groupOf(event.target);
+        if (id != null && listGroups(layoutRef.current).some((g) => g.id === id)) {
+          setFocused((f) => (f === id ? f : id));
+        }
+      };
+      // Window-level bubble listener so handlers inside the content (React or native) can preventDefault first.
+      const onKeyDown = (event: KeyboardEvent) => {
+        if (event.key !== "Escape" || event.defaultPrevented || !maximizedRef.current) return;
+        if (!(event.target instanceof Node) || !root.contains(event.target)) return;
+        setMaximizedRef.current(null);
+      };
+      const win = root.ownerDocument.defaultView;
+      root.addEventListener("pointerdown", onActivate, true);
+      root.addEventListener("focusin", onActivate, true);
+      win?.addEventListener("keydown", onKeyDown);
+      return () => {
+        root.removeEventListener("pointerdown", onActivate, true);
+        root.removeEventListener("focusin", onActivate, true);
+        win?.removeEventListener("keydown", onKeyDown);
+      };
+    }, []);
+
     /* ---- shortcuts ---- */
     const focusedNode = groups.find((g) => g.id === focusedGroup);
     const cycle = (dir: 1 | -1) => {
@@ -786,11 +847,6 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
               drag && "cursor-grabbing select-none",
               className
             )}
-            onKeyDown={(event) => {
-              if (event.key === "Escape" && maximized && !event.defaultPrevented) {
-                setMaximized(null);
-              }
-            }}
             {...props}
           >
             <TilingNodeView node={layout} />
@@ -946,8 +1002,6 @@ function TilingGroupView({ group }: { group: LayoutTabsNode }) {
         "flex min-h-0 min-w-0 flex-1 flex-col bg-background",
         maximized ? "absolute inset-0 z-20" : "relative"
       )}
-      onPointerDownCapture={() => ctx.focusGroup(group.id)}
-      onFocusCapture={() => ctx.focusGroup(group.id)}
     >
       <div
         data-slot="tiling-group-header"

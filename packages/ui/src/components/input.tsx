@@ -307,10 +307,11 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
       setHint(hotkey ? formatHotkey(hotkey) : null);
       if (!hotkey) return;
       const onKey = (e: KeyboardEvent) => {
-        if (!matchesHotkey(e, hotkey)) return;
+        if (e.isComposing || e.keyCode === 229 || !matchesHotkey(e, hotkey)) return;
         const t = e.target as HTMLElement | null;
         const typing = t && (t.isContentEditable || /^(input|textarea|select)$/i.test(t.tagName));
-        if (typing && t !== innerRef.current && !e.metaKey && !e.ctrlKey) return;
+        // Plain keys typed into any field (including this one) are text, not the shortcut.
+        if (typing && !e.metaKey && !e.ctrlKey) return;
         e.preventDefault();
         innerRef.current?.focus();
         innerRef.current?.select();

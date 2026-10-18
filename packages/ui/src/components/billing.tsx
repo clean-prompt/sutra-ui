@@ -33,6 +33,7 @@ import { Spinner } from "./spinner";
 import { Steps } from "./step-indicator";
 import { Switch } from "./switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
+import { isValidDate, safeISO, toValidDate } from "../lib/date";
 
 /* ------------------------------------------------------------------ */
 /* Pure helpers                                                        */
@@ -69,13 +70,16 @@ export function yearlySavings(monthly: number, yearly: number): number {
 
 /** Date the balance reaches zero at `dailyBurn` per day, or null when nothing is being spent. */
 export function projectRunOut(balance: number, dailyBurn: number, from: Date = new Date()): Date | null {
-  if (!(dailyBurn > 0) || !Number.isFinite(balance)) return null;
+  if (!(dailyBurn > 0) || !Number.isFinite(balance) || !isValidDate(from)) return null;
   if (balance <= 0) return new Date(from.getTime());
-  return new Date(from.getTime() + (balance / dailyBurn) * DAY_MS);
+  const out = new Date(from.getTime() + (balance / dailyBurn) * DAY_MS);
+  return isValidDate(out) ? out : null;
 }
 
-const formatDay = (d: Date | string, locale = "en-US") =>
-  new Date(d).toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+const formatDay = (d: Date | string, locale = "en-US") => {
+  const date = toValidDate(d);
+  return date ? date.toLocaleDateString(locale, { month: "short", day: "numeric", year: "numeric" }) : "—";
+};
 
 const formatNumber = (n: number, locale = "en-US") => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(n);
 
@@ -531,7 +535,7 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
               {renewsAt && (
                 <>
                   {" · "}
-                  {status === "canceled" ? "Ends" : "Renews"} on <time dateTime={new Date(renewsAt).toISOString()}>{formatDay(renewsAt, locale)}</time>
+                  {status === "canceled" ? "Ends" : "Renews"} on <time dateTime={safeISO(renewsAt)}>{formatDay(renewsAt, locale)}</time>
                 </>
               )}
             </p>
@@ -706,7 +710,7 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
           <div className="flex flex-col gap-0.5">
             <dt className="text-muted-foreground">Projected run-out</dt>
             <dd data-slot="run-out" className={cn("font-medium tabular-nums", low ? "text-destructive" : "text-foreground")}>
-              {runOut ? <time dateTime={runOut.toISOString()}>{formatDay(runOut, locale)}</time> : "Not projected"}
+              {runOut ? <time dateTime={safeISO(runOut)}>{formatDay(runOut, locale)}</time> : "Not projected"}
             </dd>
           </div>
         </dl>

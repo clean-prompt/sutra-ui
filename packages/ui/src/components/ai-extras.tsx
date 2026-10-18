@@ -866,6 +866,7 @@ const QuestionCardSingle = React.forwardRef<HTMLDivElement, QuestionCardProps>(
           onChange={(e) => setText(e.target.value)}
           className={cn("h-9 w-full rounded-control border border-input bg-background px-3 text-sm shadow-xs placeholder:text-muted-foreground", focusRing)}
           onKeyDown={(e) => {
+            if (e.nativeEvent.isComposing || e.keyCode === 229) return;
             if (e.key === "Enter" && type === "single" && text.trim()) {
               e.preventDefault();
               submit({ values: [OTHER], text: text.trim() });
@@ -2116,6 +2117,7 @@ function InlineRename({ value, label, onCommit, onCancel }: { value: string; lab
       onFocus={(e) => e.currentTarget.select()}
       onChange={(e) => setText(e.target.value)}
       onKeyDown={(e) => {
+        if (e.nativeEvent.isComposing || e.keyCode === 229) return;
         if (e.key === "Enter") {
           e.preventDefault();
           finish(true);

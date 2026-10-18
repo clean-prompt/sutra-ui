@@ -215,14 +215,21 @@ export function CallQualityIndicator({ quality, className }: { quality: CallQual
   );
 }
 
+const useIsoLayoutEffect = typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
+
+/** Callback ref that keeps `srcObject` in sync with the current `<video>` node and stream (survives remounts of the element). */
 function useStreamVideo(stream: MediaStream | null | undefined) {
-  const ref = React.useRef<HTMLVideoElement>(null);
-  React.useEffect(() => {
-    const video = ref.current;
+  const [video, setVideo] = React.useState<HTMLVideoElement | null>(null);
+  useIsoLayoutEffect(() => {
+    if (video && video.srcObject !== (stream ?? null)) video.srcObject = stream ?? null;
+  }, [video, stream]);
+  useIsoLayoutEffect(() => {
     if (!video) return;
-    video.srcObject = stream ?? null;
-  }, [stream]);
-  return ref;
+    return () => {
+      video.srcObject = null;
+    };
+  }, [video]);
+  return setVideo;
 }
 
 const pipCornerClass: Record<CallPipCorner, string> = {

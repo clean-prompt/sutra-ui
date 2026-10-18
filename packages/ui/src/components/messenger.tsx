@@ -24,6 +24,7 @@ import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Switch } from "./switch";
 import { Textarea } from "./textarea";
+import { safeISO, toValidDate } from "../lib/date";
 
 /* ------------------------------------------------------------------ */
 /* Types & helpers                                                     */
@@ -72,7 +73,6 @@ export interface GroupMessagesOptions {
   now?: Date;
 }
 
-const toDate = (d: Date | number | string) => (d instanceof Date ? d : new Date(d));
 const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -90,12 +90,14 @@ export function formatMessageDay(date: Date, now: Date = new Date()) {
 
 /** Short clock time, e.g. "9:41 AM". */
 export function formatMessageTime(date: Date | number | string) {
-  return toDate(date).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  const d = toValidDate(date);
+  return d ? d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }) : "—";
 }
 
 /** "last seen just now" / "5m ago" / "3h ago" / "yesterday" / "Oct 5". */
 export function formatLastSeen(date: Date | number | string, now: Date = new Date()) {
-  const d = toDate(date);
+  const d = toValidDate(date);
+  if (!d) return "last seen recently";
   const mins = Math.floor((now.getTime() - d.getTime()) / 60_000);
   if (mins < 1) return "last seen just now";
   if (mins < 60) return `last seen ${mins}m ago`;
@@ -119,11 +121,11 @@ export function groupMessages(messages: MessengerMessage[], options: GroupMessag
   const unreadIndex = firstUnreadId ? messages.findIndex((m) => m.id === firstUnreadId) : -1;
 
   messages.forEach((message, index) => {
-    const date = toDate(message.createdAt);
-    const key = dayKey(date);
+    const parsed = toValidDate(message.createdAt);
     let breakGroup = false;
-    if (key !== lastDay) {
-      out.push({ type: "date", key: `date-${key}`, date, label: formatMessageDay(date, now) });
+    const key = parsed ? dayKey(parsed) : lastDay;
+    if (parsed && key !== lastDay) {
+      out.push({ type: "date", key: `date-${key}`, date: parsed, label: formatMessageDay(parsed, now) });
       lastDay = key;
       breakGroup = true;
     }
@@ -131,7 +133,7 @@ export function groupMessages(messages: MessengerMessage[], options: GroupMessag
       out.push({ type: "unread", key: "unread", count: messages.length - unreadIndex });
       breakGroup = true;
     }
-    const time = date.getTime();
+    const time = parsed ? parsed.getTime() : lastTime;
     if (!breakGroup && group && group.senderId === message.senderId && time - lastTime <= windowMs) {
       group.messages.push(message);
     } else {
@@ -288,7 +290,7 @@ export const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps
             {showTimestamp && (timestamp !== undefined || status || edited) ? (
               <div className={cn("mt-0.5 flex items-center justify-end gap-1 text-2xs", out ? "text-primary-foreground/75" : "text-muted-foreground")}>
                 {edited ? <span>edited</span> : null}
-                {timestamp !== undefined ? <time dateTime={toDate(timestamp).toISOString()}>{formatMessageTime(timestamp)}</time> : null}
+                {timestamp !== undefined ? <time dateTime={safeISO(timestamp)}>{formatMessageTime(timestamp)}</time> : null}
                 {out && status ? <MessageStatusIcon status={status} className={status === "read" ? "[&_svg]:text-current" : undefined} /> : null}
               </div>
             ) : null}
@@ -546,7 +548,7 @@ export const MessageComposer = React.forwardRef<HTMLTextAreaElement, MessageComp
             rows={1}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing && e.keyCode !== 229) {
                 e.preventDefault();
                 send();
               }
