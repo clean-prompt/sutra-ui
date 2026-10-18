@@ -29,3 +29,14 @@ export const invalidRing =
   "aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20";
 
 export type Size = "sm" | "md" | "lg";
+
+/** Spacing density for lists, tables and timelines. */
+export type Density = "compact" | "normal" | "relaxed";
+
+/** Map legacy density inputs (`compact` boolean, "comfortable") to a `Density`. */
+export function normalizeDensity(density: Density | "comfortable" | boolean | null | undefined, fallback: Density = "normal"): Density {
+  if (density === true) return "compact";
+  if (density === false || density == null) return fallback;
+  if (density === "comfortable") return "relaxed";
+  return density;
+}

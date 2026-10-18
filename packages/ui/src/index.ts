@@ -14,6 +14,8 @@ export * from "./lib/text";
 export * from "./lib/validate";
 export * from "./lib/math";
 export * from "./lib/encoding";
+export * from "./lib/tone";
+export * from "./lib/status";
 export * from "./hooks/use-now";
 export * from "./hooks/use-media-query";
 export * from "./hooks/use-resize-observer";
