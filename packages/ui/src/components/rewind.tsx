@@ -226,7 +226,7 @@ export function RewindDialog({
               Cancel
             </Button>
           </DialogClose>
-          <Button variant="primary" loading={busy} disabled={!current} leadingIcon={<RiArrowGoBackLine />} onClick={confirm}>
+          <Button variant="primary" loading={busy} disabled={!current} leadingIcon={<RiArrowGoBackLine aria-hidden />} onClick={confirm}>
             {confirmLabel}
           </Button>
         </DialogFooter>
@@ -248,12 +248,16 @@ export interface RewindButtonProps extends Omit<RewindDialogProps, "trigger"> {
 }
 
 /** Message-action icon button that opens a `RewindDialog`. */
-export function RewindButton({ label = "Rewind to here", buttonClassName, disabled, ...dialogProps }: RewindButtonProps) {
+export const RewindButton = React.forwardRef<HTMLButtonElement, RewindButtonProps>(function RewindButton(
+  { label = "Rewind to here", buttonClassName, disabled, ...dialogProps },
+  ref
+) {
   return (
     <RewindDialog
       {...dialogProps}
       trigger={
         <Button
+          ref={ref}
           type="button"
           size="icon-xs"
           variant="ghost"
@@ -263,12 +267,12 @@ export function RewindButton({ label = "Rewind to here", buttonClassName, disabl
           data-slot="rewind-button"
           className={cn("text-muted-foreground hover:text-foreground", buttonClassName)}
         >
-          <RiArrowGoBackLine />
+          <RiArrowGoBackLine aria-hidden />
         </Button>
       }
     />
   );
-}
+});
 RewindButton.displayName = "RewindButton";
 
 /* ------------------------------------------------------------------ */

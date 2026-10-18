@@ -41,13 +41,16 @@ Heading.displayName = "Heading";
 export const textVariants = cva("", {
   variants: {
     size: { xs: "text-xs", sm: "text-sm", md: "text-base", lg: "text-lg", xl: "text-xl" },
+    /** `default` is plain foreground text; the semantic tones follow `Tone` (`muted` is the legacy name of `neutral`). */
     tone: {
       default: "text-foreground",
+      neutral: "text-muted-foreground",
       muted: "text-muted-foreground",
       primary: "text-primary",
       success: "text-success",
       warning: "text-warning-soft-foreground",
       destructive: "text-destructive",
+      info: "text-info",
     },
     weight: { regular: "font-normal", medium: "font-medium", semibold: "font-semibold" },
   },

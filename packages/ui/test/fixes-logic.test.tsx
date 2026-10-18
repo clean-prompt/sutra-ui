@@ -94,6 +94,19 @@ describe("useControllableState", () => {
     });
     expect(onChange.mock.calls).toEqual([["b"]]);
   });
+
+  it("reports each repeated request in controlled mode while the parent keeps its value", () => {
+    const onChange = vi.fn();
+    const { result } = renderHook(() => useControllableState({ value: true, defaultValue: false, onChange }));
+    act(() => {
+      result.current[1](false);
+      result.current[1](false);
+    });
+    expect(onChange.mock.calls).toEqual([[false], [false]]);
+    // Setting the value the parent already renders is still a no-op.
+    act(() => result.current[1](true));
+    expect(onChange).toHaveBeenCalledTimes(2);
+  });
 });
 
 /* ------------------------------------------------------------------ */

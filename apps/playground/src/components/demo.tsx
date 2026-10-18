@@ -39,7 +39,7 @@ export function Demo({
           )}
         </Heading>
         {description && (
-          <Text size="sm" tone="muted">
+          <Text size="sm" tone="neutral">
             {description}
           </Text>
         )}
@@ -82,7 +82,7 @@ export function PageIntro({ eyebrow, title, description, children }: PageIntroPr
           {title}
         </Heading>
         {description && (
-          <Text tone="muted" className="max-w-2xl">
+          <Text tone="neutral" className="max-w-2xl">
             {description}
           </Text>
         )}

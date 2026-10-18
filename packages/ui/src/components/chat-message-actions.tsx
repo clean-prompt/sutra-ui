@@ -138,9 +138,9 @@ export const ChatCopyAction = React.forwardRef<HTMLButtonElement, ChatCopyAction
       >
         {children ??
           (copied ? (
-            <RiCheckLine key="check" className="animate-in zoom-in-50 duration-200" />
+            <RiCheckLine aria-hidden key="check" className="animate-in zoom-in-50 duration-200" />
           ) : (
-            <RiFileCopyLine key="copy" />
+            <RiFileCopyLine aria-hidden key="copy" />
           ))}
       </ChatMessageAction>
     );
@@ -154,17 +154,22 @@ export interface ChatFeedbackActionsProps extends Omit<React.HTMLAttributes<HTML
   value?: ChatFeedback;
   defaultValue?: ChatFeedback;
   /** Called with the new rating; clicking the active thumb again clears it (null). */
+  onValueChange?: (value: ChatFeedback) => void;
+  /** @deprecated Use `onValueChange`. */
   onFeedback?: (value: ChatFeedback) => void;
   disabled?: boolean;
 }
 
 /** Thumbs up / down toggle pair. */
 export const ChatFeedbackActions = React.forwardRef<HTMLDivElement, ChatFeedbackActionsProps>(
-  ({ value, defaultValue = null, onFeedback, disabled, className, ...props }, ref) => {
+  ({ value, defaultValue = null, onValueChange, onFeedback, disabled, className, ...props }, ref) => {
     const [feedback, setFeedback] = useControllableState<ChatFeedback>({
       value,
       defaultValue,
-      onChange: onFeedback,
+      onChange: (next) => {
+        onValueChange?.(next);
+        onFeedback?.(next);
+      },
     });
     const toggle = (next: "up" | "down") => setFeedback(feedback === next ? null : next);
     return (
@@ -175,7 +180,7 @@ export const ChatFeedbackActions = React.forwardRef<HTMLDivElement, ChatFeedback
           disabled={disabled}
           onClick={() => toggle("up")}
         >
-          {feedback === "up" ? <RiThumbUpFill className="animate-in zoom-in-75 duration-200" /> : <RiThumbUpLine />}
+          {feedback === "up" ? <RiThumbUpFill aria-hidden className="animate-in zoom-in-75 duration-200" /> : <RiThumbUpLine aria-hidden />}
         </ChatMessageAction>
         <ChatMessageAction
           label="Bad response"
@@ -183,7 +188,7 @@ export const ChatFeedbackActions = React.forwardRef<HTMLDivElement, ChatFeedback
           disabled={disabled}
           onClick={() => toggle("down")}
         >
-          {feedback === "down" ? <RiThumbDownFill className="animate-in zoom-in-75 duration-200" /> : <RiThumbDownLine />}
+          {feedback === "down" ? <RiThumbDownFill aria-hidden className="animate-in zoom-in-75 duration-200" /> : <RiThumbDownLine aria-hidden />}
         </ChatMessageAction>
       </div>
     );
@@ -197,7 +202,7 @@ export type ChatRegenerateActionProps = Omit<ChatMessageActionProps, "label"> & 
 export const ChatRegenerateAction = React.forwardRef<HTMLButtonElement, ChatRegenerateActionProps>(
   ({ label = "Regenerate", children, ...props }, ref) => (
     <ChatMessageAction ref={ref} label={label} {...props}>
-      {children ?? <RiRefreshLine />}
+      {children ?? <RiRefreshLine aria-hidden />}
     </ChatMessageAction>
   )
 );
@@ -209,7 +214,7 @@ export type ChatEditActionProps = Omit<ChatMessageActionProps, "label"> & { labe
 export const ChatEditAction = React.forwardRef<HTMLButtonElement, ChatEditActionProps>(
   ({ label = "Edit", children, ...props }, ref) => (
     <ChatMessageAction ref={ref} label={label} {...props}>
-      {children ?? <RiEditLine />}
+      {children ?? <RiEditLine aria-hidden />}
     </ChatMessageAction>
   )
 );
@@ -239,13 +244,13 @@ export const ChatBranchSwitcher = React.forwardRef<HTMLDivElement, ChatBranchSwi
         {...props}
       >
         <ChatMessageAction label="Previous version" disabled={current <= 0} onClick={() => setIndex(current - 1)}>
-          <RiArrowLeftSLine />
+          <RiArrowLeftSLine aria-hidden />
         </ChatMessageAction>
         <span className="min-w-8 text-center font-medium tabular-nums" aria-live="polite">
           {current + 1}/{count}
         </span>
         <ChatMessageAction label="Next version" disabled={current >= count - 1} onClick={() => setIndex(current + 1)}>
-          <RiArrowRightSLine />
+          <RiArrowRightSLine aria-hidden />
         </ChatMessageAction>
       </div>
     );
@@ -307,7 +312,7 @@ export const ChatReactionAction = React.forwardRef<HTMLButtonElement, ChatReacti
   ({ label = "Add reaction", quickPicks, onSelect, children, ...props }, ref) => (
     <ReactionPickerPopover quickPicks={quickPicks} onSelect={onSelect}>
       <ChatMessageAction ref={ref} label={label} {...props}>
-        {children ?? <RiEmotionLine />}
+        {children ?? <RiEmotionLine aria-hidden />}
       </ChatMessageAction>
     </ReactionPickerPopover>
   )

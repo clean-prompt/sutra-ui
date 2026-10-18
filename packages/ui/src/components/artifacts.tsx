@@ -66,14 +66,14 @@ export interface ArtifactData {
 }
 
 const kindMeta: Record<ArtifactKind, { label: string; icon: React.ReactNode; ext: string; mime: string }> = {
-  code: { label: "Code", icon: <RiCodeSSlashLine />, ext: "txt", mime: "text/plain" },
-  html: { label: "HTML", icon: <RiHtml5Line />, ext: "html", mime: "text/html" },
-  markdown: { label: "Markdown", icon: <RiMarkdownLine />, ext: "md", mime: "text/markdown" },
-  svg: { label: "SVG", icon: <RiShapesLine />, ext: "svg", mime: "image/svg+xml" },
-  image: { label: "Image", icon: <RiImageLine />, ext: "png", mime: "image/png" },
-  diagram: { label: "Diagram", icon: <RiFlowChart />, ext: "mmd", mime: "text/plain" },
-  document: { label: "Document", icon: <RiFileTextLine />, ext: "md", mime: "text/markdown" },
-  data: { label: "Data", icon: <RiDatabase2Line />, ext: "json", mime: "application/json" },
+  code: { label: "Code", icon: <RiCodeSSlashLine aria-hidden />, ext: "txt", mime: "text/plain" },
+  html: { label: "HTML", icon: <RiHtml5Line aria-hidden />, ext: "html", mime: "text/html" },
+  markdown: { label: "Markdown", icon: <RiMarkdownLine aria-hidden />, ext: "md", mime: "text/markdown" },
+  svg: { label: "SVG", icon: <RiShapesLine aria-hidden />, ext: "svg", mime: "image/svg+xml" },
+  image: { label: "Image", icon: <RiImageLine aria-hidden />, ext: "png", mime: "image/png" },
+  diagram: { label: "Diagram", icon: <RiFlowChart aria-hidden />, ext: "mmd", mime: "text/plain" },
+  document: { label: "Document", icon: <RiFileTextLine aria-hidden />, ext: "md", mime: "text/markdown" },
+  data: { label: "Data", icon: <RiDatabase2Line aria-hidden />, ext: "json", mime: "application/json" },
 };
 
 /** Human label for an artifact kind. */
@@ -81,21 +81,31 @@ export function artifactKindLabel(kind: ArtifactKind) {
   return kindMeta[kind].label;
 }
 
+export interface ArtifactKindIconProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  kind: ArtifactKind;
+}
+
 /** Icon for an artifact kind, in a tinted tile. */
-export function ArtifactKindIcon({ kind, className }: { kind: ArtifactKind; className?: string }) {
+export const ArtifactKindIcon = React.forwardRef<HTMLSpanElement, ArtifactKindIconProps>(function ArtifactKindIcon(
+  { kind, className, ...props },
+  ref
+) {
   return (
     <span
+      ref={ref}
       data-kind={kind}
       aria-hidden
       className={cn(
         "flex size-8 shrink-0 items-center justify-center rounded-control bg-primary-soft text-primary-soft-foreground [&_svg]:size-4",
         className
       )}
+      {...props}
     >
       {kindMeta[kind].icon}
     </span>
   );
-}
+});
+ArtifactKindIcon.displayName = "ArtifactKindIcon";
 
 /** `data:` URL for SVG markup. Rendered through `<img>`, so scripts inside never run. */
 export function svgToDataUrl(svg: string) {
@@ -216,7 +226,7 @@ function VersionSwitcher({ index, total, onChange }: { index: number; total: num
           disabled={index <= 0}
           onClick={() => onChange(index - 1)}
         >
-          <RiArrowLeftSLine />
+          <RiArrowLeftSLine aria-hidden />
         </Button>
       )}
       <Badge size="sm" variant="outline" title={`Version ${index + 1} of ${total}`} aria-label={`Version ${index + 1} of ${total}`}>
@@ -231,7 +241,7 @@ function VersionSwitcher({ index, total, onChange }: { index: number; total: num
           disabled={index >= total - 1}
           onClick={() => onChange(index + 1)}
         >
-          <RiArrowRightSLine />
+          <RiArrowRightSLine aria-hidden />
         </Button>
       )}
     </div>
@@ -390,7 +400,7 @@ export const ArtifactCard = React.forwardRef<HTMLDivElement, ArtifactCardProps>(
                 disabled={streaming}
                 onClick={() => setRenderHtml(!renderHtml)}
               >
-                <RiEyeLine />
+                <RiEyeLine aria-hidden />
               </Button>
             )}
             <CopyAction content={content} onCopy={onCopy ? () => onCopy(content) : undefined} />
@@ -403,16 +413,16 @@ export const ArtifactCard = React.forwardRef<HTMLDivElement, ArtifactCardProps>(
               disabled={streaming}
               onClick={() => (onDownload ? onDownload(content) : defaultDownload(title, kind, content))}
             >
-              <RiDownloadLine />
+              <RiDownloadLine aria-hidden />
             </Button>
             {onShare && (
               <Button type="button" variant="ghost" size="icon-xs" aria-label="Share" title="Share" disabled={streaming} onClick={onShare}>
-                <RiShareLine />
+                <RiShareLine aria-hidden />
               </Button>
             )}
             {onOpen && (
               <Button type="button" variant="ghost" size="icon-xs" aria-label="Open" title="Open" onClick={onOpen}>
-                <RiExternalLinkLine />
+                <RiExternalLinkLine aria-hidden />
               </Button>
             )}
           </div>
@@ -558,11 +568,11 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
                 disabled={streaming}
                 onClick={() => (onDownload ? onDownload(content) : defaultDownload(title, kind, content))}
               >
-                <RiDownloadLine />
+                <RiDownloadLine aria-hidden />
               </Button>
               {onShare && (
                 <Button type="button" variant="ghost" size="icon-xs" aria-label="Share" onClick={onShare}>
-                  <RiShareLine />
+                  <RiShareLine aria-hidden />
                 </Button>
               )}
               <Button
@@ -573,11 +583,11 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
                 aria-pressed={fullscreen}
                 onClick={() => setFullscreen(!fullscreen)}
               >
-                {fullscreen ? <RiFullscreenExitLine /> : <RiFullscreenLine />}
+                {fullscreen ? <RiFullscreenExitLine aria-hidden /> : <RiFullscreenLine aria-hidden />}
               </Button>
               {onClose && (
                 <Button type="button" variant="ghost" size="icon-xs" aria-label="Close artifact" onClick={onClose}>
-                  <RiCloseLine />
+                  <RiCloseLine aria-hidden />
                 </Button>
               )}
             </div>
@@ -774,8 +784,8 @@ export const ArtifactLibrary = React.forwardRef<HTMLDivElement, ArtifactLibraryP
             value={layout}
             onValueChange={(v) => v && setLayout(v as ArtifactLibraryLayout)}
             options={[
-              { value: "grid", icon: <RiLayoutGridLine />, "aria-label": "Grid" },
-              { value: "list", icon: <RiListUnordered />, "aria-label": "List" },
+              { value: "grid", icon: <RiLayoutGridLine aria-hidden />, "aria-label": "Grid" },
+              { value: "list", icon: <RiListUnordered aria-hidden />, "aria-label": "List" },
             ]}
           />
         </div>
@@ -790,7 +800,7 @@ export const ArtifactLibrary = React.forwardRef<HTMLDivElement, ArtifactLibraryP
             <EmptyState
               size="sm"
               variant="dashed"
-              icon={<RiShapesLine />}
+              icon={<RiShapesLine aria-hidden />}
               title="No artifacts yet"
               description="Code, documents and previews the agent creates will collect here."
             />

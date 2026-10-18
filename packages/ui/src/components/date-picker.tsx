@@ -90,7 +90,7 @@ function ClearButton({ onClear, size }: ClearButtonProps) {
         focusRing
       )}
     >
-      <RiCloseCircleFill className="size-4" />
+      <RiCloseCircleFill aria-hidden className="size-4" />
     </button>
   );
 }
@@ -114,6 +114,7 @@ interface BasePickerProps {
   endMonth?: Date;
   align?: "start" | "center" | "end";
   open?: boolean;
+  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   className?: string;
   contentClassName?: string;
@@ -160,6 +161,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
     captionLayout,
     align = "start",
     open: openProp,
+    defaultOpen = false,
     onOpenChange,
     className,
     contentClassName,
@@ -190,7 +192,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
   const [open, setOpen] = useOptionalControlled<boolean>(
     openProp !== undefined,
     openProp ?? false,
-    false,
+    defaultOpen,
     onOpenChange
   );
 
@@ -217,7 +219,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
             aria-required={field.required}
             className={cn(dateTriggerVariants({ size }), showClear && "pr-9")}
           >
-            <RiCalendarLine className="text-muted-foreground" />
+            <RiCalendarLine aria-hidden className="text-muted-foreground" />
             <span className={cn("flex-1 truncate", !label && "text-muted-foreground")}>
               {label ?? placeholder}
             </span>
@@ -328,6 +330,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       cancelLabel = "Cancel",
       align = "start",
       open: openProp,
+      defaultOpen = false,
       onOpenChange,
       className,
       contentClassName,
@@ -358,7 +361,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
     const [open, setOpenState] = useOptionalControlled<boolean>(
       openProp !== undefined,
       openProp ?? false,
-      false,
+      defaultOpen,
       onOpenChange
     );
     const [draft, setDraft] = React.useState<DateRange | undefined>(value);
@@ -410,7 +413,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
               aria-required={field.required}
               className={cn(dateTriggerVariants({ size }), showClear && "pr-9")}
             >
-              <RiCalendarLine className="text-muted-foreground" />
+              <RiCalendarLine aria-hidden className="text-muted-foreground" />
               <span className={cn("flex-1 truncate", !label && "text-muted-foreground")}>
                 {label ?? placeholder}
               </span>

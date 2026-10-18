@@ -49,29 +49,35 @@ export interface ContextMenuItemProps extends React.ComponentPropsWithoutRef<typ
   icon?: React.ReactNode;
   shortcut?: React.ReactNode;
   description?: React.ReactNode;
+  /** `destructive` colours the row red for dangerous actions. Default `neutral`. */
+  tone?: "neutral" | "destructive";
+  /** @deprecated Use `tone`. */
   variant?: "default" | "destructive";
   inset?: boolean;
 }
 
 /** Actionable menu row with optional icon, description and shortcut. */
 export const ContextMenuItem = React.forwardRef<React.ElementRef<typeof ContextMenuPrimitive.Item>, ContextMenuItemProps>(
-  ({ className, icon, shortcut, description, variant = "default", inset, asChild, children, ...props }, ref) => (
-    <ContextMenuPrimitive.Item
-      ref={ref}
-      asChild={asChild}
-      data-variant={variant}
-      className={cn(
-        menuItemClass,
-        description && "items-start [&>svg]:mt-0.5",
-        variant === "destructive" && menuItemDestructiveClass,
-        inset && menuItemInsetClass,
-        className
-      )}
-      {...props}
-    >
-      {asChild ? children : renderMenuItemBody({ icon, description, shortcut, children })}
-    </ContextMenuPrimitive.Item>
-  )
+  ({ className, icon, shortcut, description, tone, variant: variantProp, inset, asChild, children, ...props }, ref) => {
+    const variant = (tone ?? variantProp) === "destructive" ? "destructive" : "default";
+    return (
+      <ContextMenuPrimitive.Item
+        ref={ref}
+        asChild={asChild}
+        data-variant={variant}
+        className={cn(
+          menuItemClass,
+          description && "items-start [&>svg]:mt-0.5",
+          variant === "destructive" && menuItemDestructiveClass,
+          inset && menuItemInsetClass,
+          className
+        )}
+        {...props}
+      >
+        {asChild ? children : renderMenuItemBody({ icon, description, shortcut, children })}
+      </ContextMenuPrimitive.Item>
+    );
+  }
 );
 ContextMenuItem.displayName = "ContextMenuItem";
 
@@ -88,7 +94,7 @@ export const ContextMenuCheckboxItem = React.forwardRef<
   <ContextMenuPrimitive.CheckboxItem ref={ref} className={cn(menuItemClass, menuItemInsetClass, className)} {...props}>
     <span className={menuItemIndicatorClass}>
       <ContextMenuPrimitive.ItemIndicator>
-        <RiCheckLine className="text-primary!" />
+        <RiCheckLine aria-hidden className="text-primary!" />
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     <span className="min-w-0 flex-1 truncate">{children}</span>
@@ -113,11 +119,12 @@ export const ContextMenuRadioItem = React.forwardRef<
 ));
 ContextMenuRadioItem.displayName = "ContextMenuRadioItem";
 
+export interface ContextMenuLabelProps extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> {
+  inset?: boolean;
+}
+
 /** Non-interactive section label. */
-export const ContextMenuLabel = React.forwardRef<
-  React.ElementRef<typeof ContextMenuPrimitive.Label>,
-  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> & { inset?: boolean }
->(({ className, inset, ...props }, ref) => (
+export const ContextMenuLabel = React.forwardRef<React.ElementRef<typeof ContextMenuPrimitive.Label>, ContextMenuLabelProps>(({ className, inset, ...props }, ref) => (
   <ContextMenuPrimitive.Label ref={ref} className={cn(menuLabelClass, inset && menuItemInsetClass, className)} {...props} />
 ));
 ContextMenuLabel.displayName = "ContextMenuLabel";
@@ -155,7 +162,7 @@ export const ContextMenuSubTrigger = React.forwardRef<
   >
     {icon}
     <span className="min-w-0 flex-1 truncate">{children}</span>
-    <RiArrowRightSLine className="ml-auto" />
+    <RiArrowRightSLine aria-hidden className="ml-auto" />
   </ContextMenuPrimitive.SubTrigger>
 ));
 ContextMenuSubTrigger.displayName = "ContextMenuSubTrigger";

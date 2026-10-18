@@ -1098,9 +1098,11 @@ export interface MediaTrackOption {
 export interface TrackCycleChipProps {
   kind: "subtitles" | "audio";
   tracks: MediaTrackOption[];
-  /** Selected track id, or null for off (subtitles). */
-  value: string | null;
-  onValueChange: (id: string | null) => void;
+  /** Selected track id, or null for off (subtitles). Controlled. */
+  value?: string | null;
+  /** Initial track id when uncontrolled. Default null (off). */
+  defaultValue?: string | null;
+  onValueChange?: (id: string | null) => void;
   /** Click cycles through the options, or opens a menu. Default: cycle up to 3 options, menu beyond. */
   mode?: "cycle" | "menu";
   /** Include an "Off" option. Default true for subtitles. */
@@ -1112,18 +1114,23 @@ export interface TrackCycleChipProps {
 }
 
 /** Chip showing the current subtitle/audio track; click cycles to the next one or opens a picker. */
-export function TrackCycleChip({
-  kind,
-  tracks,
-  value,
-  onValueChange,
-  mode,
-  allowOff = kind === "subtitles",
-  offLabel = "Off",
-  tone = "default",
-  disabled,
-  className,
-}: TrackCycleChipProps) {
+export const TrackCycleChip = React.forwardRef<HTMLButtonElement, TrackCycleChipProps>(function TrackCycleChip(
+  {
+    kind,
+    tracks,
+    value: valueProp,
+    defaultValue = null,
+    onValueChange,
+    mode,
+    allowOff = kind === "subtitles",
+    offLabel = "Off",
+    tone = "default",
+    disabled,
+    className,
+  },
+  ref
+) {
+  const [value, setValue] = useControllableState<string | null>({ value: valueProp, defaultValue, onChange: onValueChange });
   const options: (string | null)[] = [...(allowOff ? [null] : []), ...tracks.map((t) => t.id)];
   const current = tracks.find((t) => t.id === value) ?? null;
   const short = current ? (current.language ? current.language.toUpperCase() : current.label) : offLabel;
@@ -1142,13 +1149,14 @@ export function TrackCycleChip({
   if (resolvedMode === "cycle") {
     return (
       <button
+        ref={ref}
         type="button"
         disabled={disabled || options.length < 2}
         aria-label={`${noun}: ${full}. Switch to next`}
         data-kind={kind}
         onClick={() => {
           const at = options.indexOf(current ? current.id : null);
-          onValueChange(options[(at + 1) % options.length] ?? null);
+          setValue(options[(at + 1) % options.length] ?? null);
         }}
         className={cn(chipClass(tone, active), className)}
       >
@@ -1160,13 +1168,13 @@ export function TrackCycleChip({
   return (
     <DropdownMenuPrimitive.Root modal={false}>
       <DropdownMenuPrimitive.Trigger asChild disabled={disabled}>
-        <button type="button" aria-label={`${noun}: ${full}`} data-kind={kind} className={cn(chipClass(tone, active), className)}>
+        <button ref={ref} type="button" aria-label={`${noun}: ${full}`} data-kind={kind} className={cn(chipClass(tone, active), className)}>
           {content}
         </button>
       </DropdownMenuPrimitive.Trigger>
       <MediaMenuContent>
         <DropdownMenuLabel>{noun === "Subtitles" ? "Subtitles" : "Audio"}</DropdownMenuLabel>
-        <DropdownMenuPrimitive.RadioGroup value={value ?? "__off"} onValueChange={(v) => onValueChange(v === "__off" ? null : v)}>
+        <DropdownMenuPrimitive.RadioGroup value={value ?? "__off"} onValueChange={(v) => setValue(v === "__off" ? null : v)}>
           {allowOff && (
             <>
               <DropdownMenuRadioItem value="__off">{offLabel}</DropdownMenuRadioItem>
@@ -1182,7 +1190,7 @@ export function TrackCycleChip({
       </MediaMenuContent>
     </DropdownMenuPrimitive.Root>
   );
-}
+});
 TrackCycleChip.displayName = "TrackCycleChip";
 
 /* ------------------------------------------------------------------ */
@@ -1315,12 +1323,17 @@ NowPlayingBars.displayName = "NowPlayingBars";
 /* Buffering indicator                                                 */
 /* ------------------------------------------------------------------ */
 
+export interface MediaBufferingIndicatorProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Accessible label for the spinner. Default "Buffering". */
+  label?: string;
+}
+
 /** Centered buffering spinner used by players. */
-export function MediaBufferingIndicator({ className, label = "Buffering" }: { className?: string; label?: string }) {
-  return (
-    <span className={cn("inline-flex rounded-full bg-black/45 p-3 text-white backdrop-blur-sm", className)}>
+export const MediaBufferingIndicator = React.forwardRef<HTMLSpanElement, MediaBufferingIndicatorProps>(
+  ({ className, label = "Buffering", ...props }, ref) => (
+    <span ref={ref} className={cn("inline-flex rounded-full bg-black/45 p-3 text-white backdrop-blur-sm", className)} {...props}>
       <Spinner size="xl" className="text-white" label={label} />
     </span>
-  );
-}
+  )
+);
 MediaBufferingIndicator.displayName = "MediaBufferingIndicator";

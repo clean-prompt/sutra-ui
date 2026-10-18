@@ -479,8 +479,8 @@ export const PageHeaderWithSearch = React.forwardRef<HTMLDivElement, PageHeaderW
             defaultValue={view === undefined ? defaultView : undefined}
             onValueChange={(v) => onViewChange?.(v as "list" | "grid")}
             options={[
-              { value: "list", icon: <RiListCheck />, "aria-label": "List view" },
-              { value: "grid", icon: <RiLayoutGridLine />, "aria-label": "Grid view" },
+              { value: "list", icon: <RiListCheck aria-hidden />, "aria-label": "List view" },
+              { value: "grid", icon: <RiLayoutGridLine aria-hidden />, "aria-label": "Grid view" },
             ]}
           />
         </div>
@@ -526,9 +526,9 @@ export const ProfileHeader = React.forwardRef<HTMLDivElement, ProfileHeaderProps
       coverSrc,
       verified = true,
       meta = [
-        { icon: <RiMapPinLine />, label: "Lisbon, Portugal" },
-        { icon: <RiLinkM />, label: "maya.design", href: "#" },
-        { icon: <RiCalendarLine />, label: "Joined March 2024" },
+        { icon: <RiMapPinLine aria-hidden />, label: "Lisbon, Portugal" },
+        { icon: <RiLinkM aria-hidden />, label: "maya.design", href: "#" },
+        { icon: <RiCalendarLine aria-hidden />, label: "Joined March 2024" },
       ],
       stats = [
         { label: "Following", value: "214" },
@@ -582,13 +582,13 @@ export const ProfileHeader = React.forwardRef<HTMLDivElement, ProfileHeaderProps
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="secondary" size="icon" aria-label="More actions">
-                        <RiMoreLine />
+                        <RiMoreLine aria-hidden />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem icon={<RiShareForwardLine />}>Share profile</DropdownMenuItem>
-                      <DropdownMenuItem icon={<RiLinkM />}>Copy link</DropdownMenuItem>
-                      <DropdownMenuItem icon={<RiGlobalLine />}>View public page</DropdownMenuItem>
+                      <DropdownMenuItem icon={<RiShareForwardLine aria-hidden />}>Share profile</DropdownMenuItem>
+                      <DropdownMenuItem icon={<RiLinkM aria-hidden />}>Copy link</DropdownMenuItem>
+                      <DropdownMenuItem icon={<RiGlobalLine aria-hidden />}>View public page</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </>

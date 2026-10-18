@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { formatList } from "../lib/format";
 import { dateKey, formatShortDate, pad2, toValidDate } from "../lib/time";
 import { useControllableState } from "../hooks/use-controllable-state";
@@ -19,16 +20,20 @@ import {
 /* StatusCycle                                                         */
 /* ------------------------------------------------------------------ */
 
-export type StatusCycleColor = "neutral" | "primary" | "success" | "warning" | "destructive" | "info";
+/** @deprecated Use `Tone` (the option's `tone`). */
+export type StatusCycleColor = Tone;
 
 export interface StatusCycleOption {
   value: string;
   label: string;
   icon?: React.ReactNode;
+  /** Semantic colour of the pill. Default `neutral`. */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
   color?: StatusCycleColor;
 }
 
-const pillColor: Record<StatusCycleColor, string> = {
+const pillColor: Record<Tone, string> = {
   neutral: "bg-muted text-foreground hover:bg-border",
   primary: "bg-primary-soft text-primary-soft-foreground hover:bg-primary-soft/70",
   success: "bg-success-soft text-success-soft-foreground hover:bg-success-soft/70",
@@ -93,7 +98,7 @@ export const StatusCycle = React.forwardRef<HTMLDivElement, StatusCycleProps>(
     const nextLabel = statuses[stepIndex(1)]?.label;
 
     if (!current) return null;
-    const color = pillColor[current.color ?? "neutral"];
+    const color = pillColor[normalizeTone(current.tone ?? current.color)];
     const height = size === "sm" ? "h-7 text-xs [&_svg]:size-3.5" : "h-8 text-sm [&_svg]:size-4";
 
     return (

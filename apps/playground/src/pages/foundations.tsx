@@ -99,7 +99,7 @@ export function ColorsPage() {
               <div className="h-14" style={{ background: colors[tone] }} />
               <div className="flex items-center justify-between p-3">
                 <span className="text-sm font-medium capitalize">{tone}</span>
-                <Badge color={tone}>{tone}</Badge>
+                <Badge tone={tone}>{tone}</Badge>
               </div>
             </div>
           ))}
@@ -175,7 +175,7 @@ export function TypographyPage() {
         <div className="max-w-xl space-y-3">
           <Eyebrow>Release notes</Eyebrow>
           <Heading size="display-sm">Sutra 1.0 is here</Heading>
-          <Text tone="muted">
+          <Text tone="neutral">
             Press <Kbd>⌘</Kbd> <Kbd>K</Kbd> to open the command menu, or import <InlineCode>{"{ Button }"}</InlineCode> from{" "}
             <InlineCode>@sutra/ui</InlineCode>.
           </Text>

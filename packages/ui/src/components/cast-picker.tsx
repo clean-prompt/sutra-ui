@@ -62,7 +62,7 @@ export function resolveDeviceKind(type?: string | null): DeviceKind {
   return (type && deviceAliases[type.trim().toLowerCase()]) || "desktop";
 }
 
-export interface DeviceIconProps extends Omit<React.ComponentProps<RemixiconComponentType>, "type"> {
+export interface DeviceIconProps extends Omit<React.ComponentProps<RemixiconComponentType>, "type" | "ref"> {
   /** tv, phone, tablet, laptop, desktop, speaker, browser, cast (case-insensitive aliases accepted). */
   type?: string | null;
   /** Accessible label; decorative (aria-hidden) when omitted. */
@@ -70,10 +70,11 @@ export interface DeviceIconProps extends Omit<React.ComponentProps<RemixiconComp
 }
 
 /** One glyph per kind of device; unrecognised types fall back to a desktop monitor. */
-export function DeviceIcon({ type, label, className, ...props }: DeviceIconProps) {
+export const DeviceIcon = React.forwardRef<SVGSVGElement, DeviceIconProps>(function DeviceIcon({ type, label, className, ...props }, ref) {
   const Icon = deviceIcons[resolveDeviceKind(type)];
   return (
     <Icon
+      ref={ref}
       role={label ? "img" : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
@@ -81,7 +82,7 @@ export function DeviceIcon({ type, label, className, ...props }: DeviceIconProps
       {...props}
     />
   );
-}
+});
 DeviceIcon.displayName = "DeviceIcon";
 
 /* ------------------------------------------------------------------ */
@@ -108,6 +109,9 @@ export interface CastDeviceListProps extends Omit<React.HTMLAttributes<HTMLDivEl
   loading?: boolean;
   error?: React.ReactNode;
   onRetry?: () => void;
+  /** Shown when there is nothing to list. Default "No other devices are available right now". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
   /** Accessible list name. Default "Devices". */
   label?: string;
@@ -130,7 +134,8 @@ export const CastDeviceList = React.forwardRef<HTMLDivElement, CastDeviceListPro
       loading,
       error,
       onRetry,
-      emptyMessage = "No other devices are available right now.",
+      emptyState,
+      emptyMessage,
       label = "Devices",
       className,
       ...props
@@ -150,14 +155,14 @@ export const CastDeviceList = React.forwardRef<HTMLDivElement, CastDeviceListPro
         <div role="alert" className="flex flex-col items-center gap-3 py-6 text-center text-sm text-destructive">
           {error}
           {onRetry && (
-            <Button variant="secondary" size="sm" leadingIcon={<RiRefreshLine />} onClick={onRetry}>
+            <Button variant="secondary" size="sm" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry}>
               Try again
             </Button>
           )}
         </div>
       );
     } else if (!devices.length) {
-      body = <p className="py-6 text-center text-sm text-muted-foreground">{emptyMessage}</p>;
+      body = <p className="py-6 text-center text-sm text-muted-foreground">{emptyState ?? emptyMessage ?? "No other devices are available right now"}</p>;
     } else {
       body = (
         <ul aria-label={label} className="flex flex-col gap-1">
@@ -284,7 +289,7 @@ export function CastPicker({
         connected && (triggerTone === "overlay" ? "text-white" : "text-primary")
       )}
     >
-      <RiCastLine />
+      <RiCastLine aria-hidden />
     </Button>
   );
   const list = <CastDeviceList devices={devices} onSelect={handleSelect} {...listProps} />;
@@ -308,7 +313,7 @@ export function CastPicker({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{triggerEl}</DialogTrigger>
       <DialogContent size="sm" className={contentClassName} >
-        <DialogHeader icon={<RiCastLine />} tone="primary">
+        <DialogHeader icon={<RiCastLine aria-hidden />} tone="primary">
           <DialogTitle>{title}</DialogTitle>
           {description ? <DialogDescription className="truncate">{description}</DialogDescription> : <DialogDescription className="sr-only">Choose a device</DialogDescription>}
         </DialogHeader>

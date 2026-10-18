@@ -166,14 +166,20 @@ export interface FAQProps {
   icon?: AccordionIcon;
   /** Allow several answers open at once. */
   multiple?: boolean;
-  /** Value(s) open initially (defaults to item index as string). */
+  /** Value(s) open initially (item values default to their index as a string). */
   defaultValue?: string | string[];
+  /** Controlled open value(s). A string for single mode, an array with `multiple`. */
+  value?: string | string[];
+  /** Called with the open value(s): a string (empty when collapsed) in single mode, an array with `multiple`. */
+  onValueChange?: (value: string | string[]) => void;
   className?: string;
 }
 
 /** Data-driven FAQ list built on `Accordion`. */
 export const FAQ = React.forwardRef<HTMLDivElement, FAQProps>(
-  ({ items, variant = "default", icon = "plus", multiple, defaultValue, className }, ref) => {
+  ({ items, variant = "default", icon = "plus", multiple, defaultValue, value, onValueChange, className }, ref) => {
+    const toArray = (v: string | string[] | undefined) => (v === undefined ? undefined : Array.isArray(v) ? v : [v]);
+    const toSingle = (v: string | string[] | undefined) => (Array.isArray(v) ? (v[0] ?? "") : v);
     const content = items.map((item, i) => (
       <AccordionItem key={item.value ?? i} value={item.value ?? String(i)}>
         <AccordionTrigger leadingIcon={item.icon} className="text-base">
@@ -190,9 +196,9 @@ export const FAQ = React.forwardRef<HTMLDivElement, FAQProps>(
           variant={variant}
           icon={icon}
           className={className}
-          defaultValue={
-            defaultValue === undefined ? undefined : Array.isArray(defaultValue) ? defaultValue : [defaultValue]
-          }
+          defaultValue={toArray(defaultValue)}
+          {...(value !== undefined ? { value: toArray(value) } : {})}
+          onValueChange={onValueChange}
         >
           {content}
         </Accordion>
@@ -206,7 +212,9 @@ export const FAQ = React.forwardRef<HTMLDivElement, FAQProps>(
         variant={variant}
         icon={icon}
         className={className}
-        defaultValue={Array.isArray(defaultValue) ? defaultValue[0] : defaultValue}
+        defaultValue={toSingle(defaultValue)}
+        {...(value !== undefined ? { value: toSingle(value) } : {})}
+        onValueChange={onValueChange}
       >
         {content}
       </Accordion>

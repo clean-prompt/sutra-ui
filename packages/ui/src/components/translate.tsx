@@ -14,6 +14,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { formatDuration } from "../lib/duration";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { Button } from "./button";
 import { CopyButton } from "./copy-button";
@@ -191,8 +192,10 @@ export function searchLanguages(query: string, list: Language[] = languages) {
 /* LanguagePicker                                                      */
 /* ------------------------------------------------------------------ */
 
-export interface LanguagePickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface LanguagePickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   value?: string;
+  /** Initially selected code when uncontrolled. */
+  defaultValue?: string;
   onValueChange?: (code: string) => void;
   languages?: Language[];
   /** Recently used codes, most recent first. */
@@ -216,7 +219,9 @@ interface PickerRow {
 
 /** Searchable language list (English/native name/code) with Detect, Recent and keyboard navigation. */
 export const LanguagePicker = React.forwardRef<HTMLDivElement, LanguagePickerProps>(
-  ({ value, onValueChange, languages: list = languages, recent = [], allowDetect = false, detected, autoFocus = true, label = "Languages", className, ...props }, ref) => {
+  ({ value: valueProp, defaultValue, onValueChange, languages: list = languages, recent = [], allowDetect = false, detected, autoFocus = true, label = "Languages", className, ...props }, ref) => {
+    const [innerValue, setInnerValue] = React.useState(defaultValue);
+    const value = valueProp ?? innerValue;
     const [query, setQuery] = React.useState("");
     const [active, setActive] = React.useState(0);
     const uid = React.useId();
@@ -255,7 +260,12 @@ export const LanguagePicker = React.forwardRef<HTMLDivElement, LanguagePickerPro
     }, [active]);
 
     const optId = (i: number) => `${uid}-o-${i}`;
-    const choose = (r: PickerRow | undefined) => r && onValueChange?.(r.code);
+    const choose = (r: PickerRow | undefined) => {
+      if (!r) return;
+      setInnerValue(r.code);
+      // Always notify, even when re-picking the current code (callers close popovers on it).
+      onValueChange?.(r.code);
+    };
 
     const onKeyDown = (e: React.KeyboardEvent) => {
       const n = rows.length;
@@ -383,8 +393,12 @@ export const SwapButton = React.forwardRef<HTMLButtonElement, SwapButtonProps>((
 SwapButton.displayName = "SwapButton";
 
 export interface LanguageBarProps extends React.HTMLAttributes<HTMLDivElement> {
-  source: string;
-  target: string;
+  source?: string;
+  /** Initial source code when uncontrolled. Default "auto" (detect). */
+  defaultSource?: string;
+  target?: string;
+  /** Initial target code when uncontrolled. Default "en". */
+  defaultTarget?: string;
   onSourceChange?: (code: string) => void;
   onTargetChange?: (code: string) => void;
   /** Custom swap; default swaps (using the detected language when source is "auto"). */
@@ -433,7 +447,7 @@ function LanguageSide({ side, value, onChange, recent, list, detected }: Languag
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button type="button" variant="ghost" size="icon-sm" aria-label={isSource ? "More source languages" : "More target languages"} className="shrink-0">
-            <RiArrowDownSLine className={cn("transition-transform", open && "rotate-180")} />
+            <RiArrowDownSLine aria-hidden className={cn("transition-transform", open && "rotate-180")} />
           </Button>
         </PopoverTrigger>
         <PopoverContent padded={false} size="md" align={isSource ? "start" : "end"} aria-label={isSource ? "Source language" : "Target language"}>
@@ -456,20 +470,39 @@ function LanguageSide({ side, value, onChange, recent, list, detected }: Languag
 
 /** Source/target language row: recent chips, full picker and a swap button. */
 export const LanguageBar = React.forwardRef<HTMLDivElement, LanguageBarProps>(
-  ({ source, target, onSourceChange, onTargetChange, onSwap, recentSources = [], recentTargets = [], detected, languages: list = languages, className, ...props }, ref) => {
+  (
+    {
+      source: sourceProp,
+      defaultSource = DETECT_LANGUAGE,
+      target: targetProp,
+      defaultTarget = "en",
+      onSourceChange,
+      onTargetChange,
+      onSwap,
+      recentSources = [],
+      recentTargets = [],
+      detected,
+      languages: list = languages,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const [source, setSource] = useControllableState({ value: sourceProp, defaultValue: defaultSource, onChange: onSourceChange });
+    const [target, setTarget] = useControllableState({ value: targetProp, defaultValue: defaultTarget, onChange: onTargetChange });
     const canSwap = source !== DETECT_LANGUAGE || !!detected;
     const swap = () => {
       if (onSwap) return onSwap();
       const from = source === DETECT_LANGUAGE ? detected : source;
       if (!from) return;
-      onSourceChange?.(target);
-      onTargetChange?.(from);
+      setSource(target);
+      setTarget(from);
     };
     return (
       <div ref={ref} className={cn("flex items-center gap-2 border-b border-border px-2 py-1.5", className)} {...props}>
-        <LanguageSide side="source" value={source} onChange={onSourceChange} recent={recentSources} list={list} detected={detected} />
+        <LanguageSide side="source" value={source} onChange={setSource} recent={recentSources} list={list} detected={detected} />
         <SwapButton onSwap={swap} disabled={!canSwap} title={canSwap ? undefined : "Waiting for the language to be detected"} />
-        <LanguageSide side="target" value={target} onChange={onTargetChange} recent={recentTargets} list={list} />
+        <LanguageSide side="target" value={target} onChange={setTarget} recent={recentTargets} list={list} />
       </div>
     );
   }
@@ -481,9 +514,11 @@ LanguageBar.displayName = "LanguageBar";
 /* ------------------------------------------------------------------ */
 
 
-export interface SourcePaneProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange"> {
-  value: string;
-  onValueChange: (value: string) => void;
+export interface SourcePaneProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange" | "defaultValue"> {
+  value?: string;
+  /** Initial text when uncontrolled. Default "". */
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
   /** Language code of the text (drives `dir` and `lang`). */
   lang?: string;
   /** Character limit. Default 5000. */
@@ -507,9 +542,10 @@ export interface SourcePaneProps extends Omit<React.HTMLAttributes<HTMLElement>,
 /** Source text pane: auto-growing textarea, counter, clear, did-you-mean strip, voice/speak slots, RTL. */
 export const SourcePane = React.forwardRef<HTMLTextAreaElement, SourcePaneProps>(
   (
-    { value, onValueChange, lang, maxLength = 5000, placeholder = "Enter text", suggestion, onAcceptSuggestion, voice, speak, tools, textareaProps, minHeight = 128, className, children, ...props },
+    { value: valueProp, defaultValue = "", onValueChange: onValueChangeProp, lang, maxLength = 5000, placeholder = "Enter text", suggestion, onAcceptSuggestion, voice, speak, tools, textareaProps, minHeight = 128, className, children, ...props },
     ref
   ) => {
+    const [value, onValueChange] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChangeProp });
     const inner = React.useRef<HTMLTextAreaElement>(null);
     React.useImperativeHandle(ref, () => inner.current as HTMLTextAreaElement);
     const dir = lang && lang !== DETECT_LANGUAGE ? languageDir(lang) : "auto";
@@ -553,7 +589,7 @@ export const SourcePane = React.forwardRef<HTMLTextAreaElement, SourcePaneProps>
               onValueChange("");
               inner.current?.focus();
             }} className="absolute right-2 top-3">
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           ) : null}
           {children}
@@ -660,7 +696,7 @@ export const TargetPane = React.forwardRef<HTMLElement, TargetPaneProps>(
               <CopyButton value={text} label="Copy translation" size="md" />
               {onShare ? (
                 <Button type="button" variant="ghost" size="icon-sm" aria-label="Share translation" onClick={() => onShare(text)}>
-                  <RiShareLine />
+                  <RiShareLine aria-hidden />
                 </Button>
               ) : null}
             </>
@@ -870,8 +906,10 @@ export const TransliterationCandidates = React.forwardRef<HTMLDivElement, Transl
 TransliterationCandidates.displayName = "TransliterationCandidates";
 
 export interface TransliterationToggleProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
-  pressed: boolean;
-  onPressedChange: (pressed: boolean) => void;
+  pressed?: boolean;
+  /** Initial state when uncontrolled. Default false. */
+  defaultPressed?: boolean;
+  onPressedChange?: (pressed: boolean) => void;
   /** Script sample shown on the button. Default "अ". */
   glyph?: React.ReactNode;
   /** Language name for the label, e.g. "Hindi". */
@@ -880,13 +918,15 @@ export interface TransliterationToggleProps extends Omit<React.ButtonHTMLAttribu
 
 /** IME on/off toggle for transliteration input. */
 export const TransliterationToggle = React.forwardRef<HTMLButtonElement, TransliterationToggleProps>(
-  ({ pressed, onPressedChange, glyph = "अ", languageName, className, ...props }, ref) => (
+  ({ pressed: pressedProp, defaultPressed = false, onPressedChange, glyph = "अ", languageName, className, ...props }, ref) => {
+    const [pressed, setPressed] = useControllableState({ value: pressedProp, defaultValue: defaultPressed, onChange: onPressedChange });
+    return (
     <button
       ref={ref}
       type="button"
       aria-pressed={pressed}
       aria-label={languageName ? `Type in ${languageName} script` : "Transliteration"}
-      onClick={() => onPressedChange(!pressed)}
+      onClick={() => setPressed(!pressed)}
       className={cn(
         "inline-flex h-8 items-center gap-1 rounded-control px-2 text-sm font-medium transition-colors",
         pressed ? "bg-primary-soft text-primary-soft-foreground" : "text-muted-foreground hover:bg-accent hover:text-foreground",
@@ -900,7 +940,8 @@ export const TransliterationToggle = React.forwardRef<HTMLButtonElement, Transli
       </span>
       <RiTranslate2 aria-hidden="true" className="size-3.5" />
     </button>
-  )
+    );
+  }
 );
 TransliterationToggle.displayName = "TransliterationToggle";
 
@@ -1056,7 +1097,7 @@ export const ConversationTurns = React.forwardRef<HTMLDivElement, ConversationTu
             onClick={() => onMicPress?.(side)}
             className="rounded-full"
           >
-            {state === "speaking" ? <RiVolumeUpLine /> : <RiMicLine />}
+            {state === "speaking" ? <RiVolumeUpLine aria-hidden /> : <RiMicLine aria-hidden />}
           </Button>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-foreground">{nameOf(sp)}</p>

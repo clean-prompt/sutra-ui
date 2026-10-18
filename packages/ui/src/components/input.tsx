@@ -67,7 +67,17 @@ export interface InputProps
   /** Shows a clear button while the field has a value. */
   clearable?: boolean;
   onClear?: () => void;
-  /** Class for the outer wrapper (only rendered when addons are present). */
+  /**
+   * Classes for the element that renders. Without addons that is the `<input>` itself (the root).
+   * With addons (`leadingIcon`, `trailingIcon`, `prefix`, `suffix`, `clearable`) it lands on the
+   * **inner** `<input>`, not the outer wrapper, so layout classes (`w-48`, `flex-1`, margins) have no
+   * visible effect there; use `wrapperClassName` for those.
+   */
+  className?: string;
+  /**
+   * Classes for the outer wrapper `<div>`, which is only rendered when addons are present. Put
+   * layout/sizing classes here when the input has addons.
+   */
   wrapperClassName?: string;
 }
 

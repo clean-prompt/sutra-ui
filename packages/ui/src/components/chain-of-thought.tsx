@@ -1,12 +1,13 @@
 import * as React from "react";
 import { Collapsible } from "radix-ui";
-import { RiArrowDownSLine, RiBrainLine, RiCheckLine, RiExpandUpDownLine } from "@remixicon/react";
+import { RiArrowDownSLine, RiBrainLine, RiCheckLine, RiCloseLine, RiExpandUpDownLine } from "@remixicon/react";
 import { Favicon, domainOf } from "./favicon";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useNow } from "../hooks/use-now";
 import { formatDuration as formatDurationMs } from "../lib/duration";
 import { formatTokens } from "../lib/format";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { Spinner } from "./spinner";
 import { TextShimmer } from "./text-shimmer";
 import { Button, type ButtonProps } from "./button";
@@ -79,7 +80,7 @@ export const ThinkingToggle = React.forwardRef<HTMLButtonElement, ThinkingToggle
         variant={variant}
         size={size}
         aria-pressed={ctx.expanded}
-        leadingIcon={<RiExpandUpDownLine />}
+        leadingIcon={<RiExpandUpDownLine aria-hidden />}
         data-slot="thinking-toggle"
         onClick={(e) => {
           onClick?.(e);
@@ -189,7 +190,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
           )}
         >
           <span aria-hidden className="inline-flex shrink-0 [&_svg]:size-4">
-            {icon ?? <RiBrainLine />}
+            {icon ?? <RiBrainLine aria-hidden />}
           </span>
           {streaming && title == null ? (
             <TextShimmer className="font-medium">{label}</TextShimmer>
@@ -239,28 +240,34 @@ export const ChainOfThoughtContent = React.forwardRef<
 ChainOfThoughtContent.displayName = "ChainOfThoughtContent";
 
 export type ChainOfThoughtStepStatus = "pending" | "active" | "complete";
+/** Step statuses accepted on input: the legacy values plus canonical `TaskStatus` names (`running`, `succeeded`, `failed`, …). */
+export type ChainOfThoughtStepStatusInput = ChainOfThoughtStepStatus | TaskStatusInput;
 
 export interface ChainOfThoughtStepProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   label: React.ReactNode;
   description?: React.ReactNode;
-  status?: ChainOfThoughtStepStatus;
+  /** Default "succeeded" (legacy "complete"). */
+  status?: ChainOfThoughtStepStatusInput;
   /** Icon in the timeline dot (defaults depend on status). */
   icon?: React.ReactNode;
 }
 
 /** One step on the reasoning timeline. Children render under the label (e.g. search results). */
 export const ChainOfThoughtStep = React.forwardRef<HTMLDivElement, ChainOfThoughtStepProps>(
-  ({ label, description, status = "complete", icon, className, children, ...props }, ref) => {
+  ({ label, description, status: statusProp = "complete", icon, className, children, ...props }, ref) => {
+    const lifecycle = normalizeTaskStatus(statusProp, "succeeded");
+    const status = lifecycle === "running" ? "active" : lifecycle === "succeeded" ? "complete" : lifecycle === "failed" ? "failed" : "pending";
     let dot: React.ReactNode;
     if (status === "active") dot = <Spinner aria-hidden role="presentation" size="xs" className="text-primary" />;
     else if (icon) dot = icon;
-    else if (status === "complete") dot = <RiCheckLine />;
+    else if (status === "complete") dot = <RiCheckLine aria-hidden />;
+    else if (status === "failed") dot = <RiCloseLine aria-hidden />;
     else dot = <span className="size-1.5 rounded-full bg-current" />;
 
     return (
       <div
         ref={ref}
-        data-status={status}
+        data-status={statusProp}
         className={cn("group/step relative flex gap-3 pb-4 last:pb-0", className)}
         {...props}
       >
@@ -274,6 +281,7 @@ export const ChainOfThoughtStep = React.forwardRef<HTMLDivElement, ChainOfThough
             "relative z-[1] mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border bg-background [&_svg]:size-3",
             status === "complete" && "border-border text-muted-foreground",
             status === "active" && "border-primary/40 bg-primary-soft text-primary",
+            status === "failed" && "border-destructive/40 text-destructive",
             status === "pending" && "border-dashed border-border-strong text-muted-foreground/60"
           )}
         >
@@ -284,7 +292,7 @@ export const ChainOfThoughtStep = React.forwardRef<HTMLDivElement, ChainOfThough
             {status === "active" && typeof label === "string" ? (
               <TextShimmer className="font-medium">{label}</TextShimmer>
             ) : (
-              <span className={cn("font-medium", status === "complete" ? "text-foreground" : "text-muted-foreground")}>
+              <span className={cn("font-medium", status === "complete" || status === "failed" ? "text-foreground" : "text-muted-foreground")}>
                 {label}
               </span>
             )}

@@ -327,7 +327,7 @@ export const KunjiSignInPage = React.forwardRef<HTMLDivElement, KunjiSignInPageP
   ) => {
     const [method, setMethod] = React.useState<SignInMethodId>("kunji");
     const back = (
-      <Button variant="ghost" size="sm" leadingIcon={<RiArrowLeftLine />} onClick={() => setMethod("kunji")} className="mt-4 self-center">
+      <Button variant="ghost" size="sm" leadingIcon={<RiArrowLeftLine aria-hidden />} onClick={() => setMethod("kunji")} className="mt-4 self-center">
         Back to kunji
       </Button>
     );
@@ -348,12 +348,12 @@ export const KunjiSignInPage = React.forwardRef<HTMLDivElement, KunjiSignInPageP
                       <Separator label="Other ways to sign in" />
                       <div className="flex flex-col gap-2 sm:flex-row">
                         {otherMethods.includes("password") && (
-                          <Button variant="secondary" className="flex-1" leadingIcon={<RiLockPasswordLine />} onClick={() => setMethod("password")}>
+                          <Button variant="secondary" className="flex-1" leadingIcon={<RiLockPasswordLine aria-hidden />} onClick={() => setMethod("password")}>
                             Password
                           </Button>
                         )}
                         {otherMethods.includes("token") && (
-                          <Button variant="secondary" className="flex-1" leadingIcon={<RiKey2Line />} onClick={() => setMethod("token")}>
+                          <Button variant="secondary" className="flex-1" leadingIcon={<RiKey2Line aria-hidden />} onClick={() => setMethod("token")}>
                             Access token
                           </Button>
                         )}
@@ -469,12 +469,12 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
           )}
           <div className="flex w-full flex-col gap-2 sm:flex-row">
             {onCheck && (
-              <Button variant="secondary" className="flex-1" leadingIcon={<RiRefreshLine />} loading={checking} onClick={() => void check()}>
+              <Button variant="secondary" className="flex-1" leadingIcon={<RiRefreshLine aria-hidden />} loading={checking} onClick={() => void check()}>
                 Check now
               </Button>
             )}
             {onSignOut && (
-              <Button variant="ghost" className="flex-1" leadingIcon={<RiLogoutBoxRLine />} onClick={onSignOut}>
+              <Button variant="ghost" className="flex-1" leadingIcon={<RiLogoutBoxRLine aria-hidden />} onClick={onSignOut}>
                 Sign out
               </Button>
             )}
@@ -861,7 +861,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
             {expired && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center">
                 <p className="text-sm font-semibold text-[#09090b]">Code expired</p>
-                <Button size="sm" leadingIcon={<RiRefreshLine />} onClick={startExisting}>
+                <Button size="sm" leadingIcon={<RiRefreshLine aria-hidden />} onClick={startExisting}>
                   New code
                 </Button>
               </div>
@@ -921,7 +921,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
             <Button variant="secondary" className="flex-1" onClick={() => void decide(false)}>
               They don&apos;t match
             </Button>
-            <Button className="flex-1" leadingIcon={<RiCheckLine />} onClick={() => void decide(true)}>
+            <Button className="flex-1" leadingIcon={<RiCheckLine aria-hidden />} onClick={() => void decide(true)}>
               They match
             </Button>
           </div>
@@ -936,10 +936,10 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
     } else if (step === "mismatch") {
       icon = RiErrorWarningLine;
       iconColor = "destructive";
-      heading = "Pairing cancelled";
+      heading = "Pairing canceled";
       sub = "The codes didn't match, so nothing was shared. Someone nearby may have tried to join. Start again on both devices.";
       content = (
-        <Button fullWidth leadingIcon={<RiRefreshLine />} onClick={restart}>
+        <Button fullWidth leadingIcon={<RiRefreshLine aria-hidden />} onClick={restart}>
           Start again
         </Button>
       );
@@ -949,7 +949,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
       heading = "Pairing failed";
       sub = error;
       content = (
-        <Button fullWidth leadingIcon={<RiRefreshLine />} onClick={restart}>
+        <Button fullWidth leadingIcon={<RiRefreshLine aria-hidden />} onClick={restart}>
           Try again
         </Button>
       );

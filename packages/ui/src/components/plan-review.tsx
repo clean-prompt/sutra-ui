@@ -196,7 +196,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
       >
         <div className="flex items-center gap-2.5 border-b border-border px-4 py-2.5">
           <span aria-hidden className="flex size-6 items-center justify-center rounded-md bg-primary-soft text-primary-soft-foreground [&_svg]:size-3.5">
-            <RiMap2Line />
+            <RiMap2Line aria-hidden />
           </span>
           <p id={titleId} className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">
             {title}
@@ -215,7 +215,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
             aria-label={expanded ? "Collapse plan" : "Expand plan"}
             onClick={() => setExpanded(!expanded)}
           >
-            <RiArrowDownSLine className={cn("transition-transform", !expanded && "-rotate-90")} />
+            <RiArrowDownSLine aria-hidden className={cn("transition-transform", !expanded && "-rotate-90")} />
           </Button>
         </div>
 
@@ -245,11 +245,11 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
             size="xs"
             variant="inverse"
             data-slot="plan-comment-trigger"
-            leadingIcon={<RiChatQuoteLine />}
+            leadingIcon={<RiChatQuoteLine aria-hidden />}
             onMouseDown={(e) => e.preventDefault()}
             onClick={startComment}
             style={{ top: selection.top, left: selection.left }}
-            className="absolute z-10 -translate-x-1/2 shadow-lg"
+            className="absolute z-50 -translate-x-1/2 shadow-lg"
           >
             Comment
           </Button>
@@ -290,7 +290,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
                       aria-label={`Remove comment: ${truncatePlanQuote(c.body, 40)}`}
                       onClick={() => setComments(comments.filter((x) => x.id !== c.id))}
                     >
-                      <RiCloseLine />
+                      <RiCloseLine aria-hidden />
                     </Button>
                   )}
                 </li>

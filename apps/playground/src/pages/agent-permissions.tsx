@@ -245,7 +245,7 @@ function ModeSwitcherDemo() {
             onValueChange={setMode}
             cycleWhen={() => !!composerRef.current?.contains(document.activeElement)}
           />
-          <EffortSlider variant="compact" value={effort} onValueChange={setEffort} />
+          <EffortSlider density="compact" value={effort} onValueChange={setEffort} />
           <Button size="icon-sm" className="ml-auto" aria-label="Send">
             <RiArrowUpLine />
           </Button>

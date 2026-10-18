@@ -136,11 +136,11 @@ function LinkForm({ initial = "", onApply, onRemove, onCancel, className }: Link
         )}
       />
       <Button type="submit" size="icon-xs" variant="primary" aria-label="Apply link">
-        <RiCheckLine />
+        <RiCheckLine aria-hidden />
       </Button>
       {onRemove && initial && (
         <Button type="button" size="icon-xs" variant="ghost" aria-label="Remove link" onClick={onRemove}>
-          <RiLinkUnlink />
+          <RiLinkUnlink aria-hidden />
         </Button>
       )}
     </form>
@@ -162,22 +162,22 @@ function FormatButtons({ editor, state, onLink, compact }: { editor: Editor; sta
   const disabled = !state.editable;
   return (
     <>
-      <EditorToolbarButton label="Bold" shortcut="mod+b" icon={<RiBold />} pressed={state.bold} disabled={disabled} onClick={() => editor.chain().focus().toggleBold().run()} />
-      <EditorToolbarButton label="Italic" shortcut="mod+i" icon={<RiItalic />} pressed={state.italic} disabled={disabled} onClick={() => editor.chain().focus().toggleItalic().run()} />
-      <EditorToolbarButton label="Strikethrough" shortcut="mod+shift+s" icon={<RiStrikethrough />} pressed={state.strike} disabled={disabled} onClick={() => editor.chain().focus().toggleStrike().run()} />
-      <EditorToolbarButton label="Inline code" shortcut="mod+e" icon={<RiCodeLine />} pressed={state.code} disabled={disabled} onClick={() => editor.chain().focus().toggleCode().run()} />
+      <EditorToolbarButton label="Bold" shortcut="mod+b" icon={<RiBold aria-hidden />} pressed={state.bold} disabled={disabled} onClick={() => editor.chain().focus().toggleBold().run()} />
+      <EditorToolbarButton label="Italic" shortcut="mod+i" icon={<RiItalic aria-hidden />} pressed={state.italic} disabled={disabled} onClick={() => editor.chain().focus().toggleItalic().run()} />
+      <EditorToolbarButton label="Strikethrough" shortcut="mod+shift+s" icon={<RiStrikethrough aria-hidden />} pressed={state.strike} disabled={disabled} onClick={() => editor.chain().focus().toggleStrike().run()} />
+      <EditorToolbarButton label="Inline code" shortcut="mod+e" icon={<RiCodeLine aria-hidden />} pressed={state.code} disabled={disabled} onClick={() => editor.chain().focus().toggleCode().run()} />
       {onLink}
       <EditorToolbarSeparator />
       <EditorToolbarMenu
         label={state.heading ? `Heading ${state.heading}` : compact ? "Text" : "Paragraph"}
-        icon={compact ? <RiHeading /> : undefined}
+        icon={compact ? <RiHeading aria-hidden /> : undefined}
         showLabel={!compact}
         disabled={disabled}
         items={headingItems(editor)}
       />
-      <EditorToolbarButton label="Bulleted list" shortcut="mod+shift+8" icon={<RiListUnordered />} pressed={state.bulletList} disabled={disabled} onClick={() => editor.chain().focus().toggleBulletList().run()} />
-      <EditorToolbarButton label="Numbered list" shortcut="mod+shift+7" icon={<RiListOrdered />} pressed={state.orderedList} disabled={disabled} onClick={() => editor.chain().focus().toggleOrderedList().run()} />
-      <EditorToolbarButton label="Quote" shortcut="mod+shift+b" icon={<RiDoubleQuotesL />} pressed={state.blockquote} disabled={disabled} onClick={() => editor.chain().focus().toggleBlockquote().run()} />
+      <EditorToolbarButton label="Bulleted list" shortcut="mod+shift+8" icon={<RiListUnordered aria-hidden />} pressed={state.bulletList} disabled={disabled} onClick={() => editor.chain().focus().toggleBulletList().run()} />
+      <EditorToolbarButton label="Numbered list" shortcut="mod+shift+7" icon={<RiListOrdered aria-hidden />} pressed={state.orderedList} disabled={disabled} onClick={() => editor.chain().focus().toggleOrderedList().run()} />
+      <EditorToolbarButton label="Quote" shortcut="mod+shift+b" icon={<RiDoubleQuotesL aria-hidden />} pressed={state.blockquote} disabled={disabled} onClick={() => editor.chain().focus().toggleBlockquote().run()} />
     </>
   );
 }
@@ -203,7 +203,7 @@ export const RichTextToolbar = React.forwardRef<HTMLDivElement, RichTextToolbarP
     const link = (
       <Popover open={linkOpen} onOpenChange={setLinkOpen}>
         <PopoverTrigger asChild>
-          <EditorToolbarButton label="Link" shortcut="mod+k" icon={<RiLink />} pressed={!!state.link} disabled={!state.editable} />
+          <EditorToolbarButton label="Link" shortcut="mod+k" icon={<RiLink aria-hidden />} pressed={!!state.link} disabled={!state.editable} />
         </PopoverTrigger>
         <PopoverContent align="start" className="w-auto p-1.5">
           <LinkForm
@@ -225,14 +225,14 @@ export const RichTextToolbar = React.forwardRef<HTMLDivElement, RichTextToolbarP
       <EditorToolbar ref={ref} aria-label="Text formatting" className={className} {...props}>
         {history && (
           <>
-            <EditorToolbarButton label="Undo" shortcut="mod+z" icon={<RiArrowGoBackLine />} disabled={!state.canUndo} onClick={() => editor.chain().focus().undo().run()} />
-            <EditorToolbarButton label="Redo" shortcut="mod+shift+z" icon={<RiArrowGoForwardLine />} disabled={!state.canRedo} onClick={() => editor.chain().focus().redo().run()} />
+            <EditorToolbarButton label="Undo" shortcut="mod+z" icon={<RiArrowGoBackLine aria-hidden />} disabled={!state.canUndo} onClick={() => editor.chain().focus().undo().run()} />
+            <EditorToolbarButton label="Redo" shortcut="mod+shift+z" icon={<RiArrowGoForwardLine aria-hidden />} disabled={!state.canRedo} onClick={() => editor.chain().focus().redo().run()} />
             <EditorToolbarSeparator />
           </>
         )}
         <FormatButtons editor={editor} state={state} onLink={link} />
-        <EditorToolbarButton label="Code block" shortcut="mod+alt+c" icon={<RiCodeBoxLine />} pressed={state.codeBlock} disabled={!state.editable} onClick={() => editor.chain().focus().toggleCodeBlock().run()} />
-        <EditorToolbarButton label="Divider" icon={<RiSeparator />} disabled={!state.editable} onClick={() => editor.chain().focus().setHorizontalRule().run()} />
+        <EditorToolbarButton label="Code block" shortcut="mod+alt+c" icon={<RiCodeBoxLine aria-hidden />} pressed={state.codeBlock} disabled={!state.editable} onClick={() => editor.chain().focus().toggleCodeBlock().run()} />
+        <EditorToolbarButton label="Divider" icon={<RiSeparator aria-hidden />} disabled={!state.editable} onClick={() => editor.chain().focus().setHorizontalRule().run()} />
         {children}
       </EditorToolbar>
     );
@@ -280,7 +280,7 @@ function RichTextBubble({
   return (
     <div
       data-slot="rich-text-bubble"
-      className={cn("absolute z-40 -translate-x-1/2", pos.below ? "pt-2" : "-translate-y-full pb-2")}
+      className={cn("absolute z-50 -translate-x-1/2", pos.below ? "pt-2" : "-translate-y-full pb-2")}
       style={{ top: pos.top, left: Math.max(pos.left, 0) }}
       onMouseDown={(e) => {
         if ((e.target as HTMLElement).closest("button")) e.preventDefault();
@@ -318,7 +318,7 @@ function RichTextBubble({
               editor={editor}
               state={state}
               onLink={
-                <EditorToolbarButton label="Link" shortcut="mod+k" icon={<RiLink />} pressed={!!state.link} onClick={() => setLinkMode(true)} />
+                <EditorToolbarButton label="Link" shortcut="mod+k" icon={<RiLink aria-hidden />} pressed={!!state.link} onClick={() => setLinkMode(true)} />
               }
             />
           </EditorToolbar>
@@ -341,6 +341,9 @@ export interface RichTextEditorProps extends Omit<React.HTMLAttributes<HTMLDivEl
   defaultValue?: RichTextValue;
   /** Default "html". */
   format?: RichTextFormat;
+  /** Called on every edit with the serialized value and the TipTap editor. */
+  onValueChange?: (value: RichTextValue, editor: Editor) => void;
+  /** @deprecated Use `onValueChange`. */
   onChange?: (value: RichTextValue, editor: Editor) => void;
   readOnly?: boolean;
   placeholder?: string;
@@ -377,6 +380,7 @@ export const RichTextEditor = React.forwardRef<HTMLDivElement, RichTextEditorPro
       value,
       defaultValue,
       format = "html",
+      onValueChange,
       onChange,
       readOnly = false,
       placeholder = "Start writing…",
@@ -395,8 +399,8 @@ export const RichTextEditor = React.forwardRef<HTMLDivElement, RichTextEditorPro
   ) => {
     const containerRef = React.useRef<HTMLDivElement>(null);
     React.useImperativeHandle(ref, () => containerRef.current as HTMLDivElement);
-    const onChangeRef = React.useRef(onChange);
-    onChangeRef.current = onChange;
+    const onChangeRef = React.useRef(onValueChange ?? onChange);
+    onChangeRef.current = onValueChange ?? onChange;
     const formatRef = React.useRef(format);
     formatRef.current = format;
     const [linkMode, setLinkMode] = React.useState(false);

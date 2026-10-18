@@ -37,6 +37,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { calendarDayDiff, formatRelative, formatShortDate, safeISO, toMs, toValidDate } from "../lib/time";
 import { formatDuration } from "../lib/duration";
+import { normalizeTaskStatus, type TaskStatus, type TaskStatusInput } from "../lib/status";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Badge, type BadgeColor } from "./badge";
@@ -67,7 +68,14 @@ import {
 /* ------------------------------------------------------------------ */
 
 export type KanbanPriority = "urgent" | "high" | "medium" | "low" | "none";
+/**
+ * Legacy run-status spellings (kept so existing `Record<KanbanRunStatus, …>` maps still type-check).
+ * Run-status props accept `KanbanRunStatusInput`, so the canonical `TaskStatus` names
+ * (`pending`, `canceled`, …) work too.
+ */
 export type KanbanRunStatus = "queued" | "running" | "succeeded" | "failed" | "cancelled";
+/** What run-status props accept: the canonical `TaskStatus` plus every legacy spelling. */
+export type KanbanRunStatusInput = KanbanRunStatus | TaskStatusInput;
 export type KanbanSwimlanes = "none" | "assignee" | "priority";
 
 export interface KanbanAssignee {
@@ -101,7 +109,7 @@ export interface KanbanCardData {
   subtasks?: { done: number; total: number };
   commentCount?: number;
   /** Status of the latest agent run on this task. */
-  runStatus?: KanbanRunStatus;
+  runStatus?: KanbanRunStatusInput;
   /** Story points or hours. */
   estimate?: number;
   /** Model override id for agent runs. */
@@ -318,42 +326,53 @@ export interface KanbanAssigneeAvatarProps {
   className?: string;
 }
 
-/** Human `Avatar` or procedural `AgentAvatar` for agent assignees. */
-export function KanbanAssigneeAvatar({ assignee, size = 20, className }: KanbanAssigneeAvatarProps) {
-  if (assignee.kind === "agent") {
+/** Human `Avatar` or procedural `AgentAvatar` for agent assignees. The ref points at the rendered `<span>` or `<svg>`. */
+export const KanbanAssigneeAvatar = React.forwardRef<HTMLSpanElement | SVGSVGElement, KanbanAssigneeAvatarProps>(
+  ({ assignee, size = 20, className }, ref) => {
+    if (assignee.kind === "agent") {
+      return (
+        <AgentAvatar
+          ref={ref as React.Ref<SVGSVGElement>}
+          spec={assignee.avatar ?? randomAvatarSpec(assignee.id)}
+          size={size}
+          label={`${assignee.name} (agent)`}
+          className={cn("shrink-0", className)}
+        />
+      );
+    }
     return (
-      <AgentAvatar
-        spec={assignee.avatar ?? randomAvatarSpec(assignee.id)}
-        size={size}
-        label={`${assignee.name} (agent)`}
+      <Avatar
+        ref={ref as React.Ref<HTMLSpanElement>}
+        name={assignee.name}
+        src={assignee.avatarSrc}
+        size={size <= 20 ? "xs" : size <= 32 ? "sm" : "md"}
         className={cn("shrink-0", className)}
       />
     );
   }
-  return (
-    <Avatar
-      name={assignee.name}
-      src={assignee.avatarSrc}
-      size={size <= 20 ? "xs" : size <= 32 ? "sm" : "md"}
-      className={cn("shrink-0", className)}
-    />
-  );
-}
+);
+KanbanAssigneeAvatar.displayName = "KanbanAssigneeAvatar";
 
-const runBadge: Record<KanbanRunStatus, { label: string; color: BadgeColor }> = {
-  queued: { label: "Queued", color: "neutral" },
+const runBadge: Record<TaskStatus, { label: string; color: BadgeColor }> = {
+  pending: { label: "Queued", color: "neutral" },
   running: { label: "Agent running", color: "info" },
   succeeded: { label: "Run succeeded", color: "success" },
   failed: { label: "Run failed", color: "destructive" },
-  cancelled: { label: "Run cancelled", color: "gray" },
+  canceled: { label: "Run canceled", color: "gray" },
 };
 
+export interface KanbanRunBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children" | "color"> {
+  /** Run status; canonical `TaskStatus` names or legacy spellings (`queued`, `cancelled`). */
+  status: KanbanRunStatusInput;
+}
+
 /** Badge for the status of an agent run (running shimmers, failed is red). */
-export function KanbanRunBadge({ status, className }: { status: KanbanRunStatus; className?: string }) {
-  const b = runBadge[status];
+export const KanbanRunBadge = React.forwardRef<HTMLSpanElement, KanbanRunBadgeProps>(({ status, className, ...props }, ref) => {
+  const s = normalizeTaskStatus(status);
+  const b = runBadge[s];
   return (
-    <Badge size="sm" color={b.color} className={className} data-run-status={status}>
-      {status === "running" ? (
+    <Badge ref={ref} size="sm" color={b.color} className={className} data-run-status={status} {...props}>
+      {s === "running" ? (
         <span className="inline-flex items-center gap-1">
           <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-current motion-reduce:animate-none" />
           <span className="text-shimmer motion-reduce:animate-none">{b.label}</span>
@@ -363,7 +382,8 @@ export function KanbanRunBadge({ status, className }: { status: KanbanRunStatus;
       )}
     </Badge>
   );
-}
+});
+KanbanRunBadge.displayName = "KanbanRunBadge";
 
 
 /** True when `due` is before today and the card is not done. */
@@ -434,7 +454,7 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
           "hover:border-border-strong hover:shadow-sm",
           placeholder && "opacity-40",
           overlay && "rotate-1 cursor-grabbing shadow-xl ring-2 ring-primary/30",
-          card.runStatus === "failed" && "border-destructive/40",
+          card.runStatus && normalizeTaskStatus(card.runStatus) === "failed" && "border-destructive/40",
           className
         )}
         {...props}
@@ -998,7 +1018,7 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
               aria-label={`Actions for ${card.title}`}
               className="text-muted-foreground opacity-0 focus-visible:opacity-100 group-hover/card:opacity-100 data-[state=open]:opacity-100 [@media(hover:none)]:opacity-100"
             >
-              <RiMoreLine />
+              <RiMoreLine aria-hidden />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-44">
@@ -1085,7 +1105,7 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
                 </div>
               </SortableContext>
               {lanes.length === 0 && (
-                <p className="px-1 py-6 text-sm text-muted-foreground">No cards match the current filters.</p>
+                <p className="px-1 py-6 text-sm text-muted-foreground">No cards match the current filters</p>
               )}
               {lanes.map((lane, li) => (
                 <div key={lane.key} className={cn(hasLanes && "mt-3")} role="group" aria-label={hasLanes ? `Swimlane ${lane.title}` : undefined}>
@@ -1268,7 +1288,7 @@ function KanbanColumnHeader({ column, wip, visibleCount, collapsed, onToggleColl
       <div className={cn("flex items-center gap-0.5", collapsed ? "flex-col" : "ml-auto")}>
         {onAdd && !collapsed && (
           <Button size="icon-xs" variant="ghost" aria-label={`Add card to ${column.title}`} onClick={onAdd}>
-            <RiAddLine />
+            <RiAddLine aria-hidden />
           </Button>
         )}
         <Button
@@ -1278,7 +1298,7 @@ function KanbanColumnHeader({ column, wip, visibleCount, collapsed, onToggleColl
           aria-expanded={!collapsed}
           onClick={onToggleCollapsed}
         >
-          {collapsed ? <RiArrowRightSLine /> : <RiArrowDownSLine />}
+          {collapsed ? <RiArrowRightSLine aria-hidden /> : <RiArrowDownSLine aria-hidden />}
         </Button>
       </div>
     </div>
@@ -1369,7 +1389,7 @@ function KanbanAddCardComposer({ columnTitle, onSubmit, onCancel }: { columnTitl
 /* Toolbar                                                             */
 /* ------------------------------------------------------------------ */
 
-export interface KanbanToolbarProps {
+export interface KanbanToolbarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   board: KanbanBoardModel;
   filters: KanbanFilters;
   onFiltersChange: (filters: KanbanFilters) => void;
@@ -1377,20 +1397,13 @@ export interface KanbanToolbarProps {
   onSwimlanesChange?: (mode: KanbanSwimlanes) => void;
   boardSwitcher?: React.ReactNode;
   extra?: React.ReactNode;
-  className?: string;
 }
 
 /** Quick filters for a board: search, assignee toggles, labels and swimlane grouping. */
-export function KanbanToolbar({
-  board,
-  filters,
-  onFiltersChange,
-  swimlanes = "none",
-  onSwimlanesChange,
-  boardSwitcher,
-  extra,
-  className,
-}: KanbanToolbarProps) {
+export const KanbanToolbar = React.forwardRef<HTMLDivElement, KanbanToolbarProps>(function KanbanToolbar(
+  { board, filters, onFiltersChange, swimlanes = "none", onSwimlanesChange, boardSwitcher, extra, className, ...props },
+  ref
+) {
   const selectedAssignees = filters.assignees ?? [];
   const active = !!(filters.search || selectedAssignees.length || filters.labels?.length || filters.priorities?.length);
   const toggleAssignee = (id: string) =>
@@ -1399,7 +1412,7 @@ export function KanbanToolbar({
       assignees: selectedAssignees.includes(id) ? selectedAssignees.filter((a) => a !== id) : [...selectedAssignees, id],
     });
   return (
-    <div role="toolbar" aria-label="Board filters" className={cn("flex flex-wrap items-center gap-2", className)}>
+    <div ref={ref} role="toolbar" aria-label="Board filters" className={cn("flex flex-wrap items-center gap-2", className)} {...props}>
       {boardSwitcher}
       <SearchInput
         size="sm"
@@ -1464,14 +1477,15 @@ export function KanbanToolbar({
         />
       )}
       {active && (
-        <Button size="sm" variant="ghost" leadingIcon={<RiCloseLine />} onClick={() => onFiltersChange({})}>
+        <Button size="sm" variant="ghost" leadingIcon={<RiCloseLine aria-hidden />} onClick={() => onFiltersChange({})}>
           Clear filters
         </Button>
       )}
       {extra && <div className="ml-auto flex items-center gap-2">{extra}</div>}
     </div>
   );
-}
+});
+KanbanToolbar.displayName = "KanbanToolbar";
 
 /* ------------------------------------------------------------------ */
 /* TaskDetailDialog                                                    */
@@ -1491,7 +1505,7 @@ export interface KanbanTaskRun {
   /** Assignee id of the agent that ran. */
   agentId?: string;
   agentName?: string;
-  status: KanbanRunStatus;
+  status: KanbanRunStatusInput;
   startedAt: Date | number | string;
   endedAt?: Date | number | string;
   model?: string;
@@ -1509,7 +1523,10 @@ export interface KanbanModelOption {
 export type KanbanDependencyKind = "blockedBy" | "blocks";
 
 export interface TaskDetailDialogProps {
+  /** Controlled open state. */
   open?: boolean;
+  /** Initial open state when uncontrolled. Default false. */
+  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   task: KanbanCardData | null;
   /** Columns, assignees, labels and the other tasks (for dependencies). */
@@ -1558,7 +1575,8 @@ function PropertyRow({ label, children }: { label: string; children: React.React
 
 /** Linear-style task modal: inline title, Markdown description, property sidebar, dependencies and Comments / Activity / Runs tabs. */
 export function TaskDetailDialog({
-  open,
+  open: openProp,
+  defaultOpen = false,
   onOpenChange,
   task,
   board,
@@ -1578,8 +1596,9 @@ export function TaskDetailDialog({
   sidebarExtra,
   taskKey,
 }: TaskDetailDialogProps) {
+  const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   return (
-    <Dialog open={open && !!task} onOpenChange={onOpenChange}>
+    <Dialog open={open && !!task} onOpenChange={setOpen}>
       <DialogContent size="xl" className="gap-0 overflow-hidden p-0">
         {task && (
           <TaskDetailBody
@@ -1625,7 +1644,7 @@ function TaskDetailBody({
   defaultTab,
   sidebarExtra,
   taskKey,
-}: Omit<TaskDetailDialogProps, "open" | "onOpenChange" | "task"> & {
+}: Omit<TaskDetailDialogProps, "open" | "defaultOpen" | "onOpenChange" | "task"> & {
   task: KanbanCardData;
   activity: KanbanTaskActivity[];
   runs: KanbanTaskRun[];
@@ -1675,7 +1694,7 @@ function TaskDetailBody({
                     aria-label={`Remove ${taskTitle(id)} from ${label.toLowerCase()}`}
                     onClick={() => onRemoveDependency(kind, id)}
                   >
-                    <RiCloseLine />
+                    <RiCloseLine aria-hidden />
                   </Button>
                 )}
               </li>
@@ -1776,7 +1795,7 @@ function TaskDetailBody({
           ) : description ? (
             <Markdown className="rounded-control border border-border p-3 text-sm">{description}</Markdown>
           ) : (
-            <p className="rounded-control border border-dashed border-border p-3 text-sm text-muted-foreground">No description.</p>
+            <p className="rounded-control border border-dashed border-border p-3 text-sm text-muted-foreground">No description</p>
           )}
         </div>
 
@@ -1799,13 +1818,13 @@ function TaskDetailBody({
             {comments && comments.comments.length > 0 ? (
               <CommentThread thread={comments} currentUserId={currentUserId} now={nowMs} {...commentHandlers} />
             ) : (
-              <p className="text-sm text-muted-foreground">No comments yet.</p>
+              <p className="text-sm text-muted-foreground">No comments yet</p>
             )}
             {onComment && <CommentComposer label="Add a comment" placeholder="Leave a comment…" submitLabel="Comment" onSubmit={onComment} />}
           </TabsContent>
           <TabsContent value="activity">
             {activity.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No activity yet.</p>
+              <p className="text-sm text-muted-foreground">No activity yet</p>
             ) : (
               <ol aria-label="Activity" className="relative flex flex-col gap-3 border-l border-border pl-4">
                 {activity.map((a) => (
@@ -1822,12 +1841,12 @@ function TaskDetailBody({
           </TabsContent>
           <TabsContent value="runs">
             {runs.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No agent runs yet.</p>
+              <p className="text-sm text-muted-foreground">No agent runs yet</p>
             ) : (
               <ul aria-label="Agent runs" className="flex flex-col gap-2">
                 {runs.map((r) => {
                   const agent = people.find((p) => p.id === r.agentId);
-                  const end = r.endedAt ? (toMs(r.endedAt) ?? NaN) : r.status === "running" ? nowMs : NaN;
+                  const end = r.endedAt ? (toMs(r.endedAt) ?? NaN) : normalizeTaskStatus(r.status) === "running" ? nowMs : NaN;
                   const duration = formatKanbanDuration(end - (toMs(r.startedAt) ?? NaN));
                   const isOpen = openLog === r.id;
                   return (
@@ -1859,7 +1878,7 @@ function TaskDetailBody({
                           aria-label={`Log for run ${r.id}`}
                           lines={r.log.slice(-500)}
                           height={200}
-                          status={r.status === "running" ? "live" : "idle"}
+                          status={normalizeTaskStatus(r.status) === "running" ? "live" : "idle"}
                           downloadName={`${r.id}.log`}
                         />
                       )}
@@ -1981,7 +2000,7 @@ export interface OrchestrationParticipant {
   agent: KanbanAssignee;
   /** Role in this task, e.g. "Writes tests". Falls back to the agent description. */
   role?: string;
-  status?: KanbanRunStatus | "idle";
+  status?: KanbanRunStatusInput | "idle";
 }
 
 export interface OrchestrationPanelProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange" | "title"> {
@@ -2067,7 +2086,7 @@ export const OrchestrationPanel = React.forwardRef<HTMLElement, OrchestrationPan
           <Switch id={switchId} size="sm" checked={auto} onCheckedChange={setAuto} />
         </div>
         {onDecompose && (
-          <Button size="sm" variant="secondary" loading={decomposing} disabled={decomposing} onClick={onDecompose} leadingIcon={<RiSparkling2Line />}>
+          <Button size="sm" variant="secondary" loading={decomposing} disabled={decomposing} onClick={onDecompose} leadingIcon={<RiSparkling2Line aria-hidden />}>
             Decompose now
           </Button>
         )}

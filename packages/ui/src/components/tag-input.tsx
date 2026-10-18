@@ -39,7 +39,9 @@ export interface TagInputProps
   /** Class for the outer container. */
   wrapperClassName?: string;
   tagClassName?: string;
-  /** Empty-state text inside the suggestions dropdown. */
+  /** Empty state inside the suggestions dropdown. */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
 }
 
@@ -69,6 +71,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       className,
       wrapperClassName,
       tagClassName,
+      emptyState: emptyStateProp,
       emptyText,
       placeholder,
       id,
@@ -118,7 +121,8 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       );
     }, [suggestions, tags, text, allowDuplicates]);
 
-    const showList = open && interactive && !atMax && Boolean(suggestions?.length) && (filtered.length > 0 || emptyText != null);
+    const emptyState = emptyStateProp ?? emptyText;
+    const showList = open && interactive && !atMax && Boolean(suggestions?.length) && (filtered.length > 0 || emptyState != null);
 
     React.useEffect(() => {
       setActive((i) => (filtered.length === 0 ? -1 : Math.min(i, filtered.length - 1)));
@@ -371,7 +375,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             >
               {filtered.length === 0 ? (
                 <li className="px-2 py-1.5 text-sm text-muted-foreground" role="presentation">
-                  {emptyText}
+                  {emptyState}
                 </li>
               ) : (
                 filtered.map((s, i) => (

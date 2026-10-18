@@ -57,7 +57,7 @@ export const SelectTrigger = React.forwardRef<
     {leadingIcon && <span className="flex text-muted-foreground">{leadingIcon}</span>}
     <span className="flex min-w-0 flex-1 items-center gap-2 truncate [&>span]:truncate">{children}</span>
     <SelectPrimitive.Icon asChild>
-      <RiArrowDownSLine className="text-muted-foreground transition-transform duration-200 group-data-[state=open]/select-trigger:rotate-180" />
+      <RiArrowDownSLine aria-hidden className="text-muted-foreground transition-transform duration-200 group-data-[state=open]/select-trigger:rotate-180" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -73,7 +73,7 @@ export const SelectScrollUpButton = React.forwardRef<
     className={cn("flex h-6 cursor-default items-center justify-center text-muted-foreground", className)}
     {...props}
   >
-    <RiArrowUpSLine className="size-4" />
+    <RiArrowUpSLine aria-hidden className="size-4" />
   </SelectPrimitive.ScrollUpButton>
 ));
 SelectScrollUpButton.displayName = "SelectScrollUpButton";
@@ -88,7 +88,7 @@ export const SelectScrollDownButton = React.forwardRef<
     className={cn("flex h-6 cursor-default items-center justify-center text-muted-foreground", className)}
     {...props}
   >
-    <RiArrowDownSLine className="size-4" />
+    <RiArrowDownSLine aria-hidden className="size-4" />
   </SelectPrimitive.ScrollDownButton>
 ));
 SelectScrollDownButton.displayName = "SelectScrollDownButton";
@@ -179,7 +179,7 @@ export const SelectItem = React.forwardRef<
     )}
     <span className={cn("absolute right-2 flex size-4 items-center justify-center", description ? "top-2" : "")}>
       <SelectPrimitive.ItemIndicator>
-        <RiCheckLine className="size-4 text-primary" />
+        <RiCheckLine aria-hidden className="size-4 text-primary" />
       </SelectPrimitive.ItemIndicator>
     </span>
   </SelectPrimitive.Item>

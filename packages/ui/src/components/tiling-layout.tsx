@@ -382,12 +382,12 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
                 </div>
                 {onDock && (
                   <Button variant="ghost" size="icon-xs" aria-label={`Dock ${label}`} onClick={() => onDock(pane.id)}>
-                    <RiPictureInPictureExitLine className="size-3.5" />
+                    <RiPictureInPictureExitLine aria-hidden className="size-3.5" />
                   </Button>
                 )}
                 {onClose && (
                   <Button variant="ghost" size="icon-xs" aria-label={`Close ${label}`} onClick={() => onClose(pane.id)}>
-                    <RiCloseLine className="size-3.5" />
+                    <RiCloseLine aria-hidden className="size-3.5" />
                   </Button>
                 )}
               </div>
@@ -495,6 +495,8 @@ export interface TilingLayoutProps
   onFloatingChange?: (panes: FloatingPaneState[]) => void;
   /** Maximized group id (controlled). */
   maximizedGroup?: string | null;
+  /** Initially maximized group id when uncontrolled. */
+  defaultMaximizedGroup?: string | null;
   onMaximizedGroupChange?: (groupId: string | null) => void;
   /** Register keyboard shortcuts (mod+\, mod+shift+\, mod+w, ctrl+tab, mod+1…9). */
   shortcuts?: boolean;
@@ -525,6 +527,7 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
       floating,
       onFloatingChange,
       maximizedGroup,
+      defaultMaximizedGroup = null,
       onMaximizedGroupChange,
       shortcuts = false,
       minSize = 0.08,
@@ -550,7 +553,7 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
     });
     const [maximizedRaw, setMaximized] = useControllableState<string | null>({
       value: maximizedGroup,
-      defaultValue: null,
+      defaultValue: defaultMaximizedGroup,
       onChange: onMaximizedGroupChange,
     });
     const layoutRef = React.useRef(layout);
@@ -1045,7 +1048,7 @@ function TilingGroupView({ group }: { group: LayoutTabsNode }) {
             aria-label="Split group right"
             onClick={() => (group.active ? ctx.split(group.active, "row") : ctx.splitEmpty(group.id, "row"))}
           >
-            <RiLayoutColumnLine className="size-3.5" />
+            <RiLayoutColumnLine aria-hidden className="size-3.5" />
           </Button>
           <Button
             variant="ghost"
@@ -1054,7 +1057,7 @@ function TilingGroupView({ group }: { group: LayoutTabsNode }) {
             aria-pressed={maximized}
             onClick={() => ctx.toggleMaximize(group.id)}
           >
-            {maximized ? <RiFullscreenExitLine className="size-3.5" /> : <RiFullscreenLine className="size-3.5" />}
+            {maximized ? <RiFullscreenExitLine aria-hidden className="size-3.5" /> : <RiFullscreenLine aria-hidden className="size-3.5" />}
           </Button>
           {group.panes.length === 0 && removable && (
             <Button
@@ -1063,7 +1066,7 @@ function TilingGroupView({ group }: { group: LayoutTabsNode }) {
               aria-label="Close group"
               onClick={() => ctx.update((l) => removeGroup(l, group.id))}
             >
-              <RiCloseLine className="size-3.5" />
+              <RiCloseLine aria-hidden className="size-3.5" />
             </Button>
           )}
         </div>
@@ -1184,29 +1187,29 @@ function TilingTab({ group, paneId, focused }: { group: LayoutTabsNode; paneId: 
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => ctx.close(paneId)}
             >
-              <RiCloseLine className="size-3.5" />
+              <RiCloseLine aria-hidden className="size-3.5" />
             </span>
           )}
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent className="min-w-48">
-        <ContextMenuItem icon={<RiLayoutColumnLine />} onSelect={() => ctx.split(paneId, "row")}>
+        <ContextMenuItem icon={<RiLayoutColumnLine aria-hidden />} onSelect={() => ctx.split(paneId, "row")}>
           Split right
         </ContextMenuItem>
-        <ContextMenuItem icon={<RiLayoutRowLine />} onSelect={() => ctx.split(paneId, "column")}>
+        <ContextMenuItem icon={<RiLayoutRowLine aria-hidden />} onSelect={() => ctx.split(paneId, "column")}>
           Split down
         </ContextMenuItem>
         <ContextMenuItem disabled={group.panes.length < 2} onSelect={() => ctx.moveToNewGroup(paneId)}>
           Move to new group
         </ContextMenuItem>
         {ctx.floatingEnabled && (
-          <ContextMenuItem icon={<RiPictureInPicture2Line />} onSelect={() => ctx.popOut(paneId)}>
+          <ContextMenuItem icon={<RiPictureInPicture2Line aria-hidden />} onSelect={() => ctx.popOut(paneId)}>
             Pop out
           </ContextMenuItem>
         )}
         <ContextMenuSeparator />
         <ContextMenuItem
-          icon={ctx.maximized === group.id ? <RiFullscreenExitLine /> : <RiFullscreenLine />}
+          icon={ctx.maximized === group.id ? <RiFullscreenExitLine aria-hidden /> : <RiFullscreenLine aria-hidden />}
           onSelect={() => ctx.toggleMaximize(group.id)}
         >
           {ctx.maximized === group.id ? "Restore group" : "Maximize group"}
@@ -1386,7 +1389,7 @@ export const LayoutPresetPicker = React.forwardRef<HTMLDivElement, LayoutPresetP
               onChange={(event) => setName(event.target.value)}
               className="min-w-0 flex-1"
             />
-            <Button type="submit" size="sm" variant="secondary" leadingIcon={<RiSave3Line />} disabled={!current || !name.trim()}>
+            <Button type="submit" size="sm" variant="secondary" leadingIcon={<RiSave3Line aria-hidden />} disabled={!current || !name.trim()}>
               Save current arrangement
             </Button>
           </form>
@@ -1413,7 +1416,7 @@ export const LayoutPresetPicker = React.forwardRef<HTMLDivElement, LayoutPresetP
                     className="absolute right-1 bottom-1"
                     onClick={() => setSaved(saved.filter((s) => s.id !== item.id))}
                   >
-                    <RiDeleteBinLine className="size-3.5" />
+                    <RiDeleteBinLine aria-hidden className="size-3.5" />
                   </Button>
                 </li>
               ))}
@@ -1438,6 +1441,8 @@ export interface ZoneEditorProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   onApply: (layout: LayoutNode) => void;
   onCancel?: () => void;
   /** Called on every edit with the zone tree. */
+  onValueChange?: (zones: LayoutNode) => void;
+  /** @deprecated Use `onValueChange`. */
   onChange?: (zones: LayoutNode) => void;
   /** Minimum zone fraction per split. Default 0.1. */
   minSize?: number;
@@ -1445,7 +1450,7 @@ export interface ZoneEditorProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 
 /** FancyZones-style editor: click to split zones (Shift for horizontal), drag dividers, delete zones. */
 export const ZoneEditor = React.forwardRef<HTMLDivElement, ZoneEditorProps>(
-  ({ defaultLayout, panes, onApply, onCancel, onChange, minSize = 0.1, className, ...props }, ref) => {
+  ({ defaultLayout, panes, onApply, onCancel, onValueChange, onChange, minSize = 0.1, className, ...props }, ref) => {
     const initial = React.useMemo(
       () => normalizeLayout(toZoneLayout(defaultLayout ?? layoutPresets[1].create())),
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1460,7 +1465,7 @@ export const ZoneEditor = React.forwardRef<HTMLDivElement, ZoneEditorProps>(
       if (next === zonesRef.current) return;
       zonesRef.current = next;
       setZonesState(next);
-      onChange?.(next);
+      (onValueChange ?? onChange)?.(next);
     };
     const zoneList = listGroups(zones);
     const numberOf = (id: string) => zoneList.findIndex((z) => z.id === id) + 1;
@@ -1498,7 +1503,7 @@ export const ZoneEditor = React.forwardRef<HTMLDivElement, ZoneEditorProps>(
                 className="absolute top-2 right-2 opacity-70 hover:opacity-100"
                 onClick={() => setZones((z) => removeGroup(z, node.id))}
               >
-                <RiDeleteBinLine className="size-3.5" />
+                <RiDeleteBinLine aria-hidden className="size-3.5" />
               </Button>
             )}
           </div>

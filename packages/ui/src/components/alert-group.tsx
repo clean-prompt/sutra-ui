@@ -10,6 +10,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { formatRelative, safeISO, toMs } from "../lib/time";
+import { toneClasses, type Tone } from "../lib/tone";
 
 export type AlertSeverity = "critical" | "warning" | "info";
 
@@ -55,9 +56,13 @@ const severityIcon: Record<AlertSeverity, React.ReactNode> = {
   info: <RiInformationLine aria-hidden />,
 };
 
+/** Semantic tone for each (domain-specific) severity. */
+const alertSeverityTone: Record<AlertSeverity, Tone> = { critical: "destructive", warning: "warning", info: "info" };
+
 const severityText: Record<AlertSeverity, string> = {
-  critical: "text-destructive",
-  warning: "text-warning-soft-foreground",
+  critical: toneClasses.text[alertSeverityTone.critical],
+  warning: toneClasses.text[alertSeverityTone.warning],
+  // Darker than toneClasses.text.info for small text on the card surface.
   info: "text-info-soft-foreground",
 };
 
@@ -196,7 +201,7 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
                           <span
                             className={cn(
                               "rounded-xs px-1.5 py-0.5 font-medium",
-                              a.category === "security" ? "bg-destructive-soft text-destructive-soft-foreground" : "bg-muted text-muted-foreground"
+                              a.category === "security" ? toneClasses.soft.destructive : toneClasses.soft.neutral
                             )}
                           >
                             {a.category}
@@ -204,7 +209,7 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
                         ) : null}
                         {a.source ? <span className="rounded-xs border border-border px-1.5 py-0.5 font-mono text-muted-foreground">{a.source}</span> : null}
                         {a.postRepair ? (
-                          <span className="rounded-xs bg-warning-soft px-1.5 py-0.5 font-semibold uppercase tracking-wide text-warning-soft-foreground">
+                          <span className={cn("rounded-xs px-1.5 py-0.5 font-semibold uppercase tracking-wide", toneClasses.soft.warning)}>
                             Post-repair
                           </span>
                         ) : null}

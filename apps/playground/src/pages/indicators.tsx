@@ -15,8 +15,7 @@ import {
   StatusDot,
   Steps,
   type BadgeColor,
-  type ChipColor,
-  type ProgressColor,
+  type Tone,
   type StatusBadgeStatus,
   type StepIndicatorStep,
 } from "@sutra/ui";
@@ -34,9 +33,9 @@ import {
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
-const chipColors: ChipColor[] = ["neutral", "brand", "success", "warning", "destructive", "info"];
+const chipTones = ["neutral", "primary", "success", "warning", "destructive", "info"] as const;
 const badgeColors: BadgeColor[] = [
-  "neutral", "brand", "success", "warning", "destructive", "info", "gray", "blue", "purple", "pink", "orange",
+  "neutral", "primary", "success", "warning", "destructive", "info", "gray", "blue", "purple", "pink", "orange",
 ];
 const statuses: StatusBadgeStatus[] = [
   "online", "offline", "busy", "away", "active", "inactive", "pending",
@@ -44,7 +43,7 @@ const statuses: StatusBadgeStatus[] = [
 ];
 const spinnerVariants = ["ring", "dots", "bars", "pulse"] as const;
 const spinnerSizes = ["xs", "sm", "md", "lg", "xl"] as const;
-const progressColors: ProgressColor[] = ["primary", "success", "warning", "destructive", "info", "neutral"];
+const progressTones: Tone[] = ["primary", "success", "warning", "destructive", "info", "neutral"];
 
 const label = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -226,10 +225,10 @@ function ProgressDemo() {
         <div className="space-y-5">
           <DemoLabel>Sizes &amp; colors</DemoLabel>
           {(["xs", "sm", "md", "lg"] as const).map((size, i) => (
-            <Progress key={size} size={size} value={Math.max(8, value - i * 12)} color={progressColors[i]} aria-label={`${size} progress`} />
+            <Progress key={size} size={size} value={Math.max(8, value - i * 12)} tone={progressTones[i]} aria-label={`${size} progress`} />
           ))}
-          <Progress size="sm" value={value} color="destructive" aria-label="Destructive" />
-          <Progress size="sm" value={value} color="neutral" aria-label="Neutral" />
+          <Progress size="sm" value={value} tone="destructive" aria-label="Destructive" />
+          <Progress size="sm" value={value} tone="neutral" aria-label="Neutral" />
         </div>
       </div>
 
@@ -238,9 +237,9 @@ function ProgressDemo() {
         <div className="flex flex-wrap items-center gap-6">
           <ProgressCircle value={value} size={48} strokeWidth={5} label="Small" />
           <ProgressCircle value={value} label="Default" />
-          <ProgressCircle value={value} size={88} strokeWidth={8} color="success" label="Success" />
+          <ProgressCircle value={value} size={88} strokeWidth={8} tone="success" label="Success" />
           <ProgressCircle value={value} size={88} strokeWidth={8} gradient label="Gradient" />
-          <ProgressCircle value={value} size={88} strokeWidth={8} color="warning" label="Streak">
+          <ProgressCircle value={value} size={88} strokeWidth={8} tone="warning" label="Streak">
             <span className="flex flex-col items-center leading-none">
               <RiFireLine className="size-5 text-warning" aria-hidden />
               <span className="mt-1 text-xs font-semibold">{Math.round(value / 10)}d</span>
@@ -264,7 +263,7 @@ function ProgressDemo() {
         <div className="space-y-3">
           <DemoLabel>ProgressSegments · 10 segments, value relative to max=100</DemoLabel>
           <ProgressSegments segments={10} value={value} max={100} size="lg" label="Course progress" />
-          <ProgressSegments segments={10} value={value} max={100} size="sm" color="neutral" label="Course progress small" />
+          <ProgressSegments segments={10} value={value} max={100} size="sm" tone="neutral" label="Course progress small" />
         </div>
       </div>
     </div>
@@ -340,9 +339,9 @@ export function IndicatorsPage() {
             {(["outline", "soft", "solid"] as const).map((variant) => (
               <div key={variant} className="flex flex-wrap items-center gap-2">
                 <span className="w-14 text-xs text-muted-foreground">{variant}</span>
-                {chipColors.map((color) => (
-                  <Chip key={color} variant={variant} color={color}>
-                    {label(color)}
+                {chipTones.map((tone) => (
+                  <Chip key={tone} variant={variant} tone={tone}>
+                    {label(tone)}
                   </Chip>
                 ))}
               </div>
@@ -395,17 +394,17 @@ export function IndicatorsPage() {
             <div className="space-y-2">
               <DemoLabel>Sizes</DemoLabel>
               <div className="flex flex-wrap items-center gap-2">
-                <Badge size="sm" color="brand">Small</Badge>
-                <Badge size="md" color="brand">Medium</Badge>
-                <Badge size="lg" color="brand">Large</Badge>
+                <Badge size="sm" tone="primary">Small</Badge>
+                <Badge size="md" tone="primary">Medium</Badge>
+                <Badge size="lg" tone="primary">Large</Badge>
               </div>
             </div>
             <div className="space-y-2">
               <DemoLabel>Icons, counts &amp; removable</DemoLabel>
               <div className="flex flex-wrap items-center gap-2">
-                <Badge color="success" leadingIcon={<RiCheckLine />}>Verified</Badge>
+                <Badge tone="success" leadingIcon={<RiCheckLine />}>Verified</Badge>
                 <Badge color="orange" trailingIcon={<RiFireLine />}>Trending</Badge>
-                <Badge variant="solid" color="destructive" size="sm">99+</Badge>
+                <Badge variant="solid" tone="destructive" size="sm">99+</Badge>
                 <Badge variant="outline" onRemove={() => {}} removeLabel="Remove React">React</Badge>
               </div>
             </div>

@@ -1,22 +1,15 @@
 import * as React from "react";
 import { RiArrowDownLine, RiArrowUpLine, RiSubtractLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { Sparkline, type SparklineColor } from "./sparkline";
 
 export type StatDeltaIntent = "positive-is-good" | "negative-is-good" | "neutral";
-export type StatTone = "default" | "primary" | "success" | "warning" | "destructive" | "info";
+/** Stat tile tone. Canonical `Tone` plus deprecated aliases (`"default"` → `neutral`). */
+export type StatTone = ToneInput;
 
-const toneIcon: Record<StatTone, string> = {
-  default: "bg-muted text-muted-foreground",
-  primary: "bg-primary-soft text-primary-soft-foreground",
-  success: "bg-success-soft text-success-soft-foreground",
-  warning: "bg-warning-soft text-warning-soft-foreground",
-  destructive: "bg-destructive-soft text-destructive-soft-foreground",
-  info: "bg-info-soft text-info-soft-foreground",
-};
-
-const toneValue: Record<StatTone, string> = {
-  default: "text-foreground",
+const toneValue: Record<Tone, string> = {
+  neutral: "text-foreground",
   primary: "text-foreground",
   success: "text-foreground",
   info: "text-foreground",
@@ -77,7 +70,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
       trendType = "area",
       trendColor,
       loading,
-      tone = "default",
+      tone: toneProp = "neutral",
       size = "md",
       className,
       ...props
@@ -85,6 +78,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
     ref
   ) => {
     const group = React.useContext(StatGroupContext);
+    const tone = normalizeTone(toneProp);
     const direction = delta === undefined ? null : statDeltaDirection(delta);
     const quality =
       direction === null || direction === "flat" || deltaIntent === "neutral"
@@ -117,7 +111,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
         <div className="flex items-start justify-between gap-2">
           <span className={cn("truncate text-muted-foreground", size === "sm" ? "text-xs" : "text-sm")}>{label}</span>
           {icon ? (
-            <span aria-hidden className={cn("inline-flex size-8 shrink-0 items-center justify-center rounded-md [&_svg]:size-4", toneIcon[tone])}>
+            <span aria-hidden className={cn("inline-flex size-8 shrink-0 items-center justify-center rounded-md [&_svg]:size-4", toneClasses.soft[tone])}>
               {icon}
             </span>
           ) : null}

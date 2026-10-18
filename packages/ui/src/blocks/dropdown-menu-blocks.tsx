@@ -91,10 +91,10 @@ export interface UserAccountMenuProps {
 }
 
 const defaultAccountItems: UserAccountMenuItem[] = [
-  { key: "profile", label: "Profile", icon: <RiUserLine />, shortcut: "⇧⌘P" },
-  { key: "settings", label: "Settings", icon: <RiSettings3Line />, shortcut: "⌘," },
-  { key: "billing", label: "Billing", icon: <RiBankCardLine />, shortcut: "⌘B" },
-  { key: "shortcuts", label: "Keyboard shortcuts", icon: <RiKeyboardLine />, shortcut: "?" },
+  { key: "profile", label: "Profile", icon: <RiUserLine aria-hidden />, shortcut: "⇧⌘P" },
+  { key: "settings", label: "Settings", icon: <RiSettings3Line aria-hidden />, shortcut: "⌘," },
+  { key: "billing", label: "Billing", icon: <RiBankCardLine aria-hidden />, shortcut: "⌘B" },
+  { key: "shortcuts", label: "Keyboard shortcuts", icon: <RiKeyboardLine aria-hidden />, shortcut: "?" },
 ];
 
 /** Avatar-triggered account menu: profile header, settings, theme submenu and sign out. */
@@ -163,34 +163,34 @@ export function UserAccountMenu({
           <>
             <DropdownMenuSeparator />
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger icon={<RiPaletteLine />}>Theme</DropdownMenuSubTrigger>
+              <DropdownMenuSubTrigger icon={<RiPaletteLine aria-hidden />}>Theme</DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="w-40">
                 <DropdownMenuRadioGroup value={theme} onValueChange={(v) => setTheme(v as ThemePreference)}>
                   <DropdownMenuRadioItem value="light">
                     <span className="flex items-center gap-2">
-                      <RiSunLine /> Light
+                      <RiSunLine aria-hidden /> Light
                     </span>
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="dark">
                     <span className="flex items-center gap-2">
-                      <RiMoonLine /> Dark
+                      <RiMoonLine aria-hidden /> Dark
                     </span>
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="system">
                     <span className="flex items-center gap-2">
-                      <RiComputerLine /> System
+                      <RiComputerLine aria-hidden /> System
                     </span>
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
-            <DropdownMenuItem icon={<RiQuestionLine />} onSelect={() => onSelect?.("help")}>
+            <DropdownMenuItem icon={<RiQuestionLine aria-hidden />} onSelect={() => onSelect?.("help")}>
               Help &amp; support
             </DropdownMenuItem>
           </>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" icon={<RiLogoutBoxRLine />} shortcut="⇧⌘Q" onSelect={() => onSignOut?.()}>
+        <DropdownMenuItem variant="destructive" icon={<RiLogoutBoxRLine aria-hidden />} shortcut="⇧⌘Q" onSelect={() => onSignOut?.()}>
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -320,7 +320,7 @@ export function WorkspaceSwitcher({
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => onCreate?.()} className="gap-2.5 text-muted-foreground">
           <span className="inline-flex size-6 items-center justify-center rounded-md border border-dashed border-border-strong">
-            <RiAddLine className="size-3.5!" />
+            <RiAddLine aria-hidden className="size-3.5!" />
           </span>
           Create workspace
         </DropdownMenuItem>
@@ -347,7 +347,13 @@ export interface NotificationItem {
 }
 
 export interface NotificationsMenuProps {
+  /**
+   * Controlled list when paired with `onNotificationsChange`. Passed alone it only seeds the
+   * list (deprecated: use `defaultNotifications` for that).
+   */
   notifications?: NotificationItem[];
+  /** Initial list when uncontrolled. */
+  defaultNotifications?: NotificationItem[];
   onNotificationsChange?: (items: NotificationItem[]) => void;
   onNotificationClick?: (item: NotificationItem) => void;
   onViewAll?: () => void;
@@ -369,6 +375,7 @@ const defaultNotifications: NotificationItem[] = [
 /** Bell button with unread count opening a notification list with All/Unread tabs and "Mark all read". */
 export function NotificationsMenu({
   notifications,
+  defaultNotifications: defaultNotificationsProp,
   onNotificationsChange,
   onNotificationClick,
   onViewAll,
@@ -380,7 +387,7 @@ export function NotificationsMenu({
 }: NotificationsMenuProps) {
   const [items, setItems] = useControllableState<NotificationItem[]>({
     value: notifications && onNotificationsChange ? notifications : undefined,
-    defaultValue: notifications ?? defaultNotifications,
+    defaultValue: defaultNotificationsProp ?? notifications ?? defaultNotifications,
     onChange: onNotificationsChange,
   });
   const [tab, setTab] = React.useState("all");
@@ -397,7 +404,7 @@ export function NotificationsMenu({
           aria-label={unread > 0 ? `Notifications, ${unread} unread` : "Notifications"}
           className={cn("relative", className)}
         >
-          <RiNotification3Line />
+          <RiNotification3Line aria-hidden />
           {unread > 0 && (
             <span className="absolute right-1 top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none text-destructive-foreground ring-2 ring-background tabular-nums">
               {unread > 9 ? "9+" : unread}
@@ -698,7 +705,7 @@ export function SortFilterMenu({
         ))}
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          icon={<RiRefreshLine />}
+          icon={<RiRefreshLine aria-hidden />}
           disabled={isDefault}
           onSelect={() => {
             setSort(defaultSort ?? sortOptions[0]?.value ?? "");

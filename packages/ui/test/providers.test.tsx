@@ -769,7 +769,7 @@ describe("LocalModelBrowser", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "Search models" }), { target: { value: "heron" } });
     expect(screen.getAllByRole("listitem")).toHaveLength(1);
     fireEvent.change(screen.getByRole("textbox", { name: "Search models" }), { target: { value: "zzz" } });
-    expect(screen.getByText("No models match “zzz”.")).toBeInTheDocument();
+    expect(screen.getByText("No models match “zzz”")).toBeInTheDocument();
   });
 });
 

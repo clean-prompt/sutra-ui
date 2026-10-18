@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiCalendarLine, RiFlag2Line, RiHashtag, RiMoneyDollarCircleLine, RiTimeLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { toneClasses } from "../lib/tone";
 import { addDays, calendarDayDiff, dateKey, formatClockTime, formatShortDate, pad2 } from "../lib/time";
 import { useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
@@ -280,10 +281,10 @@ export interface QuickCaptureProps {
 }
 
 const priorityStyle: Record<CapturePriority, string> = {
-  urgent: "bg-destructive-soft text-destructive-soft-foreground",
-  high: "bg-warning-soft text-warning-soft-foreground",
-  medium: "bg-info-soft text-info-soft-foreground",
-  low: "bg-muted text-muted-foreground",
+  urgent: toneClasses.soft.destructive,
+  high: toneClasses.soft.warning,
+  medium: toneClasses.soft.info,
+  low: toneClasses.soft.neutral,
 };
 
 function formatCaptureDate(value: string, now: Date) {

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiInboxLine } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
+import { normalizeTone } from "../lib/tone";
 import { FeaturedIcon } from "../assets/icons";
 import { EmptyStateIllustration, type EmptyStateIllustrationVariant } from "../assets/misc";
 import { Spinner } from "./spinner";
@@ -44,7 +45,7 @@ export const EmptyState = React.forwardRef<HTMLElement, EmptyStateProps>(
     } else {
       art = (
         <FeaturedIcon variant="outline-ring" color="neutral" size={s.icon}>
-          {icon ?? <RiInboxLine />}
+          {icon ?? <RiInboxLine aria-hidden />}
         </FeaturedIcon>
       );
     }
@@ -80,11 +81,15 @@ EmptyState.displayName = "EmptyState";
 /* Note                                                                */
 /* ------------------------------------------------------------------ */
 
-export type NoteTone = "default" | "busy" | "error";
+/** Canonical tones: `neutral` and `destructive`. `default`, `error` and `busy` are deprecated aliases. */
+export type NoteTone = "neutral" | "destructive" | "default" | "error" | "busy";
 
 export interface NoteProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** `neutral` (default) or `destructive`. Legacy `default` / `error` are accepted; `busy` is the same as `loading`. */
   tone?: NoteTone;
-  /** Shorthand for `tone="busy"`. */
+  /** Shows a spinner and marks the note `aria-busy`. */
+  loading?: boolean;
+  /** @deprecated Use `loading`. */
   busy?: boolean;
   align?: "center" | "start";
   icon?: React.ReactNode;
@@ -92,25 +97,27 @@ export interface NoteProps extends React.HTMLAttributes<HTMLDivElement> {
 
 /** The quiet line a screen says while working or when there is nothing here: small, grey, unalarming. */
 export const Note = React.forwardRef<HTMLDivElement, NoteProps>(
-  ({ tone: toneProp = "default", busy, align = "center", icon, className, children, ...props }, ref) => {
-    const tone: NoteTone = busy ? "busy" : toneProp;
+  ({ tone: toneProp, loading: loadingProp, busy, align = "center", icon, className, children, ...props }, ref) => {
+    const loading = Boolean(loadingProp ?? busy) || toneProp === "busy";
+    const destructive = !loading && normalizeTone(toneProp) === "destructive";
     return (
       <div
         ref={ref}
-        role={tone === "error" ? "alert" : "status"}
-        aria-busy={tone === "busy" || undefined}
+        role={destructive ? "alert" : "status"}
+        aria-busy={loading || undefined}
         data-slot="note"
-        data-tone={tone}
+        data-tone={destructive ? "destructive" : "neutral"}
+        data-loading={loading || undefined}
         className={cn(
           "flex items-center gap-2 py-3 text-sm",
           align === "center" ? "justify-center text-center" : "justify-start text-left",
-          tone === "error" ? "text-destructive" : "text-muted-foreground",
+          destructive ? "text-destructive" : "text-muted-foreground",
           className
         )}
         {...props}
       >
-        {tone === "busy" ? <Spinner size="xs" variant="ring" role="none" aria-hidden className="text-current" /> : icon}
-        <span className={cn(tone === "busy" && "animate-pulse [animation-duration:2.4s] motion-reduce:animate-none")}>
+        {loading ? <Spinner size="xs" variant="ring" role="none" aria-hidden className="text-current" /> : icon}
+        <span className={cn(loading && "animate-pulse [animation-duration:2.4s] motion-reduce:animate-none")}>
           {children}
         </span>
       </div>

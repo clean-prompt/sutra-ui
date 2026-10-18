@@ -774,7 +774,7 @@ describe("BlueprintGallery", () => {
     fireEvent.change(screen.getByRole("searchbox", { name: "Search templates" }), { target: { value: "backup" } });
     expect(screen.getAllByRole("article")).toHaveLength(1);
     fireEvent.change(screen.getByRole("searchbox", { name: "Search templates" }), { target: { value: "zzz" } });
-    expect(screen.getByText("No templates match.")).toBeInTheDocument();
+    expect(screen.getByText("No templates match")).toBeInTheDocument();
   });
 
   it("has no axe violations", async () => {

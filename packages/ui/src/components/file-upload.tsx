@@ -7,6 +7,7 @@ import {
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { formatBytes as formatBytesLib } from "../lib/format";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { Button, type ButtonProps } from "./button";
 import { Dropzone, validateFiles, type DropzoneProps, type FileRejection } from "./dropzone";
 
@@ -15,7 +16,8 @@ export interface UploadFile {
   file: File;
   /** Upload progress, 0–100. */
   progress?: number;
-  status?: "idle" | "uploading" | "complete" | "error";
+  /** Upload state. Canonical lifecycle names (`pending`, `running`, `succeeded`, `failed`, `canceled`) are also accepted. */
+  status?: "idle" | "uploading" | "complete" | "error" | TaskStatusInput;
   error?: string;
 }
 
@@ -208,7 +210,7 @@ export const FileUploadTrigger = React.forwardRef<HTMLButtonElement, FileUploadT
         ref={ref}
         variant={variant}
         disabled={disabled || ctxDisabled}
-        leadingIcon={leadingIcon ?? <RiUploadLine />}
+        leadingIcon={leadingIcon ?? <RiUploadLine aria-hidden />}
         onClick={(e) => {
           onClick?.(e);
           if (!e.defaultPrevented) openPicker();
@@ -271,10 +273,10 @@ const extColors: [RegExp, string][] = [
   [/^pdf$/, "bg-destructive text-destructive-foreground"],
   [/^(docx?|rtf|odt|pages|txt|md)$/, "bg-info text-info-foreground"],
   [/^(xlsx?|csv|ods|numbers|tsv)$/, "bg-success text-success-foreground"],
-  [/^(pptx?|key|odp)$/, "bg-[#f97316] text-white"],
+  [/^(pptx?|key|odp)$/, "bg-orange-500 text-white"],
   [/^(zip|rar|7z|tar|gz)$/, "bg-warning text-warning-foreground"],
   [/^(png|jpe?g|gif|webp|svg|avif|heic|bmp|ico)$/, "bg-primary text-primary-foreground"],
-  [/^(mp4|mov|webm|avi|mkv|mp3|wav|ogg|flac|m4a)$/, "bg-[#d946ef] text-white"],
+  [/^(mp4|mov|webm|avi|mkv|mp3|wav|ogg|flac|m4a)$/, "bg-fuchsia-500 text-white"],
   [/^(js|jsx|ts|tsx|json|html|css|py|go|rs|java|rb|sh|yml|yaml)$/, "bg-inverse text-inverse-foreground"],
 ];
 
@@ -317,9 +319,10 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
   ({ file: item, onRemove, hideRemove, className, ...props }, ref) => {
     const ctx = React.useContext(FileUploadContext);
     const { file, progress, status = "idle", error } = item;
+    const phase = status === "uploading" ? "running" : normalizeTaskStatus(status);
     const pct = Math.min(100, Math.max(0, progress ?? 0));
-    const showProgress = status === "uploading" || (progress !== undefined && status !== "complete" && status !== "error");
-    const isError = status === "error";
+    const showProgress = phase === "running" || (progress !== undefined && phase !== "succeeded" && phase !== "failed");
+    const isError = phase === "failed";
 
     return (
       <li
@@ -338,7 +341,7 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
             <span className="truncate text-sm font-medium text-foreground" title={file.name}>
               {file.name}
             </span>
-            {status === "complete" && (
+            {phase === "succeeded" && (
               <RiCheckboxCircleFill aria-label="Uploaded" className="size-4 shrink-0 text-success" />
             )}
             {isError && <RiErrorWarningFill aria-label="Failed" className="size-4 shrink-0 text-destructive" />}
@@ -348,10 +351,10 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
             {showProgress && (
               <>
                 <span aria-hidden>·</span>
-                <span>{status === "uploading" && progress === undefined ? "Uploading…" : `${Math.round(pct)}%`}</span>
+                <span>{phase === "running" && progress === undefined ? "Uploading…" : `${Math.round(pct)}%`}</span>
               </>
             )}
-            {status === "complete" && (
+            {phase === "succeeded" && (
               <>
                 <span aria-hidden>·</span>
                 <span className="text-success">Complete</span>
@@ -392,7 +395,7 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
             className="shrink-0 self-start text-muted-foreground hover:text-foreground"
             onClick={() => (onRemove ? onRemove(item) : ctx?.removeFile(item.id))}
           >
-            <RiCloseLine />
+            <RiCloseLine aria-hidden />
           </Button>
         )}
       </li>

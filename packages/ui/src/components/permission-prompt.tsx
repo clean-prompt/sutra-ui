@@ -70,7 +70,8 @@ export interface PermissionOption {
   scoped?: boolean;
   /** Choosing it reveals a feedback field; the decision carries `feedback`. */
   feedback?: boolean;
-  tone?: "default" | "destructive";
+  /** "destructive" colours the selected option red. ("default" is a deprecated spelling of "neutral".) */
+  tone?: "neutral" | "destructive" | "default";
   disabled?: boolean;
 }
 
@@ -82,19 +83,19 @@ export interface PermissionDecision {
 
 const toolMeta: Record<PermissionToolKind, { icon: React.ReactNode; question: (target?: React.ReactNode) => React.ReactNode; rule: string }> = {
   edit: {
-    icon: <RiFileEditLine />,
+    icon: <RiFileEditLine aria-hidden />,
     question: (t) => (t != null ? <>Make this edit to <code className="font-mono text-[0.92em]">{t}</code>?</> : "Make this edit?"),
     rule: "edits",
   },
-  bash: { icon: <RiTerminalBoxLine />, question: () => "Run this command?", rule: "this command" },
-  fetch: { icon: <RiGlobalLine />, question: () => "Fetch this URL?", rule: "this domain" },
+  bash: { icon: <RiTerminalBoxLine aria-hidden />, question: () => "Run this command?", rule: "this command" },
+  fetch: { icon: <RiGlobalLine aria-hidden />, question: () => "Fetch this URL?", rule: "this domain" },
   read: {
-    icon: <RiFileEditLine />,
+    icon: <RiFileEditLine aria-hidden />,
     question: (t) => (t != null ? <>Read <code className="font-mono text-[0.92em]">{t}</code>?</> : "Read this file?"),
     rule: "reads in this directory",
   },
-  mcp: { icon: <RiShieldKeyholeLine />, question: () => "Use this tool?", rule: "this tool" },
-  other: { icon: <RiShieldKeyholeLine />, question: () => "Allow this action?", rule: "this action" },
+  mcp: { icon: <RiShieldKeyholeLine aria-hidden />, question: () => "Use this tool?", rule: "this tool" },
+  other: { icon: <RiShieldKeyholeLine aria-hidden />, question: () => "Allow this action?", rule: "this action" },
 };
 
 /** Default Yes / Always / No options for a tool kind. */
@@ -110,7 +111,8 @@ export function getDefaultPermissionOptions(tool: PermissionToolKind = "other", 
 /* RuleScopePicker                                                     */
 /* ------------------------------------------------------------------ */
 
-export interface RuleScopePickerProps {
+export interface RuleScopePickerProps
+  extends Omit<React.HTMLAttributes<HTMLSpanElement>, "defaultValue" | "onChange" | "prefix" | "children"> {
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
@@ -118,19 +120,13 @@ export interface RuleScopePickerProps {
   /** Text before the link (visually). Default "in". */
   prefix?: React.ReactNode;
   disabled?: boolean;
-  className?: string;
 }
 
 /** Inline destination link ("in this session ▾") that opens a menu of rule scopes. */
-export function RuleScopePicker({
-  value: valueProp,
-  defaultValue,
-  onValueChange,
-  scopes = defaultPermissionScopes,
-  prefix = "in",
-  disabled,
-  className,
-}: RuleScopePickerProps) {
+export const RuleScopePicker = React.forwardRef<HTMLSpanElement, RuleScopePickerProps>(function RuleScopePicker(
+  { value: valueProp, defaultValue, onValueChange, scopes = defaultPermissionScopes, prefix = "in", disabled, className, ...props },
+  ref
+) {
   const [value, setValue] = useControllableState({
     value: valueProp,
     defaultValue: defaultValue ?? scopes[0]?.value ?? "",
@@ -138,7 +134,7 @@ export function RuleScopePicker({
   });
   const current = scopes.find((s) => s.value === value) ?? scopes[0];
   return (
-    <span className={cn("inline-flex items-center gap-1 text-sm text-muted-foreground", className)} data-slot="rule-scope-picker">
+    <span ref={ref} className={cn("inline-flex items-center gap-1 text-sm text-muted-foreground", className)} data-slot="rule-scope-picker" {...props}>
       {prefix != null && <span aria-hidden>{prefix}</span>}
       <DropdownMenu>
         <DropdownMenuTrigger
@@ -169,7 +165,7 @@ export function RuleScopePicker({
       </DropdownMenu>
     </span>
   );
-}
+});
 RuleScopePicker.displayName = "RuleScopePicker";
 
 /* ------------------------------------------------------------------ */
@@ -205,6 +201,8 @@ export interface PermissionPromptProps extends Omit<React.HTMLAttributes<HTMLDiv
   onCancel?: () => void;
   /** A recorded decision: renders the prompt locked with its outcome. */
   decision?: PermissionDecision | null;
+  /** Initial decision when uncontrolled (e.g. restoring a transcript). */
+  defaultDecision?: PermissionDecision | null;
   /** Show the keyboard hints footer. Default true. */
   showHints?: boolean;
   feedbackPlaceholder?: string;
@@ -232,6 +230,7 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
       onDecision,
       onCancel,
       decision: decisionProp,
+      defaultDecision = null,
       showHints = true,
       feedbackPlaceholder = "Tell the agent what to do instead…",
       className,
@@ -255,7 +254,7 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
     const [highlight, setHighlight] = React.useState(0);
     const [feedbackFor, setFeedbackFor] = React.useState<string | null>(null);
     const [feedback, setFeedback] = React.useState("");
-    const [localDecision, setLocalDecision] = React.useState<PermissionDecision | null>(null);
+    const [localDecision, setLocalDecision] = React.useState<PermissionDecision | null>(defaultDecision);
     const decision = decisionProp ?? localDecision;
     const locked = decision != null;
 
@@ -380,7 +379,7 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
             onClick={() => setFolded(!folded)}
             data-slot="permission-fold"
           >
-            {folded ? <RiArrowRightSLine /> : <RiArrowDownSLine />}
+            {folded ? <RiArrowRightSLine aria-hidden /> : <RiArrowDownSLine aria-hidden />}
           </Button>
         )}
       </div>

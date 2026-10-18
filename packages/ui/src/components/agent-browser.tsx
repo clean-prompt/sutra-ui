@@ -71,10 +71,10 @@ export function normalizeBrowserInput(input: string): string {
 }
 
 const securityMeta: Record<BrowserSecurity, { label: string; icon: React.ReactNode; className: string }> = {
-  secure: { label: "Secure connection", icon: <RiLockLine />, className: "text-success" },
-  insecure: { label: "Not secure", icon: <RiLockUnlockLine />, className: "text-destructive" },
-  local: { label: "Local page", icon: <RiComputerLine />, className: "text-info" },
-  unknown: { label: "Page", icon: <RiGlobalLine />, className: "text-muted-foreground" },
+  secure: { label: "Secure connection", icon: <RiLockLine aria-hidden />, className: "text-success" },
+  insecure: { label: "Not secure", icon: <RiLockUnlockLine aria-hidden />, className: "text-destructive" },
+  local: { label: "Local page", icon: <RiComputerLine aria-hidden />, className: "text-info" },
+  unknown: { label: "Page", icon: <RiGlobalLine aria-hidden />, className: "text-muted-foreground" },
 };
 
 /* ------------------------------------------------------------------ */
@@ -190,7 +190,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
             disabled={!canGoBack || agentDriving}
             onClick={onBack}
           >
-            <RiArrowLeftLine />
+            <RiArrowLeftLine aria-hidden />
           </Button>
           <Button
             type="button"
@@ -201,7 +201,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
             disabled={!canGoForward || agentDriving}
             onClick={onForward}
           >
-            <RiArrowRightLine />
+            <RiArrowRightLine aria-hidden />
           </Button>
           {loading ? (
             <Button
@@ -213,7 +213,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
               disabled={agentDriving}
               onClick={onStop}
             >
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           ) : (
             <Button
@@ -225,7 +225,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
               disabled={agentDriving}
               onClick={onReload}
             >
-              <RiRefreshLine />
+              <RiRefreshLine aria-hidden />
             </Button>
           )}
           <form role="search" aria-label="Address bar" onSubmit={submit} className="min-w-0 flex-1">
@@ -391,11 +391,11 @@ export interface BrowserConsoleProps extends Omit<React.HTMLAttributes<HTMLDivEl
 }
 
 const levelStyle: Record<BrowserConsoleLevel, { row: string; text: string; icon: React.ReactNode; label: string }> = {
-  error: { row: "bg-destructive-soft/50", text: "text-destructive", icon: <RiErrorWarningLine />, label: "Errors" },
-  warn: { row: "bg-warning-soft/50", text: "text-warning", icon: <RiErrorWarningLine />, label: "Warnings" },
-  info: { row: "", text: "text-info", icon: <RiInformationLine />, label: "Info" },
-  log: { row: "", text: "text-foreground", icon: <RiTerminalBoxLine />, label: "Logs" },
-  debug: { row: "", text: "text-muted-foreground", icon: <RiBugLine />, label: "Debug" },
+  error: { row: "bg-destructive-soft/50", text: "text-destructive", icon: <RiErrorWarningLine aria-hidden />, label: "Errors" },
+  warn: { row: "bg-warning-soft/50", text: "text-warning", icon: <RiErrorWarningLine aria-hidden />, label: "Warnings" },
+  info: { row: "", text: "text-info", icon: <RiInformationLine aria-hidden />, label: "Info" },
+  log: { row: "", text: "text-foreground", icon: <RiTerminalBoxLine aria-hidden />, label: "Logs" },
+  debug: { row: "", text: "text-muted-foreground", icon: <RiBugLine aria-hidden />, label: "Debug" },
 };
 
 function formatConsoleTs(ts: BrowserConsoleEntry["ts"]) {
@@ -505,7 +505,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
               </div>
               {onClear && (
                 <Button type="button" variant="ghost" size="icon-xs" aria-label="Clear console" onClick={onClear}>
-                  <RiDeleteBinLine />
+                  <RiDeleteBinLine aria-hidden />
                 </Button>
               )}
             </div>
@@ -521,7 +521,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
           >
           <ul>
             {visible.length === 0 ? (
-              <li className="px-3 py-3 text-muted-foreground">{entries.length ? "No messages match." : "Console is empty."}</li>
+              <li className="px-3 py-3 text-muted-foreground">{entries.length ? "No messages match" : "Console is empty"}</li>
             ) : (
               visible.map((e) => {
                 const s = levelStyle[e.level];
@@ -680,7 +680,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
             size="xs"
             variant={active ? "soft" : "ghost"}
             aria-pressed={active}
-            leadingIcon={<RiMapPin2Line />}
+            leadingIcon={<RiMapPin2Line aria-hidden />}
             onClick={() => setActive(!active)}
           >
             Annotate
@@ -689,7 +689,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
             type="button"
             size="xs"
             variant="ghost"
-            leadingIcon={<RiAddLine />}
+            leadingIcon={<RiAddLine aria-hidden />}
             onClick={() => {
               if (!active) setActive(true);
               drop(50, 50);
@@ -704,7 +704,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
             type="button"
             size="xs"
             variant="primary"
-            leadingIcon={<RiSendPlaneLine />}
+            leadingIcon={<RiSendPlaneLine aria-hidden />}
             disabled={!sendable.length}
             onClick={send}
           >
@@ -776,7 +776,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
                       }}
                     />
                     <div className="flex items-center justify-between gap-2">
-                      <Button type="button" size="xs" variant="ghost" onClick={() => remove(a.id)} leadingIcon={<RiDeleteBinLine />}>
+                      <Button type="button" size="xs" variant="ghost" onClick={() => remove(a.id)} leadingIcon={<RiDeleteBinLine aria-hidden />}>
                         Delete
                       </Button>
                       <Button type="submit" size="xs" disabled={!draft.trim()}>
@@ -804,7 +804,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
                   {a.comment || "Empty note"}
                 </button>
                 <Button type="button" size="icon-xs" variant="ghost" aria-label={`Remove annotation ${i + 1}`} onClick={() => remove(a.id)}>
-                  <RiCloseLine />
+                  <RiCloseLine aria-hidden />
                 </Button>
               </li>
             ))}
@@ -839,9 +839,9 @@ export interface RealProfileConsentDialogProps {
 }
 
 const accessItems = [
-  { icon: <RiCookieLine />, title: "Cookies and signed-in sessions", body: "It can act as you on sites where you’re logged in." },
-  { icon: <RiKey2Line />, title: "Saved logins and autofill", body: "Password-manager autofill may be available to the page." },
-  { icon: <RiHistoryLine />, title: "History and extensions", body: "Your browsing history and extensions stay active." },
+  { icon: <RiCookieLine aria-hidden />, title: "Cookies and signed-in sessions", body: "It can act as you on sites where you’re logged in." },
+  { icon: <RiKey2Line aria-hidden />, title: "Saved logins and autofill", body: "Password-manager autofill may be available to the page." },
+  { icon: <RiHistoryLine aria-hidden />, title: "History and extensions", body: "Your browsing history and extensions stay active." },
 ];
 
 /** Asks before letting the agent use the user's real browser profile (cookies, logins) instead of a clean one. */
@@ -865,7 +865,7 @@ export function RealProfileConsentDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className={cn("sm:max-w-md", className)}>
-        <DialogHeader icon={<RiShieldUserLine />} tone="warning">
+        <DialogHeader icon={<RiShieldUserLine aria-hidden />} tone="warning">
           <DialogTitle>Use your real browser profile?</DialogTitle>
           <DialogDescription>
             {agentName} wants to browse{site ? <> {site}</> : null} with{" "}

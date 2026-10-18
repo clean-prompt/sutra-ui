@@ -228,6 +228,9 @@ export interface CodeEditorProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue" | "onScroll"> {
   value?: string;
   defaultValue?: string;
+  /** Called with the new text and the CodeMirror `ViewUpdate` when the user edits the document. */
+  onValueChange?: (value: string, update: ViewUpdate) => void;
+  /** @deprecated Use `onValueChange`. */
   onChange?: (value: string, update: ViewUpdate) => void;
   /** "markdown" (built in) or "plain"; pass other languages through `extensions`. Default "markdown". */
   language?: "markdown" | "plain";
@@ -265,6 +268,7 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
     {
       value,
       defaultValue = "",
+      onValueChange,
       onChange,
       language = "markdown",
       extensions,
@@ -290,8 +294,8 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
   ) => {
     const hostRef = React.useRef<HTMLDivElement>(null);
     const viewRef = React.useRef<EditorView | null>(null);
-    const cb = React.useRef({ onChange, onSave, onSelectionChange, onScroll, onFocusChange });
-    cb.current = { onChange, onSave, onSelectionChange, onScroll, onFocusChange };
+    const cb = React.useRef({ onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange });
+    cb.current = { onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange };
     const compartments = React.useMemo(
       () => ({
         lang: new Compartment(),
@@ -356,7 +360,9 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
             sutraEditorTheme,
             EditorView.updateListener.of((u) => {
               if (u.docChanged && !u.transactions.some((t) => t.annotation(External))) {
-                cb.current.onChange?.(u.state.doc.toString(), u);
+                const text = u.state.doc.toString();
+                cb.current.onValueChange?.(text, u);
+                cb.current.onChange?.(text, u);
               }
               if ((u.selectionSet || u.docChanged) && cb.current.onSelectionChange) {
                 const { from, to, head } = u.state.selection.main;

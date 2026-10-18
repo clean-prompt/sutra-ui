@@ -1,5 +1,6 @@
 import * as React from "react";
 import { RiHashtag, RiSlashCommands2, RiUser3Line } from "@remixicon/react";
+import { normalizeTaskStatus } from "../lib/status";
 import { cn, focusRing } from "../lib/cn";
 import { formatDateTime, formatShortDate, toValidDate } from "../lib/time";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
@@ -17,7 +18,7 @@ export interface EntityRef {
   type: EntityType;
   id: string;
   title: string;
-  /** e.g. "done" (tasks are struck through), "open", "archived". */
+  /** e.g. "succeeded" / "done" (tasks are struck through), "open", "archived". */
   status?: string;
   /** Event / due date. Shown after the title for calendar items. */
   date?: Date | string;
@@ -63,7 +64,7 @@ export interface EntityChipProps extends Omit<React.HTMLAttributes<HTMLElement>,
 export const EntityChip = React.forwardRef<HTMLElement, EntityChipProps>(
   ({ type, id, title, status, date, href, preview, size = "md", hideIcon, className, onClick, ...props }, ref) => {
     const app = isSutraApp(type) ? type : undefined;
-    const done = status === "done" || status === "completed";
+    const done = !!status && normalizeTaskStatus(status, "pending") === "succeeded";
     const dateLabel = type === "calendar" || date ? formatEntityDate(date) : undefined;
     const iconSize = size === "sm" ? 12 : 14;
     const interactive = Boolean(href || onClick);

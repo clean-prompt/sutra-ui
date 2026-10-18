@@ -186,12 +186,13 @@ IdentityMark.displayName = "IdentityMark";
 /* TextButton                                                          */
 /* ------------------------------------------------------------------ */
 
-export type TextButtonTone = "default" | "muted" | "danger";
+/** `default` and `muted` are emphasis levels; `destructive` is the semantic tone (`danger` is a deprecated alias). */
+export type TextButtonTone = "default" | "muted" | "destructive" | "danger";
 
-const textButtonTone: Record<TextButtonTone, string> = {
+const textButtonTone: Record<Exclude<TextButtonTone, "danger">, string> = {
   default: "text-foreground decoration-foreground/40",
   muted: "text-muted-foreground decoration-muted-foreground/50 hover:text-foreground",
-  danger: "text-destructive decoration-destructive/50",
+  destructive: "text-destructive decoration-destructive/50",
 };
 
 export interface TextButtonProps extends React.HTMLAttributes<HTMLElement> {
@@ -212,7 +213,7 @@ export const TextButton = React.forwardRef<HTMLElement, TextButtonProps>(
       "inline cursor-pointer rounded-xs bg-transparent p-0 font-medium underline-offset-4 decoration-1",
       "hover:underline focus-visible:underline transition-colors",
       "disabled:cursor-not-allowed disabled:opacity-50 disabled:no-underline",
-      textButtonTone[tone],
+      textButtonTone[tone === "danger" ? "destructive" : tone] ?? textButtonTone.default,
       focusRing,
       className
     );

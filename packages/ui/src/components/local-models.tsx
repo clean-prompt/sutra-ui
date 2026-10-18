@@ -9,7 +9,8 @@ import {
   RiRefreshLine,
   RiSearchLine,
 } from "@remixicon/react";
-import { cn } from "../lib/cn";
+import { cn, type Density } from "../lib/cn";
+import { toneClasses } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
 import { Badge, type BadgeColor } from "./badge";
@@ -21,7 +22,7 @@ import { SimpleTooltip } from "./tooltip";
 import { formatBytes, formatCompact } from "../lib/format";
 import { clamp, toPercent } from "../lib/math";
 import { formatEta, formatSpeed } from "./transfer-list";
-import { meterLevel, type MeterThresholds } from "./meter";
+import { meterLevel, meterLevelTone, type MeterThresholds } from "./meter";
 
 /* ------------------------------------------------------------------ */
 /* estimateModelFit                                                    */
@@ -129,20 +130,23 @@ const fitColor: Record<ModelFitLevel, BadgeColor> = { gpu: "success", partial: "
 export interface HardwareFitHintProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   model: ModelFootprint;
   hardware: HardwareProfile;
-  /** `compact` renders only the badge, with the explanation in a tooltip. */
+  /** `compact` renders only the badge, with the explanation in a tooltip. Default `normal`. */
+  density?: Density;
+  /** @deprecated Use `density` (`"compact"` → `density="compact"`). */
   variant?: "default" | "compact";
 }
 
 /** Badge + explanation of how a model fits the given hardware. */
-export const HardwareFitHint = React.forwardRef<HTMLDivElement, HardwareFitHintProps>(({ model, hardware, variant = "default", className, ...props }, ref) => {
+export const HardwareFitHint = React.forwardRef<HTMLDivElement, HardwareFitHintProps>(({ model, hardware, density, variant, className, ...props }, ref) => {
+  const compact = (density ?? (variant === "compact" ? "compact" : "normal")) === "compact";
   const est = estimateModelFit(model, hardware);
   const badge = (
-    <Badge size="sm" color={fitColor[est.fit]} data-fit={est.fit} tabIndex={variant === "compact" ? 0 : undefined}>
-      {est.fit === "gpu" ? <RiCheckLine /> : est.fit === "none" ? <RiCloseLine /> : <RiCpuLine />}
+    <Badge size="sm" color={fitColor[est.fit]} data-fit={est.fit} tabIndex={compact ? 0 : undefined}>
+      {est.fit === "gpu" ? <RiCheckLine aria-hidden /> : est.fit === "none" ? <RiCloseLine aria-hidden /> : <RiCpuLine aria-hidden />}
       {est.label}
     </Badge>
   );
-  if (variant === "compact") {
+  if (compact) {
     return (
       <div ref={ref} data-slot="hardware-fit-hint" data-fit={est.fit} className={cn("inline-flex", className)} {...props}>
         <SimpleTooltip content={est.explanation}>{badge}</SimpleTooltip>
@@ -297,7 +301,7 @@ export const StagedSetupHero = React.forwardRef<HTMLDivElement, StagedSetupHeroP
               {current.status === "error" ? (
                 <div role="alert" className="flex flex-wrap items-center gap-3">
                   <p className="flex-1 text-sm text-destructive">{current.error ?? "Something went wrong."}</p>
-                  <Button size="sm" variant="secondary" leadingIcon={<RiRefreshLine />} onClick={() => onRetry?.(current.id)}>
+                  <Button size="sm" variant="secondary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={() => onRetry?.(current.id)}>
                     Retry
                   </Button>
                 </div>
@@ -455,7 +459,7 @@ function LocalModelItem({
           )}
           {download?.status === "done" ? (
             <Badge color="success" size="md">
-              <RiCheckLine /> Downloaded
+              <RiCheckLine aria-hidden /> Downloaded
             </Badge>
           ) : active ? (
             <Button size="sm" variant="ghost" aria-label={`Cancel ${m.name} download`} onClick={() => onCancel?.(m.id)}>
@@ -465,7 +469,7 @@ function LocalModelItem({
             <Button
               size="sm"
               variant={download?.status === "failed" ? "secondary" : "primary"}
-              leadingIcon={download?.status === "failed" ? <RiRefreshLine /> : <RiDownloadLine />}
+              leadingIcon={download?.status === "failed" ? <RiRefreshLine aria-hidden /> : <RiDownloadLine aria-hidden />}
               aria-label={`${download?.status === "failed" ? "Retry" : "Download"} ${m.name}`}
               disabled={!variant}
               onClick={() => variant && onDownload?.(m.id, variant.quant)}
@@ -475,7 +479,7 @@ function LocalModelItem({
           )}
         </div>
       </div>
-      {hardware && variant && !active && <HardwareFitHint variant="compact" model={{ sizeGB: variant.sizeGB }} hardware={hardware} />}
+      {hardware && variant && !active && <HardwareFitHint density="compact" model={{ sizeGB: variant.sizeGB }} hardware={hardware} />}
       {active && (
         <div className="grid gap-1" data-slot="local-model-progress">
           <Progress value={pct} size="sm" aria-label={`Downloading ${m.name}`} />
@@ -508,7 +512,7 @@ export const LocalModelBrowser = React.forwardRef<HTMLDivElement, LocalModelBrow
         <div className="border-b border-border p-2">
           <Input
             size="sm"
-            leadingIcon={<RiSearchLine />}
+            leadingIcon={<RiSearchLine aria-hidden />}
             aria-label="Search models"
             placeholder="Search models"
             value={query}
@@ -517,7 +521,7 @@ export const LocalModelBrowser = React.forwardRef<HTMLDivElement, LocalModelBrow
           />
         </div>
         {shown.length === 0 ? (
-          <p className="px-4 py-8 text-center text-sm text-muted-foreground">No models match “{query}”.</p>
+          <p className="px-4 py-8 text-center text-sm text-muted-foreground">No models match “{query}”</p>
         ) : (
           <ul aria-label="Downloadable models" className="max-h-[28rem] divide-y divide-border overflow-y-auto scrollbar-thin">
             {shown.map((m) => (
@@ -590,7 +594,7 @@ export const SystemResourcesBar = React.forwardRef<HTMLDivElement, SystemResourc
               <span aria-hidden className="relative h-1.5 w-12 overflow-hidden rounded-full bg-muted">
                 <span className={cn("absolute inset-y-0 left-0 rounded-full transition-[width]", levelBar[level])} style={{ width: `${pct}%` }} />
               </span>
-              <span className={cn("font-mono tabular-nums", level === "danger" ? "text-destructive" : level === "warn" ? "text-warning-soft-foreground" : "text-foreground")}>{text}</span>
+              <span className={cn("font-mono tabular-nums", level === "ok" ? "text-foreground" : toneClasses.text[meterLevelTone(level)!])}>{text}</span>
             </div>
           );
         })}

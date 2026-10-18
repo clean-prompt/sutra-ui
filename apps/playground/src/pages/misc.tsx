@@ -467,7 +467,7 @@ export function MiscPage() {
       <Demo id="text-button" title="Text Button" description="An action that reads as a sentence: a button, or a link when given an href.">
         <p className="max-w-md text-sm text-muted-foreground">
           Your draft was saved. You can <TextButton onClick={() => {}}>start from the beginning</TextButton>, open{" "}
-          <TextButton href="#text-button" tone="muted">settings</TextButton>, or <TextButton tone="danger" onClick={() => {}}>discard it</TextButton>.
+          <TextButton href="#text-button" tone="muted">settings</TextButton>, or <TextButton tone="destructive" onClick={() => {}}>discard it</TextButton>.
         </p>
       </Demo>
 

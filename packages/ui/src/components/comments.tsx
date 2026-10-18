@@ -9,7 +9,8 @@ import {
   RiReplyLine,
   RiArrowGoBackLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { Avatar } from "./avatar";
 import { Button } from "./button";
 import { Textarea } from "./textarea";
@@ -79,18 +80,24 @@ const defaultReactions = ["👍", "❤️", "🎉", "👀", "✅"];
 /* CommentComposer                                                     */
 /* ------------------------------------------------------------------ */
 
-export interface CommentComposerProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> {
+export interface CommentComposerProps
+  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue"> {
   onSubmit: (body: string) => void;
   onCancel?: () => void;
   /** Excerpt shown above the field. */
   quote?: string;
   placeholder?: string;
   submitLabel?: string;
+  /** Draft text (controlled). */
+  value?: string;
   defaultValue?: string;
+  onValueChange?: (value: string) => void;
   autoFocus?: boolean;
   /** Accessible label of the field. Default "Comment". */
   label?: string;
-  /** Hide the buttons until the field is focused or has text. */
+  /** `compact` hides the buttons until the field is focused or has text. Default `normal`. */
+  density?: Density;
+  /** @deprecated Use `density="compact"`. */
   compact?: boolean;
 }
 
@@ -103,16 +110,20 @@ export const CommentComposer = React.forwardRef<HTMLFormElement, CommentComposer
       quote,
       placeholder = "Add a comment…",
       submitLabel = "Comment",
+      value: valueProp,
       defaultValue = "",
+      onValueChange,
       autoFocus,
       label = "Comment",
-      compact = false,
+      density,
+      compact: compactProp,
       className,
       ...props
     },
     ref
   ) => {
-    const [value, setValue] = React.useState(defaultValue);
+    const compact = normalizeDensity(density ?? compactProp) === "compact";
+    const [value, setValue] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChange });
     const [focused, setFocused] = React.useState(false);
     const submit = () => {
       const body = value.trim();
@@ -234,17 +245,17 @@ function CommentItem({
                   aria-label={`Actions for comment by ${comment.author.name}`}
                   className="ml-auto opacity-0 focus-visible:opacity-100 group-hover/comment:opacity-100 data-[state=open]:opacity-100"
                 >
-                  <RiMoreLine />
+                  <RiMoreLine aria-hidden />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-36">
                 {canEdit && onEdit && (
-                  <DropdownMenuItem icon={<RiPencilLine />} onSelect={() => setEditing(true)}>
+                  <DropdownMenuItem icon={<RiPencilLine aria-hidden />} onSelect={() => setEditing(true)}>
                     Edit
                   </DropdownMenuItem>
                 )}
                 {canDelete && onDelete && (
-                  <DropdownMenuItem icon={<RiDeleteBinLine />} variant="destructive" onSelect={() => onDelete(thread.id, comment.id)}>
+                  <DropdownMenuItem icon={<RiDeleteBinLine aria-hidden />} tone="destructive" onSelect={() => onDelete(thread.id, comment.id)}>
                     Delete
                   </DropdownMenuItem>
                 )}
@@ -292,7 +303,7 @@ function CommentItem({
             <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
               <PopoverTrigger asChild>
                 <Button size="icon-xs" variant="ghost" aria-label="Add reaction" className="size-6 text-muted-foreground">
-                  <RiEmotionLine />
+                  <RiEmotionLine aria-hidden />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="flex w-auto gap-0.5 p-1" align="start">
@@ -416,7 +427,7 @@ export const CommentThread = React.forwardRef<HTMLElement, CommentThreadProps>(
           (canReply && onReply && !thread.resolved) || (canResolve && onResolve) ? (
             <div className="flex items-center gap-1">
               {canReply && onReply && !thread.resolved && (
-                <Button size="xs" variant="ghost" leadingIcon={<RiReplyLine />} onClick={() => setReplying(true)}>
+                <Button size="xs" variant="ghost" leadingIcon={<RiReplyLine aria-hidden />} onClick={() => setReplying(true)}>
                   Reply
                 </Button>
               )}
@@ -425,7 +436,7 @@ export const CommentThread = React.forwardRef<HTMLElement, CommentThreadProps>(
                   size="xs"
                   variant="ghost"
                   className="ml-auto"
-                  leadingIcon={thread.resolved ? <RiArrowGoBackLine /> : <RiCheckboxCircleLine />}
+                  leadingIcon={thread.resolved ? <RiArrowGoBackLine aria-hidden /> : <RiCheckboxCircleLine aria-hidden />}
                   onClick={() => onResolve(thread.id, !thread.resolved)}
                 >
                   {thread.resolved ? "Reopen" : "Resolve"}
@@ -540,7 +551,7 @@ export const CommentsPanel = React.forwardRef<HTMLElement, CommentsPanelProps>(
               size="sm"
               variant={quoteFromSelection ? "primary" : "outline"}
               className="w-full"
-              leadingIcon={<RiChat3Line />}
+              leadingIcon={<RiChat3Line aria-hidden />}
               onClick={() => setDraftQuote(quoteFromSelection)}
             >
               {quoteFromSelection ? "Comment on selection" : "New comment"}
@@ -564,7 +575,7 @@ export const CommentsPanel = React.forwardRef<HTMLElement, CommentsPanelProps>(
           {shown.length === 0 ? (
             <EmptyState
               size="sm"
-              icon={filter === "resolved" ? <RiCheckboxCircleLine /> : <RiChat3Line />}
+              icon={filter === "resolved" ? <RiCheckboxCircleLine aria-hidden /> : <RiChat3Line aria-hidden />}
               title={
                 filter === "resolved"
                   ? "No resolved comments"

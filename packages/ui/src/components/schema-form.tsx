@@ -218,10 +218,15 @@ function SaveStatus({ status }: { status?: SchemaFieldSaveStatus }) {
 /* NestedValueEditor                                                   */
 /* ------------------------------------------------------------------ */
 
+const noop = () => {};
+
 export interface NestedValueEditorProps {
   schema: SchemaFormSchema;
   value: unknown;
-  onChange: (value: unknown) => void;
+  /** Called with the edited value. */
+  onValueChange?: (value: unknown) => void;
+  /** @deprecated Use `onValueChange`. */
+  onChange?: (value: unknown) => void;
   /** Dotted path of this value inside the form. */
   path?: string;
   /** Property name (used for the label when the schema has no title). */
@@ -234,7 +239,8 @@ export interface NestedValueEditorProps {
 }
 
 /** Recursive editor for one schema value: primitives, nested object sections and arrays with add/remove. */
-export function NestedValueEditor({ schema, value, onChange, path = "", name, required, bare, ariaLabel }: NestedValueEditorProps) {
+export function NestedValueEditor({ schema, value, onValueChange, onChange: onChangeLegacy, path = "", name, required, bare, ariaLabel }: NestedValueEditorProps) {
+  const onChange = onValueChange ?? onChangeLegacy ?? noop;
   const ctx = React.useContext(SchemaFormContext);
   const type = inferType(schema);
   const id = fieldId(ctx.idPrefix, path);
@@ -259,7 +265,7 @@ export function NestedValueEditor({ schema, value, onChange, path = "", name, re
             path={joinPath(path, k)}
             required={schema.required?.includes(k)}
             value={obj[k]}
-            onChange={(v) => {
+            onValueChange={(v) => {
               const next = { ...obj };
               if (v === undefined) delete next[k];
               else next[k] = v;
@@ -308,7 +314,7 @@ export function NestedValueEditor({ schema, value, onChange, path = "", name, re
                 disabled={disabled || (schema.minItems != null && list.length <= schema.minItems)}
                 onClick={() => onChange(list.filter((_, j) => j !== i))}
               >
-                <RiDeleteBinLine />
+                <RiDeleteBinLine aria-hidden />
               </Button>
             );
             const set = (v: unknown) => onChange(list.map((x, j) => (j === i ? v : x)));
@@ -320,12 +326,12 @@ export function NestedValueEditor({ schema, value, onChange, path = "", name, re
                   </span>
                   {remove}
                 </div>
-                <NestedValueEditor schema={itemSchema} value={item} onChange={set} path={itemPath} bare />
+                <NestedValueEditor schema={itemSchema} value={item} onValueChange={set} path={itemPath} bare />
               </li>
             ) : (
               <li key={i} className="flex items-start gap-2">
                 <div className="min-w-0 flex-1">
-                  <NestedValueEditor schema={itemSchema} value={item} onChange={set} path={itemPath} bare ariaLabel={`${singular} ${i + 1}`} />
+                  <NestedValueEditor schema={itemSchema} value={item} onValueChange={set} path={itemPath} bare ariaLabel={`${singular} ${i + 1}`} />
                 </div>
                 {remove}
               </li>
@@ -336,7 +342,7 @@ export function NestedValueEditor({ schema, value, onChange, path = "", name, re
           type="button"
           size="xs"
           variant="ghost"
-          leadingIcon={<RiAddLine />}
+          leadingIcon={<RiAddLine aria-hidden />}
           disabled={!canAdd}
           onClick={() => onChange([...list, schemaDefaults(itemSchema) ?? (itemType === "boolean" ? false : itemType === "number" || itemType === "integer" ? undefined : "")])}
         >
@@ -536,6 +542,9 @@ export interface SchemaFormProps extends Omit<React.FormHTMLAttributes<HTMLFormE
   schema: SchemaFormSchema;
   value?: Record<string, unknown>;
   defaultValue?: Record<string, unknown>;
+  /** Called with the whole form value after every edit. */
+  onValueChange?: (value: Record<string, unknown>) => void;
+  /** @deprecated Use `onValueChange`. */
   onChange?: (value: Record<string, unknown>) => void;
   /** Explicit submit (non-autosave). Only called when valid. */
   onSubmit?: (value: Record<string, unknown>) => void | Promise<void>;
@@ -591,6 +600,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
       schema,
       value: valueProp,
       defaultValue,
+      onValueChange,
       onChange,
       onSubmit,
       submitLabel = "Save",
@@ -609,7 +619,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
     const [value, setValue] = useControllableState<Record<string, unknown>>({
       value: valueProp,
       defaultValue: defaultValue ?? ((schemaDefaults(schema) as Record<string, unknown>) || {}),
-      onChange,
+      onChange: onValueChange ?? onChange,
     });
     const [touched, setTouched] = React.useState<Set<string>>(() => new Set());
     const [submitted, setSubmitted] = React.useState(validateOnMount);
@@ -711,7 +721,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
     const errorCount = Object.keys(errors).length;
     const fields = (
       <div className="min-w-0 flex-1 space-y-8">
-        {shownSections.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No settings match “{query}”.</p>}
+        {shownSections.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No settings match “{query}”</p>}
         {shownSections.map((s) => (
           <section key={s.id} aria-labelledby={`${idPrefix}-sec-${s.id}`} className="space-y-4">
             {(showNav || sections.length > 1) && (
@@ -735,7 +745,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
                   path={k}
                   required={schema.required?.includes(k)}
                   value={value[k]}
-                  onChange={(v) => {
+                  onValueChange={(v) => {
                     const next = { ...value };
                     if (v === undefined) delete next[k];
                     else next[k] = v;

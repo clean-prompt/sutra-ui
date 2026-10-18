@@ -150,7 +150,7 @@ export const ChatListItem = React.forwardRef<HTMLLIElement, ChatListItemProps>(
                 {actions}
                 {onRename && (
                   <button type="button" className={actionButton} aria-label={`Rename ${title}`} title="Rename" onClick={startEditing}>
-                    <RiPencilLine />
+                    <RiPencilLine aria-hidden />
                   </button>
                 )}
                 {onDelete && (
@@ -161,7 +161,7 @@ export const ChatListItem = React.forwardRef<HTMLLIElement, ChatListItemProps>(
                     title="Delete"
                     onClick={onDelete}
                   >
-                    <RiDeleteBinLine />
+                    <RiDeleteBinLine aria-hidden />
                   </button>
                 )}
               </div>
@@ -187,6 +187,8 @@ export interface ChatListViewProps extends Omit<React.HTMLAttributes<HTMLDivElem
   onSearchChange?: (query: string) => void;
   searchPlaceholder?: string;
   /** Shown when there are no items (or no search matches). */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
   /** Reference "now" for date grouping (useful for tests and SSR). */
   now?: Date;
@@ -206,6 +208,7 @@ export const ChatListView = React.forwardRef<HTMLDivElement, ChatListViewProps>(
       defaultSearch = "",
       onSearchChange,
       searchPlaceholder = "Search chats…",
+      emptyState,
       emptyMessage,
       now,
       className,
@@ -247,7 +250,7 @@ export const ChatListView = React.forwardRef<HTMLDivElement, ChatListViewProps>(
         <nav aria-label="Conversations" className="scrollbar-thin flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-2 pb-2">
           {groups.length === 0 ? (
             <p className="px-2.5 py-6 text-center text-sm text-muted-foreground">
-              {emptyMessage ?? (query.trim() ? "No matching chats" : "No conversations yet")}
+              {emptyState ?? emptyMessage ?? (query.trim() ? "No matching chats" : "No conversations yet")}
             </p>
           ) : (
             groups.map((group) => {

@@ -367,6 +367,9 @@ export interface CommandPaletteFromRegistryProps extends Omit<CommandDialogProps
   /** Shortcut that toggles the palette. Default "mod+k"; `null` disables. */
   keys?: string | null;
   placeholder?: string;
+  /** Shown when nothing matches. Default "No commands found". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
   /** Extra items rendered above the registry groups. */
   children?: React.ReactNode;
@@ -378,7 +381,8 @@ export interface CommandPaletteFromRegistryProps extends Omit<CommandDialogProps
 export function CommandPaletteFromRegistry({
   keys = "mod+k",
   placeholder = "Type a command or search…",
-  emptyText = "No commands found.",
+  emptyState,
+  emptyText,
   children,
   onRun,
   open: openProp,
@@ -419,7 +423,7 @@ export function CommandPaletteFromRegistry({
     <CommandDialog open={open} onOpenChange={setOpen} {...dialogProps}>
       <CommandInput placeholder={placeholder} />
       <CommandList>
-        <CommandEmpty>{emptyText}</CommandEmpty>
+        <CommandEmpty>{emptyState ?? emptyText ?? "No commands found"}</CommandEmpty>
         {children}
         {groups.map((group) => (
           <CommandGroup key={group.group} heading={group.group}>

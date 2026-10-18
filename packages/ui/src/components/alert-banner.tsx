@@ -9,10 +9,16 @@ import {
   RiMegaphoneLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { CloseButton } from "./close-button";
 
+/** Canonical banner tone: a semantic `Tone` or the high-contrast `inverse`. */
+export type AlertBannerTone = Tone | "inverse";
+
+/** @deprecated Use `AlertBannerTone` with the `tone` prop (`brand` is now `primary`). */
 export type AlertBannerVariant =
   | "brand"
+  | "primary"
   | "neutral"
   | "info"
   | "success"
@@ -25,6 +31,7 @@ export const alertBannerVariants = cva(
   {
     variants: {
       variant: {
+        primary: "bg-primary text-primary-foreground",
         brand: "bg-primary text-primary-foreground",
         neutral: "border-b border-border bg-subtle text-foreground",
         info: "bg-info text-info-foreground",
@@ -36,12 +43,12 @@ export const alertBannerVariants = cva(
       sticky: { true: "sticky top-0", false: "" },
       align: { center: "justify-center", start: "justify-start" },
     },
-    defaultVariants: { variant: "brand", sticky: false, align: "center" },
+    defaultVariants: { variant: "primary", sticky: false, align: "center" },
   }
 );
 
-const defaultIcons: Record<AlertBannerVariant, React.ComponentType<{ className?: string }>> = {
-  brand: RiMegaphoneLine,
+const defaultIcons: Record<AlertBannerTone, React.ComponentType<{ className?: string }>> = {
+  primary: RiMegaphoneLine,
   neutral: RiInformationLine,
   info: RiInformationLine,
   success: RiCheckboxCircleLine,
@@ -60,7 +67,11 @@ export interface AlertBannerAction {
 
 export interface AlertBannerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
-    VariantProps<typeof alertBannerVariants> {
+    Omit<VariantProps<typeof alertBannerVariants>, "variant"> {
+  /** Semantic colour (default `primary`); `inverse` gives a high-contrast dark banner. */
+  tone?: ToneInput | "inverse";
+  /** @deprecated Use `tone` (`brand` is now `primary`). */
+  variant?: AlertBannerVariant | null;
   /** Main message. Children are used when `message` is omitted. */
   message?: React.ReactNode;
   children?: React.ReactNode;
@@ -86,6 +97,7 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
   (
     {
       className,
+      tone,
       variant,
       sticky,
       align,
@@ -120,7 +132,8 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
 
     if (!open && !mounted) return null;
 
-    const v: AlertBannerVariant = variant ?? "brand";
+    const rawTone = tone ?? variant;
+    const v: AlertBannerTone = rawTone === "inverse" ? "inverse" : normalizeTone(rawTone, "primary");
     const DefaultIcon = defaultIcons[v];
     const iconNode = icon === undefined ? <DefaultIcon /> : icon;
     const isNeutral = v === "neutral";
@@ -164,7 +177,8 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
         ref={ref}
         role={role ?? (v === "destructive" || v === "warning" ? "alert" : "region")}
         aria-label={role ? undefined : "Announcement"}
-        data-variant={v}
+        data-tone={v}
+        data-variant={v === "primary" ? "brand" : v}
         data-state={closing ? "closed" : "open"}
         className={cn(
           alertBannerVariants({ variant: v, sticky, align }),

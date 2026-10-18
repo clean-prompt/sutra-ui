@@ -262,7 +262,7 @@ export const EditorToolbar = React.forwardRef<HTMLDivElement, EditorToolbarProps
                       size={size === "sm" ? "icon-sm" : "icon"}
                       aria-label={moreLabel}
                     >
-                      <RiMoreLine />
+                      <RiMoreLine aria-hidden />
                     </Button>
                   </DropdownMenuTrigger>
                 </SimpleTooltip>

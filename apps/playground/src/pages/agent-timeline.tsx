@@ -110,7 +110,7 @@ const longLog = Array.from({ length: 40 }, (_, i) =>
 const LAST_STEP = 27;
 
 function itemStatus(step: number, at: number) {
-  return step === at ? "progress" : "success";
+  return step === at ? "running" : "succeeded";
 }
 
 function AgentTurnDemo() {
@@ -301,9 +301,9 @@ function TimelineDemo() {
           <ReadToolBody path="src/app.tsx" startLine={1} endLine={3} snippet={'import { App } from "./app";\n\ncreateRoot(root).render(<App />);'} language="tsx" />
         </ToolTimelineItem>
         <ToolTimelineItem name="Edit" arg="src/app.tsx" diffStat={{ additions: 12, deletions: 3 }} duration={210} />
-        <ToolTimelineItem name="Bash" arg="pnpm build" status="failure" exitCode={2} duration={8300} />
+        <ToolTimelineItem name="Bash" arg="pnpm build" status="failed" exitCode={2} duration={8300} />
         <ToolTimelineItem name="WebFetch" arg="https://react.dev/reference/react/useCallback" status="warning" meta="redirected" />
-        <ToolTimelineItem name="Bash" arg="pnpm test --watch=false" status="progress" />
+        <ToolTimelineItem name="Bash" arg="pnpm test --watch=false" status="running" />
         <ToolTimelineItem name="Write" arg="CHANGELOG.md" status="pending" />
       </ToolTimeline>
     </Demo>
@@ -329,7 +329,7 @@ function ToolGroupDemo() {
           <ToolTimelineItem name="Read" arg="package.json" />
           <ToolTimelineItem name="Read" arg="tsconfig.json" />
           <ToolTimelineItem name="Glob" arg="src/**/*.test.ts" />
-          <ToolTimelineItem name="Read" arg="vitest.config.ts" status={done ? "success" : "progress"} />
+          <ToolTimelineItem name="Read" arg="vitest.config.ts" status={done ? "succeeded" : "running"} />
         </ToolGroup>
         <ToolGroup verb="Searched" runningVerb="Searching" noun="pattern">
           <ToolTimelineItem name="Grep" arg="TODO" />
@@ -578,7 +578,7 @@ function ThinkingDemo() {
           <ChainOfThought streaming={streaming} tokenCount={tokens} summary="Traced the off-by-one to the increment guard">
             <ChainOfThoughtContent>
               <ChainOfThoughtStep label="The guard compares c < max - 1, so max is never reached." />
-              <ChainOfThoughtStep label="Math.min(max, c + 1) states the intent directly." status={streaming ? "active" : "complete"} />
+              <ChainOfThoughtStep label="Math.min(max, c + 1) states the intent directly." status={streaming ? "running" : "succeeded"} />
             </ChainOfThoughtContent>
           </ChainOfThought>
         </div>

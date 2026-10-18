@@ -320,8 +320,10 @@ export interface DiffViewerProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   newValue?: string;
   /** Precomputed (e.g. server-side, author-attributed) comparison; overrides old/new values. */
   segments?: DiffSegment[];
-  /** Default "inline". */
+  /** Layout (controlled). Default "inline". */
   mode?: DiffMode;
+  /** Initial layout when uncontrolled; also shows the Inline / Split toggle. */
+  defaultMode?: DiffMode;
   /** Shows an Inline / Split toggle in the header. */
   onModeChange?: (mode: DiffMode) => void;
   /** Detail inside changed lines. Default "word". */
@@ -364,7 +366,8 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
       oldValue = "",
       newValue = "",
       segments,
-      mode = "inline",
+      mode: modeProp,
+      defaultMode,
       onModeChange,
       granularity = "word",
       collapseUnchanged = true,
@@ -389,6 +392,12 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
     ref
   ) => {
     const bodyRef = React.useRef<HTMLDivElement>(null);
+    const [modeInner, setModeInner] = React.useState<DiffMode>(defaultMode ?? "inline");
+    const mode = modeProp ?? modeInner;
+    const setMode = (next: DiffMode) => {
+      if (modeProp === undefined) setModeInner(next);
+      onModeChange?.(next);
+    };
     const parts = React.useMemo(
       () => (segments ? segmentsToParts(segments) : computeDiff(oldValue, newValue, granularity)),
       [segments, oldValue, newValue, granularity]
@@ -600,12 +609,12 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
             )}
             <span className="ml-auto flex items-center gap-1">
               {headerExtra}
-              {onModeChange && (
+              {(onModeChange || defaultMode !== undefined) && (
                 <SegmentedControl
                   size="sm"
                   aria-label="Diff layout"
                   value={mode}
-                  onValueChange={(v) => v && onModeChange(v as DiffMode)}
+                  onValueChange={(v) => v && setMode(v as DiffMode)}
                   options={[
                     { value: "inline", label: "Inline" },
                     { value: "split", label: "Split" },
@@ -618,10 +627,10 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
                     {active >= 0 ? `${active + 1} of ${changeCount}` : ""}
                   </span>
                   <Button size="icon-xs" variant="ghost" aria-label="Previous change" onClick={() => go(-1)}>
-                    <RiArrowUpSLine />
+                    <RiArrowUpSLine aria-hidden />
                   </Button>
                   <Button size="icon-xs" variant="ghost" aria-label="Next change" onClick={() => go(1)}>
-                    <RiArrowDownSLine />
+                    <RiArrowDownSLine aria-hidden />
                   </Button>
                 </>
               )}
@@ -1157,12 +1166,12 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
             )}
             <span className="ml-auto flex items-center gap-1.5">
               {onReject && (
-                <Button size="xs" variant="secondary" leadingIcon={<RiCloseLine />} onClick={onReject}>
+                <Button size="xs" variant="secondary" leadingIcon={<RiCloseLine aria-hidden />} onClick={onReject}>
                   {rejectLabel}
                 </Button>
               )}
               {onAccept && (
-                <Button size="xs" variant="primary" leadingIcon={<RiCheckLine />} onClick={onAccept}>
+                <Button size="xs" variant="primary" leadingIcon={<RiCheckLine aria-hidden />} onClick={onAccept}>
                   {acceptLabel}
                 </Button>
               )}

@@ -10,29 +10,29 @@ import {
   Toaster,
   snackbar,
   toast,
-  type AlertBannerVariant,
-  type InlineAlertVariant,
+  type AlertBannerTone,
+  type Tone,
 } from "@sutra/ui";
 import { RiArchiveLine, RiCheckLine, RiRocketLine, RiWifiOffLine } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
-const alertVariants: { variant: InlineAlertVariant; title: string; description: string }[] = [
-  { variant: "info", title: "Scheduled maintenance", description: "The API will be read-only on Sunday from 02:00 to 03:00 UTC." },
-  { variant: "success", title: "Payment received", description: "Invoice #4021 was paid in full. A receipt is on its way." },
-  { variant: "warning", title: "Storage almost full", description: "You've used 92% of your 50 GB. Upgrade to keep syncing files." },
-  { variant: "destructive", title: "Couldn't save changes", description: "The server rejected the request. Check your connection and try again." },
-  { variant: "neutral", title: "Read-only workspace", description: "Ask an admin for edit access to make changes here." },
-  { variant: "brand", title: "New: shared views", description: "Save filters as a view and share it with your team." },
+const alertTones: { tone: Tone; title: string; description: string }[] = [
+  { tone: "info", title: "Scheduled maintenance", description: "The API will be read-only on Sunday from 02:00 to 03:00 UTC." },
+  { tone: "success", title: "Payment received", description: "Invoice #4021 was paid in full. A receipt is on its way." },
+  { tone: "warning", title: "Storage almost full", description: "You've used 92% of your 50 GB. Upgrade to keep syncing files." },
+  { tone: "destructive", title: "Couldn't save changes", description: "The server rejected the request. Check your connection and try again." },
+  { tone: "neutral", title: "Read-only workspace", description: "Ask an admin for edit access to make changes here." },
+  { tone: "primary", title: "New: shared views", description: "Save filters as a view and share it with your team." },
 ];
 
-const bannerVariants: { variant: AlertBannerVariant; message: React.ReactNode }[] = [
-  { variant: "brand", message: <><strong>Sutra 2.0</strong> is here with a redesigned editor.</> },
-  { variant: "neutral", message: "We've updated our privacy policy." },
-  { variant: "info", message: "Scheduled maintenance on Sunday, 02:00 UTC." },
-  { variant: "success", message: "All systems operational." },
-  { variant: "warning", message: "Your trial ends in 3 days." },
-  { variant: "destructive", message: "Payment failed. Update your billing details to avoid interruption." },
-  { variant: "inverse", message: "Join our live product walkthrough on Thursday." },
+const bannerTones: { tone: AlertBannerTone; message: React.ReactNode }[] = [
+  { tone: "primary", message: <><strong>Sutra 2.0</strong> is here with a redesigned editor.</> },
+  { tone: "neutral", message: "We've updated our privacy policy." },
+  { tone: "info", message: "Scheduled maintenance on Sunday, 02:00 UTC." },
+  { tone: "success", message: "All systems operational." },
+  { tone: "warning", message: "Your trial ends in 3 days." },
+  { tone: "destructive", message: "Payment failed. Update your billing details to avoid interruption." },
+  { tone: "inverse", message: "Join our live product walkthrough on Thursday." },
 ];
 
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -47,7 +47,7 @@ function DismissibleAlert() {
     );
   }
   return (
-    <InlineAlert variant="brand" appearance="outline" onDismiss={() => setOpen(false)}>
+    <InlineAlert tone="primary" appearance="outline" onDismiss={() => setOpen(false)}>
       <InlineAlertTitle>Two-factor authentication is off</InlineAlertTitle>
       <InlineAlertDescription>
         Protect your account with an authenticator app. It takes about two minutes.
@@ -68,7 +68,7 @@ function DismissibleBanner() {
   return (
     <>
       <AlertBanner
-        variant="brand"
+        tone="primary"
         open={open}
         onOpenChange={setOpen}
         dismissible
@@ -105,8 +105,8 @@ export function FeedbackPage() {
         <div className="space-y-3">
           <DemoLabel>Soft</DemoLabel>
           <div className="grid gap-3 md:grid-cols-2">
-            {alertVariants.map(({ variant, title, description }) => (
-              <InlineAlert key={variant} variant={variant}>
+            {alertTones.map(({ tone, title, description }) => (
+              <InlineAlert key={tone} tone={tone}>
                 <InlineAlertTitle>{title}</InlineAlertTitle>
                 <InlineAlertDescription>{description}</InlineAlertDescription>
               </InlineAlert>
@@ -116,8 +116,8 @@ export function FeedbackPage() {
         <div className="space-y-3">
           <DemoLabel>Outline</DemoLabel>
           <div className="grid gap-3 md:grid-cols-2">
-            {alertVariants.map(({ variant, title }) => (
-              <InlineAlert key={variant} variant={variant} appearance="outline">
+            {alertTones.map(({ tone, title }) => (
+              <InlineAlert key={tone} tone={tone} appearance="outline">
                 <InlineAlertTitle>{title}</InlineAlertTitle>
               </InlineAlert>
             ))}
@@ -126,8 +126,8 @@ export function FeedbackPage() {
         <div className="space-y-3">
           <DemoLabel>Accent</DemoLabel>
           <div className="grid gap-3 md:grid-cols-2">
-            {alertVariants.map(({ variant, description }) => (
-              <InlineAlert key={variant} variant={variant} appearance="accent">
+            {alertTones.map(({ tone, description }) => (
+              <InlineAlert key={tone} tone={tone} appearance="accent">
                 <InlineAlertDescription>{description}</InlineAlertDescription>
               </InlineAlert>
             ))}
@@ -135,7 +135,7 @@ export function FeedbackPage() {
         </div>
         <div className="space-y-3">
           <DemoLabel>Actions, dismiss & custom icon</DemoLabel>
-          <InlineAlert variant="warning">
+          <InlineAlert tone="warning">
             <InlineAlertTitle>Your API key expires in 7 days</InlineAlertTitle>
             <InlineAlertDescription>
               Rotate it from <a href="#inline-alert">Settings → API keys</a> to avoid failed requests.
@@ -150,10 +150,10 @@ export function FeedbackPage() {
             </InlineAlertActions>
           </InlineAlert>
           <DismissibleAlert />
-          <InlineAlert variant="neutral" icon={<RiWifiOffLine />}>
+          <InlineAlert tone="neutral" icon={<RiWifiOffLine aria-hidden />}>
             <InlineAlertDescription>You're offline. Changes will sync when you reconnect.</InlineAlertDescription>
           </InlineAlert>
-          <InlineAlert variant="info" icon={false}>
+          <InlineAlert tone="info" icon={false}>
             <InlineAlertDescription>An alert without an icon, for dense layouts.</InlineAlertDescription>
           </InlineAlert>
         </div>
@@ -227,7 +227,7 @@ export function FeedbackPage() {
       >
         <DemoLabel>Inline</DemoLabel>
         <div className="flex flex-col items-start gap-3">
-          <Snackbar message="Conversation archived" action={{ label: "Undo" }} onClose={() => undefined} />
+          <Snackbar message="Conversation archived" action={{ label: "Undo" }} onDismiss={() => undefined} />
           <Snackbar message="Changes saved" icon={<RiCheckLine />} />
           <Snackbar
             message="Couldn't reach the server. Retrying in 10 seconds."
@@ -266,15 +266,15 @@ export function FeedbackPage() {
         canvasClassName="gap-0 p-0 sm:p-0"
       >
         <div className="flex flex-col divide-y divide-border">
-          {bannerVariants.map(({ variant, message }) => (
+          {bannerTones.map(({ tone, message }) => (
             <AlertBanner
-              key={variant}
-              variant={variant}
+              key={tone}
+              tone={tone}
               message={message}
-              action={variant === "brand" || variant === "destructive" ? { label: variant === "brand" ? "What's new" : "Update billing", href: "#alert-banner" } : undefined}
+              action={tone === "primary" || tone === "destructive" ? { label: tone === "primary" ? "What's new" : "Update billing", href: "#alert-banner" } : undefined}
             />
           ))}
-          <AlertBanner variant="inverse" align="start" icon={<RiRocketLine />} message="Start-aligned banner with a custom icon." />
+          <AlertBanner tone="inverse" align="start" icon={<RiRocketLine />} message="Start-aligned banner with a custom icon." />
           <DismissibleBanner />
         </div>
       </Demo>

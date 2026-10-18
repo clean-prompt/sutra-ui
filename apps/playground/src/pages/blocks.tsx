@@ -82,7 +82,7 @@ function BlockPreview({ block }: { block: BlockEntry }) {
             {block.name}
           </Heading>
           {block.description && (
-            <Text size="sm" tone="muted">
+            <Text size="sm" tone="neutral">
               {block.description}
             </Text>
           )}
@@ -127,7 +127,7 @@ export function BlocksPage() {
       description="Composed sections and full pages built from Sutra components. Full-page blocks are scaled to fit; toggle Actual size to inspect them at full width."
     >
       {groups.length === 0 ? (
-        <Text tone="muted">No blocks registered yet.</Text>
+        <Text tone="neutral">No blocks registered yet.</Text>
       ) : (
         <>
           <nav aria-label="Block categories" className="-mt-6 flex flex-wrap gap-2">

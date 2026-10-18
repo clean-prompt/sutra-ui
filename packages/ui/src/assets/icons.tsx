@@ -1,13 +1,18 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 
 /* ------------------------------------------------------------------ */
 /* Icon                                                                */
 /* ------------------------------------------------------------------ */
 
 export type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type IconTone = "default" | "muted" | "primary" | "success" | "warning" | "destructive" | "info";
+/**
+ * Icon tone. Canonical `Tone` plus deprecated aliases. Omit it (or pass the legacy `"default"`)
+ * to inherit `currentColor`; `neutral` (legacy `"muted"`) is the muted foreground.
+ */
+export type IconTone = ToneInput;
 
 /** Pixel sizes for each icon size token. */
 export const iconSizes: Record<IconSize, number> = { xs: 12, sm: 16, md: 20, lg: 24, xl: 32 };
@@ -20,9 +25,8 @@ const iconSizeClass: Record<IconSize, string> = {
   xl: "size-8",
 };
 
-const iconToneClass: Record<IconTone, string> = {
-  default: "",
-  muted: "text-muted-foreground",
+const iconToneClass: Record<Tone, string> = {
+  neutral: "text-muted-foreground",
   primary: "text-primary",
   success: "text-success",
   warning: "text-warning",
@@ -42,9 +46,13 @@ export interface IconProps extends Omit<React.ComponentPropsWithoutRef<"svg">, "
   label?: string;
 }
 
+function iconToneClassFor(tone: IconTone | undefined) {
+  return !tone || tone === "default" ? "" : iconToneClass[normalizeTone(tone)];
+}
+
 /** Sized, toned wrapper around any icon component. */
 export const Icon = React.forwardRef<SVGSVGElement, IconProps>(
-  ({ as: Comp, size = "sm", tone = "default", label, className, ...props }, ref) => (
+  ({ as: Comp, size = "sm", tone, label, className, ...props }, ref) => (
     <Comp
       ref={ref}
       size={iconSizes[size]}
@@ -52,7 +60,7 @@ export const Icon = React.forwardRef<SVGSVGElement, IconProps>(
       aria-label={label}
       role={label ? "img" : undefined}
       focusable="false"
-      className={cn("shrink-0", iconSizeClass[size], iconToneClass[tone], className)}
+      className={cn("shrink-0", iconSizeClass[size], iconToneClassFor(tone), className)}
       {...props}
     />
   )
@@ -63,6 +71,7 @@ Icon.displayName = "Icon";
 /* FeaturedIcon                                                        */
 /* ------------------------------------------------------------------ */
 
+/** @deprecated Use `tone` (`Tone`) on `FeaturedIcon`; `"brand"` is `"primary"`. */
 export type FeaturedIconColor = "brand" | "neutral" | "success" | "warning" | "destructive" | "info";
 export type FeaturedIconVariant = "soft" | "solid" | "outline-ring" | "glass";
 
@@ -141,7 +150,11 @@ export const featuredIconVariants = cva(
 
 export interface FeaturedIconProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color">,
-    VariantProps<typeof featuredIconVariants> {
+    Omit<VariantProps<typeof featuredIconVariants>, "color"> {
+  /** Semantic colour. Default `primary`. */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
+  color?: FeaturedIconColor | null;
   /** Icon component to render inside the tile. Alternatively pass the icon as children. */
   icon?: IconComponent;
   /** Accessible label; decorative when omitted. */
@@ -150,8 +163,10 @@ export interface FeaturedIconProps
 
 /** An icon presented in a tinted tile, with soft, solid, ring-halo and glass styles. */
 export const FeaturedIcon = React.forwardRef<HTMLSpanElement, FeaturedIconProps>(
-  ({ icon: IconComp, variant, color, size, shape, label, className, children, ...props }, ref) => {
+  ({ icon: IconComp, variant, tone, color: legacyColor, size, shape, label, className, children, ...props }, ref) => {
     const v = variant ?? "soft";
+    const t = normalizeTone(tone ?? legacyColor, "primary");
+    const color: FeaturedIconColor = t === "primary" ? "brand" : t;
     return (
       <span
         ref={ref}

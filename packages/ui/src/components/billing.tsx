@@ -16,7 +16,8 @@ import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { errorMessage, useAsyncAction } from "../hooks/use-async-action";
 import { formatCost } from "../lib/format";
-import { Badge, type BadgeColor } from "./badge";
+import { Badge } from "./badge";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { Button } from "./button";
 import {
   Dialog,
@@ -290,7 +291,7 @@ export const PlanPicker = React.forwardRef<HTMLDivElement, PlanPickerProps>(
         </ul>
         <Dialog open={!!pending} onOpenChange={(o) => !o && setPending(null)}>
           <DialogContent size="sm">
-            <DialogHeader icon={<RiAlertLine />} tone="warning">
+            <DialogHeader icon={<RiAlertLine aria-hidden />} tone="warning">
               <DialogTitle>Downgrade to {pending?.name}?</DialogTitle>
               <DialogDescription>
                 {losses.length > 0 ? "You'll lose access to these at the end of your billing period:" : "Your plan changes at the end of your billing period."}
@@ -453,6 +454,8 @@ export interface BillingPaymentMethod {
 }
 
 export type SubscriptionStatus = "active" | "trialing" | "past_due" | "canceled";
+/** Accepted subscription statuses, including the deprecated British spelling `cancelled`. */
+export type SubscriptionStatusInput = SubscriptionStatus | "cancelled";
 
 export interface CurrentPlanCardProps extends React.HTMLAttributes<HTMLElement> {
   planName: string;
@@ -461,7 +464,7 @@ export interface CurrentPlanCardProps extends React.HTMLAttributes<HTMLElement> 
   interval?: BillingInterval;
   currency?: string;
   locale?: string;
-  status?: SubscriptionStatus;
+  status?: SubscriptionStatusInput;
   renewsAt?: Date | string;
   seats?: { used: number; total: number };
   usage?: PlanUsageQuota[];
@@ -471,11 +474,11 @@ export interface CurrentPlanCardProps extends React.HTMLAttributes<HTMLElement> 
   onUpdatePayment?: () => void;
 }
 
-const statusBadge: Record<SubscriptionStatus, { label: string; color: BadgeColor }> = {
-  active: { label: "Active", color: "success" },
-  trialing: { label: "Trial", color: "info" },
-  past_due: { label: "Past due", color: "destructive" },
-  canceled: { label: "Canceled", color: "neutral" },
+const statusBadge: Record<SubscriptionStatus, { label: string; tone: Tone }> = {
+  active: { label: "Active", tone: "success" },
+  trialing: { label: "Trial", tone: "info" },
+  past_due: { label: "Past due", tone: "destructive" },
+  canceled: { label: "Canceled", tone: "neutral" },
 };
 
 /** Summary of the active subscription: price, renewal, seats, quota meters, payment method and actions. */
@@ -487,7 +490,7 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
       interval = "monthly",
       currency = "USD",
       locale = "en-US",
-      status = "active",
+      status: statusProp = "active",
       renewsAt,
       seats,
       usage = [],
@@ -501,7 +504,8 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
     ref
   ) => {
     const titleId = React.useId();
-    const s = statusBadge[status];
+    const status: SubscriptionStatus = statusProp === "cancelled" ? "canceled" : statusProp;
+    const s = statusBadge[status] ?? statusBadge.active;
     return (
       <section
         ref={ref}
@@ -516,7 +520,7 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
               <h3 id={titleId} className="text-lg font-semibold text-foreground">
                 {planName}
               </h3>
-              <Badge size="sm" color={s.color}>
+              <Badge size="sm" tone={s.tone}>
                 {s.label}
               </Badge>
             </div>
@@ -582,7 +586,7 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
               </div>
             </div>
             {onUpdatePayment && (
-              <Button size="sm" variant="outline" leadingIcon={<RiBankCardLine />} onClick={onUpdatePayment}>
+              <Button size="sm" variant="outline" leadingIcon={<RiBankCardLine aria-hidden />} onClick={onUpdatePayment}>
                 Update payment method
               </Button>
             )}
@@ -685,7 +689,7 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
             </p>
           </div>
           <span aria-hidden className="inline-flex size-10 items-center justify-center rounded-box bg-primary-soft text-primary-soft-foreground">
-            <RiCoinsLine className="size-5" />
+            <RiCoinsLine aria-hidden className="size-5" />
           </span>
         </div>
         <dl className="grid grid-cols-2 gap-3 text-sm">
@@ -706,7 +710,7 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
             Less than {lowRunwayDays} days of credits left at the current rate.
           </p>
         )}
-        <Button onClick={() => setOpen(true)} leadingIcon={<RiCoinsLine />}>
+        <Button onClick={() => setOpen(true)} leadingIcon={<RiCoinsLine aria-hidden />}>
           Buy credits
         </Button>
         <Dialog open={open} onOpenChange={setOpen}>
@@ -930,19 +934,22 @@ export interface UsageInvoiceTableProps extends React.HTMLAttributes<HTMLTableEl
   locale?: string;
   onDownload?: (invoice: BillingInvoice) => void;
   onPay?: (invoice: BillingInvoice) => void;
-  emptyLabel?: string;
+  /** Shown when there are no invoices. Default "No invoices yet". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
+  emptyLabel?: React.ReactNode;
 }
 
-const invoiceStatus: Record<InvoiceStatus, { label: string; color: BadgeColor }> = {
-  paid: { label: "Paid", color: "success" },
-  due: { label: "Due", color: "warning" },
-  failed: { label: "Failed", color: "destructive" },
-  refunded: { label: "Refunded", color: "neutral" },
+const invoiceStatus: Record<InvoiceStatus, { label: string; tone: Tone }> = {
+  paid: { label: "Paid", tone: "success" },
+  due: { label: "Due", tone: "warning" },
+  failed: { label: "Failed", tone: "destructive" },
+  refunded: { label: "Refunded", tone: "neutral" },
 };
 
 /** Invoice history: date, description, amount, paid/due/failed status and download / pay actions. */
 export const UsageInvoiceTable = React.forwardRef<HTMLTableElement, UsageInvoiceTableProps>(
-  ({ invoices, locale = "en-US", onDownload, onPay, emptyLabel = "No invoices yet.", className, ...props }, ref) => (
+  ({ invoices, locale = "en-US", onDownload, onPay, emptyState, emptyLabel, className, ...props }, ref) => (
     <Table ref={ref} className={className} {...props}>
       <caption className="sr-only">Invoices</caption>
       <TableHeader>
@@ -960,7 +967,7 @@ export const UsageInvoiceTable = React.forwardRef<HTMLTableElement, UsageInvoice
         {invoices.length === 0 ? (
           <TableRow>
             <TableCell colSpan={5} align="center" className="py-8 text-muted-foreground">
-              {emptyLabel}
+              {emptyState ?? emptyLabel ?? "No invoices yet"}
             </TableCell>
           </TableRow>
         ) : (
@@ -978,7 +985,7 @@ export const UsageInvoiceTable = React.forwardRef<HTMLTableElement, UsageInvoice
                   {formatPrice(inv.amount, inv.currency ?? "USD", locale)}
                 </TableCell>
                 <TableCell>
-                  <Badge size="sm" color={st.color} variant="soft">
+                  <Badge size="sm" tone={st.tone} variant="soft">
                     {st.label}
                   </Badge>
                 </TableCell>
@@ -1010,11 +1017,22 @@ UsageInvoiceTable.displayName = "UsageInvoiceTable";
 /* BillingBanner                                                       */
 /* ------------------------------------------------------------------ */
 
-export type BillingBannerTone = "trial" | "payment-failed" | "over-limit" | "info";
+/** What a billing banner is about. Sets the default copy, icon, CTA and tone. */
+export type BillingBannerKind = "trial" | "payment-failed" | "over-limit" | "info";
+/** @deprecated Use `BillingBannerKind` with the `kind` prop. */
+export type BillingBannerTone = BillingBannerKind;
+
+const BANNER_KINDS: readonly string[] = ["trial", "payment-failed", "over-limit", "info"];
 
 export interface BillingBannerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  tone: BillingBannerTone;
-  /** Days left in the trial (tone "trial"). */
+  /** What the banner is about. Default "info". */
+  kind?: BillingBannerKind;
+  /**
+   * Semantic colour override when `kind` is set. Without `kind`, a kind value here
+   * (`trial`, `payment-failed`, `over-limit`, `info`) is the deprecated way to pass the kind.
+   */
+  tone?: ToneInput | BillingBannerKind;
+  /** Days left in the trial (kind "trial"). */
   daysLeft?: number;
   title?: React.ReactNode;
   description?: React.ReactNode;
@@ -1023,15 +1041,24 @@ export interface BillingBannerProps extends Omit<React.HTMLAttributes<HTMLDivEle
   onDismiss?: () => void;
 }
 
-const bannerTone: Record<BillingBannerTone, { box: string; icon: React.ReactNode; action: string }> = {
-  trial: { box: "border-info/30 bg-info-soft text-info-soft-foreground", icon: <RiTimeLine />, action: "Choose a plan" },
-  "payment-failed": { box: "border-destructive/30 bg-destructive-soft text-destructive-soft-foreground", icon: <RiErrorWarningLine />, action: "Update payment" },
-  "over-limit": { box: "border-warning/30 bg-warning-soft text-warning-soft-foreground", icon: <RiAlertLine />, action: "Upgrade" },
-  info: { box: "border-border bg-subtle text-foreground", icon: <RiCoinsLine />, action: "View billing" },
+const bannerKind: Record<BillingBannerKind, { tone: Tone; icon: React.ReactNode; action: string }> = {
+  trial: { tone: "info", icon: <RiTimeLine aria-hidden />, action: "Choose a plan" },
+  "payment-failed": { tone: "destructive", icon: <RiErrorWarningLine aria-hidden />, action: "Update payment" },
+  "over-limit": { tone: "warning", icon: <RiAlertLine aria-hidden />, action: "Upgrade" },
+  info: { tone: "neutral", icon: <RiCoinsLine aria-hidden />, action: "View billing" },
 };
 
-function bannerTitle(tone: BillingBannerTone, daysLeft?: number) {
-  switch (tone) {
+const bannerBox: Record<Tone, string> = {
+  neutral: "border-border bg-subtle text-foreground",
+  primary: "border-primary/30 bg-primary-soft text-primary-soft-foreground",
+  success: "border-success/30 bg-success-soft text-success-soft-foreground",
+  warning: "border-warning/30 bg-warning-soft text-warning-soft-foreground",
+  destructive: "border-destructive/30 bg-destructive-soft text-destructive-soft-foreground",
+  info: "border-info/30 bg-info-soft text-info-soft-foreground",
+};
+
+function bannerTitle(kind: BillingBannerKind, daysLeft?: number) {
+  switch (kind) {
     case "trial":
       return daysLeft == null ? "Your trial is ending soon" : daysLeft <= 0 ? "Your trial ends today" : `Your trial ends in ${daysLeft} ${daysLeft === 1 ? "day" : "days"}`;
     case "payment-failed":
@@ -1043,35 +1070,39 @@ function bannerTitle(tone: BillingBannerTone, daysLeft?: number) {
   }
 }
 
-const bannerDescription: Record<BillingBannerTone, string> = {
+const bannerDescription: Record<BillingBannerKind, string> = {
   trial: "Pick a plan to keep your agents, history and integrations.",
   "payment-failed": "Update your card to avoid interruptions. We'll retry automatically in 3 days.",
   "over-limit": "New runs are paused until you upgrade or the quota resets.",
   info: "",
 };
 
-/** Tone-based billing notice (trial ending, payment failed, over limit) with a CTA. */
+/** Billing notice (trial ending, payment failed, over limit) with a CTA. */
 export const BillingBanner = React.forwardRef<HTMLDivElement, BillingBannerProps>(
-  ({ tone, daysLeft, title, description, actionLabel, onAction, onDismiss, className, ...props }, ref) => {
-    const t = bannerTone[tone];
-    const desc = description ?? bannerDescription[tone];
+  ({ kind: kindProp, tone: toneProp, daysLeft, title, description, actionLabel, onAction, onDismiss, className, ...props }, ref) => {
+    const legacyKind = !kindProp && toneProp && BANNER_KINDS.includes(toneProp) ? (toneProp as BillingBannerKind) : undefined;
+    const kind: BillingBannerKind = kindProp ?? legacyKind ?? "info";
+    const t = bannerKind[kind];
+    const tone: Tone = legacyKind || !toneProp ? t.tone : normalizeTone(toneProp, t.tone);
+    const desc = description ?? bannerDescription[kind];
     return (
       <div
         ref={ref}
-        role={tone === "payment-failed" || tone === "over-limit" ? "alert" : "status"}
+        role={kind === "payment-failed" || kind === "over-limit" ? "alert" : "status"}
+        data-kind={kind}
         data-tone={tone}
-        className={cn("flex flex-wrap items-center gap-3 rounded-box border px-4 py-3 text-sm", t.box, className)}
+        className={cn("flex flex-wrap items-center gap-3 rounded-box border px-4 py-3 text-sm", bannerBox[tone], className)}
         {...props}
       >
         <span aria-hidden className="flex shrink-0 [&_svg]:size-5">
           {t.icon}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="font-semibold">{title ?? bannerTitle(tone, daysLeft)}</p>
+          <p className="font-semibold">{title ?? bannerTitle(kind, daysLeft)}</p>
           {desc && <p className="opacity-90">{desc}</p>}
         </div>
         {onAction && (
-          <Button size="sm" variant={tone === "payment-failed" ? "destructive" : tone === "info" ? "secondary" : "primary"} onClick={onAction} trailingIcon={<RiArrowRightLine />}>
+          <Button size="sm" variant={kind === "payment-failed" ? "destructive" : kind === "info" ? "secondary" : "primary"} onClick={onAction} trailingIcon={<RiArrowRightLine aria-hidden />}>
             {actionLabel ?? t.action}
           </Button>
         )}
@@ -1230,7 +1261,7 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
               </p>
             </div>
             <div className="flex justify-end">
-              <Button onClick={() => setStep("payment")} trailingIcon={<RiArrowRightLine />}>
+              <Button onClick={() => setStep("payment")} trailingIcon={<RiArrowRightLine aria-hidden />}>
                 Continue
               </Button>
             </div>
@@ -1264,7 +1295,7 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
               <Button variant="ghost" onClick={() => setStep("plan")}>
                 Back
               </Button>
-              <Button disabled={!canPay} onClick={() => setStep("confirm")} trailingIcon={<RiArrowRightLine />}>
+              <Button disabled={!canPay} onClick={() => setStep("confirm")} trailingIcon={<RiArrowRightLine aria-hidden />}>
                 Continue
               </Button>
             </div>
@@ -1334,7 +1365,7 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
         {step === "success" && (
           <div role="status" className="flex flex-col items-center gap-3 py-4 text-center">
             <span aria-hidden className="inline-flex size-12 items-center justify-center rounded-full bg-success-soft text-success">
-              <RiCheckLine className="size-6" />
+              <RiCheckLine aria-hidden className="size-6" />
             </span>
             <p className="text-sm text-muted-foreground">
               You're now on {plan.name}. A receipt for {price} is on its way.

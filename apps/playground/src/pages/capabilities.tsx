@@ -945,7 +945,7 @@ function SchemaFormDemo() {
     <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
       <SchemaForm
         schema={MEMORY_SCHEMA}
-        onChange={setValue}
+        onValueChange={setValue}
         autosave
         autosaveDelay={700}
         onSave={async (_v, keys) => {
@@ -1076,7 +1076,7 @@ export function CapabilitiesPage() {
       <Demo id="security-scan" title="Security scan verdict" description="Verdict, policy badge, per-severity counts and findings with file:line." align="start" canvasClassName="grid gap-6 lg:grid-cols-2">
         <SecurityScanVerdict verdict="dangerous" policy="Blocked by policy" policyTone="block" findings={SCAN_FINDINGS} scanner="skill-guard 1.4" scannedAt="2 min ago" />
         <div className="space-y-6">
-          <SecurityScanVerdict verdict="caution" policy="Allowed with warning" policyTone="warn" findings={SCAN_FINDINGS.slice(3)} scanner="skill-guard 1.4" />
+          <SecurityScanVerdict verdict="caution" policy="Allowed with warning" policyTone="warning" findings={SCAN_FINDINGS.slice(3)} scanner="skill-guard 1.4" />
           <SecurityScanVerdict verdict="safe" policy="Allowed" findings={[]} scanner="skill-guard 1.4" />
         </div>
       </Demo>

@@ -22,9 +22,9 @@ function readStored(key: string | null): ThemeToggleMode | undefined {
 
 const labels: Record<ThemeToggleMode, string> = { light: "Light", dark: "Dark", system: "System" };
 const icons: Record<ThemeToggleMode, React.ReactNode> = {
-  light: <RiSunLine />,
-  dark: <RiMoonClearLine />,
-  system: <RiComputerLine />,
+  light: <RiSunLine aria-hidden />,
+  dark: <RiMoonClearLine aria-hidden />,
+  system: <RiComputerLine aria-hidden />,
 };
 
 export interface ThemeToggleProps
@@ -134,7 +134,7 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement & HTMLDivElement, 
             !showSystem && resolved === "light" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-50 opacity-0"
           )}
         >
-          <RiSunLine />
+          <RiSunLine aria-hidden />
         </span>
         <span
           aria-hidden
@@ -143,7 +143,7 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement & HTMLDivElement, 
             !showSystem && resolved === "dark" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-50 opacity-0"
           )}
         >
-          <RiMoonClearLine />
+          <RiMoonClearLine aria-hidden />
         </span>
         <span
           aria-hidden
@@ -152,7 +152,7 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement & HTMLDivElement, 
             showSystem ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
           )}
         >
-          <RiComputerLine />
+          <RiComputerLine aria-hidden />
         </span>
       </Button>
     );

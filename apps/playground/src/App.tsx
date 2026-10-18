@@ -126,7 +126,7 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                     s.id === "foundations" ? foundationIcons[p.id] : s.id === "blocks" ? <RiLayoutMasonryLine /> : <RiBrushLine />;
                   return (
                     <SidebarMenuItem key={p.id}>
-                      <SidebarMenuButton asChild isActive={active} icon={icon}>
+                      <SidebarMenuButton asChild active={active} icon={icon}>
                         <a href={href(s.id, p.id)}>{p.label}</a>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -137,7 +137,7 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                     <SidebarMenuSub
                       open={active}
                       trigger={
-                        <SidebarMenuButton asChild isActive={active && !anchor} icon={<RiCodeBoxLine />}>
+                        <SidebarMenuButton asChild active={active && !anchor} icon={<RiCodeBoxLine />}>
                           <a href={href(s.id, p.id)}>
                             <span className="min-w-0 flex-1 truncate">{p.label}</span>
                             <RiArrowRightSLine
@@ -153,7 +153,7 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                           key={item.id}
                           size="sm"
                           href={href(s.id, p.id, item.id)}
-                          isActive={active && anchor === item.id}
+                          active={active && anchor === item.id}
                         >
                           {item.label}
                         </SidebarMenuSubButton>
@@ -167,7 +167,7 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
         ))}
       </SidebarContent>
       <SidebarFooter className="px-4 py-3">
-        <Text size="xs" tone="muted">
+        <Text size="xs" tone="neutral">
           React 19 · Tailwind v4 · Radix
         </Text>
       </SidebarFooter>

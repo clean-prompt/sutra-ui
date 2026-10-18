@@ -425,7 +425,7 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
                   onClick={toggleTorch}
                   className="rounded-full bg-black/40 text-white backdrop-blur hover:bg-black/60"
                 >
-                  {torchOn ? <RiFlashlightFill /> : <RiFlashlightLine />}
+                  {torchOn ? <RiFlashlightFill aria-hidden /> : <RiFlashlightLine aria-hidden />}
                 </Button>
               )}
               {canSwitch && (
@@ -436,7 +436,7 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
                   onClick={() => setFacing((f) => (f === "environment" ? "user" : "environment"))}
                   className="rounded-full bg-black/40 text-white backdrop-blur hover:bg-black/60"
                 >
-                  <RiCameraSwitchLine />
+                  <RiCameraSwitchLine aria-hidden />
                 </Button>
               )}
             </div>
@@ -465,7 +465,7 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
               aria-hidden
               onChange={onFile}
             />
-            <Button variant="ghost" size="sm" leadingIcon={<RiImageLine />} onClick={() => fileRef.current?.click()}>
+            <Button variant="ghost" size="sm" leadingIcon={<RiImageLine aria-hidden />} onClick={() => fileRef.current?.click()}>
               Upload image instead
             </Button>
           </>
@@ -526,7 +526,7 @@ export function QRScannerDialog({
             </div>
             <DialogPrimitive.Close asChild>
               <Button variant="ghost" size="icon" aria-label="Close scanner" className="rounded-full bg-white/10 text-white hover:bg-white/20">
-                <RiCloseLine />
+                <RiCloseLine aria-hidden />
               </Button>
             </DialogPrimitive.Close>
           </div>

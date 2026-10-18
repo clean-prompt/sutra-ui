@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiCalendarCheckLine, RiFireFill } from "@remixicon/react";
-import { cn } from "../lib/cn";
+import { cn, normalizeDensity, type Density } from "../lib/cn";
 import { formatClockTime, toValidDate } from "../lib/time";
 import { useNow } from "../hooks/use-now";
 import { SutraAppIcon, sutraAppMeta, type SutraApp } from "../assets/brand";
@@ -88,7 +88,11 @@ export interface TodayTimelineProps extends Omit<React.HTMLAttributes<HTMLDivEle
   /** Toggle a task or habit. */
   onToggle?: (item: TimelineItem, done: boolean) => void;
   onSelect?: (item: TimelineItem) => void;
-  density?: "compact" | "comfortable";
+  /**
+   * Rail spacing. `compact` tightens the hour rail; `normal` (default) and `relaxed` use the
+   * roomy rail. The legacy `"comfortable"` is accepted as an alias of `relaxed`.
+   */
+  density?: Density | "comfortable";
   /** Fixed current time (otherwise the clock updates every minute). */
   now?: Date;
   /** First / last hour on the rail. Defaults fit the items within 8–20. */
@@ -104,7 +108,7 @@ const minutesOf = (d: Date) => d.getHours() * 60 + d.getMinutes();
 function Streak({ days }: { days: number }) {
   return (
     <span className="inline-flex shrink-0 items-center gap-0.5 text-xs font-semibold text-warning-soft-foreground">
-      <RiFireFill aria-hidden className="size-3.5 text-[#ff6900]" />
+      <RiFireFill aria-hidden className="size-3.5 text-orange-500" />
       {days}
       <span className="sr-only"> day streak</span>
     </span>
@@ -148,7 +152,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
       items,
       onToggle,
       onSelect,
-      density = "comfortable",
+      density: densityProp,
       now: nowProp,
       startHour,
       endHour,
@@ -159,6 +163,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
     },
     ref
   ) => {
+    const density = normalizeDensity(densityProp);
     const now = new Date(useNow({ interval: 60_000, fixed: nowProp }));
     const { untimed, timed } = React.useMemo(() => layoutTimeline(items), [items]);
     const hourHeight = density === "compact" ? 40 : 64;

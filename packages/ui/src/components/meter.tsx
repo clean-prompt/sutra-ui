@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { chartColors } from "../lib/tokens";
 import { toPercent } from "../lib/math";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 
 /** Percent thresholds at which a meter turns warning / danger. */
 export interface MeterThresholds {
@@ -9,7 +10,17 @@ export interface MeterThresholds {
   danger?: number;
 }
 
+/**
+ * Threshold level emitted by `meterLevel()` and `data-level`. These spellings predate the tone
+ * vocabulary and are kept so consumers don't break; the canonical tones are
+ * `warn` → `warning` and `danger` → `destructive` (see `meterLevelTone`).
+ */
 export type MeterLevel = "ok" | "warn" | "danger";
+
+/** Canonical tone for a meter level (`ok` → `null`, meaning "use the base tone"). */
+export function meterLevelTone(level: MeterLevel): Exclude<Tone, "neutral" | "primary" | "success" | "info"> | null {
+  return level === "danger" ? "destructive" : level === "warn" ? "warning" : null;
+}
 
 export const defaultMeterThresholds: Required<MeterThresholds> = { warn: 75, danger: 90 };
 
@@ -23,9 +34,10 @@ export function meterLevel(percent: number, thresholds: MeterThresholds | false 
   return "ok";
 }
 
+/** @deprecated Use `Tone` (the `tone` prop). */
 export type MeterColor = "primary" | "success" | "warning" | "destructive" | "info" | "neutral";
 
-const fillClass: Record<MeterColor, string> = {
+const fillClass: Record<Tone, string> = {
   primary: "bg-primary",
   success: "bg-success",
   warning: "bg-warning",
@@ -55,8 +67,10 @@ export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   valueText?: React.ReactNode | ((value: number, max: number, percent: number) => React.ReactNode);
   /** Percent thresholds for automatic warning/danger color, or false to disable. */
   thresholds?: MeterThresholds | false;
-  /** Base fill color when below thresholds (or always, if thresholds are off). Default primary. */
-  color?: MeterColor;
+  /** Base fill tone when below thresholds (or always, if thresholds are off). Default `primary`. */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
+  color?: MeterColor | ToneInput;
   /** Secondary line under the bar, e.g. "resets in 2h". */
   caption?: React.ReactNode;
   size?: "sm" | "md" | "lg";
@@ -80,7 +94,8 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
       unit,
       valueText,
       thresholds = defaultMeterThresholds,
-      color = "primary",
+      tone,
+      color,
       caption,
       size = "md",
       segments,
@@ -97,7 +112,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
     const v = empty ? min : (value as number);
     const pct = empty ? 0 : toPercent(v, max, min);
     const level = empty ? "ok" : meterLevel(pct, thresholds);
-    const fill = level === "ok" ? fillClass[color] : levelFill[level];
+    const fill = level === "ok" ? fillClass[normalizeTone(tone ?? color, "primary")] : levelFill[level];
 
     const text: React.ReactNode = empty
       ? "—"

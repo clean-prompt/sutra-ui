@@ -106,15 +106,18 @@ export interface WebhookRouteListProps extends Omit<React.HTMLAttributes<HTMLDiv
   /** Shows a "New route" button. */
   onCreate?: () => void;
   deliveryStatus?: Partial<Record<DeliveryPlatform, DeliveryPlatformStatus>>;
+  /** Shown when there are no routes. Default "No webhook routes yet". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
 /** Webhook routes: name, copyable URL, events, delivery target, last delivery and an enabled switch. */
 export const WebhookRouteList = React.forwardRef<HTMLDivElement, WebhookRouteListProps>(
-  ({ routes, selectedId, onSelect, onToggleEnabled, onCreate, deliveryStatus, empty = "No webhook routes yet.", className, ...props }, ref) => (
+  ({ routes, selectedId, onSelect, onToggleEnabled, onCreate, deliveryStatus, emptyState, empty, className, ...props }, ref) => (
     <div ref={ref} className={cn("flex min-w-0 flex-col gap-2", className)} {...props}>
       {onCreate ? (
-        <Button type="button" size="sm" variant="secondary" leadingIcon={<RiAddLine />} className="self-end" onClick={onCreate}>
+        <Button type="button" size="sm" variant="secondary" leadingIcon={<RiAddLine aria-hidden />} className="self-end" onClick={onCreate}>
           New route
         </Button>
       ) : null}
@@ -158,7 +161,7 @@ export const WebhookRouteList = React.forwardRef<HTMLDivElement, WebhookRouteLis
           })}
         </ul>
       ) : (
-        <p className="rounded-box border border-dashed border-border p-6 text-center text-sm text-muted-foreground">{empty}</p>
+        <p className="rounded-box border border-dashed border-border p-6 text-center text-sm text-muted-foreground">{emptyState ?? empty ?? "No webhook routes yet"}</p>
       )}
     </div>
   )
@@ -302,7 +305,7 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
                     setSecret(s);
                   }}
                   trigger={
-                    <Button type="button" size="sm" variant="outline" leadingIcon={<RiRefreshLine />}>
+                    <Button type="button" size="sm" variant="outline" leadingIcon={<RiRefreshLine aria-hidden />}>
                       Regenerate
                     </Button>
                   }
@@ -334,7 +337,7 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
 
         {route && onTestSend ? (
           <div className="flex flex-wrap items-center gap-3">
-            <Button type="button" size="sm" variant="outline" leadingIcon={<RiSendPlaneLine />} loading={testing} onClick={runTest}>
+            <Button type="button" size="sm" variant="outline" leadingIcon={<RiSendPlaneLine aria-hidden />} loading={testing} onClick={runTest}>
               Send test
             </Button>
             <p role="status" className={cn("text-sm", testResult ? (testResult.ok ? "text-success" : "text-destructive") : "sr-only")}>
@@ -376,7 +379,7 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
                           size="xs"
                           variant="ghost"
                           className="ml-auto"
-                          leadingIcon={<RiReplyLine />}
+                          leadingIcon={<RiReplyLine aria-hidden />}
                           aria-label={`Redeliver ${d.event ?? "delivery"} from ${when}`}
                           onClick={() => onRedeliver(d)}
                         >
@@ -388,7 +391,7 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
                 })}
               </ol>
             ) : (
-              <p className="text-sm text-muted-foreground">No deliveries yet.</p>
+              <p className="text-sm text-muted-foreground">No deliveries yet</p>
             )}
           </div>
         ) : null}

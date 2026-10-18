@@ -39,11 +39,11 @@ export type ToolHint = "read-only" | "destructive" | "network" | "filesystem" | 
 export const TOOL_HINTS: ToolHint[] = ["read-only", "destructive", "network", "filesystem", "costly"];
 
 const hintMeta: Record<ToolHint, { label: string; color: BadgeColor; icon: React.ReactNode; long: string }> = {
-  "read-only": { label: "Read-only", color: "neutral", icon: <RiEyeLine />, long: "Only reads data; never changes anything." },
-  destructive: { label: "Destructive", color: "destructive", icon: <RiDeleteBin6Line />, long: "Can delete or overwrite data." },
-  network: { label: "Network", color: "info", icon: <RiGlobalLine />, long: "Talks to external services over the network." },
-  filesystem: { label: "Filesystem", color: "warning", icon: <RiFolderLine />, long: "Reads or writes files on this machine." },
-  costly: { label: "Costly", color: "orange", icon: <RiMoneyDollarCircleLine />, long: "May incur usage charges." },
+  "read-only": { label: "Read-only", color: "neutral", icon: <RiEyeLine aria-hidden />, long: "Only reads data; never changes anything." },
+  destructive: { label: "Destructive", color: "destructive", icon: <RiDeleteBin6Line aria-hidden />, long: "Can delete or overwrite data." },
+  network: { label: "Network", color: "info", icon: <RiGlobalLine aria-hidden />, long: "Talks to external services over the network." },
+  filesystem: { label: "Filesystem", color: "warning", icon: <RiFolderLine aria-hidden />, long: "Reads or writes files on this machine." },
+  costly: { label: "Costly", color: "orange", icon: <RiMoneyDollarCircleLine aria-hidden />, long: "May incur usage charges." },
 };
 
 export interface ToolHintTagProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
@@ -90,9 +90,13 @@ export interface ToolToggleItem {
 
 export interface ToolToggleRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onToggle"> {
   tool: ToolToggleItem;
-  checked: boolean;
+  /** Controlled switch state. */
+  checked?: boolean;
+  /** Initial switch state when uncontrolled. Defaults to `tool.enabled`. */
+  defaultChecked?: boolean;
   dirty?: boolean;
   expanded?: boolean;
+  defaultExpanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
   onCheckedChange?: (checked: boolean) => void;
 }
@@ -102,7 +106,31 @@ const LOCK_REASON = "Managed by your organization";
 /** One tool row: name, hint tags, lock state, switch and an expandable detail. */
 export const ToolToggleRow = React.memo(
   React.forwardRef<HTMLDivElement, ToolToggleRowProps>(
-    ({ tool, checked, dirty, expanded = false, onExpandedChange, onCheckedChange, className, ...props }, ref) => {
+    (
+      {
+        tool,
+        checked: checkedProp,
+        defaultChecked,
+        dirty,
+        expanded: expandedProp,
+        defaultExpanded = false,
+        onExpandedChange,
+        onCheckedChange,
+        className,
+        ...props
+      },
+      ref
+    ) => {
+      const [checked, setChecked] = useControllableState<boolean>({
+        value: checkedProp,
+        defaultValue: defaultChecked ?? tool.enabled,
+        onChange: onCheckedChange,
+      });
+      const [expanded, setExpanded] = useControllableState<boolean>({
+        value: expandedProp,
+        defaultValue: defaultExpanded,
+        onChange: onExpandedChange,
+      });
       const locked = Boolean(tool.locked);
       const lockReason = typeof tool.locked === "string" ? tool.locked : LOCK_REASON;
       const detailId = React.useId();
@@ -124,7 +152,7 @@ export const ToolToggleRow = React.memo(
               aria-expanded={expandable ? expanded : undefined}
               aria-controls={expandable && expanded ? detailId : undefined}
               disabled={!expandable}
-              onClick={() => onExpandedChange?.(!expanded)}
+              onClick={() => setExpanded(!expanded)}
               className={cn(
                 "flex min-w-0 flex-1 items-center gap-2 rounded-sm text-left disabled:cursor-default",
                 focusRing
@@ -170,7 +198,7 @@ export const ToolToggleRow = React.memo(
               size="sm"
               checked={checked}
               disabled={locked}
-              onCheckedChange={(v) => !locked && onCheckedChange?.(v)}
+              onCheckedChange={(v) => !locked && setChecked(v)}
               aria-label={`Enable ${tool.name}`}
             />
           </div>
@@ -212,6 +240,8 @@ export interface ToolToggleListProps extends Omit<React.HTMLAttributes<HTMLDivEl
   /** Hide the search + filter toolbar. */
   hideToolbar?: boolean;
   label?: string;
+  /** Shown when no tool matches the search or filters. Default "No tools match". */
+  emptyState?: React.ReactNode;
 }
 
 function baselineOf(tools: ToolToggleItem[]) {
@@ -234,6 +264,7 @@ export const ToolToggleList = React.forwardRef<HTMLDivElement, ToolToggleListPro
       onShowDeprecatedChange,
       hideToolbar,
       label = "Tools",
+      emptyState = "No tools match",
       className,
       ...props
     },
@@ -360,7 +391,7 @@ export const ToolToggleList = React.forwardRef<HTMLDivElement, ToolToggleListPro
           style={maxHeight != null ? { maxHeight } : undefined}
         >
           {visible.length === 0 ? (
-            <p className="px-3 py-8 text-center text-sm text-muted-foreground">No tools match.</p>
+            <p className="px-3 py-8 text-center text-sm text-muted-foreground">{emptyState}</p>
           ) : (
             visible.map((t) => (
               <ToolToggleRow
@@ -413,9 +444,9 @@ ToolToggleList.displayName = "ToolToggleList";
 export type ToolsetHealth = "configured" | "needs-keys" | "error";
 
 const healthMeta: Record<ToolsetHealth, { label: string; color: BadgeColor; icon: React.ReactNode }> = {
-  configured: { label: "Configured", color: "success", icon: <RiCheckLine /> },
-  "needs-keys": { label: "Needs keys", color: "warning", icon: <RiKey2Line /> },
-  error: { label: "Error", color: "destructive", icon: <RiErrorWarningLine /> },
+  configured: { label: "Configured", color: "success", icon: <RiCheckLine aria-hidden /> },
+  "needs-keys": { label: "Needs keys", color: "warning", icon: <RiKey2Line aria-hidden /> },
+  error: { label: "Error", color: "destructive", icon: <RiErrorWarningLine aria-hidden /> },
 };
 
 export interface ToolsetHealthPillProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
@@ -485,7 +516,7 @@ export const ToolsetCard = React.forwardRef<HTMLDivElement, ToolsetCardProps>(
       >
         <div className="flex items-start gap-3">
           <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-box border border-border bg-background text-foreground [&_svg]:size-[18px]">
-            {icon ?? <RiToolsLine />}
+            {icon ?? <RiToolsLine aria-hidden />}
           </span>
           <div className="min-w-0 flex-1">
             <h3 id={titleId} className="truncate text-sm font-semibold text-foreground">
@@ -506,7 +537,7 @@ export const ToolsetCard = React.forwardRef<HTMLDivElement, ToolsetCardProps>(
         <div className="mt-auto flex items-center justify-between gap-2">
           {health ? <ToolsetHealthPill health={health} /> : <span />}
           {onConfigure && (
-            <Button size="sm" variant={health === "needs-keys" ? "soft" : "ghost"} leadingIcon={<RiSettings3Line />} onClick={onConfigure}>
+            <Button size="sm" variant={health === "needs-keys" ? "soft" : "ghost"} leadingIcon={<RiSettings3Line aria-hidden />} onClick={onConfigure}>
               Configure
             </Button>
           )}
@@ -661,7 +692,7 @@ const installStatusMeta: Record<ToolsetInstallStatus, { label: string; color: Ba
 };
 
 /** Side sheet to configure a toolset: on/off, backend provider, credentials and a post-setup install step. */
-export function ToolsetProviderDrawer({
+export const ToolsetProviderDrawer = React.forwardRef<HTMLDivElement, ToolsetProviderDrawerProps>(function ToolsetProviderDrawer({
   open,
   defaultOpen,
   onOpenChange,
@@ -681,7 +712,7 @@ export function ToolsetProviderDrawer({
   installLog,
   installLabel = "Run setup",
   className,
-}: ToolsetProviderDrawerProps) {
+}, ref) {
   const [enabled, setEnabled] = useControllableState({ value: enabledProp, defaultValue: defaultEnabled, onChange: onEnabledChange });
   const [provider, setProvider] = useControllableState({
     value: providerProp,
@@ -692,7 +723,7 @@ export function ToolsetProviderDrawer({
   const st = installStatusMeta[installStatus];
   return (
     <Sheet open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className={cn("w-full max-w-lg gap-0 overflow-y-auto p-0 sm:max-w-lg", className)}>
+      <SheetContent ref={ref} side="right" className={cn("w-full max-w-lg gap-0 overflow-y-auto p-0 sm:max-w-lg", className)}>
         <SheetHeader className="border-b border-border p-5 pr-12">
           <SheetTitle>{title}</SheetTitle>
           {description != null ? <SheetDescription>{description}</SheetDescription> : <SheetDescription className="sr-only">Configure {title}</SheetDescription>}
@@ -777,4 +808,5 @@ export function ToolsetProviderDrawer({
       </SheetContent>
     </Sheet>
   );
-}
+});
+ToolsetProviderDrawer.displayName = "ToolsetProviderDrawer";

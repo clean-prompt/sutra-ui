@@ -157,7 +157,7 @@ export const EmbedConsent = React.forwardRef<HTMLDivElement, EmbedConsentProps>(
         {preview}
         <div className="flex items-start gap-2.5">
           <span aria-hidden className="mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-box bg-muted text-foreground [&_svg]:size-4">
-            {icon ?? <RiShieldCheckLine />}
+            {icon ?? <RiShieldCheckLine aria-hidden />}
           </span>
           <div className="min-w-0 flex-1">
             <p id={titleId} className="font-medium text-foreground">
@@ -182,7 +182,7 @@ export const EmbedConsent = React.forwardRef<HTMLDivElement, EmbedConsentProps>(
               {
                 id: "always",
                 label: allowAlwaysLabel ?? `Always allow ${provider}`,
-                icon: <RiShieldCheckLine />,
+                icon: <RiShieldCheckLine aria-hidden />,
                 onSelect: () => {
                   onAllowAlways?.(id);
                   ctx?.allow(id);
@@ -313,7 +313,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "youtube",
     name: "YouTube",
     domain: "youtube.com",
-    icon: <RiYoutubeLine />,
+    icon: <RiYoutubeLine aria-hidden />,
     allow: "accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen; clipboard-write",
     match: (url) => {
       const h = host(url);
@@ -334,7 +334,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "vimeo",
     name: "Vimeo",
     domain: "vimeo.com",
-    icon: <RiVimeoLine />,
+    icon: <RiVimeoLine aria-hidden />,
     match: (url) => {
       const h = host(url);
       if (h !== "vimeo.com" && h !== "player.vimeo.com") return null;
@@ -346,7 +346,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "spotify",
     name: "Spotify",
     domain: "spotify.com",
-    icon: <RiSpotifyLine />,
+    icon: <RiSpotifyLine aria-hidden />,
     height: 152,
     allow: "encrypted-media; clipboard-write; fullscreen",
     match: (url) => {
@@ -361,7 +361,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "soundcloud",
     name: "SoundCloud",
     domain: "soundcloud.com",
-    icon: <RiSoundcloudLine />,
+    icon: <RiSoundcloudLine aria-hidden />,
     height: 166,
     match: (url) => {
       if (host(url) !== "soundcloud.com" || seg(url).length < 2) return null;
@@ -373,7 +373,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "x",
     name: "X",
     domain: "x.com",
-    icon: <RiTwitterXLine />,
+    icon: <RiTwitterXLine aria-hidden />,
     height: 420,
     match: (url) => {
       const h = host(url);
@@ -388,7 +388,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "mastodon",
     name: "Mastodon",
     domain: "the Mastodon server",
-    icon: <RiMastodonLine />,
+    icon: <RiMastodonLine aria-hidden />,
     height: 360,
     originScoped: true,
     sandbox: EMBED_SANDBOX_STRICT,
@@ -403,7 +403,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "gist",
     name: "GitHub Gist",
     domain: "gist.github.com",
-    icon: <RiGithubLine />,
+    icon: <RiGithubLine aria-hidden />,
     height: 320,
     match: (url) => {
       if (host(url) !== "gist.github.com") return null;
@@ -417,7 +417,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "figma",
     name: "Figma",
     domain: "figma.com",
-    icon: <RiFigmaLine />,
+    icon: <RiFigmaLine aria-hidden />,
     aspectRatio: 4 / 3,
     match: (url) => {
       if (host(url) !== "figma.com") return null;
@@ -429,7 +429,7 @@ export const embedProviders: EmbedProvider[] = [
     id: "codepen",
     name: "CodePen",
     domain: "codepen.io",
-    icon: <RiCodepenLine />,
+    icon: <RiCodepenLine aria-hidden />,
     height: 380,
     match: (url) => {
       if (host(url) !== "codepen.io") return null;

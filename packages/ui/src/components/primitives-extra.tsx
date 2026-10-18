@@ -48,9 +48,11 @@ export interface SplitButtonAction {
   onSelect: () => void;
 }
 
-type SplitButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
+/** SplitButton follows Button's full text scale (xs h-7, sm h-8, md h-9, lg h-10, xl h-12). */
+export type SplitButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 export interface SplitButtonProps extends Omit<ButtonProps, "size"> {
+  /** Button's text-size scale; the chevron uses the matching icon size. Default "md". */
   size?: SplitButtonSize;
   /** Secondary actions listed in the chevron menu. */
   actions?: SplitButtonAction[];
@@ -554,6 +556,9 @@ export interface UseZoomPanOptions {
   wheelRequiresModifier?: boolean;
   /** Pixels per arrow-key pan. Default 40. */
   panStep?: number;
+  /** Called with the new scale and offset after every zoom or pan. */
+  onValueChange?: (state: ZoomPanState) => void;
+  /** @deprecated Use `onValueChange`. */
   onChange?: (state: ZoomPanState) => void;
 }
 
@@ -565,12 +570,13 @@ export function useZoomPan({
   step = 1.25,
   wheelRequiresModifier = false,
   panStep = 40,
+  onValueChange,
   onChange,
 }: UseZoomPanOptions = {}) {
   const [state, setStateRaw] = React.useState<ZoomPanState>({ scale: defaultScale, x: 0, y: 0 });
   const stateRef = React.useRef(state);
-  const changeRef = React.useRef(onChange);
-  changeRef.current = onChange;
+  const changeRef = React.useRef(onValueChange ?? onChange);
+  changeRef.current = onValueChange ?? onChange;
   const viewportRef = React.useRef<HTMLElement | null>(null);
   const pointers = React.useRef(new Map<number, { x: number; y: number }>());
   const gesture = React.useRef<{ dist: number; scale: number } | null>(null);
@@ -731,6 +737,7 @@ export const ZoomPan = React.forwardRef<HTMLDivElement, ZoomPanProps>(
       step,
       wheelRequiresModifier,
       panStep,
+      onValueChange,
       onChange,
       className,
       contentClassName,
@@ -739,7 +746,7 @@ export const ZoomPan = React.forwardRef<HTMLDivElement, ZoomPanProps>(
     },
     forwardedRef
   ) => {
-    const zp = useZoomPan({ minScale, maxScale, defaultScale, step, wheelRequiresModifier, panStep, onChange });
+    const zp = useZoomPan({ minScale, maxScale, defaultScale, step, wheelRequiresModifier, panStep, onValueChange, onChange });
     const percent = Math.round(zp.scale * 100);
     const ctrl = cn(
       "inline-flex size-7 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4",
@@ -782,16 +789,16 @@ export const ZoomPan = React.forwardRef<HTMLDivElement, ZoomPanProps>(
             className={cn("absolute flex items-center gap-0.5 rounded-control border border-border bg-popover/90 p-0.5 shadow-sm backdrop-blur", controlsPos[controlsPosition])}
           >
             <button type="button" aria-label="Zoom out" title="Zoom out (−)" disabled={zp.scale <= zp.minScale} onClick={zp.zoomOut} className={ctrl}>
-              <RiSubtractLine />
+              <RiSubtractLine aria-hidden />
             </button>
             <span aria-live="polite" className="min-w-10 text-center text-xs font-medium tabular-nums text-foreground">
               {percent}%
             </span>
             <button type="button" aria-label="Zoom in" title="Zoom in (+)" disabled={zp.scale >= zp.maxScale} onClick={zp.zoomIn} className={ctrl}>
-              <RiAddLine />
+              <RiAddLine aria-hidden />
             </button>
             <button type="button" aria-label="Reset zoom" title="Reset (0)" onClick={zp.reset} className={ctrl}>
-              <RiFullscreenExitLine />
+              <RiFullscreenExitLine aria-hidden />
             </button>
           </div>
         )}
@@ -924,7 +931,7 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
           ))}
           <span data-tab-measure-more="" className={tabClass}>
             {moreLabel}
-            <RiArrowDownSLine />
+            <RiArrowDownSLine aria-hidden />
           </span>
         </div>
         <div role="tablist" aria-label={label} aria-orientation="horizontal" className="flex min-w-0 items-center gap-1">
@@ -1209,7 +1216,7 @@ export const UndeliveredNotice = React.forwardRef<HTMLDivElement, UndeliveredNot
           </Button>
         )}
         {onRetry && (
-          <Button size="xs" variant="secondary" loading={retrying} leadingIcon={<RiRefreshLine />} onClick={onRetry} className="h-6">
+          <Button size="xs" variant="secondary" loading={retrying} leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry} className="h-6">
             {retryLabel}
           </Button>
         )}

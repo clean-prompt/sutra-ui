@@ -29,6 +29,8 @@ export interface ApprovalStackProps<T> extends Omit<React.HTMLAttributes<HTMLEle
   /** Region label. Default "Pending approvals". */
   label?: string;
   /** Shown when `items` is empty. Renders nothing by default. */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
@@ -44,7 +46,8 @@ function ApprovalStackInner<T>(
     onDenyAll,
     depth = 2,
     label = "Pending approvals",
-    empty = null,
+    emptyState,
+    empty,
     className,
     onKeyDown,
     ...props
@@ -53,7 +56,7 @@ function ApprovalStackInner<T>(
 ) {
   const [rawIndex, setIndex] = useControllableState<number>({ value: indexProp, defaultValue: defaultIndex, onChange: onIndexChange });
   const total = items.length;
-  if (total === 0) return <>{empty}</>;
+  if (total === 0) return <>{emptyState ?? empty ?? null}</>;
   const index = clamp(rawIndex, 0, total - 1);
   const item = items[index];
   const behind = Math.min(depth, total - 1);
@@ -97,12 +100,12 @@ function ApprovalStackInner<T>(
         )}
         <span className="ml-auto flex items-center gap-1">
           {onDenyAll && total > 1 && (
-            <Button size="xs" variant="ghost" leadingIcon={<RiCloseLine />} onClick={onDenyAll}>
+            <Button size="xs" variant="ghost" leadingIcon={<RiCloseLine aria-hidden />} onClick={onDenyAll}>
               Deny all
             </Button>
           )}
           {onApproveAll && total > 1 && (
-            <Button size="xs" variant="soft" leadingIcon={<RiCheckDoubleLine />} onClick={onApproveAll}>
+            <Button size="xs" variant="soft" leadingIcon={<RiCheckDoubleLine aria-hidden />} onClick={onApproveAll}>
               Approve all
             </Button>
           )}
@@ -119,7 +122,7 @@ function ApprovalStackInner<T>(
                   focusRing
                 )}
               >
-                <RiArrowLeftSLine />
+                <RiArrowLeftSLine aria-hidden />
               </button>
               <button
                 type="button"
@@ -132,7 +135,7 @@ function ApprovalStackInner<T>(
                   focusRing
                 )}
               >
-                <RiArrowRightSLine />
+                <RiArrowRightSLine aria-hidden />
               </button>
             </span>
           )}

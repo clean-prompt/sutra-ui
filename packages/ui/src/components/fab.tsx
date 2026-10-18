@@ -162,7 +162,7 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
       };
     }, [isOpen, setOpen]);
 
-    const iconNode = icon ?? <RiAddLine />;
+    const iconNode = icon ?? <RiAddLine aria-hidden />;
 
     const trigger = (
       <button

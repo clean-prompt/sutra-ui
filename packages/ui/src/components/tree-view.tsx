@@ -414,8 +414,8 @@ function TreeCheckbox({ state, disabled, onToggle }: { state: TreeCheckState; di
         on ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background hover:border-border-strong"
       )}
     >
-      {state === "checked" && <RiCheckLine className="size-3" />}
-      {state === "indeterminate" && <RiSubtractLine className="size-3" />}
+      {state === "checked" && <RiCheckLine aria-hidden className="size-3" />}
+      {state === "indeterminate" && <RiSubtractLine aria-hidden className="size-3" />}
     </span>
   );
 }
@@ -444,12 +444,12 @@ function TreeViewItem({
     (ctx.showIcons ? (
       hasChildren ? (
         isOpen ? (
-          <RiFolderOpenLine />
+          <RiFolderOpenLine aria-hidden />
         ) : (
-          <RiFolderLine />
+          <RiFolderLine aria-hidden />
         )
       ) : (
-        <RiFileLine />
+        <RiFileLine aria-hidden />
       )
     ) : null);
 
@@ -499,7 +499,7 @@ function TreeViewItem({
               className="inline-flex shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground"
               style={{ width: CHEVRON, height: CHEVRON }}
             >
-              <RiArrowRightSLine
+              <RiArrowRightSLine aria-hidden
                 className={cn("size-4 transition-transform duration-200 ease-out-quart", isOpen && "rotate-90")}
               />
             </span>

@@ -122,7 +122,7 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
                       met ? "bg-success-soft text-success" : "bg-muted text-muted-foreground"
                     )}
                   >
-                    {met ? <RiCheckLine /> : <RiCloseLine />}
+                    {met ? <RiCheckLine aria-hidden /> : <RiCloseLine aria-hidden />}
                   </span>
                   <span>{req.label}</span>
                   <span className="sr-only">{met ? "(met)" : "(not met)"}</span>

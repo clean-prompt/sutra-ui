@@ -178,12 +178,16 @@ const statusLabel: Record<MessageDeliveryStatus, string> = {
   failed: "Not delivered",
 };
 
+export interface MessageStatusIconProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  status: MessageDeliveryStatus;
+}
+
 /** Delivery state glyph: clock, single tick, double tick, blue double tick, or a warning. */
-export function MessageStatusIcon({ status, className }: { status: MessageDeliveryStatus; className?: string }) {
+export const MessageStatusIcon = React.forwardRef<HTMLSpanElement, MessageStatusIconProps>(({ status, className, ...props }, ref) => {
   const Icon =
     status === "sending" ? RiTimeLine : status === "sent" ? RiCheckLine : status === "failed" ? RiErrorWarningLine : RiCheckDoubleLine;
   return (
-    <span data-status={status} className={cn("inline-flex items-center", className)}>
+    <span ref={ref} data-status={status} className={cn("inline-flex items-center", className)} {...props}>
       <Icon
         aria-hidden
         className={cn(
@@ -196,7 +200,8 @@ export function MessageStatusIcon({ status, className }: { status: MessageDelive
       <span className="sr-only">{statusLabel[status]}</span>
     </span>
   );
-}
+});
+MessageStatusIcon.displayName = "MessageStatusIcon";
 
 export interface MessageBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   direction?: MessageDirection;

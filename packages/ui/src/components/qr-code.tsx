@@ -287,7 +287,7 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl bg-background/70 p-4 backdrop-blur-[1px]">
               <p className="text-sm font-semibold text-foreground">Code expired</p>
               {onRefresh && (
-                <Button size="sm" variant="primary" leadingIcon={<RiRefreshLine />} onClick={onRefresh}>
+                <Button size="sm" variant="primary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRefresh}>
                   {refreshLabel}
                 </Button>
               )}

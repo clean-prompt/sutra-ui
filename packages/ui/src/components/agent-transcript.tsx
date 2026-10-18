@@ -296,7 +296,7 @@ export const TranscriptSystemRow = React.forwardRef<HTMLDivElement, TranscriptSy
           {error != null && <div className="mt-0.5 break-words text-xs opacity-90">{error}</div>}
         </div>
         {onRetry && (
-          <Button variant="outline" size="xs" leadingIcon={<RiRefreshLine />} onClick={onRetry} className="shrink-0">
+          <Button variant="outline" size="xs" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry} className="shrink-0">
             {retryLabel}
           </Button>
         )}
@@ -335,7 +335,7 @@ export const BookmarkButton = React.forwardRef<HTMLButtonElement, BookmarkButton
         className={cn(pressed && "text-primary", className)}
         {...props}
       >
-        {pressed ? <RiBookmarkFill /> : <RiBookmarkLine />}
+        {pressed ? <RiBookmarkFill aria-hidden /> : <RiBookmarkLine aria-hidden />}
       </Button>
     );
   }
@@ -376,13 +376,16 @@ export interface BookmarksPaneProps extends Omit<React.HTMLAttributes<HTMLDivEle
   onJump?: (id: string) => void;
   onRemove?: (id: string) => void;
   onClose?: () => void;
+  /** Shown when there is nothing to list. Default "Bookmark a message to find it here". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
 }
 
 /** Pane listing bookmarked messages; click jumps to the message. */
 export const BookmarksPane = React.forwardRef<HTMLDivElement, BookmarksPaneProps>(
   (
-    { bookmarks, title = "Bookmarks", onJump, onRemove, onClose, emptyText = "Bookmark a message to find it here", className, ...props },
+    { bookmarks, title = "Bookmarks", onJump, onRemove, onClose, emptyState, emptyText, className, ...props },
     ref
   ) => {
     const titleId = React.useId();
@@ -402,14 +405,14 @@ export const BookmarksPane = React.forwardRef<HTMLDivElement, BookmarksPaneProps
           <span className="text-xs tabular-nums text-muted-foreground">{bookmarks.length}</span>
           {onClose && (
             <Button variant="ghost" size="icon-xs" aria-label="Close bookmarks" onClick={onClose} className="ml-auto">
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           )}
         </div>
         {bookmarks.length === 0 ? (
           <div className="flex flex-col items-center gap-2 px-4 py-8 text-center">
             <RiBookmarkLine aria-hidden className="size-6 text-muted-foreground/60" />
-            <p className="text-sm text-muted-foreground">{emptyText}</p>
+            <p className="text-sm text-muted-foreground">{emptyState ?? emptyText ?? "Bookmark a message to find it here"}</p>
           </div>
         ) : (
           <ul className="flex flex-col p-1">
@@ -436,7 +439,7 @@ export const BookmarksPane = React.forwardRef<HTMLDivElement, BookmarksPaneProps
                     onClick={() => onRemove(b.id)}
                     className="mr-1 mt-1"
                   >
-                    <RiCloseLine />
+                    <RiCloseLine aria-hidden />
                   </Button>
                 )}
               </li>
@@ -531,7 +534,7 @@ export const SpinnerVerbs = React.forwardRef<HTMLDivElement, SpinnerVerbsProps>(
         {...props}
       >
         <span aria-hidden className="text-primary [&_svg]:size-4">
-          {icon ?? <RiSparkling2Fill className="animate-pulse motion-reduce:animate-none" />}
+          {icon ?? <RiSparkling2Fill aria-hidden className="animate-pulse motion-reduce:animate-none" />}
         </span>
         <TextShimmer data-slot="spinner-verb" className="font-medium">
           {verb.endsWith("…") ? verb : `${verb}…`}
@@ -614,7 +617,7 @@ export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps
       >
         <div className="flex flex-wrap items-center gap-2">
           <span aria-hidden className={cn("[&_svg]:size-4", warning ? "text-warning-soft-foreground" : "text-muted-foreground")}>
-            {icon ?? (warning ? <RiErrorWarningLine /> : <RiInformationLine />)}
+            {icon ?? (warning ? <RiErrorWarningLine aria-hidden /> : <RiInformationLine aria-hidden />)}
           </span>
           <span className="min-w-0">{children}</span>
           {name && (
@@ -649,7 +652,7 @@ export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps
             )}
             {onDismiss && (
               <Button variant="ghost" size="icon-xs" aria-label="Dismiss" onClick={onDismiss}>
-                <RiCloseLine />
+                <RiCloseLine aria-hidden />
               </Button>
             )}
           </span>
@@ -744,10 +747,10 @@ export const ResponseRating = React.forwardRef<HTMLDivElement, ResponseRatingPro
             {prompt}
           </span>
           <Button variant="ghost" size="icon-xs" aria-label="Good response" aria-pressed={rating === "good"} onClick={() => rate("good")}>
-            {rating === "good" ? <RiThumbUpFill /> : <RiThumbUpLine />}
+            {rating === "good" ? <RiThumbUpFill aria-hidden /> : <RiThumbUpLine aria-hidden />}
           </Button>
           <Button variant="ghost" size="icon-xs" aria-label="Bad response" aria-pressed={rating === "bad"} onClick={() => rate("bad")}>
-            {rating === "bad" ? <RiThumbDownFill /> : <RiThumbDownLine />}
+            {rating === "bad" ? <RiThumbDownFill aria-hidden /> : <RiThumbDownLine aria-hidden />}
           </Button>
         </div>
         {rating && chips.length > 0 && (

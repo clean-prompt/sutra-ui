@@ -335,10 +335,10 @@ export function IdentityPage() {
       </Demo>
 
       <Demo id="note" title="Note" description="The quiet line a screen says while working or when there's nothing here. Not a banner." align="start">
-        <Note busy>Searching…</Note>
+        <Note loading>Searching…</Note>
         <Note>Nothing matched “invoices 2019”.</Note>
         <Note align="start">No sessions in this project yet.</Note>
-        <Note tone="error">Couldn't reach id.sutra.app. Retrying in 10s.</Note>
+        <Note tone="destructive">Couldn't reach id.sutra.app. Retrying in 10s.</Note>
       </Demo>
 
       <Demo id="boot-screen" title="Boot screen" description="Shown while the app checks who you are. Waits a beat before appearing so fast loads never flash." align="start">

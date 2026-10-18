@@ -81,7 +81,7 @@ export function MorePage() {
           </div>
           <div className="space-y-2">
             <DemoLabel>Straight segments</DemoLabel>
-            <Sparkline data={latency} smooth={false} color="warning" width={160} height={40} />
+            <Sparkline data={latency} smooth={false} tone="warning" width={160} height={40} />
           </div>
           <div className="space-y-2">
             <DemoLabel>Trend (auto green / red)</DemoLabel>
@@ -92,7 +92,7 @@ export function MorePage() {
           </div>
           <div className="space-y-2">
             <DemoLabel>SparkBar · negative values</DemoLabel>
-            <SparkBar data={pnl} color="info" width={160} height={40} gap={3} />
+            <SparkBar data={pnl} tone="info" width={160} height={40} gap={3} />
           </div>
         </div>
 
@@ -111,8 +111,8 @@ export function MorePage() {
         <div className="space-y-2">
           <DemoLabel>Inline in text</DemoLabel>
           <p className="text-sm text-foreground">
-            Revenue grew <Sparkline data={revenue} width={56} height={16} color="success" className="mx-1" /> 12.4% this
-            quarter while churn fell <Sparkline data={churn} width={56} height={16} color="success" className="mx-1" /> to
+            Revenue grew <Sparkline data={revenue} width={56} height={16} tone="success" className="mx-1" /> 12.4% this
+            quarter while churn fell <Sparkline data={churn} width={56} height={16} tone="success" className="mx-1" /> to
             3.1%.
           </p>
         </div>
@@ -127,7 +127,7 @@ export function MorePage() {
       >
         <MeshGradient className="rounded-box border border-border" grain>
           <div className="flex flex-col items-center gap-4 px-6 py-20 text-center">
-            <Badge variant="dot" color="brand">New in 2.0</Badge>
+            <Badge variant="dot" tone="primary">New in 2.0</Badge>
             <h3 className="max-w-xl text-balance text-display-sm font-semibold tracking-tight text-foreground">
               Build beautiful interfaces, faster
             </h3>

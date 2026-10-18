@@ -821,7 +821,7 @@ export function ShortcutsDialog({
         <DialogBody className="max-h-[60dvh]">
           {groups.length === 0 ? (
             <p className="py-10 text-center text-sm text-muted-foreground">
-              {q ? `No shortcuts match “${query}”.` : "No shortcuts registered."}
+              {q ? `No shortcuts match “${query}”` : "No shortcuts registered"}
             </p>
           ) : (
             <div className="grid gap-x-8 gap-y-6 pb-1 sm:grid-cols-2">

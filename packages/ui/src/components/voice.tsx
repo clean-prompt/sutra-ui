@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiMicLine, RiStopFill, RiVolumeUpLine, RiStopCircleLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { normalizeTone, toneClasses, type ToneInput } from "../lib/tone";
 import { formatClock } from "../lib/duration";
 import { useNow } from "../hooks/use-now";
 import { Button, type ButtonProps } from "./button";
@@ -232,18 +233,19 @@ export interface AudioLevelMeterProps extends React.HTMLAttributes<HTMLDivElemen
   size?: "sm" | "md" | "lg";
   /** Accessible name. Default "Input level". */
   label?: string;
-  tone?: "primary" | "success" | "destructive" | "muted";
+  /** Bar colour. Canonical `Tone`; legacy `"muted"` maps to `neutral`. Default `primary`. */
+  tone?: ToneInput;
 }
 
 const meterBox = {
   horizontal: { sm: "h-3 gap-0.5", md: "h-4 gap-0.5", lg: "h-6 gap-1" },
   vertical: { sm: "w-3 gap-0.5", md: "w-4 gap-0.5", lg: "w-6 gap-1" },
 } as const;
-const barTone = { primary: "bg-primary", success: "bg-success", destructive: "bg-destructive", muted: "bg-muted-foreground" } as const;
 
 /** Bars that light up with an audio level (0..1). Horizontal bars stand up like an equalizer. */
 export const AudioLevelMeter = React.forwardRef<HTMLDivElement, AudioLevelMeterProps>(
-  ({ level, bars = 5, orientation = "horizontal", size = "md", label = "Input level", tone = "primary", className, ...props }, ref) => {
+  ({ level, bars = 5, orientation = "horizontal", size = "md", label = "Input level", tone, className, ...props }, ref) => {
+    const bar = toneClasses.dot[normalizeTone(tone, "primary")];
     const v = Math.max(0, Math.min(1, Number.isFinite(level) ? level : 0));
     const horizontal = orientation === "horizontal";
     return (
@@ -268,7 +270,7 @@ export const AudioLevelMeter = React.forwardRef<HTMLDivElement, AudioLevelMeterP
               className={cn(
                 "block rounded-full transition-[height,width,opacity] duration-75 motion-reduce:transition-none",
                 horizontal ? "w-1" : "h-1 w-full",
-                horizontal ? (v > 0.02 ? barTone[tone] : "bg-muted-foreground/30") : lit ? barTone[tone] : "bg-muted-foreground/25"
+                horizontal ? (v > 0.02 ? bar : "bg-muted-foreground/30") : lit ? bar : "bg-muted-foreground/25"
               )}
               style={horizontal ? { height: `${lit * 100}%` } : undefined}
             />
@@ -421,7 +423,7 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
             onClick={toggle}
             className="relative rounded-full"
           >
-            {listening ? <RiStopFill /> : <RiMicLine />}
+            {listening ? <RiStopFill aria-hidden /> : <RiMicLine aria-hidden />}
           </Button>
         </span>
         {listening ? (
@@ -568,7 +570,7 @@ export const SpeakButton = React.forwardRef<HTMLButtonElement, SpeakButtonProps>
         className={cn(tts.speaking && "text-primary", className)}
         {...props}
       >
-        {tts.speaking ? <RiStopCircleLine /> : <RiVolumeUpLine />}
+        {tts.speaking ? <RiStopCircleLine aria-hidden /> : <RiVolumeUpLine aria-hidden />}
       </Button>
     );
   }

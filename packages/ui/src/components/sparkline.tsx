@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { useSafeId } from "../hooks/use-safe-id";
 
 export type SparklineColor =
@@ -23,6 +24,19 @@ const tokenColor: Record<string, string> = {
 };
 
 const resolveColor = (color: string) => tokenColor[color] ?? color;
+
+const toneColor: Record<Tone, string> = {
+  neutral: "var(--muted-foreground)",
+  primary: "var(--primary)",
+  success: "var(--success)",
+  warning: "var(--warning)",
+  destructive: "var(--destructive)",
+  info: "var(--info)",
+};
+
+/** `tone` wins over `color`; `color` stays for arbitrary CSS colours. */
+const colorFor = (tone: ToneInput | undefined, color: string | undefined) =>
+  tone ? toneColor[normalizeTone(tone)] : color;
 
 type Point = readonly [number, number];
 
@@ -89,7 +103,9 @@ export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>,
   height?: number;
   /** Stretch to 100% of the container width. */
   responsive?: boolean;
-  /** Token name (primary, success, …) or any CSS color. */
+  /** Semantic colour. Takes precedence over `color`. */
+  tone?: ToneInput;
+  /** Any CSS colour (token names such as "primary" still work; prefer `tone` for those). */
   color?: SparklineColor;
   /** Color green when the series ends higher than it started, red otherwise. */
   trend?: boolean;
@@ -115,7 +131,8 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
       width = 120,
       height = 32,
       responsive,
-      color,
+      tone,
+      color: colorProp,
       trend,
       smooth = true,
       strokeWidth = 1.5,
@@ -130,6 +147,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
     },
     ref
   ) => {
+    const color = colorFor(tone, colorProp);
     const stroke = strokeFor(data, color, trend);
     const gradientId = useSafeId("sutra-spark");
 
@@ -237,6 +255,9 @@ export interface SparkBarProps extends Omit<React.SVGAttributes<SVGSVGElement>, 
   width?: number;
   height?: number;
   responsive?: boolean;
+  /** Semantic colour. Takes precedence over `color`. */
+  tone?: ToneInput;
+  /** Any CSS colour (token names still work; prefer `tone` for those). Default primary. */
   color?: SparklineColor;
   /** Color for non-highlighted bars when `highlightLast` is on. Defaults to a faded `color`. */
   mutedColor?: string;
@@ -256,6 +277,7 @@ export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
       width = 120,
       height = 32,
       responsive,
+      tone,
       color = "primary",
       mutedColor,
       highlightLast,
@@ -268,7 +290,7 @@ export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
     },
     ref
   ) => {
-    const fill = resolveColor(color);
+    const fill = resolveColor(colorFor(tone, color) ?? "primary");
     const n = data.length;
     const hi = Math.max(0, ...data);
     const lo = Math.min(0, ...data);

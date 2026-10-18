@@ -65,7 +65,7 @@ export const OnboardingChecklist = React.forwardRef<HTMLDivElement, OnboardingCh
           </span>
           {onDismiss && (
             <Button variant="ghost" size="icon-xs" aria-label="Dismiss checklist" onClick={onDismiss} className="-mr-1 -mt-1">
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           )}
         </div>
@@ -102,7 +102,7 @@ export const OnboardingChecklist = React.forwardRef<HTMLDivElement, OnboardingCh
                     state === "upcoming" && "border border-border-strong text-muted-foreground"
                   )}
                 >
-                  {state === "completed" ? <RiCheckLine className="size-3.5" /> : i + 1}
+                  {state === "completed" ? <RiCheckLine aria-hidden className="size-3.5" /> : i + 1}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className={cn("text-sm", state === "completed" ? "text-muted-foreground line-through" : "font-medium text-foreground")}>
@@ -214,7 +214,7 @@ export const ConnectionState = React.forwardRef<HTMLDivElement, ConnectionStateP
             )
           ))}
         {isError && onRetry && (
-          <Button variant="outline" size="sm" leadingIcon={<RiRefreshLine />} onClick={onRetry}>
+          <Button variant="outline" size="sm" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry}>
             Retry
           </Button>
         )}
@@ -308,7 +308,7 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
       return (
         <div ref={ref} role="status" className={cn("flex w-full items-center gap-2 rounded-box border border-border bg-card p-4 text-sm", className)} {...props}>
           <span aria-hidden className="flex size-6 items-center justify-center rounded-full bg-success text-success-foreground">
-            <RiCheckLine className="size-4" />
+            <RiCheckLine aria-hidden className="size-4" />
           </span>
           {successText}
         </div>
@@ -332,7 +332,7 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
                 </code>
                 <CopyButton value={url} size="md" label="Copy link" copiedLabel="Link copied" />
                 {onOpenUrl ? (
-                  <Button variant="secondary" size="sm" trailingIcon={<RiExternalLinkLine />} onClick={() => onOpenUrl(url)}>
+                  <Button variant="secondary" size="sm" trailingIcon={<RiExternalLinkLine aria-hidden />} onClick={() => onOpenUrl(url)}>
                     Open
                   </Button>
                 ) : (
@@ -374,7 +374,7 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
                     invalidRing
                   )}
                 />
-                <Button type="button" variant="outline" size="sm" leadingIcon={<RiClipboardLine />} onClick={paste} disabled={busy}>
+                <Button type="button" variant="outline" size="sm" leadingIcon={<RiClipboardLine aria-hidden />} onClick={paste} disabled={busy}>
                   Paste
                 </Button>
               </div>

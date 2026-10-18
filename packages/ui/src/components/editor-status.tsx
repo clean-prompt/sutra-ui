@@ -166,7 +166,7 @@ export const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
       >
         {status === "error" && error ? <SimpleTooltip content={error}>{body}</SimpleTooltip> : body}
         {status === "error" && onRetry && (
-          <Button size={btn} variant="ghost" leadingIcon={<RiRefreshLine />} onClick={onRetry}>
+          <Button size={btn} variant="ghost" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry}>
             Retry
           </Button>
         )}

@@ -2,9 +2,15 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiCloseLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { normalizeTone, type ToneInput } from "../lib/tone";
 
+/**
+ * Badge colour. The categorical palette (`gray`, `blue`, `purple`, `pink`, `orange`) lives here;
+ * for semantic colour prefer the `tone` prop (`brand` is kept as an alias of `primary`).
+ */
 export type BadgeColor =
   | "neutral"
+  | "primary"
   | "brand"
   | "success"
   | "warning"
@@ -24,6 +30,12 @@ const palette: Record<BadgeColor, BadgeStyleSet> = {
     solid: "bg-inverse text-inverse-foreground",
     outline: "border-border-strong text-foreground",
     dot: "bg-muted-foreground",
+  },
+  primary: {
+    soft: "bg-primary-soft text-primary-soft-foreground",
+    solid: "bg-primary text-primary-foreground",
+    outline: "border-primary/50 text-primary-soft-foreground",
+    dot: "bg-primary",
   },
   brand: {
     soft: "bg-primary-soft text-primary-soft-foreground",
@@ -101,6 +113,7 @@ export const badgeVariants = cva(
       },
       color: {
         neutral: "",
+        primary: "",
         brand: "",
         success: "",
         warning: "",
@@ -130,6 +143,8 @@ export const badgeVariants = cva(
 export interface BadgeProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color">,
     VariantProps<typeof badgeVariants> {
+  /** Semantic colour (`neutral | primary | success | warning | destructive | info`). Wins over `color`. */
+  tone?: ToneInput;
   leadingIcon?: React.ReactNode;
   trailingIcon?: React.ReactNode;
   /** Shows a small remove button. */
@@ -140,15 +155,15 @@ export interface BadgeProps
 /** Compact label for status, category or count. */
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   (
-    { className, variant, color, size, leadingIcon, trailingIcon, onRemove, removeLabel, children, ...props },
+    { className, variant, tone, color, size, leadingIcon, trailingIcon, onRemove, removeLabel, children, ...props },
     ref
   ) => {
-    const c = color ?? "neutral";
+    const c: BadgeColor = tone ? normalizeTone(tone) : (color ?? "neutral");
     return (
       <span
         ref={ref}
         className={cn(
-          badgeVariants({ variant, color, size }),
+          badgeVariants({ variant, color: c, size }),
           onRemove && (size === "lg" ? "pr-1" : "pr-0.5"),
           className
         )}

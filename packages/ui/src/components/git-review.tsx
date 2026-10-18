@@ -91,16 +91,30 @@ export function sumChangedFiles(files: readonly ChangedFile[]) {
   );
 }
 
-/** Colored status letter with a screen-reader label. */
-export function GitStatusLetter({ status = "modified", className }: { status?: ChangedFileStatus; className?: string }) {
-  const m = statusMeta[status];
-  return (
-    <span data-status={status} title={m.label} className={cn("inline-flex w-3 shrink-0 justify-center font-mono text-xs font-semibold", m.className, className)}>
-      <span aria-hidden>{m.letter}</span>
-      <span className="sr-only">{m.label}</span>
-    </span>
-  );
+export interface GitStatusLetterProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Default `modified`. */
+  status?: ChangedFileStatus;
 }
+
+/** Colored status letter with a screen-reader label. */
+export const GitStatusLetter = React.forwardRef<HTMLSpanElement, GitStatusLetterProps>(
+  ({ status = "modified", className, ...props }, ref) => {
+    const m = statusMeta[status];
+    return (
+      <span
+        ref={ref}
+        data-status={status}
+        title={m.label}
+        className={cn("inline-flex w-3 shrink-0 justify-center font-mono text-xs font-semibold", m.className, className)}
+        {...props}
+      >
+        <span aria-hidden>{m.letter}</span>
+        <span className="sr-only">{m.label}</span>
+      </span>
+    );
+  }
+);
+GitStatusLetter.displayName = "GitStatusLetter";
 
 function FilePathLabel({ path, className }: { path: string; className?: string }) {
   const { dir, base } = splitFilePath(path);
@@ -485,9 +499,9 @@ export interface ShipState {
 }
 
 const shipActionMeta: Record<ShipAction, { label: string; description: string; icon: React.ReactNode }> = {
-  commit: { label: "Commit", description: "Record changes locally", icon: <RiGitCommitLine /> },
-  "commit-push": { label: "Commit & push", description: "Commit, then push to the remote", icon: <RiUploadCloud2Line /> },
-  pr: { label: "Create PR", description: "Commit, push and open a pull request", icon: <RiGitPullRequestLine /> },
+  commit: { label: "Commit", description: "Record changes locally", icon: <RiGitCommitLine aria-hidden /> },
+  "commit-push": { label: "Commit & push", description: "Commit, then push to the remote", icon: <RiUploadCloud2Line aria-hidden /> },
+  pr: { label: "Create PR", description: "Commit, push and open a pull request", icon: <RiGitPullRequestLine aria-hidden /> },
 };
 
 /** Why an action can't run right now, or null when it can. */
@@ -651,7 +665,7 @@ export const ShipBar = React.forwardRef<HTMLDivElement, ShipBarProps>(
               disabled={generating || running || changedCount === 0}
               onClick={onGenerateMessage}
             >
-              {generating ? <Spinner size="xs" /> : <RiSparkling2Line />}
+              {generating ? <Spinner size="xs" /> : <RiSparkling2Line aria-hidden />}
             </Button>
           )}
         </div>
@@ -681,7 +695,7 @@ export const ShipBar = React.forwardRef<HTMLDivElement, ShipBarProps>(
                   disabled={running}
                   className="rounded-l-none border-l border-primary-foreground/20"
                 >
-                  <RiArrowDownSLine />
+                  <RiArrowDownSLine aria-hidden />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" sideOffset={6} className="w-64">
@@ -706,7 +720,7 @@ export const ShipBar = React.forwardRef<HTMLDivElement, ShipBarProps>(
             </DropdownMenu>
           </div>
           {onDelegate && (
-            <Button type="button" size="sm" variant="ghost" leadingIcon={<RiRobot2Line />} disabled={delegateDisabled} onClick={onDelegate}>
+            <Button type="button" size="sm" variant="ghost" leadingIcon={<RiRobot2Line aria-hidden />} disabled={delegateDisabled} onClick={onDelegate}>
               {delegateLabel}
             </Button>
           )}
@@ -832,7 +846,7 @@ export function WorktreeDialog({
       value: b.name,
       label: b.name,
       group,
-      icon: <RiGitBranchLine />,
+      icon: <RiGitBranchLine aria-hidden />,
       description: b.current ? "current" : undefined,
     });
     return [
@@ -860,7 +874,7 @@ export function WorktreeDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">
         <form onSubmit={submit} noValidate className="contents">
-          <DialogHeader icon={<RiGitForkLine />}>
+          <DialogHeader icon={<RiGitForkLine aria-hidden />}>
             <DialogTitle>New worktree</DialogTitle>
             <DialogDescription>Work on a branch in its own folder without touching your current checkout.</DialogDescription>
           </DialogHeader>
@@ -896,7 +910,7 @@ export function WorktreeDialog({
                 onValueChange={(v) => setBase(v)}
                 placeholder="Select a branch"
                 searchPlaceholder="Search branches…"
-                emptyText="No branches match."
+                emptyText="No branches match"
                 invalid={touched && !!baseError}
               />
             </div>

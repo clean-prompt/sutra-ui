@@ -185,7 +185,7 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
           )}
         </p>
         {onRetry && (
-          <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine />} onClick={onRetry} className="text-current">
+          <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry} className="text-current">
             Retry
           </Button>
         )}
@@ -200,7 +200,7 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
               onDismiss?.();
             }}
           >
-            <RiCloseLine />
+            <RiCloseLine aria-hidden />
           </Button>
         )}
       </div>
@@ -233,6 +233,8 @@ export interface ConflictResolverProps {
   /** Shows a "Merge both" action. */
   onMerge?: () => void;
   now?: Date;
+  /** Class name for the dialog content. */
+  className?: string;
 }
 
 function diffLines(a: string, b: string) {
@@ -287,7 +289,7 @@ function VersionPane({
 }
 
 /** Side-by-side "Yours / Theirs" dialog for resolving a sync conflict. */
-export function ConflictResolver({
+export const ConflictResolver = React.forwardRef<HTMLDivElement, ConflictResolverProps>(function ConflictResolver({
   open: openProp,
   defaultOpen = false,
   onOpenChange,
@@ -299,7 +301,8 @@ export function ConflictResolver({
   onKeepTheirs,
   onMerge,
   now,
-}: ConflictResolverProps) {
+  className,
+}, ref) {
   const [openState, setOpenState] = React.useState(defaultOpen);
   const open = openProp ?? openState;
   const setOpen = (next: boolean) => {
@@ -312,8 +315,8 @@ export function ConflictResolver({
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent size="xl">
-        <DialogHeader icon={<RiGitMergeLine />} tone="warning">
+      <DialogContent ref={ref} size="xl" className={className}>
+        <DialogHeader icon={<RiGitMergeLine aria-hidden />} tone="warning">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
@@ -326,7 +329,7 @@ export function ConflictResolver({
             Keep theirs
           </Button>
           {onMerge && (
-            <Button variant="outline" leadingIcon={<RiGitMergeLine />} onClick={choose(onMerge)}>
+            <Button variant="outline" leadingIcon={<RiGitMergeLine aria-hidden />} onClick={choose(onMerge)}>
               Merge both
             </Button>
           )}
@@ -337,5 +340,5 @@ export function ConflictResolver({
       </DialogContent>
     </Dialog>
   );
-}
+});
 ConflictResolver.displayName = "ConflictResolver";

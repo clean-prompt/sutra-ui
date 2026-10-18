@@ -32,12 +32,12 @@ import { SimpleTooltip } from "./tooltip";
 export type CapabilityProvenance = "official" | "learned" | "hub" | "community" | "local" | "bundled";
 
 const provenanceMeta: Record<CapabilityProvenance, { label: string; color: BadgeColor; icon: React.ReactNode; hint: string }> = {
-  official: { label: "Official", color: "brand", icon: <RiVerifiedBadgeLine />, hint: "Published and maintained by the vendor" },
-  learned: { label: "Learned", color: "purple", icon: <RiSparklingLine />, hint: "Written by the agent from experience" },
-  hub: { label: "Hub", color: "info", icon: <RiStore2Line />, hint: "Installed from the skills hub" },
-  community: { label: "Community", color: "orange", icon: <RiGroupLine />, hint: "Contributed by the community" },
-  local: { label: "Local", color: "neutral", icon: <RiComputerLine />, hint: "Lives in a local directory you control" },
-  bundled: { label: "Bundled", color: "gray", icon: <RiBox3Line />, hint: "Ships with the agent" },
+  official: { label: "Official", color: "brand", icon: <RiVerifiedBadgeLine aria-hidden />, hint: "Published and maintained by the vendor" },
+  learned: { label: "Learned", color: "purple", icon: <RiSparklingLine aria-hidden />, hint: "Written by the agent from experience" },
+  hub: { label: "Hub", color: "info", icon: <RiStore2Line aria-hidden />, hint: "Installed from the skills hub" },
+  community: { label: "Community", color: "orange", icon: <RiGroupLine aria-hidden />, hint: "Contributed by the community" },
+  local: { label: "Local", color: "neutral", icon: <RiComputerLine aria-hidden />, hint: "Lives in a local directory you control" },
+  bundled: { label: "Bundled", color: "gray", icon: <RiBox3Line aria-hidden />, hint: "Ships with the agent" },
 };
 
 export interface ProvenancePillProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
@@ -81,31 +81,31 @@ const trustMeta: Record<CapabilityTrustLevel, { label: string; color: BadgeColor
   verified: {
     label: "Verified",
     color: "success",
-    icon: <RiShieldCheckLine />,
+    icon: <RiShieldCheckLine aria-hidden />,
     explain: "Signed by a verified publisher and passed the security scan.",
   },
   trusted: {
     label: "Trusted",
     color: "info",
-    icon: <RiCheckboxCircleLine />,
+    icon: <RiCheckboxCircleLine aria-hidden />,
     explain: "From a source you or your organization marked as trusted.",
   },
   community: {
     label: "Community",
     color: "neutral",
-    icon: <RiUserLine />,
+    icon: <RiUserLine aria-hidden />,
     explain: "Published by the community. Reviewed by users, not by the vendor.",
   },
   unverified: {
     label: "Unverified",
     color: "warning",
-    icon: <RiQuestionLine />,
+    icon: <RiQuestionLine aria-hidden />,
     explain: "Unknown source with no signature. Review the code before enabling.",
   },
   flagged: {
     label: "Flagged",
     color: "destructive",
-    icon: <RiFlagLine />,
+    icon: <RiFlagLine aria-hidden />,
     explain: "The security scan or a report flagged this item. It is disabled until reviewed.",
   },
 };
@@ -206,8 +206,8 @@ export interface ScopeSelectorProps {
   className?: string;
 }
 
-/** Selector for which profile a capability change applies to. */
-export function ScopeSelector({
+/** Selector for which profile a capability change applies to. The ref goes to the trigger. */
+export const ScopeSelector = React.forwardRef<HTMLButtonElement, ScopeSelectorProps>(function ScopeSelector({
   profiles,
   value: valueProp,
   defaultValue = null,
@@ -216,7 +216,7 @@ export function ScopeSelector({
   size = "sm",
   disabled,
   className,
-}: ScopeSelectorProps) {
+}, ref) {
   const [value, setValue] = useControllableState<string | null>({
     value: valueProp,
     defaultValue,
@@ -230,6 +230,7 @@ export function ScopeSelector({
       disabled={disabled}
     >
       <SelectTrigger
+        ref={ref}
         size={size}
         aria-labelledby={`${prefixId} ${prefixId}-v`}
         className={cn("w-auto gap-1.5", className)}
@@ -252,7 +253,8 @@ export function ScopeSelector({
       </SelectContent>
     </Select>
   );
-}
+});
+ScopeSelector.displayName = "ScopeSelector";
 
 /* ------------------------------------------------------------------ */
 /* CapabilityDetailHeader                                              */
@@ -300,7 +302,7 @@ export const CapabilityDetailHeader = React.forwardRef<HTMLElement, CapabilityDe
           {actions}
           {onClose && (
             <Button variant="ghost" size="icon-sm" aria-label="Close details" onClick={onClose}>
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           )}
         </div>
@@ -450,7 +452,7 @@ export const CapabilitiesShell = React.forwardRef<HTMLDivElement, CapabilitiesSh
                 className="min-w-0 rounded-box border border-border bg-card p-4 shadow-xs lg:sticky lg:top-4 lg:self-start"
               >
                 {onDetailClose && (
-                  <Button variant="ghost" size="sm" leadingIcon={<RiArrowLeftLine />} onClick={onDetailClose} className="mb-3 lg:hidden">
+                  <Button variant="ghost" size="sm" leadingIcon={<RiArrowLeftLine aria-hidden />} onClick={onDetailClose} className="mb-3 lg:hidden">
                     Back
                   </Button>
                 )}
@@ -469,19 +471,29 @@ CapabilitiesShell.displayName = "CapabilitiesShell";
 /* Shared helpers (internal to the capabilities set)                   */
 /* ------------------------------------------------------------------ */
 
+export interface CapabilityMonogramProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  name: string;
+}
+
 /** Monogram tile used when a capability has no icon. */
-export function CapabilityMonogram({ name, className }: { name: string; className?: string }) {
+export const CapabilityMonogram = React.forwardRef<HTMLSpanElement, CapabilityMonogramProps>(function CapabilityMonogram(
+  { name, className, ...props },
+  ref
+) {
   const letters = initials(name.replace(/[-_.]+/g, " "), { mode: "first-two" });
   return (
     <span
+      ref={ref}
       aria-hidden
       className={cn(
         "flex size-9 shrink-0 items-center justify-center rounded-box border border-border bg-gradient-to-br from-brand-50 to-brand-100 text-xs font-semibold text-brand-700 dark:from-brand-900 dark:to-brand-950 dark:text-brand-200",
         className
       )}
+      {...props}
     >
       {letters || "?"}
     </span>
   );
-}
+});
+CapabilityMonogram.displayName = "CapabilityMonogram";
 

@@ -220,7 +220,7 @@ function ViewerBody({
   onDownload?: () => void;
 }) {
   const [zoomed, setZoomed] = React.useState(false);
-  if (!file.url && !isTextKind(kind)) return <DownloadCard file={file} message="No preview available." onDownload={onDownload} />;
+  if (!file.url && !isTextKind(kind)) return <DownloadCard file={file} message="No preview available" onDownload={onDownload} />;
 
   switch (kind) {
     case "image":
@@ -234,7 +234,7 @@ function ViewerBody({
           >
             <ImageWithFallback src={file.url} alt={file.name} fit="contain" className="max-h-[70dvh] min-w-48 bg-transparent" imgClassName="max-h-[70dvh] w-auto" />
             <span aria-hidden className="absolute bottom-2 right-2 inline-flex size-8 items-center justify-center rounded-full bg-black/55 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-              <RiZoomInLine className="size-4" />
+              <RiZoomInLine aria-hidden className="size-4" />
             </span>
           </button>
           <Lightbox items={[{ src: file.url!, alt: file.name }]} open={zoomed} onOpenChange={setZoomed} thumbnails={false} />
@@ -273,7 +273,7 @@ function ViewerBody({
     case "text":
       return <TextPreview file={file} kind={kind} text={text} loadText={loadText} />;
     default:
-      return <DownloadCard file={file} message="No preview available." onDownload={onDownload} />;
+      return <DownloadCard file={file} message="No preview available" onDownload={onDownload} />;
   }
 }
 

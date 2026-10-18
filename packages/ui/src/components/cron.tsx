@@ -1016,7 +1016,7 @@ export const CronScheduleField = React.forwardRef<HTMLFieldSetElement, CronSched
                   ))}
                 </ol>
               ) : (
-                <p className="text-xs text-muted-foreground">{state.mode === "once" ? "That time is in the past." : "No upcoming runs."}</p>
+                <p className="text-xs text-muted-foreground">{state.mode === "once" ? "That time is in the past." : "No upcoming runs"}</p>
               )}
             </div>
           ) : null}

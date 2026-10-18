@@ -179,7 +179,7 @@ export const ChatScrollButton = React.forwardRef<HTMLButtonElement, ChatScrollBu
         )}
         {...props}
       >
-        <RiArrowDownLine />
+        <RiArrowDownLine aria-hidden />
       </Button>
     );
   }

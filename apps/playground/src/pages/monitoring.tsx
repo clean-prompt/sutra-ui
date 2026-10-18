@@ -147,7 +147,7 @@ function NodeGridDemo() {
             name={n.name}
             description={n.host}
             icon={n.gpu == null ? <RiServerLine /> : <RiCpuLine />}
-            badges={n.priority ? <Badge size="sm" color="warning">Priority</Badge> : undefined}
+            badges={n.priority ? <Badge size="sm" tone="warning">Priority</Badge> : undefined}
             status={status}
             uptime="12d 4h"
             cpu={avg}

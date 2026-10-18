@@ -191,9 +191,9 @@ function GatewayStatusDemo() {
 
 const noticeSource: NoticeItem[] = [
   { id: "update", tone: "info", message: "Sutra 1.5 is ready to install.", action: { label: "Restart to update", onClick: () => {} }, priority: 2 },
-  { id: "quota", tone: "warn", message: "You've used 85% of this month's model budget.", action: { label: "Review usage", href: "#notice-bar" }, priority: 3 },
-  { id: "gpu", tone: "error", message: "Office GPU box is unreachable. Jobs there are paused.", priority: 5 },
-  { id: "promo", tone: "promo", message: "New: voice mode for every agent.", action: { label: "Try it", href: "#notice-bar" }, priority: 1 },
+  { id: "quota", tone: "warning", message: "You've used 85% of this month's model budget.", action: { label: "Review usage", href: "#notice-bar" }, priority: 3 },
+  { id: "gpu", tone: "destructive", message: "Office GPU box is unreachable. Jobs there are paused.", priority: 5 },
+  { id: "promo", tone: "primary", message: "New: voice mode for every agent.", action: { label: "Try it", href: "#notice-bar" }, priority: 1 },
   { id: "update", tone: "info", message: "Sutra 1.5 is ready to install (duplicate id, deduped).", priority: 2 },
 ];
 
@@ -269,7 +269,7 @@ function TipDemo() {
   const [muted, setMuted] = React.useState(false);
   return (
     <div className="flex min-h-48 w-full flex-col items-start gap-3">
-      <TipBubble tips={tips} open={open && !muted} onOpenChange={setOpen} onDontShowAgain={() => setMuted(true)} accent="primary" side="right">
+      <TipBubble tips={tips} open={open && !muted} onOpenChange={setOpen} onDontShowAgain={() => setMuted(true)} tone="primary" side="right">
         <Button variant="secondary" leadingIcon={<RiLightbulbLine />}>
           Composer
         </Button>

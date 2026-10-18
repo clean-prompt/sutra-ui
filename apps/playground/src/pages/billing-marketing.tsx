@@ -165,10 +165,10 @@ function BannersDemo() {
   const [dismissed, setDismissed] = React.useState(false);
   return (
     <div className="flex w-full flex-col gap-3">
-      <BillingBanner tone="trial" daysLeft={3} onAction={() => {}} />
-      {!dismissed && <BillingBanner tone="payment-failed" onAction={() => {}} onDismiss={() => setDismissed(true)} />}
-      <BillingBanner tone="over-limit" onAction={() => {}} description="You've used 5,000 of 5,000 runs this month. Runs reset on Nov 1." />
-      <BillingBanner tone="info" title="Yearly billing saves 20%" description="Switch at any time; we prorate the difference." onAction={() => {}} actionLabel="Switch to yearly" />
+      <BillingBanner kind="trial" daysLeft={3} onAction={() => {}} />
+      {!dismissed && <BillingBanner kind="payment-failed" onAction={() => {}} onDismiss={() => setDismissed(true)} />}
+      <BillingBanner kind="over-limit" onAction={() => {}} description="You've used 5,000 of 5,000 runs this month. Runs reset on Nov 1." />
+      <BillingBanner kind="info" title="Yearly billing saves 20%" description="Switch at any time; we prorate the difference." onAction={() => {}} actionLabel="Switch to yearly" />
     </div>
   );
 }

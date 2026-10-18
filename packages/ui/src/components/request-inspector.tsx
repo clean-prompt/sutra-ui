@@ -125,15 +125,25 @@ function CopyIconButton({ text, label, className }: { text: string; label: strin
   return <CopyButton value={text} label={label} copiedLabel="Copied" size="xs" className={cn("rounded-control", className)} />;
 }
 
+export interface RequestIdCopyProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "id" | "children"> {
+  /** The request id to show and copy. */
+  id: string;
+}
+
 /** Click-to-copy request id chip. */
-export function RequestIdCopy({ id, className }: { id: string; className?: string }) {
+export const RequestIdCopy = React.forwardRef<HTMLButtonElement, RequestIdCopyProps>(function RequestIdCopy(
+  { id, className, onClick, ...props },
+  ref
+) {
   const { copied, copy } = useCopy();
   return (
     <button
+      ref={ref}
       type="button"
       onClick={(e) => {
+        onClick?.(e);
         e.stopPropagation();
-        void copy(id);
+        if (!e.defaultPrevented) void copy(id);
       }}
       aria-label={copied ? `Request id ${id} copied` : `Copy request id ${id}`}
       title={id}
@@ -142,12 +152,14 @@ export function RequestIdCopy({ id, className }: { id: string; className?: strin
         focusRing,
         className
       )}
+      {...props}
     >
       <span className="truncate">{id}</span>
       {copied ? <RiCheckLine aria-hidden className="size-3 shrink-0 text-success" /> : <RiFileCopyLine aria-hidden className="size-3 shrink-0" />}
     </button>
   );
-}
+});
+RequestIdCopy.displayName = "RequestIdCopy";
 
 const statusClass = (s: number) =>
   s >= 500
@@ -287,7 +299,7 @@ export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspecto
             {info.messages.length ? (
               info.messages.map((m, i) => <MessageBlock key={i} message={m} />)
             ) : (
-              <p className="text-sm text-muted-foreground">No messages in this record.</p>
+              <p className="text-sm text-muted-foreground">No messages in this record</p>
             )}
             {info.error ? (
               <div role="alert" className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive-soft p-3 text-sm text-destructive-soft-foreground">
@@ -301,14 +313,14 @@ export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspecto
             {record.request !== undefined ? (
               <JsonViewer data={record.request} defaultExpandDepth={2} label="Request body" />
             ) : (
-              <p className="text-sm text-muted-foreground">No request body logged.</p>
+              <p className="text-sm text-muted-foreground">No request body logged</p>
             )}
           </TabsContent>
           <TabsContent value="response">
             {record.response !== undefined ? (
               <JsonViewer data={record.response} defaultExpandDepth={2} label="Response body" />
             ) : (
-              <p className="text-sm text-muted-foreground">No response body logged.</p>
+              <p className="text-sm text-muted-foreground">No response body logged</p>
             )}
           </TabsContent>
           <TabsContent value="raw">
@@ -471,7 +483,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
             {rows.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={colCount} className="py-8 text-center text-sm text-muted-foreground">
-                  {emptyState ?? (records.length ? "No records match these filters." : "No requests logged yet.")}
+                  {emptyState ?? (records.length ? "No records match these filters" : "No requests logged yet")}
                 </TableCell>
               </TableRow>
             ) : (

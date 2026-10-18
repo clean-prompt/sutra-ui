@@ -12,17 +12,24 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { formatDuration } from "../lib/duration";
+import { normalizeTaskStatus, type TaskStatus, type TaskStatusInput } from "../lib/status";
+import { toneClasses, type Tone } from "../lib/tone";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { PermissionPrompt, type PermissionDecision, type PermissionPromptProps } from "./permission-prompt";
 
-export type ChatToolState = "pending" | "running" | "completed" | "error";
+/**
+ * Tool-call state. Canonical lifecycle names (`pending`, `running`, `succeeded`, `failed`, `canceled`)
+ * and the legacy `completed` / `error` (and other `TaskStatusInput` spellings) are all accepted.
+ */
+export type ChatToolState = "pending" | "running" | "completed" | "error" | TaskStatusInput;
 
-const stateMeta: Record<ChatToolState, { label: string; className: string }> = {
-  pending: { label: "Pending", className: "bg-muted text-muted-foreground" },
-  running: { label: "Running", className: "bg-info-soft text-info-soft-foreground" },
-  completed: { label: "Completed", className: "bg-success-soft text-success-soft-foreground" },
-  error: { label: "Error", className: "bg-destructive-soft text-destructive-soft-foreground" },
+const stateMeta: Record<TaskStatus, { label: string; tone: Tone }> = {
+  pending: { label: "Pending", tone: "neutral" },
+  running: { label: "Running", tone: "info" },
+  succeeded: { label: "Completed", tone: "success" },
+  failed: { label: "Error", tone: "destructive" },
+  canceled: { label: "Canceled", tone: "neutral" },
 };
 
 export interface ChatToolStateBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -32,22 +39,24 @@ export interface ChatToolStateBadgeProps extends React.HTMLAttributes<HTMLSpanEl
 /** Status pill for a tool call. */
 export const ChatToolStateBadge = React.forwardRef<HTMLSpanElement, ChatToolStateBadgeProps>(
   ({ state, className, children, ...props }, ref) => {
-    const meta = stateMeta[state];
+    const status = normalizeTaskStatus(state);
+    const meta = stateMeta[status];
     return (
       <span
         ref={ref}
         data-state={state}
         className={cn(
           "inline-flex h-5 shrink-0 items-center gap-1 rounded-control px-1.5 text-2xs font-medium [&_svg]:size-3",
-          meta.className,
+          toneClasses.soft[meta.tone],
           className
         )}
         {...props}
       >
-        {state === "pending" && <RiTimeLine aria-hidden />}
-        {state === "running" && <Spinner aria-hidden role="presentation" size="xs" className="size-3 text-current" />}
-        {state === "completed" && <RiCheckLine aria-hidden />}
-        {state === "error" && <RiErrorWarningLine aria-hidden />}
+        {status === "pending" && <RiTimeLine aria-hidden />}
+        {status === "running" && <Spinner aria-hidden role="presentation" size="xs" className="size-3 text-current" />}
+        {status === "succeeded" && <RiCheckLine aria-hidden />}
+        {status === "failed" && <RiErrorWarningLine aria-hidden />}
+        {status === "canceled" && <RiCloseCircleLine aria-hidden />}
         {children ?? meta.label}
       </span>
     );
@@ -96,7 +105,7 @@ export interface ChatToolProps
   input?: unknown;
   /** Tool result (rendered as JSON). */
   output?: unknown;
-  /** Error text shown when `state` is "error". */
+  /** Error text shown when `state` is "failed" (or the legacy "error"). */
   errorText?: React.ReactNode;
 }
 
@@ -107,6 +116,7 @@ export const ChatTool = React.forwardRef<HTMLDivElement, ChatToolProps>(
     ref
   ) => {
     const hasBody = children != null || input !== undefined || output !== undefined || errorText != null;
+    const status = normalizeTaskStatus(state, "succeeded");
     return (
       <Collapsible.Root
         ref={ref}
@@ -125,10 +135,10 @@ export const ChatTool = React.forwardRef<HTMLDivElement, ChatToolProps>(
             aria-hidden
             className="flex size-6 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground [&_svg]:size-3.5"
           >
-            {icon ?? <RiToolsLine />}
+            {icon ?? <RiToolsLine aria-hidden />}
           </span>
           <span className="min-w-0 flex-1 truncate font-mono text-[13px] font-medium text-foreground">{name}</span>
-          {duration != null && state !== "running" && (
+          {duration != null && status !== "running" && (
             <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{formatToolDuration(duration)}</span>
           )}
           <ChatToolStateBadge state={state} />
@@ -145,7 +155,7 @@ export const ChatTool = React.forwardRef<HTMLDivElement, ChatToolProps>(
               {children ?? (
                 <>
                   {input !== undefined && <JsonBlock label="Input" value={input} />}
-                  {state === "error" && errorText != null ? (
+                  {status === "failed" && errorText != null ? (
                     <div className="flex flex-col gap-1.5">
                       <span className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">Error</span>
                       <div className="rounded-md border border-destructive/30 bg-destructive-soft p-3 text-xs leading-5 text-destructive-soft-foreground">
@@ -154,7 +164,7 @@ export const ChatTool = React.forwardRef<HTMLDivElement, ChatToolProps>(
                     </div>
                   ) : (
                     output !== undefined && (
-                      <JsonBlock label="Output" value={output} tone={state === "error" ? "error" : undefined} />
+                      <JsonBlock label="Output" value={output} tone={status === "failed" ? "error" : undefined} />
                     )
                   )}
                 </>
@@ -265,7 +275,7 @@ export const ChatToolApproval = React.forwardRef<HTMLDivElement, ChatToolApprova
           aria-hidden
           className="flex size-7 shrink-0 items-center justify-center rounded-md bg-warning-soft text-warning-soft-foreground [&_svg]:size-4"
         >
-          {icon ?? <RiShieldCheckLine />}
+          {icon ?? <RiShieldCheckLine aria-hidden />}
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
           <p className="text-sm font-medium text-foreground">{title}</p>
@@ -287,10 +297,10 @@ export const ChatToolApproval = React.forwardRef<HTMLDivElement, ChatToolApprova
       <div className="mt-3.5 flex items-center justify-end gap-2 border-t border-border bg-subtle px-3.5 py-2.5">
         {status === "pending" ? (
           <>
-            <Button variant="secondary" size="sm" onClick={onDeny} leadingIcon={<RiCloseLine />}>
+            <Button variant="secondary" size="sm" onClick={onDeny} leadingIcon={<RiCloseLine aria-hidden />}>
               {denyLabel}
             </Button>
-            <Button variant="primary" size="sm" onClick={onApprove} leadingIcon={<RiCheckLine />}>
+            <Button variant="primary" size="sm" onClick={onApprove} leadingIcon={<RiCheckLine aria-hidden />}>
               {approveLabel}
             </Button>
           </>

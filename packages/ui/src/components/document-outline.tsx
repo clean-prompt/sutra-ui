@@ -137,6 +137,8 @@ export interface DocumentOutlineProps extends Omit<React.HTMLAttributes<HTMLElem
   /** Heading shown above the list. Default "Outline"; `null` hides it. */
   title?: React.ReactNode;
   /** Shown when there are no headings. */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyHint?: React.ReactNode;
   /** Deepest level listed. Default 6. */
   maxLevel?: number;
@@ -151,7 +153,8 @@ export const DocumentOutline = React.forwardRef<HTMLElement, DocumentOutlineProp
       onNavigate,
       filterable,
       title = "Outline",
-      emptyHint = "No headings yet. Lines starting with # become headings.",
+      emptyState,
+      emptyHint,
       maxLevel = 6,
       className,
       ...props
@@ -199,7 +202,7 @@ export const DocumentOutline = React.forwardRef<HTMLElement, DocumentOutlineProp
           </div>
         )}
         {headings.length === 0 ? (
-          <p className="px-2 py-1 text-sm text-muted-foreground">{emptyHint}</p>
+          <p className="px-2 py-1 text-sm text-muted-foreground">{emptyState ?? emptyHint ?? "No headings yet. Lines starting with # become headings."}</p>
         ) : shown.length === 0 ? (
           <p className="px-2 py-1 text-sm text-muted-foreground">No headings match “{query}”.</p>
         ) : (

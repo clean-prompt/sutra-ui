@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiUploadCloud2Line } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { formatBytes } from "../lib/format";
 
 export type FileRejectionCode = "file-invalid-type" | "file-too-large" | "too-many-files";
@@ -107,7 +107,9 @@ export interface DropzoneProps
   maxFiles?: number;
   multiple?: boolean;
   disabled?: boolean;
-  /** Single-row layout for tight spaces. */
+  /** `compact` is a single-row layout for tight spaces. Default `normal`. */
+  density?: Density;
+  /** @deprecated Use `density="compact"`. */
   compact?: boolean;
   /** Files already selected elsewhere, counted against `maxFiles`. */
   currentCount?: number;
@@ -130,7 +132,8 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       maxFiles,
       multiple = true,
       disabled = false,
-      compact = false,
+      density: densityProp,
+      compact: compactProp,
       currentCount = 0,
       icon,
       title,
@@ -145,6 +148,8 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
     },
     ref
   ) => {
+    const density = normalizeDensity(densityProp ?? compactProp);
+    const compact = density === "compact";
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     const dragDepth = React.useRef(0);
     const [dragState, setDragState] = React.useState<"idle" | "accept" | "reject">("idle");
@@ -194,6 +199,7 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
         aria-disabled={disabled || undefined}
         aria-describedby={hintText ? hintId : undefined}
         data-drag={dragState === "idle" ? undefined : dragState}
+        data-density={density}
         onClick={(e) => {
           onClick?.(e);
           if (!e.defaultPrevented) open();
@@ -265,7 +271,7 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
             compact ? "size-9 [&_svg]:size-4" : "size-11 [&_svg]:size-5"
           )}
         >
-          {icon ?? <RiUploadCloud2Line />}
+          {icon ?? <RiUploadCloud2Line aria-hidden />}
         </span>
         <span className={cn("flex min-w-0 flex-col gap-1", compact && "flex-1")}>
           <span className="text-sm text-muted-foreground">

@@ -8,6 +8,7 @@ import {
   RiCloseLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { toneClasses, type Tone } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { formatDuration } from "../lib/duration";
 import { clamp } from "../lib/math";
@@ -20,13 +21,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, type Tab
 
 export type ModelState = "ready" | "loading" | "sleeping" | "stopped" | "failed" | "downloading";
 
-const stateMeta: Record<ModelState, { label: string; pill: string }> = {
-  ready: { label: "Ready", pill: "bg-success-soft text-success-soft-foreground" },
-  loading: { label: "Loading", pill: "bg-primary-soft text-primary-soft-foreground" },
-  sleeping: { label: "Sleeping", pill: "bg-info-soft text-info-soft-foreground" },
-  stopped: { label: "Stopped", pill: "bg-muted text-muted-foreground" },
-  failed: { label: "Failed", pill: "bg-destructive-soft text-destructive-soft-foreground" },
-  downloading: { label: "Downloading", pill: "bg-info-soft text-info-soft-foreground" },
+const stateMeta: Record<ModelState, { label: string; tone: Tone }> = {
+  ready: { label: "Ready", tone: "success" },
+  loading: { label: "Loading", tone: "primary" },
+  sleeping: { label: "Sleeping", tone: "info" },
+  stopped: { label: "Stopped", tone: "neutral" },
+  failed: { label: "Failed", tone: "destructive" },
+  downloading: { label: "Downloading", tone: "info" },
 };
 
 /** Distinct glyph per state so it is never color-only. */
@@ -76,7 +77,7 @@ export const ModelStatePill = React.forwardRef<HTMLSpanElement, ModelStatePillPr
         className={cn(
           "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-control font-medium leading-none",
           size === "sm" ? "h-5 px-1.5 text-2xs" : "h-6 px-2 text-xs",
-          hideLabel ? "bg-transparent px-0" : meta.pill,
+          hideLabel ? "bg-transparent px-0" : toneClasses.soft[meta.tone],
           className
         )}
         {...props}
@@ -432,7 +433,7 @@ export const ModelTable = React.forwardRef<HTMLDivElement, ModelTableProps>(
       onFilterChange,
       hideFilters,
       defaultSort = null,
-      emptyState = "No models match this filter.",
+      emptyState = "No models match this filter",
       ...props
     },
     ref

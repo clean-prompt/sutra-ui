@@ -222,7 +222,7 @@ function SidebarPreview() {
   const [active, setActive] = React.useState("Inbox");
   const item = (label: string, icon: React.ReactNode, badge?: React.ReactNode) => (
     <SidebarMenuItem>
-      <SidebarMenuButton icon={icon} isActive={active === label} onClick={() => setActive(label)} badge={badge}>
+      <SidebarMenuButton icon={icon} active={active === label} onClick={() => setActive(label)} badge={badge}>
         {label}
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -257,7 +257,7 @@ function SidebarPreview() {
                       <SidebarMenuSubButton
                         key={p}
                         href="#sidebar"
-                        isActive={active === p}
+                        active={active === p}
                         onClick={(e) => {
                           e.preventDefault();
                           setActive(p);

@@ -7,15 +7,16 @@ import {
   RiInboxLine,
   RiSubtractLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 
-export type TableDensity = "compact" | "normal" | "relaxed";
+/** Table row density: the shared `Density`, plus the legacy `"comfortable"` (→ `relaxed`). */
+export type TableDensity = Density | "comfortable";
 export type TableAlign = "left" | "center" | "right";
 export type TableSortDirection = "asc" | "desc" | false;
 
 interface TableContextValue {
-  density: TableDensity;
+  density: Density;
   striped: boolean;
   stickyHeader: boolean;
 }
@@ -26,13 +27,13 @@ const TableContext = React.createContext<TableContextValue>({
   stickyHeader: false,
 });
 
-const cellPadding: Record<TableDensity, string> = {
+const cellPadding: Record<Density, string> = {
   compact: "px-3 py-1.5",
   normal: "px-4 py-2.5",
   relaxed: "px-4 py-4",
 };
 
-const headHeight: Record<TableDensity, string> = {
+const headHeight: Record<Density, string> = {
   compact: "h-8 px-3",
   normal: "h-10 px-4",
   relaxed: "h-11 px-4",
@@ -45,6 +46,7 @@ const alignClass: Record<TableAlign, string> = {
 };
 
 export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
+  /** Row density. Default `normal`; `"comfortable"` is accepted as a legacy alias of `relaxed`. */
   density?: TableDensity;
   striped?: boolean;
   /** Keeps the header visible while the container scrolls. Pair with `maxHeight`. */
@@ -61,7 +63,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
     {
       className,
       containerClassName,
-      density = "normal",
+      density: densityProp,
       striped = false,
       stickyHeader = false,
       maxHeight,
@@ -70,6 +72,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
     },
     ref
   ) => {
+    const density = normalizeDensity(densityProp);
     const ctx = React.useMemo(
       () => ({ density, striped, stickyHeader }),
       [density, striped, stickyHeader]
@@ -277,15 +280,26 @@ TableCaption.displayName = "TableCaption";
 /* DataTable                                                           */
 /* ------------------------------------------------------------------ */
 
-interface TableCheckboxProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "checked" | "onChange"> {
-  checked: boolean;
+export interface TableCheckboxProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "checked" | "defaultChecked" | "onChange"> {
+  checked?: boolean;
+  defaultChecked?: boolean;
   indeterminate?: boolean;
-  onCheckedChange: (checked: boolean) => void;
+  onCheckedChange?: (checked: boolean) => void;
 }
 
-function TableCheckbox({ checked, indeterminate, onCheckedChange, className, ...props }: TableCheckboxProps) {
+/** Row-selection checkbox sized for table cells (controlled or uncontrolled, with an indeterminate state). */
+export const TableCheckbox = React.forwardRef<HTMLInputElement, TableCheckboxProps>(function TableCheckbox(
+  { checked: checkedProp, defaultChecked = false, indeterminate, onCheckedChange, className, ...props },
+  forwardedRef
+) {
   const ref = React.useRef<HTMLInputElement>(null);
+  const [checked, setChecked] = useControllableState<boolean>({
+    value: checkedProp,
+    defaultValue: defaultChecked,
+    onChange: onCheckedChange,
+  });
+  React.useImperativeHandle(forwardedRef, () => ref.current as HTMLInputElement);
   React.useEffect(() => {
     if (ref.current) ref.current.indeterminate = !!indeterminate;
   }, [indeterminate]);
@@ -296,7 +310,7 @@ function TableCheckbox({ checked, indeterminate, onCheckedChange, className, ...
         type="checkbox"
         role="checkbox"
         checked={checked && !indeterminate}
-        onChange={(e) => onCheckedChange(e.target.checked)}
+        onChange={(e) => setChecked(e.target.checked)}
         onClick={(e) => e.stopPropagation()}
         className={cn(
           "peer size-4 cursor-pointer appearance-none rounded-[4px] border border-border-strong bg-background shadow-xs transition-colors",
@@ -316,7 +330,8 @@ function TableCheckbox({ checked, indeterminate, onCheckedChange, className, ...
       />
     </span>
   );
-}
+});
+TableCheckbox.displayName = "TableCheckbox";
 
 export interface DataTableColumn<T> {
   /** Property of the row to read, or any unique id when `cell` is provided. */
@@ -356,12 +371,18 @@ export interface DataTableProps<T> {
   emptyState?: React.ReactNode;
   onRowClick?: (row: T, index: number) => void;
   caption?: React.ReactNode;
+  /** Row density. Default `normal`; `"comfortable"` is accepted as a legacy alias of `relaxed`. */
   density?: TableDensity;
   striped?: boolean;
   stickyHeader?: boolean;
   maxHeight?: number | string;
   className?: string;
   tableClassName?: string;
+  /**
+   * Ref to the `<table>` element. DataTable is generic, so it takes `ref` as a plain prop
+   * (React 19) instead of going through `forwardRef`, which would erase the row type.
+   */
+  ref?: React.Ref<HTMLTableElement>;
 }
 
 function readKey<T>(row: T, key: string): unknown {
@@ -388,6 +409,7 @@ function defaultRowId<T>(row: T, index: number) {
 
 /** Data-driven table with sorting, selection, loading and empty states. */
 export function DataTable<T>({
+  ref,
   columns,
   data,
   getRowId = defaultRowId,
@@ -446,6 +468,7 @@ export function DataTable<T>({
 
   return (
     <Table
+      ref={ref}
       density={density}
       striped={striped}
       stickyHeader={stickyHeader}

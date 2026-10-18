@@ -16,6 +16,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { pluralize } from "../lib/format";
 import { formatShortDate, MINUTE_MS, toMs, type TimeInput } from "../lib/time";
+import { toneClasses } from "../lib/tone";
 import { useAsyncAction } from "../hooks/use-async-action";
 import { Avatar } from "./avatar";
 import { Badge } from "./badge";
@@ -117,7 +118,7 @@ export const SessionRow = React.forwardRef<HTMLLIElement, SessionRowProps>(
           aria-hidden
           className={cn(
             "flex size-10 shrink-0 items-center justify-center rounded-xl [&_svg]:size-5",
-            session.current ? "bg-success-soft text-success-soft-foreground" : "bg-muted text-muted-foreground"
+            session.current ? toneClasses.soft.success : toneClasses.soft.neutral
           )}
         >
           <Icon />
@@ -144,7 +145,7 @@ export const SessionRow = React.forwardRef<HTMLLIElement, SessionRowProps>(
             <span className="inline-flex items-center gap-1.5">
               <span
                 aria-hidden
-                className={cn("size-1.5 rounded-full", isActiveNow(session.lastActive, now ?? Date.now()) ? "bg-success" : "bg-muted-foreground/50")}
+                className={cn("size-1.5 rounded-full", isActiveNow(session.lastActive, now ?? Date.now()) ? toneClasses.dot.success : "bg-muted-foreground/50")}
               />
               {last}
             </span>
@@ -193,6 +194,8 @@ export interface SessionListProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   onRevokeOthers?: () => void | Promise<void>;
   title?: React.ReactNode;
   description?: React.ReactNode;
+  /** Replaces the whole empty state (overrides `emptyTitle` / `emptyDescription`). */
+  emptyState?: React.ReactNode;
   emptyTitle?: React.ReactNode;
   emptyDescription?: React.ReactNode;
   now?: number;
@@ -208,6 +211,7 @@ export const SessionList = React.forwardRef<HTMLDivElement, SessionListProps>(
       onRevokeOthers,
       title = "Active sessions",
       description,
+      emptyState,
       emptyTitle = "No active sessions",
       emptyDescription = "Devices appear here after they sign in.",
       now,
@@ -242,13 +246,13 @@ export const SessionList = React.forwardRef<HTMLDivElement, SessionListProps>(
           {onRevokeOthers && !isLoading && others > 0 && (
             <ConfirmDialog
               tone="destructive"
-              icon={<RiShieldCheckLine />}
+              icon={<RiShieldCheckLine aria-hidden />}
               title="Sign out all other sessions?"
               description={`${others} other ${pluralize(others, "session")} will be signed out and need to sign in again. You'll stay signed in on this device.`}
               confirmLabel="Sign out others"
               onConfirm={onRevokeOthers}
               trigger={
-                <Button size="sm" variant="destructive-soft" leadingIcon={<RiLogoutBoxRLine />}>
+                <Button size="sm" variant="destructive-soft" leadingIcon={<RiLogoutBoxRLine aria-hidden />}>
                   Sign out all other sessions
                 </Button>
               }
@@ -268,7 +272,7 @@ export const SessionList = React.forwardRef<HTMLDivElement, SessionListProps>(
             ))}
           </ul>
         ) : list.length === 0 ? (
-          <EmptyState size="sm" icon={<RiComputerLine />} title={emptyTitle} description={emptyDescription} />
+          (emptyState ?? <EmptyState size="sm" icon={<RiComputerLine aria-hidden />} title={emptyTitle} description={emptyDescription} />)
         ) : (
           <ul aria-labelledby={headingId} className="divide-y divide-border">
             {list.map((s) => (
@@ -363,7 +367,7 @@ export const AccountPanel = React.forwardRef<HTMLDivElement, AccountPanelProps>(
         {(onSignOut || onSignOutEverywhere) && (
           <div className="flex flex-col gap-2 border-t border-border pt-4 sm:flex-row">
             {onSignOut && (
-              <Button variant="primary" className="flex-1" leadingIcon={<RiLogoutBoxRLine />} loading={signingOut} onClick={() => void signOut()}>
+              <Button variant="primary" className="flex-1" leadingIcon={<RiLogoutBoxRLine aria-hidden />} loading={signingOut} onClick={() => void signOut()}>
                 Sign out
               </Button>
             )}

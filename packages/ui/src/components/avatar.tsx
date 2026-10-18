@@ -3,6 +3,7 @@ import { Avatar as AvatarPrimitive } from "radix-ui";
 import { cva } from "class-variance-authority";
 import { RiUserLine, RiVerifiedBadgeFill } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { toneClasses, type Tone } from "../lib/tone";
 import { colorForSeed } from "../lib/hash";
 import { initials } from "../lib/text";
 
@@ -53,11 +54,12 @@ const verifiedSize: Record<AvatarSize, string> = {
   "2xl": "size-5",
 };
 
+const statusTone: Record<AvatarStatus, Tone> = { online: "success", offline: "neutral", busy: "destructive", away: "warning" };
 const statusColor: Record<AvatarStatus, string> = {
-  online: "bg-success",
-  offline: "bg-muted-foreground",
-  busy: "bg-destructive",
-  away: "bg-warning",
+  online: toneClasses.dot[statusTone.online],
+  offline: toneClasses.dot[statusTone.offline],
+  busy: toneClasses.dot[statusTone.busy],
+  away: toneClasses.dot[statusTone.away],
 };
 
 /** Context used by `AvatarGroup` to pass size, shape and ring to its avatars. */

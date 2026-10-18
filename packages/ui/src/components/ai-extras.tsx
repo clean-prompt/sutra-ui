@@ -49,6 +49,8 @@ import { useNow } from "../hooks/use-now";
 import { formatClock } from "../lib/duration";
 import { formatCompact } from "../lib/format";
 import { roundTo } from "../lib/math";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 
 /* ------------------------------------------------------------------ */
 /* Shared helpers                                                      */
@@ -328,6 +330,7 @@ export type StatusStripStatus =
   | (StatusBase & { kind: "offline" })
   | (StatusBase & { kind: "error"; title?: React.ReactNode });
 
+/** Tones a status kind maps to by default. The `tone` prop accepts any `ToneInput`. */
 export type StatusStripTone = "neutral" | "info" | "warning" | "destructive";
 
 export interface StatusStripProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
@@ -335,11 +338,13 @@ export interface StatusStripProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   onRetry?: () => void;
   onCancel?: () => void;
   /** Override the tone derived from the status kind. */
-  tone?: StatusStripTone;
+  tone?: ToneInput;
 }
 
-const stripTone: Record<StatusStripTone, string> = {
+const stripTone: Record<Tone, string> = {
   neutral: "border-border bg-subtle text-foreground",
+  primary: "border-primary/30 bg-primary-soft text-primary-soft-foreground",
+  success: "border-success/30 bg-success-soft text-success-soft-foreground",
   info: "border-info/30 bg-info-soft text-info-soft-foreground",
   warning: "border-warning/30 bg-warning-soft text-warning-soft-foreground",
   destructive: "border-destructive/30 bg-destructive-soft text-destructive-soft-foreground",
@@ -377,7 +382,7 @@ export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
       (((status.kind === "cold-start" || status.kind === "waking") && status.startedAt != null) || target != null);
     useNow({ active: ticking });
     if (!status) return null;
-    const tone = toneProp ?? kindTone[status.kind];
+    const tone = toneProp ? normalizeTone(toneProp) : kindTone[status.kind];
     let icon: React.ReactNode = <Spinner size="xs" variant="ring" aria-hidden="true" />;
     let line: React.ReactNode;
     let progress: number | null = null;
@@ -506,7 +511,8 @@ export interface JobBannerProps extends Omit<React.HTMLAttributes<HTMLDivElement
   phases?: JobBannerPhase[];
   /** Current phase id. */
   phase?: string;
-  status?: "running" | "done" | "failed" | "cancelled";
+  /** Lifecycle status (`running | succeeded | failed | canceled`; legacy `done` / `cancelled` still work). */
+  status?: TaskStatusInput;
   /** Epoch ms the job started; elapsed time ticks itself. */
   startedAt?: number;
   /** Elapsed seconds (when not using startedAt). */
@@ -537,7 +543,10 @@ export const JobBanner = React.forwardRef<HTMLDivElement, JobBannerProps>(
     },
     ref
   ) => {
-    const running = status === "running";
+    const lifecycle = normalizeTaskStatus(status, "running");
+    const running = lifecycle === "running" || lifecycle === "pending";
+    const succeeded = lifecycle === "succeeded";
+    const failed = lifecycle === "failed";
     const [endedAt, setEndedAt] = React.useState<number | null>(null);
     React.useEffect(() => {
       setEndedAt(running ? null : Date.now());
@@ -547,12 +556,12 @@ export const JobBanner = React.forwardRef<HTMLDivElement, JobBannerProps>(
     const idx = Math.max(0, phases.findIndex((p) => p.id === phase));
     const current = phases[idx];
     const headline =
-      status === "done"
+      succeeded
         ? "Done"
-        : status === "failed"
+        : failed
           ? "Failed"
-          : status === "cancelled"
-            ? "Cancelled"
+          : lifecycle === "canceled"
+            ? "Canceled"
             : current?.activeLabel ?? `${current?.label ?? "Working"}…`;
 
     return (
@@ -563,7 +572,7 @@ export const JobBanner = React.forwardRef<HTMLDivElement, JobBannerProps>(
         data-status={status}
         className={cn(
           "flex flex-col gap-3 rounded-box border border-border bg-card p-3 shadow-xs sm:flex-row sm:items-center",
-          status === "failed" && "border-destructive/40",
+          failed && "border-destructive/40",
           className
         )}
         {...props}
@@ -578,7 +587,7 @@ export const JobBanner = React.forwardRef<HTMLDivElement, JobBannerProps>(
           <div className="flex items-center gap-3">
             <ol className="flex items-center gap-1" aria-label="Progress">
               {phases.map((p, i) => {
-                const done = status === "done" || i < idx;
+                const done = succeeded || i < idx;
                 const active = running && i === idx;
                 return (
                   <li key={p.id} aria-current={active ? "step" : undefined} className="flex items-center gap-1">
@@ -601,7 +610,7 @@ export const JobBanner = React.forwardRef<HTMLDivElement, JobBannerProps>(
               })}
             </ol>
             <p className="min-w-0 truncate text-xs" aria-live="polite">
-              {running ? <TextShimmer>{headline}</TextShimmer> : <span className={status === "failed" ? "text-destructive" : "text-muted-foreground"}>{headline}</span>}
+              {running ? <TextShimmer>{headline}</TextShimmer> : <span className={failed ? "text-destructive" : "text-muted-foreground"}>{headline}</span>}
             </p>
           </div>
           {detail ? <p className="truncate text-xs text-muted-foreground">{detail}</p> : null}
@@ -613,11 +622,11 @@ export const JobBanner = React.forwardRef<HTMLDivElement, JobBannerProps>(
             </Button>
           ) : null}
           {!running && onAskAgain ? (
-            <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine />} onClick={onAskAgain}>
+            <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onAskAgain}>
               Ask again
             </Button>
           ) : null}
-          {status === "done" && onOpenResult ? (
+          {succeeded && onOpenResult ? (
             <Button size="xs" variant="primary" onClick={onOpenResult}>
               Open result
             </Button>
@@ -825,7 +834,7 @@ const QuestionCardSingle = React.forwardRef<HTMLDivElement, QuestionCardProps>(
                   }}
                 />
                 <Button type="button" size="icon-sm" variant="ghost" aria-label="Attach files" onClick={() => fileRef.current?.click()}>
-                  <RiAttachment2 />
+                  <RiAttachment2 aria-hidden />
                 </Button>
               </>
             ) : (
@@ -1119,7 +1128,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
             aria-label={isFolded ? "Expand questions" : "Collapse questions"}
             onClick={() => setFolded(!isFolded)}
           >
-            {isFolded ? <RiArrowRightSLine /> : <RiArrowDownSLine />}
+            {isFolded ? <RiArrowRightSLine aria-hidden /> : <RiArrowDownSLine aria-hidden />}
           </Button>
         </div>
         {!isFolded && (
@@ -1203,7 +1212,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
                               checked ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                             )}
                           >
-                            {checked && item.multiSelect ? <RiCheckLine className="size-3" /> : i + 1}
+                            {checked && item.multiSelect ? <RiCheckLine aria-hidden className="size-3" /> : i + 1}
                           </span>
                           <span className="flex min-w-0 flex-col">
                             <span className="font-medium text-foreground">{o.label}</span>
@@ -1404,6 +1413,9 @@ export interface SlashMenuProps extends Omit<React.HTMLAttributes<HTMLDivElement
   onSelect?: (command: SlashCommand, match: SlashTriggerMatch) => void;
   /** Header label. Default "Commands" (or "Mentions" for "@"). */
   heading?: React.ReactNode;
+  /** Shown when nothing matches. Default "No matching commands". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
   /** Max visible rows before scrolling. Default 8. */
   maxRows?: number;
@@ -1442,7 +1454,7 @@ export function highlightMatch(text: string, query: string): React.ReactNode {
 
 /** Inline command / mention listbox anchored to the caret of a composer textarea. */
 export const SlashMenu = React.forwardRef<HTMLDivElement, SlashMenuProps>(
-  ({ anchorRef, commands, trigger = "/", onSelect, heading, emptyText = "No matching commands", maxRows = 8, filter = defaultCommandFilter, className, style, ...props }, ref) => {
+  ({ anchorRef, commands, trigger = "/", onSelect, heading, emptyState, emptyText, maxRows = 8, filter = defaultCommandFilter, className, style, ...props }, ref) => {
     const triggers = React.useMemo(() => (Array.isArray(trigger) ? trigger : [trigger]), [trigger]);
     const { match, dismiss, replace } = useSlashTrigger(anchorRef, triggers);
     const items = React.useMemo(() => (match ? filter(commands, match.query) : []), [match, commands, filter]);
@@ -1549,7 +1561,7 @@ export const SlashMenu = React.forwardRef<HTMLDivElement, SlashMenuProps>(
         >
           {items.length === 0 ? (
             <div role="option" aria-selected={false} aria-disabled="true" className="px-2 py-3 text-center text-sm text-muted-foreground">
-              {emptyText}
+              {emptyState ?? emptyText ?? "No matching commands"}
             </div>
           ) : (
             items.map((c, i) => (
@@ -1628,17 +1640,23 @@ export interface ModelStateGlyphProps extends React.SVGAttributes<SVGSVGElement>
   size?: number;
 }
 
+const modelStateTone: Record<ModelLifecycleState, Tone> = {
+  ready: "success",
+  starting: "info",
+  asleep: "neutral",
+  stopped: "neutral",
+  failed: "destructive",
+};
+
 /** Lifecycle mark: shape, not color, carries the state (filled, outline, moon, warning). */
-export function ModelStateGlyph({ state, size = 14, className, ...props }: ModelStateGlyphProps) {
-  const color = {
-    ready: "text-success",
-    starting: "text-info",
-    asleep: "text-muted-foreground",
-    stopped: "text-muted-foreground",
-    failed: "text-destructive",
-  }[state];
+export const ModelStateGlyph = React.forwardRef<SVGSVGElement, ModelStateGlyphProps>(function ModelStateGlyph(
+  { state, size = 14, className, ...props },
+  ref
+) {
+  const color = toneClasses.text[modelStateTone[state]];
   return (
     <svg
+      ref={ref}
       role="img"
       aria-label={modelStateLabels[state]}
       width={size}
@@ -1663,7 +1681,8 @@ export function ModelStateGlyph({ state, size = 14, className, ...props }: Model
       ) : null}
     </svg>
   );
-}
+});
+ModelStateGlyph.displayName = "ModelStateGlyph";
 
 /** "answers in ~3s" / "needs warm-up ~40s" for a model. */
 export function modelWaitHint(m: Pick<ModelPickerModel, "state" | "answerSeconds" | "warmSeconds">) {
@@ -1681,7 +1700,7 @@ export function modelWaitHint(m: Pick<ModelPickerModel, "state" | "answerSeconds
   }
 }
 
-const costColor: Record<NonNullable<ModelPickerModel["cost"]>, BadgeColor> = { free: "success", low: "info", medium: "warning", high: "destructive" };
+const costTone: Record<NonNullable<ModelPickerModel["cost"]>, Tone> = { free: "success", low: "info", medium: "warning", high: "destructive" };
 const qualityColor: Record<NonNullable<ModelPickerModel["quality"]>, BadgeColor> = { basic: "gray", good: "blue", best: "purple" };
 
 /** Sort by lifecycle (ready first), then rank, then name. */
@@ -1711,7 +1730,7 @@ export interface ModelPickerProps {
 }
 
 /** Model dropdown with lifecycle glyphs, wait hints, badges, search, grouping and per-model warm-up. */
-export function ModelPicker({
+export const ModelPicker = React.forwardRef<HTMLButtonElement, ModelPickerProps>(function ModelPicker({
   models,
   value: valueProp,
   defaultValue,
@@ -1725,7 +1744,7 @@ export function ModelPicker({
   side = "top",
   align = "start",
   "aria-label": ariaLabel = "Model",
-}: ModelPickerProps) {
+}, ref) {
   const [value, setValue] = useControllableState<string>({ value: valueProp, defaultValue: defaultValue ?? "", onChange: onValueChange });
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
@@ -1782,12 +1801,13 @@ export function ModelPicker({
     >
       <PopoverTrigger asChild>
         <Button
+          ref={ref}
           variant="ghost"
           size="sm"
           disabled={disabled}
           aria-label={`${ariaLabel}: ${selected ? `${selected.name}, ${modelStateLabels[selected.state]}` : placeholder}`}
           className={cn("max-w-64 gap-1.5", className)}
-          trailingIcon={<RiArrowDownSLine className="text-muted-foreground" />}
+          trailingIcon={<RiArrowDownSLine aria-hidden className="text-muted-foreground" />}
         >
           {selected ? <ModelStateGlyph state={selected.state} aria-hidden="true" role="presentation" /> : null}
           <span className="truncate">{selected?.name ?? placeholder}</span>
@@ -1846,7 +1866,7 @@ export function ModelPicker({
                             <span className="flex items-center gap-1.5">
                               <span className="truncate font-medium text-foreground">{m.name}</span>
                               {m.cost ? (
-                                <Badge size="sm" color={costColor[m.cost]}>
+                                <Badge size="sm" tone={costTone[m.cost]}>
                                   {m.cost}
                                 </Badge>
                               ) : null}
@@ -1870,7 +1890,7 @@ export function ModelPicker({
                             loading={warming}
                             disabled={warming}
                             aria-label={`Warm up ${m.name}`}
-                            leadingIcon={warming ? undefined : <RiFlashlightLine />}
+                            leadingIcon={warming ? undefined : <RiFlashlightLine aria-hidden />}
                             onClick={() => onWarmUp(m.id)}
                           >
                             {warming ? "Warming" : "Warm up"}
@@ -1898,7 +1918,7 @@ export function ModelPicker({
       </PopoverContent>
     </Popover>
   );
-}
+});
 ModelPicker.displayName = "ModelPicker";
 
 /* ------------------------------------------------------------------ */
@@ -1939,7 +1959,7 @@ function formatDuration(ms: number) {
   return `${roundTo(ms / 3_600_000, 1)}h`;
 }
 
-const finishLabels: Record<string, string> = { stop: "Completed", length: "Hit length limit", error: "Errored", cancelled: "Cancelled", tool_calls: "Tool calls" };
+const finishLabels: Record<string, string> = { stop: "Completed", length: "Hit length limit", error: "Errored", cancelled: "Canceled", canceled: "Canceled", tool_calls: "Tool calls" };
 
 /** Usage dashboard: range switch, KPI tiles, daily bars, per-model bars, wait vs generate and finish reasons. */
 export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
@@ -2008,7 +2028,7 @@ export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
                   </div>
                 </li>
               ))}
-              {perModel.length === 0 ? <li className="text-sm text-muted-foreground">No requests in this range.</li> : null}
+              {perModel.length === 0 ? <li className="text-sm text-muted-foreground">No requests in this range</li> : null}
             </ul>
           </section>
           <section className="space-y-4">
@@ -2208,7 +2228,7 @@ export const ConversationSidebarList = React.forwardRef<HTMLElement, Conversatio
                 }}
               >
                 {onRename ? (
-                  <DropdownMenuItem icon={<RiPencilLine />} onSelect={() => {
+                  <DropdownMenuItem icon={<RiPencilLine aria-hidden />} onSelect={() => {
                       renameNext.current = c.id;
                       setTimeout(() => {
                         if (renameNext.current === c.id) {
@@ -2221,16 +2241,16 @@ export const ConversationSidebarList = React.forwardRef<HTMLElement, Conversatio
                   </DropdownMenuItem>
                 ) : null}
                 {onPin ? (
-                  <DropdownMenuItem icon={c.pinned ? <RiUnpinLine /> : <RiPushpinLine />} onSelect={() => onPin(c.id, !c.pinned)}>
+                  <DropdownMenuItem icon={c.pinned ? <RiUnpinLine aria-hidden /> : <RiPushpinLine aria-hidden />} onSelect={() => onPin(c.id, !c.pinned)}>
                     {c.pinned ? "Unpin" : "Pin"}
                   </DropdownMenuItem>
                 ) : null}
                 {onMove && folders.length ? (
                   <DropdownMenuSub>
-                    <DropdownMenuSubTrigger icon={<RiFolderLine />}>Move to</DropdownMenuSubTrigger>
+                    <DropdownMenuSubTrigger icon={<RiFolderLine aria-hidden />}>Move to</DropdownMenuSubTrigger>
                     <DropdownMenuSubContent className="w-44">
                       {folders.map((f) => (
-                        <DropdownMenuItem key={f.id} icon={<RiFolderLine />} disabled={c.folderId === f.id} onSelect={() => onMove(c.id, f.id)}>
+                        <DropdownMenuItem key={f.id} icon={<RiFolderLine aria-hidden />} disabled={c.folderId === f.id} onSelect={() => onMove(c.id, f.id)}>
                           {f.name}
                         </DropdownMenuItem>
                       ))}
@@ -2244,14 +2264,14 @@ export const ConversationSidebarList = React.forwardRef<HTMLElement, Conversatio
                   </DropdownMenuSub>
                 ) : null}
                 {onArchive ? (
-                  <DropdownMenuItem icon={c.archived ? <RiInboxUnarchiveLine /> : <RiArchiveLine />} onSelect={() => onArchive(c.id, !c.archived)}>
+                  <DropdownMenuItem icon={c.archived ? <RiInboxUnarchiveLine aria-hidden /> : <RiArchiveLine aria-hidden />} onSelect={() => onArchive(c.id, !c.archived)}>
                     {c.archived ? "Unarchive" : "Archive"}
                   </DropdownMenuItem>
                 ) : null}
                 {onDelete ? (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive" icon={<RiDeleteBinLine />} onSelect={() => onDelete(c.id)}>
+                    <DropdownMenuItem variant="destructive" icon={<RiDeleteBinLine aria-hidden />} onSelect={() => onDelete(c.id)}>
                       Delete
                     </DropdownMenuItem>
                   </>

@@ -736,8 +736,17 @@ export const ScopeMatrix = React.forwardRef<HTMLDivElement, ScopeMatrixProps>(
 );
 ScopeMatrix.displayName = "ScopeMatrix";
 
-/** Icon for a scope as a ready-to-render node. */
-export function ScopeIcon({ scope, className, definitions }: { scope: ScopeInput; className?: string; definitions?: Record<string, ScopeDefinition> }) {
-  const Icon = formatScope(scope, { definitions }).icon;
-  return <Icon aria-hidden className={cn("size-4", className)} />;
+export interface ScopeIconProps {
+  scope: ScopeInput;
+  className?: string;
+  definitions?: Record<string, ScopeDefinition>;
 }
+
+/** Icon for a scope as a ready-to-render node. */
+export const ScopeIcon = React.forwardRef<SVGSVGElement, ScopeIconProps>(({ scope, className, definitions }, ref) => {
+  const Icon = formatScope(scope, { definitions }).icon as React.ComponentType<
+    React.ComponentProps<IconComponent> & { ref?: React.Ref<SVGSVGElement> }
+  >;
+  return <Icon ref={ref} aria-hidden className={cn("size-4", className)} />;
+});
+ScopeIcon.displayName = "ScopeIcon";

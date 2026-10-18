@@ -344,6 +344,9 @@ export interface SidebarMenuButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof sidebarMenuButtonVariants> {
   asChild?: boolean;
+  /** Marks the current page (sets `aria-current="page"`). */
+  active?: boolean;
+  /** @deprecated Use `active`. */
   isActive?: boolean;
   icon?: React.ReactNode;
   /** Count or status shown on the right; hidden in icon mode. */
@@ -354,7 +357,8 @@ export interface SidebarMenuButtonProps
 
 /** Menu row: icon, label, badge; shows a tooltip when the sidebar is collapsed to icons. */
 export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
-  ({ asChild, isActive, icon, badge, tooltip, size, className, children, ...props }, ref) => {
+  ({ asChild, active: activeProp, isActive: isActiveProp, icon, badge, tooltip, size, className, children, ...props }, ref) => {
+    const isActive = activeProp ?? isActiveProp;
     const { collapsed, isMobile } = useSidebar();
     const Comp: React.ElementType = asChild ? Slot.Root : "button";
     const badgeNode =
@@ -405,17 +409,20 @@ export interface SidebarMenuSubProps
   label?: React.ReactNode;
   icon?: React.ReactNode;
   badge?: React.ReactNode;
+  /** Marks the current page (sets `aria-current="page"`). */
+  active?: boolean;
+  /** @deprecated Use `active`. */
   isActive?: boolean;
   children?: React.ReactNode;
 }
 
 /** Collapsible nested menu under a menu item. Hidden in icon mode. */
 export const SidebarMenuSub = React.forwardRef<HTMLDivElement, SidebarMenuSubProps>(
-  ({ trigger, label, icon, badge, isActive, className, children, ...props }, ref) => (
+  ({ trigger, label, icon, badge, active, isActive, className, children, ...props }, ref) => (
     <CollapsiblePrimitive.Root ref={ref} className={cn("group/menu-sub", className)} {...props}>
       <CollapsiblePrimitive.Trigger asChild>
         {trigger ?? (
-          <SidebarMenuButton icon={icon} isActive={isActive} tooltip={typeof label === "string" ? label : undefined}>
+          <SidebarMenuButton icon={icon} active={active ?? isActive} tooltip={typeof label === "string" ? label : undefined}>
             <span className="flex min-w-0 flex-1 items-center gap-2">
               <span className="min-w-0 flex-1 truncate">{label}</span>
               {badge != null && (
@@ -446,6 +453,9 @@ SidebarMenuSub.displayName = "SidebarMenuSub";
 
 export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   asChild?: boolean;
+  /** Marks the current page (sets `aria-current="page"`). */
+  active?: boolean;
+  /** @deprecated Use `active`. */
   isActive?: boolean;
   icon?: React.ReactNode;
   size?: "sm" | "md";
@@ -453,7 +463,8 @@ export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HT
 
 /** Nested link row inside `SidebarMenuSub`. Wrapped in its own list item. */
 export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarMenuSubButtonProps>(
-  ({ asChild, isActive, icon, size = "md", className, children, ...props }, ref) => {
+  ({ asChild, active: activeProp, isActive: isActiveProp, icon, size = "md", className, children, ...props }, ref) => {
+    const isActive = activeProp ?? isActiveProp;
     const Comp: React.ElementType = asChild ? Slot.Root : "a";
     return (
       <li className="relative">
@@ -501,7 +512,7 @@ export const SidebarTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
         }}
         {...props}
       >
-        {children ?? <RiLayoutLeftLine />}
+        {children ?? <RiLayoutLeftLine aria-hidden />}
       </Button>
     );
   }

@@ -16,7 +16,8 @@ import {
   RiRestartLine,
   RiUploadLine,
 } from "@remixicon/react";
-import { cn } from "../lib/cn";
+import { cn, normalizeDensity, type Density } from "../lib/cn";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { formatDuration } from "../lib/duration";
 import { formatBytes } from "../lib/format";
 import { clamp } from "../lib/math";
@@ -42,6 +43,20 @@ export function formatSpeed(bytesPerSecond: number | null | undefined): string {
 }
 
 export type TransferStatus = "queued" | "active" | "paused" | "completed" | "failed" | "canceled";
+
+/**
+ * What `status` accepts: the transfer states plus canonical lifecycle `TaskStatus` values and
+ * legacy spellings ("cancelled", "running", "succeeded", …), mapped by `normalizeTransferStatus`.
+ */
+export type TransferStatusInput = TransferStatus | TaskStatusInput;
+
+const fromTaskStatus = { pending: "queued", running: "active", succeeded: "completed", failed: "failed", canceled: "canceled" } as const;
+
+/** Map any accepted status spelling to a `TransferStatus` ("cancelled" → "canceled", "running" → "active"). */
+export function normalizeTransferStatus(status: TransferStatusInput | string | null | undefined): TransferStatus {
+  if (status === "paused") return "paused";
+  return fromTaskStatus[normalizeTaskStatus(status, "pending")];
+}
 export type TransferDirection = "upload" | "download" | "move" | "process";
 
 export interface TransferSample {
@@ -54,7 +69,8 @@ export interface TransferSample {
 export interface TransferItemData {
   id: string;
   name: string;
-  status: TransferStatus;
+  /** Transfer state; canonical `TaskStatus` values and "cancelled" are accepted too. */
+  status: TransferStatusInput;
   direction?: TransferDirection;
   /** 0–100. Derived from `bytes / total` when omitted. */
   progress?: number;
@@ -91,8 +107,9 @@ const SPEED_WINDOW_MS = 5000;
 /** Percent, speed (bytes/s) and ETA (s) for a transfer, from explicit values or samples. */
 export function getTransferStats(item: TransferItemData, now: number = Date.now()): TransferStats {
   const { bytes, total } = item;
+  const status = normalizeTransferStatus(item.status);
   const percent =
-    item.status === "completed"
+    status === "completed"
       ? 100
       : item.progress != null
         ? clamp(item.progress, 0, 100)
@@ -111,7 +128,7 @@ export function getTransferStats(item: TransferItemData, now: number = Date.now(
     const dt = (now - item.startedAt) / 1000;
     if (dt > 0) speed = bytes / dt;
   }
-  if (item.status !== "active") speed = item.status === "paused" ? 0 : speed;
+  if (status !== "active") speed = status === "paused" ? 0 : speed;
   let eta: number | null = item.eta ?? null;
   if (eta == null && speed && speed > 0 && bytes != null && total != null) eta = Math.max(0, (total - bytes) / speed);
   return { percent, speed, eta };
@@ -135,13 +152,14 @@ export function summarizeTransfers(items: TransferItemData[], now: number = Date
   let pctSum = 0;
   let pctN = 0;
   for (const item of items) {
-    counts[item.status]++;
+    const status = normalizeTransferStatus(item.status);
+    counts[status]++;
     const stats = getTransferStats(item, now);
-    if (item.status === "active" && stats.speed) speed += stats.speed;
-    if (item.status === "canceled") continue;
+    if (status === "active" && stats.speed) speed += stats.speed;
+    if (status === "canceled") continue;
     if (item.total) {
       total += item.total;
-      done += item.status === "completed" ? item.total : (item.bytes ?? ((stats.percent ?? 0) / 100) * item.total);
+      done += status === "completed" ? item.total : (item.bytes ?? ((stats.percent ?? 0) / 100) * item.total);
     } else if (stats.percent != null) {
       pctSum += stats.percent;
       pctN++;
@@ -195,7 +213,9 @@ export interface TransferItemProps
   id?: string;
   /** Override "now" (epoch ms) for speed computed from `startedAt`. */
   now?: number;
-  /** Denser row for trays. */
+  /** Row spacing. `compact` is the denser tray row. Default `normal`. */
+  density?: Density;
+  /** @deprecated Use `density="compact"`. */
   compact?: boolean;
 }
 
@@ -221,7 +241,7 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
     {
       id,
       name,
-      status,
+      status: statusProp,
       direction,
       progress,
       bytes,
@@ -235,7 +255,8 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
       ext,
       detail,
       now,
-      compact,
+      density,
+      compact: compactProp,
       onPause,
       onResume,
       onCancel,
@@ -247,6 +268,8 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
     },
     ref
   ) => {
+    const status = normalizeTransferStatus(statusProp);
+    const compact = normalizeDensity(density ?? compactProp) === "compact";
     const stats = getTransferStats(
       { id: id ?? name, name, status, progress, bytes, total, speed: speedProp, eta: etaProp, startedAt, samples },
       now
@@ -272,17 +295,17 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
 
     const actions: React.ReactNode[] = [];
     if (status === "active" && onPause)
-      actions.push(<ActionButton key="pause" label={`Pause ${name}`} onClick={onPause}><RiPauseLine /></ActionButton>);
+      actions.push(<ActionButton key="pause" label={`Pause ${name}`} onClick={onPause}><RiPauseLine aria-hidden /></ActionButton>);
     if (status === "paused" && onResume)
-      actions.push(<ActionButton key="resume" label={`Resume ${name}`} onClick={onResume}><RiPlayLine /></ActionButton>);
+      actions.push(<ActionButton key="resume" label={`Resume ${name}`} onClick={onResume}><RiPlayLine aria-hidden /></ActionButton>);
     if ((status === "failed" || status === "canceled") && onRetry)
-      actions.push(<ActionButton key="retry" label={`Retry ${name}`} onClick={onRetry}><RiRestartLine /></ActionButton>);
+      actions.push(<ActionButton key="retry" label={`Retry ${name}`} onClick={onRetry}><RiRestartLine aria-hidden /></ActionButton>);
     if (status === "completed" && onOpen)
-      actions.push(<ActionButton key="open" label={`Open ${name}`} onClick={onOpen}><RiExternalLinkLine /></ActionButton>);
+      actions.push(<ActionButton key="open" label={`Open ${name}`} onClick={onOpen}><RiExternalLinkLine aria-hidden /></ActionButton>);
     if ((status === "queued" || status === "active" || status === "paused") && onCancel)
-      actions.push(<ActionButton key="cancel" label={`Cancel ${name}`} onClick={onCancel}><RiCloseLine /></ActionButton>);
+      actions.push(<ActionButton key="cancel" label={`Cancel ${name}`} onClick={onCancel}><RiCloseLine aria-hidden /></ActionButton>);
     if ((status === "completed" || status === "failed" || status === "canceled") && onRemove)
-      actions.push(<ActionButton key="remove" label={`Remove ${name}`} onClick={onRemove}><RiDeleteBinLine /></ActionButton>);
+      actions.push(<ActionButton key="remove" label={`Remove ${name}`} onClick={onRemove}><RiDeleteBinLine aria-hidden /></ActionButton>);
 
     const StatusIcon =
       status === "completed" ? RiCheckboxCircleFill : status === "failed" ? RiErrorWarningFill : status === "canceled" ? RiForbidLine : null;
@@ -381,7 +404,13 @@ export interface TransferListProps
   title?: React.ReactNode | null;
   /** Override "now" (epoch ms) for computed speeds. */
   now?: number;
+  /** Row spacing. Default `normal`. */
+  density?: Density;
+  /** @deprecated Use `density="compact"`. */
   compact?: boolean;
+  /** Shown when there are no items. Default "No transfers". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
   /** Max height of the scrolling list. */
   maxHeight?: number | string;
@@ -398,8 +427,10 @@ export const TransferList = React.forwardRef<HTMLDivElement, TransferListProps>(
       items,
       title = "Transfers",
       now,
-      compact,
-      emptyMessage = "No transfers",
+      density: densityProp,
+      compact: compactProp,
+      emptyState,
+      emptyMessage,
       maxHeight,
       onPause,
       onResume,
@@ -415,6 +446,8 @@ export const TransferList = React.forwardRef<HTMLDivElement, TransferListProps>(
   ) => {
     const summary = summarizeTransfers(items, now);
     const finished = summary.counts.completed + summary.counts.canceled;
+    const density = normalizeDensity(densityProp ?? compactProp);
+    const compact = density === "compact";
     return (
       <div ref={ref} className={cn("flex min-w-0 flex-col", className)} {...props}>
         {title !== null && (
@@ -433,7 +466,7 @@ export const TransferList = React.forwardRef<HTMLDivElement, TransferListProps>(
           </div>
         )}
         {items.length === 0 ? (
-          <p className="px-4 py-6 text-center text-sm text-muted-foreground">{emptyMessage}</p>
+          <p className="px-4 py-6 text-center text-sm text-muted-foreground">{emptyState ?? emptyMessage ?? "No transfers"}</p>
         ) : (
           <ul
             role="list"
@@ -446,7 +479,7 @@ export const TransferList = React.forwardRef<HTMLDivElement, TransferListProps>(
                 key={item.id}
                 {...item}
                 now={now}
-                compact={compact}
+                density={density}
                 onPause={bind(onPause, item.id)}
                 onResume={bind(onResume, item.id)}
                 onCancel={bind(onCancel, item.id)}
@@ -467,7 +500,7 @@ TransferList.displayName = "TransferList";
 /* TransferTray                                                        */
 /* ------------------------------------------------------------------ */
 
-export interface TransferTrayProps extends Omit<TransferListProps, "title" | "compact"> {
+export interface TransferTrayProps extends Omit<TransferListProps, "title" | "compact" | "density"> {
   /** Header title; defaults to e.g. "Uploading 3 items" / "2 transfers complete". */
   title?: React.ReactNode;
   minimized?: boolean;
@@ -483,7 +516,10 @@ export interface TransferTrayProps extends Omit<TransferListProps, "title" | "co
 function trayTitle(items: TransferItemData[], counts: Record<TransferStatus, number>) {
   const running = counts.active + counts.queued + counts.paused;
   if (running > 0) {
-    const dirs = new Set(items.filter((i) => i.status === "active" || i.status === "queued").map((i) => i.direction));
+    const dirs = new Set(items.filter((i) => {
+      const s = normalizeTransferStatus(i.status);
+      return s === "active" || s === "queued";
+    }).map((i) => i.direction));
     const verb = dirs.size === 1 ? ({ upload: "Uploading", download: "Downloading", move: "Moving", process: "Processing" } as const)[[...dirs][0] ?? "upload"] ?? "Transferring" : "Transferring";
     return `${verb} ${running} ${running === 1 ? "item" : "items"}`;
   }
@@ -549,11 +585,11 @@ export const TransferTray = React.forwardRef<HTMLDivElement, TransferTrayProps>(
             aria-controls={bodyId}
             onClick={() => setMinimized(!minimized)}
           >
-            {minimized ? <RiArrowUpSLine /> : <RiArrowDownSLine />}
+            {minimized ? <RiArrowUpSLine aria-hidden /> : <RiArrowDownSLine aria-hidden />}
           </Button>
           {onClose && (
             <Button type="button" variant="ghost" size="icon-sm" aria-label="Close transfers" onClick={onClose}>
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           )}
         </div>
@@ -561,7 +597,7 @@ export const TransferTray = React.forwardRef<HTMLDivElement, TransferTrayProps>(
           <Progress aria-label="Overall progress" value={summary.percent} size="xs" className="rounded-none" />
         )}
         <div id={bodyId} hidden={minimized}>
-          <TransferList items={items} title={null} now={now} compact maxHeight={maxHeight} {...listProps} />
+          <TransferList items={items} title={null} now={now} density="compact" maxHeight={maxHeight} {...listProps} />
           {listProps.onClearCompleted && summary.counts.completed + summary.counts.canceled > 0 && (
             <div className="flex justify-end border-t border-border px-2 py-1.5">
               <Button type="button" variant="ghost" size="xs" onClick={listProps.onClearCompleted}>

@@ -428,7 +428,7 @@ function MockChat() {
           value={input}
           onValueChange={setInput}
           onSubmit={send}
-          isLoading={isBusy}
+          loading={isBusy}
           onStop={stop}
           canSubmit={input.trim().length > 0 || files.length > 0}
           onFilesAdded={addFiles}
@@ -688,7 +688,7 @@ function ChatToolDemo() {
         <ChatTool name="web_search" state="running" icon={<RiSearchLine />} input={{ query: "best espresso machines 2026" }} />
         <ChatTool
           name="run_sql"
-          state="completed"
+          state="succeeded"
           icon={<RiTerminalBoxLine />}
           duration={182}
           defaultOpen
@@ -701,7 +701,7 @@ function ChatToolDemo() {
         />
         <ChatTool
           name="send_email"
-          state="error"
+          state="failed"
           duration={2400}
           input={{ to: "team@acme.co", subject: "Weekly report" }}
           errorText="SMTP server rejected the message: daily sending limit reached."
@@ -885,7 +885,7 @@ function PromptInputDemo() {
               </Button>
             )}
           </div>
-          <PromptInput isLoading={loading} onStop={() => setLoading(false)}>
+          <PromptInput loading={loading} onStop={() => setLoading(false)}>
             <PromptInputTextarea placeholder={loading ? "Generating a reply…" : "Ask anything…"} />
             <PromptInputToolbar>
               <PromptInputTools>

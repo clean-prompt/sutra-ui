@@ -68,10 +68,18 @@ export interface AppSidebarFavorite {
   children?: { id: string; label: string; href?: string }[];
 }
 
-export interface AppSidebarProps extends Omit<SidebarProps, "children"> {
+export interface AppSidebarProps extends Omit<SidebarProps, "children" | "defaultValue"> {
   /** Currently active item id (nav item, app or favorite). */
+  value?: string;
+  /** Initially active item id when uncontrolled. Default "home". */
+  defaultValue?: string;
+  /** Called with the id of the item the user navigates to. */
+  onValueChange?: (id: string) => void;
+  /** @deprecated Use `value`. */
   active?: string;
+  /** @deprecated Use `defaultValue`. */
   defaultActive?: string;
+  /** @deprecated Use `onValueChange`. */
   onNavigate?: (id: string) => void;
   primaryItems?: AppSidebarNavItem[];
   apps?: SutraApp[];
@@ -86,9 +94,9 @@ export interface AppSidebarProps extends Omit<SidebarProps, "children"> {
 }
 
 const defaultPrimary: AppSidebarNavItem[] = [
-  { id: "home", label: "Home", icon: <RiHome5Line /> },
-  { id: "inbox", label: "Inbox", icon: <RiInboxLine />, badge: 12 },
-  { id: "today", label: "Today", icon: <RiCalendarCheckLine /> },
+  { id: "home", label: "Home", icon: <RiHome5Line aria-hidden /> },
+  { id: "inbox", label: "Inbox", icon: <RiInboxLine aria-hidden />, badge: 12 },
+  { id: "today", label: "Today", icon: <RiCalendarCheckLine aria-hidden /> },
 ];
 
 const defaultFavorites: AppSidebarFavorite[] = [
@@ -143,8 +151,11 @@ function NavButton({
 export const AppSidebar = React.forwardRef<HTMLElement, AppSidebarProps>(
   (
     {
+      value,
+      defaultValue,
+      onValueChange,
       active,
-      defaultActive = "home",
+      defaultActive,
       onNavigate,
       primaryItems = defaultPrimary,
       apps = [...sutraApps],
@@ -161,9 +172,12 @@ export const AppSidebar = React.forwardRef<HTMLElement, AppSidebarProps>(
     ref
   ) => {
     const [current, setCurrent] = useControllableState<string>({
-      value: active,
-      defaultValue: defaultActive,
-      onChange: onNavigate,
+      value: value ?? active,
+      defaultValue: defaultValue ?? defaultActive ?? "home",
+      onChange: (id) => {
+        onValueChange?.(id);
+        onNavigate?.(id);
+      },
     });
     const pct = storage ? Math.round((storage.used / storage.total) * 100) : 0;
 
@@ -173,7 +187,7 @@ export const AppSidebar = React.forwardRef<HTMLElement, AppSidebarProps>(
           <WorkspaceSwitcher workspaces={workspaces} />
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton icon={<RiSearchLine />} tooltip="Search (⌘K)" onClick={onSearch} className="text-muted-foreground">
+              <SidebarMenuButton icon={<RiSearchLine aria-hidden />} tooltip="Search (⌘K)" onClick={onSearch} className="text-muted-foreground">
                 <span className="flex items-center gap-2">
                   <span className="flex-1">Search</span>
                   <span className="flex gap-0.5" aria-hidden>
@@ -324,19 +338,19 @@ const defaultSettingsGroups: SettingsNavGroup[] = [
   {
     label: "Personal",
     items: [
-      { value: "account", label: "Account", icon: <RiUserLine /> },
-      { value: "preferences", label: "Preferences", icon: <RiPaletteLine /> },
-      { value: "notifications", label: "Notifications", icon: <RiBellLine /> },
-      { value: "security", label: "Security", icon: <RiLockLine /> },
+      { value: "account", label: "Account", icon: <RiUserLine aria-hidden /> },
+      { value: "preferences", label: "Preferences", icon: <RiPaletteLine aria-hidden /> },
+      { value: "notifications", label: "Notifications", icon: <RiBellLine aria-hidden /> },
+      { value: "security", label: "Security", icon: <RiLockLine aria-hidden /> },
     ],
   },
   {
     label: "Workspace",
     items: [
-      { value: "members", label: "Members", icon: <RiTeamLine />, badge: 12 },
-      { value: "integrations", label: "Integrations", icon: <RiPlugLine /> },
-      { value: "billing", label: "Billing", icon: <RiBankCardLine /> },
-      { value: "permissions", label: "Roles & permissions", icon: <RiShieldUserLine /> },
+      { value: "members", label: "Members", icon: <RiTeamLine aria-hidden />, badge: 12 },
+      { value: "integrations", label: "Integrations", icon: <RiPlugLine aria-hidden /> },
+      { value: "billing", label: "Billing", icon: <RiBankCardLine aria-hidden /> },
+      { value: "permissions", label: "Roles & permissions", icon: <RiShieldUserLine aria-hidden /> },
     ],
   },
 ];
@@ -418,10 +432,19 @@ export interface DocsNavSection {
   links: DocsNavLink[];
 }
 
-export interface DocsSidebarProps extends React.HTMLAttributes<HTMLElement> {
+export interface DocsSidebarProps extends Omit<React.HTMLAttributes<HTMLElement>, "defaultValue"> {
   sections?: DocsNavSection[];
+  /** Currently active link id. */
+  value?: string;
+  /** Initially active link id when uncontrolled. Default "installation". */
+  defaultValue?: string;
+  /** Called with the id of the link the user navigates to. */
+  onValueChange?: (id: string) => void;
+  /** @deprecated Use `value`. */
   active?: string;
+  /** @deprecated Use `defaultValue`. */
   defaultActive?: string;
+  /** @deprecated Use `onValueChange`. */
   onNavigate?: (id: string) => void;
   /** `sections`: collapsible groups of links. `tree`: a keyboard-navigable TreeView. */
   mode?: "sections" | "tree";
@@ -467,8 +490,11 @@ export const DocsSidebar = React.forwardRef<HTMLElement, DocsSidebarProps>(
   (
     {
       sections = defaultDocsSections,
+      value,
+      defaultValue,
+      onValueChange,
       active,
-      defaultActive = "installation",
+      defaultActive,
       onNavigate,
       mode = "sections",
       searchable = true,
@@ -478,9 +504,12 @@ export const DocsSidebar = React.forwardRef<HTMLElement, DocsSidebarProps>(
     ref
   ) => {
     const [current, setCurrent] = useControllableState<string>({
-      value: active,
-      defaultValue: defaultActive,
-      onChange: onNavigate,
+      value: value ?? active,
+      defaultValue: defaultValue ?? defaultActive ?? "installation",
+      onChange: (id) => {
+        onValueChange?.(id);
+        onNavigate?.(id);
+      },
     });
     const [query, setQuery] = React.useState("");
     const q = query.trim().toLowerCase();
@@ -493,7 +522,7 @@ export const DocsSidebar = React.forwardRef<HTMLElement, DocsSidebarProps>(
     const nodes: TreeNode[] = filtered.map((s) => ({
       id: s.id,
       label: s.label,
-      icon: <RiFileTextLine />,
+      icon: <RiFileTextLine aria-hidden />,
       children: s.links.map((l) => ({ id: l.id, label: l.label, textValue: l.label })),
     }));
 
@@ -510,7 +539,7 @@ export const DocsSidebar = React.forwardRef<HTMLElement, DocsSidebarProps>(
           />
         )}
         {filtered.length === 0 ? (
-          <p className="px-2 text-sm text-muted-foreground">No pages match “{query}”.</p>
+          <p className="px-2 text-sm text-muted-foreground">No pages match “{query}”</p>
         ) : mode === "tree" ? (
           <TreeView
             nodes={nodes}

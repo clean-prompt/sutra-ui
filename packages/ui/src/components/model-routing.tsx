@@ -89,7 +89,7 @@ export function formatModelPrice(model: Pick<RoutingModel, "inputPrice" | "outpu
   return [model.inputPrice, model.outputPrice].map((n) => (n == null ? "—" : f(n))).join(" / ");
 }
 
-const capabilityMeta: Record<ModelCapability, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
+const capabilityMeta: Record<ModelCapability, { label: string; icon: React.ComponentType<{ className?: string; "aria-hidden"?: React.AriaAttributes["aria-hidden"] }> }> = {
   tools: { label: "Tools", icon: RiToolsLine },
   vision: { label: "Vision", icon: RiEyeLine },
   reasoning: { label: "Reasoning", icon: RiBrainLine },
@@ -101,22 +101,24 @@ export interface ModelCapabilityChipsProps extends React.HTMLAttributes<HTMLSpan
 }
 
 /** Tools / vision / reasoning chips. */
-export function ModelCapabilityChips({ capabilities = [], size = "sm", className, ...props }: ModelCapabilityChipsProps) {
-  if (capabilities.length === 0) return null;
-  return (
-    <span data-slot="model-capabilities" className={cn("inline-flex flex-wrap gap-1", className)} {...props}>
-      {capabilities.map((c) => {
-        const { label, icon: Icon } = capabilityMeta[c];
-        return (
-          <Badge key={c} size={size} variant="outline" color="neutral" data-capability={c}>
-            <Icon className="text-muted-foreground" />
-            {label}
-          </Badge>
-        );
-      })}
-    </span>
-  );
-}
+export const ModelCapabilityChips = React.forwardRef<HTMLSpanElement, ModelCapabilityChipsProps>(
+  ({ capabilities = [], size = "sm", className, ...props }, ref) => {
+    if (capabilities.length === 0) return null;
+    return (
+      <span ref={ref} data-slot="model-capabilities" className={cn("inline-flex flex-wrap gap-1", className)} {...props}>
+        {capabilities.map((c) => {
+          const { label, icon: Icon } = capabilityMeta[c];
+          return (
+            <Badge key={c} size={size} variant="outline" color="neutral" data-capability={c}>
+              <Icon aria-hidden className="text-muted-foreground" />
+              {label}
+            </Badge>
+          );
+        })}
+      </span>
+    );
+  }
+);
 ModelCapabilityChips.displayName = "ModelCapabilityChips";
 
 function ModelRefLabel({ providers, value, className }: { providers: RoutingProvider[]; value: ModelRef; className?: string }) {
@@ -238,7 +240,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
           <Input
             ref={searchRef}
             size="sm"
-            leadingIcon={<RiSearchLine />}
+            leadingIcon={<RiSearchLine aria-hidden />}
             placeholder="Search models"
             aria-label="Search models"
             value={query}
@@ -299,7 +301,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
             {providers.length === 0 || !anyConfigured ? (
               <EmptyState
                 size="sm"
-                icon={<RiKey2Line />}
+                icon={<RiKey2Line aria-hidden />}
                 title="No providers connected"
                 description="Add an API key or sign in with OAuth to choose a model."
                 actions={
@@ -332,7 +334,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
                 onKeyDown={onModelsKey}
                 className={cn("max-h-80 overflow-y-auto p-1 scrollbar-thin", focusRing, "focus-visible:ring-inset")}
               >
-                {models.length === 0 && <p className="px-3 py-8 text-center text-sm text-muted-foreground">No models match “{query}”.</p>}
+                {models.length === 0 && <p className="px-3 py-8 text-center text-sm text-muted-foreground">No models match “{query}”</p>}
                 {models.map((m, i) => {
                   const r = { providerId: activeProvider!.id, modelId: m.id };
                   const current = sameRef(value, r);
@@ -431,18 +433,30 @@ export function ProviderModelPickerDialog({
 ProviderModelPickerDialog.displayName = "ProviderModelPickerDialog";
 
 export interface ProviderModelPickerPopoverProps extends Omit<ProviderModelPickerProps, "autoFocus" | "onSelect"> {
+  /** Initial model when uncontrolled (no `value`). */
+  defaultValue?: ModelRef | null;
   onValueChange?: (ref: ModelRef, model: RoutingModel) => void;
   placeholder?: string;
   triggerClassName?: string;
 }
 
 /** Trigger button showing the current model; opens the picker in a popover. */
-export function ProviderModelPickerPopover({ providers, value, onValueChange, placeholder = "Choose a model", triggerClassName, ...props }: ProviderModelPickerPopoverProps) {
+export function ProviderModelPickerPopover({
+  providers,
+  value: valueProp,
+  defaultValue = null,
+  onValueChange,
+  placeholder = "Choose a model",
+  triggerClassName,
+  ...props
+}: ProviderModelPickerPopoverProps) {
   const [open, setOpen] = React.useState(false);
+  const [uncontrolled, setUncontrolled] = React.useState<ModelRef | null>(defaultValue);
+  const value = valueProp !== undefined ? valueProp : uncontrolled;
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
       <PopoverPrimitive.Trigger asChild>
-        <Button variant="outline" className={cn("justify-between gap-2", triggerClassName)} trailingIcon={<RiArrowDownSLine />}>
+        <Button variant="outline" className={cn("justify-between gap-2", triggerClassName)} trailingIcon={<RiArrowDownSLine aria-hidden />}>
           {value ? <ModelRefLabel providers={providers} value={value} className="[&_.text-xs]:hidden" /> : placeholder}
         </Button>
       </PopoverPrimitive.Trigger>
@@ -453,6 +467,7 @@ export function ProviderModelPickerPopover({ providers, value, onValueChange, pl
           value={value}
           {...props}
           onSelect={(r, m) => {
+            if (valueProp === undefined) setUncontrolled(r);
             onValueChange?.(r, m);
             setOpen(false);
           }}
@@ -542,7 +557,7 @@ export const ModelVisibilityManager = React.forwardRef<HTMLDivElement, ModelVisi
           <span className="text-xs text-muted-foreground" data-slot="visibility-count">
             {visibleCount} of {rows.length} visible
           </span>
-          <Button variant="ghost" size="sm" className="ml-auto" leadingIcon={<RiRestartLine />} disabled={!dirty} onClick={reset}>
+          <Button variant="ghost" size="sm" className="ml-auto" leadingIcon={<RiRestartLine aria-hidden />} disabled={!dirty} onClick={reset}>
             Reset
           </Button>
         </div>
@@ -569,7 +584,7 @@ export const ModelVisibilityManager = React.forwardRef<HTMLDivElement, ModelVisi
                       })
                     }
                   >
-                    <RiCloseLine />
+                    <RiCloseLine aria-hidden />
                   </Button>
                 )}
                 <Switch size="sm" checked={shown} onCheckedChange={(c) => toggle(r.id, c)} aria-label={`Show ${r.name}`} />
@@ -591,7 +606,7 @@ export const ModelVisibilityManager = React.forwardRef<HTMLDivElement, ModelVisi
               className="font-mono"
               invalid={!!error}
             />
-            <Button type="submit" size="sm" variant="secondary" leadingIcon={<RiAddLine />} disabled={!draft.trim()}>
+            <Button type="submit" size="sm" variant="secondary" leadingIcon={<RiAddLine aria-hidden />} disabled={!draft.trim()}>
               Add
             </Button>
           </div>
@@ -671,14 +686,14 @@ export const FallbackChainEditor = React.forwardRef<HTMLDivElement, FallbackChai
                   aria-label={`Remove ${label(item)}`}
                   onClick={() => setValue(value.filter((v) => !sameRef(v, item)))}
                 >
-                  <RiCloseLine />
+                  <RiCloseLine aria-hidden />
                 </Button>
               </div>
             )}
           />
         )}
         <div>
-          <Button variant="secondary" size="sm" leadingIcon={<RiAddLine />} disabled={value.length >= max} onClick={() => setPicking(true)}>
+          <Button variant="secondary" size="sm" leadingIcon={<RiAddLine aria-hidden />} disabled={value.length >= max} onClick={() => setPicking(true)}>
             {value.length === 0 ? "Add primary model" : "Add fallback"}
           </Button>
         </div>
@@ -779,7 +794,7 @@ export const TaskModelAssignment = React.forwardRef<HTMLDivElement, TaskModelAss
                         Use for all
                       </Button>
                       <Button variant="ghost" size="icon-xs" aria-label={`Reset ${t.label} to Auto`} onClick={() => setConfirmTask(t)}>
-                        <RiLoopLeftLine />
+                        <RiLoopLeftLine aria-hidden />
                       </Button>
                     </>
                   )}
@@ -866,7 +881,7 @@ export const EnsembleBuilder = React.forwardRef<HTMLDivElement, EnsembleBuilderP
             <h4 id={`${id}-refs`} className="text-sm font-medium text-foreground">
               Reference models
             </h4>
-            <Button variant="ghost" size="sm" leadingIcon={<RiAddLine />} disabled={value.references.length >= maxReferences} onClick={() => setPicking("reference")}>
+            <Button variant="ghost" size="sm" leadingIcon={<RiAddLine aria-hidden />} disabled={value.references.length >= maxReferences} onClick={() => setPicking("reference")}>
               Add reference
             </Button>
           </div>
@@ -883,7 +898,7 @@ export const EnsembleBuilder = React.forwardRef<HTMLDivElement, EnsembleBuilderP
                     aria-label={`Remove ${nameOf(r)}`}
                     onClick={() => setValue({ ...value, references: value.references.filter((x) => !sameRef(x, r)) })}
                   >
-                    <RiCloseLine />
+                    <RiCloseLine aria-hidden />
                   </Button>
                 </li>
               ))}

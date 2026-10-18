@@ -146,7 +146,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
           focusRing
         )}
       >
-        <RiCloseLine className="size-3.5" />
+        <RiCloseLine aria-hidden className="size-3.5" />
       </button>
     );
 
@@ -161,7 +161,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
         {showThumb ? (
           <img src={previewUrl} alt="" className="size-full object-cover" />
         ) : hasError ? (
-          <RiErrorWarningLine className="size-1/2 max-h-5 max-w-5 text-destructive" />
+          <RiErrorWarningLine aria-hidden className="size-1/2 max-h-5 max-w-5 text-destructive" />
         ) : (
           <Icon className="size-1/2 max-h-5 max-w-5" />
         )}

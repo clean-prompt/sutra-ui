@@ -218,7 +218,7 @@ function WorkspaceDemo() {
             <CodeEditor
               ref={editor}
               value={text}
-              onChange={setText}
+              onValueChange={setText}
               placeholder="Start writing markdown…"
               onSave={save}
               onSelectionChange={(s) => setCursor({ line: s.line, column: s.column, selected: s.to - s.from })}
@@ -298,7 +298,7 @@ function CodeEditorDemo() {
         <CodeEditor
           language="plain"
           value={value}
-          onChange={setValue}
+          onValueChange={setValue}
           lineNumbers={lineNumbers !== "off"}
           readOnly={lineNumbers === "ro"}
           label="Code"
@@ -363,7 +363,7 @@ function RichTextDemo() {
   return (
     <div className="w-full space-y-3">
       <div className="rounded-box border border-border">
-        <RichTextEditor value={html} onChange={(v) => setHtml(v as string)} toolbar="both" className="max-h-96" contentClassName="px-4" />
+        <RichTextEditor value={html} onValueChange={(v) => setHtml(v as string)} toolbar="both" className="max-h-96" contentClassName="px-4" />
       </div>
       <details className="text-xs text-muted-foreground">
         <summary className="cursor-pointer">HTML output</summary>

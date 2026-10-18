@@ -41,6 +41,7 @@ export const HeaderNav = React.forwardRef<HTMLElement, HeaderNavProps>(
         ref={ref}
         data-scrolled={scrolled || undefined}
         className={cn(
+          // z-40: sticky chrome sits above page content but below floating content/overlays (z-50).
           "z-40 w-full border-b transition-[border-color,box-shadow,background-color] duration-200",
           sticky && "sticky top-0 glass",
           !sticky && "bg-background",
@@ -276,18 +277,11 @@ export interface HeaderNavMobileProps {
   label?: string;
 }
 
-/** Hamburger button (mobile only) opening a slide-down sheet with nested sections. */
-export function HeaderNavMobile({
-  items,
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
-  brand,
-  children,
-  renderLink,
-  className,
-  label = "Open menu",
-}: HeaderNavMobileProps) {
+/** Hamburger button (mobile only) opening a slide-down sheet with nested sections. The ref points at the hamburger button. */
+export const HeaderNavMobile = React.forwardRef<HTMLButtonElement, HeaderNavMobileProps>(function HeaderNavMobile(
+  { items, open: openProp, defaultOpen = false, onOpenChange, brand, children, renderLink, className, label = "Open menu" },
+  ref
+) {
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   const close = () => setOpen(false);
 
@@ -346,8 +340,8 @@ export function HeaderNavMobile({
   return (
     <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
       <DialogPrimitive.Trigger asChild>
-        <Button variant="ghost" size="icon" aria-label={label} className={cn("md:hidden", className)}>
-          <RiMenuLine />
+        <Button ref={ref} variant="ghost" size="icon" aria-label={label} className={cn("md:hidden", className)}>
+          <RiMenuLine aria-hidden />
         </Button>
       </DialogPrimitive.Trigger>
       <DialogPrimitive.Portal>
@@ -363,7 +357,7 @@ export function HeaderNavMobile({
             <DialogPrimitive.Title className="min-w-0">{brand ?? <span className="text-base font-semibold">Menu</span>}</DialogPrimitive.Title>
             <DialogPrimitive.Close asChild>
               <Button variant="ghost" size="icon" aria-label="Close menu">
-                <RiCloseLine />
+                <RiCloseLine aria-hidden />
               </Button>
             </DialogPrimitive.Close>
           </div>
@@ -380,5 +374,5 @@ export function HeaderNavMobile({
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
   );
-}
+});
 HeaderNavMobile.displayName = "HeaderNavMobile";

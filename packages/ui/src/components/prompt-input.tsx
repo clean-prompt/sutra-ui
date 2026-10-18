@@ -29,6 +29,9 @@ import { DropdownMenu as Menu, DropdownMenuContent, DropdownMenuItem, DropdownMe
 interface PromptInputContextValue {
   value: string;
   setValue: (value: string) => void;
+  /** A response is streaming. */
+  loading: boolean;
+  /** @deprecated Use `loading`. */
   isLoading: boolean;
   disabled: boolean;
   canSubmit: boolean;
@@ -41,6 +44,8 @@ interface PromptInputContextValue {
   /** Mounted PromptInputDropOverlay parts replace the built-in drop hint. */
   registerDropOverlay: () => () => void;
   /** Routes an oversized paste to an attachment; returns true when handled (only with `largePasteThreshold`). */
+  onLargePaste?: (text: string, selection: readonly [number, number]) => boolean;
+  /** @deprecated Use `onLargePaste`. */
   handleLargePaste?: (text: string, selection: readonly [number, number]) => boolean;
 }
 
@@ -62,8 +67,10 @@ export interface PromptInputProps
   /** Called with the current text when the user submits (Enter or the submit button). */
   onSubmit?: (value: string, event: React.FormEvent<HTMLFormElement>) => void;
   /** A response is streaming: the submit button becomes a stop button and Enter won't submit. */
+  loading?: boolean;
+  /** @deprecated Use `loading`. */
   isLoading?: boolean;
-  /** Called by the stop button while `isLoading`. */
+  /** Called by the stop button while `loading`. */
   onStop?: () => void;
   disabled?: boolean;
   /** Clear the text after submitting (default true). */
@@ -104,7 +111,8 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
       defaultValue = "",
       onValueChange,
       onSubmit,
-      isLoading = false,
+      loading: loadingProp,
+      isLoading: isLoadingProp,
       onStop,
       disabled = false,
       clearOnSubmit = true,
@@ -126,6 +134,7 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
     },
     ref
   ) => {
+    const loading = loadingProp ?? isLoadingProp ?? false;
     const [value, setValue] = useControllableState<string>({
       value: valueProp,
       defaultValue,
@@ -139,7 +148,7 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
       setCustomOverlays((n) => n + 1);
       return () => setCustomOverlays((n) => n - 1);
     }, []);
-    const canSubmit = !disabled && !isLoading && (canSubmitProp ?? value.trim().length > 0);
+    const canSubmit = !disabled && !loading && (canSubmitProp ?? value.trim().length > 0);
     const acceptsFiles = !!onFilesAdded && !disabled;
 
     const addFiles = React.useCallback(
@@ -192,7 +201,8 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
       () => ({
         value,
         setValue,
-        isLoading,
+        loading,
+        isLoading: loading,
         disabled,
         canSubmit,
         onStop,
@@ -201,9 +211,10 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
         textareaRef,
         dragging,
         registerDropOverlay,
+        onLargePaste: largePasteEnabled ? handleLargePaste : undefined,
         handleLargePaste: largePasteEnabled ? handleLargePaste : undefined,
       }),
-      [value, setValue, isLoading, disabled, canSubmit, onStop, addFiles, acceptsFiles, dragging, registerDropOverlay, largePasteEnabled, handleLargePaste]
+      [value, setValue, loading, disabled, canSubmit, onStop, addFiles, acceptsFiles, dragging, registerDropOverlay, largePasteEnabled, handleLargePaste]
     );
 
     const hasFiles = (e: React.DragEvent) => Array.from(e.dataTransfer?.types ?? []).includes("Files");
@@ -215,7 +226,7 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
       <PromptInputContext.Provider value={ctx}>
         <form
           ref={ref}
-          data-loading={isLoading || undefined}
+          data-loading={loading || undefined}
           data-dragging={dragging || undefined}
           aria-disabled={disabled || undefined}
           onSubmit={(e) => {
@@ -299,7 +310,7 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
               aria-hidden
               className="pointer-events-none absolute inset-1 z-10 flex items-center justify-center gap-2 rounded-[inherit] border-2 border-dashed border-primary/50 bg-primary-soft/90 text-sm font-medium text-primary-soft-foreground animate-in fade-in-0"
             >
-              <RiUploadCloud2Line className="size-5" />
+              <RiUploadCloud2Line aria-hidden className="size-5" />
               Drop files to attach
             </div>
           )}
@@ -486,7 +497,7 @@ export const PromptInputTextarea = React.forwardRef<HTMLTextAreaElement, PromptI
     },
     ref
   ) => {
-    const { value, setValue, isLoading, disabled, textareaRef, addFiles, acceptsFiles, handleLargePaste } = usePromptInput();
+    const { value, setValue, loading: isLoading, disabled, textareaRef, addFiles, acceptsFiles, onLargePaste: handleLargePaste } = usePromptInput();
     const composing = React.useRef(false);
 
     const setRefs = React.useCallback(
@@ -713,7 +724,7 @@ export const PromptInputAttachButton = React.forwardRef<HTMLButtonElement, Promp
           }}
           {...props}
         >
-          {children ?? <RiAttachment2 />}
+          {children ?? <RiAttachment2 aria-hidden />}
         </PromptInputButton>
         <input
           ref={inputRef}
@@ -741,7 +752,7 @@ export interface PromptInputSubmitProps extends Omit<ButtonProps, "type"> {
 /** Round send button; turns into a stop button while loading. */
 export const PromptInputSubmit = React.forwardRef<HTMLButtonElement, PromptInputSubmitProps>(
   ({ submitLabel = "Send message", stopLabel = "Stop generating", className, disabled, onClick, children, ...props }, ref) => {
-    const { isLoading, canSubmit, onStop } = usePromptInput();
+    const { loading: isLoading, canSubmit, onStop } = usePromptInput();
     const stopping = isLoading && !!onStop;
     const label = isLoading ? stopLabel : submitLabel;
     return (
@@ -766,11 +777,11 @@ export const PromptInputSubmit = React.forwardRef<HTMLButtonElement, PromptInput
       >
         {children ??
           (stopping ? (
-            <RiStopFill key="stop" className="size-3.5 animate-in zoom-in-50 duration-150" />
+            <RiStopFill aria-hidden key="stop" className="size-3.5 animate-in zoom-in-50 duration-150" />
           ) : isLoading ? (
             <Spinner key="spin" aria-hidden role="presentation" size="sm" className="text-current" />
           ) : (
-            <RiArrowUpLine key="send" className="animate-in zoom-in-75 duration-150" />
+            <RiArrowUpLine aria-hidden key="send" className="animate-in zoom-in-75 duration-150" />
           ))}
       </Button>
     );
@@ -981,7 +992,7 @@ export const PromptInputModelSelect = React.forwardRef<HTMLButtonElement, Prompt
                     )}
                   </span>
                   <DropdownMenu.ItemIndicator className="absolute right-2 top-2.5 inline-flex text-primary">
-                    <RiCheckLine className="size-4" />
+                    <RiCheckLine aria-hidden className="size-4" />
                   </DropdownMenu.ItemIndicator>
                 </DropdownMenu.RadioItem>
               ))}
@@ -1126,7 +1137,7 @@ export const PromptInputContextChip = React.forwardRef<HTMLDivElement, PromptInp
         {...props}
       >
         <span aria-hidden className="inline-flex shrink-0 text-muted-foreground [&_svg]:size-3.5">
-          {icon ?? <RiFileCodeLine />}
+          {icon ?? <RiFileCodeLine aria-hidden />}
         </span>
         {onOpen ? (
           <button
@@ -1148,12 +1159,12 @@ export const PromptInputContextChip = React.forwardRef<HTMLDivElement, PromptInp
             onClick={() => setIncluded(!included)}
             className={iconButton}
           >
-            {included ? <RiEyeLine /> : <RiEyeOffLine />}
+            {included ? <RiEyeLine aria-hidden /> : <RiEyeOffLine aria-hidden />}
           </button>
         )}
         {onRemove && (
           <button type="button" aria-label={`Remove ${full}`} title="Remove" onClick={onRemove} className={iconButton}>
-            <RiCloseLine />
+            <RiCloseLine aria-hidden />
           </button>
         )}
       </div>
@@ -1248,12 +1259,12 @@ export const PromptInputAddContextMenu = React.forwardRef<HTMLButtonElement, Pro
     };
 
     const defaults: PromptInputAddContextItem[] = [];
-    if (onAttachFile) defaults.push({ id: "attach-file", label: "Attach file…", icon: <RiAttachment2 />, onSelect: onAttachFile });
+    if (onAttachFile) defaults.push({ id: "attach-file", label: "Attach file…", icon: <RiAttachment2 aria-hidden />, onSelect: onAttachFile });
     if (onMentionFile || ctx)
       defaults.push({
         id: "mention-file",
         label: "Mention a file from this project…",
-        icon: <RiAtLine />,
+        icon: <RiAtLine aria-hidden />,
         shortcut: "@",
         onSelect: onMentionFile ?? insertAt,
       });
@@ -1261,11 +1272,11 @@ export const PromptInputAddContextMenu = React.forwardRef<HTMLButtonElement, Pro
       defaults.push({
         id: "upload",
         label: "Upload from computer",
-        icon: <RiUploadCloud2Line />,
+        icon: <RiUploadCloud2Line aria-hidden />,
         onSelect: () => inputRef.current?.click(),
       });
     if (onPasteImage || (acceptsFiles && canReadClipboard))
-      defaults.push({ id: "paste-image", label: "Paste image", icon: <RiClipboardLine />, onSelect: onPasteImage ?? (() => void pasteImage()) });
+      defaults.push({ id: "paste-image", label: "Paste image", icon: <RiClipboardLine aria-hidden />, onSelect: onPasteImage ?? (() => void pasteImage()) });
 
     const list = typeof items === "function" ? items(defaults) : (items ?? defaults);
 
@@ -1274,7 +1285,7 @@ export const PromptInputAddContextMenu = React.forwardRef<HTMLButtonElement, Pro
         <Menu>
           <DropdownMenuTrigger asChild>
             <PromptInputButton ref={ref} label={label} disabled={disabled ?? (!!ctx?.disabled || list.length === 0)} {...props}>
-              {children ?? <RiAddLine />}
+              {children ?? <RiAddLine aria-hidden />}
             </PromptInputButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent align={align} side="top" className="min-w-64">
@@ -1334,6 +1345,10 @@ export interface PromptInputRestoredDraftProps extends React.HTMLAttributes<HTML
   clearOnDiscard?: boolean;
   /** Controlled visibility. Uncontrolled notices hide themselves after either choice. */
   open?: boolean;
+  /** Initial visibility when uncontrolled. Default true. */
+  defaultOpen?: boolean;
+  /** Called when Discard or Keep hides the notice. */
+  onOpenChange?: (open: boolean) => void;
   discardLabel?: string;
   keepLabel?: string;
 }
@@ -1348,6 +1363,8 @@ export const PromptInputRestoredDraft = React.forwardRef<HTMLDivElement, PromptI
       onKeep,
       clearOnDiscard = true,
       open: openProp,
+      defaultOpen = true,
+      onOpenChange,
       discardLabel = "Discard",
       keepLabel = "Keep",
       className,
@@ -1356,8 +1373,7 @@ export const PromptInputRestoredDraft = React.forwardRef<HTMLDivElement, PromptI
     ref
   ) => {
     const ctx = React.useContext(PromptInputContext);
-    const [innerOpen, setInnerOpen] = React.useState(true);
-    const open = openProp ?? innerOpen;
+    const [open, setInnerOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
     if (!open) return null;
     return (
       <div

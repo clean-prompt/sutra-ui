@@ -11,7 +11,8 @@ import { pluralize } from "../lib/format";
 import { toPercent } from "../lib/math";
 import { Button } from "./button";
 import { CopyButton } from "./copy-button";
-import { Meter, meterLevel, type MeterThresholds } from "./meter";
+import { toneClasses } from "../lib/tone";
+import { Meter, meterLevel, meterLevelTone, type MeterThresholds } from "./meter";
 import { Gauge } from "./gauge";
 import { Sparkline, type SparklineColor } from "./sparkline";
 import { StatusDot, type StatusBadgeStatus } from "./status-badge";
@@ -73,7 +74,7 @@ export const NodeMetricTile = React.forwardRef<HTMLDivElement, NodeMetricTilePro
           <span
             className={cn(
               "font-mono text-xs font-semibold tabular-nums",
-              level === "danger" ? "text-destructive" : level === "warn" ? "text-warning-soft-foreground" : "text-foreground"
+              level === "ok" ? "text-foreground" : toneClasses.text[meterLevelTone(level)!]
             )}
           >
             {text}
@@ -91,7 +92,7 @@ export const NodeMetricTile = React.forwardRef<HTMLDivElement, NodeMetricTilePro
           <span
             className={cn(
               "block h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none",
-              level === "danger" ? "bg-destructive" : level === "warn" ? "bg-warning" : "bg-primary"
+              toneClasses.dot[meterLevelTone(level) ?? "primary"]
             )}
             style={{ width: `${pct}%` }}
           />
@@ -247,10 +248,10 @@ export const NodeCard = React.forwardRef<HTMLDivElement, NodeCardProps>(
             aria-hidden
             className={cn(
               "flex size-10 shrink-0 items-center justify-center rounded-md [&_svg]:size-5",
-              status === "online" ? "bg-primary-soft text-primary-soft-foreground" : "bg-muted text-muted-foreground"
+              toneClasses.soft[status === "online" ? "primary" : "neutral"]
             )}
           >
-            {icon ?? <RiServerLine />}
+            {icon ?? <RiServerLine aria-hidden />}
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5">

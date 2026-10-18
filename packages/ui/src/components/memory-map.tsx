@@ -310,15 +310,18 @@ export interface MemoryGlyphIconProps extends React.SVGAttributes<SVGSVGElement>
 }
 
 /** Small SVG swatch of a memory-map glyph. */
-export function MemoryGlyphIcon({ glyph, color, size = 12, className, ...props }: MemoryGlyphIconProps) {
-  const p = new SvgPath();
-  glyphPath(p, glyph, 6, 6, 4.4);
-  return (
-    <svg viewBox="0 0 12 12" width={size} height={size} aria-hidden className={cn("shrink-0", className)} {...props}>
-      <path d={p.d} fill={color} />
-    </svg>
-  );
-}
+export const MemoryGlyphIcon = React.forwardRef<SVGSVGElement, MemoryGlyphIconProps>(
+  ({ glyph, color, size = 12, className, ...props }, ref) => {
+    const p = new SvgPath();
+    glyphPath(p, glyph, 6, 6, 4.4);
+    return (
+      <svg ref={ref} viewBox="0 0 12 12" width={size} height={size} aria-hidden className={cn("shrink-0", className)} {...props}>
+        <path d={p.d} fill={color} />
+      </svg>
+    );
+  }
+);
+MemoryGlyphIcon.displayName = "MemoryGlyphIcon";
 
 /* ------------------------------------------------------------------ */
 /* Legend                                                              */
@@ -546,7 +549,7 @@ export const TimeScrubber = React.forwardRef<HTMLDivElement, TimeScrubberProps>(
             aria-pressed={playing}
             onClick={togglePlay}
           >
-            {playing ? <RiPauseFill /> : <RiPlayFill />}
+            {playing ? <RiPauseFill aria-hidden /> : <RiPlayFill aria-hidden />}
           </Button>
           <SimpleSelect
             size="sm"
@@ -1248,7 +1251,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="icon-xs" variant="ghost" aria-label={`Actions for ${selected.label}`}>
-              <RiMoreLine />
+              <RiMoreLine aria-hidden />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-36">
@@ -1296,10 +1299,10 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
             {!listView && (
               <>
                 <Button size="icon-sm" variant="ghost" aria-label="Zoom in" onClick={() => zoomAt(1.3)}>
-                  <RiZoomInLine />
+                  <RiZoomInLine aria-hidden />
                 </Button>
                 <Button size="icon-sm" variant="ghost" aria-label="Zoom out" onClick={() => zoomAt(1 / 1.3)}>
-                  <RiZoomOutLine />
+                  <RiZoomOutLine aria-hidden />
                 </Button>
                 <Button
                   size="icon-sm"
@@ -1311,11 +1314,11 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
                     emitZoom();
                   }}
                 >
-                  <RiFocus3Line />
+                  <RiFocus3Line aria-hidden />
                 </Button>
               </>
             )}
-            <Button size="sm" variant={listView ? "soft" : "ghost"} aria-pressed={listView} leadingIcon={<RiListUnordered />} onClick={() => setListView(!listView)}>
+            <Button size="sm" variant={listView ? "soft" : "ghost"} aria-pressed={listView} leadingIcon={<RiListUnordered aria-hidden />} onClick={() => setListView(!listView)}>
               List view
             </Button>
           </div>
@@ -1483,7 +1486,7 @@ function MemoryNodeDetail({
         </div>
         {actions}
         <Button size="icon-xs" variant="ghost" aria-label="Close details" onClick={() => onSelect(null)}>
-          <RiCloseLine />
+          <RiCloseLine aria-hidden />
         </Button>
       </div>
       {node.description && <p className="text-sm text-muted-foreground">{node.description}</p>}

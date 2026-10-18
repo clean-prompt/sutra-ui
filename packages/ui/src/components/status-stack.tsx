@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiArrowUpSLine, RiCloseLine, RiPauseLine, RiPlayLine, RiSkipForwardLine, RiStopLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { formatRelative, toMs, type TimeInput } from "../lib/time";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
@@ -8,9 +9,10 @@ import { formatCountdownClock, formatInterval, parseInterval, useScheduleNow, ty
 
 type TimeLike = TimeInput;
 
-export type StatusStackTone = "neutral" | "primary" | "success" | "warning" | "destructive" | "info";
+/** Row tone. Canonical `Tone` plus deprecated aliases (`brand`, `danger`, …). */
+export type StatusStackTone = ToneInput;
 
-const toneText: Record<StatusStackTone, string> = {
+const toneText: Record<Tone, string> = {
   neutral: "text-muted-foreground",
   primary: "text-primary",
   success: "text-success",
@@ -19,14 +21,7 @@ const toneText: Record<StatusStackTone, string> = {
   info: "text-info",
 };
 
-const toneBar: Record<StatusStackTone, string> = {
-  neutral: "bg-muted-foreground",
-  primary: "bg-primary",
-  success: "bg-success",
-  warning: "bg-warning",
-  destructive: "bg-destructive",
-  info: "bg-info",
-};
+const toneBar = toneClasses.dot;
 
 const StatusStackContext = React.createContext<{ dismiss: () => void } | null>(null);
 
@@ -57,8 +52,9 @@ export interface StatusStackRowProps extends Omit<React.HTMLAttributes<HTMLDivEl
 
 /** Generic status row: glyph, label, "·"-separated facts, title, actions and an optional progress bar. */
 export const StatusStackRow = React.forwardRef<HTMLDivElement, StatusStackRowProps>(
-  ({ icon, label, meta, title, actions, progress, tone = "neutral", onDismiss, dismissLabel, priority: _priority, className, children, ...props }, ref) => {
+  ({ icon, label, meta, title, actions, progress, tone: toneProp, onDismiss, dismissLabel, priority: _priority, className, children, ...props }, ref) => {
     const stack = React.useContext(StatusStackContext);
+    const tone = normalizeTone(toneProp);
     const facts = (meta ?? []).filter((m) => m != null && m !== false && m !== "");
     const pct = progress ? Math.max(0, Math.min(100, (progress.value / Math.max(1, progress.max)) * 100)) : 0;
     const labelText = typeof label === "string" ? label : "status";
@@ -102,7 +98,7 @@ export const StatusStackRow = React.forwardRef<HTMLDivElement, StatusStackRowPro
                 stack?.dismiss();
               }}
             >
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           ) : null}
         </div>
@@ -233,12 +229,12 @@ export const GoalStatusRow = React.forwardRef<HTMLDivElement, GoalStatusRowProps
           <>
             {paused && onResume ? (
               <Button type="button" variant="ghost" size="icon-xs" aria-label="Resume goal" onClick={onResume}>
-                <RiPlayLine />
+                <RiPlayLine aria-hidden />
               </Button>
             ) : null}
             {!paused && onPause ? (
               <Button type="button" variant="ghost" size="icon-xs" aria-label="Pause goal" onClick={onPause}>
-                <RiPauseLine />
+                <RiPauseLine aria-hidden />
               </Button>
             ) : null}
             {onClear ? (
@@ -302,12 +298,12 @@ export const LoopStatusRow = React.forwardRef<HTMLDivElement, LoopStatusRowProps
           <>
             {onRunNow ? (
               <Button type="button" variant="ghost" size="icon-xs" aria-label="Run loop now" onClick={onRunNow}>
-                <RiSkipForwardLine />
+                <RiSkipForwardLine aria-hidden />
               </Button>
             ) : null}
             {onStop ? (
               <Button type="button" variant="ghost" size="icon-xs" aria-label="Stop loop" onClick={onStop}>
-                <RiStopLine />
+                <RiStopLine aria-hidden />
               </Button>
             ) : null}
           </>
@@ -337,7 +333,7 @@ export const HeartbeatStatusRow = React.forwardRef<HTMLDivElement, HeartbeatStat
     const beatMs = toMs(lastBeatAt);
     const since = beatMs !== undefined ? now - beatMs : null;
     const stale = since == null || (intervalMs != null && since > intervalMs * 2);
-    const t: StatusStackTone = tone ?? (stale ? "warning" : "success");
+    const t = normalizeTone(tone ?? (stale ? "warning" : "success"));
     return (
       <StatusStackRow
         ref={ref}

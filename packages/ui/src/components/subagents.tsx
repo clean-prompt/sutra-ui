@@ -4,6 +4,7 @@ import {
   RiCheckLine,
   RiCloseLine,
   RiExternalLinkLine,
+  RiForbidLine,
   RiSendPlane2Line,
   RiStopFill,
   RiTimeLine,
@@ -11,6 +12,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { formatDuration } from "../lib/duration";
 import { formatCost, formatTokens } from "../lib/format";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useNow } from "../hooks/use-now";
 import { heatmapColor, heatmapLevel } from "./heatmap";
@@ -23,13 +25,27 @@ import { Spinner } from "./spinner";
 
 export type SubagentStatus = "running" | "done" | "failed" | "waiting";
 
+/** What `status` accepts: the subagent states plus canonical `TaskStatus` values and legacy spellings. */
+export type SubagentStatusInput = SubagentStatus | TaskStatusInput;
+
+/** Resolved display status (`canceled` renders as a neutral, finished glyph). */
+type SubagentDisplayStatus = SubagentStatus | "canceled";
+
+const fromTaskStatus = { pending: "waiting", running: "running", succeeded: "done", failed: "failed", canceled: "canceled" } as const;
+
+function resolveStatus(status: SubagentStatusInput | undefined): SubagentDisplayStatus {
+  if (status === "done" || status === "waiting") return status;
+  return fromTaskStatus[normalizeTaskStatus(status)];
+}
+
 export interface SubagentNode {
   id: string;
   name: string;
   /** Agent type, e.g. "researcher". */
   type?: string;
   task?: string;
-  status: SubagentStatus;
+  /** Accepts canonical `TaskStatus` values too (`succeeded` → done, `pending` → waiting). */
+  status: SubagentStatusInput;
   /** Latest activity line (streamed). */
   activity?: string;
   startedAt?: number;
@@ -84,17 +100,22 @@ function fmtCost(n: number) {
   return formatCost(n, { maxFraction: digits, minFraction: digits, tiny: 0.001 });
 }
 
-const statusLabel: Record<SubagentStatus, string> = { running: "Running", done: "Done", failed: "Failed", waiting: "Waiting" };
-const statusRank: Record<SubagentStatus, number> = { running: 0, waiting: 1, failed: 2, done: 3 };
+const statusLabel: Record<SubagentDisplayStatus, string> = { running: "Running", done: "Done", failed: "Failed", waiting: "Waiting", canceled: "Canceled" };
+const statusRank: Record<SubagentDisplayStatus, number> = { running: 0, waiting: 1, failed: 2, canceled: 3, done: 4 };
 
 export interface SubagentStatusGlyphProps extends React.HTMLAttributes<HTMLSpanElement> {
-  status: SubagentStatus;
+  status: SubagentStatusInput;
 }
 
-/** Small status glyph: spinner (running), check (done), cross (failed), clock (waiting). */
-export function SubagentStatusGlyph({ status, className, ...props }: SubagentStatusGlyphProps) {
+/** Small status glyph: spinner (running), check (done), cross (failed), clock (waiting), forbid (canceled). */
+export const SubagentStatusGlyph = React.forwardRef<HTMLSpanElement, SubagentStatusGlyphProps>(function SubagentStatusGlyph(
+  { status: statusProp, className, ...props },
+  ref
+) {
+  const status = resolveStatus(statusProp);
   return (
     <span
+      ref={ref}
       role="img"
       aria-label={statusLabel[status]}
       data-status={status}
@@ -102,7 +123,7 @@ export function SubagentStatusGlyph({ status, className, ...props }: SubagentSta
         "inline-flex size-4 shrink-0 items-center justify-center rounded-full [&_svg]:size-3",
         status === "done" && "bg-success-soft text-success",
         status === "failed" && "bg-destructive-soft text-destructive",
-        status === "waiting" && "text-muted-foreground",
+        (status === "waiting" || status === "canceled") && "text-muted-foreground",
         status === "running" && "text-primary",
         className
       )}
@@ -114,12 +135,15 @@ export function SubagentStatusGlyph({ status, className, ...props }: SubagentSta
         <RiCheckLine aria-hidden />
       ) : status === "failed" ? (
         <RiCloseLine aria-hidden />
+      ) : status === "canceled" ? (
+        <RiForbidLine aria-hidden />
       ) : (
         <RiTimeLine aria-hidden className="!size-3.5" />
       )}
     </span>
   );
-}
+});
+SubagentStatusGlyph.displayName = "SubagentStatusGlyph";
 
 /* ------------------------------------------------------------------ */
 /* SubagentTree                                                        */
@@ -163,7 +187,7 @@ function collectIds(nodes: SubagentNode[], acc: string[] = []) {
 }
 
 function hasRunning(n: SubagentNode): boolean {
-  return n.status === "running" || (n.children ?? []).some(hasRunning);
+  return resolveStatus(n.status) === "running" || (n.children ?? []).some(hasRunning);
 }
 
 interface FlatRow {
@@ -226,7 +250,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
         let out = runningOnly ? list.filter(hasRunning) : list;
         if (sort !== "none") {
           out = [...out].sort((a, b) => {
-            if (sort === "status") return statusRank[a.status] - statusRank[b.status];
+            if (sort === "status") return statusRank[resolveStatus(a.status)] - statusRank[resolveStatus(b.status)];
             if (sort === "elapsed") return subagentElapsed(b, now) - subagentElapsed(a, now);
             return subagentRollup(b).cost - subagentRollup(a).cost;
           });
@@ -317,11 +341,12 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
         const hasKids = row.visibleChildren.length > 0;
         const open = hasKids && expanded.includes(n.id);
         const roll = subagentRollup(n);
-        const heat = n.heat ?? (n.status === "running" ? 0.5 : 0);
+        const status = resolveStatus(n.status);
+        const heat = n.heat ?? (status === "running" ? 0.5 : 0);
         const level = heatmapLevel(heat * 100, 0, 100, 4);
         const color = heatmapColor(heat * 100, { scale: "warning", steps: 4 });
         const elapsed = subagentElapsed(n, now);
-        const running = n.status === "running";
+        const running = status === "running";
         return (
           <li
             key={n.id}
@@ -335,10 +360,10 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
             aria-setsize={row.setsize}
             aria-expanded={hasKids ? open : undefined}
             aria-selected={activeId === n.id}
-            aria-label={`${n.name}, ${statusLabel[n.status]}`}
+            aria-label={`${n.name}, ${statusLabel[status]}`}
             tabIndex={activeId === n.id ? 0 : -1}
             data-node={n.id}
-            data-status={n.status}
+            data-status={status}
             onFocus={(e) => {
               if (e.target === e.currentTarget) setFocusId(n.id);
             }}
@@ -371,7 +396,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                     onClick={() => toggle(n.id)}
                     className="-ml-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground"
                   >
-                    <RiArrowRightSLine className={cn("size-4 transition-transform", open && "rotate-90")} />
+                    <RiArrowRightSLine aria-hidden className={cn("size-4 transition-transform", open && "rotate-90")} />
                   </button>
                 ) : (
                   <span className="size-4 shrink-0" aria-hidden />
@@ -411,7 +436,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                     </Button>
                   )}
                   {onStop && (
-                    <Button size="xs" variant="ghost" leadingIcon={<RiStopFill />} onClick={() => onStop(n.id)} aria-label={`Stop ${n.name}`}>
+                    <Button size="xs" variant="ghost" leadingIcon={<RiStopFill aria-hidden />} onClick={() => onStop(n.id)} aria-label={`Stop ${n.name}`}>
                       Stop
                     </Button>
                   )}
@@ -444,7 +469,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                     )}
                   />
                   <Button type="submit" size="icon-xs" aria-label="Send" disabled={!steerText.trim()}>
-                    <RiSendPlane2Line />
+                    <RiSendPlane2Line aria-hidden />
                   </Button>
                 </form>
               )}
@@ -499,7 +524,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
           </div>
         )}
         {rows.length === 0 ? (
-          <p className="py-4 text-center text-sm text-muted-foreground">{runningOnly ? "Nothing running." : "No subagents."}</p>
+          <p className="py-4 text-center text-sm text-muted-foreground">{runningOnly ? "Nothing running" : "No subagents"}</p>
         ) : (
           <ul role="tree" aria-label={label} className="flex flex-col">
             {renderLevel(null)}
@@ -619,7 +644,8 @@ export interface DelegateTask {
   /** Goal handed to the child agent. */
   title: React.ReactNode;
   agent?: string;
-  status: SubagentStatus;
+  /** Accepts canonical `TaskStatus` values too. */
+  status: SubagentStatusInput;
   /** Result summary or latest activity. */
   summary?: React.ReactNode;
   elapsedMs?: number;
@@ -634,9 +660,10 @@ export interface DelegateToolBodyProps extends React.HTMLAttributes<HTMLDivEleme
 /** Body for a "delegate" tool call: one row per child task with status and an open button. */
 export const DelegateToolBody = React.forwardRef<HTMLDivElement, DelegateToolBodyProps>(
   ({ tasks, onOpen, className, ...props }, ref) => {
-    const running = tasks.filter((t) => t.status === "running").length;
-    const done = tasks.filter((t) => t.status === "done").length;
-    const failed = tasks.filter((t) => t.status === "failed").length;
+    const statuses = tasks.map((t) => resolveStatus(t.status));
+    const running = statuses.filter((s) => s === "running").length;
+    const done = statuses.filter((s) => s === "done").length;
+    const failed = statuses.filter((s) => s === "failed").length;
     return (
       <div ref={ref} data-slot="delegate-tool-body" className={cn("flex flex-col gap-1.5", className)} {...props}>
         <p className="text-xs text-muted-foreground">
@@ -647,7 +674,7 @@ export const DelegateToolBody = React.forwardRef<HTMLDivElement, DelegateToolBod
         </p>
         <ul className="divide-y divide-border overflow-hidden rounded-lg border border-border bg-background">
           {tasks.map((t, i) => (
-            <li key={t.id} data-status={t.status} className="flex items-start gap-2.5 px-3 py-2">
+            <li key={t.id} data-status={statuses[i]} className="flex items-start gap-2.5 px-3 py-2">
               <SubagentStatusGlyph status={t.status} className="mt-0.5" />
               <div className="min-w-0 flex-1">
                 <p className="flex items-center gap-1.5 text-sm text-foreground">
@@ -675,7 +702,7 @@ export const DelegateToolBody = React.forwardRef<HTMLDivElement, DelegateToolBod
                   onClick={() => onOpen(t.id)}
                   className="shrink-0"
                 >
-                  <RiExternalLinkLine />
+                  <RiExternalLinkLine aria-hidden />
                 </Button>
               )}
             </li>

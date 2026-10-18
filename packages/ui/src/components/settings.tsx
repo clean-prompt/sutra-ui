@@ -108,7 +108,7 @@ export const SettingsShell = React.forwardRef<HTMLDivElement, SettingsShellProps
 
     const closeButton = onClose ? (
       <Button variant="ghost" size="icon-sm" aria-label="Close settings" onClick={onClose} className="text-muted-foreground">
-        <RiCloseLine />
+        <RiCloseLine aria-hidden />
       </Button>
     ) : null;
 
@@ -145,7 +145,7 @@ export const SettingsShell = React.forwardRef<HTMLDivElement, SettingsShellProps
           <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
             {stacked && current && (
               <Button variant="ghost" size="icon-sm" aria-label="Back to settings" onClick={() => setSection(null)} className="-ml-1.5">
-                <RiArrowLeftLine />
+                <RiArrowLeftLine aria-hidden />
               </Button>
             )}
             <h2 id={headingId} className="min-w-0 flex-1 truncate text-base font-semibold tracking-tight">
@@ -397,7 +397,7 @@ function RowText({
 }
 
 /** A settings row: static with a control slot, a toggle row (whole row clickable) or a nav row with value + chevron. */
-export function SettingsRow(props: SettingsRowProps) {
+export const SettingsRow = React.forwardRef<HTMLElement, SettingsRowProps>(function SettingsRow(props, ref) {
   const id = React.useId();
   const titleId = `${id}-title`;
   const descriptionId = `${id}-desc`;
@@ -415,7 +415,16 @@ export function SettingsRow(props: SettingsRowProps) {
   );
 
   if (props.type === "toggle") {
-    return <SettingsToggleRow {...props} disabled={disabled} text={text} titleId={titleId} descriptionId={hasDesc ? descriptionId : undefined} />;
+    return (
+      <SettingsToggleRow
+        {...props}
+        rowRef={ref as React.Ref<HTMLLabelElement>}
+        disabled={disabled}
+        text={text}
+        titleId={titleId}
+        descriptionId={hasDesc ? descriptionId : undefined}
+      />
+    );
   }
 
   if (props.type === "nav") {
@@ -437,13 +446,13 @@ export function SettingsRow(props: SettingsRowProps) {
     );
     if (href && !disabled) {
       return (
-        <a href={href} onClick={onClick} className={cls} data-slot="settings-row">
+        <a ref={ref as React.Ref<HTMLAnchorElement>} href={href} onClick={onClick} className={cls} data-slot="settings-row">
           {inner}
         </a>
       );
     }
     return (
-      <button type="button" onClick={onClick} disabled={disabled} className={cls} data-slot="settings-row">
+      <button ref={ref as React.Ref<HTMLButtonElement>} type="button" onClick={onClick} disabled={disabled} className={cls} data-slot="settings-row">
         {inner}
       </button>
     );
@@ -452,6 +461,7 @@ export function SettingsRow(props: SettingsRowProps) {
   const { children, className } = props as SettingsStaticRowProps;
   return (
     <div
+      ref={ref as React.Ref<HTMLDivElement>}
       role="group"
       aria-labelledby={titleId}
       aria-describedby={hasDesc ? descriptionId : undefined}
@@ -463,7 +473,7 @@ export function SettingsRow(props: SettingsRowProps) {
       {children != null && <div className="flex shrink-0 items-center gap-2">{children}</div>}
     </div>
   );
-}
+});
 SettingsRow.displayName = "SettingsRow";
 
 function SettingsToggleRow({
@@ -475,11 +485,13 @@ function SettingsToggleRow({
   text,
   titleId,
   descriptionId,
-}: SettingsToggleRowProps & { text: React.ReactNode; titleId: string; descriptionId?: string }) {
+  rowRef,
+}: SettingsToggleRowProps & { text: React.ReactNode; titleId: string; descriptionId?: string; rowRef?: React.Ref<HTMLLabelElement> }) {
   const [on, setOn] = useControllableState({ value: checked, defaultValue: defaultChecked, onChange: onCheckedChange });
   const switchId = React.useId();
   return (
     <label
+      ref={rowRef}
       htmlFor={switchId}
       data-slot="settings-row"
       data-disabled={disabled || undefined}

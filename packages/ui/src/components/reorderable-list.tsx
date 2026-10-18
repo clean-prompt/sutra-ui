@@ -91,7 +91,10 @@ export interface ReorderableListProps<T> extends Omit<React.HTMLAttributes<HTMLU
 type ActiveState = { key: string; origin: number; mode: "keyboard" | "pointer" };
 type PointerState = { y: number; offsetY: number; left: number; width: number; height: number };
 
-/** Accessible reorderable list: drag handle with placeholder, Space-to-lift keyboard moves, optional arrow buttons, live announcements. */
+/**
+ * Accessible reorderable list: drag handle with placeholder, Space-to-lift keyboard moves, optional arrow buttons, live announcements.
+ * A generic plain function (React 19 `ref` prop) rather than `forwardRef`, which would erase the item type `T`.
+ */
 export function ReorderableList<T>({
   items,
   getKey,
@@ -153,7 +156,7 @@ export function ReorderableList<T>({
 
   const cancel = () => {
     if (!active) return;
-    setAnnouncement(`Reorder cancelled. ${labelOf(active.key)} returned to position ${active.origin + 1} of ${items.length}.`);
+    setAnnouncement(`Reorder canceled. ${labelOf(active.key)} returned to position ${active.origin + 1} of ${items.length}.`);
     setOrder(null);
     setActive(null);
     setPointer(null);
@@ -314,7 +317,7 @@ export function ReorderableList<T>({
         >
           {handle ? (
             <span className="flex h-8 w-6 shrink-0 items-center justify-center text-muted-foreground">
-              <RiDraggable className="size-4" />
+              <RiDraggable aria-hidden className="size-4" />
             </span>
           ) : null}
           <div className="min-w-0 flex-1">{renderItem(activeItem, { index: indexOfKey(working, active.key), active: true })}</div>
@@ -329,6 +332,7 @@ export function ReorderableList<T>({
     </>
   );
 }
+ReorderableList.displayName = "ReorderableList";
 
 /* ------------------------------------------------------------------ */
 /* Checklist                                                           */

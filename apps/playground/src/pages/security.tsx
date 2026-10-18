@@ -253,7 +253,7 @@ function AuthenticatorDemo() {
                 <DropdownMenuItem icon={<RiEditLine />}>Rename</DropdownMenuItem>
                 <DropdownMenuItem icon={<RiQrCodeLine />}>Export QR</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive" icon={<RiDeleteBinLine />}>
+                <DropdownMenuItem tone="destructive" icon={<RiDeleteBinLine />}>
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>

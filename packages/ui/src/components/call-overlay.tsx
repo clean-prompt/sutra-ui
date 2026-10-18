@@ -12,6 +12,7 @@ import {
   RiVolumeUpLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { toneClasses } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useNow } from "../hooks/use-now";
@@ -192,17 +193,24 @@ export type CallPipCorner = "top-left" | "top-right" | "bottom-left" | "bottom-r
 
 const qualityBars: Record<CallQuality, number> = { excellent: 4, good: 3, poor: 1, offline: 0 };
 const qualityColor: Record<CallQuality, string> = {
-  excellent: "bg-success",
-  good: "bg-success",
-  poor: "bg-warning",
-  offline: "bg-destructive",
+  excellent: toneClasses.dot.success,
+  good: toneClasses.dot.success,
+  poor: toneClasses.dot.warning,
+  offline: toneClasses.dot.destructive,
 };
 
+export interface CallQualityIndicatorProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  quality: CallQuality;
+}
+
 /** Four-bar connection quality indicator. */
-export function CallQualityIndicator({ quality, className }: { quality: CallQuality; className?: string }) {
+export const CallQualityIndicator = React.forwardRef<HTMLSpanElement, CallQualityIndicatorProps>(function CallQualityIndicator(
+  { quality, className, ...props },
+  ref
+) {
   const bars = qualityBars[quality];
   return (
-    <span role="img" aria-label={`Connection ${quality}`} data-quality={quality} className={cn("inline-flex h-3.5 items-end gap-0.5", className)}>
+    <span ref={ref} role="img" aria-label={`Connection ${quality}`} data-quality={quality} className={cn("inline-flex h-3.5 items-end gap-0.5", className)} {...props}>
       {[1, 2, 3, 4].map((i) => (
         <span
           key={i}
@@ -212,7 +220,8 @@ export function CallQualityIndicator({ quality, className }: { quality: CallQual
       ))}
     </span>
   );
-}
+});
+CallQualityIndicator.displayName = "CallQualityIndicator";
 
 /** Callback ref that keeps `srcObject` in sync with the current `<video>` node and stream (survives remounts of the element). */
 function useStreamVideo(stream: MediaStream | null | undefined) {

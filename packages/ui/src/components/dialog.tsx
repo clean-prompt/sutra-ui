@@ -3,6 +3,7 @@ import { Dialog as DialogPrimitive, AlertDialog as AlertDialogPrimitive } from "
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiCloseLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { Button, type ButtonProps } from "./button";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useAsyncAction } from "../hooks/use-async-action";
@@ -45,10 +46,11 @@ const MobileHandle = () => (
   <span aria-hidden className="mx-auto -mt-3 mb-1 block h-1 w-10 shrink-0 rounded-full bg-border-strong sm:hidden" />
 );
 
-export type DialogTone = "default" | "primary" | "success" | "warning" | "destructive" | "info";
+/** Canonical `Tone` values; legacy spellings (`default`, `danger`, …) are accepted as deprecated aliases. */
+export type DialogTone = ToneInput;
 
-const toneClass: Record<DialogTone, string> = {
-  default: "bg-muted text-foreground ring-muted/50",
+const toneClass: Record<Tone, string> = {
+  neutral: "bg-muted text-foreground ring-muted/50",
   primary: "bg-primary-soft text-primary ring-primary-soft/50",
   success: "bg-success-soft text-success ring-success-soft/50",
   warning: "bg-warning-soft text-warning-soft-foreground ring-warning-soft/50",
@@ -63,7 +65,7 @@ function FeaturedIcon({ icon, tone = "primary" }: { icon: React.ReactNode; tone?
       aria-hidden
       className={cn(
         "mb-3 inline-flex size-11 shrink-0 items-center justify-center rounded-full ring-[6px] [&_svg]:size-5",
-        toneClass[tone]
+        toneClass[normalizeTone(tone, "primary")]
       )}
     >
       {icon}
@@ -160,7 +162,7 @@ export const DialogContent = React.forwardRef<React.ElementRef<typeof DialogPrim
         {showClose && (
           <DialogPrimitive.Close asChild>
             <Button variant="ghost" size="icon-sm" className={closeButtonClass} aria-label="Close">
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           </DialogPrimitive.Close>
         )}
@@ -286,7 +288,8 @@ export interface ConfirmDialogProps {
   description?: React.ReactNode;
   confirmLabel?: React.ReactNode;
   cancelLabel?: React.ReactNode;
-  tone?: "default" | "destructive";
+  /** `destructive` turns the icon and confirm button red. Default `neutral`. `default` is a deprecated alias of `neutral`. */
+  tone?: ToneInput;
   icon?: React.ReactNode;
   /** May return a promise; the confirm button shows a spinner until it settles. Throw to keep the dialog open. */
   onConfirm?: () => void | Promise<void>;
@@ -306,7 +309,7 @@ export function ConfirmDialog({
   description,
   confirmLabel = "Confirm",
   cancelLabel = "Cancel",
-  tone = "default",
+  tone: toneProp,
   icon,
   onConfirm,
   onCancel,
@@ -320,6 +323,7 @@ export function ConfirmDialog({
     setOpen(false);
   });
   const loading = confirm.busy;
+  const tone = normalizeTone(toneProp);
 
   const handleConfirm = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -330,7 +334,7 @@ export function ConfirmDialog({
     <AlertDialog open={open} onOpenChange={(next) => !loading && setOpen(next)}>
       {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
       <AlertDialogContent className={className}>
-        <AlertDialogHeader icon={icon} tone={tone === "destructive" ? "destructive" : "primary"}>
+        <AlertDialogHeader icon={icon} tone={tone === "neutral" ? "primary" : tone}>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
         </AlertDialogHeader>
@@ -401,7 +405,7 @@ export const SheetContent = React.forwardRef<React.ElementRef<typeof DialogPrimi
         {showClose && (
           <DialogPrimitive.Close asChild>
             <Button variant="ghost" size="icon-sm" className={cn(closeButtonClass, focusRing)} aria-label="Close">
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           </DialogPrimitive.Close>
         )}

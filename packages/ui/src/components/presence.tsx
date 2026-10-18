@@ -3,6 +3,7 @@ import { RiLoader4Line, RiWifiOffLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { formatList, pluralize } from "../lib/format";
 import { colorForSeed } from "../lib/hash";
+import { toneClasses, type Tone } from "../lib/tone";
 import { Avatar, type AvatarSize } from "./avatar";
 import { SimpleTooltip } from "./tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
@@ -29,10 +30,8 @@ export function getPresenceColor(id: string) {
   return colorForSeed(id);
 }
 
-const statusDot: Record<PresenceStatus, string> = {
-  active: "bg-success",
-  idle: "bg-warning",
-};
+const statusTone: Record<PresenceStatus, Tone> = { active: "success", idle: "warning" };
+const statusDot = (status: PresenceStatus) => toneClasses.dot[statusTone[status]];
 
 const statusText: Record<PresenceStatus, string> = { active: "Active", idle: "Idle" };
 
@@ -44,6 +43,7 @@ export interface PresenceAvatarsProps extends React.HTMLAttributes<HTMLDivElemen
   users: PresenceUser[];
   /** Avatars shown before the "+N" overflow. Default 4. */
   max?: number;
+  /** Avatar size. Defaults to "sm" (not "md"): presence stacks sit in dense toolbars. */
   size?: Extract<AvatarSize, "xs" | "sm" | "md">;
   /** Show the active/idle dot. Default true. */
   showStatus?: boolean;
@@ -78,7 +78,7 @@ function PresenceFace({
       {showStatus && user.status ? (
         <span
           aria-hidden
-          className={cn("absolute bottom-0 right-0 block size-2.5 rounded-full ring-2 ring-background", statusDot[user.status])}
+          className={cn("absolute bottom-0 right-0 block size-2.5 rounded-full ring-2 ring-background", statusDot(user.status))}
         />
       ) : null}
     </span>
@@ -152,7 +152,7 @@ export const PresenceAvatars = React.forwardRef<HTMLDivElement, PresenceAvatarsP
                     </span>
                     {u.status ? (
                       <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <span aria-hidden className={cn("size-2 rounded-full", statusDot[u.status])} />
+                        <span aria-hidden className={cn("size-2 rounded-full", statusDot(u.status))} />
                         {statusText[u.status]}
                       </span>
                     ) : null}
@@ -190,10 +190,10 @@ const connectionLabel: Record<PresenceConnection, string> = {
 };
 
 const connectionTone: Record<PresenceConnection, string> = {
-  live: "border-success/25 bg-success-soft text-success-soft-foreground",
-  offline: "border-border bg-muted text-muted-foreground",
-  reconnecting: "border-warning/30 bg-warning-soft text-warning-soft-foreground",
-  connecting: "border-border bg-muted text-muted-foreground",
+  live: cn(toneClasses.soft.success, "border-success/25"),
+  offline: cn(toneClasses.soft.neutral, "border-border"),
+  reconnecting: cn(toneClasses.soft.warning, "border-warning/30"),
+  connecting: cn(toneClasses.soft.neutral, "border-border"),
 };
 
 /** Connection-mode chip for collaborative editors: pulsing "Live", "Offline · saved locally", "Reconnecting…". */

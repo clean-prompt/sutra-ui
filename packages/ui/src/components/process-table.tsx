@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiCloseCircleLine, RiSkullLine } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, type Density } from "../lib/cn";
+import { toneClasses } from "../lib/tone";
 import { formatDuration } from "../lib/duration";
 import { formatBytes, pluralize } from "../lib/format";
 import { safeISO, toMs, type TimeInput } from "../lib/time";
@@ -22,7 +23,9 @@ export interface KillButtonProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /** Process name, used in labels. */
   name?: string;
   onKill: (signal: KillSignal) => void | Promise<unknown>;
-  /** External pending state (e.g. waiting for the process to exit). */
+  /** External loading state (e.g. waiting for the process to exit). Shows "Killing…". */
+  loading?: boolean;
+  /** @deprecated Use `loading`. */
   pending?: boolean;
   disabled?: boolean;
   /** Called when the confirm step opens / closes. */
@@ -31,12 +34,12 @@ export interface KillButtonProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 
 /** Two-mode kill control (SIGTERM / SIGKILL) with an inline "Kill 1234? Confirm / Cancel" step. */
 export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
-  ({ className, pid, name, onKill, pending: pendingProp, disabled, onConfirmingChange, ...props }, ref) => {
+  ({ className, pid, name, onKill, loading: loadingProp, pending: pendingProp, disabled, onConfirmingChange, ...props }, ref) => {
     const [confirming, setConfirmingState] = React.useState<KillSignal | null>(null);
     const kill = useAsyncAction((result: PromiseLike<unknown>) => result);
     const confirmRef = React.useRef<HTMLButtonElement>(null);
     const termRef = React.useRef<HTMLButtonElement>(null);
-    const pending = pendingProp || kill.busy;
+    const pending = (loadingProp ?? pendingProp) || kill.busy;
 
     const setConfirming = (s: KillSignal | null) => {
       setConfirmingState(s);
@@ -268,12 +271,13 @@ const columnLabel: Record<ProcessColumn, string> = {
 
 const numeric: ProcessColumn[] = ["pid", "cpu", "memory", "vram"];
 
+/** Process states are domain-specific (not `TaskStatus`); only their colours come from the shared tones. */
 const stateTone: Record<string, string> = {
-  running: "bg-success-soft text-success-soft-foreground",
-  sleeping: "bg-muted text-muted-foreground",
-  idle: "bg-muted text-muted-foreground",
-  stopped: "bg-warning-soft text-warning-soft-foreground",
-  zombie: "bg-destructive-soft text-destructive-soft-foreground",
+  running: toneClasses.soft.success,
+  sleeping: toneClasses.soft.neutral,
+  idle: toneClasses.soft.neutral,
+  stopped: toneClasses.soft.warning,
+  zombie: toneClasses.soft.destructive,
 };
 
 export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableElement>, "children"> {
@@ -295,8 +299,10 @@ export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableEl
   /** "now" for the started column. */
   now?: number;
   maxHeight?: number | string;
+  /** Shown when there are no processes. Default "No processes". */
   emptyState?: React.ReactNode;
-  density?: "compact" | "normal" | "relaxed";
+  /** Row density. Default "compact". */
+  density?: Density;
   /** Row exit animation duration ms. Default 250. */
   exitDuration?: number;
   /** Accessible table caption. */
@@ -461,7 +467,7 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
                         <KillButton
                           pid={p.pid}
                           name={p.name}
-                          pending={isPending}
+                          loading={isPending}
                           onKill={(signal) => onKill(p, signal)}
                           onConfirmingChange={(s) => setConfirmingPid(s ? p.pid : null)}
                           className={cn(

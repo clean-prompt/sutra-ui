@@ -19,6 +19,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { formatDuration } from "../lib/duration";
 import { isSafeHref } from "../lib/validate";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useNow } from "../hooks/use-now";
 import { useResizeObserver } from "../hooks/use-resize-observer";
@@ -35,15 +36,36 @@ import { formatTokenLabel } from "./chain-of-thought";
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
 
+/** Status values the timeline reports back (e.g. in `ToolGroupLabelInfo`). */
 export type ToolTimelineStatus = "success" | "failure" | "progress" | "warning" | "pending";
 
-const statusLabel: Record<ToolTimelineStatus, string> = {
+/**
+ * What status props accept: the timeline's own values plus the canonical lifecycle
+ * `TaskStatus` (`succeeded`, `failed`, `running`, `canceled`) and its legacy spellings.
+ */
+export type ToolTimelineStatusInput = ToolTimelineStatus | TaskStatusInput;
+
+/** Resolved display status: the timeline values plus `canceled` (a neutral, finished dot). */
+type DisplayStatus = ToolTimelineStatus | "canceled";
+
+const statusLabel: Record<DisplayStatus, string> = {
   success: "Succeeded",
   failure: "Failed",
   progress: "In progress",
   warning: "Warning",
   pending: "Pending",
+  canceled: "Canceled",
 };
+
+const fromTaskStatus = { pending: "pending", running: "progress", succeeded: "success", failed: "failure", canceled: "canceled" } as const;
+
+function toDisplayStatus(status: ToolTimelineStatusInput): DisplayStatus;
+function toDisplayStatus(status: ToolTimelineStatusInput | undefined): DisplayStatus | undefined;
+function toDisplayStatus(status: ToolTimelineStatusInput | undefined): DisplayStatus | undefined {
+  if (status === undefined) return undefined;
+  if (status === "warning") return "warning";
+  return fromTaskStatus[normalizeTaskStatus(status)];
+}
 
 const toolIcons: [RegExp, React.ElementType][] = [
   [/^(read|view|cat|open)/i, RiFileTextLine],
@@ -69,15 +91,16 @@ const NestedContext = React.createContext(false);
 /* ------------------------------------------------------------------ */
 
 export interface ToolTimelineDotProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Omit for a neutral narration dot (hidden from assistive tech). */
-  status?: ToolTimelineStatus;
+  /** Omit for a neutral narration dot (hidden from assistive tech). Accepts `TaskStatus` values too. */
+  status?: ToolTimelineStatusInput;
   /** Accessible label; defaults to the status name. */
   label?: string;
 }
 
 /** Status dot on the timeline rail: success, failure, progress (pulsing), warning or pending. */
 export const ToolTimelineDot = React.forwardRef<HTMLSpanElement, ToolTimelineDotProps>(
-  ({ status, label, className, ...props }, ref) => {
+  ({ status: statusProp, label, className, ...props }, ref) => {
+    const status = toDisplayStatus(statusProp);
     const text = status ? (label ?? statusLabel[status]) : undefined;
     return (
       <span
@@ -96,7 +119,7 @@ export const ToolTimelineDot = React.forwardRef<HTMLSpanElement, ToolTimelineDot
         <span
           className={cn(
             "relative inline-flex size-full rounded-full ring-[3px] ring-background",
-            !status && "bg-muted-foreground/50",
+            (!status || status === "canceled") && "bg-muted-foreground/50",
             status === "success" && "bg-success",
             status === "failure" && "bg-destructive",
             status === "warning" && "bg-warning",
@@ -148,7 +171,7 @@ ToolTimeline.displayName = "ToolTimeline";
 
 export interface ToolTimelineTextProps extends React.LiHTMLAttributes<HTMLLIElement> {
   /** Optional status for the dot (narration usually has none). */
-  status?: ToolTimelineStatus;
+  status?: ToolTimelineStatusInput;
 }
 
 /** Assistant narration between tool calls. */
@@ -178,7 +201,8 @@ export interface ToolTimelineItemProps
   name: React.ReactNode;
   /** Primary argument (path, command, pattern) in muted mono. */
   arg?: React.ReactNode;
-  status?: ToolTimelineStatus;
+  /** Default `success`. Accepts canonical `TaskStatus` values (`succeeded`, `failed`, `running`, `canceled`). */
+  status?: ToolTimelineStatusInput;
   icon?: React.ReactNode;
   /** Duration in milliseconds. */
   duration?: number;
@@ -200,7 +224,7 @@ export const ToolTimelineItem = React.forwardRef<HTMLLIElement, ToolTimelineItem
     {
       name,
       arg,
-      status = "success",
+      status: statusProp = "success",
       icon,
       duration,
       diffStat,
@@ -222,6 +246,7 @@ export const ToolTimelineItem = React.forwardRef<HTMLLIElement, ToolTimelineItem
       defaultValue: defaultOpen,
       onChange: onOpenChange,
     });
+    const status = toDisplayStatus(statusProp);
     const running = status === "progress";
     const hasBody = children != null && children !== false;
     const Icon = typeof name === "string" ? getToolIcon(name) : RiToolsLine;
@@ -339,8 +364,8 @@ export interface ToolGroupProps extends Omit<React.LiHTMLAttributes<HTMLLIElemen
   pluralNoun?: string;
   /** Custom label, e.g. ({ count }) => `Searched ${count} patterns`. */
   label?: (info: ToolGroupLabelInfo) => React.ReactNode;
-  /** Group status; derived from the children's `status` when omitted. */
-  status?: ToolTimelineStatus;
+  /** Group status; derived from the children's `status` when omitted. Accepts `TaskStatus` values too. */
+  status?: ToolTimelineStatusInput;
   icon?: React.ReactNode;
   open?: boolean;
   defaultOpen?: boolean;
@@ -349,11 +374,13 @@ export interface ToolGroupProps extends Omit<React.LiHTMLAttributes<HTMLLIElemen
   autoCollapse?: boolean;
 }
 
-function deriveStatus(children: React.ReactNode): ToolTimelineStatus {
-  const statuses = React.Children.toArray(children)
+function deriveStatus(children: React.ReactNode): DisplayStatus {
+  const all = React.Children.toArray(children)
     .filter(React.isValidElement)
-    .map((c) => ((c.props as { status?: ToolTimelineStatus }).status ?? "success"));
-  if (!statuses.length) return "pending";
+    .map((c) => toDisplayStatus((c.props as { status?: ToolTimelineStatusInput }).status ?? "success"));
+  if (!all.length) return "pending";
+  const statuses = all.filter((s) => s !== "canceled");
+  if (!statuses.length) return "canceled";
   if (statuses.includes("progress")) return "progress";
   if (statuses.includes("failure")) return "failure";
   if (statuses.includes("warning")) return "warning";
@@ -383,7 +410,7 @@ export const ToolGroup = React.forwardRef<HTMLLIElement, ToolGroupProps>(
     },
     ref
   ) => {
-    const status = statusProp ?? deriveStatus(children);
+    const status = statusProp !== undefined ? toDisplayStatus(statusProp) : deriveStatus(children);
     const running = status === "progress";
     const count = React.Children.toArray(children).filter(React.isValidElement).length;
     const [open, setOpen] = useControllableState<boolean>({
@@ -402,7 +429,7 @@ export const ToolGroup = React.forwardRef<HTMLLIElement, ToolGroupProps>(
 
     const nouns = count === 1 ? noun : (pluralNoun ?? `${noun}s`);
     const text = label
-      ? label({ count, status, running })
+      ? label({ count, status: status === "canceled" ? "pending" : status, running })
       : running
         ? `${runningVerb} ${count} ${nouns}…`
         : `${verb} ${count} ${nouns}`;
@@ -427,7 +454,7 @@ export const ToolGroup = React.forwardRef<HTMLLIElement, ToolGroupProps>(
             )}
           >
             <span aria-hidden className="inline-flex shrink-0 text-muted-foreground [&_svg]:size-3.5">
-              {icon ?? <RiSearchLine />}
+              {icon ?? <RiSearchLine aria-hidden />}
             </span>
             {running && typeof text === "string" ? (
               <TextShimmer className="font-semibold">{text}</TextShimmer>
@@ -592,7 +619,7 @@ function TruncatedOutput({
         id={id}
         className={cn(
           "overflow-x-auto scrollbar-thin whitespace-pre px-3 py-2 font-mono text-xs leading-5",
-          tone === "error" ? "text-red-300" : "text-zinc-200"
+          tone === "error" ? "text-red-300" : "text-code-foreground/90"
         )}
       >
         <code>
@@ -602,7 +629,7 @@ function TruncatedOutput({
       {hidden > 0 && !all && (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-7 h-10 bg-gradient-to-t from-zinc-950 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-7 h-10 bg-gradient-to-t from-code to-transparent"
         />
       )}
       {hidden > 0 && (
@@ -612,7 +639,7 @@ function TruncatedOutput({
           aria-controls={id}
           onClick={() => setAll(!all)}
           className={cn(
-            "mx-2 mb-2 inline-flex h-6 items-center rounded-sm px-1.5 font-sans text-xs text-zinc-400 transition-colors hover:bg-white/10 hover:text-zinc-100",
+            "mx-2 mb-2 inline-flex h-6 items-center rounded-sm px-1.5 font-sans text-xs text-code-muted transition-colors hover:bg-white/10 hover:text-code-foreground",
             focusRing
           )}
         >
@@ -644,7 +671,7 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
         ref={ref}
         data-slot="bash-tool-body"
         className={cn(
-          "overflow-hidden rounded-box border border-zinc-800 bg-zinc-950 text-zinc-100 [color-scheme:dark]",
+          "overflow-hidden rounded-box border border-code-border bg-code text-code-foreground [color-scheme:dark]",
           className
         )}
         {...props}
@@ -671,13 +698,13 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
             value={command}
             label="Copy command"
             size="xs"
-            className="text-zinc-400 hover:bg-white/10 hover:text-zinc-100"
+            className="text-code-muted hover:bg-white/10 hover:text-code-foreground"
           />
         </div>
         {output ? <TruncatedOutput text={output} maxLines={maxLines} /> : null}
         {streaming && (
           <div className="px-3 pb-2">
-            <span aria-hidden className="inline-block h-3.5 w-1.5 animate-caret-blink bg-zinc-300 align-middle" />
+            <span aria-hidden className="inline-block h-3.5 w-1.5 animate-caret-blink bg-code-foreground/80 align-middle" />
             <span className="sr-only">Running</span>
           </div>
         )}
@@ -687,7 +714,7 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
           </div>
         ) : null}
         {!output && !stderr && !streaming && (
-          <div className="px-3 py-2 font-sans text-xs italic text-zinc-500">No output</div>
+          <div className="px-3 py-2 font-sans text-xs italic text-code-muted">No output</div>
         )}
       </div>
     );
@@ -960,10 +987,10 @@ export const AgentStatusLine = React.forwardRef<HTMLDivElement, AgentStatusLineP
         {...props}
       >
         <span aria-hidden className="inline-flex shrink-0 [&_svg]:size-4">
-          {state === "thinking" && <RiBrainLine className="text-primary" />}
+          {state === "thinking" && <RiBrainLine aria-hidden className="text-primary" />}
           {state === "running" && <Spinner role="presentation" size="sm" className="text-primary" />}
-          {state === "permission" && <RiShieldKeyholeLine className="text-warning" />}
-          {state === "question" && <RiQuestionLine className="text-info" />}
+          {state === "permission" && <RiShieldKeyholeLine aria-hidden className="text-warning" />}
+          {state === "question" && <RiQuestionLine aria-hidden className="text-info" />}
         </span>
         {waiting ? (
           <span className="truncate font-medium text-foreground">{text}</span>

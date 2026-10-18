@@ -12,7 +12,27 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
 
-export type NoticeTone = "info" | "warn" | "error" | "promo";
+/** Canonical notice tones (a subset of `Tone`). */
+export type NoticeCanonicalTone = "info" | "warning" | "destructive" | "primary";
+/**
+ * Tone of a notice. Deprecated aliases: `warn` → `warning`, `error` → `destructive`, `promo` → `primary`.
+ */
+export type NoticeTone = NoticeCanonicalTone | "warn" | "error" | "promo";
+
+const NOTICE_TONE_ALIASES: Record<NoticeTone, NoticeCanonicalTone> = {
+  info: "info",
+  warning: "warning",
+  destructive: "destructive",
+  primary: "primary",
+  warn: "warning",
+  error: "destructive",
+  promo: "primary",
+};
+
+/** Map any accepted notice tone spelling to its canonical name (unknown → `info`). */
+export function normalizeNoticeTone(tone: NoticeTone | string | null | undefined): NoticeCanonicalTone {
+  return tone && Object.prototype.hasOwnProperty.call(NOTICE_TONE_ALIASES, tone) ? NOTICE_TONE_ALIASES[tone as NoticeTone] : "info";
+}
 
 export interface NoticeAction {
   label: React.ReactNode;
@@ -35,18 +55,18 @@ export interface NoticeItem {
   priority?: number;
 }
 
-const toneClass: Record<NoticeTone, string> = {
+const toneClass: Record<NoticeCanonicalTone, string> = {
   info: "bg-info-soft text-info-soft-foreground border-info/25",
-  warn: "bg-warning-soft text-warning-soft-foreground border-warning/30",
-  error: "bg-destructive-soft text-destructive-soft-foreground border-destructive/25",
-  promo: "bg-primary text-primary-foreground border-transparent",
+  warning: "bg-warning-soft text-warning-soft-foreground border-warning/30",
+  destructive: "bg-destructive-soft text-destructive-soft-foreground border-destructive/25",
+  primary: "bg-primary text-primary-foreground border-transparent",
 };
 
-const toneIcon: Record<NoticeTone, React.ComponentType<{ className?: string }>> = {
+const toneIcon: Record<NoticeCanonicalTone, React.ComponentType<{ className?: string }>> = {
   info: RiInformationLine,
-  warn: RiAlertLine,
-  error: RiErrorWarningLine,
-  promo: RiSparkling2Line,
+  warning: RiAlertLine,
+  destructive: RiErrorWarningLine,
+  primary: RiSparkling2Line,
 };
 
 /* ------------------------------------------------------------------ */
@@ -187,9 +207,9 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
     }, [rotating, safeIndex, interval, go]);
 
     if (!current) return null;
-    const tone = current.tone ?? "info";
+    const tone = normalizeNoticeTone(current.tone);
     const Icon = toneIcon[tone];
-    const promo = tone === "promo";
+    const promo = tone === "primary";
     const ctrl = cn(
       "inline-flex size-6 shrink-0 items-center justify-center rounded-sm transition-colors hover:bg-current/10 [&_svg]:size-4",
       focusRing,
@@ -207,7 +227,7 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
         role="region"
         aria-roledescription="carousel"
         aria-label={label}
-        data-tone={tone}
+        data-tone={current.tone ?? "info"}
         data-paused={paused || undefined}
         className={cn(
           "z-40 flex w-full items-center gap-2 border-b px-3 py-1.5 text-sm transition-colors",

@@ -125,7 +125,7 @@ export const BreadcrumbSeparator = React.forwardRef<HTMLLIElement, BreadcrumbSep
           ) : v === "dot" ? (
             <span className="mx-0.5 size-1 rounded-full bg-current" />
           ) : (
-            <RiArrowRightSLine className="size-4" />
+            <RiArrowRightSLine aria-hidden className="size-4" />
           ))}
       </li>
     );
@@ -157,7 +157,7 @@ export const BreadcrumbEllipsis = React.forwardRef<HTMLButtonElement, Breadcrumb
     if (!items || items.length === 0) {
       return (
         <span role="presentation" aria-hidden="true" className={cn("inline-flex size-6 items-center justify-center", className)}>
-          <RiMoreLine className="size-4" />
+          <RiMoreLine aria-hidden className="size-4" />
           <span className="sr-only">More</span>
         </span>
       );
@@ -176,7 +176,7 @@ export const BreadcrumbEllipsis = React.forwardRef<HTMLButtonElement, Breadcrumb
             )}
             {...props}
           >
-            <RiMoreLine className="size-4" />
+            <RiMoreLine aria-hidden className="size-4" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="min-w-40">

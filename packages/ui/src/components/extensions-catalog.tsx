@@ -24,6 +24,8 @@ import {
   RiStarLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { formatCompact } from "../lib/format";
 import { isSafeHref } from "../lib/validate";
 import { useAsyncAction } from "../hooks/use-async-action";
@@ -225,23 +227,23 @@ export const CatalogCard = React.forwardRef<HTMLElement, CatalogCardProps>(
           )}
           <div className="mt-auto flex flex-wrap items-center gap-3 pt-1">
             {docsUrl && (
-              <ExternalLink href={docsUrl} icon={<RiBookOpenLine />}>
+              <ExternalLink href={docsUrl} icon={<RiBookOpenLine aria-hidden />}>
                 Docs
               </ExternalLink>
             )}
             {repoUrl && (
-              <ExternalLink href={repoUrl} icon={<RiGithubLine />}>
+              <ExternalLink href={repoUrl} icon={<RiGithubLine aria-hidden />}>
                 Repo
               </ExternalLink>
             )}
             <span className="flex-1" />
             {state === "available" && onInstall && (
-              <Button size="sm" leadingIcon={<RiDownloadLine />} loading={busy} onClick={install} aria-label={`Install ${name}`}>
+              <Button size="sm" leadingIcon={<RiDownloadLine aria-hidden />} loading={busy} onClick={install} aria-label={`Install ${name}`}>
                 Install
               </Button>
             )}
             {state === "update-available" && (
-              <Button size="sm" variant="soft" leadingIcon={<RiArrowUpCircleLine />} onClick={onUpdate} aria-label={`Update ${name}${latestVersion ? ` to v${latestVersion}` : ""}`}>
+              <Button size="sm" variant="soft" leadingIcon={<RiArrowUpCircleLine aria-hidden />} onClick={onUpdate} aria-label={`Update ${name}${latestVersion ? ` to v${latestVersion}` : ""}`}>
                 Update{latestVersion ? ` to v${latestVersion}` : ""}
               </Button>
             )}
@@ -412,7 +414,7 @@ export const InstalledExtensionCard = React.forwardRef<HTMLDivElement, Installed
           {hasUpdate && (
             <ConfirmDialog
               trigger={
-                <Button size="sm" variant="soft" leadingIcon={<RiArrowUpCircleLine />}>
+                <Button size="sm" variant="soft" leadingIcon={<RiArrowUpCircleLine aria-hidden />}>
                   Update to v{latestVersion}
                 </Button>
               }
@@ -445,14 +447,14 @@ export const InstalledExtensionCard = React.forwardRef<HTMLDivElement, Installed
           )}
           <span className="flex-1" />
           {onHide && (
-            <Button size="sm" variant="ghost" leadingIcon={<RiEyeOffLine />} onClick={onHide}>
+            <Button size="sm" variant="ghost" leadingIcon={<RiEyeOffLine aria-hidden />} onClick={onHide}>
               Hide
             </Button>
           )}
           {onRemove && (
             <ConfirmDialog
               trigger={
-                <Button size="sm" variant="ghost" className="text-destructive" leadingIcon={<RiDeleteBinLine />}>
+                <Button size="sm" variant="ghost" className="text-destructive" leadingIcon={<RiDeleteBinLine aria-hidden />}>
                   Remove
                 </Button>
               }
@@ -474,7 +476,8 @@ InstalledExtensionCard.displayName = "InstalledExtensionCard";
 /* ExtensionInstallDialog                                              */
 /* ------------------------------------------------------------------ */
 
-export type ExtensionInstallStatus = "idle" | "installing" | "success" | "error";
+/** Install progress. Also accepts the canonical lifecycle names (`pending`, `running`, `succeeded`, `failed`, `canceled`). */
+export type ExtensionInstallStatus = "idle" | "installing" | "success" | "error" | TaskStatusInput;
 
 export interface ExtensionInstallDialogProps {
   open?: boolean;
@@ -521,12 +524,14 @@ export function ExtensionInstallDialog({
   onDone,
 }: ExtensionInstallDialogProps) {
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
+  const phase = status === "installing" ? "running" : normalizeTaskStatus(status);
+  const installing = phase === "running";
   const [url, setUrl] = React.useState(source);
   const [advanced, setAdvanced] = React.useState(false);
   const [acknowledged, setAcknowledged] = React.useState(false);
   React.useEffect(() => setUrl(source), [source]);
   const urlValid = mode === "catalog" || GIT_URL_RE.test(url.trim());
-  const canInstall = urlValid && (verified || acknowledged) && status !== "installing";
+  const canInstall = urlValid && (verified || acknowledged) && !installing;
   const advId = React.useId();
   const urlId = React.useId();
   const ackId = React.useId();
@@ -534,7 +539,7 @@ export function ExtensionInstallDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent className="max-w-lg">
-        <DialogHeader icon={<RiPuzzleLine />}>
+        <DialogHeader icon={<RiPuzzleLine aria-hidden />}>
           <DialogTitle>{name ? `Install ${name}` : "Install plugin"}</DialogTitle>
           <DialogDescription>{mode === "git" ? "Install a plugin from a git repository." : "Install this plugin from the catalog."}</DialogDescription>
         </DialogHeader>
@@ -552,18 +557,18 @@ export function ExtensionInstallDialog({
                 placeholder="https://github.com/org/plugin.git"
                 className="font-mono"
                 invalid={url.trim() !== "" && !urlValid}
-                disabled={status === "installing"}
+                disabled={installing}
               />
               {url.trim() !== "" && !urlValid && <p className="text-xs text-destructive">Enter an https:// or git@ URL</p>}
             </div>
           )}
           {verified ? (
-            <InlineAlert variant="success" icon={<RiShieldCheckLine />} role="note">
+            <InlineAlert variant="success" icon={<RiShieldCheckLine aria-hidden />} role="note">
               <InlineAlertTitle>Verified source</InlineAlertTitle>
               <InlineAlertDescription>Signed by a verified publisher.</InlineAlertDescription>
             </InlineAlert>
           ) : (
-            <InlineAlert variant="warning" icon={<RiAlertLine />} role="note" data-unverified>
+            <InlineAlert variant="warning" icon={<RiAlertLine aria-hidden />} role="note" data-unverified>
               <InlineAlertTitle>Unverified source</InlineAlertTitle>
               <InlineAlertDescription>
                 This plugin isn't signed by a verified publisher. Plugins run code on your machine with the permissions below.
@@ -610,33 +615,33 @@ export function ExtensionInstallDialog({
               )}
             </div>
           )}
-          {status !== "idle" && (
+          {phase !== "pending" && phase !== "canceled" && (
             <div className="space-y-2" data-install-status={status}>
               <p role="status" className="flex items-center gap-2 text-sm font-medium">
-                {status === "installing" && (
+                {installing && (
                   <>
                     <Spinner size="xs" /> Installing…
                   </>
                 )}
-                {status === "success" && (
+                {phase === "succeeded" && (
                   <span className="inline-flex items-center gap-1.5 text-success-soft-foreground">
                     <RiCheckLine aria-hidden className="size-4" /> Installed successfully
                   </span>
                 )}
-                {status === "error" && (
+                {phase === "failed" && (
                   <span className="inline-flex items-center gap-1.5 text-destructive">
                     <RiCloseCircleLine aria-hidden className="size-4" /> Install failed{error ? `: ${error}` : ""}
                   </span>
                 )}
               </p>
               {log && log.length > 0 && (
-                <LogViewer lines={log} height={160} hideToolbar status={status === "installing" ? "live" : status === "error" ? "error" : "idle"} aria-label="Install log" />
+                <LogViewer lines={log} height={160} hideToolbar status={installing ? "live" : phase === "failed" ? "error" : "idle"} aria-label="Install log" />
               )}
             </div>
           )}
         </DialogBody>
         <DialogFooter>
-          {status === "success" ? (
+          {phase === "succeeded" ? (
             <Button
               onClick={() => {
                 onDone?.();
@@ -647,11 +652,11 @@ export function ExtensionInstallDialog({
             </Button>
           ) : (
             <>
-              <Button variant="ghost" onClick={() => setOpen(false)} disabled={status === "installing"}>
+              <Button variant="ghost" onClick={() => setOpen(false)} disabled={installing}>
                 Cancel
               </Button>
-              <Button onClick={() => onInstall?.(url.trim())} disabled={!canInstall} loading={status === "installing"} leadingIcon={<RiDownloadLine />}>
-                {status === "error" ? "Retry" : "Install"}
+              <Button onClick={() => onInstall?.(url.trim())} disabled={!canInstall} loading={installing} leadingIcon={<RiDownloadLine aria-hidden />}>
+                {phase === "failed" ? "Retry" : "Install"}
               </Button>
             </>
           )}
@@ -688,9 +693,9 @@ export function countScanFindings(findings: ScanFinding[]): Record<ScanSeverity,
 }
 
 const verdictMeta: Record<ScanVerdictLevel, { label: string; tone: string; icon: React.ReactNode }> = {
-  safe: { label: "Safe", tone: "border-success/40 bg-success-soft text-success-soft-foreground", icon: <RiShieldCheckLine /> },
-  caution: { label: "Caution", tone: "border-warning/40 bg-warning-soft text-warning-soft-foreground", icon: <RiAlertLine /> },
-  dangerous: { label: "Dangerous", tone: "border-destructive/40 bg-destructive-soft text-destructive-soft-foreground", icon: <RiErrorWarningLine /> },
+  safe: { label: "Safe", tone: cn("border-success/40", toneClasses.soft.success), icon: <RiShieldCheckLine aria-hidden /> },
+  caution: { label: "Caution", tone: cn("border-warning/40", toneClasses.soft.warning), icon: <RiAlertLine aria-hidden /> },
+  dangerous: { label: "Dangerous", tone: cn("border-destructive/40", toneClasses.soft.destructive), icon: <RiErrorWarningLine aria-hidden /> },
 };
 
 const severityColor: Record<ScanSeverity, BadgeColor> = { critical: "destructive", high: "orange", medium: "warning", low: "neutral" };
@@ -700,7 +705,8 @@ export interface SecurityScanVerdictProps extends React.HTMLAttributes<HTMLEleme
   findings?: ScanFinding[];
   /** Policy outcome, e.g. "Blocked by policy" or "Allowed". */
   policy?: string;
-  policyTone?: "allow" | "warn" | "block";
+  /** Colour of the policy badge: `allow` (success), `block` (destructive) or any `Tone`. `warn` is a deprecated alias of `warning`. */
+  policyTone?: "allow" | "block" | ToneInput;
   /** Preformatted scan time. */
   scannedAt?: string;
   scanner?: string;
@@ -710,6 +716,7 @@ export interface SecurityScanVerdictProps extends React.HTMLAttributes<HTMLEleme
 export const SecurityScanVerdict = React.forwardRef<HTMLElement, SecurityScanVerdictProps>(
   ({ verdict, findings = [], policy, policyTone = "allow", scannedAt, scanner, className, ...props }, ref) => {
     const meta = verdictMeta[verdict];
+    const policyColor: Tone = policyTone === "allow" ? "success" : policyTone === "block" ? "destructive" : normalizeTone(policyTone, "success");
     const counts = countScanFindings(findings);
     const sorted = [...findings].sort((a, b) => SCAN_SEVERITIES.indexOf(a.severity) - SCAN_SEVERITIES.indexOf(b.severity));
     const headId = React.useId();
@@ -732,7 +739,7 @@ export const SecurityScanVerdict = React.forwardRef<HTMLElement, SecurityScanVer
             )}
           </div>
           {policy && (
-            <Badge size="sm" variant="solid" color={policyTone === "block" ? "destructive" : policyTone === "warn" ? "warning" : "success"} data-policy={policyTone}>
+            <Badge size="sm" variant="solid" color={policyColor} data-policy={policyTone}>
               {policy}
             </Badge>
           )}
@@ -919,7 +926,7 @@ export const SkillDetail = React.forwardRef<HTMLDivElement, SkillDetailProps>(
             </div>
             {onClose && (
               <Button size="icon-sm" variant="ghost" aria-label="Close" onClick={onClose}>
-                <RiCloseCircleLine />
+                <RiCloseCircleLine aria-hidden />
               </Button>
             )}
           </div>
@@ -932,14 +939,14 @@ export const SkillDetail = React.forwardRef<HTMLDivElement, SkillDetailProps>(
             )}
             <span className="flex-1" />
             {onEdit && (
-              <Button size="sm" variant="outline" leadingIcon={<RiEditLine />} onClick={onEdit}>
+              <Button size="sm" variant="outline" leadingIcon={<RiEditLine aria-hidden />} onClick={onEdit}>
                 Edit
               </Button>
             )}
             {onArchive && (
               <ConfirmDialog
                 trigger={
-                  <Button size="sm" variant="ghost" leadingIcon={<RiArchiveLine />}>
+                  <Button size="sm" variant="ghost" leadingIcon={<RiArchiveLine aria-hidden />}>
                     Archive
                   </Button>
                 }
@@ -1075,7 +1082,7 @@ export const SyncReceiptCard = React.forwardRef<HTMLElement, SyncReceiptCardProp
           {availableUpdates.length > 0 && <Badge size="sm" color="info">{availableUpdates.length} updates available</Badge>}
         </div>
         {clean && <p className="text-sm text-muted-foreground">Everything is up to date.</p>}
-        <ReceiptSection label="Updated" count={updated.length} tone="text-success-soft-foreground" icon={<RiCheckLine />}>
+        <ReceiptSection label="Updated" count={updated.length} tone="text-success-soft-foreground" icon={<RiCheckLine aria-hidden />}>
           {updated.map((u) => (
             <li key={u.name} className="font-mono text-xs">
               {u.name}
@@ -1088,7 +1095,7 @@ export const SyncReceiptCard = React.forwardRef<HTMLElement, SyncReceiptCardProp
             </li>
           ))}
         </ReceiptSection>
-        <ReceiptSection label="Failed rebuilds" count={failed.length} tone="text-destructive" icon={<RiCloseCircleLine />}>
+        <ReceiptSection label="Failed rebuilds" count={failed.length} tone="text-destructive" icon={<RiCloseCircleLine aria-hidden />}>
           {failed.map((f) => (
             <li key={f.name} className="text-xs">
               <span className="font-mono">{f.name}</span>
@@ -1096,7 +1103,7 @@ export const SyncReceiptCard = React.forwardRef<HTMLElement, SyncReceiptCardProp
             </li>
           ))}
         </ReceiptSection>
-        <ReceiptSection label="Disabled by dependency conflict" count={disabled.length} tone="text-warning-soft-foreground" icon={<RiAlertLine />}>
+        <ReceiptSection label="Disabled by dependency conflict" count={disabled.length} tone="text-warning-soft-foreground" icon={<RiAlertLine aria-hidden />}>
           {disabled.map((f) => (
             <li key={f.name} className="text-xs">
               <span className="font-mono">{f.name}</span>
@@ -1104,7 +1111,7 @@ export const SyncReceiptCard = React.forwardRef<HTMLElement, SyncReceiptCardProp
             </li>
           ))}
         </ReceiptSection>
-        <ReceiptSection label="Available updates" count={availableUpdates.length} tone="text-info-soft-foreground" icon={<RiArrowUpCircleLine />}>
+        <ReceiptSection label="Available updates" count={availableUpdates.length} tone="text-info-soft-foreground" icon={<RiArrowUpCircleLine aria-hidden />}>
           {availableUpdates.map((u) => (
             <li key={u.name} className="font-mono text-xs">
               {u.name}
@@ -1115,12 +1122,12 @@ export const SyncReceiptCard = React.forwardRef<HTMLElement, SyncReceiptCardProp
         {(onRetry || onUpdateAll) && (failed.length > 0 || availableUpdates.length > 0) && (
           <div className="flex justify-end gap-2 border-t border-border pt-3">
             {onRetry && failed.length > 0 && (
-              <Button size="sm" variant="ghost" leadingIcon={<RiRestartLine />} onClick={onRetry}>
+              <Button size="sm" variant="ghost" leadingIcon={<RiRestartLine aria-hidden />} onClick={onRetry}>
                 Retry failed
               </Button>
             )}
             {onUpdateAll && availableUpdates.length > 0 && (
-              <Button size="sm" variant="soft" leadingIcon={<RiArrowUpCircleLine />} onClick={onUpdateAll}>
+              <Button size="sm" variant="soft" leadingIcon={<RiArrowUpCircleLine aria-hidden />} onClick={onUpdateAll}>
                 Update all
               </Button>
             )}

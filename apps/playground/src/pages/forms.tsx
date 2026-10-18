@@ -807,7 +807,7 @@ function FileUploadDemo() {
     {
       id: "seed",
       file: new File([new Uint8Array(284_000)], "brand-guidelines.pdf", { type: "application/pdf" }),
-      status: "complete",
+      status: "succeeded",
       progress: 100,
     },
   ]);
@@ -823,7 +823,7 @@ function FileUploadDemo() {
             if (f.id !== item.id) return f;
             const progress = Math.min(100, (f.progress ?? 0) + 12);
             if (progress >= 100) clearInterval(id);
-            return { ...f, progress, status: progress >= 100 ? "complete" : "uploading" };
+            return { ...f, progress, status: progress >= 100 ? "succeeded" : "running" };
           })
         );
       }, 250);
@@ -900,9 +900,9 @@ function DropzoneDemo() {
       </div>
       <div className="space-y-3">
         <DemoLabel>Compact, custom copy</DemoLabel>
-        <Dropzone compact accept=".csv" title="Import contacts" hint="CSV, up to 1,000 rows" />
+        <Dropzone density="compact" accept=".csv" title="Import contacts" hint="CSV, up to 1,000 rows" />
         <DemoLabel>Disabled</DemoLabel>
-        <Dropzone compact disabled title="Uploads paused" hint="Storage quota reached" />
+        <Dropzone density="compact" disabled title="Uploads paused" hint="Storage quota reached" />
       </div>
     </div>
   );

@@ -9,7 +9,9 @@ import {
   RiStopCircleLine,
   RiTerminalBoxLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
+import { toneClasses, type Tone } from "../lib/tone";
+import { normalizeTaskStatus, type TaskStatus, type TaskStatusInput } from "../lib/status";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useNow } from "../hooks/use-now";
 import { formatDuration } from "../lib/duration";
@@ -43,6 +45,8 @@ export function useAgentNow(active = true, interval = 1000) {
 /* ------------------------------------------------------------------ */
 
 export type AgentTodoStatus = "pending" | "in_progress" | "completed";
+/** Todo statuses accepted on input: the legacy `AgentTodoStatus` values plus canonical `TaskStatus` names. */
+export type AgentTodoStatusInput = AgentTodoStatus | TaskStatusInput;
 
 export interface AgentTodoItem {
   id: string;
@@ -50,26 +54,28 @@ export interface AgentTodoItem {
   content: React.ReactNode;
   /** Present-continuous form shown while in progress: "Running the test suite". */
   activeForm?: React.ReactNode;
-  status: AgentTodoStatus;
+  status: AgentTodoStatusInput;
 }
 
-const todoStatusLabel: Record<AgentTodoStatus, string> = {
+const todoStatusLabel: Record<TaskStatus, string> = {
   pending: "Pending",
-  in_progress: "In progress",
-  completed: "Completed",
+  running: "In progress",
+  succeeded: "Completed",
+  failed: "Failed",
+  canceled: "Canceled",
 };
 
 /** Status glyph: empty circle, spinning ring or check. */
-function TodoGlyph({ status, compact }: { status: AgentTodoStatus; compact?: boolean }) {
+function TodoGlyph({ status, compact }: { status: TaskStatus; compact?: boolean }) {
   const size = compact ? "size-3.5" : "size-4";
-  if (status === "completed") {
+  if (status === "succeeded") {
     return (
       <span aria-hidden className={cn("flex shrink-0 items-center justify-center rounded-full bg-success text-success-foreground", size)}>
-        <RiCheckLine className="size-[80%]" />
+        <RiCheckLine aria-hidden className="size-[80%]" />
       </span>
     );
   }
-  if (status === "in_progress") {
+  if (status === "running") {
     return (
       <span
         aria-hidden
@@ -88,7 +94,9 @@ export interface AgentTodoListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   items: AgentTodoItem[];
   /** Header title. Default "Tasks". */
   title?: React.ReactNode;
-  /** `compact` drops the card chrome for use inline in a transcript. */
+  /** `compact` drops the card chrome for use inline in a transcript. Default "normal". */
+  density?: Density;
+  /** @deprecated Use `density` (`"compact"`). */
   variant?: "default" | "compact";
   /** Header toggles the list. Default true. */
   collapsible?: boolean;
@@ -105,7 +113,8 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
     {
       items,
       title = "Tasks",
-      variant = "default",
+      density,
+      variant,
       collapsible = true,
       open: openProp,
       defaultOpen = true,
@@ -119,10 +128,10 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
     const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
     const listId = React.useId();
     const titleId = React.useId();
-    const done = items.filter((i) => i.status === "completed").length;
+    const done = items.filter((i) => normalizeTaskStatus(i.status) === "succeeded").length;
     const total = items.length;
     const pct = total ? Math.round((done / total) * 100) : 0;
-    const compact = variant === "compact";
+    const compact = density ? normalizeDensity(density) === "compact" : variant === "compact";
     const expanded = !collapsible || open;
 
     const headerInner = (
@@ -145,7 +154,8 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
     return (
       <div
         ref={ref}
-        data-variant={variant}
+        data-variant={compact ? "compact" : "default"}
+        data-density={compact ? "compact" : "normal"}
         className={cn(compact ? "w-full" : "w-full rounded-box border border-border bg-card shadow-xs", className)}
         {...props}
       >
@@ -191,7 +201,8 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
             className={cn("flex flex-col", compact ? "gap-1 pb-1" : "gap-1.5 px-3 pb-3")}
           >
             {items.map((item) => {
-              const active = item.status === "in_progress";
+              const status = normalizeTaskStatus(item.status);
+              const active = status === "running";
               return (
                 <li
                   key={item.id}
@@ -200,17 +211,17 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
                   className={cn("flex items-start gap-2", compact ? "text-xs" : "text-sm")}
                 >
                   <span className={cn("flex items-center", compact ? "h-4" : "h-5")}>
-                    <TodoGlyph status={item.status} compact={compact} />
+                    <TodoGlyph status={status} compact={compact} />
                   </span>
                   <span className="min-w-0 flex-1">
                     {active ? (
                       <TextShimmer className="font-medium">{item.activeForm ?? item.content}</TextShimmer>
                     ) : (
-                      <span className={cn(item.status === "completed" ? "text-muted-foreground line-through" : "text-foreground")}>
+                      <span className={cn(status === "succeeded" ? "text-muted-foreground line-through" : "text-foreground")}>
                         {item.content}
                       </span>
                     )}
-                    <span className="sr-only"> ({todoStatusLabel[item.status]})</span>
+                    <span className="sr-only"> ({todoStatusLabel[status]})</span>
                   </span>
                 </li>
               );
@@ -270,23 +281,24 @@ function RosterGlyph({ status }: { status: AgentRosterStatus }) {
   if (status === "failed") {
     return (
       <span aria-hidden className="flex size-3.5 shrink-0 items-center justify-center rounded-full bg-destructive text-destructive-foreground">
-        <RiCloseLine className="size-3" />
+        <RiCloseLine aria-hidden className="size-3" />
       </span>
     );
   }
   return (
     <span aria-hidden className="flex size-3.5 shrink-0 items-center justify-center rounded-full bg-success text-success-foreground">
-      <RiCheckLine className="size-3" />
+      <RiCheckLine aria-hidden className="size-3" />
     </span>
   );
 }
 
-const aggregateDot: Record<AgentRosterStatus, string> = {
-  running: "bg-primary",
-  waiting: "bg-warning",
-  failed: "bg-destructive",
-  done: "bg-success",
+const rosterTone: Record<AgentRosterStatus, Tone> = {
+  running: "primary",
+  waiting: "warning",
+  failed: "destructive",
+  done: "success",
 };
+const aggregateDot = (status: AgentRosterStatus) => toneClasses.dot[rosterTone[status]];
 
 /** Aggregate status of a set of agents: waiting > running > failed > done. */
 export function aggregateAgentStatus(agents: AgentRosterAgent[]): AgentRosterStatus {
@@ -352,7 +364,7 @@ export const AgentRosterRow = React.forwardRef<HTMLLIElement, AgentRosterRowProp
               aria-label={`Open transcript for ${agent.name}`}
               onClick={() => onOpenTranscript(agent.id)}
             >
-              <RiExternalLinkLine />
+              <RiExternalLinkLine aria-hidden />
             </Button>
           )}
           {onStop && live && (
@@ -363,7 +375,7 @@ export const AgentRosterRow = React.forwardRef<HTMLLIElement, AgentRosterRowProp
               onClick={() => onStop(agent.id)}
               className="hover:text-destructive"
             >
-              <RiStopCircleLine />
+              <RiStopCircleLine aria-hidden />
             </Button>
           )}
         </div>
@@ -377,6 +389,9 @@ export interface AgentRosterPanelProps extends Omit<React.HTMLAttributes<HTMLDiv
   agents: AgentRosterAgent[];
   /** Default "Agents". */
   title?: React.ReactNode;
+  /** Shown when there are no agents. Default "No agents running". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
   now?: number;
   onOpenTranscript?: (id: string) => void;
@@ -387,7 +402,7 @@ export interface AgentRosterPanelProps extends Omit<React.HTMLAttributes<HTMLDiv
 
 /** List of subagents with live elapsed time and per-agent actions. */
 export const AgentRosterPanel = React.forwardRef<HTMLDivElement, AgentRosterPanelProps>(
-  ({ agents, title = "Agents", emptyText = "No agents running", now, onOpenTranscript, onStop, children, className, ...props }, ref) => {
+  ({ agents, title = "Agents", emptyState, emptyText, now, onOpenTranscript, onStop, children, className, ...props }, ref) => {
     const titleId = React.useId();
     const running = agents.filter((a) => a.status === "running" || a.status === "waiting").length;
     return (
@@ -401,7 +416,7 @@ export const AgentRosterPanel = React.forwardRef<HTMLDivElement, AgentRosterPane
           </span>
         </div>
         {agents.length === 0 ? (
-          <p className="px-2 py-4 text-center text-sm text-muted-foreground">{emptyText}</p>
+          <p className="px-2 py-4 text-center text-sm text-muted-foreground">{emptyState ?? emptyText ?? "No agents running"}</p>
         ) : (
           <ul aria-labelledby={titleId} className="flex flex-col">
             {agents.map((a) => (
@@ -442,9 +457,9 @@ export const AgentRosterPill = React.forwardRef<HTMLButtonElement, AgentRosterPi
       >
         <span aria-hidden className="relative flex size-2">
           {live && (
-            <span className={cn("absolute inset-0 rounded-full opacity-60 animate-ping motion-reduce:hidden", aggregateDot[status])} />
+            <span className={cn("absolute inset-0 rounded-full opacity-60 animate-ping motion-reduce:hidden", aggregateDot(status))} />
           )}
-          <span className={cn("relative size-2 rounded-full", aggregateDot[status])} />
+          <span className={cn("relative size-2 rounded-full", aggregateDot(status))} />
         </span>
         {text}
         <span className="sr-only">, {rosterStatusLabel[status]}</span>
@@ -465,8 +480,8 @@ export interface AgentRosterProps extends Omit<AgentRosterPanelProps, "title"> {
   side?: "top" | "bottom" | "left" | "right";
 }
 
-/** Pill that opens a popover panel listing subagents and background tasks. */
-export function AgentRoster({
+/** Pill that opens a popover panel listing subagents and background tasks. The ref goes to the pill. */
+export const AgentRoster = React.forwardRef<HTMLButtonElement, AgentRosterProps>(function AgentRoster({
   agents,
   open,
   defaultOpen,
@@ -476,35 +491,40 @@ export function AgentRoster({
   side = "bottom",
   className,
   ...panelProps
-}: AgentRosterProps) {
+}, ref) {
   return (
     <Popover open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <AgentRosterPill agents={agents} label={pillLabel} />
+        <AgentRosterPill ref={ref} agents={agents} label={pillLabel} />
       </PopoverTrigger>
       <PopoverContent align={align} side={side} padded={false} className={cn("w-96 max-w-[calc(100vw-2rem)] p-1.5", className)}>
         <AgentRosterPanel agents={agents} {...panelProps} />
       </PopoverContent>
     </Popover>
   );
-}
+});
+AgentRoster.displayName = "AgentRoster";
 
 /* ------------------------------------------------------------------ */
 /* BackgroundTaskRow                                                   */
 /* ------------------------------------------------------------------ */
 
 export type BackgroundTaskStatus = "running" | "completed" | "failed" | "killed";
+/** Statuses accepted on input: the domain `BackgroundTaskStatus` values plus canonical `TaskStatus` names. */
+export type BackgroundTaskStatusInput = BackgroundTaskStatus | TaskStatusInput;
 
-const bgStatusMeta: Record<BackgroundTaskStatus, { label: string; tone: string }> = {
-  running: { label: "Running", tone: "bg-primary-soft text-primary-soft-foreground" },
-  completed: { label: "Completed", tone: "bg-success-soft text-success-soft-foreground" },
-  failed: { label: "Failed", tone: "bg-destructive-soft text-destructive-soft-foreground" },
-  killed: { label: "Killed", tone: "bg-muted text-muted-foreground" },
+const bgStatusMeta: Record<TaskStatus | "killed", { label: string; tone: Tone }> = {
+  pending: { label: "Pending", tone: "neutral" },
+  running: { label: "Running", tone: "primary" },
+  succeeded: { label: "Completed", tone: "success" },
+  failed: { label: "Failed", tone: "destructive" },
+  canceled: { label: "Canceled", tone: "neutral" },
+  killed: { label: "Killed", tone: "neutral" },
 };
 
 export interface BackgroundTaskRowProps extends React.HTMLAttributes<HTMLDivElement> {
   command: string;
-  status: BackgroundTaskStatus;
+  status: BackgroundTaskStatusInput;
   startedAt: TimeInput;
   endedAt?: TimeInput;
   exitCode?: number;
@@ -523,7 +543,8 @@ export const BackgroundTaskRow = React.forwardRef<HTMLDivElement, BackgroundTask
     { command, status, startedAt, endedAt, exitCode, output, tailLines = 3, now: nowProp, onKill, onOpen, className, ...props },
     ref
   ) => {
-    const running = status === "running";
+    const lifecycle = status === "killed" ? "killed" : normalizeTaskStatus(status);
+    const running = lifecycle === "running";
     const ticking = useAgentNow(nowProp === undefined && running && endedAt == null);
     const now = nowProp ?? ticking;
     const start = toMs(startedAt) ?? now;
@@ -535,7 +556,7 @@ export const BackgroundTaskRow = React.forwardRef<HTMLDivElement, BackgroundTask
           .slice(-Math.max(1, tailLines))
           .join("\n")
       : "";
-    const meta = bgStatusMeta[status];
+    const meta = bgStatusMeta[lifecycle];
     return (
       <div
         ref={ref}
@@ -548,7 +569,7 @@ export const BackgroundTaskRow = React.forwardRef<HTMLDivElement, BackgroundTask
           <code className="min-w-0 flex-1 truncate font-mono text-xs text-foreground" title={command}>
             {command}
           </code>
-          <span className={cn("shrink-0 rounded-xs px-1.5 py-px text-2xs font-medium", meta.tone)}>
+          <span className={cn("shrink-0 rounded-xs px-1.5 py-px text-2xs font-medium", toneClasses.soft[meta.tone])}>
             {meta.label}
             {exitCode != null && !running ? ` (exit ${exitCode})` : ""}
           </span>
@@ -557,12 +578,12 @@ export const BackgroundTaskRow = React.forwardRef<HTMLDivElement, BackgroundTask
           </span>
           {onOpen && (
             <Button variant="ghost" size="icon-xs" aria-label={`View output of ${command}`} onClick={onOpen}>
-              <RiEyeLine />
+              <RiEyeLine aria-hidden />
             </Button>
           )}
           {onKill && running && (
             <Button variant="ghost" size="icon-xs" aria-label={`Kill ${command}`} onClick={onKill} className="hover:text-destructive">
-              <RiStopCircleLine />
+              <RiStopCircleLine aria-hidden />
             </Button>
           )}
         </div>

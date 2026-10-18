@@ -94,7 +94,7 @@ const INITIAL_JOBS: AgentJob[] = [
     state: "scheduled",
     nextRunAt: NOW + 6 * HOUR,
     lastRunAt: NOW - 18 * HOUR,
-    lastStatus: "success",
+    lastStatus: "succeeded",
   },
   {
     id: "triage",
@@ -112,7 +112,7 @@ const INITIAL_JOBS: AgentJob[] = [
     state: "scheduled",
     nextRunAt: NOW + 12 * MIN,
     lastRunAt: NOW - 18 * MIN,
-    lastStatus: "error",
+    lastStatus: "failed",
   },
   {
     id: "repo",
@@ -145,7 +145,7 @@ const INITIAL_JOBS: AgentJob[] = [
     enabled: false,
     state: "paused",
     lastRunAt: NOW - 3 * 24 * HOUR,
-    lastStatus: "success",
+    lastStatus: "succeeded",
   },
 ];
 
@@ -157,7 +157,7 @@ function makeRuns(jobId: string, count: number, offset = 0): AgentJobRun[] {
       id: `${jobId}-run-${i}`,
       startedAt: NOW - (i + 1) * 4 * HOUR,
       durationMs: 20_000 + ((i * 7919) % 90_000),
-      status: failed ? "error" : "success",
+      status: failed ? "failed" : "succeeded",
       trigger: i % 4 === 2 ? "manual" : "schedule",
       costUsd: 0.01 + ((i * 37) % 9) / 100,
       tokens: 4000 + ((i * 1543) % 20_000),

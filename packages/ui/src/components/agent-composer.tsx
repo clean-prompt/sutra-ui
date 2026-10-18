@@ -21,6 +21,7 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useElementWidth } from "../hooks/use-resize-observer";
 import { clamp } from "../lib/math";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { Lightbox, useLightbox, type LightboxItem } from "./lightbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { SimpleTooltip } from "./tooltip";
@@ -179,10 +180,10 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                         )}
                       />
                       <button type="button" aria-label="Save" title="Save (Enter)" onClick={() => save(item.id)} className={iconAction}>
-                        <RiCheckLine />
+                        <RiCheckLine aria-hidden />
                       </button>
                       <button type="button" aria-label="Cancel" title="Cancel (Esc)" onClick={() => setEditing(null)} className={iconAction}>
-                        <RiCloseLine />
+                        <RiCloseLine aria-hidden />
                       </button>
                     </div>
                   ) : (
@@ -199,7 +200,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                         {onReorder && (
                           <>
                             <button type="button" aria-label="Move up" disabled={index === 0} onClick={() => move(index, -1)} className={iconAction}>
-                              <RiArrowUpSLine />
+                              <RiArrowUpSLine aria-hidden />
                             </button>
                             <button
                               type="button"
@@ -208,7 +209,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                               onClick={() => move(index, 1)}
                               className={iconAction}
                             >
-                              <RiArrowDownSLine />
+                              <RiArrowDownSLine aria-hidden />
                             </button>
                           </>
                         )}
@@ -223,12 +224,12 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                             }}
                             className={iconAction}
                           >
-                            <RiPencilLine />
+                            <RiPencilLine aria-hidden />
                           </button>
                         )}
                         {onRemove && (
                           <button type="button" aria-label="Remove" title="Remove" onClick={() => onRemove(item.id)} className={iconAction}>
-                            <RiDeleteBinLine />
+                            <RiDeleteBinLine aria-hidden />
                           </button>
                         )}
                         {onSteer && (
@@ -237,7 +238,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                               type="button"
                               size="xs"
                               variant="ghost"
-                              leadingIcon={<RiSteering2Line />}
+                              leadingIcon={<RiSteering2Line aria-hidden />}
                               onClick={() => onSteer(item.id)}
                               className="ml-0.5 h-6"
                             >
@@ -250,7 +251,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                             type="button"
                             size="xs"
                             variant="soft"
-                            leadingIcon={<RiCornerDownLeftLine />}
+                            leadingIcon={<RiCornerDownLeftLine aria-hidden />}
                             onClick={() => onSendNow(item.id)}
                             className="ml-0.5 h-6"
                             title="Interrupt the agent and send this now"
@@ -280,8 +281,11 @@ export interface SideThreadExchange {
   id: string;
   question: React.ReactNode;
   answer?: React.ReactNode;
-  /** pending: waiting for the answer · error: failed (see `error`). Default "done". */
-  status?: "pending" | "done" | "error";
+  /**
+   * `pending`/`running`: waiting for the answer · `failed`: see `error` · `succeeded` (default): shows `answer`.
+   * Legacy `done` / `error` still work.
+   */
+  status?: TaskStatusInput;
   error?: React.ReactNode;
 }
 
@@ -296,6 +300,8 @@ export interface SideThreadProps extends Omit<React.HTMLAttributes<HTMLElement>,
   /** Shown when there are no exchanges yet. */
   emptyState?: React.ReactNode;
   /** Disables asking while an answer is pending. Default: any exchange is pending. */
+  loading?: boolean;
+  /** @deprecated Use `loading`. */
   busy?: boolean;
   height?: number;
   defaultHeight?: number;
@@ -318,6 +324,7 @@ export const SideThread = React.forwardRef<HTMLElement, SideThreadProps>(
       title = "Side question",
       placeholder = "Ask a quick side question…",
       emptyState = "Ask a quick side question without interrupting the main conversation.",
+      loading: loadingProp,
       busy: busyProp,
       height: heightProp,
       defaultHeight = 280,
@@ -341,7 +348,11 @@ export const SideThread = React.forwardRef<HTMLElement, SideThreadProps>(
     const drag = React.useRef<{ y: number; h: number; id: number } | null>(null);
     const logRef = React.useRef<HTMLDivElement>(null);
     const titleId = React.useId();
-    const busy = busyProp ?? exchanges.some((x) => x.status === "pending");
+    const exchangeState = (x: SideThreadExchange) => {
+      const st = normalizeTaskStatus(x.status, "succeeded");
+      return st === "pending" || st === "running" ? "pending" : st === "failed" ? "error" : "done";
+    };
+    const busy = loadingProp ?? busyProp ?? exchanges.some((x) => exchangeState(x) === "pending");
 
     React.useEffect(() => {
       const el = logRef.current;
@@ -411,7 +422,7 @@ export const SideThread = React.forwardRef<HTMLElement, SideThreadProps>(
           </h3>
           {onClose && (
             <button type="button" aria-label="Close side question" onClick={onClose} className={iconAction}>
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </button>
           )}
         </header>
@@ -431,12 +442,12 @@ export const SideThread = React.forwardRef<HTMLElement, SideThreadProps>(
                   {x.question}
                 </div>
                 <div className="max-w-full self-start leading-6 text-foreground">
-                  {x.status === "pending" ? (
+                  {exchangeState(x) === "pending" ? (
                     <span className="inline-flex items-center gap-2 text-muted-foreground">
                       <Spinner size="xs" aria-hidden role="presentation" />
                       Answering…
                     </span>
-                  ) : x.status === "error" ? (
+                  ) : exchangeState(x) === "error" ? (
                     <span className="inline-flex items-center gap-1.5 text-destructive">
                       <RiErrorWarningLine aria-hidden className="size-4" />
                       {x.error ?? "Couldn't get an answer."}
@@ -453,7 +464,7 @@ export const SideThread = React.forwardRef<HTMLElement, SideThreadProps>(
           <div className="shrink-0 border-t border-border p-2">
             <PromptInput
               onSubmit={(text) => onAsk(text.trim())}
-              isLoading={busy}
+              loading={busy}
               className="flex-row items-end rounded-control shadow-none"
             >
               <PromptInputTextarea
@@ -566,7 +577,7 @@ export const ComposerToolbar = React.forwardRef<HTMLDivElement, ComposerToolbarP
                   title={overflowLabel}
                   className="text-muted-foreground hover:text-foreground data-[state=open]:bg-accent"
                 >
-                  <RiMoreLine />
+                  <RiMoreLine aria-hidden />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
@@ -665,7 +676,7 @@ export const AttachmentThumbnails = React.forwardRef<HTMLDivElement, AttachmentT
             focusRing
           )}
         >
-          <RiCloseLine className="size-3.5" />
+          <RiCloseLine aria-hidden className="size-3.5" />
         </button>
       );
 
@@ -718,7 +729,7 @@ export const AttachmentThumbnails = React.forwardRef<HTMLDivElement, AttachmentT
                     aria-label={meta}
                     className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] bg-destructive/20 text-destructive"
                   >
-                    <RiErrorWarningLine className="size-5" />
+                    <RiErrorWarningLine aria-hidden className="size-5" />
                   </span>
                 )}
                 {state === "failed" && onRetry && (
@@ -728,7 +739,7 @@ export const AttachmentThumbnails = React.forwardRef<HTMLDivElement, AttachmentT
                     onClick={() => onRetry(item.id)}
                     className={cn("absolute -bottom-1.5 -right-1.5 z-10 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm", focusRing)}
                   >
-                    <RiRefreshLine className="size-3" />
+                    <RiRefreshLine aria-hidden className="size-3" />
                   </button>
                 )}
                 {removeButton(item)}

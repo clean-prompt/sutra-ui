@@ -26,6 +26,8 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { useAsyncAction } from "../hooks/use-async-action";
 import { formatCost } from "../lib/format";
 import { formatDateTime, safeISO, toMs as toValidMs } from "../lib/time";
+import { toneClasses, type Tone } from "../lib/tone";
+import { normalizeTaskStatus, taskStatusTone, type TaskStatus, type TaskStatusInput } from "../lib/status";
 import { CopyButton } from "./copy-button";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
@@ -66,6 +68,8 @@ const toMs = (t: TimeLike) => toValidMs(t) ?? NaN;
 export type AgentJobState = "scheduled" | "running" | "paused" | "error" | "completed" | "disabled";
 export type AgentJobMode = "agent" | "script";
 export type AgentJobRunStatus = "success" | "error" | "running" | "cancelled";
+/** Run statuses accepted on input: the legacy `AgentJobRunStatus` values plus canonical `TaskStatus` names. */
+export type AgentJobRunStatusInput = AgentJobRunStatus | TaskStatusInput;
 export type AgentJobTrigger = "schedule" | "manual" | "webhook";
 
 export type DeliveryPlatform = "local" | "telegram" | "discord" | "slack" | "whatsapp" | "email" | "github" | "webhook";
@@ -109,7 +113,7 @@ export interface AgentJob extends AgentJobDraft {
   state?: AgentJobState;
   nextRunAt?: TimeLike | null;
   lastRunAt?: TimeLike | null;
-  lastStatus?: AgentJobRunStatus;
+  lastStatus?: AgentJobRunStatusInput;
   /** Runs completed so far (shown against `repeat`). */
   runCount?: number;
 }
@@ -118,7 +122,7 @@ export interface AgentJobRun {
   id: string;
   startedAt: TimeLike;
   durationMs?: number;
-  status: AgentJobRunStatus;
+  status: AgentJobRunStatusInput;
   trigger?: AgentJobTrigger;
   costUsd?: number;
   tokens?: number;
@@ -134,13 +138,13 @@ export function agentJobState(job: Pick<AgentJob, "state" | "enabled">): AgentJo
 /* JobStatePill                                                        */
 /* ------------------------------------------------------------------ */
 
-const stateMeta: Record<AgentJobState, { label: string; className: string; dot: string }> = {
-  scheduled: { label: "Scheduled", className: "bg-info-soft text-info-soft-foreground", dot: "bg-info" },
-  running: { label: "Running", className: "bg-primary-soft text-primary-soft-foreground", dot: "bg-primary" },
-  paused: { label: "Paused", className: "bg-warning-soft text-warning-soft-foreground", dot: "bg-warning" },
-  error: { label: "Error", className: "bg-destructive-soft text-destructive-soft-foreground", dot: "bg-destructive" },
-  completed: { label: "Completed", className: "bg-success-soft text-success-soft-foreground", dot: "bg-success" },
-  disabled: { label: "Disabled", className: "bg-muted text-muted-foreground", dot: "bg-muted-foreground" },
+const stateMeta: Record<AgentJobState, { label: string; tone: Tone }> = {
+  scheduled: { label: "Scheduled", tone: "info" },
+  running: { label: "Running", tone: "primary" },
+  paused: { label: "Paused", tone: "warning" },
+  error: { label: "Error", tone: "destructive" },
+  completed: { label: "Completed", tone: "success" },
+  disabled: { label: "Disabled", tone: "neutral" },
 };
 
 export interface JobStatePillProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -160,12 +164,12 @@ export const JobStatePill = React.forwardRef<HTMLSpanElement, JobStatePillProps>
         className={cn(
           "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full font-medium",
           size === "sm" ? "h-5 px-2 text-2xs" : "h-6 px-2.5 text-xs",
-          meta.className,
+          toneClasses.soft[meta.tone],
           className
         )}
         {...props}
       >
-        {state === "running" ? <Spinner size="xs" label="" aria-hidden className="text-current" /> : <span aria-hidden className={cn("size-1.5 rounded-full", meta.dot)} />}
+        {state === "running" ? <Spinner size="xs" label="" aria-hidden className="text-current" /> : <span aria-hidden className={cn("size-1.5 rounded-full", toneClasses.dot[meta.tone])} />}
         {label ?? meta.label}
       </span>
     );
@@ -205,11 +209,15 @@ export interface DeliveryPlatformIconProps extends React.HTMLAttributes<HTMLSpan
 }
 
 /** Tinted platform glyph (decorative). */
-export function DeliveryPlatformIcon({ platform, size = "md", className, ...props }: DeliveryPlatformIconProps) {
+export const DeliveryPlatformIcon = React.forwardRef<HTMLSpanElement, DeliveryPlatformIconProps>(function DeliveryPlatformIcon(
+  { platform, size = "md", className, ...props },
+  ref
+) {
   const meta = deliveryPlatformMeta[platform];
   const Icon = meta.icon;
   return (
     <span
+      ref={ref}
       aria-hidden
       className={cn("inline-flex shrink-0 items-center justify-center rounded-md", size === "sm" ? "size-5 [&_svg]:size-3" : "size-7 [&_svg]:size-4", meta.tint, className)}
       {...props}
@@ -217,7 +225,8 @@ export function DeliveryPlatformIcon({ platform, size = "md", className, ...prop
       <Icon />
     </span>
   );
-}
+});
+DeliveryPlatformIcon.displayName = "DeliveryPlatformIcon";
 
 /** Why a target can't deliver yet, or `null`. */
 export function deliveryTargetIssue(target: DeliveryTarget, status?: Partial<Record<DeliveryPlatform, DeliveryPlatformStatus>>): string | null {
@@ -363,6 +372,9 @@ export interface NameCheckboxPickerProps extends Omit<React.HTMLAttributes<HTMLF
   onValueChange?: (value: string[]) => void;
   /** Show the search box. Default: when there are more than 6 options. */
   searchable?: boolean;
+  /** Shown when the search matches nothing. Default "No matches". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
   disabled?: boolean;
   /** Class for the scrolling list. */
@@ -373,7 +385,7 @@ const normalizeOption = (o: string | NameCheckboxOption): NameCheckboxOption => 
 
 /** Searchable checkbox list of names (skills, toolsets, events) with select-all and a count. */
 export const NameCheckboxPicker = React.forwardRef<HTMLFieldSetElement, NameCheckboxPickerProps>(
-  ({ label, options, value: valueProp, defaultValue = [], onValueChange, searchable, emptyText = "No matches", disabled, listClassName, className, ...props }, ref) => {
+  ({ label, options, value: valueProp, defaultValue = [], onValueChange, searchable, emptyState, emptyText, disabled, listClassName, className, ...props }, ref) => {
     const [value, setValue] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChange });
     const [query, setQuery] = React.useState("");
     const id = React.useId();
@@ -420,7 +432,7 @@ export const NameCheckboxPicker = React.forwardRef<HTMLFieldSetElement, NameChec
           <SearchInput size="sm" value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery("")} placeholder={`Search ${label.toLowerCase()}…`} aria-label={`Search ${label}`} />
         ) : null}
         <ul className={cn("flex max-h-56 flex-col gap-0.5 overflow-y-auto rounded-box border border-border p-1 scrollbar-thin", listClassName)}>
-          {visible.length === 0 ? <li className="px-2 py-3 text-center text-sm text-muted-foreground">{emptyText}</li> : null}
+          {visible.length === 0 ? <li className="px-2 py-3 text-center text-sm text-muted-foreground">{emptyState ?? emptyText ?? "No matches"}</li> : null}
           {visible.map((o, i) => {
             const cid = `${id}-o${i}`;
             return (
@@ -470,7 +482,12 @@ export function validateAgentJob(draft: AgentJobDraft, status?: Partial<Record<D
 }
 
 export interface AgentJobFormProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue"> {
+  /** Initial draft (uncontrolled). Missing fields get defaults. */
   defaultValue?: Partial<AgentJobDraft>;
+  /** Controlled draft. Pair with `onValueChange`. */
+  value?: AgentJobDraft;
+  /** Called with the next draft on every edit. */
+  onValueChange?: (draft: AgentJobDraft) => void;
   onSubmit?: (job: AgentJobDraft) => void | Promise<void>;
   onCancel?: () => void;
   /** Model options (or replace the select with `modelSlot`). */
@@ -493,6 +510,8 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
   (
     {
       defaultValue,
+      value,
+      onValueChange,
       onSubmit,
       onCancel,
       models,
@@ -513,7 +532,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
   ) => {
     const modelOptions = toSelectOptions(models);
     const profileOptions = toSelectOptions(profiles);
-    const [draft, setDraft] = React.useState<AgentJobDraft>(() => ({
+    const [initialDraft] = React.useState<AgentJobDraft>(() => ({
       name: "",
       prompt: "",
       script: "",
@@ -528,6 +547,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
       enabled: true,
       ...defaultValue,
     }));
+    const [draft, setDraft] = useControllableState<AgentJobDraft>({ value, defaultValue: initialDraft, onChange: onValueChange });
     const [scheduleValid, setScheduleValid] = React.useState<string | null>(null);
     const [submitted, setSubmitted] = React.useState(false);
     const save = useAsyncAction(async (out: AgentJobDraft) => onSubmit?.(out));
@@ -557,7 +577,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
       await save.run(out);
     };
 
-    const isEdit = !!defaultValue?.id;
+    const isEdit = !!(value?.id ?? defaultValue?.id);
 
     return (
       <form ref={ref} noValidate onSubmit={handleSubmit} className={cn("flex flex-col gap-5", className)} {...props}>
@@ -700,38 +720,48 @@ AgentJobForm.displayName = "AgentJobForm";
 /* JobRow / JobList                                                    */
 /* ------------------------------------------------------------------ */
 
-const runStatusMeta: Record<AgentJobRunStatus, { label: string; className: string }> = {
-  success: { label: "Succeeded", className: "text-success" },
-  error: { label: "Failed", className: "text-destructive" },
-  running: { label: "Running", className: "text-primary" },
-  cancelled: { label: "Cancelled", className: "text-muted-foreground" },
+const runStatusLabel: Record<TaskStatus, string> = {
+  pending: "Pending",
+  running: "Running",
+  succeeded: "Succeeded",
+  failed: "Failed",
+  canceled: "Canceled",
 };
 
-function RunStatusGlyph({ status }: { status: AgentJobRunStatus }) {
-  const meta = runStatusMeta[status];
-  if (status === "running") return <Spinner size="xs" label={meta.label} className={meta.className} />;
-  const Icon = status === "success" ? RiCheckboxCircleFill : RiCloseCircleFill;
+const runStatusOf = (status: AgentJobRunStatusInput) => normalizeTaskStatus(status);
+
+function RunStatusGlyph({ status: statusInput }: { status: AgentJobRunStatusInput }) {
+  const status = runStatusOf(statusInput);
+  const label = runStatusLabel[status];
+  const className = toneClasses.text[taskStatusTone[status]];
+  if (status === "running") return <Spinner size="xs" label={label} className={className} />;
+  const Icon = status === "succeeded" ? RiCheckboxCircleFill : RiCloseCircleFill;
   return (
-    <span className={cn("inline-flex", meta.className)}>
+    <span className={cn("inline-flex", className)}>
       <Icon aria-hidden className="size-4" />
-      <span className="sr-only">{meta.label}</span>
+      <span className="sr-only">{label}</span>
     </span>
   );
 }
 
+export interface JobNextRunProps extends Omit<React.TimeHTMLAttributes<HTMLTimeElement>, "children"> {
+  at: TimeLike;
+}
+
 /** "in 12:34" under an hour (live), otherwise "in 3h". */
-export function JobNextRun({ at, className }: { at: TimeLike; className?: string }) {
+export const JobNextRun = React.forwardRef<HTMLTimeElement, JobNextRunProps>(function JobNextRun({ at, className, ...props }, ref) {
   const target = toMs(at);
   const soon = target - Date.now() < 3_600_000;
   const now = useScheduleNow(true, soon ? 1000 : 30_000);
   const diff = target - now;
   const text = diff <= 0 ? "due now" : diff < 3_600_000 ? `in ${formatCountdownClock(diff)}` : formatScheduleRelative(target, now);
   return (
-    <time dateTime={safeISO(target)} data-slot="job-next-run" className={cn("tabular-nums", className)}>
+    <time ref={ref} dateTime={safeISO(target)} data-slot="job-next-run" className={cn("tabular-nums", className)} {...props}>
       {text}
     </time>
   );
-}
+});
+JobNextRun.displayName = "JobNextRun";
 
 export interface JobRowActions {
   onPause?: (job: AgentJob) => void;
@@ -766,10 +796,10 @@ function JobActionButtons({ job, onPause, onResume, onRunNow, onEdit, onDelete, 
     );
   return (
     <div className="flex shrink-0 items-center gap-1">
-      {paused && onResume ? btn(`Resume ${job.name}`, <RiPlayLine />, () => onResume(job), "Resume") : null}
-      {!paused && onPause ? btn(`Pause ${job.name}`, <RiPauseLine />, () => onPause(job), "Pause") : null}
-      {onRunNow ? btn(`Run ${job.name} now`, <RiSkipForwardLine />, () => onRunNow(job), "Run now") : null}
-      {onEdit ? btn(`Edit ${job.name}`, <RiEditLine />, () => onEdit(job), "Edit") : null}
+      {paused && onResume ? btn(`Resume ${job.name}`, <RiPlayLine aria-hidden />, () => onResume(job), "Resume") : null}
+      {!paused && onPause ? btn(`Pause ${job.name}`, <RiPauseLine aria-hidden />, () => onPause(job), "Pause") : null}
+      {onRunNow ? btn(`Run ${job.name} now`, <RiSkipForwardLine aria-hidden />, () => onRunNow(job), "Run now") : null}
+      {onEdit ? btn(`Edit ${job.name}`, <RiEditLine aria-hidden />, () => onEdit(job), "Edit") : null}
       {onDelete ? (
         <ConfirmDialog
           tone="destructive"
@@ -780,10 +810,10 @@ function JobActionButtons({ job, onPause, onResume, onRunNow, onEdit, onDelete, 
           trigger={
             compact ? (
               <Button type="button" variant="ghost" size={size} aria-label={`Delete ${job.name}`} title="Delete">
-                <RiDeleteBinLine />
+                <RiDeleteBinLine aria-hidden />
               </Button>
             ) : (
-              <Button type="button" variant="destructive-soft" size={size} leadingIcon={<RiDeleteBinLine />} aria-label={`Delete ${job.name}`}>
+              <Button type="button" variant="destructive-soft" size={size} leadingIcon={<RiDeleteBinLine aria-hidden />} aria-label={`Delete ${job.name}`}>
                 Delete
               </Button>
             )
@@ -857,14 +887,17 @@ export interface JobListProps extends Omit<React.HTMLAttributes<HTMLUListElement
   onSelect?: (job: AgentJob) => void;
   /** Map model ids to labels. */
   modelLabels?: Record<string, React.ReactNode>;
+  /** Shown when there are no jobs. Default "No scheduled jobs yet". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
 /** Master list of scheduled jobs. */
 export const JobList = React.forwardRef<HTMLUListElement, JobListProps>(
-  ({ jobs, selectedId, onSelect, modelLabels, empty = "No scheduled jobs yet.", onPause, onResume, onRunNow, onEdit, onDelete, className, ...props }, ref) => {
+  ({ jobs, selectedId, onSelect, modelLabels, emptyState, empty, onPause, onResume, onRunNow, onEdit, onDelete, className, ...props }, ref) => {
     if (!jobs.length) {
-      return <div className="rounded-box border border-dashed border-border p-6 text-center text-sm text-muted-foreground">{empty}</div>;
+      return <div className="rounded-box border border-dashed border-border p-6 text-center text-sm text-muted-foreground">{emptyState ?? empty ?? "No scheduled jobs yet"}</div>;
     }
     return (
       <ul ref={ref} aria-label="Scheduled jobs" className={cn("flex flex-col gap-1", className)} {...props}>
@@ -904,12 +937,15 @@ export interface RunHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
   loadingMore?: boolean;
   onOpenTranscript?: (run: AgentJobRun) => void;
   locale?: string;
+  /** Shown when there are no runs. Default "No runs yet". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
 /** Past runs of a job: start, duration, status, cost/tokens, trigger, error snippet and a transcript link. */
 export const RunHistory = React.forwardRef<HTMLDivElement, RunHistoryProps>(
-  ({ runs, pageSize = 5, hasMore, onLoadMore, loadingMore, onOpenTranscript, locale, empty = "No runs yet.", className, ...props }, ref) => {
+  ({ runs, pageSize = 5, hasMore, onLoadMore, loadingMore, onOpenTranscript, locale, emptyState, empty, className, ...props }, ref) => {
     const [shown, setShown] = React.useState(pageSize);
     const visible = runs.slice(0, shown);
     const localMore = runs.length > shown;
@@ -923,7 +959,7 @@ export const RunHistory = React.forwardRef<HTMLDivElement, RunHistoryProps>(
     };
     return (
       <div ref={ref} className={cn("flex flex-col gap-2", className)} {...props}>
-        {!runs.length ? <p className="py-4 text-center text-sm text-muted-foreground">{empty}</p> : null}
+        {!runs.length ? <p className="py-4 text-center text-sm text-muted-foreground">{emptyState ?? empty ?? "No runs yet"}</p> : null}
         {runs.length ? (
           <ol aria-label="Run history" className="flex flex-col divide-y divide-border rounded-box border border-border">
             {visible.map((run) => {
@@ -937,7 +973,7 @@ export const RunHistory = React.forwardRef<HTMLDivElement, RunHistoryProps>(
                         {formatStart(started)}
                       </time>
                     </span>
-                    <span className="text-xs text-muted-foreground tabular-nums">{run.durationMs != null ? formatTimelineDuration(run.durationMs) : run.status === "running" ? "running…" : "—"}</span>
+                    <span className="text-xs text-muted-foreground tabular-nums">{run.durationMs != null ? formatTimelineDuration(run.durationMs) : runStatusOf(run.status) === "running" ? "running…" : "—"}</span>
                     {run.trigger ? (
                       <Badge size="sm" color={run.trigger === "manual" ? "purple" : run.trigger === "webhook" ? "orange" : "gray"}>
                         {run.trigger === "schedule" ? "Scheduled" : run.trigger === "manual" ? "Manual" : "Webhook"}
@@ -954,7 +990,7 @@ export const RunHistory = React.forwardRef<HTMLDivElement, RunHistoryProps>(
                         size="xs"
                         variant="ghost"
                         className="ml-auto"
-                        leadingIcon={<RiFileTextLine />}
+                        leadingIcon={<RiFileTextLine aria-hidden />}
                         aria-label={`Open transcript for run at ${formatStart(started)}`}
                         onClick={() => onOpenTranscript(run)}
                       >
@@ -1051,9 +1087,9 @@ export const JobDetail = React.forwardRef<HTMLDivElement, JobDetailProps>(
       id: r.id,
       start: r.startedAt,
       end: r.durationMs != null ? toMs(r.startedAt) + r.durationMs : null,
-      live: r.status === "running",
-      tone: r.status === "success" ? "success" : r.status === "error" ? "destructive" : r.status === "running" ? "primary" : "neutral",
-      label: runStatusMeta[r.status].label,
+      live: runStatusOf(r.status) === "running",
+      tone: taskStatusTone[runStatusOf(r.status)],
+      label: runStatusLabel[runStatusOf(r.status)],
     }));
     const windowStart = spans.length ? Math.min(...spans.map((s) => toMs(s.start))) : toMs(ref0) - 86_400_000;
 
@@ -1087,7 +1123,7 @@ export const JobDetail = React.forwardRef<HTMLDivElement, JobDetailProps>(
               ))}
             </ol>
           ) : (
-            <p className="text-xs text-muted-foreground">{state === "paused" ? "Paused — no upcoming runs." : "No upcoming runs."}</p>
+            <p className="text-xs text-muted-foreground">{state === "paused" ? "Paused — no upcoming runs" : "No upcoming runs"}</p>
           )}
         </div>
 
@@ -1287,7 +1323,7 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
-          <Badge size="sm" color="brand" leadingIcon={<RiTimeLine />}>
+          <Badge size="sm" color="brand" leadingIcon={<RiTimeLine aria-hidden />}>
             {scheduleText}
           </Badge>
           {blueprint.tags?.map((t) => (
@@ -1308,7 +1344,7 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
                 </a>
               </Button>
             ) : (
-              <Button type="button" size="sm" variant="secondary" className="self-start" leadingIcon={<RiExternalLinkLine />} onClick={() => onOpen?.(blueprint)}>
+              <Button type="button" size="sm" variant="secondary" className="self-start" leadingIcon={<RiExternalLinkLine aria-hidden />} onClick={() => onOpen?.(blueprint)}>
                 Open in app
               </Button>
             )}
@@ -1348,12 +1384,15 @@ export interface BlueprintGalleryProps extends React.HTMLAttributes<HTMLDivEleme
   onOpen?: (blueprint: Blueprint) => void;
   channels?: SelectOption[];
   searchable?: boolean;
+  /** Shown when no template matches. Default "No templates match". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
 /** Filterable grid of automation templates (search + tag chips); one card expands at a time. */
 export const BlueprintGallery = React.forwardRef<HTMLDivElement, BlueprintGalleryProps>(
-  ({ blueprints, variant = "create", onCreate, onOpen, channels, searchable = true, empty = "No templates match.", className, ...props }, ref) => {
+  ({ blueprints, variant = "create", onCreate, onOpen, channels, searchable = true, emptyState, empty, className, ...props }, ref) => {
     const [query, setQuery] = React.useState("");
     const [tag, setTag] = React.useState<string | null>(null);
     const [open, setOpen] = React.useState<string | null>(null);
@@ -1407,7 +1446,7 @@ export const BlueprintGallery = React.forwardRef<HTMLDivElement, BlueprintGaller
             ))}
           </div>
         ) : (
-          <p className="rounded-box border border-dashed border-border p-6 text-center text-sm text-muted-foreground">{empty}</p>
+          <p className="rounded-box border border-dashed border-border p-6 text-center text-sm text-muted-foreground">{emptyState ?? empty ?? "No templates match"}</p>
         )}
       </div>
     );

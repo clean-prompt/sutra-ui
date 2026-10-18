@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Slider as SliderPrimitive } from "radix-ui";
-import { cn, type Size } from "../lib/cn";
+import { cn, focusRing, type Size } from "../lib/cn";
 import { toPercent } from "../lib/math";
 
 const sizes: Record<Size, { track: string; thumb: string; thumbPx: number }> = {
@@ -114,8 +114,8 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
               aria-label={thumbLabels?.[i] ?? (current.length > 1 ? (i === 0 ? "Minimum" : "Maximum") : undefined)}
               className={cn(
                 "group/thumb relative block rounded-full border-2 border-primary bg-background shadow-sm",
-                "transition-[box-shadow,transform] duration-150 hover:ring-4 hover:ring-primary/15",
-                "outline-none focus-visible:ring-4 focus-visible:ring-ring/35 active:scale-110",
+                "transition-[box-shadow,transform] duration-150 hover:ring-[3px] hover:ring-primary/15 active:scale-110",
+                focusRing,
                 "data-[disabled]:pointer-events-none",
                 invalid && "border-destructive",
                 s.thumb

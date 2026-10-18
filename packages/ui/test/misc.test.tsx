@@ -521,7 +521,7 @@ describe("ReorderableList", () => {
     expect(texts()[1]).toBe("Delta");
     fireEvent.keyDown(screen.getByRole("button", { name: "Reorder Delta" }), { key: "Escape" });
     expect(texts()).toEqual(["Alpha", "Bravo", "Charlie", "Delta", "Echo"]);
-    expect(screen.getByRole("status")).toHaveTextContent("Reorder cancelled. Delta returned to position 4 of 5.");
+    expect(screen.getByRole("status")).toHaveTextContent("Reorder canceled. Delta returned to position 4 of 5.");
     expect(onReorder).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Move Alpha up" })).toBeDisabled();
     fireEvent.click(screen.getByRole("button", { name: "Move Alpha down" }));

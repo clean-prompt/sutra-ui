@@ -114,29 +114,35 @@ export interface DropdownMenuItemProps
   icon?: React.ReactNode;
   shortcut?: React.ReactNode;
   description?: React.ReactNode;
+  /** `destructive` colours the row red for dangerous actions. Default `neutral`. */
+  tone?: "neutral" | "destructive";
+  /** @deprecated Use `tone`. */
   variant?: "default" | "destructive";
   inset?: boolean;
 }
 
 /** Actionable menu row with optional icon, description and shortcut. */
 export const DropdownMenuItem = React.forwardRef<React.ElementRef<typeof DropdownMenuPrimitive.Item>, DropdownMenuItemProps>(
-  ({ className, icon, shortcut, description, variant = "default", inset, asChild, children, ...props }, ref) => (
-    <DropdownMenuPrimitive.Item
-      ref={ref}
-      asChild={asChild}
-      data-variant={variant}
-      className={cn(
-        menuItemClass,
-        description && "items-start [&>svg]:mt-0.5",
-        variant === "destructive" && menuItemDestructiveClass,
-        inset && menuItemInsetClass,
-        className
-      )}
-      {...props}
-    >
-      {asChild ? children : renderMenuItemBody({ icon, description, shortcut, children })}
-    </DropdownMenuPrimitive.Item>
-  )
+  ({ className, icon, shortcut, description, tone, variant: variantProp, inset, asChild, children, ...props }, ref) => {
+    const variant = (tone ?? variantProp) === "destructive" ? "destructive" : "default";
+    return (
+      <DropdownMenuPrimitive.Item
+        ref={ref}
+        asChild={asChild}
+        data-variant={variant}
+        className={cn(
+          menuItemClass,
+          description && "items-start [&>svg]:mt-0.5",
+          variant === "destructive" && menuItemDestructiveClass,
+          inset && menuItemInsetClass,
+          className
+        )}
+        {...props}
+      >
+        {asChild ? children : renderMenuItemBody({ icon, description, shortcut, children })}
+      </DropdownMenuPrimitive.Item>
+    );
+  }
 );
 DropdownMenuItem.displayName = "DropdownMenuItem";
 
@@ -157,7 +163,7 @@ export const DropdownMenuCheckboxItem = React.forwardRef<
   >
     <span className={menuItemIndicatorClass}>
       <DropdownMenuPrimitive.ItemIndicator>
-        <RiCheckLine className="text-primary!" />
+        <RiCheckLine aria-hidden className="text-primary!" />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     <span className="min-w-0 flex-1 truncate">{children}</span>
@@ -182,11 +188,12 @@ export const DropdownMenuRadioItem = React.forwardRef<
 ));
 DropdownMenuRadioItem.displayName = "DropdownMenuRadioItem";
 
+export interface DropdownMenuLabelProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> {
+  inset?: boolean;
+}
+
 /** Non-interactive section label. */
-export const DropdownMenuLabel = React.forwardRef<
-  React.ElementRef<typeof DropdownMenuPrimitive.Label>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & { inset?: boolean }
->(({ className, inset, ...props }, ref) => (
+export const DropdownMenuLabel = React.forwardRef<React.ElementRef<typeof DropdownMenuPrimitive.Label>, DropdownMenuLabelProps>(({ className, inset, ...props }, ref) => (
   <DropdownMenuPrimitive.Label ref={ref} className={cn(menuLabelClass, inset && menuItemInsetClass, className)} {...props} />
 ));
 DropdownMenuLabel.displayName = "DropdownMenuLabel";
@@ -224,7 +231,7 @@ export const DropdownMenuSubTrigger = React.forwardRef<
   >
     {icon}
     <span className="min-w-0 flex-1 truncate">{children}</span>
-    <RiArrowRightSLine className="ml-auto" />
+    <RiArrowRightSLine aria-hidden className="ml-auto" />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName = "DropdownMenuSubTrigger";

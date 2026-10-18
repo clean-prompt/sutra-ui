@@ -107,7 +107,7 @@ function useSideThread() {
     setExchanges((xs) => [...xs, { id, question: text, status: "pending" }]);
     setTimeout(() => {
       setExchanges((xs) =>
-        xs.map((x) => (x.id === id ? { ...x, status: "done", answer: answers[uid % answers.length] } : x))
+        xs.map((x) => (x.id === id ? { ...x, status: "succeeded", answer: answers[uid % answers.length] } : x))
       );
     }, 1200);
   };
@@ -226,7 +226,7 @@ function FullComposerDemo() {
           onValueChange={setValue}
           onSubmit={submit}
           canSubmit={value.trim().length > 0 || attachments.length > 0}
-          isLoading={busy && value.trim().length === 0}
+          loading={busy && value.trim().length === 0}
           onStop={stop}
           onFilesAdded={addFiles}
         >

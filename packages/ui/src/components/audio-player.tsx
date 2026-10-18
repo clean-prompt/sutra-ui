@@ -16,6 +16,7 @@ import {
   RiSkipForwardFill,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { useControllableState } from "../hooks/use-controllable-state";
 import { useSwipe } from "./drawer";
 import { ImageWithFallback } from "./lightbox";
 import {
@@ -206,6 +207,9 @@ export interface UsePlayerQueueOptions<T extends PlayerQueueItem> extends Create
   items?: T[];
   /** Random source for shuffling (inject for deterministic tests). Default Math.random. */
   rng?: () => number;
+  /** Called with the next queue state after every change. */
+  onValueChange?: (state: PlayerQueueState<T>) => void;
+  /** @deprecated Use `onValueChange`. */
   onChange?: (state: PlayerQueueState<T>) => void;
 }
 
@@ -213,8 +217,8 @@ export interface UsePlayerQueueOptions<T extends PlayerQueueItem> extends Create
 export function usePlayerQueue<T extends PlayerQueueItem>(options: UsePlayerQueueOptions<T> = {}) {
   const rngRef = React.useRef(options.rng ?? Math.random);
   rngRef.current = options.rng ?? Math.random;
-  const onChangeRef = React.useRef(options.onChange);
-  onChangeRef.current = options.onChange;
+  const onChangeRef = React.useRef(options.onValueChange ?? options.onChange);
+  onChangeRef.current = options.onValueChange ?? options.onChange;
   const [state, setState] = React.useState<PlayerQueueState<T>>(() =>
     createPlayerQueue(options.items ?? [], { ...options, rng: rngRef.current })
   );
@@ -286,7 +290,7 @@ function TrackArtwork({ src, className, iconClassName }: { src?: string; classNa
   if (!src) {
     return (
       <span aria-hidden className={cn("grid aspect-square shrink-0 place-items-center overflow-hidden rounded-md bg-muted text-muted-foreground", className)}>
-        <RiMusic2Line className={cn("size-1/2 max-h-10 max-w-10", iconClassName)} />
+        <RiMusic2Line aria-hidden className={cn("size-1/2 max-h-10 max-w-10", iconClassName)} />
       </span>
     );
   }
@@ -579,8 +583,11 @@ MiniPlayer.displayName = "MiniPlayer";
 /* ------------------------------------------------------------------ */
 
 export interface NowPlayingProps extends PlayerTransportProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  /** Controlled open state. */
+  open?: boolean;
+  /** Initial open state when uncontrolled. Default false. */
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   /** Replaces the artwork (e.g. a `<video>`). */
   media?: React.ReactNode;
   onAddToPlaylist?: () => void;
@@ -596,7 +603,8 @@ export interface NowPlayingProps extends PlayerTransportProps {
 
 /** Full-screen expanded player sheet: slides up, swipe down (from the top of its scroll) to dismiss. */
 export function NowPlaying({
-  open,
+  open: openProp,
+  defaultOpen = false,
   onOpenChange,
   media,
   onAddToPlaylist,
@@ -607,10 +615,11 @@ export function NowPlaying({
   className,
   ...transport
 }: NowPlayingProps) {
+  const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const swipe = useSwipe({
     axis: "y",
-    onSwipeDown: () => onOpenChange(false),
+    onSwipeDown: () => setOpen(false),
     allow: (e) => {
       const target = e.target as HTMLElement;
       if (target.closest('input[type="range"], [role="slider"]')) return false;
@@ -620,7 +629,7 @@ export function NowPlaying({
   const { track } = transport;
 
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
+    <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Content
           aria-describedby={undefined}
@@ -720,13 +729,16 @@ export interface QueueListProps extends Omit<React.HTMLAttributes<HTMLDivElement
   onReorder?: (from: number, to: number) => void;
   /** Accessible list name. Default "Queue". */
   label?: string;
+  /** Shown when the queue is empty. Default "Nothing queued". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
 }
 
 /** Reorderable queue: current row marked with NowPlayingBars, tap to jump, remove, drag or Alt+↑/↓ to reorder. */
 export const QueueList = React.forwardRef<HTMLDivElement, QueueListProps>(
   (
-    { items, currentId, playing = false, onSelect, onRemove, onReorder, label = "Queue", emptyMessage = "Nothing queued.", className, ...props },
+    { items, currentId, playing = false, onSelect, onRemove, onReorder, label = "Queue", emptyState, emptyMessage, className, ...props },
     ref
   ) => {
     const listRef = React.useRef<HTMLUListElement | null>(null);
@@ -765,7 +777,7 @@ export const QueueList = React.forwardRef<HTMLDivElement, QueueListProps>(
     if (!items.length) {
       return (
         <div ref={ref} className={cn("py-6 text-center text-sm text-muted-foreground", className)} {...props}>
-          {emptyMessage}
+          {emptyState ?? emptyMessage ?? "Nothing queued"}
         </div>
       );
     }

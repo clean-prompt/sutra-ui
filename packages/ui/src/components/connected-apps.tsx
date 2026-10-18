@@ -18,7 +18,8 @@ import {
   RiSmartphoneLine,
   RiUserForbidLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
+import { normalizeTone, toneClasses, type Tone } from "../lib/tone";
 import { pluralize } from "../lib/format";
 import { Badge } from "./badge";
 import { Button } from "./button";
@@ -64,27 +65,27 @@ export interface SecurityEvent {
   app?: string;
   /** Extra detail rows shown when the event is expanded. */
   details?: KeyValueItem[];
-  /** Highlight as suspicious. */
-  risk?: "normal" | "warning" | "danger";
+  /** Highlight as suspicious. `danger` is a deprecated alias of `destructive`. */
+  risk?: "normal" | "warning" | "destructive" | "danger";
 }
 
 type IconType = React.ComponentType<{ className?: string; "aria-hidden"?: React.AriaAttributes["aria-hidden"] }>;
 
-const eventIcon: Record<string, { icon: IconType; tone: string }> = {
-  sign_in: { icon: RiLoginBoxLine, tone: "bg-info-soft text-info-soft-foreground" },
-  sign_out: { icon: RiLogoutBoxRLine, tone: "bg-muted text-muted-foreground" },
-  sign_in_failed: { icon: RiUserForbidLine, tone: "bg-destructive-soft text-destructive-soft-foreground" },
-  approved: { icon: RiCheckboxCircleLine, tone: "bg-success-soft text-success-soft-foreground" },
-  denied: { icon: RiCloseCircleLine, tone: "bg-muted text-muted-foreground" },
-  revoked: { icon: RiCloseCircleLine, tone: "bg-destructive-soft text-destructive-soft-foreground" },
-  key_created: { icon: RiKey2Line, tone: "bg-primary-soft text-primary-soft-foreground" },
-  key_rotated: { icon: RiRefreshLine, tone: "bg-primary-soft text-primary-soft-foreground" },
-  password_changed: { icon: RiLockPasswordLine, tone: "bg-warning-soft text-warning-soft-foreground" },
-  mfa_enabled: { icon: RiShieldKeyholeLine, tone: "bg-success-soft text-success-soft-foreground" },
-  credential_presented: { icon: RiShieldCheckLine, tone: "bg-info-soft text-info-soft-foreground" },
-  device_added: { icon: RiSmartphoneLine, tone: "bg-info-soft text-info-soft-foreground" },
-  agent_action: { icon: RiRobot2Line, tone: "bg-primary-soft text-primary-soft-foreground" },
-  alert: { icon: RiAlarmWarningLine, tone: "bg-destructive-soft text-destructive-soft-foreground" },
+const eventIcon: Record<string, { icon: IconType; tone: Tone }> = {
+  sign_in: { icon: RiLoginBoxLine, tone: "info" },
+  sign_out: { icon: RiLogoutBoxRLine, tone: "neutral" },
+  sign_in_failed: { icon: RiUserForbidLine, tone: "destructive" },
+  approved: { icon: RiCheckboxCircleLine, tone: "success" },
+  denied: { icon: RiCloseCircleLine, tone: "neutral" },
+  revoked: { icon: RiCloseCircleLine, tone: "destructive" },
+  key_created: { icon: RiKey2Line, tone: "primary" },
+  key_rotated: { icon: RiRefreshLine, tone: "primary" },
+  password_changed: { icon: RiLockPasswordLine, tone: "warning" },
+  mfa_enabled: { icon: RiShieldKeyholeLine, tone: "success" },
+  credential_presented: { icon: RiShieldCheckLine, tone: "info" },
+  device_added: { icon: RiSmartphoneLine, tone: "info" },
+  agent_action: { icon: RiRobot2Line, tone: "primary" },
+  alert: { icon: RiAlarmWarningLine, tone: "destructive" },
 };
 
 function dayLabel(t: number, now: number) {
@@ -124,15 +125,21 @@ export interface ActivityFeedProps extends React.HTMLAttributes<HTMLDivElement> 
   /** Click handler; without it, rows expand inline to show details. */
   onEventClick?: (event: SecurityEvent) => void;
   now?: number;
+  /** Shown when there are no events. Default "No activity yet". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
-  /** Smaller rows (used inside drawers). */
+  /** Row spacing; `compact` is used inside drawers. */
+  density?: Density;
+  /** @deprecated Use `density="compact"`. */
   compact?: boolean;
 }
 
 /** Security event timeline: typed icons, device/IP/location, relative time, grouped by day, expandable detail. */
 export const ActivityFeed = React.forwardRef<HTMLDivElement, ActivityFeedProps>(
-  ({ events, groupByDay = true, onEventClick, now: nowProp, empty = "No activity yet.", compact, className, ...props }, ref) => {
+  ({ events, groupByDay = true, onEventClick, now: nowProp, emptyState, empty, density: densityProp, compact: compactProp, className, ...props }, ref) => {
     const now = nowProp ?? Date.now();
+    const compact = normalizeDensity(densityProp ?? compactProp) === "compact";
     const [open, setOpen] = React.useState<string | null>(null);
     const groups = groupByDay
       ? groupEventsByDay(events, now)
@@ -142,7 +149,7 @@ export const ActivityFeed = React.forwardRef<HTMLDivElement, ActivityFeedProps>(
     if (events.length === 0) {
       return (
         <div ref={ref} data-slot="activity-feed" className={cn("py-6 text-center text-sm text-muted-foreground", className)} {...props}>
-          {empty}
+          {emptyState ?? empty ?? "No activity yet"}
         </div>
       );
     }
@@ -160,7 +167,8 @@ export const ActivityFeed = React.forwardRef<HTMLDivElement, ActivityFeedProps>(
               )}
               <ul className="flex flex-col">
                 {g.events.map((e) => {
-                  const meta = eventIcon[e.type] ?? { icon: RiShieldCheckLine, tone: "bg-muted text-muted-foreground" };
+                  const meta = eventIcon[e.type] ?? { icon: RiShieldCheckLine, tone: "neutral" as Tone };
+                  const risk = e.risk && e.risk !== "normal" ? normalizeTone(e.risk) : undefined;
                   const Icon = meta.icon;
                   const expanded = open === e.id;
                   const sub = [e.app, e.device, [e.location, e.ip].filter(Boolean).join(" · ")].filter(Boolean).join(" · ");
@@ -181,12 +189,12 @@ export const ActivityFeed = React.forwardRef<HTMLDivElement, ActivityFeedProps>(
                         className={cn(
                           "-mx-2 flex w-[calc(100%+1rem)] items-start gap-3 rounded-md px-2 text-left transition-colors hover:bg-accent",
                           compact ? "py-1.5" : "py-2.5",
-                          e.risk === "danger" && "bg-destructive-soft/40",
-                          e.risk === "warning" && "bg-warning-soft/40",
+                          risk === "destructive" && "bg-destructive-soft/40",
+                          risk === "warning" && "bg-warning-soft/40",
                           focusRing
                         )}
                       >
-                        <span className={cn("mt-0.5 flex shrink-0 items-center justify-center rounded-full", compact ? "size-6 [&_svg]:size-3.5" : "size-8 [&_svg]:size-4", meta.tone)}>
+                        <span className={cn("mt-0.5 flex shrink-0 items-center justify-center rounded-full", compact ? "size-6 [&_svg]:size-3.5" : "size-8 [&_svg]:size-4", toneClasses.soft[meta.tone])}>
                           <Icon aria-hidden />
                         </span>
                         <span className="min-w-0 flex-1">
@@ -308,12 +316,15 @@ export interface ConnectedAppListProps extends React.HTMLAttributes<HTMLDivEleme
   onPushChange?: (app: ConnectedApp, deviceId: string, enabled: boolean) => void;
   definitions?: Record<string, ScopeDefinition>;
   now?: number;
+  /** Shown when there are no apps. Default "No connected apps". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
 /** Connected apps and agents with a detail drawer (scopes, holder key, push per device, activity) and revoke. */
 export const ConnectedAppList = React.forwardRef<HTMLDivElement, ConnectedAppListProps>(
-  ({ apps, onRevoke, onPushChange, definitions, now: nowProp, empty = "No connected apps.", className, ...props }, ref) => {
+  ({ apps, onRevoke, onPushChange, definitions, now: nowProp, emptyState, empty, className, ...props }, ref) => {
     const now = nowProp ?? Date.now();
     const [openId, setOpenId] = React.useState<string | null>(null);
     const [confirming, setConfirming] = React.useState(false);
@@ -350,7 +361,7 @@ export const ConnectedAppList = React.forwardRef<HTMLDivElement, ConnectedAppLis
     return (
       <div ref={ref} data-slot="connected-app-list" className={cn("flex flex-col", className)} {...props}>
         {apps.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">{empty}</p>
+          <p className="py-6 text-center text-sm text-muted-foreground">{emptyState ?? empty ?? "No connected apps"}</p>
         ) : (
           <ul className="flex flex-col">
             {apps.map((a) => (
@@ -400,7 +411,7 @@ export const ConnectedAppList = React.forwardRef<HTMLDivElement, ConnectedAppLis
                 {shown.activity && shown.activity.length > 0 && (
                   <section className="grid gap-2">
                     <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Recent activity</h3>
-                    <ActivityFeed events={shown.activity.slice(0, 6)} groupByDay={false} compact now={now} />
+                    <ActivityFeed events={shown.activity.slice(0, 6)} groupByDay={false} density="compact" now={now} />
                   </section>
                 )}
               </DrawerBody>

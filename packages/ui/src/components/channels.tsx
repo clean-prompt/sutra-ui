@@ -10,6 +10,7 @@ import {
   RiTimeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { toneClasses } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { errorMessage, useAsyncAction } from "../hooks/use-async-action";
 import { useNow } from "../hooks/use-now";
@@ -521,7 +522,7 @@ export const PlatformConnectorCard = React.forwardRef<HTMLDivElement, PlatformCo
         </div>
 
         {failed && (
-          <div className="flex items-start gap-2 rounded-lg bg-destructive-soft px-3 py-2 text-xs text-destructive-soft-foreground">
+          <div className={cn("flex items-start gap-2 rounded-lg px-3 py-2 text-xs", toneClasses.soft.destructive)}>
             <RiErrorWarningLine aria-hidden className="mt-px size-4 shrink-0" />
             <p className="min-w-0 break-words font-mono">{connector.error ?? "The connector stopped with an error."}</p>
           </div>
@@ -543,7 +544,7 @@ export const PlatformConnectorCard = React.forwardRef<HTMLDivElement, PlatformCo
               </Button>
             )}
             {onSaveConfig && (
-              <Button size="xs" variant="ghost" leadingIcon={<RiSettings3Line />} onClick={() => setOpen(true)}>
+              <Button size="xs" variant="ghost" leadingIcon={<RiSettings3Line aria-hidden />} onClick={() => setOpen(true)}>
                 {state === "not_configured" ? "Set up" : "Configure"}
               </Button>
             )}
@@ -551,7 +552,7 @@ export const PlatformConnectorCard = React.forwardRef<HTMLDivElement, PlatformCo
               {result && (
                 <span
                   data-result={result.ok ? "ok" : "fail"}
-                  className={cn("inline-flex items-center gap-1", result.ok ? "text-success" : "text-destructive")}
+                  className={cn("inline-flex items-center gap-1", toneClasses.text[result.ok ? "success" : "destructive"])}
                 >
                   {result.ok ? <RiCheckLine aria-hidden className="size-3.5" /> : <RiCloseLine aria-hidden className="size-3.5" />}
                   {result.message ?? (result.ok ? "Test passed" : "Test failed")}
@@ -860,7 +861,7 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
           {phase === "expired" && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/70 p-4">
               <p className="text-sm font-semibold text-neutral-900">Code expired</p>
-              <Button size="sm" leadingIcon={<RiRefreshLine />} onClick={refresh}>
+              <Button size="sm" leadingIcon={<RiRefreshLine aria-hidden />} onClick={refresh}>
                 Refresh code
               </Button>
             </div>
@@ -872,7 +873,7 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
         {phase === "error" ? (
           <div className="flex flex-col items-center gap-2">
             {error != null && <p className="text-sm text-destructive">{error}</p>}
-            <Button size="sm" variant="secondary" leadingIcon={<RiRefreshLine />} onClick={refresh}>
+            <Button size="sm" variant="secondary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={refresh}>
               Try again
             </Button>
           </div>
@@ -980,7 +981,7 @@ export const GuidedSetupSteps = React.forwardRef<HTMLOListElement, GuidedSetupSt
                       : "border-border bg-background text-muted-foreground"
                 )}
               >
-                {isDone ? <RiCheckLine className="size-4" /> : i + 1}
+                {isDone ? <RiCheckLine aria-hidden className="size-4" /> : i + 1}
               </span>
               <div className={cn("flex min-w-0 flex-1 flex-col gap-2 pt-0.5", !isDone && !isCurrent && "opacity-75")}>
                 <div>
@@ -1074,7 +1075,7 @@ export const AccessRequestQueue = React.forwardRef<HTMLDivElement, AccessRequest
           <h3 id={pendingId} className="flex items-center gap-2 text-sm font-semibold text-foreground">
             Pending requests
             {requests.length > 0 && (
-              <span className="rounded-full bg-warning-soft px-1.5 text-2xs font-semibold tabular-nums text-warning-soft-foreground">
+              <span className={cn("rounded-full px-1.5 text-2xs font-semibold tabular-nums", toneClasses.soft.warning)}>
                 {requests.length}
               </span>
             )}
@@ -1083,7 +1084,7 @@ export const AccessRequestQueue = React.forwardRef<HTMLDivElement, AccessRequest
             <EmptyState
               size="sm"
               variant="dashed"
-              icon={<RiShieldUserLine />}
+              icon={<RiShieldUserLine aria-hidden />}
               title="No pending requests"
               description={emptyHint ?? "When someone messages your agent, they get a pairing code that shows up here."}
             />

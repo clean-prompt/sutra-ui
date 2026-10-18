@@ -310,7 +310,7 @@ export const FilterBarChip = React.forwardRef<HTMLButtonElement, FilterBarChipPr
                             : "border-border-strong bg-background"
                         )}
                       >
-                        <RiCheckLine
+                        <RiCheckLine aria-hidden
                           className={cn("size-3 transition-[opacity,transform] duration-150", checked ? "scale-100 opacity-100" : "scale-50 opacity-0")}
                         />
                       </span>

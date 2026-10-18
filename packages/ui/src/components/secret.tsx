@@ -249,7 +249,7 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
               onClick={() => setRevealed(!revealed)}
               className="text-muted-foreground hover:text-foreground"
             >
-              {revealed ? <RiEyeOffLine /> : <RiEyeLine />}
+              {revealed ? <RiEyeOffLine aria-hidden /> : <RiEyeLine aria-hidden />}
             </Button>
           )}
           {copyable && (
@@ -364,7 +364,7 @@ export const SecretRevealOnce = React.forwardRef<HTMLDivElement, SecretRevealOnc
             <Button
               variant="secondary"
               size="sm"
-              leadingIcon={<RiDownloadLine />}
+              leadingIcon={<RiDownloadLine aria-hidden />}
               onClick={() => downloadTextFile(fileContent ?? `${secret}\n`, fileName)}
             >
               Download

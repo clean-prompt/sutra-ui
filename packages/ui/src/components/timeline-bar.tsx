@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { formatDuration } from "../lib/duration";
 import { toMs, type TimeInput } from "../lib/time";
 import { SimpleTooltip } from "./tooltip";
@@ -14,7 +15,8 @@ export function formatTimelineDuration(ms: number): string {
 /* TimelineBar                                                         */
 /* ------------------------------------------------------------------ */
 
-export type TimelineTone = "primary" | "success" | "warning" | "destructive" | "info" | "neutral";
+/** Span tone. Canonical `Tone` plus deprecated aliases (`brand`, `danger`, …). */
+export type TimelineTone = ToneInput;
 
 export interface TimelineSpan {
   id?: string;
@@ -77,7 +79,7 @@ export function timelineTicks(from: TimeInput, to: TimeInput, count = 6): number
   return Array.from({ length: n + 1 }, (_, i) => f + ((t - f) * i) / n);
 }
 
-const toneClass: Record<TimelineTone, string> = {
+const toneClass: Record<Tone, string> = {
   primary: "bg-primary",
   success: "bg-success",
   warning: "bg-warning",
@@ -193,7 +195,7 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
                     const duration = pos.end - pos.start;
                     const rangeText = `${fmtTime(new Date(pos.start))} – ${isLive ? "now" : fmtTime(new Date(pos.end))}`;
                     const text = `${span.label ? `${span.label}: ` : ""}${rangeText} (${formatDuration(duration)}${isLive ? ", live" : ""})`;
-                    const tone = span.tone ?? "primary";
+                    const tone = normalizeTone(span.tone, "primary");
                     const content = (
                       <span className="flex flex-col gap-0.5">
                         {span.label ? <span className="font-semibold">{span.label}</span> : null}
@@ -228,8 +230,7 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
                               isLive && "ring-2 ring-inset ring-white/30",
                               pos.clippedStart && "rounded-l-none",
                               pos.clippedEnd && "rounded-r-none",
-                              focusRing,
-                              "focus-visible:ring-2 focus-visible:ring-ring"
+                              focusRing
                             )}
                           >
                             <span aria-hidden className="truncate">

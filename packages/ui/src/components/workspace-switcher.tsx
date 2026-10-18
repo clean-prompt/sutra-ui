@@ -83,7 +83,8 @@ export interface WorkspaceSelection {
   profileId: string;
 }
 
-export interface WorkspaceProfileSwitcherProps {
+export interface WorkspaceProfileSwitcherProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue" | "children" | "type"> {
   gateways: WorkspaceGateway[];
   value?: WorkspaceSelection;
   defaultValue?: WorkspaceSelection;
@@ -127,6 +128,7 @@ export const WorkspaceProfileSwitcher = React.forwardRef<HTMLButtonElement, Work
       disabled,
       className,
       contentClassName,
+      ...props
     },
     ref
   ) => {
@@ -155,6 +157,7 @@ export const WorkspaceProfileSwitcher = React.forwardRef<HTMLButtonElement, Work
               focusRing,
               className
             )}
+            {...props}
           >
             {current ? (
               <>
@@ -183,7 +186,7 @@ export const WorkspaceProfileSwitcher = React.forwardRef<HTMLButtonElement, Work
           <Command loop label="Switch profile">
             <CommandInput placeholder={searchPlaceholder} aria-label="Search gateways and profiles" />
             <CommandList>
-              <CommandEmpty>No matching profiles.</CommandEmpty>
+              <CommandEmpty>No matching profiles</CommandEmpty>
               {gateways.map((gateway) => {
                 const blocked = gateway.reachability === "unreachable" && !allowUnreachable;
                 return (
@@ -335,7 +338,7 @@ export const ProfileScopeBanner = React.forwardRef<HTMLDivElement, ProfileScopeB
         <Button
           size="xs"
           variant="outline"
-          leadingIcon={<RiArrowGoBackLine />}
+          leadingIcon={<RiArrowGoBackLine aria-hidden />}
           onClick={onSwitchBack}
           className="shrink-0 border-warning/40 bg-transparent text-current hover:bg-warning/15"
         >
@@ -489,7 +492,7 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
             <h3 className="text-sm font-semibold text-foreground">Remote gateways</h3>
             <p className="text-xs text-muted-foreground">Saved connections you can switch between.</p>
           </div>
-          <Button size="sm" variant="secondary" leadingIcon={<RiAddLine />} onClick={() => startEdit(null)} disabled={!!draft?.isNew}>
+          <Button size="sm" variant="secondary" leadingIcon={<RiAddLine aria-hidden />} onClick={() => startEdit(null)} disabled={!!draft?.isNew}>
             Add connection
           </Button>
         </div>
@@ -519,11 +522,11 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
                 <div className="flex shrink-0 items-center gap-1">
                   {!conn.isDefault && (
                     <Button size="icon-sm" variant="ghost" aria-label={`Set ${conn.name} as default`} onClick={() => setDefault(conn)}>
-                      <RiStarLine />
+                      <RiStarLine aria-hidden />
                     </Button>
                   )}
                   <Button size="icon-sm" variant="ghost" aria-label={`Edit ${conn.name}`} onClick={() => startEdit(conn)}>
-                    <RiEditLine />
+                    <RiEditLine aria-hidden />
                   </Button>
                   <Button
                     size="icon-sm"
@@ -532,7 +535,7 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
                     className="hover:text-destructive"
                     onClick={() => setRemoving(conn)}
                   >
-                    <RiDeleteBinLine />
+                    <RiDeleteBinLine aria-hidden />
                   </Button>
                 </div>
               </li>
@@ -650,14 +653,14 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
                     aria-label={`Remove header ${i + 1}`}
                     onClick={() => patch({ headers: headers.filter((_, j) => j !== i) })}
                   >
-                    <RiDeleteBinLine />
+                    <RiDeleteBinLine aria-hidden />
                   </Button>
                 </div>
               ))}
               <Button
                 size="xs"
                 variant="ghost"
-                leadingIcon={<RiAddLine />}
+                leadingIcon={<RiAddLine aria-hidden />}
                 className="self-start"
                 onClick={() => patch({ headers: [...headers, { key: "", value: "" }] })}
               >
@@ -734,7 +737,8 @@ const runStateMeta: Record<GatewayRunState, { label: string; dot: string }> = {
   error: { label: "Error", dot: "bg-destructive" },
 };
 
-export interface GatewayStatusPopoverProps {
+export interface GatewayStatusPopoverProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "name" | "children" | "type" | "onError"> {
   state: GatewayRunState;
   /** Gateway display name. Default "Gateway". */
   name?: React.ReactNode;
@@ -778,6 +782,7 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
       onOpenChange,
       className,
       contentClassName,
+      ...props
     },
     ref
   ) => {
@@ -808,6 +813,7 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
               focusRing,
               className
             )}
+            {...props}
           >
             <span aria-hidden className={cn("size-2 rounded-full", meta.dot)} />
             <span>{name}</span>
@@ -848,18 +854,18 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
             <div className="flex flex-wrap gap-2">
               {state === "stopped" || state === "error"
                 ? onStart && (
-                    <Button size="xs" variant="secondary" leadingIcon={<RiPlayLine />} onClick={onStart}>
+                    <Button size="xs" variant="secondary" leadingIcon={<RiPlayLine aria-hidden />} onClick={onStart}>
                       Start
                     </Button>
                   )
                 : null}
               {onRestart && state !== "stopped" && (
-                <Button size="xs" variant="secondary" leadingIcon={<RiRestartLine />} onClick={onRestart} disabled={busy}>
+                <Button size="xs" variant="secondary" leadingIcon={<RiRestartLine aria-hidden />} onClick={onRestart} disabled={busy}>
                   Restart
                 </Button>
               )}
               {onStop && state !== "stopped" && state !== "error" && (
-                <Button size="xs" variant="destructive-soft" leadingIcon={<RiStopLine />} onClick={onStop} disabled={busy}>
+                <Button size="xs" variant="destructive-soft" leadingIcon={<RiStopLine aria-hidden />} onClick={onStop} disabled={busy}>
                   Stop
                 </Button>
               )}
@@ -877,7 +883,7 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
                       focusRing
                     )}
                   >
-                    {logLines && logLines.length ? logLines.join("\n") : "No log output yet."}
+                    {logLines && logLines.length ? logLines.join("\n") : "No log output yet"}
                   </pre>
                 )}
               </section>

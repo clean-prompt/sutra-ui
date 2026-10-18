@@ -26,7 +26,7 @@ import {
   RiToolsLine,
   RiVerifiedBadgeFill,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { formatCompact } from "../lib/format";
 import { useSafeId } from "../hooks/use-safe-id";
 import { hashString } from "../lib/hash";
@@ -292,13 +292,16 @@ export interface MarketplaceCardProps extends Omit<React.HTMLAttributes<HTMLElem
   /** Capability chips shown before "+N". Default 3. */
   maxCapabilities?: number;
   onOpen?: (extension: MarketplaceExtension) => void;
-  /** Hide the dates row (compact shelves). */
+  /** `compact` hides the dates row (shelves). Default "normal". */
+  density?: Density;
+  /** @deprecated Use `density="compact"`. */
   compact?: boolean;
 }
 
 /** Marketplace entry card: banner, icon, name, author, description, stars, version, capabilities (+N), platforms, dates, tier. */
 export const MarketplaceCard = React.forwardRef<HTMLElement, MarketplaceCardProps>(
-  ({ extension: ext, maxCapabilities = 3, onOpen, compact, className, ...props }, ref) => {
+  ({ extension: ext, maxCapabilities = 3, onOpen, density, compact: compactProp, className, ...props }, ref) => {
+    const compact = normalizeDensity(density ?? compactProp) === "compact";
     const titleId = React.useId();
     const caps = ext.capabilities ?? [];
     const shown = caps.slice(0, maxCapabilities);
@@ -542,7 +545,7 @@ export const MarketplaceGrid = React.forwardRef<HTMLDivElement, MarketplaceGridP
                     {c} <span className="text-sm font-normal text-muted-foreground">{list.length}</span>
                   </h3>
                   {list.length > sectionLimit && (
-                    <Button variant="ghost" size="sm" trailingIcon={<RiArrowRightSLine />} onClick={() => setCategory(c)} aria-label={`View all ${c}`}>
+                    <Button variant="ghost" size="sm" trailingIcon={<RiArrowRightSLine aria-hidden />} onClick={() => setCategory(c)} aria-label={`View all ${c}`}>
                       View all
                     </Button>
                   )}
@@ -600,7 +603,7 @@ export const AuthorShelf = React.forwardRef<HTMLElement, AuthorShelfProps>(
             </div>
           </div>
           {onViewAll && (
-            <Button variant="ghost" size="sm" trailingIcon={<RiArrowRightSLine />} onClick={onViewAll} aria-label={`View all by ${author.name}`}>
+            <Button variant="ghost" size="sm" trailingIcon={<RiArrowRightSLine aria-hidden />} onClick={onViewAll} aria-label={`View all by ${author.name}`}>
               View all
             </Button>
           )}
@@ -609,7 +612,7 @@ export const AuthorShelf = React.forwardRef<HTMLElement, AuthorShelfProps>(
           <ul className="flex snap-x gap-4">
             {items.map((e) => (
               <li key={e.id} className="flex w-72 shrink-0 snap-start">
-                <MarketplaceCard extension={e} onOpen={onOpen} compact className="w-full" />
+                <MarketplaceCard extension={e} onOpen={onOpen} density="compact" className="w-full" />
               </li>
             ))}
           </ul>
@@ -720,10 +723,10 @@ export const ExtensionDetailPage = React.forwardRef<HTMLElement, ExtensionDetail
             {hasCaps && (
               <DetailSection title="Capabilities">
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <CapabilityList icon={<RiToolsLine />} label="Provides tools" items={provides.tools ?? []} />
-                  <CapabilityList icon={<RiLinksLine />} label="Provides hooks" items={provides.hooks ?? []} />
-                  <CapabilityList icon={<RiStackLine />} label="Provides middleware" items={provides.middleware ?? []} />
-                  <CapabilityList icon={<RiKey2Line />} label="Requires env" items={ext.requiresEnv ?? []} />
+                  <CapabilityList icon={<RiToolsLine aria-hidden />} label="Provides tools" items={provides.tools ?? []} />
+                  <CapabilityList icon={<RiLinksLine aria-hidden />} label="Provides hooks" items={provides.hooks ?? []} />
+                  <CapabilityList icon={<RiStackLine aria-hidden />} label="Provides middleware" items={provides.middleware ?? []} />
+                  <CapabilityList icon={<RiKey2Line aria-hidden />} label="Requires env" items={ext.requiresEnv ?? []} />
                 </div>
               </DetailSection>
             )}
@@ -778,10 +781,10 @@ export const ExtensionDetailPage = React.forwardRef<HTMLElement, ExtensionDetail
           <aside aria-label="Facts" className="flex flex-col gap-4">
             <dl className="flex flex-col divide-y divide-border rounded-box border border-border bg-card text-sm">
               {([
-                { icon: <RiPlugLine />, label: "Version", value: <span className="font-mono">v{ext.version}</span> },
+                { icon: <RiPlugLine aria-hidden />, label: "Version", value: <span className="font-mono">v{ext.version}</span> },
                 ext.sha
                   ? {
-                      icon: <RiGitCommitLine />,
+                      icon: <RiGitCommitLine aria-hidden />,
                       label: "Commit",
                       value: shaHref ? (
                         <a href={shaHref} className={cn("rounded-xs font-mono text-primary hover:underline", focusRing)}>
@@ -792,10 +795,10 @@ export const ExtensionDetailPage = React.forwardRef<HTMLElement, ExtensionDetail
                       ),
                     }
                   : null,
-                ext.license ? { icon: <RiScales3Line />, label: "License", value: ext.license } : null,
-                ext.platforms?.length ? { icon: <RiComputerLine />, label: "Platforms", value: ext.platforms.join(", ") } : null,
-                { icon: <RiTimeLine />, label: "Updated", value: <time dateTime={ext.updatedAt}>{formatDate(ext.updatedAt)}</time> },
-                { icon: <RiCalendarLine />, label: "Added", value: <time dateTime={ext.addedAt}>{formatDate(ext.addedAt)}</time> },
+                ext.license ? { icon: <RiScales3Line aria-hidden />, label: "License", value: ext.license } : null,
+                ext.platforms?.length ? { icon: <RiComputerLine aria-hidden />, label: "Platforms", value: ext.platforms.join(", ") } : null,
+                { icon: <RiTimeLine aria-hidden />, label: "Updated", value: <time dateTime={ext.updatedAt}>{formatDate(ext.updatedAt)}</time> },
+                { icon: <RiCalendarLine aria-hidden />, label: "Added", value: <time dateTime={ext.addedAt}>{formatDate(ext.addedAt)}</time> },
               ] as ({ icon: React.ReactNode; label: string; value: React.ReactNode } | null)[])
                 .filter((f): f is { icon: React.ReactNode; label: string; value: React.ReactNode } => f !== null)
                 .map((f) => (
@@ -1224,14 +1227,14 @@ const demoTestimonials: Testimonial[] = [
 ];
 
 const demoFeatures: FeatureGridItem[] = [
-  { icon: <RiRobot2Line />, title: "Agents that finish", description: "Plans, tools and retries built in, so long tasks complete without babysitting." },
-  { icon: <RiLockLine />, title: "Private by default", description: "Runs on your machine. Nothing leaves unless you connect it." },
-  { icon: <RiPlugLine />, title: "678 extensions", description: "Calendar, mail, git, search and more, installed in one command." },
-  { icon: <RiFlashlightLine />, title: "Fast everywhere", description: "Native apps for macOS, Windows and Linux, plus a lightweight web client." },
-  { icon: <RiTeamLine />, title: "Built for teams", description: "Shared workspaces, roles, audit logs and SSO on Team and Enterprise." },
-  { icon: <RiCodeSSlashLine />, title: "Hackable", description: "A small hooks API and typed manifests make writing plugins a weekend project." },
-  { icon: <RiBrainLine />, title: "Bring any model", description: "Route between hosted and local models per task, with spend limits." },
-  { icon: <RiGlobalLine />, title: "Works offline", description: "Notes, tasks and search keep working on a plane." },
+  { icon: <RiRobot2Line aria-hidden />, title: "Agents that finish", description: "Plans, tools and retries built in, so long tasks complete without babysitting." },
+  { icon: <RiLockLine aria-hidden />, title: "Private by default", description: "Runs on your machine. Nothing leaves unless you connect it." },
+  { icon: <RiPlugLine aria-hidden />, title: "678 extensions", description: "Calendar, mail, git, search and more, installed in one command." },
+  { icon: <RiFlashlightLine aria-hidden />, title: "Fast everywhere", description: "Native apps for macOS, Windows and Linux, plus a lightweight web client." },
+  { icon: <RiTeamLine aria-hidden />, title: "Built for teams", description: "Shared workspaces, roles, audit logs and SSO on Team and Enterprise." },
+  { icon: <RiCodeSSlashLine aria-hidden />, title: "Hackable", description: "A small hooks API and typed manifests make writing plugins a weekend project." },
+  { icon: <RiBrainLine aria-hidden />, title: "Bring any model", description: "Route between hosted and local models per task, with spend limits." },
+  { icon: <RiGlobalLine aria-hidden />, title: "Works offline", description: "Notes, tasks and search keep working on a plane." },
 ];
 
 const demoInstallTabs: InstallSnippetTab[] = [

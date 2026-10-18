@@ -143,7 +143,7 @@ export const RemoteScreenViewer = React.forwardRef<HTMLDivElement, RemoteScreenV
           <div className="ml-auto flex items-center gap-0.5">
             {onScreenshot && (
               <Button variant="ghost" size="icon-xs" aria-label="Take screenshot" onClick={onScreenshot} disabled={state === "disconnected"}>
-                <RiCameraLine />
+                <RiCameraLine aria-hidden />
               </Button>
             )}
             <Button
@@ -153,10 +153,10 @@ export const RemoteScreenViewer = React.forwardRef<HTMLDivElement, RemoteScreenV
               aria-pressed={fit}
               onClick={() => setFit(!fit)}
             >
-              <RiAspectRatioLine />
+              <RiAspectRatioLine aria-hidden />
             </Button>
             <Button variant="ghost" size="icon-xs" aria-label={fullscreen ? "Exit fullscreen" : "Fullscreen"} onClick={toggleFullscreen}>
-              {fullscreen ? <RiFullscreenExitLine /> : <RiFullscreenLine />}
+              {fullscreen ? <RiFullscreenExitLine aria-hidden /> : <RiFullscreenLine aria-hidden />}
             </Button>
           </div>
         </div>
@@ -192,7 +192,7 @@ export const RemoteScreenViewer = React.forwardRef<HTMLDivElement, RemoteScreenV
                 <>
                   <span>Screen disconnected</span>
                   {onReconnect && (
-                    <Button size="sm" variant="inverse" leadingIcon={<RiRefreshLine />} onClick={onReconnect}>
+                    <Button size="sm" variant="inverse" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onReconnect}>
                       Reconnect
                     </Button>
                   )}
@@ -295,7 +295,7 @@ export const PermissionPreflightCard = React.forwardRef<HTMLDivElement, Permissi
             {description && <p className="text-xs text-muted-foreground">{description}</p>}
           </div>
           {onRecheck && (
-            <Button size="xs" variant="secondary" leadingIcon={<RiRefreshLine />} loading={checking} onClick={() => void recheck()}>
+            <Button size="xs" variant="secondary" leadingIcon={<RiRefreshLine aria-hidden />} loading={checking} onClick={() => void recheck()}>
               Re-check
             </Button>
           )}
@@ -314,7 +314,7 @@ export const PermissionPreflightCard = React.forwardRef<HTMLDivElement, Permissi
                   {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
                 </div>
                 {p.state !== "granted" && onOpenSettings && (
-                  <Button size="xs" variant="ghost" trailingIcon={<RiExternalLinkLine />} onClick={() => onOpenSettings(p.id)}>
+                  <Button size="xs" variant="ghost" trailingIcon={<RiExternalLinkLine aria-hidden />} onClick={() => onOpenSettings(p.id)}>
                     Open settings
                   </Button>
                 )}

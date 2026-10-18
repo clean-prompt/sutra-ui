@@ -85,6 +85,8 @@ export interface VersionHistoryProps extends Omit<React.HTMLAttributes<HTMLDivEl
   renderContent?: (version: DocumentVersion) => React.ReactNode;
   /** Diff layout. Default "inline". */
   diffMode?: DiffMode;
+  /** Initial diff layout when uncontrolled. Default "inline". */
+  defaultDiffMode?: DiffMode;
   onDiffModeChange?: (mode: DiffMode) => void;
   /** Reference time for day grouping. */
   now?: Date | number;
@@ -109,6 +111,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
       onRestore,
       renderContent,
       diffMode: diffModeProp,
+      defaultDiffMode = "inline",
       onDiffModeChange,
       now,
       title = "Version history",
@@ -126,7 +129,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
     const [tab, setTab] = useControllableState<VersionHistoryTab>({ value: tabProp, defaultValue: defaultTab, onChange: onTabChange });
     const [diffMode, setDiffMode] = useControllableState<DiffMode>({
       value: diffModeProp,
-      defaultValue: "inline",
+      defaultValue: defaultDiffMode,
       onChange: onDiffModeChange,
     });
     const [view, setView] = React.useState<"changes" | "preview">("changes");
@@ -240,7 +243,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
               />
             )}
             {canRestore && (
-              <Button size="sm" variant="outline" leadingIcon={<RiResetLeftLine />} onClick={() => setConfirmRestore(true)}>
+              <Button size="sm" variant="outline" leadingIcon={<RiResetLeftLine aria-hidden />} onClick={() => setConfirmRestore(true)}>
                 Restore
               </Button>
             )}
@@ -293,7 +296,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
           <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin p-2">
             {groups.length === 0 && (
               <p className="px-2 py-6 text-center text-sm text-muted-foreground">
-                {tab === "named" ? "No named versions yet." : "No versions yet."}
+                {tab === "named" ? "No named versions yet" : "No versions yet"}
               </p>
             )}
             {groups.map((g) => (
@@ -361,7 +364,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
                               onClick={() => setNaming({ id: v.id, text: v.label ?? "" })}
                               className="absolute right-1 top-1 opacity-0 focus-visible:opacity-100 group-hover/version:opacity-100"
                             >
-                              <RiBookmarkLine />
+                              <RiBookmarkLine aria-hidden />
                             </Button>
                           </SimpleTooltip>
                         )}
@@ -388,10 +391,10 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
                               )}
                             />
                             <Button type="submit" size="icon-xs" variant="primary" aria-label="Save name">
-                              <RiCheckLine />
+                              <RiCheckLine aria-hidden />
                             </Button>
                             <Button type="button" size="icon-xs" variant="ghost" aria-label="Cancel naming" onClick={() => setNaming(null)}>
-                              <RiCloseLine />
+                              <RiCloseLine aria-hidden />
                             </Button>
                           </form>
                         )}

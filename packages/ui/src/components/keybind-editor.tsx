@@ -234,7 +234,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
           <Button
             variant="outline"
             size="md"
-            leadingIcon={<RiArrowGoBackLine />}
+            leadingIcon={<RiArrowGoBackLine aria-hidden />}
             disabled={!anyChanged}
             onClick={() => {
               const changed = items.filter((item) => keysOf(item) !== defaultOf(item));
@@ -256,7 +256,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
             No shortcuts registered.
           </div>
         ) : visible.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">No shortcuts match “{query}”.</p>
+          <p className="py-8 text-center text-sm text-muted-foreground">No shortcuts match “{query}”</p>
         ) : (
           [...groups.entries()].map(([group, list], gi) => (
             <section key={group} aria-labelledby={`${uid}-g${gi}`} className="flex flex-col gap-1.5">
@@ -307,7 +307,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                               setRecording(item.id);
                             }}
                           >
-                            <RiEditLine />
+                            <RiEditLine aria-hidden />
                           </Button>
                           <Button
                             size="icon-sm"
@@ -320,7 +320,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                               apply({ [item.id]: defaultOf(item) });
                             }}
                           >
-                            <RiArrowGoBackLine />
+                            <RiArrowGoBackLine aria-hidden />
                           </Button>
                         </div>
                       </div>

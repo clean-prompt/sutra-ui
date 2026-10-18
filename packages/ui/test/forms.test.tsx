@@ -742,7 +742,7 @@ describe("Combobox", () => {
     render(<Combobox aria-label="Fruit" options={fruits} />);
     await user.click(screen.getByRole("combobox", { name: "Fruit" }));
     await user.keyboard("zzz");
-    expect(await screen.findByText("No results found.")).toBeInTheDocument();
+    expect(await screen.findByText("No results")).toBeInTheDocument();
   });
 
   it("multiple mode shows chips that can be removed", async () => {

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { clamp, toPercent } from "../lib/math";
+import { normalizeTone, type ToneInput } from "../lib/tone";
 import { defaultMeterThresholds, meterLevel, type MeterColor, type MeterLevel, type MeterThresholds } from "./meter";
 
 export interface GaugeColorStop {
@@ -41,7 +42,7 @@ function pickColor(
   pct: number,
   thresholds: MeterThresholds | false,
   colorStops: GaugeColorStop[] | undefined,
-  color: MeterColor
+  color: string
 ): { color: string; level: MeterLevel } {
   if (colorStops?.length) {
     const sorted = [...colorStops].sort((a, b) => a.value - b.value);
@@ -75,8 +76,10 @@ export interface GaugeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   thresholds?: MeterThresholds | false;
   /** Custom colors by absolute value (overrides thresholds). */
   colorStops?: GaugeColorStop[];
-  /** Base color below thresholds. Default primary. */
-  color?: MeterColor;
+  /** Base tone below thresholds. Default `primary`. */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
+  color?: MeterColor | ToneInput;
   size?: "sm" | "md" | "lg";
   /** Stroke width override in px. */
   thickness?: number;
@@ -101,7 +104,8 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
       endAngle = 135,
       thresholds = defaultMeterThresholds,
       colorStops,
-      color = "primary",
+      tone,
+      color,
       size = "md",
       thickness,
       glow,
@@ -119,7 +123,7 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
     const empty = value === null || !Number.isFinite(value);
     const v = empty ? min : clamp(value as number, min, max);
     const pct = empty ? 0 : toPercent(v, max, min);
-    const { color: fill, level } = pickColor(empty ? min : (value as number), pct, thresholds, colorStops, color);
+    const { color: fill, level } = pickColor(empty ? min : (value as number), pct, thresholds, colorStops, normalizeTone(tone ?? color, "primary"));
     const c = s.box / 2;
     const r = c - stroke / 2 - (glow ? 3 : 1);
     const d = arc(c, c, r, startAngle, endAngle);
@@ -191,7 +195,10 @@ export interface RingMeterProps extends Omit<React.HTMLAttributes<HTMLSpanElemen
   /** Show the percentage beside the ring once it reaches this percent. Default 50. Use 0 to always show. */
   showValueAbove?: number;
   thresholds?: MeterThresholds | false;
-  color?: MeterColor;
+  /** Base tone below thresholds. Default `primary`. */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
+  color?: MeterColor | ToneInput;
   /** Accessible name, e.g. "Context window". */
   label?: string;
   /** Extra content after the ring, e.g. a token count. */
@@ -208,7 +215,8 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
       thickness,
       showValueAbove = 50,
       thresholds = defaultMeterThresholds,
-      color = "primary",
+      tone,
+      color,
       label = "Usage",
       children,
       className,
@@ -218,7 +226,7 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
   ) => {
     const pct = toPercent(value, max);
     const level = meterLevel(pct, thresholds);
-    const fill = level === "ok" ? resolve(color) : levelColor[level];
+    const fill = level === "ok" ? resolve(normalizeTone(tone ?? color, "primary")) : levelColor[level];
     const sw = thickness ?? Math.max(2, size / 8);
     const c = size / 2;
     const r = c - sw / 2;

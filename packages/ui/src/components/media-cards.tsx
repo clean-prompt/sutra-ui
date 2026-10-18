@@ -1,5 +1,6 @@
 import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine, RiInformationLine, RiPauseFill, RiPlayFill, RiPlayLargeFill } from "@remixicon/react";
+import { normalizeTone, type Tone } from "../lib/tone";
 import { cn, focusRing } from "../lib/cn";
 import { pluralize } from "../lib/format";
 import { clamp } from "../lib/math";
@@ -16,7 +17,8 @@ import { NowPlayingBars } from "./media-controls";
 /* Shared                                                              */
 /* ------------------------------------------------------------------ */
 
-export type MediaStatusTone = "neutral" | "brand" | "info" | "success" | "warning" | "destructive";
+/** Canonical `Tone`; `brand` is a deprecated alias of `primary`. */
+export type MediaStatusTone = Tone | "brand";
 
 export interface MediaStatus {
   label: string;
@@ -44,9 +46,10 @@ export interface MediaBusyState {
   progress?: number;
 }
 
-const statusTone: Record<MediaStatusTone, string> = {
+/** Light text for the dark image scrim (theme tokens would be too dark here). */
+const statusTone: Record<Tone, string> = {
   neutral: "text-white/90",
-  brand: "text-brand-300",
+  primary: "text-brand-300",
   info: "text-sky-300",
   success: "text-emerald-300",
   warning: "text-amber-300",
@@ -59,7 +62,7 @@ function StatusBadge({ status }: { status: MediaStatus }) {
       data-slot="media-status"
       className={cn(
         "pointer-events-none absolute left-2 top-2 z-20 inline-flex max-w-[calc(100%-1rem)] items-center gap-1 rounded-sm border border-white/10 bg-black/65 px-1.5 py-0.5 text-[10px] font-medium leading-4 backdrop-blur-sm [&_svg]:size-3 [&_svg]:shrink-0",
-        statusTone[status.tone ?? "neutral"],
+        statusTone[normalizeTone(status.tone)],
         status.pulse && "animate-pulse motion-reduce:animate-none"
       )}
     >
@@ -206,7 +209,7 @@ function MediaFrame({
           className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-black/0 opacity-0 transition-[opacity,background-color] duration-200 group-hover/media:bg-black/35 group-hover/media:opacity-100"
         >
           <span className="grid size-12 place-items-center rounded-full bg-white/90 text-black shadow-xl">
-            <RiPlayLargeFill className="size-6 translate-x-px" />
+            <RiPlayLargeFill aria-hidden className="size-6 translate-x-px" />
           </span>
         </div>
       )}
@@ -698,10 +701,10 @@ export const MediaShelf = React.forwardRef<HTMLElement, MediaShelfProps>(
             ))}
           <div className={cn("hidden shrink-0 gap-1 [@media(hover:hover)]:md:flex", grid?.hide)}>
             <Button variant="secondary" size="icon-sm" aria-label="Scroll back" disabled={!edges.start} onClick={() => scrollByPage(-1)}>
-              <RiArrowLeftSLine />
+              <RiArrowLeftSLine aria-hidden />
             </Button>
             <Button variant="secondary" size="icon-sm" aria-label="Scroll forward" disabled={!edges.end} onClick={() => scrollByPage(1)}>
-              <RiArrowRightSLine />
+              <RiArrowRightSLine aria-hidden />
             </Button>
           </div>
         </div>
@@ -824,7 +827,7 @@ export const MediaHero = React.forwardRef<HTMLElement, MediaHeroProps>(
           {(onPlay || onMoreInfo || actions) && (
             <div className="mt-1 flex flex-wrap items-center gap-2">
               {onPlay && (
-                <Button size="lg" onClick={onPlay} leadingIcon={<RiPlayFill />} className="bg-white text-black shadow-lg hover:bg-white/90">
+                <Button size="lg" onClick={onPlay} leadingIcon={<RiPlayFill aria-hidden />} className="bg-white text-black shadow-lg hover:bg-white/90">
                   {playLabel}
                 </Button>
               )}
@@ -833,7 +836,7 @@ export const MediaHero = React.forwardRef<HTMLElement, MediaHeroProps>(
                   size="lg"
                   variant="ghost"
                   onClick={onMoreInfo}
-                  leadingIcon={<RiInformationLine />}
+                  leadingIcon={<RiInformationLine aria-hidden />}
                   className="bg-white/20 text-white backdrop-blur-sm hover:bg-white/30"
                 >
                   {moreInfoLabel}

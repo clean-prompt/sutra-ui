@@ -72,27 +72,23 @@ function mergeClassNames(base: ToastClassNames, extra?: ToastClassNames): ToastC
 export interface ToasterProps extends SonnerToasterProps {}
 
 /** Sonner toaster styled with Sutra tokens. Follows the `.dark` class on <html> unless `theme` is set. */
-export function Toaster({
-  position = "bottom-right",
-  theme,
-  toastOptions,
-  icons,
-  className,
-  gap = 10,
-  ...props
-}: ToasterProps) {
+export const Toaster = React.forwardRef<HTMLElement, ToasterProps>(function Toaster(
+  { position = "bottom-right", theme, toastOptions, icons, className, gap = 10, ...props },
+  ref
+) {
   const docTheme = useDocumentTheme(theme === undefined);
   return (
     <SonnerToaster
+      ref={ref}
       position={position}
       theme={theme ?? docTheme}
       gap={gap}
       className={cn("toaster group/toaster font-sans", className)}
       icons={{
-        success: <RiCheckboxCircleFill className="size-4" />,
-        info: <RiInformationFill className="size-4" />,
-        warning: <RiAlertFill className="size-4" />,
-        error: <RiErrorWarningFill className="size-4" />,
+        success: <RiCheckboxCircleFill aria-hidden className="size-4" />,
+        info: <RiInformationFill aria-hidden className="size-4" />,
+        warning: <RiAlertFill aria-hidden className="size-4" />,
+        error: <RiErrorWarningFill aria-hidden className="size-4" />,
         loading: <Spinner size="sm" className="text-muted-foreground" />,
         ...icons,
       }}
@@ -104,7 +100,7 @@ export function Toaster({
       }}
     />
   );
-}
+});
 Toaster.displayName = "Toaster";
 
 export interface SnackbarAction {
@@ -116,14 +112,18 @@ export interface SnackbarProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   message: React.ReactNode;
   icon?: React.ReactNode;
   action?: SnackbarAction;
-  /** Shows a close button when provided. */
+  /** Shows a dismiss button when provided. */
+  onDismiss?: () => void;
+  /** @deprecated Use `onDismiss`. */
   onClose?: () => void;
   closeLabel?: string;
 }
 
 /** Compact dark (inverse) notification bar with an optional action, Material-style. */
 export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(
-  ({ className, message, icon, action, onClose, closeLabel = "Dismiss", role, ...props }, ref) => (
+  ({ className, message, icon, action, onDismiss: onDismissProp, onClose, closeLabel = "Dismiss", role, ...props }, ref) => {
+    const onDismiss = onDismissProp ?? onClose;
+    return (
     <div
       ref={ref}
       role={role ?? "status"}
@@ -141,7 +141,7 @@ export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(
         </span>
       ) : null}
       <div className="min-w-0 flex-1 py-1.5 leading-5">{message}</div>
-      {action || onClose ? (
+      {action || onDismiss ? (
         <div className="-my-0.5 flex shrink-0 items-center gap-1">
           {action ? (
             <button
@@ -155,11 +155,12 @@ export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(
               {action.label}
             </button>
           ) : null}
-          {onClose ? <CloseButton variant="inverse" size="sm" aria-label={closeLabel} onClick={onClose} /> : null}
+          {onDismiss ? <CloseButton variant="inverse" size="sm" aria-label={closeLabel} onClick={onDismiss} /> : null}
         </div>
       ) : null}
     </div>
-  )
+    );
+  }
 );
 Snackbar.displayName = "Snackbar";
 
@@ -168,7 +169,10 @@ export interface SnackbarOptions extends Omit<ExternalToast, "action" | "icon"> 
   icon?: React.ReactNode;
   /** Show a close button. Default true. */
   closable?: boolean;
-  /** Called when the snackbar is dismissed by its own controls. */
+  /**
+   * Called when the snackbar is dismissed by its own close button. For any dismissal
+   * (timeout, swipe, `toast.dismiss`) use sonner's `onDismiss`.
+   */
   onClose?: () => void;
 }
 
@@ -194,7 +198,7 @@ export function snackbar(message: React.ReactNode, options: SnackbarOptions = {}
               }
             : undefined
         }
-        onClose={
+        onDismiss={
           closable
             ? () => {
                 onClose?.();

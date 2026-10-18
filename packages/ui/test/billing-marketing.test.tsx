@@ -277,7 +277,7 @@ describe("UsageInvoiceTable", () => {
 
   it("shows an empty row", () => {
     render(<UsageInvoiceTable invoices={[]} />);
-    expect(screen.getByText("No invoices yet.")).toBeInTheDocument();
+    expect(screen.getByText("No invoices yet")).toBeInTheDocument();
   });
 });
 
@@ -295,7 +295,7 @@ describe("BillingBanner", () => {
     const alerts = screen.getAllByRole("alert");
     expect(alerts[0]).toHaveTextContent("Your last payment failed");
     expect(alerts[1]).toHaveTextContent("over your plan limit");
-    expect(container.querySelector('[data-tone="payment-failed"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-kind="payment-failed"]')).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Choose a plan" }));
     expect(onAction).toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Update payment" })).toBeInTheDocument();

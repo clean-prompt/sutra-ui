@@ -385,7 +385,7 @@ export const LockScreen = React.forwardRef<HTMLDivElement, LockScreenProps>(
                 variant={mode === "passkey" ? "primary" : "secondary"}
                 size="lg"
                 fullWidth
-                leadingIcon={<RiFingerprintLine />}
+                leadingIcon={<RiFingerprintLine aria-hidden />}
                 onClick={passkey}
                 disabled={disabled}
               >
@@ -398,7 +398,7 @@ export const LockScreen = React.forwardRef<HTMLDivElement, LockScreenProps>(
             <Button
               variant="link"
               size="sm"
-              leadingIcon={recovery ? undefined : <RiKey2Line />}
+              leadingIcon={recovery ? undefined : <RiKey2Line aria-hidden />}
               onClick={() => {
                 setRecovery((r) => !r);
                 setValue("");

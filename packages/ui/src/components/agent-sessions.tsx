@@ -186,6 +186,9 @@ export interface AgentSessionListProps extends Omit<React.HTMLAttributes<HTMLDiv
   onDelete?: (ids: string[]) => void;
   /** Reference time for relative timestamps. */
   now?: number;
+  /** Shown when there is nothing to list. Default "No sessions match". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
 }
 
@@ -276,7 +279,8 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
       onMoveToGroup,
       onDelete,
       now: nowProp,
-      emptyText = "No sessions match",
+      emptyState,
+      emptyText,
       className,
       ...props
     },
@@ -425,18 +429,18 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
         <ContextMenuContent>
           <ContextMenuItem onSelect={() => onActiveChange?.(s.id)}>Open</ContextMenuItem>
           {onRenameSession && (
-            <ContextMenuItem icon={<RiEditLine />} onSelect={() => setRenaming({ kind: "session", id: s.id })}>
+            <ContextMenuItem icon={<RiEditLine aria-hidden />} onSelect={() => setRenaming({ kind: "session", id: s.id })}>
               Rename
             </ContextMenuItem>
           )}
           {onMarkUnread && (
-            <ContextMenuItem icon={<RiMailUnreadLine />} onSelect={() => onMarkUnread(ids)}>
+            <ContextMenuItem icon={<RiMailUnreadLine aria-hidden />} onSelect={() => onMarkUnread(ids)}>
               Mark unread
             </ContextMenuItem>
           )}
           {onMoveToGroup && groups.length > 0 && (
             <ContextMenuSub>
-              <ContextMenuSubTrigger icon={<RiFolderTransferLine />}>Move to group</ContextMenuSubTrigger>
+              <ContextMenuSubTrigger icon={<RiFolderTransferLine aria-hidden />}>Move to group</ContextMenuSubTrigger>
               <ContextMenuSubContent>
                 {groups.map((g) => (
                   <ContextMenuItem key={g.id} disabled={s.groupId === g.id} onSelect={() => onMoveToGroup(ids, g.id)}>
@@ -454,12 +458,12 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
           )}
           {(onArchive || onDelete) && <ContextMenuSeparator />}
           {onArchive && (
-            <ContextMenuItem icon={<RiArchiveLine />} onSelect={() => onArchive(ids)}>
+            <ContextMenuItem icon={<RiArchiveLine aria-hidden />} onSelect={() => onArchive(ids)}>
               {ids.length > 1 ? `Archive ${ids.length}` : "Archive"}
             </ContextMenuItem>
           )}
           {onDelete && (
-            <ContextMenuItem variant="destructive" icon={<RiDeleteBinLine />} onSelect={() => onDelete(ids)}>
+            <ContextMenuItem variant="destructive" icon={<RiDeleteBinLine aria-hidden />} onSelect={() => onDelete(ids)}>
               {ids.length > 1 ? `Delete ${ids.length}` : "Delete"}
             </ContextMenuItem>
           )}
@@ -615,24 +619,24 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
                 title="Start new session in this group"
                 onClick={() => onNewSession(group.id)}
               >
-                <RiAddLine />
+                <RiAddLine aria-hidden />
               </Button>
             )}
             {(onRenameGroup || onNewSession) && !editing && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-xs" aria-label={`${group.name} group actions`}>
-                    <RiMore2Line />
+                    <RiMore2Line aria-hidden />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {onRenameGroup && (
-                    <DropdownMenuItem icon={<RiEditLine />} onSelect={() => setRenaming({ kind: "group", id: group.id })}>
+                    <DropdownMenuItem icon={<RiEditLine aria-hidden />} onSelect={() => setRenaming({ kind: "group", id: group.id })}>
                       Rename group
                     </DropdownMenuItem>
                   )}
                   {onNewSession && (
-                    <DropdownMenuItem icon={<RiAddLine />} onSelect={() => onNewSession(group.id)}>
+                    <DropdownMenuItem icon={<RiAddLine aria-hidden />} onSelect={() => onNewSession(group.id)}>
                       Start new session in this group
                     </DropdownMenuItem>
                   )}
@@ -671,7 +675,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
               else setQuery("");
             }}
           >
-            <RiSearchLine />
+            <RiSearchLine aria-hidden />
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -681,7 +685,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
                 aria-label={filter.length ? `Filter by status, ${filter.length} selected` : "Filter by status"}
                 className={cn("relative", filter.length > 0 && "text-primary")}
               >
-                <RiFilter3Line />
+                <RiFilter3Line aria-hidden />
                 {filter.length > 0 && (
                   <span aria-hidden className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-primary" />
                 )}
@@ -718,15 +722,15 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
             }}
             className={cn(checkboxMode && "bg-primary-soft text-primary-soft-foreground")}
           >
-            <RiCheckboxMultipleLine />
+            <RiCheckboxMultipleLine aria-hidden />
           </Button>
           {onCreateGroup && (
             <Button variant="ghost" size="icon-xs" aria-label="New group" onClick={onCreateGroup}>
-              <RiFolderAddLine />
+              <RiFolderAddLine aria-hidden />
             </Button>
           )}
           {onNewSession && (
-            <Button variant="soft" size="xs" leadingIcon={<RiAddLine />} onClick={() => onNewSession()}>
+            <Button variant="soft" size="xs" leadingIcon={<RiAddLine aria-hidden />} onClick={() => onNewSession()}>
               New
               <span className="sr-only"> session</span>
             </Button>
@@ -791,20 +795,20 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
               {selected.length} selected
             </span>
             {onArchive && (
-              <Button variant="ghost" size="xs" leadingIcon={<RiArchiveLine />} onClick={() => onArchive(selected)}>
+              <Button variant="ghost" size="xs" leadingIcon={<RiArchiveLine aria-hidden />} onClick={() => onArchive(selected)}>
                 Archive {selected.length}
               </Button>
             )}
             {onMarkUnread && (
               <Button variant="ghost" size="icon-xs" aria-label="Mark unread" onClick={() => onMarkUnread(selected)}>
-                <RiMailUnreadLine />
+                <RiMailUnreadLine aria-hidden />
               </Button>
             )}
             {onMoveToGroup && groups.length > 0 && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-xs" aria-label="Move to group">
-                    <RiFolderTransferLine />
+                    <RiFolderTransferLine aria-hidden />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -827,18 +831,18 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
                 onClick={() => onDelete(selected)}
                 className="hover:text-destructive"
               >
-                <RiDeleteBinLine />
+                <RiDeleteBinLine aria-hidden />
               </Button>
             )}
             <Button variant="ghost" size="icon-xs" aria-label="Clear selection" onClick={() => setSelected([])}>
-              <RiCloseLine />
+              <RiCloseLine aria-hidden />
             </Button>
           </div>
         )}
 
         <nav aria-labelledby={titleId} className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 scrollbar-thin">
           {empty ? (
-            <p className="px-2 py-6 text-center text-sm text-muted-foreground">{emptyText}</p>
+            <p className="px-2 py-6 text-center text-sm text-muted-foreground">{emptyState ?? emptyText ?? "No sessions match"}</p>
           ) : (
             <>
               {ungrouped.length > 0 && <ul className="flex flex-col gap-px">{ungrouped.map(renderRow)}</ul>}

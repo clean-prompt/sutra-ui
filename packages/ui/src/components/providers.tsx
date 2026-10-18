@@ -19,6 +19,7 @@ import { clamp } from "../lib/math";
 import { capitalize, initials } from "../lib/text";
 import { DAY_MS, HOUR_MS, toMs, type TimeInput } from "../lib/time";
 import { isHttpUrl, isSafeHref } from "../lib/validate";
+import { toneClasses, type Tone } from "../lib/tone";
 import { errorMessage, useAsyncAction, useMountedRef } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useCountdown } from "../hooks/use-now";
@@ -68,7 +69,7 @@ const statusBadge: Record<ProviderStatus, StatusBadgeStatus> = {
   "not-configured": "inactive",
 };
 
-const authIcon: Record<ProviderAuthMethod, React.ComponentType<{ className?: string }>> = {
+const authIcon: Record<ProviderAuthMethod, React.ComponentType<{ className?: string; "aria-hidden"?: React.AriaAttributes["aria-hidden"] }>> = {
   oauth: RiShieldKeyholeLine,
   "api-key": RiKey2Line,
   local: RiServerLine,
@@ -146,12 +147,9 @@ export interface ProviderQuotaChipProps extends Omit<React.HTMLAttributes<HTMLSp
   now?: number;
 }
 
-const quotaFill: Record<MeterLevel, string> = { ok: "bg-success", warn: "bg-warning", danger: "bg-destructive" };
-const quotaText: Record<MeterLevel, string> = {
-  ok: "text-foreground",
-  warn: "text-warning-soft-foreground",
-  danger: "text-destructive",
-};
+const quotaTone: Record<MeterLevel, Tone> = { ok: "success", warn: "warning", danger: "destructive" };
+const quotaFill = (level: MeterLevel) => toneClasses.dot[quotaTone[level]];
+const quotaText = (level: MeterLevel) => (level === "ok" ? "text-foreground" : toneClasses.text[quotaTone[level]]);
 
 /** Compact remaining-quota bar with threshold colors and a reset-time tooltip. */
 export const ProviderQuotaChip = React.forwardRef<HTMLSpanElement, ProviderQuotaChipProps>(
@@ -182,9 +180,9 @@ export const ProviderQuotaChip = React.forwardRef<HTMLSpanElement, ProviderQuota
         {...props}
       >
         <span aria-hidden className="relative h-1.5 w-10 overflow-hidden rounded-full bg-muted">
-          <span className={cn("absolute inset-y-0 left-0 rounded-full", quotaFill[level])} style={{ width: `${remaining}%` }} />
+          <span className={cn("absolute inset-y-0 left-0 rounded-full", quotaFill(level))} style={{ width: `${remaining}%` }} />
         </span>
-        <span className={cn("font-mono tabular-nums", quotaText[level])}>{remaining}%</span>
+        <span className={cn("font-mono tabular-nums", quotaText(level))}>{remaining}%</span>
       </span>
     );
     return reset ? <SimpleTooltip content={`${label}: ${remaining}% left · ${reset}`}>{chip}</SimpleTooltip> : chip;
@@ -244,7 +242,7 @@ export const ProviderRow = React.forwardRef<HTMLDivElement, ProviderRowProps>(
           <div className="flex flex-wrap items-center gap-2">
             <span className="truncate text-sm font-medium text-foreground">{p.name}</span>
             <Badge size="sm" variant="outline" color="neutral" data-slot="provider-auth">
-              <AuthIcon className="text-muted-foreground" />
+              <AuthIcon aria-hidden className="text-muted-foreground" />
               {providerAuthLabels[p.auth]}
             </Badge>
           </div>
@@ -274,13 +272,13 @@ export const ProviderRow = React.forwardRef<HTMLDivElement, ProviderRowProps>(
           )}
           <StatusBadge size="sm" status={statusBadge[p.status]} label={providerStatusLabels[p.status]} />
           {!configured ? (
-            <Button size="sm" variant="secondary" leadingIcon={<RiPlugLine />} onClick={() => onConnect?.(p)} aria-label={`Connect ${p.name}`}>
+            <Button size="sm" variant="secondary" leadingIcon={<RiPlugLine aria-hidden />} onClick={() => onConnect?.(p)} aria-label={`Connect ${p.name}`}>
               Connect
             </Button>
           ) : (
             <>
               {(p.status === "expired" || p.status === "error") && (
-                <Button size="sm" variant="primary" leadingIcon={<RiRefreshLine />} onClick={() => onConnect?.(p)} aria-label={`Reconnect ${p.name}`}>
+                <Button size="sm" variant="primary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={() => onConnect?.(p)} aria-label={`Reconnect ${p.name}`}>
                   Reconnect
                 </Button>
               )}
@@ -478,7 +476,7 @@ function DeviceFlowPanel({
         <InlineAlert variant={state.phase === "expired" ? "warning" : "destructive"}>
           {state.phase === "expired" ? "The code expired before it was approved." : state.message}
         </InlineAlert>
-        <Button variant="secondary" leadingIcon={<RiRefreshLine />} onClick={start}>
+        <Button variant="secondary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={start}>
           Start over
         </Button>
       </div>
@@ -905,7 +903,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
         </div>
         <fieldset className="grid gap-2">
           <legend className="mb-1.5 text-sm font-medium text-foreground">Headers</legend>
-          {values.headers.length === 0 && <p className="text-xs text-muted-foreground">No extra headers.</p>}
+          {values.headers.length === 0 && <p className="text-xs text-muted-foreground">No extra headers</p>}
           {values.headers.map((h, i) => (
             <div key={i} className="flex items-center gap-2" data-slot="endpoint-header-row">
               <Input
@@ -931,12 +929,12 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
                 aria-label={`Remove header ${i + 1}`}
                 onClick={() => set("headers", values.headers.filter((_, j) => j !== i))}
               >
-                <RiCloseLine />
+                <RiCloseLine aria-hidden />
               </Button>
             </div>
           ))}
           <div>
-            <Button type="button" variant="ghost" size="sm" leadingIcon={<RiAddLine />} onClick={() => set("headers", [...values.headers, { key: "", value: "" }])}>
+            <Button type="button" variant="ghost" size="sm" leadingIcon={<RiAddLine aria-hidden />} onClick={() => set("headers", [...values.headers, { key: "", value: "" }])}>
               Add header
             </Button>
           </div>
@@ -1037,7 +1035,7 @@ function EnvKeyRow({ k, onSet, onClear }: { k: ProviderEnvKey; onSet?: (name: st
           <SecretText value={k.value!} label={k.name} variant="field" className="min-w-0 flex-1" />
           {onClear && (
             <Button variant="ghost" size="icon-sm" aria-label={`Clear ${k.name}`} onClick={() => onClear(k.name)}>
-              <RiDeleteBinLine />
+              <RiDeleteBinLine aria-hidden />
             </Button>
           )}
         </div>
@@ -1150,7 +1148,7 @@ export const ProviderKeysGroups = React.forwardRef<HTMLDivElement, ProviderKeysG
                   {nameInvalid && <p className="text-xs text-destructive">Use A–Z, 0–9 and _.</p>}
                 </div>
                 <PasswordInput size="sm" aria-label="Variable value" placeholder="Value" value={value} onChange={(e) => setValue(e.target.value)} wrapperClassName="min-w-40 flex-1" className="font-mono" />
-                <Button type="submit" size="sm" variant="secondary" leadingIcon={<RiAddLine />} disabled={!ENV_NAME.test(name) || !value}>
+                <Button type="submit" size="sm" variant="secondary" leadingIcon={<RiAddLine aria-hidden />} disabled={!ENV_NAME.test(name) || !value}>
                   Add
                 </Button>
               </form>

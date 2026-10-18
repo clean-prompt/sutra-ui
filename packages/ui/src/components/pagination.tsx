@@ -75,32 +75,38 @@ const itemSize: Record<Size, string> = {
 
 export interface PaginationItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   page?: number;
+  /** Marks the current page (`aria-current="page"`). */
+  active?: boolean;
+  /** @deprecated Use `active`. */
   isActive?: boolean;
   size?: Size;
 }
 
 /** A single page number button. */
 export const PaginationItem = React.forwardRef<HTMLButtonElement, PaginationItemProps>(
-  ({ page, isActive, size = "md", className, children, ...props }, ref) => (
-    <button
-      ref={ref}
-      type="button"
-      aria-current={isActive ? "page" : undefined}
-      aria-label={page != null ? `Page ${page}` : undefined}
-      data-active={isActive || undefined}
-      className={cn(
-        "inline-flex shrink-0 select-none items-center justify-center rounded-control border border-transparent px-2 font-medium tabular-nums text-muted-foreground transition-[color,background-color,border-color,box-shadow] duration-150",
-        "hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-50",
-        "data-[active]:border-border data-[active]:bg-background data-[active]:text-foreground data-[active]:shadow-xs",
-        itemSize[size],
-        focusRing,
-        className
-      )}
-      {...props}
-    >
-      {children ?? page}
-    </button>
-  )
+  ({ page, active: activeProp, isActive, size = "md", className, children, ...props }, ref) => {
+    const active = activeProp ?? isActive;
+    return (
+      <button
+        ref={ref}
+        type="button"
+        aria-current={active ? "page" : undefined}
+        aria-label={page != null ? `Page ${page}` : undefined}
+        data-active={active || undefined}
+        className={cn(
+          "inline-flex shrink-0 select-none items-center justify-center rounded-control border border-transparent px-2 font-medium tabular-nums text-muted-foreground transition-[color,background-color,border-color,box-shadow] duration-150",
+          "hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-50",
+          "data-[active]:border-border data-[active]:bg-background data-[active]:text-foreground data-[active]:shadow-xs",
+          itemSize[size],
+          focusRing,
+          className
+        )}
+        {...props}
+      >
+        {children ?? page}
+      </button>
+    );
+  }
 );
 PaginationItem.displayName = "PaginationItem";
 
@@ -113,7 +119,7 @@ export const PaginationEllipsis = React.forwardRef<HTMLSpanElement, React.HTMLAt
       className={cn("inline-flex items-center justify-center text-muted-foreground", itemSize[size], className)}
       {...props}
     >
-      <RiMoreLine className="size-4" />
+      <RiMoreLine aria-hidden className="size-4" />
     </span>
   )
 );
@@ -138,7 +144,7 @@ export const PaginationPrev = React.forwardRef<HTMLButtonElement, PaginationNavB
       aria-label="Previous page"
       {...props}
     >
-      <RiArrowLeftLine />
+      <RiArrowLeftLine aria-hidden />
       {!iconOnly && <span className={cn(children == null && "max-sm:sr-only")}>{children ?? "Previous"}</span>}
     </Button>
   )
@@ -156,7 +162,7 @@ export const PaginationNext = React.forwardRef<HTMLButtonElement, PaginationNavB
       {...props}
     >
       {!iconOnly && <span className={cn(children == null && "max-sm:sr-only")}>{children ?? "Next"}</span>}
-      <RiArrowRightLine />
+      <RiArrowRightLine aria-hidden />
     </Button>
   )
 );
@@ -239,7 +245,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
                 </option>
               ))}
             </select>
-            <RiArrowDownSLine className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <RiArrowDownSLine aria-hidden className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           </span>
         </label>
       ) : null;
@@ -312,7 +318,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
                   <PaginationItem
                     page={item}
                     size={size}
-                    isActive={item === page}
+                    active={item === page}
                     disabled={disabled}
                     onClick={() => go(item)}
                   />

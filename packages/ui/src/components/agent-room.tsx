@@ -447,10 +447,10 @@ export const AgentRoomMembers = React.forwardRef<HTMLDivElement, AgentRoomMember
                 {m.role && <p className="truncate text-xs text-muted-foreground">{m.role}</p>}
               </div>
               <Button variant="ghost" size="icon-xs" aria-label={`Move ${m.name} up`} disabled={i === 0} onClick={() => move(i, -1)}>
-                <RiArrowUpLine />
+                <RiArrowUpLine aria-hidden />
               </Button>
               <Button variant="ghost" size="icon-xs" aria-label={`Move ${m.name} down`} disabled={i === members.length - 1} onClick={() => move(i, 1)}>
-                <RiArrowDownLine />
+                <RiArrowDownLine aria-hidden />
               </Button>
               {m.kind === "agent" && (
                 <Button
@@ -460,7 +460,7 @@ export const AgentRoomMembers = React.forwardRef<HTMLDivElement, AgentRoomMember
                   aria-pressed={Boolean(m.muted)}
                   onClick={() => setMembers(members.map((x) => (x.id === m.id ? { ...x, muted: !x.muted } : x)))}
                 >
-                  {m.muted ? <RiVolumeMuteLine /> : <RiVolumeUpLine />}
+                  {m.muted ? <RiVolumeMuteLine aria-hidden /> : <RiVolumeUpLine aria-hidden />}
                 </Button>
               )}
               {m.kind === "agent" && (
@@ -470,7 +470,7 @@ export const AgentRoomMembers = React.forwardRef<HTMLDivElement, AgentRoomMember
                   aria-label={`Remove ${m.name}`}
                   onClick={() => setMembers(members.filter((x) => x.id !== m.id))}
                 >
-                  <RiCloseLine />
+                  <RiCloseLine aria-hidden />
                 </Button>
               )}
             </li>
@@ -484,7 +484,7 @@ export const AgentRoomMembers = React.forwardRef<HTMLDivElement, AgentRoomMember
                 key={a.id}
                 size="xs"
                 variant="outline"
-                leadingIcon={<RiAddLine />}
+                leadingIcon={<RiAddLine aria-hidden />}
                 aria-label={`Add ${a.name}`}
                 onClick={() => setMembers([...members, a])}
               >

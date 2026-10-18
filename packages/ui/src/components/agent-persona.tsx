@@ -364,7 +364,7 @@ export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBu
                 onChange={(e) => setSpec({ ...randomAvatarSpec(e.target.value), imageUrl: spec.imageUrl })}
                 className="font-mono"
               />
-              <Button size="sm" variant="secondary" leadingIcon={<RiShuffleLine />} onClick={() => setSpec(randomAvatarSpec(newSeed()))}>
+              <Button size="sm" variant="secondary" leadingIcon={<RiShuffleLine aria-hidden />} onClick={() => setSpec(randomAvatarSpec(newSeed()))}>
                 Shuffle
               </Button>
             </div>
@@ -384,11 +384,11 @@ export const AgentAvatarBuilder = React.forwardRef<HTMLDivElement, AgentAvatarBu
               }}
             />
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="secondary" leadingIcon={<RiImageAddLine />} onClick={() => fileRef.current?.click()}>
+              <Button size="sm" variant="secondary" leadingIcon={<RiImageAddLine aria-hidden />} onClick={() => fileRef.current?.click()}>
                 Choose image
               </Button>
               {spec.imageUrl && (
-                <Button size="sm" variant="ghost" leadingIcon={<RiDeleteBinLine />} onClick={() => patch({ imageUrl: undefined })}>
+                <Button size="sm" variant="ghost" leadingIcon={<RiDeleteBinLine aria-hidden />} onClick={() => patch({ imageUrl: undefined })}>
                   Remove image
                 </Button>
               )}
@@ -464,7 +464,7 @@ export const PersonaEditor = React.forwardRef<HTMLDivElement, PersonaEditorProps
           </TabsContent>
           <TabsContent value="preview" className="mt-1.5">
             <div className="min-h-32 rounded-control border border-border bg-subtle px-3 py-2 text-sm" data-slot="persona-preview">
-              {text.trim() ? <Markdown>{text}</Markdown> : <p className="text-muted-foreground">Nothing to preview.</p>}
+              {text.trim() ? <Markdown>{text}</Markdown> : <p className="text-muted-foreground">Nothing to preview</p>}
             </div>
           </TabsContent>
         </Tabs>

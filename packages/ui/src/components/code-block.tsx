@@ -198,14 +198,14 @@ const tokenClass: Record<CodeBlockTheme, Record<TokenType, string>> = {
     plain: "",
     keyword: "text-violet-300",
     string: "text-emerald-300",
-    comment: "italic text-zinc-500",
+    comment: "italic text-code-muted/75",
     number: "text-amber-300",
     function: "text-sky-300",
     type: "text-rose-300",
     tag: "text-pink-300",
     attr: "text-amber-200",
     property: "text-sky-200",
-    punctuation: "text-zinc-400",
+    punctuation: "text-code-muted",
     variable: "text-cyan-300",
   },
   light: {
@@ -226,10 +226,10 @@ const tokenClass: Record<CodeBlockTheme, Record<TokenType, string>> = {
 
 const surface: Record<CodeBlockTheme, { root: string; header: string; muted: string; button: string }> = {
   dark: {
-    root: "border-zinc-800 bg-zinc-950 text-zinc-100 [color-scheme:dark]",
-    header: "border-white/10 bg-white/[0.03]",
-    muted: "text-zinc-400",
-    button: "text-zinc-400 hover:bg-white/10 hover:text-zinc-100",
+    root: "border-code-border bg-code text-code-foreground [color-scheme:dark]",
+    header: "border-code-foreground/10 bg-code-foreground/[0.03]",
+    muted: "text-code-muted",
+    button: "text-code-muted hover:bg-code-foreground/10 hover:text-code-foreground",
   },
   light: {
     root: "border-border bg-subtle text-foreground",
@@ -437,7 +437,7 @@ export const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
                 className={cn(
                   "inline-flex size-7 cursor-pointer items-center justify-center rounded-sm transition-colors",
                   s.button,
-                  wrap && (theme === "dark" ? "bg-white/10 text-zinc-100" : "bg-accent text-foreground"),
+                  wrap && (theme === "dark" ? "bg-code-foreground/10 text-code-foreground" : "bg-accent text-foreground"),
                   focusRing
                 )}
               >
@@ -452,7 +452,7 @@ export const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
             theme={theme}
             className={cn(
               "absolute right-2 top-2 z-[1] opacity-0 backdrop-blur-sm group-hover/code:opacity-100 focus-visible:opacity-100",
-              theme === "dark" ? "bg-zinc-900/80" : "bg-background/80"
+              theme === "dark" ? "bg-code-border/60" : "bg-background/80"
             )}
           />
         ) : null}
@@ -548,7 +548,7 @@ export const CodeBlockTabs = React.forwardRef<HTMLDivElement, CodeBlockTabsProps
                 className={cn(
                   "relative inline-flex cursor-pointer items-center gap-1.5 whitespace-nowrap px-2.5 text-xs font-medium outline-none transition-colors [&_svg]:size-3.5",
                   s.muted,
-                  theme === "dark" ? "hover:text-zinc-100 data-[state=active]:text-zinc-50" : "hover:text-foreground data-[state=active]:text-foreground",
+                  theme === "dark" ? "hover:text-code-foreground data-[state=active]:text-code-foreground" : "hover:text-foreground data-[state=active]:text-foreground",
                   "after:absolute after:inset-x-2 after:-bottom-px after:h-0.5 after:scale-x-0 after:rounded-full after:bg-primary after:transition-transform after:duration-200 data-[state=active]:after:scale-x-100",
                   "focus-visible:after:scale-x-100 focus-visible:after:bg-ring"
                 )}

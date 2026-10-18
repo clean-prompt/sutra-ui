@@ -67,7 +67,7 @@ export interface SocialProviderMeta {
   name: string;
   /** Primary brand color (hex). */
   color: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: React.AriaAttributes["aria-hidden"] }>;
   /** Icon color classes for the neutral variants (empty when the logo is multicolor or uses currentColor). */
   iconClassName: string;
   /** Fill classes for the `brand` variant. */
@@ -225,7 +225,7 @@ export const SocialButton = React.forwardRef<HTMLButtonElement, SocialButtonProp
     const icon = loading ? (
       <Spinner size="sm" className="text-current" />
     ) : (
-      <Icon className={cn(variant !== "brand" && meta.iconClassName)} />
+      <Icon aria-hidden className={cn(variant !== "brand" && meta.iconClassName)} />
     );
     const a11yLabel = ariaLabel ?? (isIcon ? `Continue with ${meta.name}` : undefined);
 

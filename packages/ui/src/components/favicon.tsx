@@ -8,11 +8,16 @@ export type FaviconResolver = (domain: string) => string | undefined;
 
 const FaviconContext = React.createContext<FaviconResolver | undefined>(undefined);
 
+export interface FaviconProviderProps {
+  resolve: FaviconResolver;
+  children: React.ReactNode;
+}
+
 /**
  * Opt in to remote favicons. Without a provider, Sutra makes no network
  * requests and renders a local monogram tile instead.
  */
-export function FaviconProvider({ resolve, children }: { resolve: FaviconResolver; children: React.ReactNode }) {
+export function FaviconProvider({ resolve, children }: FaviconProviderProps) {
   return <FaviconContext.Provider value={resolve}>{children}</FaviconContext.Provider>;
 }
 

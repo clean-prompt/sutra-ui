@@ -86,14 +86,35 @@ const baseClassNames: Partial<ClassNames> = {
   footer: "pt-3 text-sm text-muted-foreground",
 };
 
-/** Date calendar built on react-day-picker v9. Supports single, multiple and range modes. */
-export function Calendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  components,
-  ...props
-}: CalendarProps) {
+type CalendarRootProps = React.HTMLAttributes<HTMLDivElement> & { rootRef?: React.Ref<HTMLDivElement> };
+
+function assignRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
+  if (typeof ref === "function") ref(node);
+  else if (ref) (ref as React.MutableRefObject<T | null>).current = node;
+}
+
+/** Date calendar built on react-day-picker v9. Supports single, multiple and range modes. The ref goes to the root element. */
+export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calendar(
+  { className, classNames, showOutsideDays = true, components, ...props },
+  ref
+) {
+  const forwardedRef = React.useRef(ref);
+  forwardedRef.current = ref;
+  // A stable Root that hands the element to both DayPicker's own ref (used for animation) and ours.
+  const Root = React.useMemo(
+    () =>
+      function CalendarRoot({ rootRef, ...rest }: CalendarRootProps) {
+        const setNode = React.useCallback(
+          (node: HTMLDivElement | null) => {
+            assignRef(rootRef, node);
+            assignRef(forwardedRef.current, node);
+          },
+          [rootRef]
+        );
+        return <div {...rest} ref={setNode} />;
+      },
+    []
+  );
   const merged = React.useMemo(() => {
     const result: Partial<ClassNames> = { ...baseClassNames };
     if (classNames) {
@@ -115,8 +136,8 @@ export function Calendar({
       startMonth={props.startMonth ?? (usesDropdown ? new Date(thisYear - 100, 0) : undefined)}
       endMonth={props.endMonth ?? (usesDropdown ? new Date(thisYear + 10, 11) : undefined)}
       classNames={merged}
-      components={{ Chevron: CalendarChevron, ...components }}
+      components={{ Chevron: CalendarChevron, Root, ...components }}
     />
   );
-}
+});
 Calendar.displayName = "Calendar";

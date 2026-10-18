@@ -400,7 +400,7 @@ function ControlsDemo() {
 const movies = [
   { title: "Arrival", year: 2016, meta: "1h 56m", progress: 64, languages: ["en", "fr"] },
   { title: "Dune", year: 2021, meta: "2h 35m", status: { label: "Transcoding", tone: "warning" as const, pulse: true, icon: <RiTimeLine /> } },
-  { title: "Her", year: 2013, meta: "2h 6m", status: { label: "Vault", tone: "brand" as const, icon: <RiLockLine /> } },
+  { title: "Her", year: 2013, meta: "2h 6m", status: { label: "Vault", tone: "primary" as const, icon: <RiLockLine aria-hidden /> } },
   { title: "Moon", year: 2009, meta: "1h 37m", busy: { label: "Moving…", progress: 42 } },
   { title: "Coherence", year: 2013, meta: "1h 29m", disabled: true, status: { label: "NAS-2 offline", tone: "warning" as const, icon: <RiWifiOffLine /> } },
   { title: "Primer", year: 2004, meta: "1h 17m", noImage: true, status: { label: "Archived", tone: "info" as const, icon: <RiArchiveLine /> } },

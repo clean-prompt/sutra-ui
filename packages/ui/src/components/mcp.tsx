@@ -145,7 +145,7 @@ export const KeyValueRowsInput = React.forwardRef<HTMLDivElement, KeyValueRowsIn
                 disabled={disabled}
                 onClick={() => setRows(rows.filter((_, j) => j !== i))}
               >
-                <RiSubtractLine />
+                <RiSubtractLine aria-hidden />
               </Button>
             </div>
           );
@@ -154,7 +154,7 @@ export const KeyValueRowsInput = React.forwardRef<HTMLDivElement, KeyValueRowsIn
           type="button"
           size="xs"
           variant="ghost"
-          leadingIcon={<RiAddLine />}
+          leadingIcon={<RiAddLine aria-hidden />}
           disabled={disabled}
           onClick={() => setRows([...rows, { key: "", value: "" }])}
         >
@@ -678,7 +678,7 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
       >
         <div className="flex items-start gap-3">
           <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-box border border-border bg-background text-muted-foreground [&_svg]:size-[18px]">
-            <RiServerLine />
+            <RiServerLine aria-hidden />
           </span>
           <div className="min-w-0 flex-1 space-y-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -733,7 +733,7 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
           >
             {oauth === "waiting" ? <Spinner size="xs" /> : <RiErrorWarningLine aria-hidden className="size-3.5" />}
             <span className="flex-1">{oauth === "waiting" ? "Waiting for sign-in in your browser…" : oauthError}</span>
-            <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine />} onClick={connect}>
+            <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine aria-hidden />} onClick={connect}>
               Retry
             </Button>
             <Button size="xs" variant="ghost" onClick={() => setOauth("idle")}>
@@ -744,17 +744,17 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
 
         <div className="flex flex-wrap items-center gap-1.5">
           {onTest && (
-            <Button size="sm" variant="outline" leadingIcon={<RiFlashlightLine />} onClick={test} loading={testing} disabled={disabled}>
+            <Button size="sm" variant="outline" leadingIcon={<RiFlashlightLine aria-hidden />} onClick={test} loading={testing} disabled={disabled}>
               Test
             </Button>
           )}
           {onConnect && (status === "needs-auth" || status === "failed") && oauth === "idle" && (
-            <Button size="sm" variant="soft" leadingIcon={<RiLoginBoxLine />} onClick={connect}>
+            <Button size="sm" variant="soft" leadingIcon={<RiLoginBoxLine aria-hidden />} onClick={connect}>
               Connect
             </Button>
           )}
           {onViewLogs && (
-            <Button size="sm" variant="ghost" leadingIcon={<RiFileList3Line />} onClick={onViewLogs}>
+            <Button size="sm" variant="ghost" leadingIcon={<RiFileList3Line aria-hidden />} onClick={onViewLogs}>
               View logs
             </Button>
           )}
@@ -767,7 +767,7 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
           {onRemove && (
             <ConfirmDialog
               trigger={
-                <Button size="sm" variant="ghost" className="text-destructive" leadingIcon={<RiDeleteBinLine />}>
+                <Button size="sm" variant="ghost" className="text-destructive" leadingIcon={<RiDeleteBinLine aria-hidden />}>
                   Remove
                 </Button>
               }
@@ -848,7 +848,7 @@ export const ConnectionMethodChooser = React.forwardRef<React.ElementRef<typeof 
               key={w}
               value={w}
               disabled={info?.[w]?.disabled}
-              icon={w === "hosted" ? <RiCloudLine /> : <RiComputerLine />}
+              icon={w === "hosted" ? <RiCloudLine aria-hidden /> : <RiComputerLine aria-hidden />}
               label={d.label}
               description={
                 <span className="block space-y-2">
@@ -968,7 +968,7 @@ function ConnectorDirectoryCard({
             )}
           </>
         ) : (
-          <Button size="sm" variant="soft" leadingIcon={<RiPlugLine />} loading={busy} onClick={run} aria-label={`${action} ${entry.name}`}>
+          <Button size="sm" variant="soft" leadingIcon={<RiPlugLine aria-hidden />} loading={busy} onClick={run} aria-label={`${action} ${entry.name}`}>
             {action}
           </Button>
         )}
@@ -1016,7 +1016,7 @@ export const ConnectorDirectory = React.forwardRef<HTMLDivElement, ConnectorDire
           ))}
         </ChipGroup>
         {shown.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">No connectors match.</p>
+          <p className="py-8 text-center text-sm text-muted-foreground">No connectors match</p>
         ) : (
           <ul aria-label="Connectors" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {shown.map((e) => (
@@ -1100,7 +1100,7 @@ function AccountAlias({
         <span className="truncate text-sm font-medium text-foreground">{account.alias}</span>
         {onRename && account.status !== "retired" && (
           <Button size="icon-xs" variant="ghost" aria-label={`Rename ${account.alias}`} onClick={start}>
-            <RiPencilLine />
+            <RiPencilLine aria-hidden />
           </Button>
         )}
       </span>
@@ -1133,10 +1133,10 @@ function AccountAlias({
           className="h-7"
         />
         <Button size="icon-xs" variant="ghost" aria-label="Save name" onClick={() => void commit()}>
-          <RiCheckLine />
+          <RiCheckLine aria-hidden />
         </Button>
         <Button size="icon-xs" variant="ghost" aria-label="Cancel rename" onClick={() => setEditing(false)}>
-          <RiCloseLine />
+          <RiCloseLine aria-hidden />
         </Button>
       </span>
       {error && (
@@ -1176,13 +1176,13 @@ export const ConnectorAccounts = React.forwardRef<HTMLDivElement, ConnectorAccou
           </div>
           <StatusBadge status={st.status} label={st.label} size="sm" />
           {onRepair && (a.status === "expired" || a.status === "error") && (
-            <Button size="xs" variant="soft" leadingIcon={<RiRefreshLine />} onClick={() => onRepair(a.id)} aria-label={`Repair ${a.alias}`}>
+            <Button size="xs" variant="soft" leadingIcon={<RiRefreshLine aria-hidden />} onClick={() => onRepair(a.id)} aria-label={`Repair ${a.alias}`}>
               Repair
             </Button>
           )}
           {onRemove && a.status !== "retired" && (
             <Button size="icon-xs" variant="ghost" aria-label={`Remove ${a.alias}`} onClick={() => onRemove(a.id)}>
-              <RiDeleteBinLine />
+              <RiDeleteBinLine aria-hidden />
             </Button>
           )}
         </li>
@@ -1196,7 +1196,7 @@ export const ConnectorAccounts = React.forwardRef<HTMLDivElement, ConnectorAccou
           </h3>
           <span className="text-xs text-muted-foreground tabular-nums">{active.length}</span>
           {onAdd && (
-            <Button size="xs" variant="ghost" className="ml-auto" leadingIcon={<RiAddLine />} onClick={onAdd}>
+            <Button size="xs" variant="ghost" className="ml-auto" leadingIcon={<RiAddLine aria-hidden />} onClick={onAdd}>
               Add account
             </Button>
           )}
@@ -1206,7 +1206,7 @@ export const ConnectorAccounts = React.forwardRef<HTMLDivElement, ConnectorAccou
             {active.map(row)}
           </ul>
         ) : (
-          <p className="px-3 py-6 text-center text-sm text-muted-foreground">No accounts connected.</p>
+          <p className="px-3 py-6 text-center text-sm text-muted-foreground">No accounts connected</p>
         )}
         {retired.length > 0 && (
           <div className="border-t border-border">

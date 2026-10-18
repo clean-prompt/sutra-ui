@@ -10,6 +10,7 @@ import {
 } from "@remixicon/react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { cn, focusRing } from "../lib/cn";
+import { toneClasses, type Tone } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { errorMessage, useMountedRef } from "../hooks/use-async-action";
 import { Button } from "./button";
@@ -66,7 +67,7 @@ export interface BackendHealthPillProps extends Omit<React.HTMLAttributes<HTMLSp
 /** Health probe status: checking spinner, healthy + latency, unreachable + reason, or not configured. */
 export const BackendHealthPill = React.forwardRef<HTMLSpanElement, BackendHealthPillProps>(({ health, className, ...props }, ref) => {
   const base = "inline-flex h-6 max-w-full items-center gap-1.5 rounded-control px-2 text-2xs font-medium";
-  let tone = "bg-muted text-muted-foreground";
+  let tone: Tone = "neutral";
   let body: React.ReactNode = "Not checked";
   if (health.state === "checking") {
     body = (
@@ -76,18 +77,18 @@ export const BackendHealthPill = React.forwardRef<HTMLSpanElement, BackendHealth
       </>
     );
   } else if (health.state === "healthy") {
-    tone = "bg-success-soft text-success-soft-foreground";
+    tone = "success";
     body = (
       <>
-        <span aria-hidden className="size-1.5 rounded-full bg-success" />
+        <span aria-hidden className={cn("size-1.5 rounded-full", toneClasses.dot.success)} />
         Healthy{health.latencyMs != null && <span className="font-mono tabular-nums">· {Math.round(health.latencyMs)} ms</span>}
       </>
     );
   } else if (health.state === "unreachable") {
-    tone = "bg-destructive-soft text-destructive-soft-foreground";
+    tone = "destructive";
     body = (
       <>
-        <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-destructive" />
+        <span aria-hidden className={cn("size-1.5 shrink-0 rounded-full", toneClasses.dot.destructive)} />
         <span className="truncate">Unreachable: {health.reason}</span>
       </>
     );
@@ -95,7 +96,7 @@ export const BackendHealthPill = React.forwardRef<HTMLSpanElement, BackendHealth
     body = "Not configured";
   }
   return (
-    <span ref={ref} role="status" data-health={health.state} data-slot="backend-health" className={cn(base, tone, className)} {...props}>
+    <span ref={ref} role="status" data-health={health.state} data-slot="backend-health" className={cn(base, toneClasses.soft[tone], className)} {...props}>
       {body}
     </span>
   );
@@ -176,7 +177,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
           <span id={`${id}-label`} className="text-sm font-medium text-foreground">
             {label}
           </span>
-          <Button variant="ghost" size="sm" leadingIcon={<RiRefreshLine />} onClick={checkAll} disabled={anyChecking}>
+          <Button variant="ghost" size="sm" leadingIcon={<RiRefreshLine aria-hidden />} onClick={checkAll} disabled={anyChecking}>
             Re-check all
           </Button>
         </div>
@@ -222,7 +223,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
                   <div className="flex shrink-0 items-center gap-1">
                     {b.probe && b.configured !== false && (
                       <Button variant="ghost" size="icon-xs" aria-label={`Re-check ${b.name}`} disabled={h.state === "checking"} onClick={() => void check(b.id)}>
-                        <RiRefreshLine />
+                        <RiRefreshLine aria-hidden />
                       </Button>
                     )}
                     {onConfigure && (

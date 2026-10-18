@@ -98,6 +98,9 @@ export interface ApiKeyListProps extends React.HTMLAttributes<HTMLDivElement> {
   expiringSoonDays?: number;
   /** Reference time (tests/SSR). */
   now?: number;
+  /** Shown when there is nothing to list. Default "No API keys yet". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
@@ -164,7 +167,7 @@ function ScopeChips({ scopes, max, keyName }: { scopes: string[]; max: number; k
 /** API keys table: masked key, scopes, expiry warnings, usage and a row menu (edit, rotate, revoke). */
 export const ApiKeyList = React.forwardRef<HTMLDivElement, ApiKeyListProps>(
   (
-    { keys, onEdit, onRotate, onRevoke, maxScopes = 2, expiringSoonDays = 7, now: nowProp, empty, className, ...props },
+    { keys, onEdit, onRotate, onRevoke, maxScopes = 2, expiringSoonDays = 7, now: nowProp, emptyState, empty, className, ...props },
     ref
   ) => {
     const now = nowProp ?? Date.now();
@@ -175,7 +178,7 @@ export const ApiKeyList = React.forwardRef<HTMLDivElement, ApiKeyListProps>(
         {keys.length === 0 ? (
           <div className="flex flex-col items-center gap-2 rounded-box border border-dashed border-border px-6 py-10 text-center">
             <RiKey2Line aria-hidden className="size-6 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">{empty ?? "No API keys yet."}</p>
+            <p className="text-sm text-muted-foreground">{emptyState ?? empty ?? "No API keys yet"}</p>
           </div>
         ) : (
           <Table>
@@ -227,24 +230,24 @@ export const ApiKeyList = React.forwardRef<HTMLDivElement, ApiKeyListProps>(
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon-xs" aria-label={`Actions for ${k.name}`} disabled={k.revoked}>
-                            <RiMore2Line />
+                            <RiMore2Line aria-hidden />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           {onEdit && (
-                            <DropdownMenuItem icon={<RiEditLine />} onSelect={() => onEdit(k)}>
+                            <DropdownMenuItem icon={<RiEditLine aria-hidden />} onSelect={() => onEdit(k)}>
                               Edit
                             </DropdownMenuItem>
                           )}
                           {onRotate && (
-                            <DropdownMenuItem icon={<RiRefreshLine />} onSelect={() => onRotate(k)}>
+                            <DropdownMenuItem icon={<RiRefreshLine aria-hidden />} onSelect={() => onRotate(k)}>
                               Rotate
                             </DropdownMenuItem>
                           )}
                           {onRevoke && (
                             <>
                               {(onEdit || onRotate) && <DropdownMenuSeparator />}
-                              <DropdownMenuItem variant="destructive" icon={<RiDeleteBinLine />} onSelect={() => setRevoking(k)}>
+                              <DropdownMenuItem variant="destructive" icon={<RiDeleteBinLine aria-hidden />} onSelect={() => setRevoking(k)}>
                                 Revoke
                               </DropdownMenuItem>
                             </>
@@ -262,7 +265,7 @@ export const ApiKeyList = React.forwardRef<HTMLDivElement, ApiKeyListProps>(
           open={!!revoking}
           onOpenChange={(open) => !open && setRevoking(null)}
           tone="destructive"
-          icon={<RiDeleteBinLine />}
+          icon={<RiDeleteBinLine aria-hidden />}
           title={`Revoke “${revoking?.name ?? ""}”?`}
           description="Requests using this key will fail immediately. This can't be undone."
           confirmLabel="Revoke key"
@@ -433,7 +436,7 @@ export function ApiKeyCreateDialog({
       <DialogContent showClose={!secret} onEscapeKeyDown={(e) => secret && e.preventDefault()}>
         {secret ? (
           <>
-            <DialogHeader icon={<RiKey2Line />} tone="success">
+            <DialogHeader icon={<RiKey2Line aria-hidden />} tone="success">
               <DialogTitle>Key created</DialogTitle>
               <DialogDescription>“{name.trim()}” is ready to use.</DialogDescription>
             </DialogHeader>
@@ -448,7 +451,7 @@ export function ApiKeyCreateDialog({
           </>
         ) : (
           <form onSubmit={submit} className="contents" noValidate>
-            <DialogHeader icon={<RiKey2Line />}>
+            <DialogHeader icon={<RiKey2Line aria-hidden />}>
               <DialogTitle>{title}</DialogTitle>
               {description && <DialogDescription>{description}</DialogDescription>}
             </DialogHeader>

@@ -29,6 +29,9 @@ interface ComboboxBaseProps {
   options: ComboboxOption[];
   placeholder?: string;
   searchPlaceholder?: string;
+  /** Shown when the query matches nothing. Default "No results". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
   /** Hide the search input. */
   searchable?: boolean;
@@ -48,6 +51,7 @@ interface ComboboxBaseProps {
   /** Max chips shown in the trigger before collapsing into "+N" (multiple only). */
   maxChips?: number;
   open?: boolean;
+  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   className?: string;
   contentClassName?: string;
@@ -102,7 +106,8 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
     options,
     placeholder = "Select…",
     searchPlaceholder = "Search…",
-    emptyText = "No results found.",
+    emptyState,
+    emptyText,
     searchable = true,
     creatable = false,
     onCreate,
@@ -117,6 +122,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
     invalid: invalidProp,
     maxChips = 3,
     open: openProp,
+    defaultOpen = false,
     onOpenChange,
     className,
     contentClassName,
@@ -148,7 +154,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
   const selected = isControlled ? toArray(props.value) : internal;
 
   const [search, setSearch] = React.useState("");
-  const [openState, setOpenState] = React.useState(false);
+  const [openState, setOpenState] = React.useState(defaultOpen);
   const open = openProp ?? openState;
   const setOpen = (next: boolean) => {
     if (disabled && next) return;
@@ -258,7 +264,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
                     }}
                     className="inline-flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-border hover:text-foreground [&_svg]:size-3"
                   >
-                    <RiCloseLine />
+                    <RiCloseLine aria-hidden />
                   </button>
                 </span>
               ))}
@@ -309,7 +315,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
             >
               {!canCreate && (
                 <CommandPrimitive.Empty className="px-2 py-6 text-center text-sm text-muted-foreground">
-                  {emptyText}
+                  {emptyState ?? emptyText ?? "No results"}
                 </CommandPrimitive.Empty>
               )}
               {groups.map(([heading, items]) => (
@@ -345,7 +351,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
                               isSelected && "border-primary bg-primary text-primary-foreground"
                             )}
                           >
-                            {isSelected && <RiCheckLine />}
+                            {isSelected && <RiCheckLine aria-hidden />}
                           </span>
                         )}
                         {option.icon && (

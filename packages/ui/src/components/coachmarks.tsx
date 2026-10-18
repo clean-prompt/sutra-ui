@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { RiArrowRightSLine, RiCloseLine, RiLightbulbFlashLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { prefersReducedMotion } from "../hooks/use-media-query";
 import { useSafeId } from "../hooks/use-safe-id";
@@ -367,9 +368,11 @@ export interface TipBubbleItem {
   body: React.ReactNode;
 }
 
+/** @deprecated Use `ToneInput` with the `tone` prop. */
 export type TipBubbleAccent = "primary" | "info" | "success" | "warning" | "destructive";
 
-const accentClass: Record<TipBubbleAccent, { bar: string; icon: string }> = {
+const accentClass: Record<Tone, { bar: string; icon: string }> = {
+  neutral: { bar: "bg-muted-foreground", icon: "bg-muted text-muted-foreground" },
   primary: { bar: "bg-primary", icon: "bg-primary-soft text-primary" },
   info: { bar: "bg-info", icon: "bg-info-soft text-info" },
   success: { bar: "bg-success", icon: "bg-success-soft text-success" },
@@ -393,6 +396,9 @@ export interface TipBubbleProps {
   onDismiss?: () => void;
   /** Shows a "Don't show again" action. */
   onDontShowAgain?: () => void;
+  /** Accent colour of the bar and icon. Default `primary`. */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
   accent?: TipBubbleAccent;
   icon?: React.ReactNode;
   side?: "top" | "right" | "bottom" | "left";
@@ -413,7 +419,8 @@ export function TipBubble({
   onIndexChange,
   onDismiss,
   onDontShowAgain,
-  accent = "primary",
+  tone,
+  accent,
   icon,
   side = "bottom",
   align = "start",
@@ -429,7 +436,7 @@ export function TipBubble({
   const virtualRef = React.useRef({
     getBoundingClientRect: () => resolveTarget(targetRef.current)?.getBoundingClientRect() ?? new DOMRect(),
   });
-  const a = accentClass[accent];
+  const a = accentClass[normalizeTone(tone ?? accent, "primary")];
 
   const dismiss = () => {
     setOpen(false);
@@ -464,7 +471,7 @@ export function TipBubble({
           <span aria-hidden className={cn("absolute inset-y-0 left-0 w-1", a.bar)} />
           <div className="flex items-start gap-2.5">
             <span aria-hidden className={cn("flex size-7 shrink-0 items-center justify-center rounded-full [&_svg]:size-4", a.icon)}>
-              {icon ?? <RiLightbulbFlashLine />}
+              {icon ?? <RiLightbulbFlashLine aria-hidden />}
             </span>
             <div className="min-w-0 flex-1">
               <p id={`${uid}-title`} className="text-sm font-semibold text-foreground">
@@ -500,7 +507,7 @@ export function TipBubble({
                   <span className="ml-auto text-xs tabular-nums text-muted-foreground">
                     {(((indexState % count) + count) % count) + 1}/{count}
                   </span>
-                  <Button size="xs" variant="soft" trailingIcon={<RiArrowRightSLine />} onClick={() => setIndex((indexState + 1) % count)}>
+                  <Button size="xs" variant="soft" trailingIcon={<RiArrowRightSLine aria-hidden />} onClick={() => setIndex((indexState + 1) % count)}>
                     Next tip
                   </Button>
                 </>

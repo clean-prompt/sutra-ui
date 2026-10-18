@@ -119,12 +119,12 @@ export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
         backHref ? (
           <Button asChild variant="secondary" size="icon-sm" aria-label={backLabel}>
             <a href={backHref} onClick={onBack}>
-              <RiArrowLeftLine />
+              <RiArrowLeftLine aria-hidden />
             </a>
           </Button>
         ) : (
           <Button variant="secondary" size="icon-sm" aria-label={backLabel} onClick={onBack}>
-            <RiArrowLeftLine />
+            <RiArrowLeftLine aria-hidden />
           </Button>
         )
       ) : null;

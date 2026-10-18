@@ -715,7 +715,7 @@ describe("kunji blocks", () => {
   it("DevicePairingFlow: mismatch cancels; expired code offers a new one", async () => {
     const { unmount } = render(<DevicePairingFlow adapter={createMockPairingAdapter({ latency: 5, peerAfter: 10 })} />);
     fireEvent.click(await screen.findByRole("button", { name: "They don't match" }));
-    await screen.findByRole("heading", { name: "Pairing cancelled" });
+    await screen.findByRole("heading", { name: "Pairing canceled" });
     unmount();
     render(<DevicePairingFlow adapter={createMockPairingAdapter({ latency: 5, peerAfter: 60_000, ttl: 30 })} />);
     expect(await screen.findByText("This pairing code expired.", undefined, { timeout: 2500 })).toBeInTheDocument();

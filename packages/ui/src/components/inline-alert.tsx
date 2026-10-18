@@ -7,9 +7,23 @@ import {
   RiInformationLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { CloseButton } from "./close-button";
 
+/** @deprecated Use `Tone` via the `tone` prop (`brand` is now `primary`). Kept as the `inlineAlertVariants` key set. */
 export type InlineAlertVariant = "info" | "success" | "warning" | "destructive" | "neutral" | "brand";
+
+/** Semantic tone of an `InlineAlert`: the canonical `Tone`, plus deprecated aliases. */
+export type InlineAlertTone = ToneInput;
+
+const variantForTone: Record<Tone, InlineAlertVariant> = {
+  info: "info",
+  success: "success",
+  warning: "warning",
+  destructive: "destructive",
+  neutral: "neutral",
+  primary: "brand",
+};
 
 export const inlineAlertVariants = cva(
   "relative flex w-full items-start gap-3 rounded-box px-4 py-3 text-sm [&>[data-slot=inline-alert-icon]]:mt-px",
@@ -66,7 +80,11 @@ const defaultIcons: Record<InlineAlertVariant, React.ComponentType<{ className?:
 
 export interface InlineAlertProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof inlineAlertVariants> {
+    Omit<VariantProps<typeof inlineAlertVariants>, "variant"> {
+  /** Semantic colour. Default `info`. */
+  tone?: InlineAlertTone | null;
+  /** @deprecated Use `tone` (`brand` → `primary`). */
+  variant?: InlineAlertVariant | InlineAlertTone | null;
   /** Custom icon; pass `false` or `null` to hide the default per-variant icon. */
   icon?: React.ReactNode | false;
   /** Shows a close button that calls this handler. */
@@ -76,14 +94,16 @@ export interface InlineAlertProps
 
 /** Contextual message placed inline with content (forms, panels, settings). */
 export const InlineAlert = React.forwardRef<HTMLDivElement, InlineAlertProps>(
-  ({ className, variant, appearance, icon, onDismiss, dismissLabel = "Dismiss", role, children, ...props }, ref) => {
-    const v: InlineAlertVariant = variant ?? "info";
+  ({ className, tone, variant, appearance, icon, onDismiss, dismissLabel = "Dismiss", role, children, ...props }, ref) => {
+    const t = normalizeTone(tone ?? variant, "info");
+    const v = variantForTone[t];
     const DefaultIcon = defaultIcons[v];
     const iconNode = icon === undefined ? <DefaultIcon /> : icon;
     return (
       <div
         ref={ref}
         role={role ?? (v === "destructive" || v === "warning" ? "alert" : "status")}
+        data-tone={t}
         data-variant={v}
         className={cn(inlineAlertVariants({ variant: v, appearance }), className)}
         {...props}

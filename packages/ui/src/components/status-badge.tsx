@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 
 export type StatusBadgeStatus =
   | "online"
@@ -16,8 +17,6 @@ export type StatusBadgeStatus =
   | "draft"
   | "processing";
 
-type Tone = "success" | "neutral" | "destructive" | "warning" | "info" | "brand";
-
 const statusMeta: Record<StatusBadgeStatus, { label: string; tone: Tone }> = {
   online: { label: "Online", tone: "success" },
   offline: { label: "Offline", tone: "neutral" },
@@ -31,29 +30,20 @@ const statusMeta: Record<StatusBadgeStatus, { label: string; tone: Tone }> = {
   warning: { label: "Warning", tone: "warning" },
   info: { label: "Info", tone: "info" },
   draft: { label: "Draft", tone: "neutral" },
-  processing: { label: "Processing", tone: "brand" },
+  processing: { label: "Processing", tone: "primary" },
 };
 
-const dotTone: Record<Tone, string> = {
-  success: "bg-success",
-  neutral: "bg-muted-foreground",
-  destructive: "bg-destructive",
-  warning: "bg-warning",
-  info: "bg-info",
-  brand: "bg-primary",
-};
-
-const softTone: Record<Tone, string> = {
-  success: "bg-success-soft text-success-soft-foreground",
-  neutral: "bg-muted text-muted-foreground",
-  destructive: "bg-destructive-soft text-destructive-soft-foreground",
-  warning: "bg-warning-soft text-warning-soft-foreground",
-  info: "bg-info-soft text-info-soft-foreground",
-  brand: "bg-primary-soft text-primary-soft-foreground",
-};
+/** Resolve the colour for a dot/badge: an explicit `tone` wins over the preset `status`. */
+function resolveTone(status: StatusBadgeStatus | undefined, tone: ToneInput | undefined): Tone {
+  if (tone) return normalizeTone(tone);
+  return status ? statusMeta[status].tone : "neutral";
+}
 
 export interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
-  status: StatusBadgeStatus;
+  /** Preset status (sets colour and default label). Optional when `tone` is given. */
+  status?: StatusBadgeStatus;
+  /** Open semantic colour; overrides the preset status colour. */
+  tone?: ToneInput;
   /** Animated halo. Defaults to true for `processing`. */
   pulse?: boolean;
   size?: "sm" | "md" | "lg";
@@ -63,10 +53,10 @@ export interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 /** Small colored dot indicating a status. */
 export const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
-  ({ className, status, pulse, size = "md", label, ...props }, ref) => {
-    const meta = statusMeta[status];
+  ({ className, status, tone, pulse, size = "md", label, ...props }, ref) => {
+    const dot = toneClasses.dot[resolveTone(status, tone)];
     const animate = pulse ?? status === "processing";
-    const text = label ?? meta.label;
+    const text = label ?? (status ? statusMeta[status].label : "");
     return (
       <span
         ref={ref}
@@ -84,11 +74,11 @@ export const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
           <span
             className={cn(
               "absolute inline-flex size-full rounded-full opacity-60 motion-safe:animate-ping",
-              dotTone[meta.tone]
+              dot
             )}
           />
         ) : null}
-        <span className={cn("relative inline-flex size-full rounded-full", dotTone[meta.tone])} />
+        <span className={cn("relative inline-flex size-full rounded-full", dot)} />
       </span>
     );
   }
@@ -96,7 +86,10 @@ export const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
 StatusDot.displayName = "StatusDot";
 
 export interface StatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  status: StatusBadgeStatus;
+  /** Preset status (sets colour and default label). Optional when `tone` is given. */
+  status?: StatusBadgeStatus;
+  /** Open semantic colour; overrides the preset status colour. */
+  tone?: ToneInput;
   /** Custom text; defaults to the status name. */
   label?: React.ReactNode;
   pulse?: boolean;
@@ -107,15 +100,15 @@ export interface StatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> 
 
 /** Status pill with a colored dot. */
 export const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
-  ({ className, status, label, pulse, variant = "soft", size = "md", children, ...props }, ref) => {
-    const meta = statusMeta[status];
+  ({ className, status, tone, label, pulse, variant = "soft", size = "md", children, ...props }, ref) => {
+    const resolved = resolveTone(status, tone);
     return (
       <span
         ref={ref}
         className={cn(
           "inline-flex shrink-0 items-center whitespace-nowrap font-medium leading-none",
           variant !== "plain" && "rounded-control border",
-          variant === "soft" && cn("border-transparent", softTone[meta.tone]),
+          variant === "soft" && cn("border-transparent", toneClasses.soft[resolved]),
           variant === "outline" && "border-border bg-background text-foreground shadow-xs",
           variant === "plain" && "text-foreground",
           size === "sm" && cn("gap-1.5 text-2xs", variant !== "plain" && "h-5 px-1.5"),
@@ -125,8 +118,8 @@ export const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
         )}
         {...props}
       >
-        <StatusDot status={status} pulse={pulse} size={size === "lg" ? "md" : "sm"} label="" />
-        {children ?? label ?? meta.label}
+        <StatusDot status={status} tone={resolved} pulse={pulse} size={size === "lg" ? "md" : "sm"} label="" />
+        {children ?? label ?? (status ? statusMeta[status].label : null)}
       </span>
     );
   }

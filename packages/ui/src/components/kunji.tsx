@@ -496,14 +496,14 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
             <span className="flex size-11 items-center justify-center rounded-full bg-success text-success-foreground shadow-md">
               <RiSmartphoneLine aria-hidden className="size-5" />
             </span>
-            <p className="text-sm font-semibold text-[#09090b]">Approve in kunji</p>
+            <p className="text-sm font-semibold text-(--n-950)">Approve in kunji</p>
           </div>
         )}
         {shown === "expired" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl p-4 text-center">
-            <p className="text-sm font-semibold text-[#09090b]">Code expired</p>
+            <p className="text-sm font-semibold text-(--n-950)">Code expired</p>
             {(onRefresh ?? onRetry) && (
-              <Button size="sm" variant="primary" leadingIcon={<RiRefreshLine />} onClick={onRefresh ?? onRetry}>
+              <Button size="sm" variant="primary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRefresh ?? onRetry}>
                 Get a new code
               </Button>
             )}
@@ -594,7 +594,7 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
           <KunjiMark variant="tile" size={48} />
           <p className="text-sm text-muted-foreground">Sign in with the kunji app on your phone. No password needed.</p>
           {onStart && (
-            <Button leadingIcon={<RiQrCodeLine />} onClick={onStart}>
+            <Button leadingIcon={<RiQrCodeLine aria-hidden />} onClick={onStart}>
               Show sign-in code
             </Button>
           )}
@@ -632,7 +632,7 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
           icon={RiCloseCircleLine}
           color="warning"
           title="Sign-in declined"
-          actions={(onRetry ?? onStart) && <Button leadingIcon={<RiRefreshLine />} onClick={onRetry ?? onStart}>Try again</Button>}
+          actions={(onRetry ?? onStart) && <Button leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry ?? onStart}>Try again</Button>}
         >
           The request was declined in kunji. If that wasn't you, nothing happened: no one was signed in.
         </StatusPanel>
@@ -671,14 +671,14 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
           icon={RiErrorWarningLine}
           color="destructive"
           title="kunji sign-in is unavailable"
-          actions={(onRetry ?? onStart) && <Button leadingIcon={<RiRefreshLine />} onClick={onRetry ?? onStart}>Try again</Button>}
+          actions={(onRetry ?? onStart) && <Button leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry ?? onStart}>Try again</Button>}
         >
           {state.error ?? "Something went wrong talking to the server."}
         </StatusPanel>
       );
     } else {
       const qrArea = mobileHero && !qrOpen ? (
-        <Button variant="ghost" size="sm" leadingIcon={<RiQrCodeLine />} onClick={() => setQrOpen(true)}>
+        <Button variant="ghost" size="sm" leadingIcon={<RiQrCodeLine aria-hidden />} onClick={() => setQrOpen(true)}>
           Show QR for another device
         </Button>
       ) : (
@@ -720,7 +720,7 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
                         shown === "scanned" && i < 2 ? "bg-success text-success-foreground" : "bg-muted text-foreground"
                       )}
                     >
-                      {shown === "scanned" && i < 2 ? <RiCheckLine className="size-3" /> : i + 1}
+                      {shown === "scanned" && i < 2 ? <RiCheckLine aria-hidden className="size-3" /> : i + 1}
                     </span>
                     <span>{step}</span>
                   </li>
@@ -787,7 +787,7 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
             {liveText}
           </p>
           {state.slow && (shown === "loading" || shown === "scanned") && (onRetry ?? onStart) && (
-            <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine />} onClick={onRetry ?? onStart}>
+            <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry ?? onStart}>
               Start over
             </Button>
           )}
@@ -867,14 +867,20 @@ export interface KunjiButtonProps
   onError?: (error: unknown) => void;
   /** Props for the `KunjiSignIn` inside the dialog. */
   signInProps?: Partial<Omit<KunjiSignInProps, "client" | "onSuccess" | "onError">>;
+  /** Controlled dialog open state. */
   open?: boolean;
+  /** Initial dialog open state when uncontrolled. Default false. */
+  defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
 /** Brand "Sign in with kunji" button that opens `KunjiSignIn` in a dialog. */
 export const KunjiButton = React.forwardRef<HTMLButtonElement, KunjiButtonProps>(
-  ({ client, onSuccess, onError, signInProps, open: openProp, onOpenChange, theme, size, fullWidth, className, children, ...props }, ref) => {
-    const [open, setOpen] = useControllableState({ value: openProp, defaultValue: false, onChange: onOpenChange });
+  (
+    { client, onSuccess, onError, signInProps, open: openProp, defaultOpen = false, onOpenChange, theme, size, fullWidth, className, children, ...props },
+    ref
+  ) => {
+    const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
@@ -934,7 +940,7 @@ export const KunjiLinkedBadge = React.forwardRef<HTMLSpanElement, KunjiLinkedBad
       ref={ref}
       color={linked ? "success" : "neutral"}
       size={size}
-      leadingIcon={linked ? <RiCheckLine /> : <KunjiMark />}
+      leadingIcon={linked ? <RiCheckLine aria-hidden /> : <KunjiMark />}
       title={sub ? `kunji identity ${formatKunjiSub(sub, 6, 6)}` : undefined}
       data-slot="kunji-linked-badge"
       className={className}
@@ -1074,7 +1080,7 @@ export const KunjiLink = React.forwardRef<HTMLDivElement, KunjiLinkProps>(
                 variant="secondary"
                 size="sm"
                 className="self-start"
-                leadingIcon={<RiLinkUnlinkM />}
+                leadingIcon={<RiLinkUnlinkM aria-hidden />}
                 loading={mode === "unlinking"}
                 onClick={() => void unlink()}
               >
@@ -1087,7 +1093,7 @@ export const KunjiLink = React.forwardRef<HTMLDivElement, KunjiLinkProps>(
             variant="secondary"
             size="sm"
             className="self-start"
-            leadingIcon={<RiLinkM />}
+            leadingIcon={<RiLinkM aria-hidden />}
             onClick={() => {
               setError(null);
               setMode("scanning");
@@ -1397,7 +1403,7 @@ export const AccessGate = React.forwardRef<HTMLDivElement, AccessGateProps>(
             {adapter.claim && (
               <Button
                 className="self-start"
-                leadingIcon={<RiKey2Line />}
+                leadingIcon={<RiKey2Line aria-hidden />}
                 loading={busy}
                 onClick={() =>
                   void run(async () => {
@@ -1504,7 +1510,7 @@ export const AuthProblem = React.forwardRef<HTMLDivElement, AuthProblemProps>(
     }, [variant, onRetry]);
 
     const retry = onRetry && (
-      <Button variant="secondary" leadingIcon={<RiRefreshLine />} onClick={onRetry}>
+      <Button variant="secondary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry}>
         Try again
       </Button>
     );
@@ -1539,7 +1545,7 @@ export const AuthProblem = React.forwardRef<HTMLDivElement, AuthProblemProps>(
         title: `${capitalize(providerName)}'s sign-in is not answering`,
         body: <>{appName} asked {providerName} who you are and got no answer. Nothing else is affected. This page tries again every few seconds.</>,
         actions: onRetry && (
-          <Button variant="secondary" leadingIcon={<RiRefreshLine />} onClick={onRetry}>
+          <Button variant="secondary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry}>
             Try again now
           </Button>
         ),

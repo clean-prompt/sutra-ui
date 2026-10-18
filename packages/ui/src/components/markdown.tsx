@@ -147,9 +147,9 @@ function MarkdownCodeBlock({ code, language }: MarkdownCodeBlockProps) {
           )}
         >
           {copied ? (
-            <RiCheckLine key="check" className="size-3.5 animate-in zoom-in-50 duration-200" />
+            <RiCheckLine aria-hidden key="check" className="size-3.5 animate-in zoom-in-50 duration-200" />
           ) : (
-            <RiFileCopyLine key="copy" className="size-3.5" />
+            <RiFileCopyLine aria-hidden key="copy" className="size-3.5" />
           )}
           <span>{copied ? "Copied" : "Copy"}</span>
         </button>

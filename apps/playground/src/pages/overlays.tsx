@@ -367,7 +367,7 @@ function HoverCardDemo() {
       title="Hover card"
       description="Preview content for sighted mouse users when hovering a link or mention."
     >
-      <Text size="sm" tone="muted" className="max-w-md text-center">
+      <Text size="sm" tone="neutral" className="max-w-md text-center">
         The new onboarding flow was designed by{" "}
         <HoverCard>
           <HoverCardTrigger asChild>
@@ -622,7 +622,7 @@ function DropdownMenuDemo() {
             <DropdownMenuRadioItem value="system">System</DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem icon={<RiLogoutBoxRLine />} variant="destructive" shortcut="⇧⌘Q">
+          <DropdownMenuItem icon={<RiLogoutBoxRLine />} tone="destructive" shortcut="⇧⌘Q">
             Log out
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -645,7 +645,7 @@ function DropdownMenuDemo() {
             Archive
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem icon={<RiDeleteBinLine />} variant="destructive">
+          <DropdownMenuItem icon={<RiDeleteBinLine />} tone="destructive">
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -690,7 +690,7 @@ function ContextMenuDemo() {
             Show grid
           </ContextMenuCheckboxItem>
           <ContextMenuSeparator />
-          <ContextMenuItem icon={<RiDeleteBinLine />} variant="destructive" shortcut="⌫">
+          <ContextMenuItem icon={<RiDeleteBinLine />} tone="destructive" shortcut="⌫">
             Delete
           </ContextMenuItem>
         </ContextMenuContent>

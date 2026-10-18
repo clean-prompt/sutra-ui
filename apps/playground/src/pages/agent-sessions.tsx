@@ -321,7 +321,7 @@ function TodoListDemo() {
   }, []);
   const items: AgentTodoItem[] = todoPlan.map((t, i) => ({
     ...t,
-    status: i < step - 1 ? "completed" : i === step - 1 ? "in_progress" : "pending",
+    status: i < step - 1 ? "succeeded" : i === step - 1 ? "running" : "pending",
   }));
   return (
     <Demo id="agent-todo-list" title="Todo list" description="Progresses on a timer. The compact variant sits inline in a transcript." align="start">
@@ -329,7 +329,7 @@ function TodoListDemo() {
         <AgentTodoList items={items} />
         <div className="space-y-1">
           <DemoLabel>Compact</DemoLabel>
-          <AgentTodoList items={items} variant="compact" title="Update Todos" />
+          <AgentTodoList items={items} density="compact" title="Update Todos" />
         </div>
       </div>
     </Demo>

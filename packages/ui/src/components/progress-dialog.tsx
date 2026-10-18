@@ -2,9 +2,11 @@ import * as React from "react";
 import { RiCheckLine, RiCloseCircleLine, RiErrorWarningLine, RiLoader4Line } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { clamp } from "../lib/math";
+import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
+import type { Tone } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
-import { Progress, type ProgressColor } from "./progress";
+import { Progress } from "./progress";
 import {
   ConfirmDialog,
   Dialog,
@@ -23,6 +25,13 @@ import { LogViewer, type LogLine } from "./log-viewer";
 /* ------------------------------------------------------------------ */
 
 export type StreamingTaskState = "idle" | "running" | "succeeded" | "failed" | "canceled";
+
+/** Map any lifecycle spelling (`pending`, `cancelled`, `done`, `error`…) to a `StreamingTaskState`. "pending" → "idle". */
+export function toStreamingTaskState(state: StreamingTaskState | TaskStatusInput | null | undefined): StreamingTaskState {
+  if (state === "idle") return "idle";
+  const s = normalizeTaskStatus(state);
+  return s === "pending" ? "idle" : s;
+}
 
 export interface StreamingTaskEvent {
   /** 0–100, or `null` for indeterminate. */
@@ -242,7 +251,7 @@ const stateLabel: Record<StreamingTaskState, string> = {
   canceled: "Canceled",
 };
 
-const stateColor: Record<StreamingTaskState, ProgressColor> = {
+const stateColor: Record<StreamingTaskState, Tone> = {
   idle: "primary",
   running: "primary",
   succeeded: "success",
@@ -251,9 +260,9 @@ const stateColor: Record<StreamingTaskState, ProgressColor> = {
 };
 
 const stateTone: Partial<Record<StreamingTaskState, { tone: DialogTone; icon: React.ReactNode }>> = {
-  succeeded: { tone: "success", icon: <RiCheckLine /> },
-  failed: { tone: "destructive", icon: <RiErrorWarningLine /> },
-  canceled: { tone: "default", icon: <RiCloseCircleLine /> },
+  succeeded: { tone: "success", icon: <RiCheckLine aria-hidden /> },
+  failed: { tone: "destructive", icon: <RiErrorWarningLine aria-hidden /> },
+  canceled: { tone: "default", icon: <RiCloseCircleLine aria-hidden /> },
 };
 
 export interface ProgressDialogProps {
@@ -264,7 +273,8 @@ export interface ProgressDialogProps {
   description?: React.ReactNode;
   /** Pull state, progress, phase, logs, error, cancel and retry from `useStreamingTask`. Explicit props win. */
   task?: UseStreamingTaskResult;
-  state?: StreamingTaskState;
+  /** Lifecycle state. Accepts canonical `TaskStatus` spellings too ("pending" = idle, "cancelled", "done", "error"…). */
+  state?: StreamingTaskState | TaskStatusInput;
   /** 0–100, or `null` for indeterminate. */
   progress?: number | null;
   /** Current phase, e.g. "Downloading…". */
@@ -324,7 +334,7 @@ export function ProgressDialog({
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   const [confirming, setConfirming] = React.useState(false);
 
-  const state = stateProp ?? task?.state ?? "idle";
+  const state = toStreamingTaskState(stateProp ?? task?.state ?? "idle");
   const progress = progressProp !== undefined ? progressProp : (task?.progress ?? 0);
   const phase = phaseProp ?? task?.phase;
   const logs = logsProp ?? task?.logs;
@@ -382,7 +392,7 @@ export function ProgressDialog({
                   aria-label="Progress"
                   value={indeterminate ? null : (pct ?? 0)}
                   indeterminate={indeterminate}
-                  color={stateColor[state]}
+                  tone={stateColor[state]}
                 />
               </div>
             )}

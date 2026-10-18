@@ -2,9 +2,20 @@ import * as React from "react";
 import { cva } from "class-variance-authority";
 import { RiCheckLine, RiCloseLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { normalizeTone, type ToneInput } from "../lib/tone";
 
 export type ChipVariant = "outline" | "soft" | "solid";
+/** @deprecated Use `ToneInput` with the `tone` prop (`brand` is `primary`). */
 export type ChipColor = "neutral" | "brand" | "success" | "warning" | "destructive" | "info";
+
+/** Resolve `tone` (canonical) or the legacy `color` to the chip's internal colour key. */
+function chipColor(tone: ToneInput | undefined, color: ChipColor | undefined): ChipColor | undefined {
+  if (tone) {
+    const t = normalizeTone(tone);
+    return t === "primary" ? "brand" : t;
+  }
+  return color;
+}
 export type ChipSize = "sm" | "md" | "lg";
 
 export const chipVariants = cva(
@@ -78,6 +89,9 @@ const ChipGroupContext = React.createContext<ChipGroupContextValue | null>(null)
 export interface ChipProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color" | "value"> {
   variant?: ChipVariant;
+  /** Semantic colour. Default `neutral` (`primary` inside a `ChipGroup`). */
+  tone?: ToneInput;
+  /** @deprecated Use `tone` (`brand` is `primary`). */
   color?: ChipColor;
   size?: ChipSize;
   /** Controlled toggle state (renders `aria-pressed`). */
@@ -105,6 +119,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
       className,
       wrapperClassName,
       variant: variantProp,
+      tone: toneProp,
       color: colorProp,
       size: sizeProp,
       selected: selectedProp,
@@ -127,7 +142,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
   ) => {
     const group = React.useContext(ChipGroupContext);
     const variant = variantProp ?? group?.variant ?? "outline";
-    const color = colorProp ?? group?.color ?? (group ? "brand" : "neutral");
+    const color = chipColor(toneProp, colorProp) ?? group?.color ?? (group ? "brand" : "neutral");
     const size = sizeProp ?? group?.size ?? "md";
     const disabled = disabledProp ?? group?.disabled;
 
@@ -163,7 +178,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
             selected && (size === "sm" ? "w-3.5" : "w-4")
           )}
         >
-          <RiCheckLine />
+          <RiCheckLine aria-hidden />
         </span>
       ) : null);
 
@@ -237,6 +252,9 @@ Chip.displayName = "Chip";
 interface ChipGroupBaseProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "color" | "defaultValue" | "onChange"> {
   variant?: ChipVariant;
+  /** Semantic colour for every chip in the group. Default `primary`. */
+  tone?: ToneInput;
+  /** @deprecated Use `tone` (`brand` is `primary`). */
   color?: ChipColor;
   size?: ChipSize;
   disabled?: boolean;
@@ -270,7 +288,8 @@ export const ChipGroup = React.forwardRef<HTMLDivElement, ChipGroupProps>((allPr
   const {
     className,
     variant,
-    color,
+    tone,
+    color: colorProp,
     size,
     disabled,
     type = "single",
@@ -281,6 +300,7 @@ export const ChipGroup = React.forwardRef<HTMLDivElement, ChipGroupProps>((allPr
   } = allProps;
   const { allowDeselect = true, ...props } = rest as typeof rest & { allowDeselect?: boolean };
 
+  const color = chipColor(tone, colorProp);
   const [inner, setInner] = React.useState<string[]>(() => toArray(defaultValue));
   const controlled = value !== undefined;
   const current = controlled ? toArray(value) : inner;

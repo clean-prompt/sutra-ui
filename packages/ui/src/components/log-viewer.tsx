@@ -543,6 +543,9 @@ export interface LogViewerProps extends Omit<React.HTMLAttributes<HTMLDivElement
   toolbarExtra?: React.ReactNode;
   /** Called by the "Reconnect" button shown while disconnected. */
   onReconnect?: () => void;
+  /** Shown when there are no lines (and no filter/connection message applies). Default "No log lines yet". */
+  emptyState?: React.ReactNode;
+  /** @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
   "aria-label"?: string;
 }
@@ -623,7 +626,8 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
       hideToolbar,
       toolbarExtra,
       onReconnect,
-      emptyMessage = "No log lines yet",
+      emptyState,
+      emptyMessage,
       className,
       "aria-label": ariaLabel = "Logs",
       ...props
@@ -777,7 +781,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
         );
       else if (status === "disconnected") empty = "Disconnected";
       else if (status === "error") empty = "Log stream failed";
-      else empty = emptyMessage;
+      else empty = emptyState ?? emptyMessage ?? "No log lines yet";
     }
 
     return (
@@ -845,13 +849,13 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
                 </span>
               )}
               <ToolbarToggle pressed={!!showTs} onPressedChange={setShowTs} label="Show timestamps">
-                <RiTimeLine />
+                <RiTimeLine aria-hidden />
               </ToolbarToggle>
               <ToolbarToggle pressed={!!showNums} onPressedChange={setShowNums} label="Show line numbers">
-                <RiListOrdered />
+                <RiListOrdered aria-hidden />
               </ToolbarToggle>
               <ToolbarToggle pressed={!!wrap} onPressedChange={setWrap} label="Wrap lines">
-                <RiTextWrap />
+                <RiTextWrap aria-hidden />
               </ToolbarToggle>
               <Button
                 type="button"
@@ -862,7 +866,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
                 onClick={() => (paused ? resume() : setPaused(true))}
                 className="text-muted-foreground"
               >
-                {paused ? <RiPlayLine /> : <RiPauseLine />}
+                {paused ? <RiPlayLine aria-hidden /> : <RiPauseLine aria-hidden />}
               </Button>
               <CopyButton value={asText} size="md" label="Copy visible lines" className="rounded-control" />
               <Button
@@ -874,7 +878,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
                 onClick={download}
                 className="text-muted-foreground"
               >
-                <RiDownloadLine />
+                <RiDownloadLine aria-hidden />
               </Button>
             </div>
           </div>

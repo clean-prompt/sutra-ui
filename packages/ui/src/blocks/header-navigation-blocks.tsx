@@ -96,7 +96,7 @@ function SearchTrigger({
         </span>
       </button>
       <Button variant="ghost" size="icon" aria-label="Search" onClick={onClick} className="sm:hidden">
-        <RiSearchLine />
+        <RiSearchLine aria-hidden />
       </Button>
     </>
   );
@@ -140,7 +140,7 @@ export const MarketingHeader = React.forwardRef<HTMLElement, MarketingHeaderProp
       homeHref = "/",
       loginHref = "#login",
       signupHref = "#signup",
-      loginLabel = "Log in",
+      loginLabel = "Sign in",
       signupLabel = "Get started",
       renderLink,
       getAppHref = (app) => `#${app}`,
@@ -315,9 +315,9 @@ const defaultCommandGroups: AppHeaderCommandGroup[] = [
   {
     heading: "Quick actions",
     items: [
-      { value: "new-note", label: "New note", icon: <RiStickyNoteLine />, shortcut: ["⌥", "N"] },
-      { value: "new-task", label: "New task", icon: <RiCheckboxCircleLine />, shortcut: ["⌥", "T"] },
-      { value: "new-event", label: "New event", icon: <RiCalendarEventLine />, shortcut: ["⌥", "E"] },
+      { value: "new-note", label: "New note", icon: <RiStickyNoteLine aria-hidden />, shortcut: ["⌥", "N"] },
+      { value: "new-task", label: "New task", icon: <RiCheckboxCircleLine aria-hidden />, shortcut: ["⌥", "T"] },
+      { value: "new-event", label: "New event", icon: <RiCalendarEventLine aria-hidden />, shortcut: ["⌥", "E"] },
     ],
   },
   {
@@ -331,8 +331,8 @@ const defaultCommandGroups: AppHeaderCommandGroup[] = [
   {
     heading: "Navigation",
     items: [
-      { value: "home", label: "Go to Home", icon: <RiHome5Line />, shortcut: ["G", "H"] },
-      { value: "settings", label: "Settings", icon: <RiSettings3Line />, shortcut: ["⌘", ","] },
+      { value: "home", label: "Go to Home", icon: <RiHome5Line aria-hidden />, shortcut: ["G", "H"] },
+      { value: "settings", label: "Settings", icon: <RiSettings3Line aria-hidden />, shortcut: ["⌘", ","] },
     ],
   },
 ];
@@ -363,7 +363,7 @@ export const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>(
       <header
         ref={ref}
         className={cn(
-          "@container sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b border-border bg-background/85 px-3 backdrop-blur-md sm:px-4",
+          "@container sticky top-0 z-40 flex h-14 shrink-0 items-center gap-2 border-b border-border bg-background/85 px-3 backdrop-blur-md sm:px-4",
           className
         )}
         {...props}
@@ -383,13 +383,13 @@ export const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>(
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <SearchTrigger onClick={() => setOpen(true)} placeholder={searchPlaceholder} className="w-60 lg:w-72" />
           {actions}
-          <NotificationsMenu notifications={notifications} />
+          <NotificationsMenu defaultNotifications={notifications} />
           <UserAccountMenu user={user} onSignOut={onSignOut} onSelect={onAccountSelect} />
         </div>
         <CommandDialog open={open} onOpenChange={setOpen}>
           <CommandInput placeholder="Type a command or search…" />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>No results found</CommandEmpty>
             {commandGroups.map((group, gi) => (
               <React.Fragment key={gi}>
                 {gi > 0 && <CommandSeparator />}
@@ -647,7 +647,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
           <SimpleTooltip content="GitHub">
             <Button asChild variant="ghost" size="icon">
               <a href={githubHref} target="_blank" rel="noreferrer noopener" aria-label="GitHub repository">
-                <RiGithubFill />
+                <RiGithubFill aria-hidden />
               </a>
             </Button>
           </SimpleTooltip>
@@ -658,7 +658,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
               onClick={toggleTheme}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             >
-              {theme === "dark" ? <RiSunLine /> : <RiMoonLine />}
+              {theme === "dark" ? <RiSunLine aria-hidden /> : <RiMoonLine aria-hidden />}
             </Button>
           </SimpleTooltip>
           <HeaderNavMobile items={links.map((l) => ({ label: l.label, href: l.href }))} brand={brand} renderLink={renderLink} />
@@ -666,7 +666,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
         <CommandDialog open={open} onOpenChange={setOpen} title="Search documentation">
           <CommandInput placeholder="Search documentation…" />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>No results found</CommandEmpty>
             {sections.map((section) => (
               <CommandGroup key={section} heading={section}>
                 {searchItems
@@ -675,7 +675,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
                     <CommandItem
                       key={item.value}
                       value={`${item.value} ${item.label}`}
-                      icon={section === "Components" ? <RiCodeSSlashLine /> : section === "Blocks" ? <RiBookOpenLine /> : <RiFileTextLine />}
+                      icon={section === "Components" ? <RiCodeSSlashLine aria-hidden /> : section === "Blocks" ? <RiBookOpenLine aria-hidden /> : <RiFileTextLine aria-hidden />}
                       onSelect={() => {
                         setOpen(false);
                         onSearchSelect?.(item);

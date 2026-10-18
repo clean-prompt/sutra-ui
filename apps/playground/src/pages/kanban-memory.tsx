@@ -69,7 +69,7 @@ const initialBoard: KanbanBoardModel = {
     { id: "SUT-109", title: "Onboarding copy pass", columnId: "doing", labels: ["docs"], priority: "low", assigneeId: "lin", subtasks: { done: 4, total: 4 } },
     { id: "SUT-110", title: "Kanban drag & drop announcements", columnId: "review", labels: ["feature"], priority: "medium", assigneeId: "dev", runStatus: "succeeded", commentCount: 6 },
     { id: "SUT-111", title: "Agent run log streaming", columnId: "review", labels: ["feature", "infra"], priority: "high", assigneeId: "conductor", subtasks: { done: 3, total: 4 } },
-    { id: "SUT-112", title: "Research CRDT libraries", columnId: "review", labels: ["docs"], assigneeId: "scout", runStatus: "queued" },
+    { id: "SUT-112", title: "Research CRDT libraries", columnId: "review", labels: ["docs"], assigneeId: "scout", runStatus: "pending" },
     { id: "SUT-113", title: "Ship v0.4 release notes", columnId: "done", labels: ["docs"], assigneeId: "asha", dueDate: inDays(-5) },
     { id: "SUT-114", title: "Upgrade to React 19", columnId: "done", labels: ["infra"], assigneeId: "builder", runStatus: "succeeded" },
     { id: "SUT-115", title: "Avatar builder polish", columnId: "done", labels: ["design"], assigneeId: "lin" },
@@ -108,7 +108,7 @@ function runsFor(card: KanbanCardData): KanbanTaskRun[] {
   const runs: KanbanTaskRun[] = [
     { id: `${card.id}-r1`, agentId: a.id, status: "failed", startedAt: now - 3 * 3600_000, endedAt: now - 3 * 3600_000 + 252_000, model: "balanced", summary: "Tests failed after edit.", log: sampleLog },
   ];
-  if (card.runStatus) runs.unshift({ id: `${card.id}-r2`, agentId: a.id, status: card.runStatus, startedAt: now - 8 * 60_000, endedAt: card.runStatus === "running" || card.runStatus === "queued" ? undefined : now - 60_000, model: card.model ?? "deep", log: sampleLog.slice(0, 30) });
+  if (card.runStatus) runs.unshift({ id: `${card.id}-r2`, agentId: a.id, status: card.runStatus, startedAt: now - 8 * 60_000, endedAt: card.runStatus === "running" || card.runStatus === "pending" ? undefined : now - 60_000, model: card.model ?? "deep", log: sampleLog.slice(0, 30) });
   return runs;
 }
 
@@ -302,7 +302,7 @@ function OrchestrationDemo() {
         }}
         participants={[
           { agent: people[3]!, role: "Implements the scrubber and playback", status: "running" },
-          { agent: people[4]!, role: "Reviews the diff and runs the test suite", status: "queued" },
+          { agent: people[4]!, role: "Reviews the diff and runs the test suite", status: "pending" },
           { agent: people[5]!, status: "idle" },
         ]}
       />

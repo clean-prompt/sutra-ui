@@ -27,7 +27,7 @@ import {
   type BackgroundPatternVariant,
   type EmojiReactionItem,
   type EmptyStateIllustrationVariant,
-  type FeaturedIconColor,
+  type Tone,
   type FeaturedIconVariant,
   type IconComponent,
   type SutraLogoSize,
@@ -248,9 +248,9 @@ function PlaceholderLogosDemo() {
 /* ------------------------------------------------------------------ */
 
 const featuredVariants: FeaturedIconVariant[] = ["soft", "solid", "outline-ring", "glass"];
-const featuredColors: FeaturedIconColor[] = ["brand", "neutral", "success", "warning", "destructive", "info"];
-const featuredColorIcons: Record<FeaturedIconColor, IconComponent> = {
-  brand: RiSparklingLine,
+const featuredTones: Tone[] = ["primary", "neutral", "success", "warning", "destructive", "info"];
+const featuredToneIcons: Record<Tone, IconComponent> = {
+  primary: RiSparklingLine,
   neutral: RiSettings3Line,
   success: RiCheckboxCircleLine,
   warning: RiErrorWarningLine,
@@ -277,8 +277,8 @@ function FeaturedIconDemo() {
                 : "flex flex-wrap items-center gap-4"
             }
           >
-            {featuredColors.map((color) => (
-              <FeaturedIcon key={color} variant={variant} color={color} icon={featuredColorIcons[color]} label={color} />
+            {featuredTones.map((tone) => (
+              <FeaturedIcon key={tone} variant={variant} tone={tone} icon={featuredToneIcons[tone]} label={tone} />
             ))}
           </div>
         </div>
@@ -294,18 +294,18 @@ function FeaturedIconDemo() {
             <FeaturedIcon key={`sq-${size}`} size={size} shape="square" variant="solid" icon={RiFlashlightLine} />
           ))}
           {(["sm", "md", "lg", "xl"] as const).map((size) => (
-            <FeaturedIcon key={`ring-${size}`} size={size} variant="outline-ring" color="success" icon={RiShieldCheckLine} />
+            <FeaturedIcon key={`ring-${size}`} size={size} variant="outline-ring" tone="success" icon={RiShieldCheckLine} />
           ))}
         </div>
       </div>
 
       <div className="flex max-w-sm gap-4 rounded-box border border-border bg-card p-4">
-        <FeaturedIcon variant="outline-ring" color="brand" icon={RiTeamLine} />
+        <FeaturedIcon variant="outline-ring" tone="primary" icon={RiTeamLine} />
         <div className="space-y-1">
           <Heading as="h4" size="sm">
             Invite your team
           </Heading>
-          <Text size="sm" tone="muted">
+          <Text size="sm" tone="neutral">
             Share projects and track progress together. Seats are free until March.
           </Text>
         </div>
@@ -492,7 +492,7 @@ function EmojiReactionsDemo() {
           <Text size="sm" weight="semibold">
             Priya Raman
           </Text>
-          <Text size="sm" tone="muted">
+          <Text size="sm" tone="neutral">
             The new onboarding flow shipped to everyone this morning. Activation is up 18% in the first cohort.
           </Text>
         </div>
@@ -513,7 +513,7 @@ function EmojiReactionsDemo() {
 
       <div className="flex flex-wrap items-start gap-6">
         <EmojiPicker onSelect={(emoji) => setPicked(emoji)} />
-        <Text size="sm" tone="muted">
+        <Text size="sm" tone="neutral">
           {picked ? (
             <>
               Selected <span className="text-2xl">{picked}</span>
@@ -597,7 +597,7 @@ function EmptyStateDemo() {
               <Heading as="h4" size="sm">
                 {title}
               </Heading>
-              <Text size="sm" tone="muted">
+              <Text size="sm" tone="neutral">
                 {caption}
               </Text>
             </div>
@@ -622,7 +622,7 @@ function SampleScreen({ compact }: { compact?: boolean }) {
     <div className={compact ? "space-y-3 p-4" : "space-y-4 p-6"}>
       <div className="flex items-center justify-between">
         <SutraLogo size="sm" product="tasks" />
-        <Icon as={RiNotification3Line} tone="muted" />
+        <Icon as={RiNotification3Line} tone="neutral" />
       </div>
       <Heading as="h4" size={compact ? "md" : "lg"}>
         Today
@@ -655,7 +655,7 @@ function DeviceFrameDemo() {
         </DeviceFrame>
         <DeviceFrame variant="browser" url="sutra.app/pricing" trafficLights={false} className="max-w-md">
           <div className="flex h-32 items-center justify-center bg-muted">
-            <Text size="sm" tone="muted">
+            <Text size="sm" tone="neutral">
               Neutral window controls
             </Text>
           </div>
@@ -704,7 +704,7 @@ function BackgroundPatternDemo() {
             <BackgroundPattern variant={variant} />
             <div className="relative text-center">
               <Text weight="semibold">{variant}</Text>
-              <Text size="xs" tone="muted">
+              <Text size="xs" tone="neutral">
                 fade="radial"
               </Text>
             </div>
@@ -719,7 +719,7 @@ function BackgroundPatternDemo() {
             className="relative flex h-32 items-center justify-center overflow-hidden rounded-box border border-border bg-card"
           >
             <BackgroundPattern variant="grid" cellSize={20} fade={fade} />
-            <Text size="sm" tone="muted" className="relative">
+            <Text size="sm" tone="neutral" className="relative">
               fade="{fade}"
             </Text>
           </div>
@@ -733,7 +733,7 @@ function BackgroundPatternDemo() {
           <Heading as="h4" size="display-xs">
             Your work, tied together
           </Heading>
-          <Text tone="muted">Notes, tasks and calendar in one calm workspace.</Text>
+          <Text tone="neutral">Notes, tasks and calendar in one calm workspace.</Text>
           <Button trailingIcon={<RiArrowRightLine />}>Get started</Button>
         </div>
       </div>

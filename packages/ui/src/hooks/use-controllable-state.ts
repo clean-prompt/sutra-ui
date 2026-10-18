@@ -31,7 +31,10 @@ export function useControllableState<T>({
   const setValue = React.useCallback((next: T | ((prev: T) => T)) => {
     const prev = latestRef.current;
     const resolved = typeof next === "function" ? (next as (prev: T) => T)(prev) : next;
-    if (Object.is(resolved, prev)) return;
+    // Uncontrolled: skip no-op updates. Controlled: only skip when the request matches what the
+    // parent last rendered, so repeated requests (e.g. two "close" gestures while the parent keeps
+    // `open` true) are each reported, as Radix-style onOpenChange callers expect.
+    if (Object.is(resolved, isControlledRef.current ? renderedRef.current : prev)) return;
     latestRef.current = resolved;
     if (isControlledRef.current) {
       // A parent may ignore the change and never re-render; fall back to the rendered value after this tick.

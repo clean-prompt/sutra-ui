@@ -148,7 +148,7 @@ describe("BrowserConsole", () => {
     expect(within(log).getByText("TypeError: x is undefined")).toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("searchbox", { name: "Filter console" }), { target: { value: "zzz" } });
-    expect(within(log).getByText("No messages match.")).toBeInTheDocument();
+    expect(within(log).getByText("No messages match")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Clear console" }));
     expect(onClear).toHaveBeenCalled();
   });

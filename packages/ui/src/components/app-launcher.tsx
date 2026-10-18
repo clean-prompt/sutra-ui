@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiAppsLine } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { formatBadgeCount } from "../lib/format";
 import { initials } from "../lib/text";
 import { SutraAppIcon, type SutraApp } from "../assets/brand";
@@ -57,6 +57,8 @@ export interface AppLauncherProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   label?: string;
   /** Hide tile labels (dock). */
   hideLabels?: boolean;
+  /** Tile padding. Default: `compact` for the dock, `normal` otherwise. */
+  density?: Density;
 }
 
 interface TileProps {
@@ -150,6 +152,7 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
       iconSize: iconSizeProp,
       label = "Apps",
       hideLabels,
+      density,
       className,
       ...props
     },
@@ -165,6 +168,7 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
     }
 
     const isDock = variant === "dock";
+    const tileDensity = normalizeDensity(density, isDock ? "compact" : "normal");
     const columns = isDock ? Math.max(visible.length, 1) : (columnsProp ?? 4);
     const iconSize = iconSizeProp ?? (isDock ? 44 : 52);
     const current = Math.min(active, Math.max(visible.length - 1, 0));
@@ -226,12 +230,13 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
           />
         ) : null}
         {visible.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">No apps match “{query}”.</p>
+          <p className="py-6 text-center text-sm text-muted-foreground">No apps match “{query}”</p>
         ) : (
           <ul
             aria-label={label}
             onKeyDown={onKeyDown}
             data-variant={variant}
+            data-density={tileDensity}
             className={cn(
               "grid gap-1",
               isDock && "glass w-fit rounded-2xl border border-border p-1.5 shadow-lg"
@@ -245,7 +250,7 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
                   iconSize={iconSize}
                   tabIndex={index === current ? 0 : -1}
                   hideLabel={hideLabels ?? isDock}
-                  compact={isDock}
+                  compact={tileDensity === "compact"}
                   onActivate={activate}
                   onFocusTile={() => setActive(index)}
                   tileRef={(el) => {

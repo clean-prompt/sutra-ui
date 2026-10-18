@@ -21,6 +21,7 @@ import {
   RiUserMinusLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { toneClasses } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useCopy } from "../hooks/use-copy";
 import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
@@ -239,7 +240,7 @@ function MemberRoleMenu({
           ))}
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" icon={<RiUserMinusLine />} onSelect={onRemove}>
+        <DropdownMenuItem variant="destructive" icon={<RiUserMinusLine aria-hidden />} onSelect={onRemove}>
           Remove access
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -304,7 +305,13 @@ export interface InviteMembersDialogProps extends BlockDialogBaseProps {
   description?: React.ReactNode;
   roles?: SelectOption[];
   defaultRole?: string;
+  /**
+   * Controlled member list when paired with `onMembersChange`. Passed alone it only seeds the
+   * list (deprecated: use `defaultMembers` for that).
+   */
   members?: DialogMember[];
+  /** Initial member list when uncontrolled. */
+  defaultMembers?: DialogMember[];
   onMembersChange?: (members: DialogMember[]) => void;
   inviteLink?: string;
   onInvite?: (emails: string[], role: string) => unknown;
@@ -317,6 +324,7 @@ export function InviteMembersDialog({
   roles = defaultRoles,
   defaultRole = "member",
   members: membersProp,
+  defaultMembers: defaultMembersProp,
   onMembersChange,
   inviteLink = "https://sutra.app/join/northwind-7f3k2q",
   onInvite,
@@ -330,7 +338,7 @@ export function InviteMembersDialog({
   const [rejected, setRejected] = React.useState<string | null>(null);
   const [members, setMembers] = useControllableState<DialogMember[]>({
     value: membersProp && onMembersChange ? membersProp : undefined,
-    defaultValue: membersProp ?? defaultMembers,
+    defaultValue: defaultMembersProp ?? membersProp ?? defaultMembers,
     onChange: onMembersChange,
   });
   const { copied, copy } = useCopy();
@@ -356,7 +364,7 @@ export function InviteMembersDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
       <DialogContent size="md" className={className}>
-        <DialogHeader icon={<RiUserAddLine />} tone="primary">
+        <DialogHeader icon={<RiUserAddLine aria-hidden />} tone="primary">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
@@ -427,7 +435,13 @@ export interface ShareDialogProps extends BlockDialogBaseProps {
   access?: ShareAccess;
   defaultAccess?: ShareAccess;
   onAccessChange?: (access: ShareAccess) => void;
+  /**
+   * Controlled people list when paired with `onPeopleChange`. Passed alone it only seeds the
+   * list (deprecated: use `defaultPeople` for that).
+   */
   people?: DialogMember[];
+  /** Initial people list when uncontrolled. */
+  defaultPeople?: DialogMember[];
   onPeopleChange?: (people: DialogMember[]) => void;
   /** Called when someone is invited, with the role picked next to the email field. */
   onInvite?: (email: string, role: ShareLinkRole) => unknown;
@@ -526,11 +540,11 @@ const defaultPeople: DialogMember[] = [
 function accessMetaFor(access: ShareAccess, workspaceName: string) {
   switch (access) {
     case "restricted":
-      return { icon: <RiLockLine />, description: "Only people with access can open this link.", tone: "bg-muted text-muted-foreground" };
+      return { icon: <RiLockLine aria-hidden />, description: "Only people with access can open this link.", tone: toneClasses.soft.neutral };
     case "workspace":
-      return { icon: <RiBuilding2Line />, description: `Anyone in ${workspaceName || "the workspace"} can find and open.`, tone: "bg-info-soft text-info-soft-foreground" };
+      return { icon: <RiBuilding2Line aria-hidden />, description: `Anyone in ${workspaceName || "the workspace"} can find and open.`, tone: toneClasses.soft.info };
     default:
-      return { icon: <RiGlobalLine />, description: "Anyone on the internet with the link can open.", tone: "bg-success-soft text-success-soft-foreground" };
+      return { icon: <RiGlobalLine aria-hidden />, description: "Anyone on the internet with the link can open.", tone: toneClasses.soft.success };
   }
 }
 
@@ -580,7 +594,7 @@ function SharePersonRole({
           ))}
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" icon={<RiUserMinusLine />} onSelect={onRemove}>
+        <DropdownMenuItem variant="destructive" icon={<RiUserMinusLine aria-hidden />} onSelect={onRemove}>
           Remove access
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -596,6 +610,7 @@ export function ShareDialog({
   defaultAccess = "link",
   onAccessChange,
   people: peopleProp,
+  defaultPeople: defaultPeopleProp,
   onPeopleChange,
   onInvite,
   currentUserId = "p1",
@@ -628,7 +643,7 @@ export function ShareDialog({
   });
   const [people, setPeople] = useControllableState<DialogMember[]>({
     value: peopleProp && onPeopleChange ? peopleProp : undefined,
-    defaultValue: peopleProp ?? defaultPeople,
+    defaultValue: defaultPeopleProp ?? peopleProp ?? defaultPeople,
     onChange: onPeopleChange,
   });
   const [linkRole, setLinkRole] = useControllableState<ShareLinkRole>({
@@ -1081,7 +1096,7 @@ export function UpgradeDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
       <DialogContent size="xl" className={cn("gap-6", className)}>
-        <DialogHeader align="center" icon={<RiSparkling2Line />} tone="primary">
+        <DialogHeader align="center" icon={<RiSparkling2Line aria-hidden />} tone="primary">
           <DialogTitle className="text-xl sm:text-2xl">Upgrade your Sutra plan</DialogTitle>
           <DialogDescription>Unlock every app, more storage and AI features. Cancel anytime.</DialogDescription>
         </DialogHeader>
@@ -1458,7 +1473,7 @@ export function KeyboardShortcutsDialog({
         <SearchInput value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery("")} placeholder="Search shortcuts…" aria-label="Search shortcuts" />
         <DialogBody className="max-h-[60dvh]">
           {filtered.length === 0 ? (
-            <p className="py-10 text-center text-sm text-muted-foreground">No shortcuts match “{query}”.</p>
+            <p className="py-10 text-center text-sm text-muted-foreground">No shortcuts match “{query}”</p>
           ) : (
             <div className="grid gap-x-8 gap-y-6 pb-1 sm:grid-cols-2">
               {filtered.map((group) => (
@@ -1598,8 +1613,8 @@ export function NewItemDialog({
                 value={values.type}
                 onValueChange={(v) => v && set("type", v as "task" | "note")}
                 options={[
-                  { value: "task", label: "Task", icon: <RiCheckboxCircleLine /> },
-                  { value: "note", label: "Note", icon: <RiStickyNoteLine /> },
+                  { value: "task", label: "Task", icon: <RiCheckboxCircleLine aria-hidden /> },
+                  { value: "note", label: "Note", icon: <RiStickyNoteLine aria-hidden /> },
                 ]}
               />
               <Field invalid={titleError}>

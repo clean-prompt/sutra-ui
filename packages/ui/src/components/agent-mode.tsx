@@ -7,7 +7,7 @@ import {
   RiPencilLine,
   RiAlarmWarningLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { clamp } from "../lib/math";
 import {
@@ -45,14 +45,14 @@ export interface PermissionModeOption {
 }
 
 export const defaultPermissionModes: PermissionModeOption[] = [
-  { value: "manual", label: "Ask before edits", icon: <RiHand />, description: "The agent asks for approval before each edit or command." },
-  { value: "acceptEdits", label: "Edit automatically", icon: <RiPencilLine />, tone: "primary", description: "File edits are applied without asking; commands still need approval." },
-  { value: "plan", label: "Plan mode", icon: <RiMap2Line />, tone: "primary", description: "The agent explores read-only and proposes a plan before changing anything." },
-  { value: "auto", label: "Auto", icon: <RiFlashlightLine />, tone: "warning", description: "Safe actions run automatically; anything risky pauses for approval." },
+  { value: "manual", label: "Ask before edits", icon: <RiHand aria-hidden />, description: "The agent asks for approval before each edit or command." },
+  { value: "acceptEdits", label: "Edit automatically", icon: <RiPencilLine aria-hidden />, tone: "primary", description: "File edits are applied without asking; commands still need approval." },
+  { value: "plan", label: "Plan mode", icon: <RiMap2Line aria-hidden />, tone: "primary", description: "The agent explores read-only and proposes a plan before changing anything." },
+  { value: "auto", label: "Auto", icon: <RiFlashlightLine aria-hidden />, tone: "warning", description: "Safe actions run automatically; anything risky pauses for approval." },
   {
     value: "bypass",
     label: "Bypass permissions",
-    icon: <RiAlarmWarningLine />,
+    icon: <RiAlarmWarningLine aria-hidden />,
     tone: "destructive",
     description: "Nothing asks for approval, including potentially destructive commands.",
     confirm: {
@@ -267,11 +267,14 @@ export interface EffortGlyphProps extends React.SVGAttributes<SVGSVGElement> {
 }
 
 /** Ascending bars glyph: `level + 1` of `count` bars filled. */
-export function EffortGlyph({ level, count = 4, size = 14, className, ...props }: EffortGlyphProps) {
+export const EffortGlyph = React.forwardRef<SVGSVGElement, EffortGlyphProps>(function EffortGlyph(
+  { level, count = 4, size = 14, className, ...props },
+  ref
+) {
   const gap = 1.5;
   const w = (16 - gap * (count - 1)) / count;
   return (
-    <svg aria-hidden viewBox="0 0 16 16" width={size} height={size} className={cn("shrink-0", className)} {...props}>
+    <svg ref={ref} aria-hidden viewBox="0 0 16 16" width={size} height={size} className={cn("shrink-0", className)} {...props}>
       {Array.from({ length: count }, (_, i) => {
         const h = 4 + ((12 - 4) * i) / Math.max(1, count - 1);
         return (
@@ -289,7 +292,7 @@ export function EffortGlyph({ level, count = 4, size = 14, className, ...props }
       })}
     </svg>
   );
-}
+});
 EffortGlyph.displayName = "EffortGlyph";
 
 export interface EffortSliderProps
@@ -298,7 +301,9 @@ export interface EffortSliderProps
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   levels?: EffortLevel[];
-  /** "default" shows a labelled track with a legend; "compact" is a small pill for the composer. */
+  /** `"normal"` (default) shows a labelled track with a legend; `"compact"` is a small pill for the composer. */
+  density?: Density;
+  /** @deprecated Use `density` (`"compact"`). */
   variant?: "default" | "compact";
   /** Accessible name and visible caption. Default "Effort". */
   label?: string;
@@ -315,7 +320,8 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
       defaultValue,
       onValueChange,
       levels = defaultEffortLevels,
-      variant = "default",
+      density,
+      variant,
       label = "Effort",
       tooltip = "Click or drag to set effort level",
       disabled = false,
@@ -333,7 +339,7 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
     const trackRef = React.useRef<HTMLDivElement>(null);
     const dragging = React.useRef(false);
     const current = levels[index];
-    const compact = variant === "compact";
+    const compact = density ? normalizeDensity(density) === "compact" : variant === "compact";
 
     const setIndex = (i: number) => {
       if (disabled) return;

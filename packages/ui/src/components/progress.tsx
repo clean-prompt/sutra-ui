@@ -1,12 +1,14 @@
 import * as React from "react";
 import { Progress as ProgressPrimitive } from "radix-ui";
 import { cn } from "../lib/cn";
+import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { clamp, toPercent } from "../lib/math";
 import { useSafeId } from "../hooks/use-safe-id";
 
-export type ProgressColor = "primary" | "success" | "warning" | "destructive" | "info" | "neutral";
+/** @deprecated Use `Tone` (the `tone` prop). */
+export type ProgressColor = Tone;
 
-const barColor: Record<ProgressColor, string> = {
+const barColor: Record<Tone, string> = {
   primary: "bg-primary",
   success: "bg-success",
   warning: "bg-warning",
@@ -15,7 +17,7 @@ const barColor: Record<ProgressColor, string> = {
   neutral: "bg-foreground",
 };
 
-const strokeColor: Record<ProgressColor, string> = {
+const strokeColor: Record<Tone, string> = {
   primary: "stroke-primary",
   success: "stroke-success",
   warning: "stroke-warning",
@@ -28,6 +30,9 @@ export interface ProgressProps
   extends Omit<React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>, "value" | "color"> {
   value?: number | null;
   size?: "xs" | "sm" | "md" | "lg";
+  /** Semantic colour of the filled part. Default "primary". */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
   color?: ProgressColor;
   indeterminate?: boolean;
   label?: React.ReactNode;
@@ -49,7 +54,8 @@ export const Progress = React.forwardRef<
       value,
       max = 100,
       size = "md",
-      color = "primary",
+      tone: toneProp,
+      color,
       indeterminate,
       label,
       showValue,
@@ -58,6 +64,7 @@ export const Progress = React.forwardRef<
     },
     ref
   ) => {
+    const tone = normalizeTone(toneProp ?? color, "primary");
     const isIndeterminate = indeterminate || value === null || value === undefined;
     const pct = isIndeterminate ? 0 : toPercent(value as number, max);
     const valueText = isIndeterminate
@@ -84,7 +91,7 @@ export const Progress = React.forwardRef<
         <ProgressPrimitive.Indicator
           className={cn(
             "h-full w-full rounded-full",
-            barColor[color],
+            barColor[tone],
             isIndeterminate
               ? "origin-left animate-indeterminate"
               : "transition-transform duration-500 ease-out-quart",
@@ -134,6 +141,9 @@ export interface ProgressCircleProps
   /** Diameter in px. */
   size?: number;
   strokeWidth?: number;
+  /** Semantic colour of the filled part. Default "primary". */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
   color?: ProgressColor;
   /** Brand gradient stroke instead of a flat color. */
   gradient?: boolean;
@@ -153,7 +163,8 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
       max = 100,
       size = 64,
       strokeWidth = 6,
-      color = "primary",
+      tone: toneProp,
+      color,
       gradient,
       showValue = true,
       label,
@@ -163,6 +174,7 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
     },
     ref
   ) => {
+    const tone = normalizeTone(toneProp ?? color, "primary");
     const pct = toPercent(value, max);
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
@@ -210,7 +222,7 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
             stroke={gradient ? `url(#${gradientId})` : undefined}
             className={cn(
               "transition-[stroke-dashoffset] duration-700 ease-out-quart",
-              !gradient && strokeColor[color]
+              !gradient && strokeColor[tone]
             )}
           />
         </svg>
@@ -235,6 +247,9 @@ export interface ProgressSegmentsProps
   /** Filled amount, relative to `max` (defaults to `segments`). */
   value: number;
   max?: number;
+  /** Semantic colour of the filled part. Default "primary". */
+  tone?: ToneInput;
+  /** @deprecated Use `tone`. */
   color?: ProgressColor;
   size?: "sm" | "md" | "lg";
   label?: string;
@@ -242,7 +257,8 @@ export interface ProgressSegmentsProps
 
 /** Segmented bar, e.g. for password strength or multi-step progress. */
 export const ProgressSegments = React.forwardRef<HTMLDivElement, ProgressSegmentsProps>(
-  ({ className, segments = 4, value, max, color = "primary", size = "md", label, ...props }, ref) => {
+  ({ className, segments = 4, value, max, tone: toneProp, color, size = "md", label, ...props }, ref) => {
+    const tone = normalizeTone(toneProp ?? color, "primary");
     const total = Math.max(1, Math.round(segments));
     const limit = max ?? total;
     const filled = Math.round((toPercent(value, limit) / 100) * total);
@@ -263,7 +279,7 @@ export const ProgressSegments = React.forwardRef<HTMLDivElement, ProgressSegment
             className={cn(
               "flex-1 rounded-full transition-colors duration-300",
               size === "sm" ? "h-1" : size === "md" ? "h-1.5" : "h-2",
-              i < filled ? barColor[color] : "bg-muted"
+              i < filled ? barColor[tone] : "bg-muted"
             )}
             style={{ transitionDelay: `${i * 40}ms` }}
           />

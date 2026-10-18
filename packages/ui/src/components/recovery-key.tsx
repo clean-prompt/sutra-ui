@@ -199,7 +199,7 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
               <div className="flex flex-col items-center gap-2 rounded-md border border-dashed border-border bg-subtle px-4 py-6 text-center">
                 <RiEyeOffLine aria-hidden className="size-5 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">Key hidden from screen.</p>
-                <Button variant="ghost" size="sm" leadingIcon={<RiEyeLine />} onClick={() => setVisible(true)}>
+                <Button variant="ghost" size="sm" leadingIcon={<RiEyeLine aria-hidden />} onClick={() => setVisible(true)}>
                   Show again
                 </Button>
               </div>
@@ -211,7 +211,7 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
                 <Button
                   variant="secondary"
                   size="sm"
-                  leadingIcon={<RiDownloadLine />}
+                  leadingIcon={<RiDownloadLine aria-hidden />}
                   onClick={() => {
                     downloadTextFile(body, fileName);
                     onDownload?.();
@@ -224,7 +224,7 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
                 <Button
                   variant="secondary"
                   size="sm"
-                  leadingIcon={<RiShareLine />}
+                  leadingIcon={<RiShareLine aria-hidden />}
                   onClick={() => navigator.share({ title, text: body }).catch(() => undefined)}
                 >
                   Share
@@ -234,14 +234,14 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
                 <Button
                   variant="secondary"
                   size="sm"
-                  leadingIcon={<RiPrinterLine />}
+                  leadingIcon={<RiPrinterLine aria-hidden />}
                   onClick={() => (onPrint ? onPrint() : printText(title, formatted))}
                 >
                   Print
                 </Button>
               )}
               {visible && (
-                <Button variant="ghost" size="sm" leadingIcon={<RiEyeOffLine />} onClick={hide} className="sm:ml-auto">
+                <Button variant="ghost" size="sm" leadingIcon={<RiEyeOffLine aria-hidden />} onClick={hide} className="sm:ml-auto">
                   Hide now
                 </Button>
               )}
