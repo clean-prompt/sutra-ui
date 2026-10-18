@@ -30,7 +30,8 @@ import { EmptyState } from "./empty-state";
 
 export type SessionDeviceType = "desktop" | "laptop" | "phone" | "tablet" | "tv" | "browser" | "server";
 
-export interface Session {
+/** A signed-in device or browser (not an agent run; see `AgentSession`). */
+export interface DeviceSession {
   id: string;
   /** Device name, e.g. "Vyom's MacBook Pro". */
   name: string;
@@ -76,11 +77,11 @@ export function formatSessionLastActive(value: Date | number | string | undefine
 }
 
 /* ------------------------------------------------------------------ */
-/* SessionRow                                                          */
+/* DeviceSessionRow                                                    */
 /* ------------------------------------------------------------------ */
 
-export interface SessionRowProps extends React.HTMLAttributes<HTMLLIElement> {
-  session: Session;
+export interface DeviceSessionRowProps extends React.HTMLAttributes<HTMLLIElement> {
+  session: DeviceSession;
   /** Sign this session out. May return a promise; the row shows a spinner until it settles. */
   onRevoke?: (id: string) => void | Promise<void>;
   /** Reference time for "last active" (handy for tests and SSR). */
@@ -89,7 +90,7 @@ export interface SessionRowProps extends React.HTMLAttributes<HTMLLIElement> {
 }
 
 /** One device/session with icon, details, "This device" badge and an inline-confirmed sign out. */
-export const SessionRow = React.forwardRef<HTMLLIElement, SessionRowProps>(
+export const DeviceSessionRow = React.forwardRef<HTMLLIElement, DeviceSessionRowProps>(
   ({ session, onRevoke, now, revokeLabel = "Sign out", className, ...props }, ref) => {
     const [confirming, setConfirming] = React.useState(false);
     const { run: runRevoke, busy: revoking } = useAsyncAction((id: string) => onRevoke?.(id), {
@@ -179,14 +180,19 @@ export const SessionRow = React.forwardRef<HTMLLIElement, SessionRowProps>(
     );
   }
 );
-SessionRow.displayName = "SessionRow";
+DeviceSessionRow.displayName = "DeviceSessionRow";
+
+/** @deprecated Use `DeviceSessionRow`. */
+export const SessionRow = DeviceSessionRow;
+/** @deprecated Use `DeviceSessionRowProps`. */
+export type SessionRowProps = DeviceSessionRowProps;
 
 /* ------------------------------------------------------------------ */
-/* SessionList                                                         */
+/* DeviceSessionList                                                   */
 /* ------------------------------------------------------------------ */
 
-export interface SessionListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  sessions?: Session[] | null;
+export interface DeviceSessionListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  sessions?: DeviceSession[] | null;
   /** Shows skeleton rows. `sessions == null` is treated as loading too. */
   loading?: boolean;
   onRevoke?: (id: string) => void | Promise<void>;
@@ -202,7 +208,7 @@ export interface SessionListProps extends Omit<React.HTMLAttributes<HTMLDivEleme
 }
 
 /** Devices & sessions manager: list, per-session sign out, and "sign out everywhere else". */
-export const SessionList = React.forwardRef<HTMLDivElement, SessionListProps>(
+export const DeviceSessionList = React.forwardRef<HTMLDivElement, DeviceSessionListProps>(
   (
     {
       sessions,
@@ -276,7 +282,7 @@ export const SessionList = React.forwardRef<HTMLDivElement, SessionListProps>(
         ) : (
           <ul aria-labelledby={headingId} className="divide-y divide-border">
             {list.map((s) => (
-              <SessionRow key={s.id} session={s} onRevoke={onRevoke} now={now} />
+              <DeviceSessionRow key={s.id} session={s} onRevoke={onRevoke} now={now} />
             ))}
           </ul>
         )}
@@ -284,7 +290,14 @@ export const SessionList = React.forwardRef<HTMLDivElement, SessionListProps>(
     );
   }
 );
-SessionList.displayName = "SessionList";
+DeviceSessionList.displayName = "DeviceSessionList";
+
+/** @deprecated Use `DeviceSession`. */
+export type Session = DeviceSession;
+/** @deprecated Use `DeviceSessionList`. */
+export const SessionList = DeviceSessionList;
+/** @deprecated Use `DeviceSessionListProps`. */
+export type SessionListProps = DeviceSessionListProps;
 
 /* ------------------------------------------------------------------ */
 /* AccountPanel                                                        */

@@ -55,7 +55,7 @@ export function normalizeTaskStatus(
 ): TaskStatus {
   if (!status) return fallback;
   if ((TASK_STATUSES as readonly string[]).includes(status)) return status as TaskStatus;
-  return ALIASES[status as LegacyTaskStatus] ?? fallback;
+  return Object.hasOwn(ALIASES, status) ? ALIASES[status as LegacyTaskStatus] : fallback;
 }
 
 /** True once a status can no longer change (succeeded, failed or canceled). */

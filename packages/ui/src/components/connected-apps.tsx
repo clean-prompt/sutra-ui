@@ -35,7 +35,7 @@ import { calendarDayDiff, dateKey, safeISO, toMs as toMsOrUndefined, toValidDate
 const toMs = (v: DateInput) => toMsOrUndefined(v) ?? NaN;
 
 /* ------------------------------------------------------------------ */
-/* ActivityFeed                                                        */
+/* SecurityActivityFeed                                                */
 /* ------------------------------------------------------------------ */
 
 export type SecurityEventType =
@@ -118,7 +118,7 @@ export function groupEventsByDay<T extends { at: DateInput }>(events: T[], now: 
   return groups;
 }
 
-export interface ActivityFeedProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SecurityActivityFeedProps extends React.HTMLAttributes<HTMLDivElement> {
   events: SecurityEvent[];
   /** Group under day headings. Default true. */
   groupByDay?: boolean;
@@ -136,7 +136,7 @@ export interface ActivityFeedProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 /** Security event timeline: typed icons, device/IP/location, relative time, grouped by day, expandable detail. */
-export const ActivityFeed = React.forwardRef<HTMLDivElement, ActivityFeedProps>(
+export const SecurityActivityFeed = React.forwardRef<HTMLDivElement, SecurityActivityFeedProps>(
   ({ events, groupByDay = true, onEventClick, now: nowProp, emptyState, empty, density: densityProp, compact: compactProp, className, ...props }, ref) => {
     const now = nowProp ?? Date.now();
     const compact = normalizeDensity(densityProp ?? compactProp) === "compact";
@@ -224,7 +224,12 @@ export const ActivityFeed = React.forwardRef<HTMLDivElement, ActivityFeedProps>(
     );
   }
 );
-ActivityFeed.displayName = "ActivityFeed";
+SecurityActivityFeed.displayName = "SecurityActivityFeed";
+
+/** @deprecated Use `SecurityActivityFeed`. */
+export const ActivityFeed = SecurityActivityFeed;
+/** @deprecated Use `SecurityActivityFeedProps`. */
+export type ActivityFeedProps = SecurityActivityFeedProps;
 
 /* ------------------------------------------------------------------ */
 /* ConnectedAppRow / ConnectedAppList                                  */
@@ -411,7 +416,7 @@ export const ConnectedAppList = React.forwardRef<HTMLDivElement, ConnectedAppLis
                 {shown.activity && shown.activity.length > 0 && (
                   <section className="grid gap-2">
                     <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Recent activity</h3>
-                    <ActivityFeed events={shown.activity.slice(0, 6)} groupByDay={false} density="compact" now={now} />
+                    <SecurityActivityFeed events={shown.activity.slice(0, 6)} groupByDay={false} density="compact" now={now} />
                   </section>
                 )}
               </DrawerBody>

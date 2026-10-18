@@ -1,96 +1,17 @@
 import * as React from "react";
-import {
-  RiDownload2Line,
-  RiErrorWarningFill,
-  RiMoonFill,
-  RiPushpin2Fill,
-  RiCheckLine,
-  RiCloseLine,
-} from "@remixicon/react";
+import { RiDownload2Line, RiPushpin2Fill, RiCheckLine, RiCloseLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { toneClasses, type Tone } from "../lib/tone";
+import { type Tone } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { formatDuration } from "../lib/duration";
 import { clamp } from "../lib/math";
 import { Button } from "./button";
+import { Badge } from "./badge";
+import { Progress } from "./progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, type TableSortDirection } from "./table";
+import { ModelStatePill, modelStateRank, normalizeModelState, type ModelState, type ModelStateInput } from "./model-state";
 
-/* ------------------------------------------------------------------ */
-/* ModelStatePill                                                      */
-/* ------------------------------------------------------------------ */
-
-export type ModelState = "ready" | "loading" | "sleeping" | "stopped" | "failed" | "downloading";
-
-const stateMeta: Record<ModelState, { label: string; tone: Tone }> = {
-  ready: { label: "Ready", tone: "success" },
-  loading: { label: "Loading", tone: "primary" },
-  sleeping: { label: "Sleeping", tone: "info" },
-  stopped: { label: "Stopped", tone: "neutral" },
-  failed: { label: "Failed", tone: "destructive" },
-  downloading: { label: "Downloading", tone: "info" },
-};
-
-/** Distinct glyph per state so it is never color-only. */
-function StateGlyph({ state }: { state: ModelState }) {
-  const base = "inline-flex size-3 shrink-0 items-center justify-center";
-  switch (state) {
-    case "ready":
-      return <span aria-hidden data-glyph="filled-dot" className={base}><span className="size-2 rounded-full bg-success" /></span>;
-    case "stopped":
-      return <span aria-hidden data-glyph="outline-dot" className={base}><span className="size-2 rounded-full border-[1.5px] border-muted-foreground" /></span>;
-    case "sleeping":
-      return <RiMoonFill aria-hidden data-glyph="moon" className="size-3 shrink-0 text-info" />;
-    case "failed":
-      return <RiErrorWarningFill aria-hidden data-glyph="warning" className="size-3 shrink-0 text-destructive" />;
-    case "downloading":
-      return <RiDownload2Line aria-hidden data-glyph="download" className="size-3 shrink-0 text-info" />;
-    case "loading":
-      return (
-        <span aria-hidden data-glyph="spinner" className={base}>
-          <span className="size-2.5 rounded-full border-[1.5px] border-primary/30 border-t-primary motion-safe:animate-spin" />
-        </span>
-      );
-  }
-}
-
-export interface ModelStatePillProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
-  state: ModelState;
-  /** Override the visible label. */
-  label?: string;
-  /** Secondary text, e.g. "idle 5m" or "42%". */
-  detail?: React.ReactNode;
-  /** Glyph only; the label stays available to screen readers. */
-  hideLabel?: boolean;
-  size?: "sm" | "md";
-}
-
-/** Model lifecycle pill: filled dot ready, outline stopped, moon asleep, warning failed, spinner loading. */
-export const ModelStatePill = React.forwardRef<HTMLSpanElement, ModelStatePillProps>(
-  ({ className, state, label, detail, hideLabel, size = "md", ...props }, ref) => {
-    const meta = stateMeta[state];
-    const text = label ?? meta.label;
-    return (
-      <span
-        ref={ref}
-        data-state={state}
-        title={hideLabel ? text : undefined}
-        className={cn(
-          "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-control font-medium leading-none",
-          size === "sm" ? "h-5 px-1.5 text-2xs" : "h-6 px-2 text-xs",
-          hideLabel ? "bg-transparent px-0" : toneClasses.soft[meta.tone],
-          className
-        )}
-        {...props}
-      >
-        <StateGlyph state={state} />
-        <span className="sr-only">Model state: </span>
-        <span className={cn(hideLabel && "sr-only")}>{text}</span>
-        {detail != null && !hideLabel ? <span className="font-normal opacity-75">{detail}</span> : null}
-      </span>
-    );
-  }
-);
-ModelStatePill.displayName = "ModelStatePill";
+export { ModelStatePill, type ModelState, type ModelStatePillProps } from "./model-state";
 
 /* ------------------------------------------------------------------ */
 /* DownloadBadge                                                       */
@@ -98,7 +19,7 @@ ModelStatePill.displayName = "ModelStatePill";
 
 export type DownloadStatus = "downloading" | "cached" | "partial" | "failed" | "missing";
 
-export interface DownloadBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+export interface DownloadBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children" | "color"> {
   status: DownloadStatus;
   /** 0–100 for downloading / partial. */
   progress?: number;
@@ -106,7 +27,15 @@ export interface DownloadBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanEl
   size?: string;
 }
 
-/** Weights cache state: downloading 42% (with bar), cached, partial, failed, not downloaded. */
+const downloadTone: Record<DownloadStatus, Tone> = {
+  cached: "success",
+  downloading: "info",
+  partial: "warning",
+  failed: "destructive",
+  missing: "neutral",
+};
+
+/** Weights cache state on `Badge`: downloading 42% (with bar), cached, partial, failed, not downloaded. */
 export const DownloadBadge = React.forwardRef<HTMLSpanElement, DownloadBadgeProps>(
   ({ className, status, progress, size, ...props }, ref) => {
     const pct = Math.round(clamp(progress ?? 0, 0, 100));
@@ -120,43 +49,43 @@ export const DownloadBadge = React.forwardRef<HTMLSpanElement, DownloadBadgeProp
             : status === "failed"
               ? "Download failed"
               : "Not downloaded";
+    const icon =
+      status === "cached" ? <RiCheckLine aria-hidden /> : status === "failed" ? <RiCloseLine aria-hidden /> : status === "downloading" ? <RiDownload2Line aria-hidden /> : null;
+    const bar = status === "downloading" || (status === "partial" && progress != null);
     return (
-      <span
+      <Badge
         ref={ref}
+        size="sm"
         data-status={status}
-        className={cn(
-          "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-control border px-1.5 py-0.5 text-2xs font-medium leading-none",
-          status === "cached" && "border-transparent bg-success-soft text-success-soft-foreground",
-          status === "downloading" && "border-info/30 bg-info-soft text-info-soft-foreground",
-          status === "partial" && "border-warning/40 bg-warning-soft text-warning-soft-foreground",
-          status === "failed" && "border-transparent bg-destructive-soft text-destructive-soft-foreground",
-          status === "missing" && "border-dashed border-border-strong text-muted-foreground",
-          className
-        )}
+        variant={status === "missing" ? "outline" : "soft"}
+        tone={downloadTone[status]}
+        className={cn("gap-1.5", status === "missing" && "border-dashed border-border-strong text-muted-foreground", className)}
+        leadingIcon={icon}
+        trailingIcon={
+          bar || size ? (
+            <>
+              {bar ? (
+                <Progress
+                  value={pct}
+                  size="xs"
+                  aria-label="Download progress"
+                  className="w-10 bg-current/20"
+                  indicatorClassName="bg-current"
+                />
+              ) : null}
+              {size ? <span className="font-normal opacity-75">{size}</span> : null}
+            </>
+          ) : undefined
+        }
         {...props}
       >
-        {status === "cached" ? <RiCheckLine aria-hidden className="size-3" /> : null}
-        {status === "failed" ? <RiCloseLine aria-hidden className="size-3" /> : null}
-        {status === "downloading" ? <RiDownload2Line aria-hidden className="size-3" /> : null}
         <span className="tabular-nums">{label}</span>
-        {status === "downloading" || (status === "partial" && progress != null) ? (
-          <span
-            role="progressbar"
-            aria-label="Download progress"
-            aria-valuenow={pct}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            className="relative h-1 w-10 overflow-hidden rounded-full bg-current/20"
-          >
-            <span className="absolute inset-y-0 left-0 rounded-full bg-current transition-[width] duration-500" style={{ width: `${pct}%` }} />
-          </span>
-        ) : null}
-        {size ? <span className="font-normal opacity-75">{size}</span> : null}
-      </span>
+      </Badge>
     );
   }
 );
 DownloadBadge.displayName = "DownloadBadge";
+
 
 /* ------------------------------------------------------------------ */
 /* ModelRow / ModelTable                                               */
@@ -177,7 +106,8 @@ export interface ModelInfo {
   name: string;
   /** Group heading; defaults to the name prefix ("qwen3.6-27b" → "qwen3.6"). */
   family?: string;
-  state: ModelState;
+  /** Lifecycle state; the legacy `"loading"` is accepted as `"starting"`. */
+  state: ModelStateInput;
   download?: { status: DownloadStatus; progress?: number; size?: string };
   /** Parameter / quant / context summary, e.g. "27B · FP8 · 32k ctx". */
   info?: string;
@@ -207,10 +137,10 @@ export function modelFamily(name: string): string {
 export function modelActionsFor(model: Pick<ModelInfo, "state" | "download" | "pinned">): ModelAction[] {
   const cached = !model.download || model.download.status === "cached";
   const pin: ModelAction = model.pinned ? "unpin" : "pin";
-  switch (model.state) {
+  switch (normalizeModelState(model.state)) {
     case "downloading":
       return ["cancel"];
-    case "loading":
+    case "starting":
       return ["stop"];
     case "ready":
       return ["test", "sleep", "stop", pin];
@@ -263,6 +193,7 @@ export interface ModelRowProps extends Omit<React.HTMLAttributes<HTMLTableRowEle
 export const ModelRow = React.forwardRef<HTMLTableRowElement, ModelRowProps>(
   ({ className, model, onAction, pendingAction, testResult, onDismissTest, colSpan = 6, ...props }, ref) => {
     const actions = modelActionsFor(model);
+    const state = normalizeModelState(model.state);
     const blockedReason = model.blocked ? (typeof model.blocked === "string" ? model.blocked : "Won't fit in free VRAM") : null;
     return (
       <>
@@ -284,16 +215,16 @@ export const ModelRow = React.forwardRef<HTMLTableRowElement, ModelRowProps>(
                 ) : null}
               </div>
               {model.info ? <span className="text-2xs text-muted-foreground">{model.info}</span> : null}
-              {model.state === "failed" && model.error ? <span className="truncate text-2xs text-destructive">{model.error}</span> : null}
+              {state === "failed" && model.error ? <span className="truncate text-2xs text-destructive">{model.error}</span> : null}
             </div>
           </TableCell>
           <TableCell>
             <ModelStatePill
               state={model.state}
               detail={
-                model.state === "downloading" && model.download?.progress != null
+                state === "downloading" && model.download?.progress != null
                   ? `${Math.round(model.download.progress)}%`
-                  : model.idleSeconds != null && (model.state === "ready" || model.state === "sleeping")
+                  : model.idleSeconds != null && (state === "ready" || state === "sleeping")
                     ? `idle ${fmtIdle(model.idleSeconds)}`
                     : undefined
               }
@@ -386,12 +317,12 @@ ModelRow.displayName = "ModelRow";
 export type ModelFilter = "all" | "serving" | "cached" | "missing";
 export type ModelSortKey = "name" | "state" | "vram";
 
-const stateRank: Record<ModelState, number> = { ready: 0, loading: 1, sleeping: 2, downloading: 3, stopped: 4, failed: 5 };
-const serving: ModelState[] = ["ready", "loading", "sleeping"];
+const stateRank = (m: ModelInfo) => modelStateRank[normalizeModelState(m.state)];
+const serving: ModelState[] = ["ready", "starting", "sleeping"];
 
 const filterTest: Record<ModelFilter, (m: ModelInfo) => boolean> = {
   all: () => true,
-  serving: (m) => serving.includes(m.state),
+  serving: (m) => serving.includes(normalizeModelState(m.state)),
   cached: (m) => !m.download || m.download.status === "cached",
   missing: (m) => !!m.download && m.download.status !== "cached",
 };
@@ -443,8 +374,8 @@ export const ModelTable = React.forwardRef<HTMLDivElement, ModelTableProps>(
     const shown = models.filter(filterTest[filter]);
     const sorted = sort
       ? [...shown].sort((a, b) => {
-          const va = sort.key === "name" ? a.name : sort.key === "state" ? stateRank[a.state] : (a.vram ?? 0);
-          const vb = sort.key === "name" ? b.name : sort.key === "state" ? stateRank[b.state] : (b.vram ?? 0);
+          const va = sort.key === "name" ? a.name : sort.key === "state" ? stateRank(a) : (a.vram ?? 0);
+          const vb = sort.key === "name" ? b.name : sort.key === "state" ? stateRank(b) : (b.vram ?? 0);
           return (va < vb ? -1 : va > vb ? 1 : 0) * (sort.direction === "asc" ? 1 : -1);
         })
       : shown;

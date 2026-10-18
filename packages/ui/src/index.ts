@@ -57,6 +57,7 @@ export * from "./components/code-block";
 
 /* Data display */
 export * from "./components/avatar";
+export * from "./components/monogram";
 export * from "./components/avatar-group";
 export * from "./components/separator";
 export * from "./components/filter-bar";
@@ -119,6 +120,8 @@ export * from "./components/chain-of-thought";
 export * from "./components/chat-attachment";
 export * from "./components/chat-conversation";
 export * from "./components/chat-list-view";
+export * from "./components/conversation-list";
+export * from "./components/inline-edit-text";
 export * from "./components/chat-loader";
 export * from "./components/chat-message";
 export * from "./components/chat-message-actions";
@@ -193,6 +196,8 @@ export * from "./components/status-cycle";
 
 /* AI extras, voice & translation */
 export * from "./components/ai-extras";
+export * from "./components/model-state";
+export * from "./components/model-select";
 export * from "./components/voice";
 export * from "./components/translate";
 

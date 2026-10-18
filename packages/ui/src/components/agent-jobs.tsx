@@ -32,6 +32,7 @@ import { CopyButton } from "./copy-button";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { Badge } from "./badge";
+import { StatusBadge } from "./status-badge";
 import { Input, SearchInput } from "./input";
 import { Textarea } from "./textarea";
 import { Checkbox } from "./checkbox";
@@ -153,25 +154,20 @@ export interface JobStatePillProps extends React.HTMLAttributes<HTMLSpanElement>
   size?: "sm" | "md";
 }
 
-/** Pill for a scheduled job's state; `running` shows a spinner. */
+/** Pill for a scheduled job's state (a StatusBadge preset); `running` shows a spinner. */
 export const JobStatePill = React.forwardRef<HTMLSpanElement, JobStatePillProps>(
-  ({ state, label, size = "md", className, ...props }, ref) => {
+  ({ state, label, size = "md", ...props }, ref) => {
     const meta = stateMeta[state];
     return (
-      <span
+      <StatusBadge
         ref={ref}
         data-state={state}
-        className={cn(
-          "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full font-medium",
-          size === "sm" ? "h-5 px-2 text-2xs" : "h-6 px-2.5 text-xs",
-          toneClasses.soft[meta.tone],
-          className
-        )}
+        tone={meta.tone}
+        icon={state === "running" ? "spinner" : "dot"}
+        size={size}
+        label={label ?? meta.label}
         {...props}
-      >
-        {state === "running" ? <Spinner size="xs" label="" aria-hidden className="text-current" /> : <span aria-hidden className={cn("size-1.5 rounded-full", toneClasses.dot[meta.tone])} />}
-        {label ?? meta.label}
-      </span>
+      />
     );
   }
 );

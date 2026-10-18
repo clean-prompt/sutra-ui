@@ -18,6 +18,7 @@ import { useNow } from "../hooks/use-now";
 import { heatmapColor, heatmapLevel } from "./heatmap";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
+import { StatusDot, type StatusDotProps } from "./status-badge";
 
 /* ------------------------------------------------------------------ */
 /* Types + helpers                                                     */
@@ -107,41 +108,21 @@ export interface SubagentStatusGlyphProps extends React.HTMLAttributes<HTMLSpanE
   status: SubagentStatusInput;
 }
 
-/** Small status glyph: spinner (running), check (done), cross (failed), clock (waiting), forbid (canceled). */
+const statusGlyph: Record<SubagentDisplayStatus, Pick<StatusDotProps, "tone" | "icon" | "variant">> = {
+  running: { tone: "primary", icon: "spinner", variant: "hollow" },
+  done: { tone: "success", icon: <RiCheckLine aria-hidden />, variant: "solid" },
+  failed: { tone: "destructive", icon: <RiCloseLine aria-hidden />, variant: "solid" },
+  canceled: { tone: "neutral", icon: <RiForbidLine aria-hidden />, variant: "hollow" },
+  waiting: { tone: "neutral", icon: <RiTimeLine aria-hidden className="!size-3.5" />, variant: "hollow" },
+};
+
+/** Small status glyph (a StatusDot preset): spinner (running), check (done), cross (failed), clock (waiting), forbid (canceled). */
 export const SubagentStatusGlyph = React.forwardRef<HTMLSpanElement, SubagentStatusGlyphProps>(function SubagentStatusGlyph(
-  { status: statusProp, className, ...props },
+  { status: statusProp, ...props },
   ref
 ) {
   const status = resolveStatus(statusProp);
-  return (
-    <span
-      ref={ref}
-      role="img"
-      aria-label={statusLabel[status]}
-      data-status={status}
-      className={cn(
-        "inline-flex size-4 shrink-0 items-center justify-center rounded-full [&_svg]:size-3",
-        status === "done" && "bg-success-soft text-success",
-        status === "failed" && "bg-destructive-soft text-destructive",
-        (status === "waiting" || status === "canceled") && "text-muted-foreground",
-        status === "running" && "text-primary",
-        className
-      )}
-      {...props}
-    >
-      {status === "running" ? (
-        <Spinner size="xs" label="" />
-      ) : status === "done" ? (
-        <RiCheckLine aria-hidden />
-      ) : status === "failed" ? (
-        <RiCloseLine aria-hidden />
-      ) : status === "canceled" ? (
-        <RiForbidLine aria-hidden />
-      ) : (
-        <RiTimeLine aria-hidden className="!size-3.5" />
-      )}
-    </span>
-  );
+  return <StatusDot ref={ref} {...statusGlyph[status]} label={statusLabel[status]} data-status={status} {...props} />;
 });
 SubagentStatusGlyph.displayName = "SubagentStatusGlyph";
 

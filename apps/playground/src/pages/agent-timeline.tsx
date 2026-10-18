@@ -274,7 +274,7 @@ function AgentTurnDemo() {
             {status === "idle" ? (
               <p className="px-1 py-1 text-sm text-muted-foreground">Turn complete.</p>
             ) : (
-              <AgentStatusLine state={status} tool={tool} tokenCount={thinking ? tokens : undefined} hint={<><Kbd>Esc</Kbd> to interrupt</>} />
+              <AgentStatusLine state={status} tool={tool} tokens={thinking ? tokens : undefined} hint={<><Kbd>Esc</Kbd> to interrupt</>} />
             )}
           </div>
         </div>
@@ -518,7 +518,7 @@ function StatusLineDemo() {
         <AgentStatusLine
           state={state}
           tool="Bash"
-          tokenCount={state === "thinking" ? 3420 : undefined}
+          tokens={state === "thinking" ? 3420 : undefined}
           hint={<><Kbd>Esc</Kbd> to interrupt</>}
         />
         {state === "idle" && <p className="px-1 py-1 text-sm text-muted-foreground">Idle renders nothing.</p>}

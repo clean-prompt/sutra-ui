@@ -3,11 +3,10 @@ import { Collapsible as CollapsiblePrimitive, Slot, Tooltip as TooltipPrimitive,
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiArrowRightSLine, RiExpandUpDownLine, RiLayoutLeftLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { colorForSeed } from "../lib/hash";
-import { initials } from "../lib/text";
 import { breakpoints } from "../lib/tokens";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useMediaQuery } from "../hooks/use-media-query";
+import { Avatar } from "./avatar";
 import { Button, type ButtonProps } from "./button";
 import { Tooltip, TooltipContent, TooltipProvider, useHasTooltipProvider } from "./tooltip";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "./dialog";
@@ -579,7 +578,7 @@ export interface SidebarUserCardProps extends React.ButtonHTMLAttributes<HTMLBut
   hideChevron?: boolean;
 }
 
-/** Account row with avatar, name, email and chevron. Use as a dropdown trigger. */
+/** Account row with an `Avatar` (solid seed colour), name, email and chevron. Use as a dropdown trigger. */
 export const SidebarUserCard = React.forwardRef<HTMLButtonElement, SidebarUserCardProps>(
   ({ name, email, avatarSrc, avatarColor, hideChevron, className, ...props }, ref) => (
     <button
@@ -595,17 +594,17 @@ export const SidebarUserCard = React.forwardRef<HTMLButtonElement, SidebarUserCa
       )}
       {...props}
     >
-      {avatarSrc ? (
-        <img src={avatarSrc} alt="" className="size-8 shrink-0 rounded-full object-cover" />
-      ) : (
-        <span
-          aria-hidden
-          className="inline-flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
-          style={{ backgroundColor: avatarColor ?? colorForSeed(name), color: "#ffffff" }}
-        >
-          {initials(name, { fallback: "?" })}
-        </span>
-      )}
+      <Avatar
+        aria-hidden
+        size="sm"
+        src={avatarSrc}
+        alt=""
+        name={name}
+        color={avatarColor}
+        variant="solid"
+        initialsOptions={{ fallback: "?" }}
+        fallbackClassName="font-semibold"
+      />
       <span className="grid min-w-0 flex-1 leading-tight">
         <span className="truncate font-medium text-foreground">{name}</span>
         {email && <span className="truncate text-xs text-muted-foreground">{email}</span>}

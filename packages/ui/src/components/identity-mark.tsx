@@ -1,6 +1,7 @@
 import * as React from "react";
-import { cn, focusRing } from "../lib/cn";
+import { cn } from "../lib/cn";
 import { colorForSeed, hashString } from "../lib/hash";
+import { TextLink, type TextLinkProps } from "./text-link";
 
 /* ------------------------------------------------------------------ */
 /* Pure helpers                                                        */
@@ -189,12 +190,14 @@ IdentityMark.displayName = "IdentityMark";
 /** `default` and `muted` are emphasis levels; `destructive` is the semantic tone (`danger` is a deprecated alias). */
 export type TextButtonTone = "default" | "muted" | "destructive" | "danger";
 
-const textButtonTone: Record<Exclude<TextButtonTone, "danger">, string> = {
-  default: "text-foreground decoration-foreground/40",
-  muted: "text-muted-foreground decoration-muted-foreground/50 hover:text-foreground",
-  destructive: "text-destructive decoration-destructive/50",
+const textButtonVariant: Record<TextButtonTone, NonNullable<TextLinkProps["variant"]>> = {
+  default: "subtle",
+  muted: "muted",
+  destructive: "destructive",
+  danger: "destructive",
 };
 
+/** @deprecated Use `TextLinkProps` (`TextLink` with `onClick` or `as="button"`). */
 export interface TextButtonProps extends React.HTMLAttributes<HTMLElement> {
   /** Renders an `<a>` when set; otherwise a `<button type="button">`. */
   href?: string;
@@ -206,39 +209,19 @@ export interface TextButtonProps extends React.HTMLAttributes<HTMLElement> {
   tone?: TextButtonTone;
 }
 
-/** An action that reads as part of a sentence: inline text, underlined on hover. A link with `href`, a button otherwise. */
-export const TextButton = React.forwardRef<HTMLElement, TextButtonProps>(
-  ({ href, tone = "default", className, type, disabled, target, rel, download, ...props }, ref) => {
-    const classes = cn(
-      "inline cursor-pointer rounded-xs bg-transparent p-0 font-medium underline-offset-4 decoration-1",
-      "hover:underline focus-visible:underline transition-colors",
-      "disabled:cursor-not-allowed disabled:opacity-50 disabled:no-underline",
-      textButtonTone[tone === "danger" ? "destructive" : tone] ?? textButtonTone.default,
-      focusRing,
-      className
-    );
-    if (href !== undefined) {
-      return (
-        <a
-          ref={ref as React.Ref<HTMLAnchorElement>}
-          href={href}
-          target={target}
-          rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
-          download={download}
-          className={classes}
-          {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-        />
-      );
-    }
-    return (
-      <button
-        ref={ref as React.Ref<HTMLButtonElement>}
-        type={type ?? "button"}
-        disabled={disabled}
-        className={classes}
-        {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
-      />
-    );
-  }
-);
+/**
+ * An action that reads as part of a sentence: inline text, underlined on hover. A link with `href`, a button otherwise.
+ * @deprecated Use `TextLink`: `<TextLink onClick={…} variant="subtle">` (or `as="button"`) for the button form,
+ * `<TextLink href>` for the link form. `tone` maps to `variant`: default → subtle, muted → muted, destructive → destructive.
+ */
+export const TextButton = React.forwardRef<HTMLElement, TextButtonProps>(({ href, tone = "default", className, ...props }, ref) => (
+  <TextLink
+    ref={ref as React.Ref<HTMLAnchorElement>}
+    as={href !== undefined ? "a" : "button"}
+    href={href}
+    variant={textButtonVariant[tone] ?? "subtle"}
+    className={cn("inline", className)}
+    {...(props as Omit<TextLinkProps, "href" | "as" | "variant" | "className">)}
+  />
+));
 TextButton.displayName = "TextButton";

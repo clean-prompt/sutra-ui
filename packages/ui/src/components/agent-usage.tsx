@@ -6,7 +6,7 @@ import { formatCost } from "../lib/format";
 import { roundTo } from "../lib/math";
 import { MINUTE_MS, toMs, type TimeInput } from "../lib/time";
 import { Button } from "./button";
-import { Meter, meterLevel, type MeterThresholds } from "./meter";
+import { Meter, meterLevel, StackedMeter, type MeterThresholds } from "./meter";
 import { formatAgentTokens } from "./agent-tasks";
 
 function pctText(n: number) {
@@ -24,6 +24,11 @@ export interface ContextUsageCategory {
   tokens: number;
   /** CSS color or token name (primary, info, warning…). Defaults to the chart palette. */
   color?: string;
+  /**
+   * Tokens held back (e.g. reserved for the reply): drawn and listed, and subtracted from free space,
+   * but not counted as "used" in the summary and percentage.
+   */
+  reserved?: boolean;
 }
 
 const tokenColor: Record<string, string> = {
@@ -33,6 +38,7 @@ const tokenColor: Record<string, string> = {
   destructive: "var(--destructive)",
   info: "var(--info)",
   muted: "var(--muted-foreground)",
+  neutral: "var(--muted-foreground)",
 };
 
 const resolveColor = (c: string | undefined, i: number) => (c ? (tokenColor[c] ?? c) : chartColors[i % chartColors.length]!);
@@ -41,41 +47,70 @@ export interface ContextUsageBreakdownProps extends Omit<React.HTMLAttributes<HT
   categories: ContextUsageCategory[];
   /** Context window size in tokens. */
   max: number;
+  /** Tokens in use. Defaults to the sum of the non-reserved categories; a larger value adds an "Other" part. */
+  used?: number;
   /** Default "Context window". */
   title?: React.ReactNode;
   /** Show the free-space row and track remainder. Default true. */
   showFree?: boolean;
   freeLabel?: string;
+  /** Token formatter for the summary and rows. Default `formatAgentTokens` ("100k"). */
+  valueFormatter?: (tokens: number) => string;
+  /** Short line under the bar, e.g. "Getting full". */
+  caption?: React.ReactNode;
   onCompact?: () => void;
   compactLabel?: string;
+  /** Shows a spinner on the compact button and disables it. */
+  compacting?: boolean;
+  /** Label while `compacting`. Default "Compacting…". */
+  compactingLabel?: string;
+  /** Default true. */
+  canCompact?: boolean;
+  /** `inline` (default): small button on the right · `block`: full-width button, as in the ContextMeter popover. */
+  actionLayout?: "inline" | "block";
   /** Percent thresholds for the summary color. */
   thresholds?: MeterThresholds;
+  /** Extra content between the rows and the compact button. */
+  children?: React.ReactNode;
 }
 
-/** Segmented context-window track with per-category rows and an optional "Compact now" action. */
+/** Context-window bar (a StackedMeter with meter semantics) with per-category rows and an optional "Compact now" action. Also the body of the ContextMeter popover. */
 export const ContextUsageBreakdown = React.forwardRef<HTMLDivElement, ContextUsageBreakdownProps>(
   (
     {
       categories,
       max,
+      used: usedProp,
       title = "Context window",
       showFree = true,
       freeLabel = "Free space",
+      valueFormatter: fmt = formatAgentTokens,
+      caption,
       onCompact,
       compactLabel = "Compact now",
+      compacting = false,
+      compactingLabel = "Compacting…",
+      canCompact = true,
+      actionLayout = "inline",
       thresholds,
       className,
+      children,
       ...props
     },
     ref
   ) => {
     const titleId = React.useId();
-    const used = categories.reduce((s, c) => s + Math.max(0, c.tokens), 0);
-    const free = Math.max(0, max - used);
+    const usedSum = categories.reduce((s, c) => s + (c.reserved ? 0 : Math.max(0, c.tokens)), 0);
+    const reserved = categories.reduce((s, c) => s + (c.reserved ? Math.max(0, c.tokens) : 0), 0);
+    const used = usedProp ?? usedSum;
+    const rows: ContextUsageCategory[] =
+      used > usedSum ? [...categories, { key: "other", label: "Other", tokens: used - usedSum, color: "neutral" }] : categories;
+    const resolved = rows.map((c, i) => ({ ...c, color: resolveColor(c.color, i) }));
+    const free = Math.max(0, max - used - reserved);
     const pct = max > 0 ? Math.min(100, (used / max) * 100) : 0;
     const level = meterLevel(pct, thresholds);
-    const summary = `${formatAgentTokens(used)} / ${formatAgentTokens(max)} tokens (${Math.round(pct)}%)`;
-    const denom = Math.max(max, used) || 1;
+    const summary = `${fmt(used)} / ${fmt(max)} tokens (${Math.round(pct)}%)`;
+    const share = (n: number) => pctText(max > 0 ? (n / max) * 100 : 0);
     return (
       <div ref={ref} data-level={level} className={cn("w-full space-y-3", className)} {...props}>
         <div className="flex items-baseline justify-between gap-3">
@@ -92,34 +127,33 @@ export const ContextUsageBreakdown = React.forwardRef<HTMLDivElement, ContextUsa
             {summary}
           </span>
         </div>
-        <div
-          role="meter"
-          aria-labelledby={titleId}
-          aria-valuenow={used}
-          aria-valuemin={0}
-          aria-valuemax={max}
-          aria-valuetext={summary}
-          className="flex h-2.5 w-full gap-px overflow-hidden rounded-full bg-muted"
-        >
-          {categories.map((c, i) =>
-            c.tokens > 0 ? (
-              <span
-                key={c.key}
-                data-slot="context-usage-segment"
-                className="h-full first:rounded-l-full"
-                style={{ width: `${(c.tokens / denom) * 100}%`, background: resolveColor(c.color, i) }}
-              />
-            ) : null
-          )}
-        </div>
+        <StackedMeter
+          showValue={false}
+          legend={false}
+          max={Math.max(max, used + reserved)}
+          valueFormatter={fmt}
+          caption={caption}
+          partSlot="context-usage-segment"
+          parts={resolved.map((c) => ({ key: c.key, label: c.label, value: c.tokens, color: c.color }))}
+          trackProps={{
+            role: "meter",
+            "aria-label": undefined,
+            "aria-labelledby": titleId,
+            "aria-valuenow": used,
+            "aria-valuemin": 0,
+            "aria-valuemax": max,
+            "aria-valuetext": summary,
+            className: "h-2.5 gap-px",
+          }}
+        />
         <ul className="space-y-1">
-          {categories.map((c, i) => (
+          {resolved.map((c) => (
             <li key={c.key} data-key={c.key} className="flex items-center gap-2 text-xs">
-              <span aria-hidden className="size-2.5 shrink-0 rounded-xs" style={{ background: resolveColor(c.color, i) }} />
+              <span aria-hidden className="size-2.5 shrink-0 rounded-xs" style={{ background: c.color }} />
               <span className="min-w-0 flex-1 truncate text-foreground">{c.label}</span>
-              <span className="font-mono tabular-nums text-muted-foreground">{formatAgentTokens(c.tokens)}</span>
+              <span className="font-mono tabular-nums text-muted-foreground">{fmt(c.tokens)}</span>
               <span data-slot="context-usage-percent" className="w-12 text-right font-mono tabular-nums text-muted-foreground">
-                {pctText(max > 0 ? (c.tokens / max) * 100 : 0)}
+                {share(c.tokens)}
               </span>
             </li>
           ))}
@@ -127,15 +161,23 @@ export const ContextUsageBreakdown = React.forwardRef<HTMLDivElement, ContextUsa
             <li data-key="free" className="flex items-center gap-2 text-xs">
               <span aria-hidden className="size-2.5 shrink-0 rounded-xs border border-border-strong bg-muted" />
               <span className="min-w-0 flex-1 truncate text-muted-foreground">{freeLabel}</span>
-              <span className="font-mono tabular-nums text-muted-foreground">{formatAgentTokens(free)}</span>
-              <span className="w-12 text-right font-mono tabular-nums text-muted-foreground">{pctText(max > 0 ? (free / max) * 100 : 0)}</span>
+              <span className="font-mono tabular-nums text-muted-foreground">{fmt(free)}</span>
+              <span className="w-12 text-right font-mono tabular-nums text-muted-foreground">{share(free)}</span>
             </li>
           )}
         </ul>
+        {children}
         {onCompact && (
-          <div className="flex justify-end">
-            <Button variant="outline" size="xs" onClick={onCompact}>
-              {compactLabel}
+          <div className={cn(actionLayout === "inline" && "flex justify-end")}>
+            <Button
+              variant={actionLayout === "block" ? "secondary" : "outline"}
+              size={actionLayout === "block" ? "sm" : "xs"}
+              className={cn(actionLayout === "block" && "w-full")}
+              loading={compacting}
+              disabled={!canCompact || compacting}
+              onClick={onCompact}
+            >
+              {compacting ? compactingLabel : compactLabel}
             </Button>
           </div>
         )}

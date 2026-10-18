@@ -19,6 +19,7 @@ export const textLinkVariants = cva(
         muted:
           "text-muted-foreground decoration-muted-foreground/40 hover:text-foreground hover:decoration-foreground/60",
         subtle: "text-foreground decoration-border-strong hover:decoration-foreground",
+        destructive: "text-destructive decoration-destructive/50 hover:decoration-destructive",
       },
       underline: {
         always: "underline",
@@ -43,15 +44,44 @@ export interface TextLinkProps
   asChild?: boolean;
   /** Opens in a new tab with safe `rel` and shows an arrow-up-right icon. */
   external?: boolean;
+  /**
+   * `button` renders a `<button type="button">` styled as a link, for an inline action inside a sentence.
+   * Default: `button` when there is an `onClick` but no `href`, otherwise `a`.
+   */
+  as?: "a" | "button";
+  /** Button mode only: disables the button. */
+  disabled?: boolean;
 }
 
-/** Inline text link with underline styles and optional external indicator. */
+/**
+ * Inline text link with underline styles and optional external indicator.
+ * With `onClick` and no `href` (or `as="button"`) it renders a button that reads as part of the sentence.
+ * For a standalone action use `Button variant="link"`.
+ */
 export const TextLink = React.forwardRef<HTMLAnchorElement, TextLinkProps>(
-  ({ className, variant, underline, size, asChild, external, target, rel, children, ...props }, ref) => {
+  ({ className, variant, underline, size, asChild, external, as, disabled, target, rel, children, ...props }, ref) => {
     const classes = cn(textLinkVariants({ variant, underline, size }), className);
+    const asButton = !asChild && (as === "button" || (as === undefined && props.href === undefined && props.onClick !== undefined));
+    if (asButton) {
+      const { href: _href, type, ...buttonProps } = props;
+      return (
+        <button
+          ref={ref as unknown as React.Ref<HTMLButtonElement>}
+          type={(type as "button" | "submit" | "reset" | undefined) ?? "button"}
+          disabled={disabled}
+          className={cn(
+            "group/text-link cursor-pointer text-left disabled:pointer-events-none disabled:opacity-50",
+            classes
+          )}
+          {...(buttonProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+        >
+          {children}
+        </button>
+      );
+    }
     const externalProps = external
       ? { target: target ?? "_blank", rel: rel ?? "noopener noreferrer" }
-      : { target, rel };
+      : { target, rel: rel ?? (target === "_blank" ? "noopener noreferrer" : undefined) };
     const icon = external ? (
       <RiArrowRightUpLine
         aria-hidden

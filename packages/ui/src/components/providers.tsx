@@ -14,9 +14,8 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { formatCountdown, formatDuration } from "../lib/duration";
 import { pluralize } from "../lib/format";
-import { colorForSeed } from "../lib/hash";
 import { clamp } from "../lib/math";
-import { capitalize, initials } from "../lib/text";
+import { capitalize } from "../lib/text";
 import { DAY_MS, HOUR_MS, toMs, type TimeInput } from "../lib/time";
 import { isHttpUrl, isSafeHref } from "../lib/validate";
 import { toneClasses, type Tone } from "../lib/tone";
@@ -24,6 +23,7 @@ import { errorMessage, useAsyncAction, useMountedRef } from "../hooks/use-async-
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useCountdown } from "../hooks/use-now";
 import { CopyButton } from "./copy-button";
+import { Monogram, monogramInitials } from "./monogram";
 import { Button } from "./button";
 import { Badge } from "./badge";
 import { StatusBadge, type StatusBadgeStatus } from "./status-badge";
@@ -89,9 +89,9 @@ export function formatTokenExpiry(expiresAt: TimeValue | undefined, now: number 
   return diff > 0 ? `expires in ${shortDuration(diff)}` : `expired ${shortDuration(-diff)} ago`;
 }
 
-/** Up to two monogram letters for a provider name: "Nimbus AI" → "NA". */
+/** Up to two monogram letters for a provider name: "Nimbus AI" → "NA". Same as `monogramInitials`. */
 export function providerMonogram(name: string) {
-  return initials(String(name ?? "").replace(/[^\p{L}\p{N}]+/gu, " "), { mode: "first-two", singleWord: 2, fallback: "?" });
+  return monogramInitials(name);
 }
 
 /* ------------------------------------------------------------------ */
@@ -107,25 +107,10 @@ export interface ProviderLogoProps extends React.HTMLAttributes<HTMLSpanElement>
   size?: "sm" | "md" | "lg";
 }
 
-const logoSize = { sm: "size-6 text-2xs", md: "size-8 text-xs", lg: "size-10 text-sm" } as const;
-
-/** Local monogram tile for a provider (never fetches a remote logo). */
+/** Local monogram tile for a provider (never fetches a remote logo). A `Monogram` preset (solid seed colour). */
 export const ProviderLogo = React.forwardRef<HTMLSpanElement, ProviderLogoProps>(
-  ({ name, monogram, color, size = "md", className, style, ...props }, ref) => (
-    <span
-      ref={ref}
-      aria-hidden
-      data-slot="provider-logo"
-      className={cn(
-        "inline-flex shrink-0 select-none items-center justify-center rounded-md font-semibold leading-none tracking-tight text-white shadow-inner-highlight",
-        logoSize[size],
-        className
-      )}
-      style={{ backgroundColor: color ?? colorForSeed(name), ...style }}
-      {...props}
-    >
-      {monogram ?? providerMonogram(name)}
-    </span>
+  ({ name, monogram, color, size = "md", ...props }, ref) => (
+    <Monogram ref={ref} data-slot="provider-logo" name={name} letters={monogram} color={color} size={size} variant="solid" {...props} />
   )
 );
 ProviderLogo.displayName = "ProviderLogo";

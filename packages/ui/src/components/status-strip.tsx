@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
 import { useNow } from "../hooks/use-now";
+import { formatDuration } from "../lib/duration";
 import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 
 /* ------------------------------------------------------------------ */
@@ -81,7 +82,16 @@ function useCountdownTarget(status: StatusStripStatus | null | undefined) {
   return target;
 }
 
-/** Live model-lifecycle status above the composer: warm-up, queue, retry countdown, rate limit, offline. */
+/** Seconds as a compact duration: "7s", "1m 30s" (shared by the warm-up ETA and the retry countdown). */
+const seconds = (s: number) => formatDuration(s * 1000);
+
+/**
+ * Live infrastructure status above the composer: model warm-up, queue position, retry / rate-limit
+ * countdown, offline and errors. Live region: `role="status"` (polite).
+ *
+ * This covers the platform, not the agent: for what the agent itself is doing (thinking, running a tool,
+ * waiting for permission) use `AgentStatusLine`, which sits in the same slot. Show one at a time.
+ */
 export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
   ({ status, onRetry, onCancel, tone: toneProp, className, ...props }, ref) => {
     const target = useCountdownTarget(status);
@@ -108,14 +118,14 @@ export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
           progress = Math.min(96, (elapsed / status.estimate) * 100);
           line = (
             <>
-              {verb} {who}… {left > 0 ? `~${left}s` : "almost there"}
+              {verb} {who}… {left > 0 ? `~${seconds(left)}` : "almost there"}
             </>
           );
           if (elapsed > status.estimate * 1.5 && !detail) detail = "Taking longer than usual.";
         } else {
           line = (
             <>
-              {verb} {who}… {Math.round(elapsed)}s
+              {verb} {who}… {seconds(Math.round(elapsed))}
             </>
           );
         }
@@ -135,9 +145,9 @@ export const StatusStrip = React.forwardRef<HTMLDivElement, StatusStripProps>(
         const attempt = status.attempt ? ` (attempt ${status.attempt}${status.maxAttempts ? ` of ${status.maxAttempts}` : ""})` : "";
         if (status.kind === "rate-limited") {
           icon = <RiAlertLine aria-hidden="true" className="size-4" />;
-          line = left != null && left > 0 ? `Rate limited. Try again in ${left}s` : "Rate limited";
+          line = left != null && left > 0 ? `Rate limited. Try again in ${seconds(left)}` : "Rate limited";
         } else {
-          line = left != null && left > 0 ? `Retrying in ${left}s${attempt}` : `Retrying…${attempt}`;
+          line = left != null && left > 0 ? `Retrying in ${seconds(left)}${attempt}` : `Retrying…${attempt}`;
         }
         retryNow = !!onRetry;
         break;

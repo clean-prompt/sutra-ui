@@ -27,6 +27,7 @@ import {
   RiTerminalBoxLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { Progress } from "./progress";
 import { clamp, roundTo } from "../lib/math";
 import { pad2, toValidDate } from "../lib/time";
 import { isSafeHref } from "../lib/validate";
@@ -284,23 +285,13 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
           )}
           {toolbarExtra}
           {loading && (
-            <div
-              role="progressbar"
+            <Progress
+              size="2xs"
+              value={progress != null ? Math.round(progress) : null}
               aria-label="Page loading"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={progress != null ? Math.round(progress) : undefined}
-              className="absolute inset-x-0 bottom-0 h-0.5 overflow-hidden"
-            >
-              {progress != null ? (
-                <div
-                  className="h-full bg-primary transition-[width] duration-300"
-                  style={{ width: `${clamp(progress, 0, 100)}%` }}
-                />
-              ) : (
-                <div className="h-full w-1/3 animate-indeterminate bg-primary" />
-              )}
-            </div>
+              className="absolute inset-x-0 bottom-0 rounded-none bg-transparent"
+              indicatorClassName="rounded-none duration-300"
+            />
           )}
         </div>
 

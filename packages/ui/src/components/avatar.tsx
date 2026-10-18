@@ -5,11 +5,23 @@ import { RiUserLine, RiVerifiedBadgeFill } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { toneClasses, type Tone } from "../lib/tone";
 import { colorForSeed } from "../lib/hash";
-import { initials } from "../lib/text";
+import { initials, type InitialsOptions } from "../lib/text";
 
 export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type AvatarShape = "circle" | "square";
 export type AvatarStatus = "online" | "offline" | "busy" | "away";
+/** `soft`: tinted background with coloured initials (default) · `solid`: full colour with white initials. */
+export type AvatarVariant = "soft" | "solid";
+
+/** Inline style for a seed colour: a soft tint or a solid fill. Shared by `Avatar` and `Monogram`. */
+export function seedColorStyle(color: string, variant: AvatarVariant = "soft"): React.CSSProperties {
+  return variant === "solid"
+    ? { backgroundColor: color, color: "#ffffff" }
+    : {
+        backgroundColor: `color-mix(in oklab, ${color} 16%, var(--background))`,
+        color: `color-mix(in oklab, ${color} 78%, var(--foreground))`,
+      };
+}
 
 export const avatarVariants = cva(
   "relative flex shrink-0 select-none items-center justify-center overflow-hidden bg-muted font-medium text-muted-foreground",
@@ -79,22 +91,34 @@ export interface AvatarProps
   name?: string;
   /** Custom fallback content (overrides auto initials). */
   fallback?: React.ReactNode;
-  /** Colorize the initials fallback deterministically from `name`. Default true. */
+  /** Colorize the initials fallback deterministically from `name` (via `colorForSeed`). Default true. */
   colorful?: boolean;
+  /** Explicit fallback colour (any CSS colour); overrides the colour derived from `name`. */
+  color?: string;
+  /** How the colour is applied to the fallback. Default `soft`. */
+  variant?: AvatarVariant;
+  /** Options for the auto initials (e.g. `{ singleWord: 2 }` → "Ma" for "Maya"). */
+  initialsOptions?: InitialsOptions;
   status?: AvatarStatus;
   verified?: boolean;
   /** Adds a ring in the background color (useful when overlapping). */
   ring?: boolean;
   /** Extra classes for the inner image/fallback frame. */
   frameClassName?: string;
+  /** Extra classes for the fallback (initials / icon) layer. */
+  fallbackClassName?: string;
 }
 
-/** User avatar with image, initials fallback, status dot and verified badge. */
+/**
+ * User avatar with image, initials fallback, status dot and verified badge.
+ * The fallback is labelled with `alt` or `name`. For square tiles that stand for apps, providers or tools, use `Monogram`.
+ */
 export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
   (
     {
       className,
       frameClassName,
+      fallbackClassName,
       size: sizeProp,
       shape: shapeProp,
       ring: ringProp,
@@ -103,6 +127,9 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
       name,
       fallback,
       colorful = true,
+      color,
+      variant = "soft",
+      initialsOptions,
       status,
       verified,
       children,
@@ -114,8 +141,9 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
     const size = sizeProp ?? ctx.size ?? "md";
     const shape = shapeProp ?? ctx.shape ?? "circle";
     const ring = ringProp ?? ctx.ring ?? false;
-    const monogram = initials(name);
-    const tint = name && colorful && !fallback ? colorForSeed(name) : undefined;
+    const monogram = initials(name, initialsOptions);
+    const tint = color ?? (name && colorful && !fallback ? colorForSeed(name) : undefined);
+    const label = alt || name || undefined;
     const square = shape === "square";
 
     return (
@@ -130,16 +158,10 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
               {src ? <AvatarImage src={src} alt={alt ?? name ?? ""} /> : null}
               <AvatarFallback
                 delayMs={src ? 500 : undefined}
-                style={
-                  tint
-                    ? {
-                        backgroundColor: `color-mix(in oklab, ${tint} 16%, var(--background))`,
-                        color: `color-mix(in oklab, ${tint} 78%, var(--foreground))`,
-                      }
-                    : undefined
-                }
-                role={name ? "img" : undefined}
-                aria-label={name}
+                className={fallbackClassName}
+                style={tint ? seedColorStyle(tint, variant) : undefined}
+                role={label ? "img" : undefined}
+                aria-label={label}
               >
                 {fallback ?? (monogram || <RiUserLine aria-hidden />)}
               </AvatarFallback>

@@ -16,10 +16,10 @@ import {
   RiVerifiedBadgeLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { initials } from "../lib/text";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Badge, type BadgeColor } from "./badge";
 import { Button } from "./button";
+import { Monogram } from "./monogram";
 import { SearchInput } from "./input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
@@ -468,31 +468,28 @@ export const CapabilitiesShell = React.forwardRef<HTMLDivElement, CapabilitiesSh
 CapabilitiesShell.displayName = "CapabilitiesShell";
 
 /* ------------------------------------------------------------------ */
-/* Shared helpers (internal to the capabilities set)                   */
+/* CapabilityMonogram                                                  */
 /* ------------------------------------------------------------------ */
 
-export interface CapabilityMonogramProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+export interface CapabilityMonogramProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children" | "color"> {
   name: string;
 }
 
-/** Monogram tile used when a capability has no icon. */
+/** Monogram tile used when a capability has no icon. A `Monogram` preset (brand gradient, card radius). */
 export const CapabilityMonogram = React.forwardRef<HTMLSpanElement, CapabilityMonogramProps>(function CapabilityMonogram(
   { name, className, ...props },
   ref
 ) {
-  const letters = initials(name.replace(/[-_.]+/g, " "), { mode: "first-two" });
   return (
-    <span
+    <Monogram
       ref={ref}
-      aria-hidden
-      className={cn(
-        "flex size-9 shrink-0 items-center justify-center rounded-box border border-border bg-gradient-to-br from-brand-50 to-brand-100 text-xs font-semibold text-brand-700 dark:from-brand-900 dark:to-brand-950 dark:text-brand-200",
-        className
-      )}
+      name={name}
+      variant="brand"
+      size="md"
+      data-slot="capability-monogram"
+      className={cn("flex size-9 rounded-box", className)}
       {...props}
-    >
-      {letters || "?"}
-    </span>
+    />
   );
 });
 CapabilityMonogram.displayName = "CapabilityMonogram";

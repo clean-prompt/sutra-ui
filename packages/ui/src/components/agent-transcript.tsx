@@ -19,11 +19,11 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { usePrefersReducedMotion } from "../hooks/use-media-query";
 import { formatClockTime, formatDayLabel, toMs, type TimeInput } from "../lib/time";
 import { Button } from "./button";
 import { TextShimmer } from "./text-shimmer";
-import { formatAgentElapsed, formatAgentTokens, useAgentNow } from "./agent-tasks";
+import { InlineAlert, InlineAlertActions } from "./inline-alert";
+import { AgentStatusLine } from "./tool-timeline";
 
 function textOf(node: React.ReactNode): string {
   if (node == null || typeof node === "boolean") return "";
@@ -486,7 +486,10 @@ export interface SpinnerVerbsProps extends React.HTMLAttributes<HTMLDivElement> 
   icon?: React.ReactNode;
 }
 
-/** Loader that rotates through whimsical verbs with a shimmer, elapsed time and token count. */
+/**
+ * Loader that rotates through whimsical verbs with a shimmer, elapsed time and token count.
+ * @deprecated Use `<AgentStatusLine state="thinking" verbs={…} layout="inline" tokensPrefix="↓" />`; this is now a preset of it.
+ */
 export const SpinnerVerbs = React.forwardRef<HTMLDivElement, SpinnerVerbsProps>(
   (
     {
@@ -498,62 +501,29 @@ export const SpinnerVerbs = React.forwardRef<HTMLDivElement, SpinnerVerbsProps>(
       hint,
       label = "Working",
       icon,
-      className,
+      children: _children,
       ...props
     },
     ref
-  ) => {
-    const reduced = usePrefersReducedMotion();
-    const list = verbs.length ? verbs : defaultSpinnerVerbs;
-    const [index, setIndex] = React.useState(0);
-    React.useEffect(() => {
-      if (reduced || list.length < 2) return;
-      const id = setInterval(() => {
-        setIndex((i) => {
-          if (order === "sequential") return (i + 1) % list.length;
-          let n = Math.floor(Math.random() * (list.length - 1));
-          if (n >= i) n += 1;
-          return n;
-        });
-      }, interval);
-      return () => clearInterval(id);
-    }, [reduced, list.length, order, interval]);
-    const start = toMs(startedAt);
-    const now = useAgentNow(start != null);
-    const verb = list[index % list.length] ?? "";
-    const stats = [
-      start != null ? formatAgentElapsed(now - start) : null,
-      tokens != null ? `↓ ${formatAgentTokens(tokens)} tokens` : null,
-    ].filter(Boolean);
-    return (
-      <div
-        ref={ref}
-        role="status"
-        aria-label={label}
-        className={cn("inline-flex items-center gap-2 text-sm", className)}
-        {...props}
-      >
-        <span aria-hidden className="text-primary [&_svg]:size-4">
-          {icon ?? <RiSparkling2Fill aria-hidden className="animate-pulse motion-reduce:animate-none" />}
-        </span>
-        <TextShimmer data-slot="spinner-verb" className="font-medium">
-          {verb.endsWith("…") ? verb : `${verb}…`}
-        </TextShimmer>
-        {(stats.length > 0 || hint) && (
-          <span className="text-xs tabular-nums text-muted-foreground">
-            ({stats.join(" · ")}
-            {hint ? (
-              <>
-                {stats.length ? " · " : ""}
-                {hint}
-              </>
-            ) : null}
-            )
-          </span>
-        )}
-      </div>
-    );
-  }
+  ) => (
+    <AgentStatusLine
+      ref={ref}
+      state="thinking"
+      layout="inline"
+      verbs={verbs.length ? verbs : defaultSpinnerVerbs}
+      verbOrder={order}
+      verbInterval={interval}
+      label={label}
+      aria-label={label}
+      startedAt={startedAt}
+      showElapsed={toMs(startedAt) != null}
+      tokens={tokens}
+      tokensPrefix="↓"
+      hint={hint}
+      icon={icon ?? <RiSparkling2Fill aria-hidden className="animate-pulse motion-reduce:animate-none" />}
+      {...props}
+    />
+  )
 );
 SpinnerVerbs.displayName = "SpinnerVerbs";
 
@@ -581,7 +551,7 @@ export interface ContextBannerProps extends Omit<React.HTMLAttributes<HTMLDivEle
   onDismiss?: () => void;
 }
 
-/** Banner with an icon, message, name pill, action and optional expandable command output. */
+/** Banner with an icon, message, name pill, action and optional expandable command output (a compact `InlineAlert`). */
 export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps>(
   (
     {
@@ -604,21 +574,16 @@ export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps
     const outputId = React.useId();
     const warning = variant === "warning";
     return (
-      <div
+      <InlineAlert
         ref={ref}
-        role={warning ? "alert" : "status"}
+        tone={warning ? "warning" : "neutral"}
+        icon={icon ?? (warning ? <RiErrorWarningLine aria-hidden /> : <RiInformationLine aria-hidden />)}
+        onDismiss={onDismiss}
         data-variant={variant}
-        className={cn(
-          "w-full rounded-control border px-3 py-2 text-sm",
-          warning ? "border-warning/40 bg-warning-soft text-warning-soft-foreground" : "border-border bg-subtle text-foreground",
-          className
-        )}
+        className={cn("items-center gap-2 px-3 py-2 [&>[data-slot=inline-alert-icon]_svg]:size-4", className)}
         {...props}
       >
         <div className="flex flex-wrap items-center gap-2">
-          <span aria-hidden className={cn("[&_svg]:size-4", warning ? "text-warning-soft-foreground" : "text-muted-foreground")}>
-            {icon ?? (warning ? <RiErrorWarningLine aria-hidden /> : <RiInformationLine aria-hidden />)}
-          </span>
           <span className="min-w-0">{children}</span>
           {name && (
             <span
@@ -632,30 +597,27 @@ export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps
               <span className="truncate">{name}</span>
             </span>
           )}
-          <span className="ml-auto flex items-center gap-1">
-            {output && (
-              <button
-                type="button"
-                aria-expanded={expanded}
-                aria-controls={outputId}
-                onClick={() => setExpanded(!expanded)}
-                className={cn("inline-flex items-center gap-0.5 rounded-xs text-xs font-medium underline-offset-2 hover:underline", focusRing)}
-              >
-                {expanded ? `Hide ${outputLabel}` : `Show ${outputLabel}`}
-                <RiArrowDownSLine aria-hidden className={cn("size-3.5 transition-transform", expanded && "rotate-180")} />
-              </button>
-            )}
-            {action && (
-              <Button variant={warning ? "outline" : "secondary"} size="xs" loading={action.loading} onClick={action.onClick}>
-                {action.label}
-              </Button>
-            )}
-            {onDismiss && (
-              <Button variant="ghost" size="icon-xs" aria-label="Dismiss" onClick={onDismiss}>
-                <RiCloseLine aria-hidden />
-              </Button>
-            )}
-          </span>
+          {(output || action) && (
+            <InlineAlertActions className="ml-auto mt-0 gap-1">
+              {output && (
+                <button
+                  type="button"
+                  aria-expanded={expanded}
+                  aria-controls={outputId}
+                  onClick={() => setExpanded(!expanded)}
+                  className={cn("inline-flex items-center gap-0.5 rounded-xs text-xs font-medium underline-offset-2 hover:underline", focusRing)}
+                >
+                  {expanded ? `Hide ${outputLabel}` : `Show ${outputLabel}`}
+                  <RiArrowDownSLine aria-hidden className={cn("size-3.5 transition-transform", expanded && "rotate-180")} />
+                </button>
+              )}
+              {action && (
+                <Button variant={warning ? "outline" : "secondary"} size="xs" loading={action.loading} onClick={action.onClick}>
+                  {action.label}
+                </Button>
+              )}
+            </InlineAlertActions>
+          )}
         </div>
         {output && expanded && (
           <pre
@@ -663,14 +625,14 @@ export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps
             tabIndex={0}
             aria-label="Command output"
             className={cn(
-              "mt-2 max-h-48 overflow-auto rounded-xs border border-code-border bg-code px-3 py-2 font-mono text-xs leading-relaxed text-code-foreground scrollbar-thin",
+              "mt-1 max-h-48 overflow-auto rounded-xs border border-code-border bg-code px-3 py-2 font-mono text-xs leading-relaxed text-code-foreground scrollbar-thin",
               focusRing
             )}
           >
             <code>{output}</code>
           </pre>
         )}
-      </div>
+      </InlineAlert>
     );
   }
 );

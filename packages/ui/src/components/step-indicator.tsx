@@ -2,13 +2,23 @@ import * as React from "react";
 import { RiCheckLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 
+export type StepIndicatorStatus = "complete" | "current" | "upcoming";
+
 export interface StepIndicatorStep {
+  /** Stable key for the step. Defaults to its index. */
+  id?: string;
   title: React.ReactNode;
   description?: React.ReactNode;
   icon?: React.ReactNode;
+  /** Overrides the status derived from `current` (for checklists where steps finish out of order). */
+  status?: StepIndicatorStatus;
+  /** Extra content under the title and description (inputs, links, checks). Rendered outside the clickable area. */
+  content?: React.ReactNode;
+  /** Trailing control on the step row (vertical circles/dots only), e.g. a "Show me" button. */
+  action?: React.ReactNode;
+  /** Extra attributes for the step's `<li>` (data attributes, a highlight class). */
+  itemProps?: React.LiHTMLAttributes<HTMLLIElement> & { [key: `data-${string}`]: string | number | boolean | undefined };
 }
-
-export type StepIndicatorStatus = "complete" | "current" | "upcoming";
 
 export interface StepsProps extends Omit<React.HTMLAttributes<HTMLOListElement>, "onChange"> {
   steps: StepIndicatorStep[];
@@ -16,6 +26,10 @@ export interface StepsProps extends Omit<React.HTMLAttributes<HTMLOListElement>,
   current: number;
   orientation?: "horizontal" | "vertical";
   variant?: "circles" | "bars" | "dots";
+  /** Marker size for circles: `md` (32px, default) or `sm` (24px, tighter spacing). */
+  size?: "sm" | "md";
+  /** Draw the line between markers (circles/dots). Default true. */
+  connector?: boolean;
   /** Makes steps clickable. */
   onStepClick?: (index: number) => void;
   /** Only allow clicking completed steps (and the current one). Default true. */
@@ -33,11 +47,13 @@ function Marker({
   index,
   icon,
   variant,
+  size,
 }: {
   status: StepIndicatorStatus;
   index: number;
   icon?: React.ReactNode;
   variant: "circles" | "dots";
+  size: "sm" | "md";
 }) {
   if (variant === "dots") {
     return (
@@ -54,9 +70,11 @@ function Marker({
   return (
     <span
       className={cn(
-        "relative z-[1] flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-all duration-300 [&_svg]:size-4",
+        "relative z-[1] flex shrink-0 items-center justify-center rounded-full font-semibold transition-all duration-300",
+        size === "sm" ? "size-6 text-xs [&_svg]:size-3.5" : "size-8 text-sm [&_svg]:size-4",
         status === "complete" && "bg-primary text-primary-foreground shadow-xs shadow-inner-highlight",
-        status === "current" && "border-2 border-primary bg-background text-primary ring-4 ring-primary/15",
+        status === "current" && "border-2 border-primary bg-background text-primary ring-primary/15",
+        status === "current" && (size === "sm" ? "ring-2" : "ring-4"),
         status === "upcoming" && "border border-border bg-background text-muted-foreground"
       )}
     >
@@ -78,21 +96,26 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
       current,
       orientation = "horizontal",
       variant = "circles",
+      size = "md",
+      connector = true,
       onStepClick,
       restrictToCompleted = true,
       style,
       "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
       ...props
     },
     ref
   ) => {
     const vertical = orientation === "vertical";
-    const markerSize = variant === "dots" ? 12 : 32;
+    const markerSize = variant === "dots" ? 12 : size === "sm" ? 24 : 32;
+    const gap = size === "sm" ? "pb-5" : "pb-8";
 
     return (
       <ol
         ref={ref}
-        aria-label={ariaLabel ?? "Progress"}
+        aria-label={ariaLabel ?? (ariaLabelledBy ? undefined : "Progress")}
+        aria-labelledby={ariaLabelledBy}
         className={cn(
           "w-full",
           vertical ? "flex flex-col" : variant === "bars" ? "grid gap-3" : "flex",
@@ -106,7 +129,10 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
         {...props}
       >
         {steps.map((step, i) => {
-          const status = statusOf(i, current);
+          const status = step.status ?? statusOf(i, current);
+          const key = step.id ?? i;
+          const item = step.itemProps;
+          const content = step.content != null && step.content !== false ? step.content : null;
           const last = i === steps.length - 1;
           const clickable =
             !!onStepClick && (!restrictToCompleted || status !== "upcoming");
@@ -136,9 +162,11 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
           if (variant === "bars") {
             return (
               <li
-                key={i}
+                key={key}
                 aria-current={status === "current" ? "step" : undefined}
-                className={cn(vertical ? "flex pb-4 last:pb-0" : "min-w-0")}
+                data-status={status}
+                {...item}
+                className={cn(vertical ? "flex pb-4 last:pb-0" : "min-w-0", item?.className)}
               >
                 <Comp
                   {...interactiveProps}
@@ -167,6 +195,7 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                     {text}
                   </span>
                 </Comp>
+                {content}
               </li>
             );
           }
@@ -174,40 +203,66 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
           const connectorColor = status === "complete" ? "bg-primary" : "bg-border";
 
           if (vertical) {
+            const comp = (
+              <Comp
+                {...interactiveProps}
+                className={cn(
+                  "group flex min-w-0 items-start gap-3 text-left",
+                  step.action != null && "flex-1",
+                  clickable && cn("cursor-pointer rounded-md", focusRing)
+                )}
+              >
+                <Marker status={status} index={i} icon={step.icon} variant={variant} size={size} />
+                <span style={variant === "dots" ? { marginTop: -4 } : { marginTop: size === "sm" ? 2 : 5 }}>{text}</span>
+              </Comp>
+            );
+            const row =
+              step.action != null ? (
+                <div className="flex min-w-0 flex-1 items-start gap-3">
+                  {comp}
+                  <div className="flex shrink-0 items-center gap-2">{step.action}</div>
+                </div>
+              ) : (
+                comp
+              );
             return (
               <li
-                key={i}
+                key={key}
                 aria-current={status === "current" ? "step" : undefined}
-                className={cn("relative flex", !last && "pb-8")}
+                data-status={status}
+                {...item}
+                className={cn("relative flex", !last && gap, item?.className)}
               >
-                {!last ? (
+                {connector && !last ? (
                   <span
                     aria-hidden
                     className={cn("absolute w-0.5 -translate-x-1/2 rounded-full transition-colors duration-300", connectorColor)}
                     style={{ left: markerSize / 2, top: markerSize + 6, bottom: 6 }}
                   />
                 ) : null}
-                <Comp
-                  {...interactiveProps}
-                  className={cn(
-                    "group flex min-w-0 items-start gap-3 text-left",
-                    clickable && cn("cursor-pointer rounded-md", focusRing)
-                  )}
-                >
-                  <Marker status={status} index={i} icon={step.icon} variant={variant} />
-                  <span style={variant === "dots" ? { marginTop: -4 } : { marginTop: 5 }}>{text}</span>
-                </Comp>
+                {content ? (
+                  <div className="flex min-w-0 flex-1 flex-col gap-2">
+                    {row}
+                    <div className="min-w-0" style={{ paddingLeft: markerSize + 12 }}>
+                      {content}
+                    </div>
+                  </div>
+                ) : (
+                  row
+                )}
               </li>
             );
           }
 
           return (
             <li
-              key={i}
+              key={key}
               aria-current={status === "current" ? "step" : undefined}
-              className="relative flex min-w-0 flex-1 flex-col items-center"
+              data-status={status}
+              {...item}
+              className={cn("relative flex min-w-0 flex-1 flex-col items-center", item?.className)}
             >
-              {!last ? (
+              {connector && !last ? (
                 <span
                   aria-hidden
                   className={cn("absolute h-0.5 -translate-y-1/2 rounded-full transition-colors duration-300", connectorColor)}
@@ -225,9 +280,10 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                   clickable && cn("cursor-pointer rounded-md", focusRing)
                 )}
               >
-                <Marker status={status} index={i} icon={step.icon} variant={variant} />
+                <Marker status={status} index={i} icon={step.icon} variant={variant} size={size} />
                 {text}
               </Comp>
+              {content}
             </li>
           );
         })}
@@ -237,6 +293,7 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
 );
 Steps.displayName = "Steps";
 
-/** Alias of `Steps`. */
+/** @deprecated Use `Steps` (this is a plain alias). */
 export const StepIndicator = Steps;
+/** @deprecated Use `StepsProps`. */
 export type StepIndicatorProps = StepsProps;

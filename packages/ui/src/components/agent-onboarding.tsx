@@ -13,6 +13,8 @@ import { cn, focusRing, invalidRing } from "../lib/cn";
 import { CopyButton } from "./copy-button";
 import { Button } from "./button";
 import { Spinner } from "./spinner";
+import { Progress } from "./progress";
+import { Steps } from "./step-indicator";
 
 /* ------------------------------------------------------------------ */
 /* OnboardingChecklist                                                 */
@@ -38,13 +40,12 @@ export interface OnboardingChecklistProps extends Omit<React.HTMLAttributes<HTML
   onDismiss?: () => void;
 }
 
-/** Milestone checklist with completed / next / upcoming states, "Show me" actions, progress and dismiss. */
+/** Milestone checklist with completed / next / upcoming states, "Show me" actions, progress and dismiss. Built on `Steps` and `Progress`. */
 export const OnboardingChecklist = React.forwardRef<HTMLDivElement, OnboardingChecklistProps>(
   ({ items, title = "Get started", description, nextId, onShowMe, onDismiss, className, ...props }, ref) => {
     const titleId = React.useId();
     const done = items.filter((i) => i.completed).length;
     const next = nextId ?? items.find((i) => !i.completed)?.id;
-    const pct = items.length ? Math.round((done / items.length) * 100) : 0;
     return (
       <div
         ref={ref}
@@ -69,53 +70,35 @@ export const OnboardingChecklist = React.forwardRef<HTMLDivElement, OnboardingCh
             </Button>
           )}
         </div>
-        <div
-          role="progressbar"
+        <Progress
+          size="xs"
+          value={done}
+          max={Math.max(1, items.length)}
+          getValueLabel={() => `${done} of ${items.length} complete`}
           aria-labelledby={titleId}
-          aria-valuenow={done}
-          aria-valuemin={0}
-          aria-valuemax={items.length}
-          aria-valuetext={`${done} of ${items.length} complete`}
-          className="mt-3 h-1 overflow-hidden rounded-full bg-muted"
-        >
-          <span className="block h-full rounded-full bg-primary transition-[width] duration-500 motion-reduce:transition-none" style={{ width: `${pct}%` }} />
-        </div>
-        <ol className="mt-3 flex flex-col gap-1">
-          {items.map((item, i) => {
+          className="mt-3"
+        />
+        <Steps
+          aria-labelledby={titleId}
+          orientation="vertical"
+          size="sm"
+          connector={false}
+          current={next ? items.findIndex((i) => i.id === next) : items.length}
+          className="mt-3 gap-1"
+          steps={items.map((item, i) => {
             const state = item.completed ? "completed" : item.id === next ? "next" : "upcoming";
-            return (
-              <li
-                key={item.id}
-                data-state={state}
-                aria-current={state === "next" ? "step" : undefined}
-                className={cn(
-                  "flex items-start gap-3 rounded-control px-2 py-2",
-                  state === "next" && "bg-primary-soft/60 ring-1 ring-primary/20"
-                )}
-              >
-                <span
-                  aria-hidden
-                  className={cn(
-                    "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-2xs font-semibold",
-                    state === "completed" && "bg-success text-success-foreground",
-                    state === "next" && "bg-primary text-primary-foreground",
-                    state === "upcoming" && "border border-border-strong text-muted-foreground"
-                  )}
-                >
-                  {state === "completed" ? <RiCheckLine aria-hidden className="size-3.5" /> : i + 1}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className={cn("text-sm", state === "completed" ? "text-muted-foreground line-through" : "font-medium text-foreground")}>
-                    {item.title}
-                    <span className="sr-only">
-                      {state === "completed" ? " (completed)" : state === "next" ? " (next)" : ""}
-                    </span>
-                  </p>
-                  {item.description && state !== "completed" && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">{item.description}</p>
-                  )}
-                </div>
-                {onShowMe && !item.completed && (
+            return {
+              id: item.id,
+              status: state === "completed" ? "complete" : state === "next" ? "current" : "upcoming",
+              title:
+                state === "completed" ? <span className="font-normal text-muted-foreground line-through">{item.title}</span> : item.title,
+              description: state === "completed" ? undefined : item.description,
+              itemProps: {
+                "data-state": state,
+                className: cn("rounded-control px-2 py-2", state === "next" && "bg-primary-soft/60 ring-1 ring-primary/20"),
+              },
+              action:
+                onShowMe && !item.completed ? (
                   <Button
                     variant={state === "next" ? "primary" : "ghost"}
                     size="xs"
@@ -124,11 +107,10 @@ export const OnboardingChecklist = React.forwardRef<HTMLDivElement, OnboardingCh
                   >
                     {item.actionLabel ?? "Show me"}
                   </Button>
-                )}
-              </li>
-            );
+                ) : undefined,
+            };
           })}
-        </ol>
+        />
       </div>
     );
   }

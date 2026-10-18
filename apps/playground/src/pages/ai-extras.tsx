@@ -82,16 +82,16 @@ function ContextMeterDemo() {
     <Demo
       id="context-meter"
       title="Context meter"
-      description="A ring for the context window. Quiet until it nears full, then it shows the percentage and turns warning / danger. Click it for the token breakdown and a compress action."
+      description="A ring for the context window. Quiet until it nears full, then it shows the percentage and turns warning / danger. Click it for the token breakdown and a compact action."
     >
       <div className="flex flex-col items-center gap-2">
         <ContextMeter
           limit={32000}
           model="qwen3-8b"
           breakdown={{ system: 1400, history, attachments: 2600, reserved: 2000 }}
-          onCompress={compress}
-          compressing={compressing}
-          canCompress={history > 2000}
+          onCompact={compress}
+          compacting={compressing}
+          canCompact={history > 2000}
         />
         <DemoLabel>Interactive</DemoLabel>
         <div className="flex gap-1">
@@ -252,7 +252,7 @@ function SlashMenuDemo() {
 
 const pickerModels: ModelPickerModel[] = [
   { id: "qwen3-8b", name: "Qwen3 8B", state: "ready", answerSeconds: 3, group: "Local", tags: ["chat"], cost: "free", quality: "good", rank: 1 },
-  { id: "phi-4-mini", name: "Phi-4 mini", state: "asleep", warmSeconds: 4, group: "Local", tags: ["fast"], cost: "free", quality: "basic" },
+  { id: "phi-4-mini", name: "Phi-4 mini", state: "sleeping", warmSeconds: 4, group: "Local", tags: ["fast"], cost: "free", quality: "basic" },
   { id: "llama-3.1-8b", name: "Llama 3.1 8B", state: "stopped", warmSeconds: 40, group: "Local", tags: ["chat"], cost: "free", quality: "good" },
   { id: "gemma-27b", name: "Gemma 27B", state: "failed", group: "Local", tags: ["chat"], cost: "free", quality: "best" },
   { id: "deepseek-70b", name: "DeepSeek 70B", state: "stopped", warmSeconds: 160, group: "Local", tags: ["reasoning"], blockedReason: "needs 48 GB, 22 GB free" },

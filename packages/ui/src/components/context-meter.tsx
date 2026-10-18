@@ -1,8 +1,8 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
-import { Button } from "./button";
+import { ContextUsageBreakdown, type ContextUsageCategory } from "./agent-usage";
 import { RingMeter } from "./gauge";
-import { defaultMeterThresholds, meterLevel, StackedMeter, type MeterLevel, type MeterThresholds } from "./meter";
+import { defaultMeterThresholds, meterLevel, type MeterLevel, type MeterThresholds } from "./meter";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { formatTokenCount } from "./text-caret";
 
@@ -19,18 +19,29 @@ export interface ContextMeterBreakdown {
 }
 
 export interface ContextMeterProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  /** Tokens currently in the prompt. Defaults to the sum of the breakdown. */
+  /** Tokens currently in the prompt. Defaults to the sum of the breakdown (or of the non-reserved categories). */
   used?: number;
   /** Model context size in tokens. */
   limit: number;
+  /** Fixed-key breakdown. Ignored when `categories` is set. */
   breakdown?: ContextMeterBreakdown;
+  /** Free-form breakdown, the same shape as `ContextUsageBreakdown` (mark reply reservations with `reserved: true`). */
+  categories?: ContextUsageCategory[];
   /** Model name shown in the popover. */
   model?: string;
   /** Percent thresholds for warn/danger coloring. Default 75 / 90. */
   thresholds?: MeterThresholds;
+  /** Shows a "Compact conversation" button in the popover. */
+  onCompact?: () => void;
+  /** Shows a spinner on the compact button. */
+  compacting?: boolean;
+  /** Default: true when `onCompact` is set. */
+  canCompact?: boolean;
+  /** @deprecated Use `onCompact`. Keeps the old "Compress conversation" wording. */
   onCompress?: () => void;
+  /** @deprecated Use `compacting`. */
   compressing?: boolean;
-  /** Default: true when `onCompress` is set. */
+  /** @deprecated Use `canCompact`. */
   canCompress?: boolean;
   /** Ring diameter in px. Default 20. */
   size?: number;
@@ -40,17 +51,31 @@ export interface ContextMeterProps extends Omit<React.ButtonHTMLAttributes<HTMLB
 
 const levelWord: Record<MeterLevel, string> = { ok: "Plenty of room", warn: "Getting full", danger: "Almost full" };
 
-/** Context-window usage ring with a token breakdown popover and a compress action. */
+function breakdownCategories({ system = 0, history = 0, attachments = 0, reserved = 0 }: ContextMeterBreakdown): ContextUsageCategory[] {
+  const rows: ContextUsageCategory[] = [
+    { key: "system", label: "System", tokens: system, color: "info" },
+    { key: "history", label: "History", tokens: history, color: "primary" },
+    { key: "attachments", label: "Attachments", tokens: attachments, color: "warning" },
+  ];
+  if (reserved > 0) rows.push({ key: "reserved", label: "Reserved for reply", tokens: reserved, color: "muted", reserved: true });
+  return rows;
+}
+
+/** Context-window usage ring; its popover is a `ContextUsageBreakdown` with an optional compact action. */
 export const ContextMeter = React.forwardRef<HTMLButtonElement, ContextMeterProps>(
   (
     {
       used: usedProp,
       limit,
-      breakdown = {},
+      breakdown,
+      categories: categoriesProp,
       model,
       thresholds = defaultMeterThresholds,
+      onCompact: onCompactProp,
+      compacting: compactingProp,
+      canCompact: canCompactProp,
       onCompress,
-      compressing = false,
+      compressing,
       canCompress,
       size = 20,
       note,
@@ -60,20 +85,19 @@ export const ContextMeter = React.forwardRef<HTMLButtonElement, ContextMeterProp
     ref
   ) => {
     const [open, setOpen] = React.useState(false);
-    const { system = 0, history = 0, attachments = 0, reserved = 0 } = breakdown;
-    const used = usedProp ?? system + history + attachments;
+    const categories = React.useMemo(
+      () => categoriesProp ?? breakdownCategories(breakdown ?? {}),
+      [categoriesProp, breakdown]
+    );
+    const used = usedProp ?? categories.reduce((s, c) => s + (c.reserved ? 0 : Math.max(0, c.tokens)), 0);
     const pct = limit > 0 ? Math.min(100, (used / limit) * 100) : 0;
     const level = meterLevel(pct, thresholds);
     const warnAt = thresholds.warn ?? defaultMeterThresholds.warn;
-    const remaining = Math.max(0, limit - used - reserved);
     const pctText = `${Math.round(pct)}%`;
-    const compressible = canCompress ?? !!onCompress;
-    const rows: Array<[string, number]> = [
-      ["System", system],
-      ["History", history],
-      ["Attachments", attachments],
-    ];
-    if (reserved > 0) rows.push(["Reserved for reply", reserved]);
+    const onCompact = onCompactProp ?? onCompress;
+    const legacyWording = !onCompactProp && !!onCompress;
+    const compacting = compactingProp ?? compressing ?? false;
+    const canCompact = canCompactProp ?? canCompress ?? !!onCompact;
 
     return (
       <Popover open={open} onOpenChange={setOpen}>
@@ -95,63 +119,40 @@ export const ContextMeter = React.forwardRef<HTMLButtonElement, ContextMeterProp
             </span>
           </button>
         </PopoverTrigger>
-        <PopoverContent size="sm" align="end" side="top" className="w-64 space-y-3" aria-label="Context window details">
-          <div className="flex items-baseline justify-between gap-2">
-            <p className="text-sm font-semibold text-foreground">Context window</p>
-            <span
-              className={cn(
-                "font-mono text-sm tabular-nums",
-                level === "danger" ? "text-destructive" : level === "warn" ? "text-warning" : "text-muted-foreground"
-              )}
-            >
-              {pctText}
-            </span>
-          </div>
-          <StackedMeter
-            size="sm"
-            legend={false}
+        <PopoverContent size="sm" align="end" side="top" className="w-72" aria-label="Context window details">
+          <ContextUsageBreakdown
+            categories={categories}
             max={limit}
-            valueText={`${formatTokenCount(used)} / ${formatTokenCount(limit)}`}
-            label={levelWord[level]}
+            used={used}
+            thresholds={thresholds}
             valueFormatter={formatTokenCount}
-            parts={[
-              { label: "System", value: system, color: "info" },
-              { label: "History", value: history, color: "primary" },
-              { label: "Attachments", value: attachments, color: "warning" },
-              { label: "Reserved", value: reserved, color: "muted" },
-            ]}
-          />
-          <dl className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-1 text-xs">
-            {rows.map(([k, v]) => (
-              <React.Fragment key={k}>
-                <dt className="text-muted-foreground">{k}</dt>
-                <dd className="text-right font-mono tabular-nums text-foreground">{formatTokenCount(v)}</dd>
-              </React.Fragment>
-            ))}
-            <dt className="text-muted-foreground">Remaining</dt>
-            <dd className="text-right font-mono tabular-nums text-foreground">{formatTokenCount(remaining)}</dd>
-            <dt className="border-t border-border pt-1 text-muted-foreground">Model context</dt>
-            <dd className="border-t border-border pt-1 text-right font-mono tabular-nums text-foreground">
-              {formatTokenCount(limit)} tokens
-            </dd>
-          </dl>
-          {model ? <p className="text-xs text-muted-foreground">Model: <span className="font-medium text-foreground">{model}</span></p> : null}
-          {note ? <div className="text-xs text-muted-foreground">{note}</div> : null}
-          {onCompress ? (
-            <Button
-              variant="secondary"
-              size="sm"
-              className="w-full"
-              loading={compressing}
-              disabled={!compressible || compressing}
-              onClick={() => {
-                setOpen(false);
-                onCompress();
-              }}
-            >
-              {compressing ? "Compressing…" : "Compress conversation"}
-            </Button>
-          ) : null}
+            caption={levelWord[level]}
+            freeLabel="Remaining"
+            actionLayout="block"
+            compactLabel={legacyWording ? "Compress conversation" : "Compact conversation"}
+            compactingLabel={legacyWording ? "Compressing…" : "Compacting…"}
+            compacting={compacting}
+            canCompact={canCompact}
+            onCompact={
+              onCompact
+                ? () => {
+                    setOpen(false);
+                    onCompact();
+                  }
+                : undefined
+            }
+          >
+            <div className="flex items-baseline justify-between gap-2 border-t border-border pt-2 text-xs">
+              <span className="text-muted-foreground">Model context</span>
+              <span className="font-mono tabular-nums text-foreground">{formatTokenCount(limit)} tokens</span>
+            </div>
+            {model ? (
+              <p className="text-xs text-muted-foreground">
+                Model: <span className="font-medium text-foreground">{model}</span>
+              </p>
+            ) : null}
+            {note ? <div className="text-xs text-muted-foreground">{note}</div> : null}
+          </ContextUsageBreakdown>
         </PopoverContent>
       </Popover>
     );

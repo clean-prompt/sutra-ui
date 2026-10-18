@@ -7,14 +7,12 @@ import {
   RiRefreshLine,
   RiSettings3Line,
   RiShieldUserLine,
-  RiTimeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { toneClasses } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { errorMessage, useAsyncAction } from "../hooks/use-async-action";
-import { useNow } from "../hooks/use-now";
-import { formatCountdown } from "../lib/duration";
+import { useCountdown } from "../hooks/use-now";
 import { formatRelative } from "../lib/time";
 import { CopyButton } from "./copy-button";
 import { Button } from "./button";
@@ -27,7 +25,8 @@ import { Field, FieldError, FieldHint, FieldLabel } from "./field";
 import { Checkbox } from "./checkbox";
 import { Avatar } from "./avatar";
 import { EmptyState } from "./empty-state";
-import { QRCode } from "./qr-code";
+import { QRCode, QRCodeCard } from "./qr-code";
+import { Steps } from "./step-indicator";
 import { ConfirmDialog, Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./dialog";
 
 /* ------------------------------------------------------------------ */
@@ -699,7 +698,7 @@ export interface RotatingQRPairingProps extends Omit<React.HTMLAttributes<HTMLDi
   size?: number;
 }
 
-/** Live pairing QR: polls a rotating payload, crossfades on change, counts down and walks through pairing phases. */
+/** Live pairing QR: polls a rotating payload, crossfades on change, counts down and walks through pairing phases. Built on `QRCodeCard`. */
 export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPairingProps>(
   (
     {
@@ -718,7 +717,6 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
       installingLabel = "Installing the bridge…",
       connectedLabel = "Device linked",
       size = 192,
-      className,
       ...props
     },
     ref
@@ -728,10 +726,9 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
     const [deadline, setDeadline] = React.useState<number | null>(() =>
       expiresAt ?? (ttl != null ? Date.now() + ttl * 1000 : null)
     );
-    const ticked = useNow({ active: deadline != null && phase === "waiting" });
-    // A refresh restarts the clock before the next tick.
-    const [refreshedAt, setRefreshedAt] = React.useState(0);
-    const now = Math.max(ticked, refreshedAt);
+    const waiting = phase === "waiting";
+    // Drives the phase machine; QRCodeCard runs the visible countdown from the same deadline.
+    const { expired: timeUp } = useCountdown(waiting ? deadline : undefined);
     const keyRef = React.useRef(0);
     const currentRef = React.useRef<string | null>(null);
     const getRef = React.useRef(getPayload);
@@ -790,112 +787,87 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
       return () => clearTimeout(t);
     }, [layers]);
 
-    const remaining = deadline != null ? (deadline - now) / 1000 : null;
     React.useEffect(() => {
-      if (phase === "waiting" && remaining != null && remaining <= 0) setPhase("expired");
-    }, [phase, remaining, setPhase]);
+      if (waiting && timeUp) setPhase("expired");
+    }, [waiting, timeUp, setPhase]);
 
     const refresh = () => {
       currentRef.current = null;
       setLayers([]);
       if (expiresAt == null && ttl != null) setDeadline(Date.now() + ttl * 1000);
-      setRefreshedAt(Date.now());
       setPhase("waiting");
       onRefresh?.();
     };
 
     const showQR = phase === "waiting" || phase === "expired";
+    let code: React.ReactNode;
+    if (phase === "installing") {
+      code = (
+        <div className="flex flex-col items-center gap-3 p-4 text-sm text-muted-foreground">
+          <Spinner label="" />
+          <span>{installingLabel}</span>
+        </div>
+      );
+    } else if (phase === "connected") {
+      code = (
+        <div className="flex flex-col items-center gap-2 p-4 text-foreground">
+          <span className="flex size-12 items-center justify-center rounded-full bg-success text-success-foreground">
+            <RiCheckLine aria-hidden className="size-7" />
+          </span>
+          <span className="text-sm font-semibold">{connectedLabel}</span>
+        </div>
+      );
+    } else if (phase === "error") {
+      code = (
+        <div className="flex flex-col items-center gap-2 p-4 text-foreground">
+          <RiErrorWarningLine aria-hidden className="size-8 text-destructive" />
+          <span className="text-sm font-semibold">Pairing failed</span>
+        </div>
+      );
+    } else if (layers.length === 0) {
+      code = waiting ? <Spinner label="Generating code" className="text-muted-foreground" /> : null;
+    } else {
+      code = layers.map((l, i) => (
+        <span
+          key={l.key}
+          data-payload={i === layers.length - 1 ? l.value : undefined}
+          aria-hidden={i !== layers.length - 1 || undefined}
+          className={cn("absolute inset-1", i === layers.length - 1 && layers.length > 1 && "animate-in fade-in-0 duration-500")}
+        >
+          <QRCode value={l.value} size={size} quietZone={2} title="Pairing QR code" />
+        </span>
+      ));
+    }
 
     return (
-      <div
+      <QRCodeCard
         ref={ref}
         data-slot="rotating-qr-pairing"
         data-phase={phase}
-        className={cn(
-          "flex w-full max-w-xs flex-col items-center gap-4 rounded-box border border-border bg-card p-5 text-center shadow-xs",
-          className
-        )}
+        value={layers[layers.length - 1]?.value ?? ""}
+        url={false}
+        size={size}
+        title={title}
+        caption={waiting ? caption : undefined}
+        expiresAt={waiting && deadline != null ? deadline : undefined}
+        expired={phase === "expired"}
+        onRefresh={refresh}
+        code={code}
+        frameClassName={showQR ? undefined : "bg-subtle ring-border"}
         {...props}
       >
-        {title != null && <h3 className="text-base font-semibold tracking-tight text-foreground">{title}</h3>}
-        <div
-          className="relative flex items-center justify-center overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-black/5"
-          style={{ width: size + 8, height: size + 8 }}
-        >
-          {showQR &&
-            layers.map((l, i) => (
-              <span
-                key={l.key}
-                data-payload={i === layers.length - 1 ? l.value : undefined}
-                aria-hidden={i !== layers.length - 1 || undefined}
-                className={cn(
-                  "absolute inset-1 transition-[filter,opacity] duration-300",
-                  i === layers.length - 1 && layers.length > 1 && "animate-in fade-in-0 duration-500",
-                  phase === "expired" && "opacity-40 blur-[3px]"
-                )}
-              >
-                <QRCode value={l.value} size={size} quietZone={2} title="Pairing QR code" />
-              </span>
-            ))}
-          {phase === "waiting" && layers.length === 0 && <Spinner label="Generating code" className="text-muted-foreground" />}
-          {phase === "installing" && (
-            <div className="flex flex-col items-center gap-3 p-4 text-sm text-neutral-600">
-              <Spinner label="" />
-              <span>{installingLabel}</span>
-            </div>
-          )}
-          {phase === "connected" && (
-            <div className="flex flex-col items-center gap-2 p-4 text-neutral-900">
-              <span className="flex size-12 items-center justify-center rounded-full bg-success text-success-foreground">
-                <RiCheckLine aria-hidden className="size-7" />
-              </span>
-              <span className="text-sm font-semibold">{connectedLabel}</span>
-            </div>
-          )}
-          {phase === "error" && (
-            <div className="flex flex-col items-center gap-2 p-4 text-neutral-900">
-              <RiErrorWarningLine aria-hidden className="size-8 text-destructive" />
-              <span className="text-sm font-semibold">Pairing failed</span>
-            </div>
-          )}
-          {phase === "expired" && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white/70 p-4">
-              <p className="text-sm font-semibold text-neutral-900">Code expired</p>
-              <Button size="sm" leadingIcon={<RiRefreshLine aria-hidden />} onClick={refresh}>
-                Refresh code
-              </Button>
-            </div>
-          )}
-        </div>
         <div role="status" aria-live="polite" className="sr-only">
           {phase === "installing" ? "Installing" : phase === "waiting" ? "Waiting for scan" : phase === "connected" ? "Connected" : phase === "expired" ? "Pairing code expired" : "Pairing failed"}
         </div>
-        {phase === "error" ? (
+        {phase === "error" && (
           <div className="flex flex-col items-center gap-2">
             {error != null && <p className="text-sm text-destructive">{error}</p>}
             <Button size="sm" variant="secondary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={refresh}>
               Try again
             </Button>
           </div>
-        ) : phase === "waiting" ? (
-          <>
-            {caption != null && <p className="text-sm text-muted-foreground">{caption}</p>}
-            {remaining != null && (
-              <p
-                role="timer"
-                aria-live="off"
-                className={cn(
-                  "inline-flex items-center gap-1.5 text-xs font-medium tabular-nums",
-                  remaining <= 30 ? "text-warning" : "text-muted-foreground"
-                )}
-              >
-                <RiTimeLine aria-hidden className="size-3.5" />
-                Expires in {formatCountdown(remaining * 1000)}
-              </p>
-            )}
-          </>
-        ) : null}
-      </div>
+        )}
+      </QRCodeCard>
     );
   }
 );
@@ -940,7 +912,7 @@ function StepCopy({ value, label }: { value: string; label?: string }) {
   );
 }
 
-/** Numbered onboarding checklist with copyable values, external links and "I did this" checks. */
+/** Numbered onboarding checklist with copyable values, external links and "I did this" checks. Built on `Steps orientation="vertical"`. */
 export const GuidedSetupSteps = React.forwardRef<HTMLOListElement, GuidedSetupStepsProps>(
   ({ steps, value, defaultValue = [], onValueChange, onComplete, className, ...props }, ref) => {
     const [done, setDone] = useControllableState<string[]>({ value, defaultValue, onChange: onValueChange });
@@ -955,42 +927,26 @@ export const GuidedSetupSteps = React.forwardRef<HTMLOListElement, GuidedSetupSt
     };
 
     return (
-      <ol ref={ref} data-slot="guided-setup-steps" className={cn("flex flex-col", className)} {...props}>
-        {steps.map((s, i) => {
+      <Steps
+        ref={ref}
+        data-slot="guided-setup-steps"
+        aria-label="Setup steps"
+        orientation="vertical"
+        size="sm"
+        current={currentIdx === -1 ? steps.length : currentIdx}
+        className={className}
+        {...props}
+        steps={steps.map((s, i) => {
           const isDone = done.includes(s.id);
           const isCurrent = i === currentIdx;
-          const last = i === steps.length - 1;
-          return (
-            <li
-              key={s.id}
-              data-done={isDone || undefined}
-              aria-current={isCurrent ? "step" : undefined}
-              className="relative flex gap-3 pb-5 last:pb-0"
-            >
-              {!last && (
-                <span aria-hidden className={cn("absolute left-3.5 top-8 bottom-1 w-px -translate-x-1/2", isDone ? "bg-primary" : "bg-border")} />
-              )}
-              <span
-                aria-hidden
-                className={cn(
-                  "relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold tabular-nums transition-colors",
-                  isDone
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : isCurrent
-                      ? "border-primary bg-primary-soft text-primary-soft-foreground"
-                      : "border-border bg-background text-muted-foreground"
-                )}
-              >
-                {isDone ? <RiCheckLine aria-hidden className="size-4" /> : i + 1}
-              </span>
-              <div className={cn("flex min-w-0 flex-1 flex-col gap-2 pt-0.5", !isDone && !isCurrent && "opacity-75")}>
-                <div>
-                  <p className={cn("text-sm font-medium text-foreground", isDone && "text-muted-foreground line-through decoration-muted-foreground/40")}>
-                    <span className="sr-only">Step {i + 1}: </span>
-                    {s.title}
-                  </p>
-                  {s.description != null && <p className="text-sm text-muted-foreground">{s.description}</p>}
-                </div>
+          return {
+            id: s.id,
+            status: isDone ? "complete" : isCurrent ? "current" : "upcoming",
+            title: isDone ? <span className="text-muted-foreground line-through decoration-muted-foreground/40">{s.title}</span> : s.title,
+            description: s.description,
+            itemProps: { "data-done": isDone || undefined },
+            content: (
+              <div className={cn("flex min-w-0 flex-col gap-2", !isDone && !isCurrent && "opacity-75")}>
                 {(s.copyValue || s.href) && (
                   <div className="flex flex-wrap items-center gap-2">
                     {s.copyValue && <StepCopy value={s.copyValue} label={s.copyLabel} />}
@@ -1014,10 +970,10 @@ export const GuidedSetupSteps = React.forwardRef<HTMLOListElement, GuidedSetupSt
                   {s.confirmLabel ?? "I did this"}
                 </label>
               </div>
-            </li>
-          );
+            ),
+          };
         })}
-      </ol>
+      />
     );
   }
 );

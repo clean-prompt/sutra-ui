@@ -3,6 +3,7 @@ import { cn } from "../lib/cn";
 import { clamp, toPercent } from "../lib/math";
 import { normalizeTone, type ToneInput } from "../lib/tone";
 import { defaultMeterThresholds, meterLevel, type MeterColor, type MeterLevel, type MeterThresholds } from "./meter";
+import { ProgressRingSvg } from "./progress";
 
 export interface GaugeColorStop {
   /** Absolute value from which this color applies. */
@@ -205,7 +206,10 @@ export interface RingMeterProps extends Omit<React.HTMLAttributes<HTMLSpanElemen
   children?: React.ReactNode;
 }
 
-/** Compact ring showing a fill level, e.g. an AI context window. */
+/**
+ * Compact ring showing a fill level against thresholds (role="meter"), e.g. an AI context window.
+ * It draws the same ring as `ProgressCircle` (`ProgressRingSvg`); use `ProgressCircle` for task completion (role="progressbar").
+ */
 export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
   (
     {
@@ -228,8 +232,6 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
     const level = meterLevel(pct, thresholds);
     const fill = level === "ok" ? resolve(normalizeTone(tone ?? color, "primary")) : levelColor[level];
     const sw = thickness ?? Math.max(2, size / 8);
-    const c = size / 2;
-    const r = c - sw / 2;
     const shown = pct >= showValueAbove;
     return (
       <span
@@ -244,22 +246,7 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
         className={cn("inline-flex items-center gap-1.5 align-middle", className)}
         {...props}
       >
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true" className="-rotate-90 shrink-0">
-          <circle cx={c} cy={c} r={r} fill="none" className="stroke-muted" strokeWidth={sw} />
-          <circle
-            data-slot="ring-fill"
-            cx={c}
-            cy={c}
-            r={r}
-            fill="none"
-            stroke={fill}
-            strokeWidth={sw}
-            strokeLinecap={pct > 0 ? "round" : "butt"}
-            pathLength={100}
-            strokeDasharray={`${r2(pct)} 100`}
-            className="transition-[stroke-dasharray,stroke] duration-500 ease-out-quart motion-reduce:transition-none"
-          />
-        </svg>
+        <ProgressRingSvg percent={pct} size={size} strokeWidth={sw} fillStroke={fill} fillSlot="ring-fill" />
         {shown ? (
           <span data-slot="ring-value" className={cn("text-xs font-medium tabular-nums", levelText[level] === "text-foreground" ? "text-muted-foreground" : levelText[level])}>
             {Math.round(pct)}%

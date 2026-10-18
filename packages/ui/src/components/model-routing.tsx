@@ -31,6 +31,8 @@ import { ReorderableList } from "./reorderable-list";
 import { EffortSlider, defaultEffortLevels, type EffortLevel } from "./agent-mode";
 import { formatTokenCount, highlightMatch } from "./ai-extras";
 import { ProviderLogo } from "./providers";
+import { ModelStateGlyph, normalizeModelState } from "./model-state";
+import { modelWaitHint, type PickerModel } from "./model-select";
 
 /* ------------------------------------------------------------------ */
 /* Types + helpers                                                     */
@@ -38,9 +40,7 @@ import { ProviderLogo } from "./providers";
 
 export type ModelCapability = "tools" | "vision" | "reasoning";
 
-export interface RoutingModel {
-  id: string;
-  name: string;
+export interface RoutingModel extends Pick<PickerModel, "id" | "name" | "state" | "answerSeconds" | "warmSeconds"> {
   /** Context window in tokens. */
   contextLength?: number;
   /** USD per million input tokens. */
@@ -357,6 +357,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
                       )}
                     >
                       <div className="flex items-center gap-2">
+                        {m.state != null && <ModelStateGlyph state={m.state} />}
                         <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{highlightMatch(m.name, query.trim())}</span>
                         {current && (
                           <Badge size="sm" color="brand">
@@ -368,6 +369,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
                         <ModelCapabilityChips capabilities={m.capabilities} />
                         {m.contextLength != null && <span>{formatTokenCount(m.contextLength)} ctx</span>}
                         {price && <span>{price === "Free" ? "Free" : `${price} /Mtok`}</span>}
+                        {m.state != null && normalizeModelState(m.state) !== "ready" && <span>{modelWaitHint({ ...m, state: m.state })}</span>}
                         {disabled && disabledReason && <span className="text-warning-soft-foreground">{disabledReason}</span>}
                       </div>
                     </div>

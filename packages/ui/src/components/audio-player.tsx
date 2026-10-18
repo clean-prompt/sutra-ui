@@ -16,6 +16,7 @@ import {
   RiSkipForwardFill,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { Progress } from "./progress";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useSwipe } from "./drawer";
 import { ImageWithFallback } from "./lightbox";
@@ -483,10 +484,10 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
       className={cn("relative touch-pan-x", layout === "auto" && "md:hidden")}
       {...swipe}
     >
-      <div
-        role="progressbar"
+      <Progress
+        size="xs"
+        value={pct}
         aria-label="Playback progress"
-        aria-valuemin={0}
         aria-valuemax={Math.round(duration)}
         aria-valuenow={Math.round(Math.min(currentTime, duration))}
         aria-valuetext={`${formatMediaTime(currentTime)} of ${formatMediaTime(duration)}`}
@@ -494,10 +495,9 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
           const rect = e.currentTarget.getBoundingClientRect();
           if (rect.width > 0 && duration > 0) onSeek?.(((e.clientX - rect.left) / rect.width) * duration);
         }}
-        className="absolute inset-x-0 top-0 h-1 cursor-pointer bg-muted"
-      >
-        <div className="h-full bg-primary transition-[width] duration-200" style={{ width: `${pct}%` }} />
-      </div>
+        className="absolute inset-x-0 top-0 cursor-pointer rounded-none"
+        indicatorClassName="rounded-none duration-200"
+      />
       <div className="flex items-center gap-2 px-3 pb-2 pt-3">
         {onExpand ? (
           <button

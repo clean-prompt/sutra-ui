@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
+import { Spinner } from "./spinner";
 
 export type StatusBadgeStatus =
   | "online"
@@ -39,6 +40,26 @@ function resolveTone(status: StatusBadgeStatus | undefined, tone: ToneInput | un
   return status ? statusMeta[status].tone : "neutral";
 }
 
+/**
+ * What a status indicator shows: `"dot"` (default, the coloured dot), `"spinner"`, any icon node,
+ * or nothing (`null` / `false`, StatusBadge only). Indicators are always decorative; the label carries the meaning.
+ */
+export type StatusIndicatorIcon = React.ReactNode | "spinner" | "dot";
+
+/** solid: filled · hollow: ring (glyphs: no background) · dashed: dashed ring */
+export type StatusDotVariant = "solid" | "hollow" | "dashed";
+
+/** Ring colour for hollow / dashed dots (neutral uses the muted foreground so it stays visible). */
+const ringBorder: Record<Tone, string> = { ...toneClasses.border, neutral: "border-muted-foreground" };
+
+const dotSize = { sm: "size-1.5", md: "size-2", lg: "size-2.5" } as const;
+const glyphSize = { sm: "size-3.5 [&_svg]:size-2.5", md: "size-4 [&_svg]:size-3", lg: "size-5 [&_svg]:size-3.5" } as const;
+const iconSize = { sm: "size-2.5", md: "size-3", lg: "size-3.5" } as const;
+
+function isDefaultIcon(icon: StatusIndicatorIcon) {
+  return icon === "dot" || icon == null || typeof icon === "boolean";
+}
+
 export interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Preset status (sets colour and default label). Optional when `tone` is given. */
   status?: StatusBadgeStatus;
@@ -49,36 +70,63 @@ export interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: "sm" | "md" | "lg";
   /** Accessible label; defaults to the status name. Set to "" to hide from assistive tech. */
   label?: string;
+  /** Fill style. Default `solid`. */
+  variant?: StatusDotVariant;
+  /** `"dot"` (default), or `"spinner"` / an icon to render a small round status glyph instead of a dot. */
+  icon?: StatusIndicatorIcon;
 }
 
-/** Small colored dot indicating a status. */
+/** Small colored dot (or round status glyph) indicating a status. */
 export const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
-  ({ className, status, tone, pulse, size = "md", label, ...props }, ref) => {
-    const dot = toneClasses.dot[resolveTone(status, tone)];
+  ({ className, status, tone, pulse, size = "md", label, variant = "solid", icon = "dot", ...props }, ref) => {
+    const resolved = resolveTone(status, tone);
+    const dot = toneClasses.dot[resolved];
     const animate = pulse ?? status === "processing";
     const text = label ?? (status ? statusMeta[status].label : "");
+    const a11y = {
+      role: text ? ("img" as const) : undefined,
+      "aria-label": text || undefined,
+      "aria-hidden": text ? undefined : true,
+    };
+    const halo = animate ? (
+      <span className={cn("absolute inline-flex size-full rounded-full opacity-60 motion-safe:animate-ping", dot)} />
+    ) : null;
+
+    if (isDefaultIcon(icon)) {
+      return (
+        <span
+          ref={ref}
+          {...a11y}
+          className={cn("relative inline-flex shrink-0 rounded-full", dotSize[size], className)}
+          {...props}
+        >
+          {halo}
+          <span
+            className={cn(
+              "relative inline-flex size-full rounded-full",
+              variant === "solid" ? dot : cn("border-[1.5px] bg-transparent", ringBorder[resolved], variant === "dashed" && "border-dashed")
+            )}
+          />
+        </span>
+      );
+    }
+
     return (
       <span
         ref={ref}
-        role={text ? "img" : undefined}
-        aria-label={text || undefined}
-        aria-hidden={text ? undefined : true}
+        {...a11y}
         className={cn(
-          "relative inline-flex shrink-0 rounded-full",
-          size === "sm" ? "size-1.5" : size === "md" ? "size-2" : "size-2.5",
+          "relative inline-flex shrink-0 items-center justify-center rounded-full",
+          glyphSize[size],
+          variant === "solid" && cn(toneClasses.soft[resolved], toneClasses.text[resolved]),
+          variant === "hollow" && toneClasses.text[resolved],
+          variant === "dashed" && cn("border border-dashed", ringBorder[resolved], toneClasses.text[resolved]),
           className
         )}
         {...props}
       >
-        {animate ? (
-          <span
-            className={cn(
-              "absolute inline-flex size-full rounded-full opacity-60 motion-safe:animate-ping",
-              dot
-            )}
-          />
-        ) : null}
-        <span className={cn("relative inline-flex size-full rounded-full", dot)} />
+        {halo}
+        {icon === "spinner" ? <Spinner label="" className={cn("text-current", iconSize[size])} /> : icon}
       </span>
     );
   }
@@ -96,12 +144,29 @@ export interface StatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> 
   /** soft: tinted pill · outline: bordered pill · plain: dot + text only */
   variant?: "soft" | "outline" | "plain";
   size?: "sm" | "md" | "lg";
+  /** Leading indicator: `"dot"` (default), `"spinner"`, any icon node, or `null` for none. Always decorative. */
+  icon?: StatusIndicatorIcon;
 }
 
-/** Status pill with a colored dot. */
+/** Status pill with a colored dot (or a spinner / icon). */
 export const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
-  ({ className, status, tone, label, pulse, variant = "soft", size = "md", children, ...props }, ref) => {
+  ({ className, status, tone, label, pulse, variant = "soft", size = "md", icon = "dot", children, ...props }, ref) => {
     const resolved = resolveTone(status, tone);
+    const iconClass = size === "lg" ? iconSize.lg : iconSize.md;
+    let indicator: React.ReactNode;
+    if (icon === "dot") {
+      indicator = <StatusDot status={status} tone={resolved} pulse={pulse} size={size === "lg" ? "md" : "sm"} label="" />;
+    } else if (icon === "spinner") {
+      indicator = <Spinner label="" className={cn("text-current", iconClass)} />;
+    } else if (icon == null || typeof icon === "boolean") {
+      indicator = null;
+    } else {
+      indicator = (
+        <span aria-hidden className={cn("inline-flex shrink-0", size === "lg" ? "[&_svg]:size-3.5" : "[&_svg]:size-3")}>
+          {icon}
+        </span>
+      );
+    }
     return (
       <span
         ref={ref}
@@ -118,7 +183,7 @@ export const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
         )}
         {...props}
       >
-        <StatusDot status={status} tone={resolved} pulse={pulse} size={size === "lg" ? "md" : "sm"} label="" />
+        {indicator}
         {children ?? label ?? (status ? statusMeta[status].label : null)}
       </span>
     );

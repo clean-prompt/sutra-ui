@@ -21,6 +21,7 @@ import { formatDuration } from "../lib/duration";
 import { errorMessage, useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "./button";
+import { InlineAlert } from "./inline-alert";
 import { Badge } from "./badge";
 import { Input } from "./input";
 import { Spinner } from "./spinner";
@@ -302,25 +303,36 @@ export interface ProfileScopeBannerProps extends Omit<React.HTMLAttributes<HTMLD
   sticky?: boolean;
 }
 
-/** App-wide amber banner warning that actions apply to a non-default profile. */
+/** App-wide amber banner warning that actions apply to a non-default profile. A preset over `InlineAlert layout="strip"`. */
 export const ProfileScopeBanner = React.forwardRef<HTMLDivElement, ProfileScopeBannerProps>(
   (
     { profileName, gatewayName, message, onSwitchBack, switchBackLabel = "Switch back", sticky = true, className, ...props },
     ref
   ) => (
-    <div
+    <InlineAlert
       ref={ref}
+      tone="warning"
+      layout="strip"
       role="region"
       aria-label="Profile scope"
-      className={cn(
-        "z-40 flex w-full items-center gap-3 border-b border-warning/30 bg-warning-soft px-4 py-2 text-sm text-warning-soft-foreground",
-        sticky && "sticky top-0",
-        className
-      )}
+      icon={<RiUserSettingsLine />}
+      action={
+        onSwitchBack && (
+          <Button
+            size="xs"
+            variant="outline"
+            leadingIcon={<RiArrowGoBackLine aria-hidden />}
+            onClick={onSwitchBack}
+            className="border-warning/40 bg-transparent text-current hover:bg-warning/15"
+          >
+            {switchBackLabel}
+          </Button>
+        )
+      }
+      className={cn("z-40", sticky && "sticky top-0", className)}
       {...props}
     >
-      <RiUserSettingsLine aria-hidden className="size-4 shrink-0" />
-      <p className="min-w-0 flex-1">
+      <p className="min-w-0">
         {message ?? (
           <>
             You&apos;re acting on profile <strong className="font-semibold">{profileName}</strong>
@@ -334,18 +346,7 @@ export const ProfileScopeBanner = React.forwardRef<HTMLDivElement, ProfileScopeB
           </>
         )}
       </p>
-      {onSwitchBack && (
-        <Button
-          size="xs"
-          variant="outline"
-          leadingIcon={<RiArrowGoBackLine aria-hidden />}
-          onClick={onSwitchBack}
-          className="shrink-0 border-warning/40 bg-transparent text-current hover:bg-warning/15"
-        >
-          {switchBackLabel}
-        </Button>
-      )}
-    </div>
+    </InlineAlert>
   )
 );
 ProfileScopeBanner.displayName = "ProfileScopeBanner";

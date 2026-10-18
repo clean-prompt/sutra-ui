@@ -102,13 +102,13 @@ Switch.displayName = "Switch";
 export interface SwitchFieldProps extends SwitchProps {
   label: React.ReactNode;
   description?: React.ReactNode;
-  /** `left` puts the label before the switch (settings row), `right` after it. */
+  /** `left` puts the label before the switch (settings style), `right` after it. Inside a `SettingsGroup`, use `SettingsRow type="toggle"`. */
   labelPosition?: "left" | "right";
   labelClassName?: string;
   wrapperClassName?: string;
 }
 
-/** Switch with a label and optional description. */
+/** Switch with a label and optional description, for forms. For settings pages use `SettingsRow type="toggle"` (whole-row target, icon, `disabledReason`). */
 export const SwitchField = React.forwardRef<React.ElementRef<typeof SwitchPrimitive.Root>, SwitchFieldProps>(
   ({ label, description, labelPosition = "right", labelClassName, wrapperClassName, id, size, ...props }, ref) => {
     const generated = React.useId();

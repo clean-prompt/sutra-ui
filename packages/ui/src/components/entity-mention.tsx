@@ -6,6 +6,7 @@ import { formatDateTime, formatShortDate, toValidDate } from "../lib/time";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
 import { HoverCard, HoverCardContent, HoverCardTrigger, Popover, PopoverAnchor, PopoverContent } from "./popover";
 import { Spinner } from "./spinner";
+import { detectSlashTrigger } from "./slash-menu";
 
 /* ------------------------------------------------------------------ */
 /* Types & token syntax                                                */
@@ -451,20 +452,10 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
       const nextTokens = reconcile(display, nextDisplay, tokens);
       setValue(fromDisplay(nextDisplay, nextTokens));
       const caret = e.target.selectionStart ?? nextDisplay.length;
-      setActive(detectWith(nextDisplay, caret, nextTokens));
-    };
-
-    const detectWith = (text: string, caret: number, tks: DisplayToken[]) => {
-      let i = caret - 1;
-      while (i >= 0 && !/\s/.test(text[i])) {
-        const ch = text[i] as MentionTrigger;
-        if (triggers.includes(ch) && (i === 0 || /\s/.test(text[i - 1]))) {
-          if (tks.some((t) => i >= t.start && i < t.end)) return null;
-          return { trigger: ch, start: i, query: text.slice(i + 1, caret) };
-        }
-        i--;
-      }
-      return null;
+      const match = detectSlashTrigger(nextDisplay, caret, triggers, { allowTriggerInQuery: true });
+      // A trigger character inside an existing mention token is part of its title, not a new mention.
+      const inToken = match && nextTokens.some((t) => match.start >= t.start && match.start < t.end);
+      setActive(match && !inToken ? { trigger: match.trigger as MentionTrigger, start: match.start, query: match.query } : null);
     };
 
     const select = (s: MentionSuggestion) => {

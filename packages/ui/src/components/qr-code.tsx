@@ -232,6 +232,16 @@ export interface QRCodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /** Shows a refresh button on the expired overlay. */
   onRefresh?: () => void;
   refreshLabel?: React.ReactNode;
+  /** Forces the expired state on or off (otherwise it follows `expiresAt`). */
+  expired?: boolean;
+  /** Heading of the expired overlay. Default "Code expired". */
+  expiredLabel?: React.ReactNode;
+  /** Replaces the inner `QRCode` inside the white frame (e.g. a crossfading stack, a spinner or a status). The frame keeps its size, and the expired blur and overlay still apply. */
+  code?: React.ReactNode;
+  /** Extra classes for the frame around the code (e.g. a card-coloured surface when `code` is not a QR code). */
+  frameClassName?: string;
+  /** Extra content at the bottom of the card. */
+  children?: React.ReactNode;
   size?: number;
   logo?: React.ReactNode;
   /** Extra props for the inner `QRCode`. */
@@ -250,6 +260,11 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
       onExpire,
       onRefresh,
       refreshLabel = "Refresh code",
+      expired: expiredProp,
+      expiredLabel = "Code expired",
+      code,
+      frameClassName,
+      children,
       size = 200,
       logo,
       qrProps,
@@ -259,7 +274,9 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
     ref
   ) => {
     const deadline = toMs(expiresAt);
-    const { remainingMs, expired } = useCountdown(deadline, { onExpire });
+    const countdown = useCountdown(deadline, { onExpire });
+    const expired = expiredProp ?? countdown.expired;
+    const remainingMs = countdown.remainingMs;
     const shownUrl = url === false ? null : (url ?? value);
 
     return (
@@ -274,18 +291,37 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
         {...props}
       >
         {title != null && <h3 className="text-base font-semibold tracking-tight text-foreground">{title}</h3>}
-        <div className="relative rounded-xl bg-white p-1 shadow-xs ring-1 ring-black/5">
-          <QRCode
-            value={value}
-            size={size}
-            logo={logo}
-            quietZone={2}
-            {...qrProps}
-            className={cn("transition-[filter,opacity] duration-300", expired && "opacity-40 blur-[3px]", qrProps?.className)}
-          />
+        <div
+          data-slot="qr-code-card-frame"
+          className={cn(
+            "relative rounded-xl bg-white p-1 shadow-xs ring-1 ring-black/5",
+            code !== undefined && "overflow-hidden",
+            frameClassName
+          )}
+          style={code !== undefined ? { width: size + 8, height: size + 8 } : undefined}
+        >
+          {code !== undefined ? (
+            <div
+              className={cn(
+                "absolute inset-0 flex items-center justify-center transition-[filter,opacity] duration-300",
+                expired && "opacity-40 blur-[3px]"
+              )}
+            >
+              {code}
+            </div>
+          ) : (
+            <QRCode
+              value={value}
+              size={size}
+              logo={logo}
+              quietZone={2}
+              {...qrProps}
+              className={cn("transition-[filter,opacity] duration-300", expired && "opacity-40 blur-[3px]", qrProps?.className)}
+            />
+          )}
           {expired && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-xl bg-background/70 p-4 backdrop-blur-[1px]">
-              <p className="text-sm font-semibold text-foreground">Code expired</p>
+              <p className="text-sm font-semibold text-foreground">{expiredLabel}</p>
               {onRefresh && (
                 <Button size="sm" variant="primary" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRefresh}>
                   {refreshLabel}
@@ -316,6 +352,7 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
             <CopyButton value={shownUrl} size="xs" label="Copy link" copiedLabel="Copied" />
           </div>
         )}
+        {children}
       </div>
     );
   }

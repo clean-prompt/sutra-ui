@@ -308,7 +308,7 @@ describe("ModelPicker", () => {
     await user.click(trigger);
     const pop = await screen.findByRole("dialog");
     expect(within(pop).getAllByRole("img", { name: "Ready" })).toHaveLength(1);
-    expect(within(pop).getByRole("img", { name: "Asleep" })).toBeInTheDocument();
+    expect(within(pop).getByRole("img", { name: "Sleeping" })).toBeInTheDocument();
     expect(within(pop).getAllByRole("img", { name: "Stopped" })).toHaveLength(2);
     expect(within(pop).getByRole("img", { name: "Failed" })).toBeInTheDocument();
     const names = within(pop)

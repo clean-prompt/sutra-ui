@@ -12,7 +12,7 @@ import {
   QRCodeCard,
   QRScannerDialog,
   SegmentedControl,
-  SessionList,
+  DeviceSessionList,
   SettingsDangerZone,
   SettingsDialog,
   SettingsGroup,
@@ -24,7 +24,7 @@ import {
   SutraMark,
   ThemeToggle,
   type LockScreenMode,
-  type Session,
+  type DeviceSession,
   type SettingsShellSection,
   type ThemeToggleMode,
 } from "@sutra/ui";
@@ -47,7 +47,7 @@ import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 const NOW = Date.now();
 
-const initialSessions: Session[] = [
+const initialSessions: DeviceSession[] = [
   { id: "mbp", name: "Vyom's MacBook Pro", device: "laptop", browser: "Arc 1.62", os: "macOS 15", location: "Pune, IN", ip: "103.21.4.18", lastActive: NOW, current: true },
   { id: "pixel", name: "Pixel 8", device: "phone", browser: "Chrome 131", os: "Android 15", location: "Pune, IN", lastActive: NOW - 7 * 60_000 },
   { id: "ipad", name: "iPad Air", device: "tablet", browser: "Safari", os: "iPadOS 18", location: "Mumbai, IN", lastActive: NOW - 5 * 3_600_000 },
@@ -418,7 +418,7 @@ export function IdentityPage() {
       </Demo>
 
       <Demo id="sessions" title="Sessions" description="Devices & sessions manager with inline revoke and “sign out all other sessions”." align="start">
-        <SessionList
+        <DeviceSessionList
           title="Devices"
           description="Sign out any device you don't recognise."
           sessions={sessions}
@@ -437,7 +437,7 @@ export function IdentityPage() {
           </Button>
         </div>
         <DemoLabel>Loading</DemoLabel>
-        <SessionList sessions={null} />
+        <DeviceSessionList sessions={null} />
       </Demo>
 
       <Demo id="account-panel" title="Account panel" description="Signed-in summary with app launchers. “Sign out everywhere” ends every session after confirming.">

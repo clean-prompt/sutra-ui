@@ -13,9 +13,9 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { formatDuration } from "../lib/duration";
 import { normalizeTaskStatus, type TaskStatus, type TaskStatusInput } from "../lib/status";
-import { toneClasses, type Tone } from "../lib/tone";
+import type { Tone } from "../lib/tone";
 import { Button } from "./button";
-import { Spinner } from "./spinner";
+import { StatusBadge, type StatusIndicatorIcon } from "./status-badge";
 import { PermissionPrompt, type PermissionDecision, type PermissionPromptProps } from "./permission-prompt";
 
 /**
@@ -24,41 +24,26 @@ import { PermissionPrompt, type PermissionDecision, type PermissionPromptProps }
  */
 export type ChatToolState = "pending" | "running" | "completed" | "error" | TaskStatusInput;
 
-const stateMeta: Record<TaskStatus, { label: string; tone: Tone }> = {
-  pending: { label: "Pending", tone: "neutral" },
-  running: { label: "Running", tone: "info" },
-  succeeded: { label: "Completed", tone: "success" },
-  failed: { label: "Error", tone: "destructive" },
-  canceled: { label: "Canceled", tone: "neutral" },
+const stateMeta: Record<TaskStatus, { label: string; tone: Tone; icon: StatusIndicatorIcon }> = {
+  pending: { label: "Pending", tone: "neutral", icon: <RiTimeLine aria-hidden /> },
+  running: { label: "Running", tone: "info", icon: "spinner" },
+  succeeded: { label: "Completed", tone: "success", icon: <RiCheckLine aria-hidden /> },
+  failed: { label: "Error", tone: "destructive", icon: <RiErrorWarningLine aria-hidden /> },
+  canceled: { label: "Canceled", tone: "neutral", icon: <RiCloseCircleLine aria-hidden /> },
 };
 
 export interface ChatToolStateBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   state: ChatToolState;
 }
 
-/** Status pill for a tool call. */
+/** Status pill for a tool call (a StatusBadge preset with a per-state icon). */
 export const ChatToolStateBadge = React.forwardRef<HTMLSpanElement, ChatToolStateBadgeProps>(
-  ({ state, className, children, ...props }, ref) => {
-    const status = normalizeTaskStatus(state);
-    const meta = stateMeta[status];
+  ({ state, children, ...props }, ref) => {
+    const meta = stateMeta[normalizeTaskStatus(state)];
     return (
-      <span
-        ref={ref}
-        data-state={state}
-        className={cn(
-          "inline-flex h-5 shrink-0 items-center gap-1 rounded-control px-1.5 text-2xs font-medium [&_svg]:size-3",
-          toneClasses.soft[meta.tone],
-          className
-        )}
-        {...props}
-      >
-        {status === "pending" && <RiTimeLine aria-hidden />}
-        {status === "running" && <Spinner aria-hidden role="presentation" size="xs" className="size-3 text-current" />}
-        {status === "succeeded" && <RiCheckLine aria-hidden />}
-        {status === "failed" && <RiErrorWarningLine aria-hidden />}
-        {status === "canceled" && <RiCloseCircleLine aria-hidden />}
+      <StatusBadge ref={ref} data-state={state} size="sm" tone={meta.tone} icon={meta.icon} {...props}>
         {children ?? meta.label}
-      </span>
+      </StatusBadge>
     );
   }
 );

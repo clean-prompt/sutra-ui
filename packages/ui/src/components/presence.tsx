@@ -5,6 +5,8 @@ import { formatList, pluralize } from "../lib/format";
 import { colorForSeed } from "../lib/hash";
 import { toneClasses, type Tone } from "../lib/tone";
 import { Avatar, type AvatarSize } from "./avatar";
+import { Spinner } from "./spinner";
+import { StatusDot } from "./status-badge";
 import { SimpleTooltip } from "./tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
@@ -31,7 +33,6 @@ export function getPresenceColor(id: string) {
 }
 
 const statusTone: Record<PresenceStatus, Tone> = { active: "success", idle: "warning" };
-const statusDot = (status: PresenceStatus) => toneClasses.dot[statusTone[status]];
 
 const statusText: Record<PresenceStatus, string> = { active: "Active", idle: "Idle" };
 
@@ -76,10 +77,7 @@ function PresenceFace({
     >
       <Avatar name={user.name} src={user.avatarSrc} size={size} ring={false} frameClassName="ring-2 ring-background" />
       {showStatus && user.status ? (
-        <span
-          aria-hidden
-          className={cn("absolute bottom-0 right-0 block size-2.5 rounded-full ring-2 ring-background", statusDot(user.status))}
-        />
+        <StatusDot tone={statusTone[user.status]} size="lg" label="" className="absolute bottom-0 right-0 ring-2 ring-background" />
       ) : null}
     </span>
   );
@@ -152,7 +150,7 @@ export const PresenceAvatars = React.forwardRef<HTMLDivElement, PresenceAvatarsP
                     </span>
                     {u.status ? (
                       <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <span aria-hidden className={cn("size-2 rounded-full", statusDot(u.status))} />
+                        <StatusDot tone={statusTone[u.status]} label="" />
                         {statusText[u.status]}
                       </span>
                     ) : null}
@@ -212,10 +210,7 @@ export const PresenceIndicator = React.forwardRef<HTMLSpanElement, PresenceIndic
       {...props}
     >
       {status === "live" ? (
-        <span aria-hidden className="relative flex size-2">
-          <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden" />
-          <span className="relative inline-flex size-2 rounded-full bg-success" />
-        </span>
+        <StatusDot tone="success" pulse label="" />
       ) : status === "offline" ? (
         <RiWifiOffLine aria-hidden className="size-3.5" />
       ) : (
@@ -326,7 +321,7 @@ export function formatTypingText(names: string[], maxNames = 2) {
   return `${formatList([...shown, `${rest} ${pluralize(rest, "other")}`], typingList)} are typing…`;
 }
 
-/** Polite live region announcing who is typing, with bouncing dots. */
+/** Polite live region announcing who is typing, with bouncing dots (`Spinner variant="dots"`). */
 export const TypingIndicator = React.forwardRef<HTMLDivElement, TypingIndicatorProps>(
   ({ users, maxNames = 2, hideDots, className, ...props }, ref) => {
     const names = users.map((u) => (typeof u === "string" ? u : u.name));
@@ -341,15 +336,11 @@ export const TypingIndicator = React.forwardRef<HTMLDivElement, TypingIndicatorP
         {...props}
       >
         {text && !hideDots ? (
-          <span aria-hidden className="inline-flex items-center gap-0.5">
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="size-1.5 rounded-full bg-current animate-dot-bounce motion-reduce:animate-none"
-                style={{ animationDelay: `${i * 0.16}s` }}
-              />
-            ))}
-          </span>
+          <Spinner
+            variant="dots"
+            label=""
+            className="h-1.5 w-[22px] text-current motion-reduce:[&>span]:animate-none"
+          />
         ) : null}
         {text ? <span>{text}</span> : null}
       </div>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  ActivityFeed,
+  SecurityActivityFeed,
   ApiKeyCreateDialog,
   ApiKeyList,
   ApiKeyUsage,
@@ -658,7 +658,7 @@ export function SecurityPage() {
       </Demo>
 
       <Demo id="activity-feed" title="Activity feed" description="Security events grouped by day with type icons, device, IP and location. Click a row for details." align="start">
-        <ActivityFeed events={events} className="max-w-xl" />
+        <SecurityActivityFeed events={events} className="max-w-xl" />
       </Demo>
     </PageIntro>
   );

@@ -13,6 +13,7 @@ export * from "../components/agent-jobs";
 export * from "../components/status-stack";
 export * from "../components/webhooks";
 export * from "../components/capabilities";
+export * from "../components/monogram";
 export * from "../components/tool-toggles";
 export * from "../components/mcp";
 export * from "../components/extensions-catalog";

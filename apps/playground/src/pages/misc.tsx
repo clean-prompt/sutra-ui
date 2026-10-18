@@ -4,7 +4,7 @@ import {
   AppLauncherMenu,
   Button,
   CallScreen,
-  ChatHeader,
+  MessengerHeader,
   Checklist,
   ContextMenuItem,
   Countdown,
@@ -19,7 +19,7 @@ import {
   StatusCycle,
   Stopwatch,
   TallyCounter,
-  TextButton,
+  TextLink,
   describeRecurrence,
   toRRule,
   type AppLauncherItem,
@@ -179,7 +179,7 @@ function IncomingCallDemo() {
       ) : (
         <p className="text-sm text-muted-foreground">
           Call {state === "message" ? "declined with a quick message" : state}.{" "}
-          <TextButton onClick={() => setState("ringing")}>Ring again</TextButton>
+          <TextLink variant="subtle" onClick={() => setState("ringing")}>Ring again</TextLink>
         </p>
       )}
       <Button variant="secondary" size="sm" onClick={() => setOverlay(true)}>
@@ -205,7 +205,7 @@ function CallScreenDemo() {
   if (ended) {
     return (
       <p className="text-sm text-muted-foreground">
-        Call ended. <TextButton onClick={() => setEnded(false)}>Rejoin</TextButton>
+        Call ended. <TextLink variant="subtle" onClick={() => setEnded(false)}>Rejoin</TextLink>
       </p>
     );
   }
@@ -286,7 +286,7 @@ function MessengerDemo() {
 
   return (
     <div className="mx-auto flex h-[640px] w-full max-w-md flex-col overflow-hidden rounded-box border border-border bg-subtle">
-      <ChatHeader
+      <MessengerHeader
         name="Ana Lima"
         presence="online"
         onBack={() => {}}
@@ -325,7 +325,7 @@ function MessengerDemo() {
 function GroupInfoDemo() {
   return (
     <div className="mx-auto w-full max-w-sm rounded-box border border-border">
-      <ChatHeader
+      <MessengerHeader
         name="Lisbon crew"
         members={[{ name: "Ana Lima" }, { name: "Bo Chen" }, { name: "Chandra Rao" }, { name: "Dmitri V" }]}
         presence={minutesAgo(5)}
@@ -464,10 +464,10 @@ export function MiscPage() {
         <IdentityDemo />
       </Demo>
 
-      <Demo id="text-button" title="Text Button" description="An action that reads as a sentence: a button, or a link when given an href.">
+      <Demo id="text-button" title="Text Button" description="TextLink as an inline action: a button with onClick and no href, a link when given an href. (TextButton is a deprecated alias.)">
         <p className="max-w-md text-sm text-muted-foreground">
-          Your draft was saved. You can <TextButton onClick={() => {}}>start from the beginning</TextButton>, open{" "}
-          <TextButton href="#text-button" tone="muted">settings</TextButton>, or <TextButton tone="destructive" onClick={() => {}}>discard it</TextButton>.
+          Your draft was saved. You can <TextLink variant="subtle" onClick={() => {}}>start from the beginning</TextLink>, open{" "}
+          <TextLink href="#text-button" variant="muted">settings</TextLink>, or <TextLink variant="destructive" onClick={() => {}}>discard it</TextLink>.
         </p>
       </Demo>
 
@@ -496,7 +496,7 @@ export function MiscPage() {
         <CallScreenDemo />
       </Demo>
 
-      <Demo id="messenger" title="Messenger" description="ChatHeader + MessageList + MessageComposer: grouped bubbles, day separators, an unread divider, delivery ticks, a failed message with retry, replies, reactions and shared-item previews." align="start" dots>
+      <Demo id="messenger" title="Messenger" description="MessengerHeader + MessageList + MessageComposer: grouped bubbles, day separators, an unread divider, delivery ticks, a failed message with retry, replies, reactions and shared-item previews." align="start" dots>
         <MessengerDemo />
       </Demo>
 

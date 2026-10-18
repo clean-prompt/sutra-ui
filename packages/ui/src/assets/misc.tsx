@@ -352,6 +352,7 @@ NoiseTexture.displayName = "NoiseTexture";
 /* QRCodePlaceholder                                                   */
 /* ------------------------------------------------------------------ */
 
+/** @deprecated See `QRCodePlaceholder`; use `QRCodeProps` with `QRCode`. */
 export interface QRCodePlaceholderProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** Seed for the (decorative, non-scannable) module pattern. */
   value?: string;
@@ -365,7 +366,13 @@ export interface QRCodePlaceholderProps extends Omit<React.HTMLAttributes<HTMLSp
   framed?: boolean;
 }
 
-/** A decorative QR-code-like graphic (not scannable) for mockups and placeholders. */
+/**
+ * A decorative QR-code-like graphic for mockups and placeholders.
+ *
+ * @deprecated **Not scannable**: the modules are random noise, so a phone camera reads nothing (and it is still
+ * announced as "QR code"). For anything a user might scan, use `QRCode` (or `QRCodeCard`) from `components/qr-code`,
+ * which encodes a real value. Kept only for static mockups.
+ */
 export const QRCodePlaceholder = React.forwardRef<HTMLSpanElement, QRCodePlaceholderProps>(
   ({ value = "sutra", size = 160, modules = 25, logo, framed = true, className, ...props }, ref) => {
     const n = Math.max(21, modules);

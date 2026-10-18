@@ -10,6 +10,7 @@ import {
   RiTerminalBoxLine,
 } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
+import { Progress } from "./progress";
 import { toneClasses, type Tone } from "../lib/tone";
 import { normalizeTaskStatus, type TaskStatus, type TaskStatusInput } from "../lib/status";
 import { useControllableState } from "../hooks/use-controllable-state";
@@ -130,7 +131,6 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
     const titleId = React.useId();
     const done = items.filter((i) => normalizeTaskStatus(i.status) === "succeeded").length;
     const total = items.length;
-    const pct = total ? Math.round((done / total) * 100) : 0;
     const compact = density ? normalizeDensity(density) === "compact" : variant === "compact";
     const expanded = !collapsible || open;
 
@@ -178,20 +178,15 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
         )}
         {showProgress && (
           <div className={cn(compact ? "mb-1.5" : "mx-3 mb-2")}>
-            <div
-              role="progressbar"
-              aria-valuenow={done}
-              aria-valuemin={0}
+            <Progress
+              size="xs"
+              value={done}
+              max={total}
               aria-valuemax={total}
               aria-valuetext={`${done} of ${total} done`}
               aria-labelledby={titleId}
-              className="h-1 overflow-hidden rounded-full bg-muted"
-            >
-              <span
-                className="block h-full rounded-full bg-primary transition-[width] duration-500 motion-reduce:transition-none"
-                style={{ width: `${pct}%` }}
-              />
-            </div>
+              indicatorClassName="motion-reduce:transition-none"
+            />
           </div>
         )}
         {expanded && (

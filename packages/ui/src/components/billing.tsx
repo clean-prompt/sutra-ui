@@ -19,6 +19,7 @@ import { formatCost } from "../lib/format";
 import { Badge } from "./badge";
 import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { Button } from "./button";
+import { InlineAlert, InlineAlertDescription, InlineAlertTitle } from "./inline-alert";
 import {
   Dialog,
   DialogBody,
@@ -1048,15 +1049,6 @@ const bannerKind: Record<BillingBannerKind, { tone: Tone; icon: React.ReactNode;
   info: { tone: "neutral", icon: <RiCoinsLine aria-hidden />, action: "View billing" },
 };
 
-const bannerBox: Record<Tone, string> = {
-  neutral: "border-border bg-subtle text-foreground",
-  primary: "border-primary/30 bg-primary-soft text-primary-soft-foreground",
-  success: "border-success/30 bg-success-soft text-success-soft-foreground",
-  warning: "border-warning/30 bg-warning-soft text-warning-soft-foreground",
-  destructive: "border-destructive/30 bg-destructive-soft text-destructive-soft-foreground",
-  info: "border-info/30 bg-info-soft text-info-soft-foreground",
-};
-
 function bannerTitle(kind: BillingBannerKind, daysLeft?: number) {
   switch (kind) {
     case "trial":
@@ -1077,7 +1069,7 @@ const bannerDescription: Record<BillingBannerKind, string> = {
   info: "",
 };
 
-/** Billing notice (trial ending, payment failed, over limit) with a CTA. */
+/** Billing notice (trial ending, payment failed, over limit) with a CTA. A preset over `InlineAlert`. */
 export const BillingBanner = React.forwardRef<HTMLDivElement, BillingBannerProps>(
   ({ kind: kindProp, tone: toneProp, daysLeft, title, description, actionLabel, onAction, onDismiss, className, ...props }, ref) => {
     const legacyKind = !kindProp && toneProp && BANNER_KINDS.includes(toneProp) ? (toneProp as BillingBannerKind) : undefined;
@@ -1086,32 +1078,26 @@ export const BillingBanner = React.forwardRef<HTMLDivElement, BillingBannerProps
     const tone: Tone = legacyKind || !toneProp ? t.tone : normalizeTone(toneProp, t.tone);
     const desc = description ?? bannerDescription[kind];
     return (
-      <div
+      <InlineAlert
         ref={ref}
+        tone={tone}
         role={kind === "payment-failed" || kind === "over-limit" ? "alert" : "status"}
         data-kind={kind}
-        data-tone={tone}
-        className={cn("flex flex-wrap items-center gap-3 rounded-box border px-4 py-3 text-sm", bannerBox[tone], className)}
+        icon={t.icon}
+        onDismiss={onDismiss}
+        action={
+          onAction && (
+            <Button size="sm" variant={kind === "payment-failed" ? "destructive" : kind === "info" ? "secondary" : "primary"} onClick={onAction} trailingIcon={<RiArrowRightLine aria-hidden />}>
+              {actionLabel ?? t.action}
+            </Button>
+          )
+        }
+        className={className}
         {...props}
       >
-        <span aria-hidden className="flex shrink-0 [&_svg]:size-5">
-          {t.icon}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="font-semibold">{title ?? bannerTitle(kind, daysLeft)}</p>
-          {desc && <p className="opacity-90">{desc}</p>}
-        </div>
-        {onAction && (
-          <Button size="sm" variant={kind === "payment-failed" ? "destructive" : kind === "info" ? "secondary" : "primary"} onClick={onAction} trailingIcon={<RiArrowRightLine aria-hidden />}>
-            {actionLabel ?? t.action}
-          </Button>
-        )}
-        {onDismiss && (
-          <Button size="icon-sm" variant="ghost" onClick={onDismiss} aria-label="Dismiss">
-            <RiCloseLine aria-hidden />
-          </Button>
-        )}
-      </div>
+        <InlineAlertTitle className="font-semibold">{title ?? bannerTitle(kind, daysLeft)}</InlineAlertTitle>
+        {desc && <InlineAlertDescription>{desc}</InlineAlertDescription>}
+      </InlineAlert>
     );
   }
 );

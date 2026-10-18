@@ -348,8 +348,9 @@ export const FilterBarChip = React.forwardRef<HTMLButtonElement, FilterBarChipPr
 );
 FilterBarChip.displayName = "FilterBarChip";
 
-/** Alias of `FilterBarChip`. */
+/** @deprecated Use `FilterBarChip` (the dashed "+ Filter" button; it is not a pill). */
 export const FilterPill = FilterBarChip;
+/** @deprecated Use `FilterBarChipProps`. */
 export type FilterPillProps = FilterBarChipProps;
 
 export interface FilterBarActiveFilter {

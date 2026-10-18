@@ -6,6 +6,7 @@ import {
   RiUploadLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { Progress } from "./progress";
 import { formatBytes as formatBytesLib } from "../lib/format";
 import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { Button, type ButtonProps } from "./button";
@@ -368,23 +369,13 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
             )}
           </div>
           {showProgress && (
-            <div
-              role="progressbar"
+            <Progress
+              size="sm"
+              value={progress === undefined ? null : Math.round(pct)}
               aria-label={`Uploading ${file.name}`}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={progress === undefined ? undefined : Math.round(pct)}
-              className="relative mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted"
-            >
-              {progress === undefined ? (
-                <div className="absolute inset-y-0 left-0 w-1/2 animate-indeterminate rounded-full bg-primary" />
-              ) : (
-                <div
-                  className="h-full rounded-full bg-primary transition-[width] duration-300 ease-out-quart"
-                  style={{ width: `${pct}%` }}
-                />
-              )}
-            </div>
+              className="mt-1"
+              indicatorClassName="duration-300"
+            />
           )}
         </div>
         {!hideRemove && (onRemove || ctx) && (

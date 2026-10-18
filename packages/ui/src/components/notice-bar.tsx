@@ -1,73 +1,42 @@
 import * as React from "react";
-import {
-  RiAlertLine,
-  RiArrowLeftSLine,
-  RiArrowRightLine,
-  RiArrowRightSLine,
-  RiCloseLine,
-  RiErrorWarningLine,
-  RiInformationLine,
-  RiSparkling2Line,
-} from "@remixicon/react";
+import { RiArrowLeftSLine, RiArrowRightSLine, RiSparkling2Line } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { TONES, normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
+import { AlertBanner, type AlertBannerAppearance, type BannerAction } from "./alert-banner";
 
-/** Canonical notice tones (a subset of `Tone`). */
-export type NoticeCanonicalTone = "info" | "warning" | "destructive" | "primary";
+/** @deprecated Use `Tone` (notices accept every canonical tone). */
+export type NoticeCanonicalTone = Tone;
 /**
- * Tone of a notice. Deprecated aliases: `warn` → `warning`, `error` → `destructive`, `promo` → `primary`.
+ * Tone of a notice: any `ToneInput` (`warn` → `warning` and `error` → `destructive` are deprecated spellings),
+ * plus the deprecated `promo` (now `primary`, which keeps the solid promotional fill).
  */
-export type NoticeTone = NoticeCanonicalTone | "warn" | "error" | "promo";
+export type NoticeTone = ToneInput | "promo";
 
-const NOTICE_TONE_ALIASES: Record<NoticeTone, NoticeCanonicalTone> = {
-  info: "info",
-  warning: "warning",
-  destructive: "destructive",
-  primary: "primary",
-  warn: "warning",
-  error: "destructive",
-  promo: "primary",
-};
-
-/** Map any accepted notice tone spelling to its canonical name (unknown → `info`). */
-export function normalizeNoticeTone(tone: NoticeTone | string | null | undefined): NoticeCanonicalTone {
-  return tone && Object.prototype.hasOwnProperty.call(NOTICE_TONE_ALIASES, tone) ? NOTICE_TONE_ALIASES[tone as NoticeTone] : "info";
+/** Map any accepted notice tone spelling to its canonical `Tone` (unknown → `info`). */
+export function normalizeNoticeTone(tone: NoticeTone | string | null | undefined): Tone {
+  if (tone === "promo") return "primary";
+  const t = normalizeTone(tone, "info");
+  return (TONES as readonly string[]).includes(t) ? t : "info";
 }
 
-export interface NoticeAction {
-  label: React.ReactNode;
-  href?: string;
-  onClick?: () => void;
-  target?: string;
-  rel?: string;
-}
+/** @deprecated Use `BannerAction` from `alert-banner`. */
+export type NoticeAction = BannerAction;
 
 export interface NoticeItem {
   id: string;
   message: React.ReactNode;
   tone?: NoticeTone;
+  /** Fill style. Default `solid` for `primary` (promotional), `soft` for every other tone. */
+  appearance?: AlertBannerAppearance;
   /** Custom icon; `false` hides it. */
   icon?: React.ReactNode | false;
-  action?: NoticeAction;
+  action?: BannerAction;
   /** Default true. */
   dismissible?: boolean;
   /** Higher first. Default 0. */
   priority?: number;
 }
-
-const toneClass: Record<NoticeCanonicalTone, string> = {
-  info: "bg-info-soft text-info-soft-foreground border-info/25",
-  warning: "bg-warning-soft text-warning-soft-foreground border-warning/30",
-  destructive: "bg-destructive-soft text-destructive-soft-foreground border-destructive/25",
-  primary: "bg-primary text-primary-foreground border-transparent",
-};
-
-const toneIcon: Record<NoticeCanonicalTone, React.ComponentType<{ className?: string }>> = {
-  info: RiInformationLine,
-  warning: RiAlertLine,
-  destructive: RiErrorWarningLine,
-  primary: RiSparkling2Line,
-};
 
 /* ------------------------------------------------------------------ */
 /* useNoticeQueue                                                      */
@@ -155,7 +124,7 @@ export interface RotatingNoticeBarProps extends Omit<React.HTMLAttributes<HTMLDi
   label?: string;
 }
 
-/** Global notice strip that rotates through notices with a dot pager, pausing on hover or focus. */
+/** Global notice strip that rotates through notices with a dot pager, pausing on hover or focus. Renders an `AlertBanner`. */
 export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNoticeBarProps>(
   (
     {
@@ -208,8 +177,6 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
 
     if (!current) return null;
     const tone = normalizeNoticeTone(current.tone);
-    const Icon = toneIcon[tone];
-    const promo = tone === "primary";
     const ctrl = cn(
       "inline-flex size-6 shrink-0 items-center justify-center rounded-sm transition-colors hover:bg-current/10 [&_svg]:size-4",
       focusRing,
@@ -222,19 +189,69 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
     };
 
     return (
-      <div
+      <AlertBanner
         ref={ref}
         role="region"
         aria-roledescription="carousel"
         aria-label={label}
         data-tone={current.tone ?? "info"}
         data-paused={paused || undefined}
-        className={cn(
-          "z-40 flex w-full items-center gap-2 border-b px-3 py-1.5 text-sm transition-colors",
-          toneClass[tone],
-          sticky && "sticky top-0",
-          className
-        )}
+        tone={tone}
+        appearance={current.appearance ?? (tone === "primary" ? "solid" : "soft")}
+        sticky={sticky}
+        icon={current.icon === undefined && tone === "primary" ? <RiSparkling2Line /> : current.icon}
+        message={current.message}
+        action={current.action}
+        dismissible={current.dismissible !== false}
+        open
+        onDismiss={dismiss}
+        dismissLabel="Dismiss notice"
+        className={cn("gap-2 py-1.5 transition-colors", className)}
+        contentKey={current.id}
+        contentProps={{
+          role: "group",
+          "aria-roledescription": "slide",
+          "aria-label": `${safeIndex + 1} of ${count}`,
+          "aria-live": rotating ? "off" : "polite",
+          "data-notice": current.id,
+          className: "flex-1 flex-nowrap justify-center gap-x-2 motion-safe:animate-in motion-safe:fade-in-0 [&>div]:truncate",
+        }}
+        leading={
+          count > 1 ? (
+            <button type="button" className={ctrl} aria-label="Previous notice" onClick={() => go(safeIndex - 1)}>
+              <RiArrowLeftSLine aria-hidden />
+            </button>
+          ) : null
+        }
+        trailing={
+          count > 1 ? (
+            <>
+              <div className="hidden items-center gap-1 sm:flex" role="group" aria-label="Choose notice">
+                {notices.map((n, i) => (
+                  <button
+                    key={n.id}
+                    type="button"
+                    aria-label={`Show notice ${i + 1} of ${count}`}
+                    aria-current={i === safeIndex ? "true" : undefined}
+                    onClick={() => go(i)}
+                    className={cn("flex size-4 items-center justify-center rounded-full", focusRing)}
+                  >
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "block h-1.5 rounded-full bg-current transition-all",
+                        i === safeIndex ? "w-3 opacity-90" : "w-1.5 opacity-35"
+                      )}
+                    />
+                  </button>
+                ))}
+              </div>
+              <button type="button" className={ctrl} aria-label="Next notice" onClick={() => go(safeIndex + 1)}>
+                <RiArrowRightSLine aria-hidden />
+              </button>
+            </>
+          ) : null
+        }
         onMouseEnter={(e) => {
           setHovered(true);
           onMouseEnter?.(e);
@@ -252,88 +269,7 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
           onBlur?.(e);
         }}
         {...props}
-      >
-        {count > 1 && (
-          <button type="button" className={ctrl} aria-label="Previous notice" onClick={() => go(safeIndex - 1)}>
-            <RiArrowLeftSLine aria-hidden />
-          </button>
-        )}
-        <div
-          key={current.id}
-          role="group"
-          aria-roledescription="slide"
-          aria-label={`${safeIndex + 1} of ${count}`}
-          aria-live={rotating ? "off" : "polite"}
-          data-notice={current.id}
-          className="flex min-w-0 flex-1 items-center justify-center gap-2 motion-safe:animate-in motion-safe:fade-in-0"
-        >
-          {current.icon !== false && (
-            <span aria-hidden className="flex shrink-0 [&_svg]:size-4">
-              {current.icon ?? <Icon />}
-            </span>
-          )}
-          <span className="min-w-0 truncate font-medium">{current.message}</span>
-          {current.action &&
-            (current.action.href ? (
-              <a
-                href={current.action.href}
-                target={current.action.target}
-                rel={current.action.rel}
-                onClick={current.action.onClick}
-                className={cn("inline-flex shrink-0 items-center gap-1 rounded-xs font-semibold underline-offset-4 hover:underline", focusRing)}
-              >
-                {current.action.label}
-                <RiArrowRightLine aria-hidden className="size-3.5" />
-              </a>
-            ) : (
-              <button
-                type="button"
-                onClick={current.action.onClick}
-                className={cn("inline-flex shrink-0 items-center gap-1 rounded-xs font-semibold underline-offset-4 hover:underline", focusRing)}
-              >
-                {current.action.label}
-                <RiArrowRightLine aria-hidden className="size-3.5" />
-              </button>
-            ))}
-        </div>
-        {count > 1 && (
-          <>
-            <div className="hidden items-center gap-1 sm:flex" role="group" aria-label="Choose notice">
-              {notices.map((n, i) => (
-                <button
-                  key={n.id}
-                  type="button"
-                  aria-label={`Show notice ${i + 1} of ${count}`}
-                  aria-current={i === safeIndex ? "true" : undefined}
-                  onClick={() => go(i)}
-                  className={cn("flex size-4 items-center justify-center rounded-full", focusRing)}
-                >
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "block h-1.5 rounded-full bg-current transition-all",
-                      i === safeIndex ? "w-3 opacity-90" : "w-1.5 opacity-35"
-                    )}
-                  />
-                </button>
-              ))}
-            </div>
-            <button type="button" className={ctrl} aria-label="Next notice" onClick={() => go(safeIndex + 1)}>
-              <RiArrowRightSLine aria-hidden />
-            </button>
-          </>
-        )}
-        {current.dismissible !== false && (
-          <button
-            type="button"
-            className={cn(ctrl, promo ? "text-primary-foreground/80" : "opacity-80")}
-            aria-label="Dismiss notice"
-            onClick={dismiss}
-          >
-            <RiCloseLine aria-hidden />
-          </button>
-        )}
-      </div>
+      />
     );
   }
 );

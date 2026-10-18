@@ -3,7 +3,6 @@ import { Checkbox as CheckboxPrimitive } from "radix-ui";
 import {
   RiAddLine,
   RiArchiveLine,
-  RiArrowDownSLine,
   RiCheckboxMultipleLine,
   RiCheckLine,
   RiCloseLine,
@@ -20,7 +19,11 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { MINUTE_MS, formatRelative, type TimeInput } from "../lib/time";
+import { type Tone } from "../lib/tone";
 import { Button } from "./button";
+import { StatusDot, type StatusDotVariant } from "./status-badge";
+import { InlineEditText } from "./inline-edit-text";
+import { ConversationGroupHeader, conversationRowClass } from "./conversation-list";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -57,13 +60,16 @@ export const agentStatusLabels: Record<AgentSessionStatus, string> = {
   elsewhere: "Running elsewhere",
 };
 
-const dotColor: Record<AgentSessionStatus, string> = {
-  running: "bg-success",
-  waiting: "bg-warning",
-  idle: "bg-muted-foreground/40",
-  unread: "bg-primary",
-  failed: "bg-destructive",
-  elsewhere: "border-[1.5px] border-info bg-transparent",
+/** How each session status maps onto `StatusDot`. */
+const statusDotPreset: Record<AgentSessionStatus, { tone: Tone; pulse?: boolean; variant?: StatusDotVariant; className?: string }> = {
+  running: { tone: "success", pulse: true },
+  // StatusDot only has a ping halo; "waiting" keeps its slower breathing halo locally.
+  waiting: { tone: "warning", pulse: true, className: "[&>span:first-child]:motion-safe:animate-pulse" },
+  // Softer than the neutral dot so "idle" reads as quieter than "unread".
+  idle: { tone: "neutral", className: "*:bg-muted-foreground/40" },
+  unread: { tone: "primary" },
+  failed: { tone: "destructive" },
+  elsewhere: { tone: "info", variant: "hollow" },
 };
 
 export interface AgentStatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -75,33 +81,24 @@ export interface AgentStatusDotProps extends React.HTMLAttributes<HTMLSpanElemen
   decorative?: boolean;
 }
 
-/** Session status dot: running (animated), waiting, idle, unread, failed, elsewhere (hollow). */
+/** Session status dot (a `StatusDot` preset): running and waiting pulse, elsewhere is a hollow ring. */
 export const AgentStatusDot = React.forwardRef<HTMLSpanElement, AgentStatusDotProps>(
   ({ status, label, size = "md", decorative, className, ...props }, ref) => {
-    const s = size === "sm" ? "size-1.5" : "size-2";
-    const animated = status === "running" || status === "waiting";
+    const preset = statusDotPreset[status] ?? statusDotPreset.idle;
+    const text = label ?? agentStatusLabels[status] ?? status;
     return (
-      <span
+      <StatusDot
         ref={ref}
         data-status={status}
-        role={decorative ? undefined : "img"}
-        aria-label={decorative ? undefined : (label ?? agentStatusLabels[status])}
-        aria-hidden={decorative || undefined}
-        title={label ?? agentStatusLabels[status]}
-        className={cn("relative inline-flex shrink-0 items-center justify-center", size === "sm" ? "size-2" : "size-2.5", className)}
+        tone={preset.tone}
+        pulse={preset.pulse ?? false}
+        variant={preset.variant}
+        size={size}
+        label={decorative ? "" : text}
+        title={text}
+        className={cn(preset.className, className)}
         {...props}
-      >
-        {animated && (
-          <span
-            aria-hidden
-            className={cn(
-              "absolute inset-0 rounded-full opacity-50 motion-reduce:hidden",
-              status === "running" ? "bg-success animate-ping" : "bg-warning animate-pulse"
-            )}
-          />
-        )}
-        <span aria-hidden className={cn("relative rounded-full", s, dotColor[status])} />
-      </span>
+      />
     );
   }
 );
@@ -193,59 +190,6 @@ export interface AgentSessionListProps extends Omit<React.HTMLAttributes<HTMLDiv
 }
 
 type Renaming = { kind: "session" | "group"; id: string } | null;
-
-function InlineRename({
-  value,
-  label,
-  onCommit,
-  onCancel,
-  className,
-}: {
-  value: string;
-  label: string;
-  onCommit: (v: string) => void;
-  onCancel: () => void;
-  className?: string;
-}) {
-  const ref = React.useRef<HTMLInputElement>(null);
-  const done = React.useRef(false);
-  React.useEffect(() => {
-    ref.current?.focus();
-    ref.current?.select();
-  }, []);
-  const commit = () => {
-    if (done.current) return;
-    done.current = true;
-    const v = ref.current?.value.trim() ?? "";
-    if (v && v !== value) onCommit(v);
-    else onCancel();
-  };
-  return (
-    <input
-      ref={ref}
-      defaultValue={value}
-      aria-label={label}
-      onClick={(e) => e.stopPropagation()}
-      onKeyDown={(e) => {
-        e.stopPropagation();
-        if (e.nativeEvent.isComposing || e.keyCode === 229) return;
-        if (e.key === "Enter") {
-          e.preventDefault();
-          commit();
-        } else if (e.key === "Escape") {
-          e.preventDefault();
-          done.current = true;
-          onCancel();
-        }
-      }}
-      onBlur={commit}
-      className={cn(
-        "h-6 min-w-0 flex-1 rounded-xs border border-input bg-background px-1.5 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        className
-      )}
-    />
-  );
-}
 
 /** Sessions sidebar for agent apps: groups, search, status filter, multi-select, bulk actions and keyboard navigation. */
 export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionListProps>(
@@ -484,10 +428,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
               data-session-id={s.id}
               data-selected={isSelected || undefined}
               data-active={isActive || undefined}
-              className={cn(
-                "group/session relative flex items-center gap-1 rounded-control",
-                isSelected ? "bg-primary-soft" : isActive ? "bg-accent" : "hover:bg-accent/70"
-              )}
+              className={cn(conversationRowClass({ active: isActive, selected: isSelected }), "gap-1")}
             >
               {checkboxMode && (
                 <CheckboxPrimitive.Root
@@ -507,9 +448,10 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
               {editing ? (
                 <div className="flex min-w-0 flex-1 items-center gap-2 px-2 py-1.5">
                   <AgentStatusDot status={s.status} decorative />
-                  <InlineRename
-                    value={s.title}
+                  <InlineEditText
+                    defaultValue={s.title}
                     label="Session title"
+                    className="h-6 flex-1 rounded-xs px-1.5 shadow-none"
                     onCommit={(v) => {
                       onRenameSession?.(s.id, v);
                       setRenaming(null);
@@ -578,72 +520,58 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
       const editing = renaming?.kind === "group" && renaming.id === group.id;
       return (
         <div key={group.id} role="group" aria-label={group.name} data-group-id={group.id} className="mt-2">
-          <div className="group/header flex items-center gap-1 px-1">
-            {editing ? (
-              <InlineRename
-                value={group.name}
-                label="Group name"
-                className="h-6 text-xs"
-                onCommit={(v) => {
-                  onRenameGroup?.(group.id, v);
-                  setRenaming(null);
-                }}
-                onCancel={() => setRenaming(null)}
-              />
-            ) : (
-              <button
-                type="button"
-                id={headerId}
-                aria-expanded={!closed}
-                aria-controls={listId}
-                onClick={() => setCollapsed((c) => ({ ...c, [group.id]: !closed }))}
-                onDoubleClick={() => onRenameGroup && setRenaming({ kind: "group", id: group.id })}
-                className={cn(
-                  "flex min-w-0 flex-1 items-center gap-1 rounded-xs px-1 py-1 text-left text-xs font-medium text-muted-foreground hover:text-foreground",
-                  focusRing
-                )}
-              >
-                <RiArrowDownSLine
-                  aria-hidden
-                  className={cn("size-3.5 shrink-0 transition-transform motion-reduce:transition-none", closed && "-rotate-90")}
-                />
-                <span className="truncate">{group.name}</span>
-                <span className="ml-1 tabular-nums text-muted-foreground/80">{items.length}</span>
-              </button>
-            )}
-            {onNewSession && !editing && (
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                aria-label={`Start new session in ${group.name}`}
-                title="Start new session in this group"
-                onClick={() => onNewSession(group.id)}
-              >
-                <RiAddLine aria-hidden />
-              </Button>
-            )}
-            {(onRenameGroup || onNewSession) && !editing && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon-xs" aria-label={`${group.name} group actions`}>
-                    <RiMore2Line aria-hidden />
+          <ConversationGroupHeader
+            name={group.name}
+            count={items.length}
+            expanded={!closed}
+            onExpandedChange={(open) => setCollapsed((c) => ({ ...c, [group.id]: !open }))}
+            triggerId={headerId}
+            controlsId={listId}
+            onRename={onRenameGroup ? (v) => onRenameGroup(group.id, v) : undefined}
+            renameLabel="Group name"
+            renameButton={false}
+            editing={editing}
+            onEditingChange={(on) => setRenaming(on ? { kind: "group", id: group.id } : null)}
+            className="gap-1 px-1"
+            triggerClassName="gap-1 rounded-xs px-1 py-1 text-xs text-muted-foreground hover:text-foreground"
+            inputClassName="h-6 text-xs"
+            actions={
+              <>
+                {onNewSession && (
+                  <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={`Start new session in ${group.name}`}
+                    title="Start new session in this group"
+                    onClick={() => onNewSession(group.id)}
+                  >
+                    <RiAddLine aria-hidden />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {onRenameGroup && (
-                    <DropdownMenuItem icon={<RiEditLine aria-hidden />} onSelect={() => setRenaming({ kind: "group", id: group.id })}>
-                      Rename group
-                    </DropdownMenuItem>
-                  )}
-                  {onNewSession && (
-                    <DropdownMenuItem icon={<RiAddLine aria-hidden />} onSelect={() => onNewSession(group.id)}>
-                      Start new session in this group
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
+                )}
+                {(onRenameGroup || onNewSession) && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon-xs" aria-label={`${group.name} group actions`}>
+                        <RiMore2Line aria-hidden />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {onRenameGroup && (
+                        <DropdownMenuItem icon={<RiEditLine aria-hidden />} onSelect={() => setRenaming({ kind: "group", id: group.id })}>
+                          Rename group
+                        </DropdownMenuItem>
+                      )}
+                      {onNewSession && (
+                        <DropdownMenuItem icon={<RiAddLine aria-hidden />} onSelect={() => onNewSession(group.id)}>
+                          Start new session in this group
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </>
+            }
+          />
           {!closed && (
             <ul id={listId} className="mt-0.5 flex flex-col gap-px">
               {items.length ? items.map(renderRow) : <li className="px-3 py-1.5 text-xs text-muted-foreground">No sessions</li>}

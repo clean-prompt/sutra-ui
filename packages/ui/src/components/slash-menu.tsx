@@ -18,8 +18,18 @@ export interface SlashTriggerMatch {
   end: number;
 }
 
+export interface DetectSlashTriggerOptions {
+  /** Allow trigger characters inside the query ("#notes/2024"). Default false, so "/a/b" paths don't open the menu. */
+  allowTriggerInQuery?: boolean;
+}
+
 /** Find a trigger token ("/cmd", "@name") ending at `caret`; it must start a word. */
-export function detectSlashTrigger(value: string, caret: number, triggers: readonly string[] = ["/"]): SlashTriggerMatch | null {
+export function detectSlashTrigger(
+  value: string,
+  caret: number,
+  triggers: readonly string[] = ["/"],
+  options: DetectSlashTriggerOptions = {}
+): SlashTriggerMatch | null {
   if (caret < 0 || caret > value.length) return null;
   let i = caret;
   while (i > 0 && !/\s/.test(value[i - 1]!)) i--;
@@ -28,7 +38,7 @@ export function detectSlashTrigger(value: string, caret: number, triggers: reado
   const trigger = triggers.find((t) => token.startsWith(t));
   if (!trigger) return null;
   const query = token.slice(trigger.length);
-  if (triggers.some((t) => query.includes(t))) return null;
+  if (!options.allowTriggerInQuery && triggers.some((t) => query.includes(t))) return null;
   return { trigger, query, start: i, end: caret };
 }
 

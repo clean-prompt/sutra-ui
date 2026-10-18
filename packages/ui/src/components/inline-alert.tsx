@@ -42,6 +42,10 @@ export const inlineAlertVariants = cva(
         outline: "border bg-background text-foreground shadow-xs",
         accent: "rounded-l-xs border-l-[3px]",
       },
+      layout: {
+        box: "",
+        strip: "items-center rounded-none border-x-0 border-t-0 py-2 shadow-none [&>[data-slot=inline-alert-icon]]:mt-0",
+      },
     },
     compoundVariants: [
       { variant: "info", appearance: "soft", className: "border-info/15 bg-info-soft text-info-soft-foreground" },
@@ -65,7 +69,7 @@ export const inlineAlertVariants = cva(
       { variant: "neutral", appearance: "accent", className: "border-border-strong bg-subtle text-foreground" },
       { variant: "brand", appearance: "accent", className: "border-primary bg-primary-soft text-primary-soft-foreground" },
     ],
-    defaultVariants: { variant: "info", appearance: "soft" },
+    defaultVariants: { variant: "info", appearance: "soft", layout: "box" },
   }
 );
 
@@ -87,14 +91,19 @@ export interface InlineAlertProps
   variant?: InlineAlertVariant | InlineAlertTone | null;
   /** Custom icon; pass `false` or `null` to hide the default per-variant icon. */
   icon?: React.ReactNode | false;
+  /** Trailing control(s) beside the message, before the close button (e.g. a CTA). Use `InlineAlertActions` for a row under the text. */
+  action?: React.ReactNode;
   /** Shows a close button that calls this handler. */
   onDismiss?: () => void;
   dismissLabel?: string;
 }
 
-/** Contextual message placed inline with content (forms, panels, settings). */
+/**
+ * Contextual message placed inline with content (forms, panels, settings).
+ * `layout="strip"` turns it into an edge-to-edge bar with only a bottom border, for the top of a page or panel.
+ */
 export const InlineAlert = React.forwardRef<HTMLDivElement, InlineAlertProps>(
-  ({ className, tone, variant, appearance, icon, onDismiss, dismissLabel = "Dismiss", role, children, ...props }, ref) => {
+  ({ className, tone, variant, appearance, layout, icon, action, onDismiss, dismissLabel = "Dismiss", role, children, ...props }, ref) => {
     const t = normalizeTone(tone ?? variant, "info");
     const v = variantForTone[t];
     const DefaultIcon = defaultIcons[v];
@@ -105,7 +114,7 @@ export const InlineAlert = React.forwardRef<HTMLDivElement, InlineAlertProps>(
         role={role ?? (v === "destructive" || v === "warning" ? "alert" : "status")}
         data-tone={t}
         data-variant={v}
-        className={cn(inlineAlertVariants({ variant: v, appearance }), className)}
+        className={cn(inlineAlertVariants({ variant: v, appearance, layout }), className)}
         {...props}
       >
         {iconNode ? (
@@ -114,6 +123,11 @@ export const InlineAlert = React.forwardRef<HTMLDivElement, InlineAlertProps>(
           </span>
         ) : null}
         <div className="flex min-w-0 flex-1 flex-col gap-1">{children}</div>
+        {action != null && action !== false ? (
+          <div data-slot="inline-alert-action" className="flex shrink-0 items-center gap-2 self-center">
+            {action}
+          </div>
+        ) : null}
         {onDismiss ? (
           <CloseButton
             size="xs"

@@ -396,7 +396,11 @@ function RowText({
   );
 }
 
-/** A settings row: static with a control slot, a toggle row (whole row clickable) or a nav row with value + chevron. */
+/**
+ * A settings row: static with a control slot, a toggle row (whole row clickable) or a nav row with value + chevron.
+ * Use `type="toggle"` inside a `SettingsGroup` (icon slot, `disabledReason`, full-row hover and click target);
+ * use `SwitchField` / `SwitchGroup` for switches inside ordinary forms.
+ */
 export const SettingsRow = React.forwardRef<HTMLElement, SettingsRowProps>(function SettingsRow(props, ref) {
   const id = React.useId();
   const titleId = `${id}-title`;

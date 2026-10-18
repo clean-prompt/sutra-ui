@@ -40,10 +40,18 @@ export const alertBannerVariants = cva(
         destructive: "bg-destructive text-destructive-foreground",
         inverse: "bg-inverse text-inverse-foreground",
       },
+      appearance: { solid: "", soft: "" },
       sticky: { true: "sticky top-0", false: "" },
       align: { center: "justify-center", start: "justify-start" },
     },
-    defaultVariants: { variant: "primary", sticky: false, align: "center" },
+    compoundVariants: [
+      { appearance: "soft", variant: ["primary", "brand"], className: "border-b border-primary/20 bg-primary-soft text-primary-soft-foreground" },
+      { appearance: "soft", variant: "info", className: "border-b border-info/25 bg-info-soft text-info-soft-foreground" },
+      { appearance: "soft", variant: "success", className: "border-b border-success/25 bg-success-soft text-success-soft-foreground" },
+      { appearance: "soft", variant: "warning", className: "border-b border-warning/30 bg-warning-soft text-warning-soft-foreground" },
+      { appearance: "soft", variant: "destructive", className: "border-b border-destructive/25 bg-destructive-soft text-destructive-soft-foreground" },
+    ],
+    defaultVariants: { variant: "primary", appearance: "solid", sticky: false, align: "center" },
   }
 );
 
@@ -57,13 +65,20 @@ const defaultIcons: Record<AlertBannerTone, React.ComponentType<{ className?: st
   inverse: RiMegaphoneLine,
 };
 
-export interface AlertBannerAction {
+/** Inline call to action of a banner: a link (with `href`) or a button. Shared by `AlertBanner` and `RotatingNoticeBar`. */
+export interface BannerAction {
   label: React.ReactNode;
   href?: string;
   onClick?: React.MouseEventHandler<HTMLElement>;
   target?: string;
   rel?: string;
 }
+
+/** @deprecated Use `BannerAction`. */
+export type AlertBannerAction = BannerAction;
+
+/** Fill style of a banner: `solid` (default, strong fill) or `soft` (tinted fill with a bottom border). `neutral` and `inverse` look the same in both. */
+export type AlertBannerAppearance = "solid" | "soft";
 
 export interface AlertBannerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
@@ -78,7 +93,15 @@ export interface AlertBannerProps
   /** Custom icon; `false`/`null` hides it. */
   icon?: React.ReactNode | false;
   /** Inline call to action, rendered as a link (with `href`) or a button. */
-  action?: AlertBannerAction | React.ReactNode;
+  action?: BannerAction | React.ReactNode;
+  /** Content before the message block (e.g. a "previous" control). */
+  leading?: React.ReactNode;
+  /** Content after the message block, before the close button (e.g. a pager). */
+  trailing?: React.ReactNode;
+  /** Props for the message block (icon, message, action). */
+  contentProps?: React.HTMLAttributes<HTMLDivElement> & { [key: `data-${string}`]: string | number | boolean | undefined };
+  /** Changing it remounts the message block, replaying its enter animation (e.g. when a rotator swaps messages). */
+  contentKey?: React.Key;
   /** Shows a close button. Controlled via `open`/`onOpenChange`, or uncontrolled. */
   dismissible?: boolean;
   open?: boolean;
@@ -88,7 +111,7 @@ export interface AlertBannerProps
   dismissLabel?: string;
 }
 
-function isActionObject(action: unknown): action is AlertBannerAction {
+function isActionObject(action: unknown): action is BannerAction {
   return typeof action === "object" && action !== null && !React.isValidElement(action) && "label" in action;
 }
 
@@ -99,12 +122,17 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
       className,
       tone,
       variant,
+      appearance,
       sticky,
       align,
       message,
       children,
       icon,
       action,
+      leading,
+      trailing,
+      contentProps,
+      contentKey,
       dismissible,
       open: openProp,
       defaultOpen = true,
@@ -181,7 +209,7 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
         data-variant={v === "primary" ? "brand" : v}
         data-state={closing ? "closed" : "open"}
         className={cn(
-          alertBannerVariants({ variant: v, sticky, align }),
+          alertBannerVariants({ variant: v, appearance, sticky, align }),
           dismissible && "pr-12 sm:pr-14",
           closing && "pointer-events-none animate-out fade-out-0 slide-out-to-top-2 duration-200 [animation-fill-mode:forwards]",
           className
@@ -192,7 +220,12 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
         }}
         {...props}
       >
-        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+        {leading}
+        <div
+          key={contentKey}
+          {...contentProps}
+          className={cn("flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1", contentProps?.className)}
+        >
           {iconNode ? (
             <span
               aria-hidden
@@ -204,6 +237,7 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
           <div className="min-w-0 font-medium [&_strong]:font-semibold">{message ?? children}</div>
           {actionNode}
         </div>
+        {trailing}
         {dismissible ? (
           <CloseButton
             size="sm"

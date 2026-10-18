@@ -73,8 +73,9 @@ export const BlogContent = React.forwardRef<HTMLDivElement, BlogContentProps>(
 );
 BlogContent.displayName = "BlogContent";
 
-/** Alias of `BlogContent`. */
+/** @deprecated Use `BlogContent`. */
 export const Prose = BlogContent;
+/** @deprecated Use `BlogContentProps`. */
 export type ProseProps = BlogContentProps;
 
 export interface BlogPostHeaderProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {

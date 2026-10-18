@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiArrowUpSLine, RiCloseLine, RiPauseLine, RiPlayLine, RiSkipForwardLine, RiStopLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { Progress } from "./progress";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { formatRelative, toMs, type TimeInput } from "../lib/time";
 import { useControllableState } from "../hooks/use-controllable-state";
@@ -103,16 +104,15 @@ export const StatusStackRow = React.forwardRef<HTMLDivElement, StatusStackRowPro
           ) : null}
         </div>
         {progress ? (
-          <div
-            role="progressbar"
+          <Progress
+            size="xs"
+            value={pct}
             aria-label={progress.label}
-            aria-valuemin={0}
             aria-valuemax={progress.max}
             aria-valuenow={Math.min(progress.value, progress.max)}
-            className="mx-3 mb-1.5 h-1 overflow-hidden rounded-full bg-muted"
-          >
-            <div className={cn("h-full rounded-full motion-safe:transition-[width] motion-safe:duration-500", toneBar[tone])} style={{ width: `${pct}%` }} />
-          </div>
+            className="mx-3 mb-1.5 w-auto"
+            indicatorClassName={cn("motion-reduce:transition-none", toneBar[tone])}
+          />
         ) : null}
       </div>
     );

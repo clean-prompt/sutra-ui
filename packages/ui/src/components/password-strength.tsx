@@ -2,6 +2,8 @@ import * as React from "react";
 import { RiCheckLine, RiCloseLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { clamp } from "../lib/math";
+import type { Tone } from "../lib/tone";
+import { ProgressSegments } from "./progress";
 
 export interface PasswordRequirement {
   label: React.ReactNode;
@@ -34,12 +36,12 @@ export function getPasswordScore(password: string): 0 | 1 | 2 | 3 | 4 {
   return clamp(score, 1, 4) as 1 | 2 | 3 | 4;
 }
 
-const levels = [
-  { label: "", bar: "", text: "text-muted-foreground" },
-  { label: "Weak", bar: "bg-destructive", text: "text-destructive" },
-  { label: "Fair", bar: "bg-warning", text: "text-warning-soft-foreground" },
-  { label: "Good", bar: "bg-success/70", text: "text-success" },
-  { label: "Strong", bar: "bg-success", text: "text-success" },
+const levels: { label: string; tone: Tone; bar?: string; text: string }[] = [
+  { label: "", tone: "neutral", text: "text-muted-foreground" },
+  { label: "Weak", tone: "destructive", text: "text-destructive" },
+  { label: "Fair", tone: "warning", text: "text-warning-soft-foreground" },
+  { label: "Good", tone: "success", bar: "bg-success/70", text: "text-success" },
+  { label: "Strong", tone: "success", text: "text-success" },
 ];
 
 export interface PasswordStrengthProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -74,26 +76,17 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
     return (
       <div ref={ref} className={cn("flex flex-col gap-2.5", className)} {...props}>
         <div className="flex items-center gap-3">
-          <div
+          <ProgressSegments
             role="meter"
-            aria-label="Password strength"
-            aria-valuemin={0}
-            aria-valuemax={4}
-            aria-valuenow={score}
+            label="Password strength"
+            segments={4}
+            max={4}
+            value={score}
             aria-valuetext={label || "No password"}
-            className="grid flex-1 grid-cols-4 gap-1.5"
-          >
-            {[1, 2, 3, 4].map((i) => (
-              <span key={i} className="h-1.5 overflow-hidden rounded-full bg-muted">
-                <span
-                  className={cn(
-                    "block h-full origin-left rounded-full transition-[transform,background-color] duration-300 ease-out-quart",
-                    score >= i ? cn("scale-x-100", level.bar) : "scale-x-0"
-                  )}
-                />
-              </span>
-            ))}
-          </div>
+            tone={level.tone}
+            indicatorClassName={level.bar}
+            className="flex-1 gap-1.5"
+          />
           {showLabel && (
             <span
               aria-live="polite"

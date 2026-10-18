@@ -79,6 +79,7 @@ export const Separator = React.forwardRef<
 );
 Separator.displayName = "Separator";
 
-/** Alias of `Separator`, for dividing content sections with a label. */
+/** @deprecated Use `Separator` (it takes a `label`). */
 export const ContentDivider = Separator;
+/** @deprecated Use `SeparatorProps`. */
 export type ContentDividerProps = SeparatorProps;

@@ -83,7 +83,7 @@ export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   barClassName?: string;
 }
 
-/** Labeled usage meter with threshold coloring (role="meter"). */
+/** Labeled usage meter with threshold coloring (role="meter"): a level read against thresholds. For task completion use `Progress`. */
 export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
   (
     {
@@ -236,6 +236,15 @@ export interface StackedMeterProps extends Omit<React.HTMLAttributes<HTMLDivElem
   showPercent?: boolean;
   size?: "sm" | "md" | "lg";
   caption?: React.ReactNode;
+  /** Show the label / value header. Default true. */
+  showValue?: boolean;
+  /**
+   * Props for the bar itself. By default it is `role="img"` named by a parts summary; pass
+   * `{ role: "meter", "aria-valuenow": … }` when the bar is a level against `max` (see `ContextUsageBreakdown`).
+   */
+  trackProps?: React.HTMLAttributes<HTMLDivElement> & Record<`data-${string}`, string | undefined>;
+  /** `data-slot` of each part. Default "stacked-meter-part". */
+  partSlot?: string;
 }
 
 /** One bar split into colored parts with a legend (storage breakdown, wait vs. generate…). */
@@ -251,6 +260,9 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
       showPercent,
       size = "md",
       caption,
+      showValue = true,
+      trackProps,
+      partSlot = "stacked-meter-part",
       className,
       ...props
     },
@@ -270,7 +282,7 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
 
     return (
       <div ref={ref} role="group" aria-labelledby={label ? labelId : undefined} className={cn("w-full", className)} {...props}>
-        {label || text ? (
+        {showValue && (label || text) ? (
           <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
             {label ? (
               <span id={labelId} className="font-medium text-foreground">
@@ -282,12 +294,17 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
             <span className="font-mono font-semibold tabular-nums text-foreground">{text}</span>
           </div>
         ) : null}
-        <div role="img" aria-label={summary} className={cn("flex w-full gap-0.5 overflow-hidden rounded-full bg-muted", trackHeight[size])}>
+        <div
+          role="img"
+          aria-label={summary}
+          {...trackProps}
+          className={cn("flex w-full gap-0.5 overflow-hidden rounded-full bg-muted", trackHeight[size], trackProps?.className)}
+        >
           {resolved.map((p) =>
             p.pct > 0 ? (
               <span
                 key={p.key}
-                data-slot="stacked-meter-part"
+                data-slot={partSlot}
                 title={`${p.label}: ${valueFormatter(p.value)}`}
                 className="block h-full transition-[width] duration-500 ease-out-quart first:rounded-l-full last:rounded-r-full motion-reduce:transition-none"
                 style={{ width: `${p.pct}%`, backgroundColor: p.color }}

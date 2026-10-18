@@ -127,7 +127,13 @@ const bodyClass = "-mx-6 min-h-0 flex-1 overflow-y-auto px-6 text-sm scrollbar-t
 /* Dialog                                                              */
 /* ------------------------------------------------------------------ */
 
-/** Modal dialog root. */
+/**
+ * Modal dialog root.
+ *
+ * Dialog vs Sheet vs Drawer: `Dialog` is a centred modal (a bottom sheet on phones) for a focused task or decision;
+ * `Sheet` slides in from an edge for navigation, detail or filter panels; `Drawer` (`./drawer`) is a touch-first
+ * bottom sheet with drag-to-dismiss and snap points. Use `AlertDialog` / `ConfirmDialog` for interrupting confirmations.
+ */
 export const Dialog = DialogPrimitive.Root;
 /** Element that opens the dialog. */
 export const DialogTrigger = DialogPrimitive.Trigger;
@@ -361,7 +367,13 @@ ConfirmDialog.displayName = "ConfirmDialog";
 /* Sheet                                                               */
 /* ------------------------------------------------------------------ */
 
-/** Edge-anchored panel root (a Dialog). */
+/**
+ * Edge-anchored panel root (a Dialog).
+ *
+ * Dialog vs Sheet vs Drawer: `Sheet` slides in from `side` (left, right, top, bottom) and stays put; `Dialog` is a
+ * centred modal; `Drawer` is a touch-first bottom sheet with a grabber, drag-to-dismiss and snap points, built on
+ * the Sheet parts below.
+ */
 export const Sheet = DialogPrimitive.Root;
 /** Element that opens the sheet. */
 export const SheetTrigger = DialogPrimitive.Trigger;

@@ -59,3 +59,12 @@ describe("normalizeDensity", () => {
     expect(normalizeDensity("compact")).toBe("compact");
   });
 });
+
+describe("normalizers ignore prototype keys", () => {
+  it("returns the fallback for Object.prototype names", () => {
+    for (const key of ["toString", "constructor", "hasOwnProperty", "__proto__"]) {
+      expect(normalizeTone(key)).toBe("neutral");
+      expect(normalizeTaskStatus(key)).toBe("pending");
+    }
+  });
+});

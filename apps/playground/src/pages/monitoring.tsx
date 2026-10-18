@@ -519,7 +519,7 @@ function ModelTableDemo() {
     if (a === "download") return patch(m.name, { state: "downloading", download: { ...m.download, status: "downloading", progress: 0 } });
     if (a === "cancel") return patch(m.name, { state: "stopped", download: { ...m.download, status: "partial" } });
     setPending((p) => ({ ...p, [m.name]: a }));
-    if (a === "start") patch(m.name, { state: "loading" });
+    if (a === "start") patch(m.name, { state: "starting" });
     await new Promise((r) => setTimeout(r, 1200));
     setPending((p) => ({ ...p, [m.name]: null }));
     const next: Partial<Record<ModelAction, ModelInfo["state"]>> = { start: "ready", wake: "ready", sleep: "sleeping", stop: "stopped" };

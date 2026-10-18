@@ -40,7 +40,7 @@ const ALIASES: Record<LegacyTone, Tone> = {
 export function normalizeTone(tone: ToneInput | string | null | undefined, fallback: Tone = "neutral"): Tone {
   if (!tone) return fallback;
   if ((TONES as readonly string[]).includes(tone)) return tone as Tone;
-  return ALIASES[tone as LegacyTone] ?? fallback;
+  return Object.hasOwn(ALIASES, tone) ? ALIASES[tone as LegacyTone] : fallback;
 }
 
 /** Shared tone → class maps, so components don't each hand-write their own. */

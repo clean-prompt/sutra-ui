@@ -24,6 +24,7 @@ import { Spinner } from "./spinner";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../hooks/use-resize-observer";
+import { ModelSelectOption, type PickerModel } from "./model-select";
 import { DropdownMenu as Menu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./dropdown-menu";
 
 interface PromptInputContextValue {
@@ -789,11 +790,9 @@ export const PromptInputSubmit = React.forwardRef<HTMLButtonElement, PromptInput
 );
 PromptInputSubmit.displayName = "PromptInputSubmit";
 
-export interface PromptInputModel {
-  id: string;
-  name: string;
+/** A `PickerModel` for the composer menu; `state`, `provider`, `cost` and the other shared fields render through the shared row. */
+export interface PromptInputModel extends PickerModel {
   description?: string;
-  icon?: React.ReactNode;
   /** Small trailing tag such as "New" or "Pro". */
   badge?: string;
 }
@@ -973,24 +972,10 @@ export const PromptInputModelSelect = React.forwardRef<HTMLButtonElement, Prompt
                 <DropdownMenu.RadioItem
                   key={model.id}
                   value={model.id}
-                  className="relative flex cursor-default select-none items-start gap-2.5 rounded-md py-2 pl-2 pr-8 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[disabled]:opacity-50"
+                  disabled={!!model.blockedReason}
+                  className="relative flex cursor-default select-none items-start rounded-md py-2 pl-2 pr-8 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[disabled]:opacity-50"
                 >
-                  {model.icon && (
-                    <span className="mt-0.5 inline-flex shrink-0 text-muted-foreground [&_svg]:size-4">{model.icon}</span>
-                  )}
-                  <span className="flex min-w-0 flex-col">
-                    <span className="flex items-center gap-1.5 font-medium text-foreground">
-                      {model.name}
-                      {model.badge && (
-                        <span className="rounded-xs bg-primary-soft px-1.5 py-px text-2xs font-medium text-primary-soft-foreground">
-                          {model.badge}
-                        </span>
-                      )}
-                    </span>
-                    {model.description && (
-                      <span className="text-xs leading-5 text-muted-foreground">{model.description}</span>
-                    )}
-                  </span>
+                  <ModelSelectOption model={model} wrapHint />
                   <DropdownMenu.ItemIndicator className="absolute right-2 top-2.5 inline-flex text-primary">
                     <RiCheckLine aria-hidden className="size-4" />
                   </DropdownMenu.ItemIndicator>

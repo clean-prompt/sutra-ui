@@ -17,6 +17,7 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
 import { useResizeObserver } from "../hooks/use-resize-observer";
+import { Spinner, spinnerGlyphFrames, type SpinnerGlyphFrameSet } from "./spinner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -1000,18 +1001,10 @@ TabDropdown.displayName = "TabDropdown";
 /* GlyphSpinner                                                        */
 /* ------------------------------------------------------------------ */
 
-/** Built-in frame sets for GlyphSpinner. */
-export const glyphSpinnerFrames = {
-  dots: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
-  line: ["-", "\\", "|", "/"],
-  arc: ["◜", "◠", "◝", "◞", "◡", "◟"],
-  circle: ["◐", "◓", "◑", "◒"],
-  bounce: ["⠁", "⠂", "⠄", "⠂"],
-  star: ["✶", "✸", "✹", "✺", "✹", "✷"],
-  pulse: ["·", "•", "●", "•"],
-} as const;
+/** Built-in frame sets for GlyphSpinner (the same object as `spinnerGlyphFrames`). */
+export const glyphSpinnerFrames = spinnerGlyphFrames;
 
-export type GlyphSpinnerVariant = keyof typeof glyphSpinnerFrames;
+export type GlyphSpinnerVariant = SpinnerGlyphFrameSet;
 
 export interface GlyphSpinnerProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: GlyphSpinnerVariant;
@@ -1025,27 +1018,11 @@ export interface GlyphSpinnerProps extends React.HTMLAttributes<HTMLSpanElement>
   paused?: boolean;
 }
 
-/** Text-glyph spinner (braille dots, arcs, …). Holds a static frame under reduced motion. */
+/** Text-glyph spinner (braille dots, arcs, …): a preset of `<Spinner variant="glyph">`. Holds a static frame under reduced motion. */
 export const GlyphSpinner = React.forwardRef<HTMLSpanElement, GlyphSpinnerProps>(
-  ({ variant = "dots", frames: framesProp, interval = 80, label = "Loading", paused = false, className, ...props }, ref) => {
-    const frames = framesProp && framesProp.length > 0 ? framesProp : glyphSpinnerFrames[variant];
-    const reduced = usePrefersReducedMotion();
-    const [index, setIndex] = React.useState(0);
-    const still = reduced || paused || frames.length < 2;
-    React.useEffect(() => {
-      if (still) return;
-      const t = setInterval(() => setIndex((i) => (i + 1) % frames.length), Math.max(16, interval));
-      return () => clearInterval(t);
-    }, [still, interval, frames.length]);
-    return (
-      <span ref={ref} role="status" data-frame={index % frames.length} className={cn("inline-flex items-center font-mono leading-none", className)} {...props}>
-        <span aria-hidden className="inline-block min-w-[1ch] text-center">
-          {frames[index % frames.length]}
-        </span>
-        <span className="sr-only">{label}</span>
-      </span>
-    );
-  }
+  ({ variant = "dots", frames, ...props }, ref) => (
+    <Spinner ref={ref} variant="glyph" frames={frames && frames.length > 0 ? frames : variant} {...props} />
+  )
 );
 GlyphSpinner.displayName = "GlyphSpinner";
 

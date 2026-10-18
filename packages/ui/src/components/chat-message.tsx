@@ -1,8 +1,8 @@
 import * as React from "react";
 import { RiSparklingFill } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { initials } from "../lib/text";
 import { formatClockTime, safeISO } from "../lib/time";
+import { Avatar, type AvatarProps, type AvatarSize } from "./avatar";
 import { Markdown, type MarkdownProps } from "./markdown";
 
 export type ChatMessageRole = "user" | "assistant" | "system";
@@ -86,7 +86,7 @@ export const ChatMessageBody = React.forwardRef<HTMLDivElement, React.HTMLAttrib
 );
 ChatMessageBody.displayName = "ChatMessageBody";
 
-export interface ChatMessageAvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface ChatMessageAvatarProps extends Omit<AvatarProps, "size" | "shape" | "status" | "verified"> {
   src?: string;
   alt?: string;
   /** Used for initials when there is no image. */
@@ -96,47 +96,36 @@ export interface ChatMessageAvatarProps extends React.HTMLAttributes<HTMLSpanEle
   size?: "sm" | "md" | "lg";
 }
 
-const avatarSize = { sm: "size-6 text-[10px] [&_svg]:size-3.5", md: "size-8 text-xs [&_svg]:size-4", lg: "size-9 text-sm [&_svg]:size-[18px]" };
+const avatarSize: Record<NonNullable<ChatMessageAvatarProps["size"]>, { size: AvatarSize; frame?: string }> = {
+  sm: { size: "xs" },
+  md: { size: "sm" },
+  lg: { size: "sm", frame: "size-9 text-sm [&_svg]:size-[18px]" },
+};
 
-/** Circular avatar: image, initials, or the Sutra spark for assistant messages. */
+/** Circular `Avatar` for a chat turn: image, initials, or the Sutra spark for assistant messages. */
 export const ChatMessageAvatar = React.forwardRef<HTMLSpanElement, ChatMessageAvatarProps>(
-  ({ src, alt, name, fallback, size = "md", className, ...props }, ref) => {
+  ({ src, alt, name, fallback, size = "md", frameClassName, fallbackClassName, ...props }, ref) => {
     const { role } = useChatMessage();
-    const [failed, setFailed] = React.useState(false);
-    React.useEffect(() => setFailed(false), [src]);
-    const showImage = !!src && !failed;
     const isAssistant = role !== "user";
-    let content: React.ReactNode;
-    if (showImage) {
-      content = (
-        <img src={src} alt={alt ?? name ?? ""} onError={() => setFailed(true)} className="size-full object-cover" />
-      );
-    } else if (fallback !== undefined) {
-      content = fallback;
-    } else if (name) {
-      content = initials(name, { singleWord: 2 });
-    } else if (isAssistant) {
-      content = <RiSparklingFill aria-hidden />;
-    }
-    const spark = !showImage && fallback === undefined && !name && isAssistant;
+    const spark = fallback === undefined && !name && isAssistant;
+    const s = avatarSize[size];
     return (
-      <span
+      <Avatar
         ref={ref}
-        role={showImage ? undefined : "img"}
-        aria-label={showImage ? undefined : (alt ?? name ?? (isAssistant ? "Assistant" : "User"))}
-        className={cn(
-          "relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full font-medium",
-          avatarSize[size],
-          spark
-            ? "bg-linear-to-br from-brand-400 to-brand-600 text-white shadow-xs shadow-inner-highlight"
-            : "border border-border bg-muted text-muted-foreground",
-          showImage && "border-0 bg-transparent",
-          className
+        size={s.size}
+        src={src}
+        name={name}
+        alt={alt ?? (name ? undefined : isAssistant ? "Assistant" : "User")}
+        fallback={spark ? <RiSparklingFill aria-hidden /> : fallback}
+        initialsOptions={{ singleWord: 2 }}
+        frameClassName={cn(
+          s.frame,
+          spark ? "bg-linear-to-br from-brand-400 to-brand-600 shadow-xs shadow-inner-highlight" : !src && "border border-border",
+          frameClassName
         )}
+        fallbackClassName={cn(spark && "bg-transparent text-white", fallbackClassName)}
         {...props}
-      >
-        {content}
-      </span>
+      />
     );
   }
 );

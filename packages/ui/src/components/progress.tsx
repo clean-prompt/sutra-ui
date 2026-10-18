@@ -29,7 +29,8 @@ const strokeColor: Record<Tone, string> = {
 export interface ProgressProps
   extends Omit<React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>, "value" | "color"> {
   value?: number | null;
-  size?: "xs" | "sm" | "md" | "lg";
+  /** Track height: 2xs 2px (hairline loading strips), xs 4px, sm 6px, md 8px, lg 12px. Default "md". */
+  size?: "2xs" | "xs" | "sm" | "md" | "lg";
   /** Semantic colour of the filled part. Default "primary". */
   tone?: ToneInput;
   /** @deprecated Use `tone`. */
@@ -42,7 +43,13 @@ export interface ProgressProps
   indicatorClassName?: string;
 }
 
-/** Linear progress bar, determinate or indeterminate. */
+const barHeight = { "2xs": "h-0.5", xs: "h-1", sm: "h-1.5", md: "h-2", lg: "h-3" } as const;
+
+/**
+ * Linear progress bar, determinate or indeterminate (role="progressbar"): how far a task has got.
+ * For a level read against thresholds (disk usage, context window) use `Meter` instead.
+ * Restyle the track with `className` (e.g. `rounded-none bg-transparent` for an edge strip) and the fill with `indicatorClassName`.
+ */
 export const Progress = React.forwardRef<
   React.ComponentRef<typeof ProgressPrimitive.Root>,
   ProgressProps
@@ -67,6 +74,8 @@ export const Progress = React.forwardRef<
     const tone = normalizeTone(toneProp ?? color, "primary");
     const isIndeterminate = indeterminate || value === null || value === undefined;
     const pct = isIndeterminate ? 0 : toPercent(value as number, max);
+    // Radix rejects max <= 0 with a console error; an empty range simply reads as 0%.
+    const safeMax = Number.isFinite(max) && max > 0 ? max : 100;
     const valueText = isIndeterminate
       ? null
       : formatValue
@@ -78,12 +87,12 @@ export const Progress = React.forwardRef<
     const bar = (
       <ProgressPrimitive.Root
         ref={ref}
-        value={isIndeterminate ? null : clamp(value as number, 0, max)}
-        max={max}
+        value={isIndeterminate ? null : safeMax === max ? clamp(value as number, 0, max) : 0}
+        max={safeMax}
         aria-labelledby={label ? labelId : undefined}
         className={cn(
           "relative w-full overflow-hidden rounded-full bg-muted",
-          size === "xs" ? "h-1" : size === "sm" ? "h-1.5" : size === "md" ? "h-2" : "h-3",
+          barHeight[size],
           !label && !position && className
         )}
         {...props}
@@ -154,7 +163,80 @@ export interface ProgressCircleProps
   label?: string;
 }
 
-/** Circular progress ring with centered value. */
+export interface ProgressRingSvgProps extends Omit<React.SVGProps<SVGSVGElement>, "children"> {
+  /** Filled share, 0–100. */
+  percent: number;
+  /** Diameter in px. */
+  size: number;
+  strokeWidth: number;
+  /** Classes for the fill arc, e.g. a `stroke-*` tone class. */
+  fillClassName?: string;
+  /** Explicit fill stroke (CSS colour or `url(#id)`); wins over `fillClassName` colours. */
+  fillStroke?: string;
+  /** Classes for the track circle. Default `stroke-muted`. */
+  trackClassName?: string;
+  /** Explicit track stroke (e.g. `currentColor`). */
+  trackStroke?: string;
+  trackOpacity?: number;
+  /** `data-slot` on the fill arc. */
+  fillSlot?: string;
+  /** Extra SVG definitions (gradients). */
+  defs?: React.ReactNode;
+}
+
+/**
+ * The SVG ring drawn by `ProgressCircle`, `RingMeter` and `ChatAttachment`: a track circle plus a fill arc
+ * that starts at 12 o'clock. Decorative (`aria-hidden`); the wrapper carries the role and values.
+ */
+export function ProgressRingSvg({
+  percent,
+  size,
+  strokeWidth,
+  fillClassName,
+  fillStroke,
+  trackClassName = "stroke-muted",
+  trackStroke,
+  trackOpacity,
+  fillSlot,
+  defs,
+  className,
+  ...props
+}: ProgressRingSvgProps) {
+  const pct = clamp(percent, 0, 100);
+  const c = size / 2;
+  const r = Math.max(0, c - strokeWidth / 2);
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      aria-hidden="true"
+      className={cn("shrink-0 -rotate-90", className)}
+      {...props}
+    >
+      {defs ? <defs>{defs}</defs> : null}
+      <circle cx={c} cy={c} r={r} fill="none" strokeWidth={strokeWidth} stroke={trackStroke} strokeOpacity={trackOpacity} className={trackClassName} />
+      <circle
+        data-slot={fillSlot}
+        cx={c}
+        cy={c}
+        r={r}
+        fill="none"
+        stroke={fillStroke}
+        strokeWidth={strokeWidth}
+        strokeLinecap={pct > 0 ? "round" : "butt"}
+        pathLength={100}
+        strokeDasharray={`${Math.round(pct * 100) / 100} 100`}
+        className={cn("transition-[stroke-dasharray,stroke] duration-500 ease-out-quart motion-reduce:transition-none", fillClassName)}
+      />
+    </svg>
+  );
+}
+
+/**
+ * Circular progress ring with centered value (role="progressbar"): task completion, like `Progress`.
+ * `RingMeter` draws the same ring as a threshold-coloured level (role="meter"), e.g. a context window.
+ */
 export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCircleProps>(
   (
     {
@@ -176,9 +258,6 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
   ) => {
     const tone = normalizeTone(toneProp ?? color, "primary");
     const pct = toPercent(value, max);
-    const radius = (size - strokeWidth) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference * (1 - pct / 100);
     const gradientId = useSafeId("sutra-pc");
 
     return (
@@ -193,39 +272,21 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
         style={{ width: size, height: size, ...style }}
         {...props}
       >
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90" aria-hidden>
-          {gradient ? (
-            <defs>
+        <ProgressRingSvg
+          percent={pct}
+          size={size}
+          strokeWidth={strokeWidth}
+          fillStroke={gradient ? `url(#${gradientId})` : undefined}
+          fillClassName={cn("duration-700", !gradient && strokeColor[tone])}
+          defs={
+            gradient ? (
               <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" style={{ stopColor: "var(--color-brand-400)" }} />
                 <stop offset="100%" style={{ stopColor: "var(--color-brand-700)" }} />
               </linearGradient>
-            </defs>
-          ) : null}
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            strokeWidth={strokeWidth}
-            className="stroke-muted"
-          />
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            stroke={gradient ? `url(#${gradientId})` : undefined}
-            className={cn(
-              "transition-[stroke-dashoffset] duration-700 ease-out-quart",
-              !gradient && strokeColor[tone]
-            )}
-          />
-        </svg>
+            ) : undefined
+          }
+        />
         <span
           className={cn(
             "absolute inset-0 flex items-center justify-center font-semibold tabular-nums text-foreground",
@@ -241,7 +302,7 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
 ProgressCircle.displayName = "ProgressCircle";
 
 export interface ProgressSegmentsProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "color"> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "color" | "role"> {
   /** Number of segments. */
   segments?: number;
   /** Filled amount, relative to `max` (defaults to `segments`). */
@@ -253,11 +314,18 @@ export interface ProgressSegmentsProps
   color?: ProgressColor;
   size?: "sm" | "md" | "lg";
   label?: string;
+  /** `progressbar` (default) for steps done; `meter` for a level such as password strength. Pair with `aria-valuetext`. */
+  role?: "progressbar" | "meter";
+  /** Classes for the filled segments; replaces the tone colour (e.g. `bg-success/70`). */
+  indicatorClassName?: string;
 }
 
-/** Segmented bar, e.g. for password strength or multi-step progress. */
+/** Segmented bar for multi-step progress, or (with `role="meter"`) a level such as password strength. */
 export const ProgressSegments = React.forwardRef<HTMLDivElement, ProgressSegmentsProps>(
-  ({ className, segments = 4, value, max, tone: toneProp, color, size = "md", label, ...props }, ref) => {
+  (
+    { className, segments = 4, value, max, tone: toneProp, color, size = "md", label, role = "progressbar", indicatorClassName, ...props },
+    ref
+  ) => {
     const tone = normalizeTone(toneProp ?? color, "primary");
     const total = Math.max(1, Math.round(segments));
     const limit = max ?? total;
@@ -265,7 +333,7 @@ export const ProgressSegments = React.forwardRef<HTMLDivElement, ProgressSegment
     return (
       <div
         ref={ref}
-        role="progressbar"
+        role={role}
         aria-valuemin={0}
         aria-valuemax={limit}
         aria-valuenow={clamp(value, 0, limit)}
@@ -279,7 +347,7 @@ export const ProgressSegments = React.forwardRef<HTMLDivElement, ProgressSegment
             className={cn(
               "flex-1 rounded-full transition-colors duration-300",
               size === "sm" ? "h-1" : size === "md" ? "h-1.5" : "h-2",
-              i < filled ? barColor[tone] : "bg-muted"
+              i < filled ? (indicatorClassName ?? barColor[tone]) : "bg-muted"
             )}
             style={{ transitionDelay: `${i * 40}ms` }}
           />

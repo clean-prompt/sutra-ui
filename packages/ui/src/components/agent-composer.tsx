@@ -10,7 +10,6 @@ import {
   RiMoreLine,
   RiPencilLine,
   RiQuestionAnswerLine,
-  RiRefreshLine,
   RiSteering2Line,
   RiTimeLine,
 } from "@remixicon/react";
@@ -26,7 +25,8 @@ import { Lightbox, useLightbox, type LightboxItem } from "./lightbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { SimpleTooltip } from "./tooltip";
 import { FileFormatIcon } from "../assets/file-format";
-import { formatAttachmentSize } from "./chat-attachment";
+import { ChatAttachment, formatAttachmentSize } from "./chat-attachment";
+import { pluralize } from "../lib/format";
 import { PromptInput, PromptInputSubmit, PromptInputTextarea } from "./prompt-input";
 
 
@@ -512,7 +512,11 @@ export interface ComposerToolbarProps extends React.HTMLAttributes<HTMLDivElemen
   overflowLabel?: string;
 }
 
-/** Composer footer layout: add context, mode and effort on the left; model, voice and send on the right; narrow widths collapse extras into an overflow popover. */
+/**
+ * Composer footer layout: add context, mode and effort on the left; model, voice and send on the right; narrow widths collapse extras into an overflow popover.
+ * This is the slot-based, agent-specific layout; `PromptInputToolbar` (prompt-input) is the plain flex row for a basic `PromptInput`.
+ * Use `ComposerToolbar` when you need the named slots or overflow collapse, `PromptInputToolbar` otherwise.
+ */
 export const ComposerToolbar = React.forwardRef<HTMLDivElement, ComposerToolbarProps>(
   (
     {
@@ -647,12 +651,12 @@ function isImageAttachment(item: AttachmentThumbnailItem) {
 function attachmentMeta(item: AttachmentThumbnailItem) {
   if (item.status === "failed") return item.error ?? "Upload failed";
   if (item.status === "uploading") return item.progress != null ? `Uploading… ${Math.round(item.progress)}%` : "Uploading…";
-  return [item.pages != null ? `${item.pages} ${item.pages === 1 ? "page" : "pages"}` : null, item.size != null ? formatAttachmentSize(item.size) : null]
+  return [item.pages != null ? `${item.pages} ${pluralize(item.pages, "page")}` : null, item.size != null ? formatAttachmentSize(item.size) : null]
     .filter(Boolean)
     .join(" · ");
 }
 
-/** Row of image thumbnails and file chips (pages / size, uploading and failed states) with click-to-preview and remove on hover. */
+/** Data-driven row of `ChatAttachment`s: image tiles (click to preview in a Lightbox) and file cards with pages / size, upload progress, failed + retry and remove on hover. */
 export const AttachmentThumbnails = React.forwardRef<HTMLDivElement, AttachmentThumbnailsProps>(
   ({ items, onRemove, onRetry, preview = true, className, ...props }, ref) => {
     const lightbox = useLightbox();
@@ -663,22 +667,6 @@ export const AttachmentThumbnails = React.forwardRef<HTMLDivElement, AttachmentT
       [images.map((i) => `${i.id}:${i.url}`).join("|")]
     );
     if (items.length === 0) return null;
-
-    const removeButton = (item: AttachmentThumbnailItem) =>
-      onRemove && (
-        <button
-          type="button"
-          aria-label={`Remove ${item.name}`}
-          title="Remove"
-          onClick={() => onRemove(item.id)}
-          className={cn(
-            "absolute -right-1.5 -top-1.5 z-10 flex size-5 items-center justify-center rounded-full border border-border bg-background text-muted-foreground opacity-0 shadow-sm transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover/thumb:opacity-100 [@media(hover:none)]:opacity-100",
-            focusRing
-          )}
-        >
-          <RiCloseLine aria-hidden className="size-3.5" />
-        </button>
-      );
 
     return (
       <div
@@ -691,110 +679,30 @@ export const AttachmentThumbnails = React.forwardRef<HTMLDivElement, AttachmentT
       >
         {items.map((item) => {
           const state = item.status ?? "ready";
-          const meta = attachmentMeta(item);
-          if (isImageAttachment(item)) {
-            const imageIndex = images.indexOf(item);
-            const img = <img src={item.url} alt={preview ? "" : (item.alt ?? item.name)} className="size-full object-cover" draggable={false} />;
-            return (
-              <div
-                key={item.id}
-                role="listitem"
-                data-state={state}
-                title={item.name}
-                className={cn(
-                  "group/thumb relative size-14 rounded-box border border-border bg-muted shadow-xs",
-                  state === "failed" && "border-destructive"
-                )}
-              >
-                {preview ? (
-                  <button
-                    type="button"
-                    aria-label={`Preview ${item.name}`}
-                    onClick={() => lightbox.openAt(imageIndex)}
-                    className={cn("block size-full cursor-zoom-in overflow-hidden rounded-[inherit]", focusRing)}
-                  >
-                    {img}
-                  </button>
-                ) : (
-                  <span className="block size-full overflow-hidden rounded-[inherit]">{img}</span>
-                )}
-                {state === "uploading" && (
-                  <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] bg-background/60">
-                    <Spinner size="sm" label={meta} />
-                  </span>
-                )}
-                {state === "failed" && (
-                  <span
-                    role="img"
-                    aria-label={meta}
-                    className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] bg-destructive/20 text-destructive"
-                  >
-                    <RiErrorWarningLine aria-hidden className="size-5" />
-                  </span>
-                )}
-                {state === "failed" && onRetry && (
-                  <button
-                    type="button"
-                    aria-label={`Retry ${item.name}`}
-                    onClick={() => onRetry(item.id)}
-                    className={cn("absolute -bottom-1.5 -right-1.5 z-10 flex size-5 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm", focusRing)}
-                  >
-                    <RiRefreshLine aria-hidden className="size-3" />
-                  </button>
-                )}
-                {removeButton(item)}
-              </div>
-            );
-          }
+          const image = isImageAttachment(item);
+          const imageIndex = image ? images.indexOf(item) : -1;
           return (
-            <div
+            <ChatAttachment
               key={item.id}
               role="listitem"
               data-state={state}
-              title={item.name}
-              className={cn(
-                "group/thumb relative flex h-14 max-w-60 items-center gap-2 rounded-box border border-border bg-card py-2 pl-2 pr-3 shadow-xs",
-                state === "failed" && "border-destructive/60"
-              )}
-            >
-              <span className="relative inline-flex shrink-0">
-                <FileFormatIcon ext={item.name} size={32} aria-hidden />
-                {state === "uploading" && (
-                  <span className="absolute inset-0 flex items-center justify-center bg-background/50">
-                    <Spinner size="xs" aria-hidden role="presentation" />
-                  </span>
-                )}
-              </span>
-              <span className="flex min-w-0 flex-col">
-                <span className="truncate text-sm font-medium leading-5 text-foreground">{item.name}</span>
-                <span className={cn("flex items-center gap-1.5 truncate text-xs leading-4", state === "failed" ? "text-destructive" : "text-muted-foreground")}>
-                  {meta}
-                  {state === "failed" && onRetry && (
-                    <button
-                      type="button"
-                      onClick={() => onRetry(item.id)}
-                      aria-label={`Retry ${item.name}`}
-                      className={cn("font-medium text-foreground underline-offset-2 hover:underline", focusRing)}
-                    >
-                      Retry
-                    </button>
-                  )}
-                </span>
-              </span>
-              {state === "uploading" && item.progress != null && (
-                <span
-                  role="progressbar"
-                  aria-label={`Uploading ${item.name}`}
-                  aria-valuenow={Math.round(item.progress)}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  className="absolute inset-x-2 bottom-1 h-0.5 overflow-hidden rounded-full bg-muted"
-                >
-                  <span className="block h-full bg-primary transition-[width]" style={{ width: `${clamp(item.progress, 0, 100)}%` }} />
-                </span>
-              )}
-              {removeButton(item)}
-            </div>
+              variant={image ? "image" : "card"}
+              name={item.name}
+              mimeType={item.mimeType}
+              previewUrl={image ? item.url : undefined}
+              alt={item.alt ?? item.name}
+              fileSize={item.size}
+              pages={item.pages}
+              status={state}
+              progress={item.progress}
+              error={state === "failed" ? (item.error ?? true) : undefined}
+              meta={state === "ready" ? attachmentMeta(item) : undefined}
+              icon={image ? undefined : <FileFormatIcon ext={item.name} size={32} aria-hidden />}
+              onRemove={onRemove ? () => onRemove(item.id) : undefined}
+              onRetry={onRetry ? () => onRetry(item.id) : undefined}
+              onPreview={image && preview ? () => lightbox.openAt(imageIndex) : undefined}
+              className={image ? "size-14" : "w-auto max-w-60"}
+            />
           );
         })}
         {preview && lightboxItems.length > 0 && <Lightbox items={lightboxItems} {...lightbox.props} />}

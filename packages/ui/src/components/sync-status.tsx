@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   type RemixiconComponentType,
   RiCheckboxCircleLine,
-  RiCloseLine,
   RiCloudOffLine,
   RiErrorWarningLine,
   RiGitMergeLine,
@@ -12,6 +11,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { formatRelative } from "../lib/time";
 import { Button } from "./button";
+import { InlineAlert } from "./inline-alert";
 import { SimpleTooltip } from "./tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./dialog";
 
@@ -150,7 +150,7 @@ export interface OfflineBannerProps extends React.HTMLAttributes<HTMLDivElement>
   onDismiss?: () => void;
 }
 
-/** Banner shown while offline: reassures that changes are saved locally. */
+/** Banner shown while offline: reassures that changes are saved locally. A preset over `InlineAlert layout="strip"`. */
 export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps>(
   ({ offline: offlineProp, pendingChanges = 0, onRetry, dismissible, onDismiss, className, children, ...props }, ref) => {
     const online = useOnlineStatus();
@@ -161,17 +161,31 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
     }, [offline]);
     if (!offline || dismissed) return null;
     return (
-      <div
+      <InlineAlert
         ref={ref}
+        tone="warning"
+        layout="strip"
         role="status"
-        className={cn(
-          "flex items-center gap-3 border-b border-warning/30 bg-warning-soft px-4 py-2 text-sm text-warning-soft-foreground",
-          className
-        )}
+        icon={<RiWifiOffLine />}
+        action={
+          onRetry && (
+            <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry} className="text-current">
+              Retry
+            </Button>
+          )
+        }
+        onDismiss={
+          dismissible
+            ? () => {
+                setDismissed(true);
+                onDismiss?.();
+              }
+            : undefined
+        }
+        className={className}
         {...props}
       >
-        <RiWifiOffLine aria-hidden className="size-4 shrink-0" />
-        <p className="min-w-0 flex-1">
+        <p className="min-w-0">
           {children ?? (
             <>
               <span className="font-medium">You’re offline.</span> Changes are saved on this device and will sync when you
@@ -184,26 +198,7 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
             </>
           )}
         </p>
-        {onRetry && (
-          <Button size="xs" variant="ghost" leadingIcon={<RiRefreshLine aria-hidden />} onClick={onRetry} className="text-current">
-            Retry
-          </Button>
-        )}
-        {dismissible && (
-          <Button
-            size="icon-xs"
-            variant="ghost"
-            aria-label="Dismiss"
-            className="text-current"
-            onClick={() => {
-              setDismissed(true);
-              onDismiss?.();
-            }}
-          >
-            <RiCloseLine aria-hidden />
-          </Button>
-        )}
-      </div>
+      </InlineAlert>
     );
   }
 );

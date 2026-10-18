@@ -1,66 +1,49 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
-import { Spinner } from "./spinner";
+import { Spinner, type SpinnerProps } from "./spinner";
 import { TextShimmer } from "./text-shimmer";
 
-export type ChatLoaderVariant = "dots" | "shimmer" | "pulse" | "spinner" | "wave";
+export type ChatLoaderVariant = "dots" | "shimmer" | "pulse" | "spinner" | "wave" | "glyph";
 
 export interface ChatLoaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** dots: typing indicator · shimmer: shimmering "Thinking…" · pulse: breathing dot · spinner: ring · wave: equalizer bars */
+  /**
+   * dots: typing indicator · shimmer: shimmering "Thinking…" · pulse: breathing dot · spinner: ring ·
+   * wave: equalizer bars · glyph: cycling text glyph. Every indicator except shimmer is a `Spinner`.
+   */
   variant?: ChatLoaderVariant;
   /** Visible text next to the indicator (the shimmer variant uses it as its text). */
-  label?: string;
+  label?: React.ReactNode;
   size?: "sm" | "md" | "lg";
 }
 
-const dotSize = { sm: "size-1.5", md: "size-2", lg: "size-2.5" };
-const barHeight = { sm: "h-3", md: "h-4", lg: "h-5" };
-const pulseSize = { sm: "size-2.5", md: "size-3", lg: "size-3.5" };
+type Size = NonNullable<ChatLoaderProps["size"]>;
+
+/** Which Spinner each variant renders, with box classes tuned to the reply slot. */
+const indicator: Record<Exclude<ChatLoaderVariant, "shimmer">, (size: Size) => SpinnerProps> = {
+  dots: (size) => ({ variant: "dots", className: { sm: "h-1.5 w-6", md: "h-2 w-8", lg: "h-2.5 w-10" }[size] }),
+  wave: (size) => ({ variant: "bars", className: { sm: "h-3 w-5", md: "h-4 w-6", lg: "h-5 w-7" }[size] }),
+  pulse: (size) => ({ variant: "pulse", className: cn("text-foreground", { sm: "size-2.5", md: "size-3", lg: "size-3.5" }[size]) }),
+  spinner: (size) => ({ variant: "ring", size: size === "lg" ? "md" : "sm" }),
+  glyph: () => ({ variant: "glyph" }),
+};
+
 const textSize = { sm: "text-xs", md: "text-sm", lg: "text-base" };
 
-/** Assistant "working" indicator for the reply slot. */
+/** Assistant "working" indicator for the reply slot: a `Spinner` (or TextShimmer) plus an optional label. */
 export const ChatLoader = React.forwardRef<HTMLDivElement, ChatLoaderProps>(
   ({ variant = "dots", label, size = "md", className, ...props }, ref) => {
-    const srLabel = label ?? (variant === "shimmer" ? "Thinking…" : "Assistant is typing");
-    let indicator: React.ReactNode = null;
-
-    if (variant === "dots") {
-      indicator = (
-        <span aria-hidden className="flex items-center gap-1">
-          {[0, 1, 2].map((i) => (
-            <span
-              key={i}
-              className={cn("rounded-full bg-muted-foreground animate-dot-bounce", dotSize[size])}
-              style={{ animationDelay: `${i * 0.16}s` }}
-            />
-          ))}
-        </span>
-      );
-    } else if (variant === "pulse") {
-      indicator = (
-        <span aria-hidden className={cn("relative inline-flex", pulseSize[size])}>
-          <span className="absolute inset-0 rounded-full bg-foreground/30 animate-ping [animation-duration:1.6s]" />
-          <span className="relative inline-flex size-full rounded-full bg-foreground animate-pulse" />
-        </span>
-      );
-    } else if (variant === "spinner") {
-      indicator = (
-        <Spinner aria-hidden role="presentation" size={size === "lg" ? "md" : "sm"} className="text-muted-foreground" />
-      );
-    } else if (variant === "wave") {
-      indicator = (
-        <span aria-hidden className={cn("flex items-center gap-[3px]", barHeight[size])}>
-          {[0, 1, 2, 3, 4].map((i) => (
-            <span
-              key={i}
-              className="h-full w-[3px] rounded-full bg-muted-foreground animate-bar-scale"
-              style={{ animationDelay: `${i * 0.1}s` }}
-            />
-          ))}
-        </span>
+    let content: React.ReactNode;
+    if (variant === "shimmer") {
+      content = <TextShimmer className="font-medium">{label ?? "Thinking…"}</TextShimmer>;
+    } else {
+      const spinner = (indicator[variant] ?? indicator.dots)(size);
+      content = (
+        <>
+          <Spinner {...spinner} label="" className={cn("text-muted-foreground", spinner.className)} />
+          {label ? <span>{label}</span> : <span className="sr-only">Assistant is typing</span>}
+        </>
       );
     }
-
     return (
       <div
         ref={ref}
@@ -69,14 +52,7 @@ export const ChatLoader = React.forwardRef<HTMLDivElement, ChatLoaderProps>(
         className={cn("inline-flex min-h-7 items-center gap-2.5 text-muted-foreground", textSize[size], className)}
         {...props}
       >
-        {variant === "shimmer" ? (
-          <TextShimmer className="font-medium">{label ?? "Thinking…"}</TextShimmer>
-        ) : (
-          <>
-            {indicator}
-            {label ? <span>{label}</span> : <span className="sr-only">{srLabel}</span>}
-          </>
-        )}
+        {content}
       </div>
     );
   }

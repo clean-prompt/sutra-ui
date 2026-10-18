@@ -3,6 +3,7 @@ import { RiArrowDownLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { useResizeObserver } from "../hooks/use-resize-observer";
 import { Button, type ButtonProps } from "./button";
+import { EmptyState } from "./empty-state";
 
 export interface UseStickToBottomOptions {
   /** Distance in px from the bottom that still counts as "at bottom". */
@@ -192,27 +193,17 @@ export interface ChatEmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivEl
   description?: React.ReactNode;
 }
 
-/** Centered welcome state for a new conversation; pass suggestions as children. */
+/** Centered welcome state for a new conversation; pass suggestions as children. A preset of `EmptyState variant="welcome"`. */
 export const ChatEmptyState = React.forwardRef<HTMLDivElement, ChatEmptyStateProps>(
-  ({ icon, title, description, className, children, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn("mx-auto flex w-full max-w-2xl flex-col items-center justify-center gap-4 px-4 py-12 text-center", className)}
+  ({ icon, title, description, ...props }, ref) => (
+    <EmptyState
+      ref={ref as React.Ref<HTMLElement>}
+      variant="welcome"
+      icon={icon || undefined}
+      title={title || undefined}
+      description={description || undefined}
       {...props}
-    >
-      {icon && (
-        <div className="flex size-12 items-center justify-center rounded-box border border-border bg-card text-foreground shadow-sm [&_svg]:size-6">
-          {icon}
-        </div>
-      )}
-      {(title || description) && (
-        <div className="flex flex-col gap-1.5">
-          {title && <h2 className="text-display-xs font-semibold tracking-tight text-foreground text-balance">{title}</h2>}
-          {description && <p className="text-sm text-muted-foreground text-pretty">{description}</p>}
-        </div>
-      )}
-      {children && <div className="mt-2 w-full">{children}</div>}
-    </div>
+    />
   )
 );
 ChatEmptyState.displayName = "ChatEmptyState";

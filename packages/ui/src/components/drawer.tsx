@@ -3,6 +3,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 import { RiCloseLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { DialogOverlay, SheetBody, SheetClose, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./dialog";
 
 /* ------------------------------------------------------------------ */
 /* useSwipe                                                            */
@@ -151,7 +152,14 @@ export interface DrawerProps {
   children?: React.ReactNode;
 }
 
-/** Bottom sheet with drag-to-dismiss, optional snap points, scroll lock and focus return (Radix Dialog). */
+/**
+ * Bottom sheet with drag-to-dismiss, optional snap points, scroll lock and focus return (Radix Dialog).
+ *
+ * Dialog vs Sheet vs Drawer: `Dialog` is a centred modal for a focused task or decision; `Sheet` is a panel
+ * that slides in from any edge (side navigation, detail or filter panels); `Drawer` is a touch-first bottom sheet
+ * with a grabber, drag-to-dismiss and snap points. Drawer's Header, Title, Description, Body and Footer are the
+ * Sheet parts with drawer spacing.
+ */
 export function Drawer({
   open: openProp,
   defaultOpen = false,
@@ -198,16 +206,16 @@ export function Drawer({
 }
 Drawer.displayName = "Drawer";
 
-/** Element that opens the drawer. */
-export const DrawerTrigger = DialogPrimitive.Trigger;
+/** Element that opens the drawer (same as `SheetTrigger`). */
+export const DrawerTrigger = SheetTrigger;
 /** Closes the drawer when clicked (works even when `dismissible={false}`). */
 export const DrawerClose = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Close>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>
+  React.ElementRef<typeof SheetClose>,
+  React.ComponentPropsWithoutRef<typeof SheetClose>
 >(({ onClick, ...props }, ref) => {
   const ctx = useDrawerContext();
   return (
-    <DialogPrimitive.Close
+    <SheetClose
       ref={ref}
       onClick={(event) => {
         onClick?.(event);
@@ -439,11 +447,8 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
 
     return (
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay
-          className={cn(
-            "fixed inset-0 z-50 bg-overlay backdrop-blur-[2px] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
-            overlayClassName
-          )}
+        <DialogOverlay
+          className={overlayClassName}
           style={
             dragging && offset > 0 && !snapPoints
               ? { opacity: Math.max(0.2, 1 - offset / ((nodeRef.current?.offsetHeight || 400) * 1.2)) }
@@ -528,57 +533,45 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
 );
 DrawerContent.displayName = "DrawerContent";
 
-/** Pinned header (does not scroll with the body); drag it to move the sheet. */
+/** Pinned header (does not scroll with the body); drag it to move the sheet. `SheetHeader` with drawer spacing. */
 export const DrawerHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div
+    <SheetHeader
       ref={ref}
       data-slot="drawer-header"
-      className={cn("flex shrink-0 touch-none flex-col gap-1 px-5 pb-3 pt-1 text-left", className)}
+      className={cn("shrink-0 touch-none gap-1 px-5 pb-3 pt-1 text-left", className)}
       {...props}
     />
   )
 );
 DrawerHeader.displayName = "DrawerHeader";
 
-/** Accessible drawer title. */
-export const DrawerTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title ref={ref} className={cn("text-lg font-semibold leading-tight tracking-tight text-foreground", className)} {...props} />
-));
-DrawerTitle.displayName = "DrawerTitle";
+/** Accessible drawer title (same as `SheetTitle`). */
+export const DrawerTitle = SheetTitle;
 
-/** Accessible drawer description. */
-export const DrawerDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />
-));
-DrawerDescription.displayName = "DrawerDescription";
+/** Accessible drawer description (same as `SheetDescription`). */
+export const DrawerDescription = SheetDescription;
 
-/** Scrollable content area. A drag never starts here while it is scrolled down. */
+/** Scrollable content area. A drag never starts here while it is scrolled down. `SheetBody` with drawer spacing. */
 export const DrawerBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div
+    <SheetBody
       ref={ref}
       data-slot="drawer-body"
-      className={cn("min-h-0 flex-1 touch-pan-y overflow-y-auto overscroll-contain px-5 pb-4 text-sm scrollbar-thin select-text", className)}
+      className={cn("mx-0 touch-pan-y overscroll-contain px-5 pb-4 select-text", className)}
       {...props}
     />
   )
 );
 DrawerBody.displayName = "DrawerBody";
 
-/** Action row pinned to the bottom of the sheet. */
+/** Action row pinned to the bottom of the sheet. `SheetFooter` with a top border and drawer spacing. */
 export const DrawerFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div
+    <SheetFooter
       ref={ref}
       data-slot="drawer-footer"
-      className={cn("flex shrink-0 flex-col-reverse gap-2 border-t border-border px-5 py-3 sm:flex-row sm:justify-end", className)}
+      className={cn("shrink-0 border-t border-border px-5 py-3", className)}
       {...props}
     />
   )

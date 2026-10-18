@@ -10,11 +10,11 @@ import {
 } from "@remixicon/react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { cn, focusRing } from "../lib/cn";
-import { toneClasses, type Tone } from "../lib/tone";
+import type { Tone } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { errorMessage, useMountedRef } from "../hooks/use-async-action";
 import { Button } from "./button";
-import { Spinner } from "./spinner";
+import { StatusBadge, type StatusIndicatorIcon } from "./status-badge";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -64,41 +64,45 @@ export interface BackendHealthPillProps extends Omit<React.HTMLAttributes<HTMLSp
   health: BackendHealth;
 }
 
-/** Health probe status: checking spinner, healthy + latency, unreachable + reason, or not configured. */
-export const BackendHealthPill = React.forwardRef<HTMLSpanElement, BackendHealthPillProps>(({ health, className, ...props }, ref) => {
-  const base = "inline-flex h-6 max-w-full items-center gap-1.5 rounded-control px-2 text-2xs font-medium";
-  let tone: Tone = "neutral";
-  let body: React.ReactNode = "Not checked";
-  if (health.state === "checking") {
-    body = (
-      <>
-        <Spinner size="xs" label="" aria-hidden className="text-current" />
-        Checking…
-      </>
-    );
-  } else if (health.state === "healthy") {
-    tone = "success";
-    body = (
-      <>
-        <span aria-hidden className={cn("size-1.5 rounded-full", toneClasses.dot.success)} />
-        Healthy{health.latencyMs != null && <span className="font-mono tabular-nums">· {Math.round(health.latencyMs)} ms</span>}
-      </>
-    );
-  } else if (health.state === "unreachable") {
-    tone = "destructive";
-    body = (
-      <>
-        <span aria-hidden className={cn("size-1.5 shrink-0 rounded-full", toneClasses.dot.destructive)} />
-        <span className="truncate">Unreachable: {health.reason}</span>
-      </>
-    );
-  } else if (health.state === "not-configured") {
-    body = "Not configured";
+function healthBadge(health: BackendHealth): { tone: Tone; icon: StatusIndicatorIcon; label: React.ReactNode } {
+  switch (health.state) {
+    case "checking":
+      return { tone: "neutral", icon: "spinner", label: "Checking…" };
+    case "healthy":
+      return {
+        tone: "success",
+        icon: "dot",
+        label: (
+          <>
+            Healthy{health.latencyMs != null && <span className="font-mono tabular-nums">· {Math.round(health.latencyMs)} ms</span>}
+          </>
+        ),
+      };
+    case "unreachable":
+      return { tone: "destructive", icon: "dot", label: <span className="min-w-0 truncate">Unreachable: {health.reason}</span> };
+    case "not-configured":
+      return { tone: "neutral", icon: null, label: "Not configured" };
+    default:
+      return { tone: "neutral", icon: null, label: "Not checked" };
   }
+}
+
+/** Health probe status (a live StatusBadge preset): checking spinner, healthy + latency, unreachable + reason, or not configured. */
+export const BackendHealthPill = React.forwardRef<HTMLSpanElement, BackendHealthPillProps>(({ health, className, ...props }, ref) => {
+  const b = healthBadge(health);
   return (
-    <span ref={ref} role="status" data-health={health.state} data-slot="backend-health" className={cn(base, toneClasses.soft[tone], className)} {...props}>
-      {body}
-    </span>
+    <StatusBadge
+      ref={ref}
+      role="status"
+      data-health={health.state}
+      data-slot="backend-health"
+      tone={b.tone}
+      icon={b.icon}
+      className={cn("max-w-full shrink text-2xs", className)}
+      {...props}
+    >
+      {b.label}
+    </StatusBadge>
   );
 });
 BackendHealthPill.displayName = "BackendHealthPill";

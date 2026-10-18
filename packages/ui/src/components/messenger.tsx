@@ -588,19 +588,19 @@ export const MessageComposer = React.forwardRef<HTMLTextAreaElement, MessageComp
 MessageComposer.displayName = "MessageComposer";
 
 /* ------------------------------------------------------------------ */
-/* ChatHeader                                                          */
+/* MessengerHeader                                                     */
 /* ------------------------------------------------------------------ */
 
-export interface ChatHeaderMember {
+export interface MessengerHeaderMember {
   name: string;
   src?: string;
 }
 
-export interface ChatHeaderProps extends React.HTMLAttributes<HTMLElement> {
+export interface MessengerHeaderProps extends React.HTMLAttributes<HTMLElement> {
   name: string;
   avatarSrc?: string;
   /** Group members: renders stacked avatars instead of a single one. */
-  members?: ChatHeaderMember[];
+  members?: MessengerHeaderMember[];
   /** `"online"`, a last-seen time, or any custom string. */
   presence?: "online" | Date | number | (string & {});
   typing?: boolean;
@@ -612,7 +612,7 @@ export interface ChatHeaderProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 /** Conversation header: avatar(s), name, presence or typing, call and info buttons. */
-export const ChatHeader = React.forwardRef<HTMLElement, ChatHeaderProps>(
+export const MessengerHeader = React.forwardRef<HTMLElement, MessengerHeaderProps>(
   ({ name, avatarSrc, members, presence, typing, onBack, onVoiceCall, onVideoCall, onInfo, now, className, children, ...props }, ref) => {
     const online = presence === "online";
     const subtitle = typing
@@ -668,7 +668,14 @@ export const ChatHeader = React.forwardRef<HTMLElement, ChatHeaderProps>(
     );
   }
 );
-ChatHeader.displayName = "ChatHeader";
+MessengerHeader.displayName = "MessengerHeader";
+
+/** @deprecated Use `MessengerHeader` (the AI `Chat*` components are a separate family). */
+export const ChatHeader = MessengerHeader;
+/** @deprecated Use `MessengerHeaderProps`. */
+export type ChatHeaderProps = MessengerHeaderProps;
+/** @deprecated Use `MessengerHeaderMember`. */
+export type ChatHeaderMember = MessengerHeaderMember;
 
 /* ------------------------------------------------------------------ */
 /* GroupInfoPanel                                                      */

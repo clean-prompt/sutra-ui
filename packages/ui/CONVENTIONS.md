@@ -11,7 +11,7 @@ Stack: **React 19 + TypeScript (strict) + Tailwind CSS v4 + Radix UI** (`radix-u
 ## Shared building blocks (import, do not re-implement)
 - `cn`, `focusRing`, `invalidRing`, `type Size` from `../lib/cn`
 - `Button`, `buttonVariants` from `./button` (variants: primary, secondary, tertiary, soft, ghost, outline, destructive, destructive-soft, inverse, link; sizes: xs, sm, md, lg, xl, icon-xs, icon-sm, icon, icon-lg, icon-xl; props `loading`, `leadingIcon`, `trailingIcon`, `asChild`)
-- `Spinner` from `./spinner` (variants ring | dots | bars | pulse; sizes xs–xl)
+- `Spinner` from `./spinner` (variants ring | dots | bars | pulse | glyph; sizes xs–xl; `label=""` makes it decorative)
 - `Label` from `./label` (`required`, `hint`)
 - `Heading`, `Text`, `Eyebrow`, `Kbd`, `InlineCode` from `./typography`
 - `Container`, `Grid`, `GridItem`, `Stack`, `HStack`, `Card` from `./layout`
@@ -76,3 +76,30 @@ One spelling per concept. Old spellings stay accepted as **deprecated aliases** 
 - **Words:** "Sign in" (not "Log in"), "canceled", "…" for ellipses.
 
 Mark aliases with a JSDoc `@deprecated Use \`tone\`.` tag so editors show the strike-through.
+
+## Build on the existing base (don't add a parallel copy)
+Before writing a new pill, list, banner or picker, check this table. A domain component should be a small map from its own states to the base's props (see `ToolsetHealthPill`, `JobStatePill`), not new markup.
+
+| Need | Base | Presets built on it |
+|---|---|---|
+| Status pill or dot | `StatusBadge`, `StatusDot` (`tone`, `icon: "dot" \| "spinner" \| node`, dot `variant: solid \| hollow \| dashed`, `pulse`) | JobStatePill, ChatToolStateBadge, BackendHealthPill, SubagentStatusGlyph, AgentStatusDot, ToolTimelineDot, ModelStatePill |
+| Categorical label | `Badge` (`color`, or `tone` for semantics) | KanbanRunBadge, ToolsetHealthPill, DownloadBadge |
+| Loading indicator | `Spinner` | ChatLoader, GlyphSpinner, TypingIndicator, MediaBufferingIndicator |
+| Live "agent is working" line | `AgentStatusLine` (`state`, `verbs`, `tokens`, `startedAt`) | SpinnerVerbs. Infrastructure waits (cold start, retry, offline) use `StatusStrip` instead |
+| Model lifecycle | `ModelState` / `ModelStateGlyph` (`model-state.tsx`) | — |
+| Pick a model | `ModelSelect` (flat list), `ProviderModelPicker` (two columns), rows via `ModelSelectOption` | ModelPicker, PromptInputModelSelect |
+| Conversation sidebar | `ConversationList` (`groupBy`, `searchable`, `rowActions`) | ChatListView, ConversationSidebarList; AgentSessionList reuses its row and header |
+| Rename in place | `InlineEditText` | conversation and session rename |
+| Page-level banner | `AlertBanner` (`appearance: solid \| soft`, `BannerAction`) | RotatingNoticeBar |
+| In-content notice | `InlineAlert` (`action`, `layout: box \| strip`) | BillingBanner, OfflineBanner, ProfileScopeBanner, ContextBanner |
+| Numbered steps or checklist | `Steps` (per-step `status`, `content`, `action`) | GuidedSetupSteps, OnboardingChecklist |
+| QR with expiry | `QRCodeCard` | RotatingQRPairing. `QRCodePlaceholder` is a non-scannable mock |
+| Person picture or initials | `Avatar` | ChatMessageAvatar, SidebarUserCard |
+| App, provider or tool tile | `Monogram` | ProviderLogo, CapabilityMonogram |
+| Empty view | `EmptyState` (`variant="welcome"` for chat) | ChatEmptyState |
+| Text-styled action | `TextLink` (button mode with `onClick` and no `href`) | TextButton |
+| Copy a value | `CopyButton`, `CopyField` | — |
+| Task progress | `Progress` (bar, sizes down to `2xs`), `ProgressSegments` (`role="meter"` option), `ProgressCircle` | PasswordStrength and every upload, playback and step bar |
+| Level against thresholds | `Meter`, `StackedMeter`, `RingMeter` (rings share `ProgressRingSvg`) | ContextMeter, ContextUsageBreakdown |
+| Attachment tile | `ChatAttachment` (`status`, `progress`, `onRetry`, `onPreview`) | AttachmentThumbnails |
+| Bottom or side panel | `Dialog` (centred, sheet on mobile), `Sheet` (edge panel), `Drawer` (gesture bottom sheet; shares Sheet's parts) | — |

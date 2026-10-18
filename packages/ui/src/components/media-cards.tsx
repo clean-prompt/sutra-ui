@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine, RiInformationLine, RiPauseFill, RiPlayFill, RiPlayLargeFill } from "@remixicon/react";
 import { normalizeTone, type Tone } from "../lib/tone";
 import { cn, focusRing } from "../lib/cn";
+import { Progress } from "./progress";
 import { pluralize } from "../lib/format";
 import { clamp } from "../lib/math";
 import { formatDuration } from "../lib/duration";
@@ -122,9 +123,7 @@ function BusyOverlay({ busy }: { busy: MediaBusyState }) {
         {pct !== undefined && ` ${pct}%`}
       </span>
       {pct !== undefined && (
-        <span aria-hidden className="h-1.5 w-2/3 overflow-hidden rounded-full bg-white/20">
-          <span className="block h-full rounded-full bg-white transition-[width] duration-500" style={{ width: `${pct}%` }} />
-        </span>
+        <Progress aria-hidden size="sm" value={pct} className="w-2/3 bg-white/20" indicatorClassName="bg-white" />
       )}
     </div>
   );
@@ -133,17 +132,14 @@ function BusyOverlay({ busy }: { busy: MediaBusyState }) {
 function ProgressStrip({ value, label = "Watched" }: { value: number; label?: string }) {
   const pct = Math.round(clamp(value, 0, 100));
   return (
-    <div
-      role="progressbar"
+    <Progress
+      size="xs"
+      value={pct}
       aria-label={label}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={pct}
       data-slot="media-progress"
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1 bg-black/45"
-    >
-      <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
-    </div>
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-10 rounded-none bg-black/45"
+      indicatorClassName="rounded-none transition-none"
+    />
   );
 }
 
@@ -811,16 +807,13 @@ export const MediaHero = React.forwardRef<HTMLElement, MediaHeroProps>(
           {synopsis && <p className="line-clamp-3 max-w-xl text-sm text-white/80 sm:text-base">{synopsis}</p>}
           {progress !== undefined && progress > 0 && (
             <div className="flex max-w-sm items-center gap-3">
-              <div
-                role="progressbar"
+              <Progress
+                size="xs"
+                value={Math.round(progress)}
                 aria-label="Watched"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={Math.round(progress)}
-                className="h-1 flex-1 overflow-hidden rounded-full bg-white/25"
-              >
-                <div className="h-full bg-primary" style={{ width: `${clamp(progress, 0, 100)}%` }} />
-              </div>
+                className="flex-1 bg-white/25"
+                indicatorClassName="transition-none"
+              />
               {progressLabel && <span className="shrink-0 text-xs text-white/75">{progressLabel}</span>}
             </div>
           )}
