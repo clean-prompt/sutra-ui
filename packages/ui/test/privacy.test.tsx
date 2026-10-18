@@ -48,6 +48,7 @@ const URL_ALLOWLIST: { file: string; url: string; reason: string }[] = [
   { file: "components/agent-browser.tsx", url: "https://", reason: "doc comment for normalizeBrowserInput" },
   { file: "components/agent-browser.tsx", url: "http://${v}", reason: "normalizes a typed localhost address for display; AgentBrowserPane never loads URLs itself" },
   { file: "components/agent-browser.tsx", url: "https://${v}", reason: "normalizes a typed bare host for display; AgentBrowserPane never loads URLs itself" },
+  { file: "lib/validate.ts", url: "https://${raw}", reason: "hostnameOf: adds a scheme to a bare host so URL can parse it; never fetched" },
   { file: "components/workspace-switcher.tsx", url: "https://gw.example.com", reason: "JSDoc example of a gateway URL" },
   { file: "components/workspace-switcher.tsx", url: "https://gateway.example.com", reason: "placeholder text for the gateway URL input" },
   { file: "components/embeds.tsx", url: "https://www.youtube-nocookie.com/embed/", reason: "embedProviders: iframe src template, only rendered inside SandboxedFrame after the user consents via EmbedConsent" },

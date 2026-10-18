@@ -49,3 +49,16 @@ Tests render everything inside `<StrictMode>` (see `test/setup.ts`), which mount
 - Async work started in an effect must be cancelled in its cleanup (`AbortController`, an `alive` flag set in the same effect). Results from a cancelled run must be dropped, and any resources it acquired (camera streams, sockets) released.
 - Share one promise for lazy imports at module level instead of `import()`-ing on every mount.
 - In tests, don't assert exact counts of mount-time effect calls; assert relative to the count after mount, and make mocks depend on state rather than call order (`mockReturnValueOnce`).
+
+## Shared helpers
+**Before writing a formatter, hook or copy button, use `lib/` or `hooks/`; extend them with options instead of copying.** All lib functions are pure, typed, never throw on bad input (they return an `invalid` placeholder such as `"—"` or `undefined`/`null`), and take an optional `locale` where they produce text.
+- `lib/time`: `TimeInput`, `toMs`, `toDate`/`toValidDate`, `isValidDate`, `safeISO`, `formatRelative` (narrow/short/long, `justNowMs`, `maxRelativeDays`, `future`), `formatClockTime`, `formatShortDate`, `formatDateTime`, `formatDayLabel` (calendar days, DST-safe), `dateKey`, `startOfDay`, `addDays`, `calendarDayDiff`, `pad2`. `lib/date` re-exports the old names.
+- `lib/duration`: `splitDuration`, `formatClock` (from seconds: `"1:05"`), `formatCountdown` (from ms, rounds up), `formatDuration` (from ms: `"1h 5m"`, `"3m 05s"`, `"850ms"`, `"1.5s"`; rounds once, never `"1m 60s"`).
+- `lib/format`: `formatBytes`, `formatCompact`, `formatTokens`, `formatBadgeCount`, `formatCost`, `pluralize`, `formatList`.
+- `lib/hash`: `hashString` (FNV-1a), `seededRandom`/`mulberry32`, `pickForSeed`, `colorForSeed` (use it for every "colour for a user/id", so the same person gets the same colour everywhere).
+- `lib/text`: `escapeRegExp`, `matchRanges`, `slugify`, `initials`, `capitalize`, `truncateMiddle`, `graphemes`.
+- `lib/validate`: `isEmail`, `isHttpUrl`, `hostnameOf`, `isSafeHref` (check user-supplied hrefs with it).
+- `lib/math`: `clamp`, `toPercent`, `roundTo`. `lib/encoding`: `base64UrlEncode/Decode(Bytes)`, `base32Encode/Decode`.
+- `hooks/use-now`: `useNow`, `useCountdown` (wall-clock based). `hooks/use-media-query`: `useMediaQuery`, `usePrefersReducedMotion`, `prefersReducedMotion`, `useBreakpoint`. `hooks/use-resize-observer`: `useResizeObserver`, `useElementSize`, `useElementWidth`. `hooks/use-iso-layout-effect`: `useIsoLayoutEffect`, `useLatestRef`. `hooks/use-async-action`: `useAsyncAction` (busy/error, stale-run and unmount safe), `useMountedRef`, `errorMessage`. `hooks/use-safe-id`: `useSafeId` (ids safe for `url(#id)`).
+- `components/copy-button`: `CopyButton` (icon/button/ghost, announces "Copied to clipboard") and `CopyField` (value + copy button, optional `$` prefix).
+- Root-barrel note: `formatBytes`, `splitDuration` and `base32Decode` from the root are still the older component versions (file-upload, counters, totp); the lib versions are exported from `@sutra/ui/tokens`. Inside the package, import from `../lib/*` directly.

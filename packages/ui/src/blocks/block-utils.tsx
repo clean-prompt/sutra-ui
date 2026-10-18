@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { SutraApp } from "../assets/brand";
+import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
 
 /* Internal helpers shared by the blocks. Not part of the public API. */
 
@@ -33,32 +34,23 @@ export function BlockLink({
   );
 }
 
-/** Tracks a possibly-async action: exposes `busy` and the thrown error message. */
+/** Blocks' action tracker: `run(fn)` resolves true on success; `busy` also reflects `externalLoading`. Wraps `hooks/use-async-action`. */
 export function useAsyncAction(externalLoading?: boolean) {
-  const [pending, setPending] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-  const mounted = React.useRef(true);
-  React.useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-  const run = React.useCallback(async (fn?: () => unknown) => {
-    if (!fn) return true;
-    setError(null);
-    try {
-      setPending(true);
-      await fn();
-      return true;
-    } catch (e) {
-      if (mounted.current) setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
-      return false;
-    } finally {
-      if (mounted.current) setPending(false);
-    }
-  }, []);
-  return { busy: Boolean(externalLoading) || pending, error, setError, run };
+  const action = useSharedAsyncAction((fn: () => unknown) => fn());
+  const { run: runShared, busy, error, setError } = action;
+  const run = React.useCallback(
+    async (fn?: () => unknown) => {
+      if (!fn) return true;
+      let ok = false;
+      await runShared(async () => {
+        await fn();
+        ok = true;
+      });
+      return ok;
+    },
+    [runShared]
+  );
+  return { busy: Boolean(externalLoading) || busy, error, setError, run };
 }
 
 /** One-line pitch for each Sutra app (used in menus and navigation). */
@@ -80,5 +72,5 @@ export const demoUser = {
   avatarSrc: undefined as string | undefined,
 };
 
-/** Simple email check for demo validation. */
-export const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+/** Simple email check for demo validation (see `lib/validate`). */
+export { isEmail } from "../lib/validate";
