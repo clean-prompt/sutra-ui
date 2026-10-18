@@ -487,6 +487,24 @@ export const nav: NavSection[] = [
     ],
   },
   {
+    id: "system",
+    label: "System",
+    route: "components",
+    pages: [
+      {
+        id: "system",
+        label: "System Monitor",
+        items: [
+          { id: "volume-mixer", label: "Volume Mixer" },
+          { id: "device-batteries", label: "Device Batteries" },
+          { id: "dev-servers", label: "Dev Servers" },
+          { id: "agents", label: "Agent Quotas & Sessions" },
+          { id: "containers", label: "Containers" },
+        ],
+      },
+    ],
+  },
+  {
     id: "ops",
     label: "Ops",
     route: "components",

@@ -25,6 +25,8 @@ export interface SliderProps extends React.ComponentPropsWithoutRef<typeof Slide
   formatValue?: (value: number) => React.ReactNode;
   /** Accessible labels per thumb, e.g. `["Minimum", "Maximum"]`. */
   thumbLabels?: string[];
+  /** Accessible value text per thumb (`aria-valuetext`), e.g. `(v) => v + "%"`. */
+  getValueText?: (value: number, index: number) => string;
   invalid?: boolean;
   /** Categorical colour for the range, thumb border and active marks. Default primary. */
   accent?: Accent;
@@ -42,6 +44,7 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
       marks,
       formatValue = (v) => v,
       thumbLabels,
+      getValueText,
       invalid,
       accent: accentProp,
       tone,
@@ -123,6 +126,7 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
             <SliderPrimitive.Thumb
               key={i}
               aria-label={thumbLabels?.[i] ?? (current.length > 1 ? (i === 0 ? "Minimum" : "Maximum") : undefined)}
+              aria-valuetext={getValueText?.(v, i)}
               className={cn(
                 "group/thumb relative block rounded-full border-2 bg-background shadow-sm",
                 "transition-[box-shadow,transform] duration-150 hover:ring-[3px] active:scale-110",

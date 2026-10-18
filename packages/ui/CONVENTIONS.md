@@ -137,5 +137,9 @@ Before writing a new pill, list, banner or picker, check this table. A domain co
 | Ranked list with bars | `BarList` (icon, name, description, value + proportional bar, `highlightFirst`, `limit`) | — |
 | Breakdown legend | `BreakdownList` (dot, icon, label, value, percent; toggles series); `topWithOther` for an "Other" row | DonutChart `legendValues`/`iconFor`, StackedMeter `legend="list"` |
 | Live series | `useRollingSeries`, `useSampler` (last N readings, optional interval sampling) | — |
+| Volume control | `VolumeSlider` (mute toggle, slider, level; `Slider` `getValueText` for value text) | VolumeMixer |
+| Battery reading | `BatteryLevel` (icon, bar or text; low and critical thresholds) | DeviceBatteryList |
+| Port chips | `PortBadge`, `PortBadgeList` (overflow "+N") | DevServerList, ContainerList, ContainerSummary |
+| Plan limits | `QuotaRing`, `QuotaStrip`, `QuotaBars` with `usagePace` / `describeUsagePace` (on pace, spare, runs out) | — |
 | Attachment tile | `ChatAttachment` (`status`, `progress`, `onRetry`, `onPreview`) | AttachmentThumbnails |
 | Bottom or side panel | `Dialog` (centred, sheet on mobile), `Sheet` (edge panel), `Drawer` (gesture bottom sheet; shares Sheet's parts) | — |

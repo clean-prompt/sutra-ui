@@ -13,6 +13,7 @@ export * from "../kits/ai/model-state";
 export * from "../kits/ai/chat-tool";
 export * from "../kits/agent/agent-tasks";
 export * from "../kits/agent/agent-sessions";
+export * from "../kits/agent/agent-processes";
 export * from "../primitives/inline-edit-text";
 export * from "../kits/agent/agent-transcript";
 export * from "../kits/ai/agent-usage";

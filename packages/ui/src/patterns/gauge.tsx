@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { clamp, toPercent } from "../lib/math";
 import { normalizeTone, type ToneInput } from "../lib/tone";
+import { accentColorValue, accentStyle, type Accent } from "../lib/accent";
 import { defaultMeterThresholds, meterLevel, type MeterColor, type MeterLevel, type MeterThresholds } from "../primitives/meter";
 import { ProgressRingSvg } from "../primitives/progress";
 
@@ -200,6 +201,11 @@ export interface RingMeterProps extends Omit<React.HTMLAttributes<HTMLSpanElemen
   tone?: ToneInput;
   /** @deprecated Use `tone`. */
   color?: MeterColor | ToneInput;
+  /**
+   * Categorical ring colour (a provider or metric colour). Colour order: the warning/danger threshold colours, then
+   * `tone`/`color`, then `accent`, then primary. Sets `--sutra-accent` on the root.
+   */
+  accent?: Accent;
   /** Accessible name, e.g. "Context window". */
   label?: string;
   /** Extra content after the ring, e.g. a token count. */
@@ -221,16 +227,23 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
       thresholds = defaultMeterThresholds,
       tone,
       color,
+      accent,
       label = "Usage",
       children,
       className,
+      style,
       ...props
     },
     ref
   ) => {
     const pct = toPercent(value, max);
     const level = meterLevel(pct, thresholds);
-    const fill = level === "ok" ? resolve(normalizeTone(tone ?? color, "primary")) : levelColor[level];
+    const fill =
+      level !== "ok"
+        ? levelColor[level]
+        : tone == null && color == null && accent
+          ? accentColorValue
+          : resolve(normalizeTone(tone ?? color, "primary"));
     const sw = thickness ?? Math.max(2, size / 8);
     const shown = pct >= showValueAbove;
     return (
@@ -244,6 +257,7 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
         aria-valuetext={`${Math.round(pct)}%`}
         data-level={level}
         className={cn("inline-flex items-center gap-1.5 align-middle", className)}
+        style={accentStyle(accent, style)}
         {...props}
       >
         <ProgressRingSvg percent={pct} size={size} strokeWidth={sw} fillStroke={fill} fillSlot="ring-fill" />

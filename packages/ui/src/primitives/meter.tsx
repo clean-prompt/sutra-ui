@@ -5,6 +5,7 @@ import { toPercent } from "../lib/math";
 import { breakdownValue, formatShare } from "../lib/breakdown";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
+import { accentClasses, accentStyle, type Accent } from "../lib/accent";
 
 /** Percent thresholds at which a meter turns warning / danger. */
 export interface MeterThresholds {
@@ -73,6 +74,11 @@ export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   tone?: ToneInput;
   /** @deprecated Use `tone`. */
   color?: MeterColor | ToneInput;
+  /**
+   * Categorical fill colour (a provider or metric colour). Colour order: the warning/danger threshold colours, then
+   * `tone`/`color`, then `accent`, then primary. Sets `--sutra-accent` on the root.
+   */
+  accent?: Accent;
   /** Secondary line under the bar, e.g. "resets in 2h". */
   caption?: React.ReactNode;
   size?: "sm" | "md" | "lg";
@@ -98,6 +104,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
       thresholds = defaultMeterThresholds,
       tone,
       color,
+      accent,
       caption,
       size = "md",
       segments,
@@ -105,6 +112,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
       ariaValueText,
       className,
       barClassName,
+      style,
       ...props
     },
     ref
@@ -114,7 +122,12 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
     const v = empty ? min : (value as number);
     const pct = empty ? 0 : toPercent(v, max, min);
     const level = empty ? "ok" : meterLevel(pct, thresholds);
-    const fill = level === "ok" ? fillClass[normalizeTone(tone ?? color, "primary")] : levelFill[level];
+    const fill =
+      level !== "ok"
+        ? levelFill[level]
+        : tone == null && color == null && accent
+          ? accentClasses.solid
+          : fillClass[normalizeTone(tone ?? color, "primary")];
 
     const text: React.ReactNode = empty
       ? "—"
@@ -132,7 +145,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
     const lgText = size === "lg" ? "text-sm" : size === "sm" ? "text-xs" : "text-sm";
 
     return (
-      <div ref={ref} data-level={level} className={cn("w-full", className)} {...props}>
+      <div ref={ref} data-level={level} className={cn("w-full", className)} style={accentStyle(accent, style)} {...props}>
         {label || showValue ? (
           <div className={cn("mb-1.5 flex items-baseline justify-between gap-3", lgText)}>
             {label ? (

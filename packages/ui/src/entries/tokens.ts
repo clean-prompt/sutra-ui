@@ -12,6 +12,7 @@ export * from "../lib/encoding";
 export * from "../lib/tone";
 export * from "../lib/accent";
 export * from "../lib/breakdown";
+export * from "../lib/usage-pace";
 export * from "../lib/status";
 export * from "../hooks/use-controllable-state";
 export * from "../hooks/use-copy";

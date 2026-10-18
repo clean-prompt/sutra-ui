@@ -55,6 +55,11 @@
       "import": "./dist/entries/workspace.js",
       "default": "./dist/entries/workspace.js"
     },
+    "./system": {
+      "types": "./dist/entries/system.d.ts",
+      "import": "./dist/entries/system.js",
+      "default": "./dist/entries/system.js"
+    },
     "./billing": {
       "types": "./dist/entries/billing.d.ts",
       "import": "./dist/entries/billing.js",

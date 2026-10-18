@@ -28,6 +28,7 @@ const KIT_DEPS: Record<string, string[]> = {
   social: [],
   editor: [],
   terminal: [],
+  system: [],
 };
 
 const BASE = ["lib", "hooks", "assets", "styles"];

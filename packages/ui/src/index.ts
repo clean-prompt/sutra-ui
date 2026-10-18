@@ -29,6 +29,7 @@ export * from "./lib/text";
 export * from "./lib/time";
 export * from "./lib/tokens";
 export * from "./lib/tone";
+export * from "./lib/usage-pace";
 export * from "./lib/validate";
 
 /* Assets: src/assets */
@@ -52,6 +53,7 @@ export * from "./primitives/aspect-ratio";
 export * from "./primitives/avatar";
 export * from "./primitives/avatar-group";
 export * from "./primitives/badge";
+export * from "./primitives/battery-level";
 export * from "./primitives/breadcrumbs";
 export * from "./primitives/button";
 export * from "./primitives/button-group";
@@ -87,6 +89,7 @@ export * from "./primitives/monogram";
 export * from "./primitives/number-input";
 export * from "./primitives/pagination";
 export * from "./primitives/popover";
+export * from "./primitives/port-badge";
 export * from "./primitives/progress";
 export * from "./primitives/radio";
 export * from "./primitives/rating";
@@ -112,6 +115,7 @@ export * from "./primitives/textarea";
 export * from "./primitives/toast";
 export * from "./primitives/tooltip";
 export * from "./primitives/typography";
+export * from "./primitives/volume-slider";
 
 /* Patterns: src/patterns */
 // not exported: patterns/counters (back-compat barrel, all targets exported)
@@ -174,6 +178,7 @@ export * from "./kits/agent/agent-browser";
 export * from "./kits/agent/agent-composer";
 export * from "./kits/agent/agent-mode";
 export * from "./kits/agent/agent-onboarding";
+export * from "./kits/agent/agent-processes";
 export * from "./kits/agent/agent-sessions";
 export * from "./kits/agent/agent-tasks";
 export * from "./kits/agent/agent-transcript";
@@ -233,6 +238,7 @@ export * from "./kits/ai/slash-menu";
 export * from "./kits/ai/status-strip";
 export * from "./kits/ai/text-caret";
 export * from "./kits/ai/undelivered-notice";
+export * from "./kits/ai/usage-quota";
 export * from "./kits/ai/usage-summary";
 
 /* Kit: billing (src/kits/billing) */
@@ -280,6 +286,12 @@ export * from "./kits/ops/request-inspector";
 export * from "./kits/social/call-overlay";
 export * from "./kits/social/messenger";
 export * from "./kits/social/presence";
+
+/* Kit: system (src/kits/system) */
+export * from "./kits/system/containers";
+export * from "./kits/system/dev-servers";
+export * from "./kits/system/device-battery";
+export * from "./kits/system/volume-mixer";
 
 /* Kit: terminal (src/kits/terminal) */
 // not exported: kits/terminal/terminal (imports optional peer @xterm/xterm)

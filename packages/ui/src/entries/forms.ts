@@ -15,6 +15,7 @@ export * from "../primitives/calendar";
 export * from "../primitives/date-picker";
 export * from "../primitives/segmented-control";
 export * from "../primitives/slider";
+export * from "../primitives/volume-slider";
 export * from "../primitives/rating";
 export * from "../patterns/file-upload";
 export * from "../primitives/dropzone";

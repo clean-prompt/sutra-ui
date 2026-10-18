@@ -16,6 +16,7 @@ export * from "../kits/ai/chat-tool";
 export * from "../kits/ai/prompt-input";
 export * from "../kits/ai/prompt-suggestion";
 export * from "../kits/ai/ai-extras";
+export * from "../kits/ai/usage-quota";
 export * from "../kits/ai/model-state";
 export * from "../kits/ai/model-select";
 export * from "../kits/ai/embeds";
