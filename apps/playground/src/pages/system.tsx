@@ -387,6 +387,21 @@ export function SystemPage() {
       <Demo id="apps" title="Apps, not processes" description="ProcessTable grouped by app: totals per app, expandable helpers, and Quit or Force Quit with confirmation." align="start">
         <AppsDemo />
       </Demo>
+      <Demo id="loading" title="Loading states" description="Each screen before its first data: real headers and labels, skeleton rows, no empty messages and no controls to tab into." align="start">
+        <div className="grid w-full gap-4">
+          <MetricReadoutGroup label="Menu bar (loading)" className="w-fit rounded-control border border-border bg-card px-3 py-1.5">
+            <MetricReadout label="CPU" value={null} unit="%" loading />
+            <MetricReadout label="MEM" value={null} unit="%" loading />
+            <MetricReadout label="GPU" value={null} unit="%" loading />
+          </MetricReadoutGroup>
+          <QuotaStrip quotas={[]} loading />
+          <VolumeMixer apps={[]} loading />
+          <DevServerList projects={[]} loading />
+          <ContainerSummary containers={[]} loading />
+          <AgentProcessList sessions={[]} loading loadingRows={1} />
+          <ProcessTable processes={[]} loading loadingRows={4} />
+        </div>
+      </Demo>
       <Demo id="containers" title="Containers" description="Memory by container, the container closest to its limit, and Compose projects with their containers." align="start">
         <ContainersDemo />
       </Demo>

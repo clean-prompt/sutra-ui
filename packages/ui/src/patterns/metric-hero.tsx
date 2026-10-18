@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { accentColorValue, accentStyle, type Accent } from "../lib/accent";
 import { KeyValueList } from "../primitives/key-value";
+import { Skeleton } from "../primitives/progress";
 import { AreaChart } from "./chart";
 import { StatValue } from "./stat-card";
 
@@ -38,6 +39,11 @@ export interface MetricHeroProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   accent?: Accent;
   /** Number face for the value: monospaced (default) or the UI sans with tabular figures. */
   valueFont?: "mono" | "sans";
+  /**
+   * Data is on its way. With no value yet, placeholders stand in for the value, the detail values and the chart
+   * (the caption and detail labels stay); with a value, the root is just marked busy.
+   */
+  loading?: boolean;
 }
 
 /** Header of a metric detail view: caption, big value, status and facts on the left; a history chart on the right. */
@@ -58,6 +64,7 @@ export const MetricHero = React.forwardRef<HTMLDivElement, MetricHeroProps>(
       valueFormatter,
       accent,
       valueFont,
+      loading,
       className,
       style,
       ...props
@@ -65,9 +72,12 @@ export const MetricHero = React.forwardRef<HTMLDivElement, MetricHeroProps>(
     ref
   ) => {
     const data = React.useMemo(() => (series ?? []).map((v, i) => ({ i, v })), [series]);
+    const skeleton = !!loading && (value === undefined || value === null || value === "");
     const chartEl =
       chart ??
-      (series ? (
+      (skeleton && !series?.length ? (
+        <Skeleton data-slot="metric-hero-chart-skeleton" className="w-full rounded-md" height={chartHeight} />
+      ) : series ? (
         <AreaChart
           data={data}
           index="i"
@@ -86,6 +96,7 @@ export const MetricHero = React.forwardRef<HTMLDivElement, MetricHeroProps>(
       <div
         ref={ref}
         data-slot="metric-hero"
+        aria-busy={loading || undefined}
         style={accentStyle(accent, style)}
         className={cn(
           "grid gap-6 rounded-box border border-border bg-card p-5 [--chart-surface:var(--card)] text-card-foreground shadow-xs",
@@ -96,9 +107,30 @@ export const MetricHero = React.forwardRef<HTMLDivElement, MetricHeroProps>(
       >
         <div data-slot="metric-hero-summary" className="flex min-w-0 flex-col gap-1">
           {caption ? <div className="text-sm text-muted-foreground">{caption}</div> : null}
-          <StatValue value={value} unit={unit} size="xl" font={valueFont} className="text-foreground" />
+          {skeleton ? (
+            <>
+              <span className="sr-only">{`Loading ${typeof caption === "string" ? caption : "metric"}…`}</span>
+              <Skeleton data-slot="metric-hero-value-skeleton" className="my-1 h-9 w-32" />
+            </>
+          ) : (
+            <StatValue value={value} unit={unit} size="xl" font={valueFont} className="text-foreground" />
+          )}
           {status ? <div className="mt-1">{status}</div> : null}
-          {details && details.length > 0 ? (
+          {skeleton ? (
+            <KeyValueList
+              dividers={false}
+              data-slot="metric-hero-details-skeleton"
+              className="mt-auto pt-4 [&_[data-slot=key-value]]:py-1"
+              items={(details && details.length > 0
+                ? details.map((d, i) => ({ key: d.key ?? (typeof d.label === "string" ? d.label : String(i)), label: d.label }))
+                : [{ key: "0", label: null }, { key: "1", label: null }]
+              ).map((d, i) => ({
+                key: d.key,
+                label: d.label ?? <Skeleton shape="text" className="inline-block h-3.5 align-middle" width={i % 2 ? 64 : 88} />,
+                value: <Skeleton shape="text" className="inline-block h-3.5 align-middle" width={i % 2 ? 40 : 52} />,
+              }))}
+            />
+          ) : details && details.length > 0 ? (
             <KeyValueList
               dividers={false}
               className="mt-auto pt-4 [&_[data-slot=key-value]]:py-1 [&_dd]:font-medium [&_dd]:tabular-nums"

@@ -5,6 +5,7 @@ import { clamp } from "../../lib/math";
 import { accentClasses, accentStyle, type Accent } from "../../lib/accent";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Monogram } from "../../primitives/monogram";
+import { Skeleton } from "../../primitives/progress";
 import { VolumeSlider } from "../../primitives/volume-slider";
 import {
   DropdownMenu,
@@ -59,6 +60,10 @@ export interface VolumeMixerProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   /** Accessible name of the apps table. Default "App volumes". */
   label?: string;
   disabled?: boolean;
+  /** Data is on its way. With no apps yet the card and table show placeholders; with apps the root is only marked busy. */
+  loading?: boolean;
+  /** Placeholder app rows while loading. Default 3. */
+  loadingRows?: number;
 }
 
 function PlayingBars() {
@@ -109,12 +114,15 @@ export const VolumeMixer = React.forwardRef<HTMLDivElement, VolumeMixerProps>(
       emptyState = "No apps using audio",
       label = "App volumes",
       disabled,
+      loading = false,
+      loadingRows = 3,
       className,
       style,
       ...props
     },
     ref
   ) => {
+    const skeleton = loading && apps.length === 0;
     const [deviceId, setDeviceId] = useControllableState<string | undefined>({
       value: deviceProp,
       defaultValue: defaultDevice ?? devices[0]?.id,
@@ -127,10 +135,12 @@ export const VolumeMixer = React.forwardRef<HTMLDivElement, VolumeMixerProps>(
       <div
         ref={ref}
         data-slot="volume-mixer"
+        aria-busy={loading || undefined}
         style={accentStyle(accent, style)}
         className={cn("@container flex flex-col gap-4 text-sm", className)}
         {...props}
       >
+        {skeleton ? <span className="sr-only">Loading audio…</span> : null}
         <section
           aria-labelledby={titleId}
           data-slot="volume-mixer-output"
@@ -172,23 +182,33 @@ export const VolumeMixer = React.forwardRef<HTMLDivElement, VolumeMixerProps>(
                 </DropdownMenu>
               ) : current ? (
                 <span className="truncate text-muted-foreground">{current.name}</span>
+              ) : skeleton ? (
+                <Skeleton data-slot="volume-mixer-skeleton" shape="text" className="mt-1 w-32" />
               ) : null}
             </div>
           </div>
-          <VolumeSlider
-            value={volume}
-            defaultValue={defaultVolume}
-            onValueChange={onVolumeChange}
-            muted={muted}
-            defaultMuted={defaultMuted}
-            onMutedChange={onMutedChange}
-            accent={accent}
-            disabled={disabled}
-            label="Output volume"
-            muteLabel="Mute output"
-            levelClassName="text-base font-semibold"
-            className="min-w-48 flex-1 basis-full @md:basis-0"
-          />
+          {skeleton ? (
+            <div data-slot="volume-mixer-skeleton" aria-hidden className="flex min-w-48 flex-1 basis-full items-center gap-2 @md:basis-0">
+              <Skeleton className="size-7 shrink-0 rounded-control" />
+              <Skeleton className="h-1.5 min-w-10 flex-1 rounded-full" />
+              <Skeleton shape="text" className="h-[1em] w-12 shrink-0" />
+            </div>
+          ) : (
+            <VolumeSlider
+              value={volume}
+              defaultValue={defaultVolume}
+              onValueChange={onVolumeChange}
+              muted={muted}
+              defaultMuted={defaultMuted}
+              onMutedChange={onMutedChange}
+              accent={accent}
+              disabled={disabled}
+              label="Output volume"
+              muteLabel="Mute output"
+              levelClassName="text-base font-semibold"
+              className="min-w-48 flex-1 basis-full @md:basis-0"
+            />
+          )}
         </section>
 
         <div data-slot="volume-mixer-apps" className="rounded-box border border-border bg-card py-2 shadow-xs">
@@ -212,7 +232,33 @@ export const VolumeMixer = React.forwardRef<HTMLDivElement, VolumeMixerProps>(
               </TableRow>
             </TableHeader>
             <TableBody>
-              {apps.length === 0 ? (
+              {skeleton ? (
+                Array.from({ length: Math.max(0, loadingRows) }, (_, i) => (
+                  <TableRow key={i} data-slot="volume-mixer-skeleton-row" aria-hidden className="hover:bg-transparent">
+                    <TableCell className="border-b-0">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Skeleton className="size-7 shrink-0 rounded-md" />
+                        <div className="flex min-w-0 flex-1 flex-col gap-1">
+                          <Skeleton shape="text" className="w-24 max-w-full" />
+                          <Skeleton shape="text" className="h-[0.7em] w-14 @xl:hidden" />
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden border-b-0 @xl:table-cell">
+                      <Skeleton shape="text" className="w-14" />
+                    </TableCell>
+                    <TableCell className="border-b-0">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <Skeleton className="size-6 shrink-0 rounded-control" />
+                        <Skeleton className="h-1.5 min-w-10 flex-1 rounded-full" />
+                      </div>
+                    </TableCell>
+                    <TableCell align="right" className="hidden border-b-0 @lg:table-cell">
+                      <Skeleton shape="text" className="ml-auto w-10" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : apps.length === 0 ? (
                 <TableRow className="hover:bg-transparent">
                   <TableCell colSpan={4} className="border-b-0 py-8 text-center text-muted-foreground">
                     {emptyState}

@@ -1,6 +1,8 @@
 import * as React from "react";
 import {
   ACCENT_COLORS,
+  AreaChart,
+  Treemap,
   BarList,
   DonutChart,
   MetricHero,
@@ -555,6 +557,22 @@ export function MetricsPage() {
         align="start"
       >
         <Dashboard />
+      </Demo>
+      <Demo
+        id="loading"
+        title="Loading states"
+        description="Before the first readings arrive: skeletons in each component's real layout, so nothing jumps when data lands."
+        align="start"
+      >
+        <div className="grid w-full gap-4 md:grid-cols-2">
+          <StatCard accent="blue" icon={<RiCpuLine />} label="CPU" caption="Now" value={0} unit="%" loading stats={[{ label: "User", value: "" }, { label: "System", value: "" }, { label: "Average today", value: "" }]} trend={[0]} trendType="bar" trendPlacement="footer" />
+          <TopItemCard accent="blue" icon={<RiApps2Line />} item="" loading />
+          <MetricHero className="md:col-span-2" accent="violet" caption="In use of 64 GB" value={undefined} unit="GB" details={[{ label: "Free", value: "" }, { label: "Swap", value: "" }]} chartHeight={160} loading />
+          <BarList className="md:col-span-2" accent="violet" items={[]} header={{ label: "App", value: "Memory" }} label="Apps by memory" loading loadingRows={3} />
+          <DonutChart data={[]} index="name" size={140} thickness={14} centerLabel="in use" legend="right" legendValues label="Memory by type" loading />
+          <AreaChart data={[]} index="t" series={[{ key: "cpu", label: "CPU" }]} height={160} label="CPU history" loading />
+          <Treemap className="md:col-span-2" data={{ id: "root", name: "Disk", children: [] }} label="Storage" height={200} legend loading />
+        </div>
       </Demo>
       <Demo
         id="bar-list"

@@ -4,6 +4,7 @@ import { cn, type Size } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { toneClasses } from "../lib/tone";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
+import { Skeleton } from "./progress";
 
 export type BatteryLevelVariant = "icon" | "bar" | "text";
 
@@ -57,6 +58,8 @@ export interface BatteryLevelProps extends Omit<React.HTMLAttributes<HTMLSpanEle
   accent?: Accent;
   /** Accessible text override. Default from `formatBatteryLevel`, e.g. "42% battery, charging". */
   label?: string;
+  /** Waiting for the first reading: with no `value` the glyph or bar is an empty placeholder with no percentage. */
+  loading?: boolean;
 }
 
 const glyphSize: Record<Size, { body: string; nub: string; bolt: string }> = {
@@ -80,6 +83,7 @@ export const BatteryLevel = React.forwardRef<HTMLSpanElement, BatteryLevelProps>
       showValue = true,
       accent,
       label,
+      loading,
       className,
       style,
       ...props
@@ -87,6 +91,35 @@ export const BatteryLevel = React.forwardRef<HTMLSpanElement, BatteryLevelProps>
     ref
   ) => {
     const state = batteryLevelState(value, { low, critical });
+    const s = glyphSize[size];
+
+    if (loading && state === "unknown") {
+      return (
+        <span
+          ref={ref}
+          aria-busy
+          data-slot="battery-level"
+          data-state="loading"
+          style={accentStyle(accent, style)}
+          className={cn("inline-flex shrink-0 items-center gap-1.5 align-middle", className)}
+          {...props}
+        >
+          {variant === "icon" ? (
+            <span aria-hidden className="inline-flex animate-pulse items-center motion-reduce:animate-none">
+              <span className={cn("relative flex rounded-[3px] border border-muted-foreground/40 p-px", s.body)} />
+              <span className={cn("ml-px rounded-r-[1px] bg-muted-foreground/40", s.nub)} />
+            </span>
+          ) : variant === "bar" ? (
+            <span aria-hidden className={cn("relative block shrink-0 animate-pulse overflow-hidden rounded-full bg-muted motion-reduce:animate-none", barSize[size])} />
+          ) : null}
+          {showValue || variant === "text" ? (
+            <Skeleton shape="text" className={cn("inline-block w-[2.2em] shrink-0", textSize[size])} />
+          ) : null}
+          <span className="sr-only">Loading battery level…</span>
+        </span>
+      );
+    }
+
     const pct = state === "unknown" ? 0 : Math.round(clamp(value as number, 0, 100));
     const text = label ?? formatBatteryLevel(value, { charging, low, critical });
     const fill =
@@ -101,11 +134,11 @@ export const BatteryLevel = React.forwardRef<HTMLSpanElement, BatteryLevelProps>
               : "bg-foreground/80";
     const valueTone =
       state === "critical" ? toneClasses.text.destructive : state === "low" ? toneClasses.text.warning : "text-foreground";
-    const s = glyphSize[size];
 
     return (
       <span
         ref={ref}
+        aria-busy={loading || undefined}
         role="img"
         aria-label={text}
         data-slot="battery-level"

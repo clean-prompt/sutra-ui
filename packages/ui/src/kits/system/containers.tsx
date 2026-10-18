@@ -34,7 +34,7 @@ import { Button } from "../../primitives/button";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { StackedMeter } from "../../primitives/meter";
 import { PortBadgeList } from "../../primitives/port-badge";
-import { Progress } from "../../primitives/progress";
+import { Progress, Skeleton } from "../../primitives/progress";
 import { StatCard, StatGroup, StatValue } from "../../patterns/stat-card";
 
 export {
@@ -80,6 +80,10 @@ export interface ContainerListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   /** Accessible name of the list. Default "Containers". */
   label?: string;
   emptyState?: React.ReactNode;
+  /** Data is on its way. With no containers yet the list shows placeholder rows; with containers the root is only marked busy. */
+  loading?: boolean;
+  /** Placeholder container rows (under one placeholder group header) while loading. Default 3. */
+  loadingRows?: number;
 }
 
 interface RowContext {
@@ -99,6 +103,42 @@ function CpuCell({ cpu, max }: { cpu: number; max: number }) {
         <span className={cn("block h-full rounded-full", accentClasses.solid)} style={{ width: `${pct}%` }} />
       </span>
     </span>
+  );
+}
+
+function ContainerListSkeleton({ rows }: { rows: number }) {
+  return (
+    <ul aria-hidden className="m-0 flex list-none flex-col p-0">
+      <li data-slot="container-skeleton-group" className="flex items-center gap-3 rounded-box px-3 py-3">
+        <Skeleton className="size-8 shrink-0 rounded-md" />
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <Skeleton shape="text" className="w-36 max-w-full" />
+          <Skeleton shape="text" className="h-[0.7em] w-56 max-w-full" />
+        </div>
+        <div className="flex w-24 shrink-0 justify-end pr-0 sm:w-32 sm:pr-14">
+          <Skeleton shape="text" className="w-10" />
+        </div>
+        <div className="flex w-20 shrink-0 justify-end">
+          <Skeleton shape="text" className="w-14" />
+        </div>
+      </li>
+      {Array.from({ length: Math.max(0, rows) }, (_, i) => (
+        <li key={i} data-slot="container-skeleton-row" className="flex items-center gap-3 rounded-box px-3 py-3 pl-6 sm:pl-9">
+          <Skeleton className="size-4 shrink-0 rounded-xs" />
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <Skeleton shape="text" className="w-40 max-w-full" />
+            <Skeleton shape="text" className="h-[0.7em] w-24 max-w-full" />
+          </div>
+          <div className="flex w-24 shrink-0 items-center justify-end gap-2 sm:w-32">
+            <Skeleton shape="text" className="w-8" />
+            <Skeleton className="hidden h-1 w-12 rounded-full sm:block" />
+          </div>
+          <div className="flex w-20 shrink-0 justify-end">
+            <Skeleton shape="text" className="w-14" />
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -188,12 +228,15 @@ export const ContainerList = React.forwardRef<HTMLDivElement, ContainerListProps
       formatBytes = formatMemory,
       label = "Containers",
       emptyState,
+      loading = false,
+      loadingRows = 3,
       className,
       style,
       ...props
     },
     ref
   ) => {
+    const skeleton = loading && containers.length === 0;
     const baseId = React.useId();
     const entries = groupContainers(containers);
     const groupNames = entries.flatMap((e) => (e.type === "group" ? [e.name] : []));
@@ -217,8 +260,20 @@ export const ContainerList = React.forwardRef<HTMLDivElement, ContainerListProps
     };
 
     return (
-      <div ref={ref} data-slot="container-list" style={accentStyle(accent, style)} className={cn("flex flex-col text-sm", className)} {...props}>
-        {entries.length === 0 ? (
+      <div
+        ref={ref}
+        data-slot="container-list"
+        aria-busy={loading || undefined}
+        style={accentStyle(accent, style)}
+        className={cn("flex flex-col text-sm", className)}
+        {...props}
+      >
+        {skeleton ? (
+          <>
+            <span className="sr-only">Loading containers…</span>
+            <ContainerListSkeleton rows={loadingRows} />
+          </>
+        ) : entries.length === 0 ? (
           <div data-slot="container-empty" className="px-3 py-8 text-center text-muted-foreground">
             {emptyState ?? "No containers"}
           </div>
@@ -301,6 +356,8 @@ export interface ContainerSummaryProps extends Omit<React.HTMLAttributes<HTMLDiv
   /** Where the containers run, for the heading ("4 containers in Docker"). Default "Docker". */
   runtimeName?: string;
   formatBytes?: (bytes: number) => string;
+  /** Data is on its way. With no containers yet the total, breakdown and tiles show placeholders; with containers the root is only marked busy. */
+  loading?: boolean;
 }
 
 /** Container overview: total memory with lowest/peak, a per-container breakdown and CPU, limit, network and port tiles. */
@@ -315,12 +372,14 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
       accent = "cyan",
       runtimeName = "Docker",
       formatBytes = formatMemory,
+      loading = false,
       className,
       style,
       ...props
     },
     ref
   ) => {
+    const skeleton = loading && containers.length === 0;
     const headingId = React.useId();
     const summary = summarizeContainers(containers);
     const total = splitValueUnit(formatBytes(summary.memoryBytes));
@@ -340,7 +399,40 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
     const netTotal = net ? splitValueUnit(formatRate(net.totalBps)) : undefined;
 
     return (
-      <div ref={ref} data-slot="container-summary" style={accentStyle(accent, style)} className={cn("flex flex-col gap-4", className)} {...props}>
+      <div
+        ref={ref}
+        data-slot="container-summary"
+        aria-busy={loading || undefined}
+        style={accentStyle(accent, style)}
+        className={cn("flex flex-col gap-4", className)}
+        {...props}
+      >
+        {skeleton ? <span className="sr-only">Loading containers…</span> : null}
+        {skeleton ? (
+          <div
+            data-slot="container-summary-skeleton"
+            aria-hidden
+            className="flex flex-col gap-6 rounded-box border border-border bg-card p-5 text-card-foreground shadow-xs md:flex-row"
+          >
+            <div className="flex shrink-0 flex-col gap-2 md:w-56">
+              <Skeleton shape="text" className="w-40" />
+              <Skeleton className="h-9 w-32 rounded-md" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="mb-1.5 text-sm font-medium text-foreground">By Container</div>
+              <Skeleton className="h-2 rounded-full" />
+              <div className="mt-3 flex flex-col gap-2.5">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Skeleton className="size-2 shrink-0 rounded-[2px]" />
+                    <Skeleton shape="text" className="w-28" />
+                    <Skeleton shape="text" className="ml-auto w-12" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
         <section
           aria-labelledby={headingId}
           className="flex flex-col gap-6 rounded-box border border-border bg-card p-5 text-card-foreground shadow-xs md:flex-row"
@@ -368,6 +460,7 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
             valueFormatter={formatBytes}
           />
         </section>
+        )}
 
         <StatGroup columns={4}>
           <StatCard
@@ -376,6 +469,7 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
             icon={<RiCpuLine />}
             accent={accent}
             valueFont="sans"
+            loading={skeleton || undefined}
             value={formatCpu(summary.cpu)}
             hint={summary.topCpu ? `most in ${summary.topCpu.name}` : "Idle"}
           />
@@ -385,6 +479,7 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
             icon={<RiTempHotLine />}
             accent={accent}
             valueFont="sans"
+            loading={skeleton || undefined}
             value={closest ? closest.name : "—"}
             hint={closest ? undefined : "No memory limits set"}
           >
@@ -408,6 +503,7 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
             icon={<RiGlobalLine />}
             accent={accent}
             valueFont="sans"
+            loading={skeleton || undefined}
             value={netTotal ? netTotal.value : "—"}
             unit={netTotal?.unit}
             hint={
@@ -426,6 +522,7 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
             icon={<RiUpload2Line />}
             accent={accent}
             valueFont="sans"
+            loading={skeleton || undefined}
             value={String(summary.ports.length)}
           >
             {summary.ports.length > 0 ? <PortBadgeList ports={summary.ports} max={maxPorts} label="Published ports" /> : null}

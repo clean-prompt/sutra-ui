@@ -16,6 +16,7 @@ import { clamp } from "../../lib/math";
 import { formatList } from "../../lib/format";
 import { accentClasses, accentStyle, type Accent } from "../../lib/accent";
 import { BatteryLevel, formatBatteryLevel } from "../../primitives/battery-level";
+import { Skeleton } from "../../primitives/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../primitives/table";
 
 export type BatteryDeviceKind = "headphones" | "trackpad" | "keyboard" | "mouse" | "speaker" | "controller" | "phone" | "other";
@@ -146,6 +147,10 @@ export interface DeviceBatteryListProps extends Omit<React.HTMLAttributes<HTMLDi
   /** Accessible name of the devices table. Default "Device batteries". */
   label?: string;
   locale?: string;
+  /** Data is on its way. With no devices yet the summary and table show placeholders; with devices the root is only marked busy. */
+  loading?: boolean;
+  /** Placeholder device rows while loading. Default 3. */
+  loadingRows?: number;
 }
 
 function LevelCells({ battery, charging, away }: { battery?: number; charging?: boolean; away?: boolean }) {
@@ -197,12 +202,15 @@ export const DeviceBatteryList = React.forwardRef<HTMLDivElement, DeviceBatteryL
       emptyState = "No Bluetooth devices",
       label = "Device batteries",
       locale,
+      loading = false,
+      loadingRows = 3,
       className,
       style,
       ...props
     },
     ref
   ) => {
+    const skeleton = loading && devices.length === 0;
     const computed = React.useMemo(() => summarizeDeviceBatteries(devices, { locale }), [devices, locale]);
     const rows = showAway ? devices : computed.connected;
     const titleId = React.useId();
@@ -224,12 +232,14 @@ export const DeviceBatteryList = React.forwardRef<HTMLDivElement, DeviceBatteryL
       <div
         ref={ref}
         data-slot="device-battery-list"
+        aria-busy={loading || undefined}
         style={accentStyle(accent, style)}
         className={cn("@container flex flex-col gap-4 text-sm", className)}
         {...props}
       >
+        {skeleton ? <span className="sr-only">Loading devices…</span> : null}
         <section
-          aria-labelledby={titleId}
+          aria-labelledby={skeleton && title == null ? undefined : titleId}
           data-slot="device-battery-summary"
           className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-box border border-border bg-card p-4 shadow-xs"
         >
@@ -238,15 +248,28 @@ export const DeviceBatteryList = React.forwardRef<HTMLDivElement, DeviceBatteryL
               <RiBluetoothLine />
             </span>
             <div className="flex min-w-0 flex-col">
-              <div id={titleId} className="text-base font-semibold text-foreground">
-                {title ?? `${computed.connected.length} connected`}
-              </div>
-              {(summary ?? computed.sentence) ? <p className="m-0 text-muted-foreground">{summary ?? computed.sentence}</p> : null}
+              {skeleton && title == null ? (
+                <Skeleton data-slot="device-battery-skeleton" shape="text" className="my-1 h-[1em] w-28" />
+              ) : (
+                <div id={titleId} className="text-base font-semibold text-foreground">
+                  {title ?? `${computed.connected.length} connected`}
+                </div>
+              )}
+              {skeleton && summary == null ? (
+                <Skeleton data-slot="device-battery-skeleton" shape="text" className="mt-1 w-56 max-w-full" />
+              ) : (summary ?? computed.sentence) ? (
+                <p className="m-0 text-muted-foreground">{summary ?? computed.sentence}</p>
+              ) : null}
             </div>
           </div>
-          {lowest || settingsHref || onOpenSettings ? (
+          {skeleton || lowest || settingsHref || onOpenSettings ? (
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              {lowest ? (
+              {skeleton ? (
+                <div data-slot="device-battery-skeleton" aria-hidden className="flex items-center gap-3">
+                  <Skeleton className="h-2 w-24 rounded-full" />
+                  <Skeleton shape="text" className="w-8" />
+                </div>
+              ) : lowest ? (
                 <BatteryLevel
                   variant="bar"
                   size="lg"
@@ -290,7 +313,30 @@ export const DeviceBatteryList = React.forwardRef<HTMLDivElement, DeviceBatteryL
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.length === 0 ? (
+              {skeleton ? (
+                Array.from({ length: Math.max(0, loadingRows) }, (_, i) => (
+                  <TableRow key={i} data-slot="device-battery-skeleton-row" aria-hidden className="hover:bg-transparent">
+                    <TableCell className="border-b-0">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <Skeleton className="size-7 shrink-0 rounded-md" />
+                        <div className="flex min-w-0 flex-1 flex-col gap-1">
+                          <Skeleton shape="text" className="w-28 max-w-full" />
+                          <Skeleton shape="text" className="h-[0.7em] w-16 @xl:hidden" />
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden border-b-0 @xl:table-cell">
+                      <Skeleton shape="text" className="w-16" />
+                    </TableCell>
+                    <TableCell className="hidden border-b-0 @lg:table-cell">
+                      <Skeleton className="h-1.5 w-16 rounded-full" />
+                    </TableCell>
+                    <TableCell align="right" className="border-b-0">
+                      <Skeleton shape="text" className="ml-auto w-12" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : rows.length === 0 ? (
                 <TableRow className="hover:bg-transparent">
                   <TableCell colSpan={4} className="border-b-0 py-8 text-center text-muted-foreground">
                     {emptyState}

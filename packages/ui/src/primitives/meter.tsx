@@ -6,6 +6,7 @@ import { breakdownValue, formatShare } from "../lib/breakdown";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
+import { Skeleton } from "./progress";
 
 /** Percent thresholds at which a meter turns warning / danger. */
 export interface MeterThresholds {
@@ -89,7 +90,13 @@ export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   /** Screen-reader value text override. */
   ariaValueText?: string;
   barClassName?: string;
+  /** Waiting for the first reading: with no `value` the bar is a muted track with no fill and a placeholder value. */
+  loading?: boolean;
 }
+
+/** "Loading CPU…" for a string label, else "Loading usage…". */
+const meterLoadingText = (label: React.ReactNode, fallback: string) =>
+  `Loading ${typeof label === "string" && label ? label : fallback}…`;
 
 /** Labeled usage meter with threshold coloring (role="meter"): a level read against thresholds. For task completion use `Progress`. */
 export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
@@ -112,6 +119,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
       ariaValueText,
       className,
       barClassName,
+      loading,
       style,
       ...props
     },
@@ -119,6 +127,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
   ) => {
     const labelId = React.useId();
     const empty = value === null || !Number.isFinite(value);
+    const skeleton = Boolean(loading) && empty;
     const v = empty ? min : (value as number);
     const pct = empty ? 0 : toPercent(v, max, min);
     const level = empty ? "ok" : meterLevel(pct, thresholds);
@@ -145,7 +154,14 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
     const lgText = size === "lg" ? "text-sm" : size === "sm" ? "text-xs" : "text-sm";
 
     return (
-      <div ref={ref} data-level={level} className={cn("w-full", className)} style={accentStyle(accent, style)} {...props}>
+      <div
+        ref={ref}
+        aria-busy={loading || undefined}
+        data-level={level}
+        className={cn("w-full", className)}
+        style={accentStyle(accent, style)}
+        {...props}
+      >
         {label || showValue ? (
           <div className={cn("mb-1.5 flex items-baseline justify-between gap-3", lgText)}>
             {label ? (
@@ -155,13 +171,34 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
             ) : (
               <span />
             )}
-            {showValue ? (
+            {showValue && skeleton ? (
+              <Skeleton shape="text" data-slot="meter-value-skeleton" className="w-10 shrink-0 self-center" />
+            ) : showValue ? (
               <span data-slot="meter-value" className={cn("shrink-0 font-mono font-semibold tabular-nums", empty ? "text-muted-foreground" : levelText[level])}>
                 {text}
               </span>
             ) : null}
           </div>
         ) : null}
+        {skeleton ? (
+          <>
+            <div
+              aria-hidden
+              data-slot="meter-track"
+              className={cn(
+                segments ? "flex gap-0.5" : "relative overflow-hidden rounded-full bg-muted",
+                "animate-pulse motion-reduce:animate-none",
+                trackHeight[size],
+                barClassName
+              )}
+            >
+              {segments
+                ? Array.from({ length: segments }, (_, i) => <span key={i} className="h-full flex-1 rounded-[2px] bg-muted" />)
+                : null}
+            </div>
+            <span className="sr-only">{meterLoadingText(label, "usage")}</span>
+          </>
+        ) : (
         <div
           role="meter"
           aria-valuenow={v}
@@ -192,6 +229,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
             />
           )}
         </div>
+        )}
         {caption ? <div className="mt-1 text-xs text-muted-foreground">{caption}</div> : null}
       </div>
     );
@@ -435,7 +473,11 @@ export interface StackedMeterProps extends Omit<React.HTMLAttributes<HTMLDivElem
   trackProps?: React.HTMLAttributes<HTMLDivElement> & Record<`data-${string}`, string | undefined>;
   /** `data-slot` of each part. Default "stacked-meter-part". */
   partSlot?: string;
+  /** Waiting for the first breakdown: with no `parts` the bar is a muted track and the legend shows placeholders. */
+  loading?: boolean;
 }
+
+const LEGEND_SKELETON_WIDTHS = ["45%", "35%", "28%"];
 
 /** One bar split into colored parts with a legend (storage breakdown, wait vs. generate…). */
 export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
@@ -453,12 +495,14 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
       showValue = true,
       trackProps,
       partSlot = "stacked-meter-part",
+      loading,
       className,
       ...props
     },
     ref
   ) => {
     const labelId = React.useId();
+    const skeleton = Boolean(loading) && parts.length === 0;
     const used = parts.reduce((a, p) => a + Math.max(0, p.value), 0);
     const capacity = max ?? used;
     const resolved = parts.map((p, i) => ({
@@ -471,7 +515,59 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
     const summary = `${resolved.map((p) => `${p.label} ${valueFormatter(p.value)}`).join(", ")}${max !== undefined ? ` of ${valueFormatter(max)}` : ""}`;
 
     return (
-      <div ref={ref} role="group" aria-labelledby={label ? labelId : undefined} className={cn("w-full", className)} {...props}>
+      <div
+        ref={ref}
+        role="group"
+        aria-labelledby={label ? labelId : undefined}
+        aria-busy={loading || undefined}
+        className={cn("w-full", className)}
+        {...props}
+      >
+        {skeleton ? (
+          <>
+            {showValue ? (
+              <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
+                {label ? (
+                  <span id={labelId} className="font-medium text-foreground">
+                    {label}
+                  </span>
+                ) : (
+                  <span />
+                )}
+                <Skeleton shape="text" className="w-20 shrink-0 self-center" />
+              </div>
+            ) : null}
+            <div
+              aria-hidden
+              data-slot="stacked-meter-track"
+              className={cn("flex w-full animate-pulse overflow-hidden rounded-full bg-muted motion-reduce:animate-none", trackHeight[size], trackProps?.className)}
+            />
+            {legend === "list" ? (
+              <ul aria-hidden data-slot="stacked-meter-legend-skeleton" className={cn("mt-3 flex min-w-0 flex-col", size === "sm" ? "gap-1 text-xs" : "gap-0.5 text-sm")}>
+                {LEGEND_SKELETON_WIDTHS.map((w, i) => (
+                  <li key={i} className={cn("flex items-center gap-2", size === "sm" ? "h-4" : "h-6 py-0.5")}>
+                    <Skeleton shape="circle" className="size-2" />
+                    <span className="min-w-0 flex-1">
+                      <Skeleton shape="text" width={w} />
+                    </span>
+                    <Skeleton shape="text" className="w-12 shrink-0" />
+                  </li>
+                ))}
+              </ul>
+            ) : legend ? (
+              <ul aria-hidden data-slot="stacked-meter-legend-skeleton" className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                {LEGEND_SKELETON_WIDTHS.map((_, i) => (
+                  <li key={i} className="inline-flex h-4 items-center gap-1.5">
+                    <Skeleton className="size-2 rounded-[2px]" />
+                    <Skeleton shape="text" className={i === 0 ? "w-16" : i === 1 ? "w-12" : "w-14"} />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            <span className="sr-only">{meterLoadingText(label, "breakdown")}</span>
+          </>
+        ) : (
+        <>
         {showValue && (label || text) ? (
           <div className="mb-1.5 flex items-baseline justify-between gap-3 text-sm">
             {label ? (
@@ -522,6 +618,8 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
             ))}
           </ul>
         ) : null}
+        </>
+        )}
         {caption ? <div className="mt-1 text-xs text-muted-foreground">{caption}</div> : null}
       </div>
     );

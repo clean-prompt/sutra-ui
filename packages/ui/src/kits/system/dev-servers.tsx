@@ -16,6 +16,7 @@ import { Button } from "../../primitives/button";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { InlineAlert, InlineAlertDescription, InlineAlertTitle } from "../../primitives/inline-alert";
 import { PortBadgeList } from "../../primitives/port-badge";
+import { Skeleton } from "../../primitives/progress";
 import { StatusBadge } from "../../primitives/status-badge";
 
 export {
@@ -56,6 +57,10 @@ export interface DevServerListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   /** Accessible name of the list. Default "Dev servers". */
   label?: string;
   emptyState?: React.ReactNode;
+  /** Data is on its way. With no projects yet the list shows placeholder rows; with projects the root is only marked busy. */
+  loading?: boolean;
+  /** Placeholder rows while loading. Default 3. */
+  loadingRows?: number;
 }
 
 function subtitle(project: DevServerProject): string | undefined {
@@ -96,12 +101,15 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
       formatBytes = formatMemory,
       label = "Dev servers",
       emptyState,
+      loading = false,
+      loadingRows = 3,
       className,
       style,
       ...props
     },
     ref
   ) => {
+    const skeleton = loading && projects.length === 0;
     const now = nowProp ?? Date.now();
     const options = { now, idleAfterMs };
     const rows = projects.map((project) => ({ project, activity: classifyDevServer(project, options) }));
@@ -111,11 +119,12 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
       <div
         ref={ref}
         data-slot="dev-server-list"
+        aria-busy={loading || undefined}
         style={accentStyle(accent, style)}
         className={cn("flex flex-col gap-1 text-sm", className)}
         {...props}
       >
-        {showIdleBanner && idle.count > 0 ? (
+        {!skeleton && showIdleBanner && idle.count > 0 ? (
           <InlineAlert
             tone="neutral"
             data-slot="dev-server-idle-banner"
@@ -154,7 +163,29 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
           </InlineAlert>
         ) : null}
 
-        {rows.length === 0 ? (
+        {skeleton ? (
+          <>
+            <span className="sr-only">Loading dev servers…</span>
+            <ul aria-hidden className="m-0 flex list-none flex-col p-0">
+              {Array.from({ length: Math.max(0, loadingRows) }, (_, i) => (
+                <li key={i} data-slot="dev-server-skeleton-row" className="flex items-center gap-3 rounded-box px-3 py-3">
+                  <Skeleton className="size-8 shrink-0 rounded-md" />
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <Skeleton shape="text" className="w-32 max-w-full" />
+                    <Skeleton shape="text" className="h-[0.7em] w-20 max-w-full" />
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1.5">
+                    <Skeleton data-slot="dev-server-skeleton-port" className="h-6 w-12 rounded-control" />
+                    <Skeleton data-slot="dev-server-skeleton-pill" className="h-6 w-20 rounded-full" />
+                  </div>
+                  <div className="flex w-20 shrink-0 justify-end">
+                    <Skeleton shape="text" className="w-14" />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : rows.length === 0 ? (
           <div data-slot="dev-server-empty" className="px-3 py-8 text-center text-muted-foreground">
             {emptyState ?? "No dev servers running"}
           </div>

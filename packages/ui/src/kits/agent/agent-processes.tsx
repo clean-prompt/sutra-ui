@@ -10,6 +10,7 @@ import { useNow } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { Monogram } from "../../primitives/monogram";
+import { Skeleton } from "../../primitives/progress";
 import { StatusBadge } from "../../primitives/status-badge";
 
 /* ------------------------------------------------------------------ */
@@ -152,11 +153,79 @@ function statusPill(session: AgentProcessSession, now: number) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Skeletons                                                           */
+/* ------------------------------------------------------------------ */
+
+const processRowWidths = [
+  ["w-28", "w-24"],
+  ["w-20", "w-28"],
+  ["w-32", "w-20"],
+  ["w-24", "w-24"],
+] as const;
+
+/** Placeholder process rows in the card's row layout. */
+function AgentProcessRowSkeletons({ count }: { count: number }) {
+  return (
+    <ul aria-hidden data-slot="agent-process-skeleton" className="flex flex-col">
+      {Array.from({ length: Math.max(0, count) }, (_, i) => {
+        const [name, detail] = processRowWidths[i % processRowWidths.length]!;
+        return (
+          <li key={i} className="flex min-h-9 items-center gap-3 py-1 text-sm">
+            <span className="flex min-w-0 flex-1 items-center gap-2">
+              <Skeleton shape="text" className={name} />
+              <Skeleton shape="text" className={detail} />
+            </span>
+            <Skeleton shape="text" className="w-12 shrink-0" />
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** A whole session in the card's layout: logo, title, pill, subtitle, memory, the "Started" label and process rows. */
+function AgentProcessCardSkeleton({ rows }: { rows: number }) {
+  return (
+    <div aria-hidden className="flex flex-col gap-3">
+      <div className="flex items-center gap-3">
+        <span className="flex size-9 shrink-0 items-center justify-center">
+          <Skeleton shape="circle" className="size-8" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex h-[22px] items-center gap-2">
+            <Skeleton shape="text" className="w-36" />
+            <Skeleton className="h-5 w-16 rounded-full" />
+          </div>
+          <div className="mt-0.5 flex h-5 items-center">
+            <Skeleton shape="text" className="w-48 max-w-full" />
+          </div>
+        </div>
+        <Skeleton shape="text" className="w-14 shrink-0" />
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="flex h-5 items-center text-sm">
+          <Skeleton shape="text" className="w-20" />
+        </div>
+        <AgentProcessRowSkeletons count={rows} />
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* AgentProcessCard                                                    */
 /* ------------------------------------------------------------------ */
 
 export interface AgentProcessCardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
-  session: AgentProcessSession;
+  /** The session. May be left out while `loading` (the whole card is a placeholder). */
+  session?: AgentProcessSession;
+  /**
+   * Waiting for data: with no `session` the whole card is a placeholder; with a session whose `processes` are not
+   * known yet the header is real and the process rows are placeholders (no Quit button).
+   */
+  loading?: boolean;
+  /** Placeholder process rows while loading. Default 3. */
+  loadingRows?: number;
   /** Called after the "Quit Session…" confirmation. May return a promise (the dialog waits). */
   onQuit?: (sessionId: string) => void | Promise<void>;
   /** Adds a stop button to each process row. */
@@ -188,6 +257,8 @@ export const AgentProcessCard = React.forwardRef<HTMLElement, AgentProcessCardPr
       expanded: expandedProp,
       defaultExpanded = true,
       onExpandedChange,
+      loading,
+      loadingRows = 3,
       className,
       style,
       ...props
@@ -204,6 +275,24 @@ export const AgentProcessCard = React.forwardRef<HTMLElement, AgentProcessCardPr
     const titleId = React.useId();
     const listId = React.useId();
 
+    if (!session) {
+      if (!loading) return null;
+      return (
+        <div
+          ref={ref as React.Ref<HTMLDivElement>}
+          aria-busy
+          data-slot="agent-process-card-skeleton"
+          className={cn("flex flex-col gap-3 py-4", className)}
+          style={accentStyle(accent, style)}
+          {...props}
+        >
+          <AgentProcessCardSkeleton rows={loadingRows} />
+          <span className="sr-only">Loading agent session…</span>
+        </div>
+      );
+    }
+
+    const processesPending = Boolean(loading) && session.processes === undefined;
     const title = session.title || session.agent;
     const processes = session.processes ?? [];
     const memory = agentSessionMemory(session);
@@ -214,7 +303,7 @@ export const AgentProcessCard = React.forwardRef<HTMLElement, AgentProcessCardPr
       session.project,
       session.host,
       runtime ? `running ${runtime}` : undefined,
-      processes.length === 0 ? "Nothing started" : undefined,
+      processes.length === 0 && !processesPending ? "Nothing started" : undefined,
     ].filter(Boolean);
 
     const startedLabel = `Started · ${processes.length}`;
@@ -222,6 +311,7 @@ export const AgentProcessCard = React.forwardRef<HTMLElement, AgentProcessCardPr
     return (
       <article
         ref={ref}
+        aria-busy={loading || undefined}
         aria-labelledby={titleId}
         data-status={session.status}
         className={cn("flex flex-col gap-3 py-4", className)}
@@ -255,13 +345,25 @@ export const AgentProcessCard = React.forwardRef<HTMLElement, AgentProcessCardPr
             </div>
             {subtitle.length > 0 && <p className="mt-0.5 truncate text-sm text-muted-foreground">{subtitle.join(" · ")}</p>}
           </div>
-          {memory !== undefined && (
+          {memory !== undefined ? (
             <span className="shrink-0 text-sm font-semibold tabular-nums text-foreground">
               <span className="sr-only">Memory </span>
               {formatMemory(memory)}
             </span>
-          )}
+          ) : processesPending ? (
+            <Skeleton shape="text" className="w-14 shrink-0" />
+          ) : null}
         </div>
+
+        {processesPending && (
+          <div className="flex flex-col gap-1">
+            <div aria-hidden className="flex h-5 items-center text-sm">
+              <Skeleton shape="text" className="w-20" />
+            </div>
+            <AgentProcessRowSkeletons count={loadingRows} />
+            <span className="sr-only">Loading processes…</span>
+          </div>
+        )}
 
         {processes.length > 0 && (
           <div className="flex flex-col gap-1">
@@ -352,6 +454,10 @@ export interface AgentProcessListProps
   /** Accessible name of the list. Default "Agent sessions". */
   label?: string;
   emptyState?: React.ReactNode;
+  /** Waiting for sessions: with none yet, `loadingRows` placeholder sessions stand in; sessions without `processes` show placeholder rows. */
+  loading?: boolean;
+  /** Placeholder sessions while loading with none. Default 3. */
+  loadingRows?: number;
 }
 
 /**
@@ -373,6 +479,8 @@ export const AgentProcessList = React.forwardRef<HTMLDivElement, AgentProcessLis
       onExpandedChange,
       label = "Agent sessions",
       emptyState = "No agent sessions",
+      loading,
+      loadingRows = 3,
       className,
       style,
       ...props
@@ -395,11 +503,23 @@ export const AgentProcessList = React.forwardRef<HTMLDivElement, AgentProcessLis
     return (
       <div
         ref={ref}
+        aria-busy={loading || undefined}
         className={cn("rounded-box border border-border bg-card px-5 text-card-foreground", className)}
         style={accentStyle(accent, style)}
         {...props}
       >
-        {sessions.length === 0 ? (
+        {sessions.length === 0 && loading ? (
+          <>
+            <ul aria-hidden className="flex flex-col divide-y divide-border">
+              {Array.from({ length: Math.max(1, loadingRows) }, (_, i) => (
+                <li key={i} data-slot="agent-process-list-skeleton" className="py-4">
+                  <AgentProcessCardSkeleton rows={2} />
+                </li>
+              ))}
+            </ul>
+            <span className="sr-only">Loading agent sessions…</span>
+          </>
+        ) : sessions.length === 0 ? (
           <div className="py-8 text-center text-sm text-muted-foreground">{emptyState}</div>
         ) : (
           <ul aria-label={label} className="flex flex-col divide-y divide-border">
@@ -415,6 +535,7 @@ export const AgentProcessList = React.forwardRef<HTMLDivElement, AgentProcessLis
                   collapsible={collapsible}
                   expanded={collapsible ? isExpanded(s.id) : undefined}
                   onExpandedChange={(open) => toggle(s.id, open)}
+                  loading={loading && s.processes === undefined ? true : undefined}
                 />
               </li>
             ))}

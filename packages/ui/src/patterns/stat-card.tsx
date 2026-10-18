@@ -4,7 +4,7 @@ import { cn } from "../lib/cn";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { accentClasses, accentColorValue, accentStyle, resolveAccent, type Accent } from "../lib/accent";
 import { KeyValueList } from "../primitives/key-value";
-import { Progress } from "../primitives/progress";
+import { Progress, Skeleton } from "../primitives/progress";
 import { Sparkline, type SparklineColor } from "./sparkline";
 
 export type StatDeltaIntent = "positive-is-good" | "negative-is-good" | "neutral";
@@ -31,6 +31,8 @@ export function statDeltaDirection(delta: number | string): "up" | "down" | "fla
 }
 
 const StatGroupContext = React.createContext<"cards" | "divided" | null>(null);
+/** Lets a preset (TopItemCard) replace the value placeholder StatCard draws while loading. */
+const StatValueSkeletonContext = React.createContext<React.ReactNode>(null);
 
 /* ------------------------------------------------------------------------------------------------
  * StatValue
@@ -103,6 +105,10 @@ export interface StatCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   trendMin?: number;
   /** Fixed upper bound of the trend scale (e.g. 100). */
   trendMax?: number;
+  /**
+   * Shows placeholders instead of the value, hint, delta and stat values (the label, caption and stat labels stay);
+   * the progress bar, trend and `children` body get placeholders of the same size.
+   */
   loading?: boolean;
   tone?: StatTone;
   size?: "sm" | "md" | "lg";
@@ -179,6 +185,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
     ref
   ) => {
     const group = React.useContext(StatGroupContext);
+    const valueSkeleton = React.useContext(StatValueSkeletonContext);
     const valueId = React.useId();
     const tone = normalizeTone(toneProp);
     const interactive = href !== undefined || onClick !== undefined;
@@ -287,10 +294,40 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
           {iconAtStart ? null : iconChip}
         </div>
         {loading ? (
-          <div className="space-y-2 py-1" aria-hidden>
-            <div className={cn("w-24 animate-pulse rounded-md bg-muted", size === "sm" ? "h-6" : "h-8")} />
-            <div className="h-3 w-16 animate-pulse rounded bg-muted" />
-          </div>
+          <>
+            <span className="sr-only">{`Loading ${labelText ?? "metric"}…`}</span>
+            {caption ? <div data-slot="stat-caption" className="text-xs text-muted-foreground">{caption}</div> : null}
+            {hasValueRow || children === undefined || children === null ? (
+              valueSkeleton ?? (
+                <div data-slot="stat-skeleton" className="space-y-2 py-1" aria-hidden>
+                  <Skeleton className={cn("w-24", size === "sm" ? "h-6" : "h-8")} />
+                  <Skeleton className="h-3 w-16" />
+                </div>
+              )
+            ) : null}
+            {progress !== undefined ? <Skeleton className="mt-2 h-1 rounded-full" /> : null}
+            {stats && stats.length > 0 ? (
+              <KeyValueList
+                layout="grid"
+                data-slot="stat-stats"
+                className="mt-3 gap-x-3 [&_dt]:min-w-0 [&_dt]:truncate"
+                style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}
+                items={stats.map((s, i) => ({
+                  key: s.key ?? (typeof s.label === "string" ? s.label : String(i)),
+                  label: s.label,
+                  value: <Skeleton shape="text" className="inline-block h-3.5 w-10 align-middle" />,
+                }))}
+              />
+            ) : null}
+            {children !== undefined && children !== null ? (
+              <Skeleton data-slot="stat-content-skeleton" className="mt-2 h-24 rounded-md" />
+            ) : null}
+            {trendPlacement === "footer" ? (
+              <Skeleton data-slot="stat-trend-skeleton" className="mt-auto rounded-md" height={(size === "sm" ? 28 : 40) + 14} />
+            ) : trend !== undefined ? (
+              <Skeleton data-slot="stat-trend-skeleton" className="mt-2 rounded-md" height={size === "sm" ? 28 : 36} />
+            ) : null}
+          </>
         ) : (
           <>
             {hasValueRow || caption || deltaText !== null || status ? (
@@ -351,7 +388,11 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
                 }))}
               />
             ) : null}
-            {children !== undefined && children !== null ? <div data-slot="stat-content" className="mt-2 min-w-0">{children}</div> : null}
+            {children !== undefined && children !== null ? (
+              <div data-slot="stat-content" className="mt-2 min-w-0">
+                {valueSkeleton ? <StatValueSkeletonContext.Provider value={null}>{children}</StatValueSkeletonContext.Provider> : children}
+              </div>
+            ) : null}
             {trendEl && trendPlacement === "footer" ? (
               <div data-slot="stat-trend" className={cn("mt-auto rounded-md px-2 pb-1.5 pt-2", accentClasses.track)}>
                 {trendEl}
@@ -385,9 +426,9 @@ export interface TopItemCardProps
 
 /** StatCard preset for "the biggest item right now": label, item icon + name and its value, optionally linked. */
 export const TopItemCard = React.forwardRef<HTMLDivElement, TopItemCardProps>(
-  ({ label = "Top App", item, itemIcon, value, labelTone = "muted", href, onClick, chevron, ...props }, ref) => {
+  ({ label = "Top App", item, itemIcon, value, labelTone = "muted", href, onClick, chevron, loading, ...props }, ref) => {
     const showChevron = chevron ?? (href !== undefined || onClick !== undefined);
-    return (
+    const card = (
       <StatCard
         ref={ref}
         data-variant="top-item"
@@ -396,6 +437,7 @@ export const TopItemCard = React.forwardRef<HTMLDivElement, TopItemCardProps>(
         href={href}
         onClick={onClick}
         chevron={false}
+        loading={loading}
         value={
           <span data-slot="top-item" className="inline-flex min-w-0 max-w-full items-center gap-2 align-middle font-sans text-base font-semibold tracking-normal">
             {itemIcon ? (
@@ -416,6 +458,22 @@ export const TopItemCard = React.forwardRef<HTMLDivElement, TopItemCardProps>(
         }
         {...props}
       />
+    );
+    if (!loading) return card;
+    return (
+      <StatValueSkeletonContext.Provider
+        value={
+          <div data-slot="top-item-skeleton" aria-hidden className="flex flex-col gap-1">
+            <span className="flex items-center gap-2">
+              <Skeleton shape="circle" className="size-6 shrink-0" />
+              <Skeleton shape="text" className="h-4 w-28" />
+            </span>
+            {value !== undefined || showChevron ? <Skeleton shape="text" className="mt-0.5 h-3.5 w-12" /> : null}
+          </div>
+        }
+      >
+        {card}
+      </StatValueSkeletonContext.Provider>
     );
   }
 );

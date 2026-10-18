@@ -6,6 +6,7 @@ import { useElementWidth } from "../hooks/use-resize-observer";
 import { useSafeId } from "../hooks/use-safe-id";
 import { formatShortDate } from "../lib/time";
 import { BreakdownList } from "../primitives/meter";
+import { Skeleton } from "../primitives/progress";
 
 /* ------------------------------------------------------------------------------------------------
  * Types
@@ -498,6 +499,50 @@ export const ChartLegend = React.forwardRef<HTMLDivElement, ChartLegendProps>(
 );
 ChartLegend.displayName = "ChartLegend";
 
+/** Placeholder legend chips (or rows) shown while a chart has no data yet. */
+function ChartLegendSkeleton({
+  count,
+  layout = "chips",
+  align = "start",
+  className,
+}: {
+  count: number;
+  layout?: "chips" | "rows";
+  align?: "start" | "center";
+  className?: string;
+}) {
+  const widths = [56, 44, 64, 48, 36];
+  if (layout === "rows") {
+    return (
+      <div aria-hidden data-slot="chart-legend-skeleton" className={cn("flex min-w-0 flex-col gap-0.5 text-sm", className)}>
+        {Array.from({ length: count }, (_, i) => (
+          <div key={i} className="flex items-center gap-2 py-1.5">
+            <Skeleton className="size-2.5 shrink-0 rounded-[3px]" />
+            <span className="min-w-0 flex-1">
+              <Skeleton shape="text" className="h-3.5" width={`${widths[i % widths.length]}%`} />
+            </span>
+            <Skeleton shape="text" className="h-3.5 w-10 shrink-0" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div
+      aria-hidden
+      data-slot="chart-legend-skeleton"
+      className={cn("flex flex-wrap items-center gap-x-1 gap-y-1 text-xs", align === "center" ? "justify-center" : "justify-start", className)}
+    >
+      {Array.from({ length: count }, (_, i) => (
+        <span key={i} className="inline-flex items-center gap-1.5 px-2 py-1">
+          <Skeleton className="size-2.5 shrink-0 rounded-[3px]" />
+          <Skeleton shape="text" className="h-3" width={widths[i % widths.length]} />
+        </span>
+      ))}
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------------------------------------
  * Cartesian base
  * ----------------------------------------------------------------------------------------------*/
@@ -532,6 +577,8 @@ export interface CartesianChartProps extends Omit<React.HTMLAttributes<HTMLDivEl
   defaultHiddenSeries?: string[];
   onHiddenSeriesChange?: (hidden: string[]) => void;
   onActiveIndexChange?: (index: number | null) => void;
+  /** Data is on its way: with no data, a placeholder plot (and legend) of the same size; with data, the root is marked busy. */
+  loading?: boolean;
 }
 
 interface ResolvedSeries extends ChartSeries {
@@ -589,6 +636,7 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
       defaultHiddenSeries,
       onHiddenSeriesChange,
       onActiveIndexChange,
+      loading,
       chartType,
       band,
       horizontal = false,
@@ -644,6 +692,18 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
         marker={legendMarker}
       />
     ) : null;
+
+    if (n === 0 && loading) {
+      const legendSkeleton = legendPos ? <ChartLegendSkeleton count={Math.max(1, series.length)} /> : null;
+      return (
+        <div ref={ref} aria-busy="true" className={cn("flex w-full flex-col gap-3", className)} {...props}>
+          <span className="sr-only">{`Loading ${label ?? chartType.toLowerCase()}…`}</span>
+          {legendPos === "top" ? legendSkeleton : null}
+          <Skeleton data-slot="chart-skeleton" className="w-full rounded-md" height={height} />
+          {legendPos === "bottom" ? legendSkeleton : null}
+        </div>
+      );
+    }
 
     if (n === 0) {
       return (
@@ -746,7 +806,7 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
     const motion = animate ? "motion-safe:transition-all motion-safe:duration-500 motion-safe:ease-out" : "";
 
     return (
-      <div ref={ref} className={cn("flex w-full flex-col gap-3", className)} {...props}>
+      <div ref={ref} aria-busy={loading || undefined} className={cn("flex w-full flex-col gap-3", className)} {...props}>
         {legendPos === "top" ? legendEl : null}
         <ChartContainer
           label={ariaLabel}
@@ -1270,6 +1330,8 @@ export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   hiddenSeries?: string[];
   defaultHiddenSeries?: string[];
   onHiddenSeriesChange?: (hidden: string[]) => void;
+  /** Data is on its way: with no data, a placeholder ring (and legend) of the same size; with data, the root is marked busy. */
+  loading?: boolean;
 }
 
 function arcPath(cx: number, cy: number, ro: number, ri: number, a0: number, a1: number) {
@@ -1310,6 +1372,7 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
       hiddenSeries,
       defaultHiddenSeries,
       onHiddenSeriesChange,
+      loading,
       className,
       ...props
     },
@@ -1374,6 +1437,48 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
       />
     ) : null;
 
+    const ro = size / 2 - 4;
+    const ri = Math.max(0, ro - (thickness ?? size * 0.14));
+    const c = size / 2;
+
+    if (data.length === 0 && loading) {
+      return (
+        <div
+          ref={ref}
+          aria-busy="true"
+          className={cn(
+            "flex w-full gap-4",
+            legend === "right" ? cn("flex-row flex-wrap items-center", listLegend ? "justify-start gap-x-6" : "justify-center") : "flex-col items-center",
+            className
+          )}
+          {...props}
+        >
+          <span className="sr-only">{`Loading ${label ?? "donut chart"}…`}</span>
+          <div aria-hidden data-slot="chart-skeleton" className="relative shrink-0" style={{ width: size, height: size }}>
+            <svg width={size} height={size} className="block">
+              <path d={arcPath(c, c, ro, ri, 0, Math.PI * 2)} className="animate-pulse fill-muted motion-reduce:animate-none" fillRule="evenodd" />
+            </svg>
+            {centerValue !== null || centerLabel ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
+                {centerValue !== null ? <Skeleton shape="text" className={size >= 180 ? "h-6" : "h-4"} width={size * 0.3} /> : null}
+                {centerLabel ? (
+                  <span className="text-xs leading-tight text-muted-foreground">{centerLabel}</span>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+          {legend ? (
+            <ChartLegendSkeleton
+              count={3}
+              layout={listLegend ? "rows" : "chips"}
+              align={legend === "right" ? "start" : "center"}
+              className={listLegend ? (legend === "right" ? "min-w-48 flex-1" : "w-full") : legend === "right" ? "flex-col items-start" : undefined}
+            />
+          ) : null}
+        </div>
+      );
+    }
+
     if (data.length === 0) {
       return (
         <div ref={ref} className={cn("w-full", className)} {...props}>
@@ -1405,9 +1510,6 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
       setAnnounce(`${it.label}: ${valueFormatter(it.value)} (${pct(it.value)})`);
     };
 
-    const ro = size / 2 - 4;
-    const ri = Math.max(0, ro - (thickness ?? size * 0.14));
-    const c = size / 2;
     const pad = (padAngle * Math.PI) / 180;
     let angle = 0;
     const arcs = shown.map((it) => {
@@ -1423,6 +1525,7 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
     return (
       <div
         ref={ref}
+        aria-busy={loading || undefined}
         className={cn(
           "flex w-full gap-4",
           legend === "right" ? cn("flex-row flex-wrap items-center", listLegend ? "justify-start gap-x-6" : "justify-center") : "flex-col items-center",

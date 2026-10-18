@@ -59,6 +59,7 @@ import { Field, FieldError, FieldLabel } from "../../primitives/field";
 import { Input } from "../../primitives/input";
 import { Monogram } from "../../primitives/monogram";
 import { NumberInput } from "../../primitives/number-input";
+import { Skeleton } from "../../primitives/progress";
 import { SegmentedControl } from "../../primitives/segmented-control";
 import { SimpleSelect } from "../../primitives/select";
 import { StatusBadge } from "../../primitives/status-badge";
@@ -648,6 +649,10 @@ export interface AlertRuleListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   emptyState?: React.ReactNode;
   /** Categorical colour. Default "red". */
   accent?: Accent;
+  /** Rules are on their way. With no rules yet placeholder rows replace the presets empty state; with rules the root is only marked busy. */
+  loading?: boolean;
+  /** Placeholder rows while loading. Default 3. */
+  loadingRows?: number;
 }
 
 interface RowProps {
@@ -734,6 +739,8 @@ export const AlertRuleList = React.forwardRef<HTMLDivElement, AlertRuleListProps
       addLabel = "Add alert",
       emptyState,
       accent = "red",
+      loading = false,
+      loadingRows = 3,
       className,
       style,
       ...props
@@ -742,6 +749,7 @@ export const AlertRuleList = React.forwardRef<HTMLDivElement, AlertRuleListProps
   ) => {
     const titleId = React.useId();
     const [rules, setRules] = useControllableState<AlertRule[]>({ value: rulesProp, defaultValue: defaultRules ?? [], onChange: onRulesChange });
+    const skeleton = loading && rules.length === 0;
     const [dialog, setDialog] = React.useState<{ open: boolean; rule?: AlertRule }>({ open: false });
     const firing = new Set(firingIds ?? []);
 
@@ -765,7 +773,14 @@ export const AlertRuleList = React.forwardRef<HTMLDivElement, AlertRuleListProps
     };
 
     return (
-      <div ref={ref} data-slot="alert-rule-list" style={accentStyle(accent, style)} className={cn("flex flex-col gap-1 text-sm", className)} {...props}>
+      <div
+        ref={ref}
+        data-slot="alert-rule-list"
+        aria-busy={loading || undefined}
+        style={accentStyle(accent, style)}
+        className={cn("flex flex-col gap-1 text-sm", className)}
+        {...props}
+      >
         <div className="flex items-center gap-3 px-3 py-2">
           <span id={titleId} className="flex-1 font-medium text-foreground">
             {title}
@@ -776,7 +791,25 @@ export const AlertRuleList = React.forwardRef<HTMLDivElement, AlertRuleListProps
             </Button>
           ) : null}
         </div>
-        {rules.length === 0 ? (
+        {skeleton ? (
+          <>
+            <span className="sr-only">Loading alerts…</span>
+            <ul aria-hidden className="m-0 flex list-none flex-col p-0">
+              {Array.from({ length: Math.max(0, loadingRows) }, (_, i) => (
+                <li key={i} data-slot="alert-rule-skeleton-row" className="flex items-center gap-3 rounded-box px-3 py-3">
+                  <Skeleton className="size-8 shrink-0 rounded-md" />
+                  <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                    <Skeleton shape="text" className="w-64 max-w-full" />
+                    <Skeleton className="h-5 w-20 rounded-control" />
+                  </div>
+                  <Skeleton className="size-7 shrink-0 rounded-control" />
+                  <Skeleton className="size-7 shrink-0 rounded-control" />
+                  <Skeleton className="h-5 w-9 shrink-0 rounded-full" />
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : rules.length === 0 ? (
           emptyState ?? (
             <EmptyState
               data-slot="alert-rule-empty"

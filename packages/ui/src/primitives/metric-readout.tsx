@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
+import { Skeleton } from "./progress";
 
 /**
  * Absolute strain thresholds for a reading (same units as the value). Higher is worse when `danger` ≥ `warning`
@@ -88,6 +89,8 @@ export interface MetricReadoutProps extends Omit<React.HTMLAttributes<HTMLSpanEl
   /** Icon colour while the reading is normal. Default: muted. */
   accent?: Accent;
   locale?: string;
+  /** Waiting for the first reading: with no `value` the label stays and the value is a short placeholder. */
+  loading?: boolean;
 }
 
 /**
@@ -113,6 +116,7 @@ export const MetricReadout = React.forwardRef<HTMLSpanElement, MetricReadoutProp
       size = "sm",
       accent,
       locale,
+      loading,
       className,
       style,
       ...props
@@ -121,7 +125,10 @@ export const MetricReadout = React.forwardRef<HTMLSpanElement, MetricReadoutProp
   ) => {
     const numeric = typeof value === "number" && Number.isFinite(value);
     const empty = value === null || value === undefined || (typeof value === "number" && !numeric) || value === "";
-    const level: ReadoutLevel = toneProp
+    const skeleton = Boolean(loading) && empty;
+    const level: ReadoutLevel = skeleton
+      ? "normal"
+      : toneProp
       ? (() => {
           const t = normalizeTone(toneProp);
           return t === "destructive" ? "danger" : t === "warning" ? "warning" : "normal";
@@ -129,7 +136,7 @@ export const MetricReadout = React.forwardRef<HTMLSpanElement, MetricReadoutProp
       : numeric
         ? readoutLevel(value as number, thresholds)
         : "normal";
-    const tone: Tone = toneProp ? normalizeTone(toneProp) : readoutLevelTone(level);
+    const tone: Tone = toneProp && !skeleton ? normalizeTone(toneProp) : readoutLevelTone(level);
     const shown = empty ? "—" : numeric ? (formatValue ?? defaultNumber(locale).format)(value as number) : String(value);
     const status =
       statusText === false
@@ -137,13 +144,16 @@ export const MetricReadout = React.forwardRef<HTMLSpanElement, MetricReadoutProp
         : (statusText ?? (level === "danger" ? (statusLabels?.danger ?? "critical") : level === "warning" ? (statusLabels?.warning ?? "high") : null));
     const name = labelText ?? (typeof label === "string" || typeof label === "number" ? String(label) : "");
     const reading = empty ? "no data" : joinReadoutUnit(shown, unit);
-    const accessible = [name ? `${name} ${reading}` : reading, status].filter(Boolean).join(", ");
+    const accessible = skeleton
+      ? `Loading ${name || "reading"}…`
+      : [name ? `${name} ${reading}` : reading, status].filter(Boolean).join(", ");
     const s = sizes[size];
     const pill = variant === "pill";
 
     return (
       <span
         ref={ref}
+        aria-busy={loading || undefined}
         data-slot="metric-readout"
         data-level={level}
         data-tone={tone}
@@ -171,12 +181,16 @@ export const MetricReadout = React.forwardRef<HTMLSpanElement, MetricReadoutProp
               {label}
             </span>
           ) : null}
+          {skeleton ? (
+            <Skeleton shape="text" data-slot="metric-readout-value-skeleton" className="inline-block w-[2.5em] shrink-0" />
+          ) : (
           <span data-slot="metric-readout-value" className={cn("font-semibold tabular-nums", empty && "text-muted-foreground")}>
             {shown}
             {unit && !empty ? (
               <span className={cn(s.unit, unit === "%" || unit === "°" ? "" : "ml-0.5", tone === "neutral" && "text-muted-foreground")}>{unit}</span>
             ) : null}
           </span>
+          )}
           {trend ? (
             <span data-slot="metric-readout-trend" className="inline-flex shrink-0 items-center">
               {trend}

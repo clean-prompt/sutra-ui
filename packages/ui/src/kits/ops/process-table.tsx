@@ -21,6 +21,7 @@ import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { Monogram } from "../../primitives/monogram";
+import { Skeleton } from "../../primitives/progress";
 import { Spinner } from "../../primitives/spinner";
 import { SimpleTooltip } from "../../primitives/tooltip";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, type TableSortDirection } from "../../primitives/table";
@@ -351,7 +352,24 @@ export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableEl
   onQuitGroup?: (group: ProcessTableGroup, options: ProcessQuitOptions) => void | Promise<unknown>;
   /** Whether a given group can be quit (default all). */
   canQuitGroup?: (group: ProcessTableGroup) => boolean;
+  /** Waiting for the first sample: with no processes the header stays and the body is `loadingRows` placeholder rows (no totals). */
+  loading?: boolean;
+  /** Placeholder rows while loading with no processes. Default 5. */
+  loadingRows?: number;
 }
+
+/** Placeholder widths per column (right-aligned columns push theirs to the end). */
+const skeletonWidth: Record<ProcessColumn, string> = {
+  pid: "w-10",
+  name: "w-36",
+  user: "w-14",
+  cpu: "w-10",
+  memory: "w-14",
+  vram: "w-12",
+  state: "w-14",
+  started: "w-14",
+};
+const skeletonNameWidths = ["w-36", "w-28", "w-40", "w-24", "w-32"];
 
 interface RowContext {
   /** The group a child row belongs to. */
@@ -505,6 +523,8 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
       onExpandedGroupsChange,
       onQuitGroup,
       canQuitGroup,
+      loading,
+      loadingRows = 5,
       ...props
     },
     ref
@@ -765,8 +785,41 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
       </TableBody>
     );
 
+    const skeletonBody = (
+      <TableBody data-slot="process-table-skeleton">
+        {Array.from({ length: Math.max(1, loadingRows) }, (_, r) => (
+          <TableRow key={r}>
+            {columns.map((col, c) => (
+              <TableCell key={col} align={alignFor(col)}>
+                <div className={cn("flex h-5 items-center", alignFor(col) === "right" && "justify-end")}>
+                  <Skeleton
+                    shape="text"
+                    className={cn(
+                      "shrink-0",
+                      col === "name" ? skeletonNameWidths[r % skeletonNameWidths.length] : skeletonWidth[col],
+                      col === "state" && "h-4 rounded-control"
+                    )}
+                  />
+                </div>
+                {r === 0 && c === 0 ? <span className="sr-only">Loading processes…</span> : null}
+              </TableCell>
+            ))}
+            {hasActions ? <TableCell className="w-px" /> : null}
+          </TableRow>
+        ))}
+      </TableBody>
+    );
+
     return (
-      <Table ref={ref} density={density} stickyHeader={maxHeight !== undefined} maxHeight={maxHeight} className={className} {...props}>
+      <Table
+        ref={ref}
+        aria-busy={loading || undefined}
+        density={density}
+        stickyHeader={maxHeight !== undefined}
+        maxHeight={maxHeight}
+        className={className}
+        {...props}
+      >
         <caption className="sr-only">{caption}</caption>
         <TableHeader>
           <TableRow>
@@ -782,7 +835,9 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
             ) : null}
           </TableRow>
         </TableHeader>
-        {grouped ? (
+        {loading && processes.length === 0 ? (
+          skeletonBody
+        ) : grouped ? (
           <ProcessTreeBodies
               empty={emptyBody}
               items={tree}

@@ -128,6 +128,7 @@ export const nav: NavSection[] = [
         items: [
           { id: "dashboard", label: "Live Dashboard" },
           { id: "bar-list", label: "Bar List" },
+          { id: "loading", label: "Loading States" },
           { id: "breakdown", label: "Breakdown Legends" },
         ],
       },
@@ -504,6 +505,7 @@ export const nav: NavSection[] = [
           { id: "alerts", label: "Alert Rules" },
           { id: "storage", label: "Storage Map" },
           { id: "apps", label: "Apps, Not Processes" },
+          { id: "loading", label: "Loading States" },
           { id: "containers", label: "Containers" },
         ],
       },

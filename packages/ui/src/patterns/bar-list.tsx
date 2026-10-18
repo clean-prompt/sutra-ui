@@ -3,6 +3,7 @@ import { cn, focusRing } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { Skeleton } from "../primitives/progress";
 
 export interface BarListItem {
   id: string | number;
@@ -46,6 +47,10 @@ export interface BarListProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   /** Accessible name of the list. */
   label?: string;
   emptyState?: React.ReactNode;
+  /** Data is on its way: with no items, placeholder rows stand in (header labels stay); with items, the root is marked busy. */
+  loading?: boolean;
+  /** Placeholder rows shown while loading with no items. Default 5. */
+  loadingRows?: number;
 }
 
 const defaultFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
@@ -71,6 +76,8 @@ export const BarList = React.forwardRef<HTMLDivElement, BarListProps>(
       showLessLabel = "Show less",
       label,
       emptyState,
+      loading,
+      loadingRows = 5,
       className,
       style,
       ...props
@@ -91,16 +98,36 @@ export const BarList = React.forwardRef<HTMLDivElement, BarListProps>(
     const max = maxProp ?? largest;
     const hasMore = limit !== undefined && limit >= 0 && sorted.length > limit;
     const visible = hasMore && !expanded ? sorted.slice(0, limit) : sorted;
+    const skeleton = !!loading && sorted.length === 0;
 
     return (
-      <div ref={ref} data-slot="bar-list" style={accentStyle(accent, style)} className={cn("flex flex-col gap-1 text-sm", className)} {...props}>
+      <div ref={ref} data-slot="bar-list" aria-busy={loading || undefined} style={accentStyle(accent, style)} className={cn("flex flex-col gap-1 text-sm", className)} {...props}>
         {header && (header.label || header.value) ? (
           <div data-slot="bar-list-header" className="flex items-center justify-between gap-4 px-3 pb-1 text-xs font-medium text-muted-foreground">
             <span>{header.label}</span>
             <span>{header.value}</span>
           </div>
         ) : null}
-        {sorted.length === 0 ? (
+        {skeleton ? (
+          <>
+            <span className="sr-only">{`Loading ${label ?? "items"}…`}</span>
+            <div aria-hidden data-slot="bar-list-skeleton" className="flex flex-col gap-0.5">
+              {Array.from({ length: Math.max(1, Math.floor(loadingRows)) }, (_, i) => (
+                <div key={i} className="flex w-full items-center gap-3 px-3 py-2.5">
+                  <Skeleton shape="circle" className="size-8 shrink-0" />
+                  <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+                    <Skeleton shape="text" className="h-3.5" width={`${[56, 44, 64, 38, 50][i % 5]}%`} />
+                    <Skeleton shape="text" className="h-3" width={`${[32, 26, 36, 22, 30][i % 5]}%`} />
+                  </span>
+                  <span className="flex w-28 shrink-0 flex-col items-end gap-1.5 sm:w-44 lg:w-64">
+                    <Skeleton shape="text" className="h-3.5 w-12" />
+                    <Skeleton className="h-1 w-full rounded-full" />
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : sorted.length === 0 ? (
           <div data-slot="bar-list-empty" className="px-3 py-6 text-center text-muted-foreground">
             {emptyState ?? "No data"}
           </div>

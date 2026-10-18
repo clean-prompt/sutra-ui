@@ -4,7 +4,7 @@ import { clamp, toPercent } from "../lib/math";
 import { normalizeTone, type ToneInput } from "../lib/tone";
 import { accentColorValue, accentStyle, type Accent } from "../lib/accent";
 import { defaultMeterThresholds, meterLevel, type MeterColor, type MeterLevel, type MeterThresholds } from "../primitives/meter";
-import { ProgressRingSvg } from "../primitives/progress";
+import { ProgressRingSvg, Skeleton } from "../primitives/progress";
 
 export interface GaugeColorStop {
   /** Absolute value from which this color applies. */
@@ -95,6 +95,8 @@ export interface GaugeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   /** Extra content under the value (replaces the label slot). */
   children?: React.ReactNode;
   ariaValueText?: string;
+  /** Waiting for the first reading: with `value` null, the track stays empty and a placeholder stands in for the number. */
+  loading?: boolean;
 }
 
 /** Radial arc gauge with threshold coloring (role="meter"). */
@@ -119,6 +121,7 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
       glow,
       children,
       ariaValueText,
+      loading,
       className,
       style,
       ...props
@@ -137,7 +140,8 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
     const r = c - stroke / 2 - (glow ? 3 : 1);
     const d = arc(c, c, r, startAngle, endAngle);
     const text = empty ? "—" : valueFormatter(value as number);
-    const valueText = ariaValueText ?? (empty ? "No data" : `${text}${unit ? ` ${unit}` : ""}`);
+    const skeleton = !!loading && empty;
+    const valueText = ariaValueText ?? (skeleton ? "Loading" : empty ? "No data" : `${text}${unit ? ` ${unit}` : ""}`);
 
     return (
       <div
@@ -149,6 +153,7 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
         aria-valuetext={valueText}
         aria-labelledby={label ? labelId : undefined}
         aria-label={label ? undefined : "Gauge"}
+        aria-busy={loading || undefined}
         data-level={level}
         className={cn("relative inline-flex shrink-0 items-center justify-center", className)}
         style={accentStyle(accent, { width: s.box, height: s.box, ...style })}
@@ -172,10 +177,17 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
           ) : null}
         </svg>
         <div className="relative flex flex-col items-center leading-none">
-          <span data-slot="gauge-value" className={cn("font-mono font-semibold tabular-nums tracking-tight", s.value, empty ? "text-muted-foreground" : levelText[level])}>
-            {text}
-            {unit && !empty ? <span className="ml-0.5 text-[0.6em] font-medium text-muted-foreground">{unit}</span> : null}
-          </span>
+          {skeleton ? (
+            <span data-slot="gauge-value" className={cn("inline-flex items-center", s.value)}>
+              <span className="sr-only">{`Loading ${typeof label === "string" ? label : "gauge"}…`}</span>
+              <Skeleton shape="text" className="h-[0.9em] w-[2.2em]" />
+            </span>
+          ) : (
+            <span data-slot="gauge-value" className={cn("font-mono font-semibold tabular-nums tracking-tight", s.value, empty ? "text-muted-foreground" : levelText[level])}>
+              {text}
+              {unit && !empty ? <span className="ml-0.5 text-[0.6em] font-medium text-muted-foreground">{unit}</span> : null}
+            </span>
+          )}
           {children ??
             (label ? (
               <span id={labelId} className={cn("mt-1 max-w-[80%] truncate text-center text-muted-foreground", s.label)}>
@@ -195,8 +207,8 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
 Gauge.displayName = "Gauge";
 
 export interface RingMeterProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
-  /** Value in `max` units (percent by default). */
-  value: number;
+  /** Value in `max` units (percent by default). `null` means no reading yet: an empty track. */
+  value: number | null;
   max?: number;
   /** Diameter in px. Default 20. */
   size?: number;
@@ -217,6 +229,8 @@ export interface RingMeterProps extends Omit<React.HTMLAttributes<HTMLSpanElemen
   label?: string;
   /** Extra content after the ring, e.g. a token count. */
   children?: React.ReactNode;
+  /** Waiting for the first reading: with `value` null, the track stays empty and a placeholder stands in for the percentage. */
+  loading?: boolean;
 }
 
 /**
@@ -237,13 +251,16 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
       accent,
       label = "Usage",
       children,
+      loading,
       className,
       style,
       ...props
     },
     ref
   ) => {
-    const pct = toPercent(value, max);
+    const empty = value === null;
+    const skeleton = !!loading && empty;
+    const pct = empty ? 0 : toPercent(value, max);
     const level = meterLevel(pct, thresholds);
     const fill =
       level !== "ok"
@@ -252,7 +269,7 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
           ? accentColorValue
           : resolve(normalizeTone(tone ?? color, "primary"));
     const sw = thickness ?? Math.max(2, size / 8);
-    const shown = pct >= showValueAbove;
+    const shown = !empty && pct >= showValueAbove;
     return (
       <span
         ref={ref}
@@ -261,14 +278,20 @@ export const RingMeter = React.forwardRef<HTMLSpanElement, RingMeterProps>(
         aria-valuenow={Math.round(pct)}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-valuetext={`${Math.round(pct)}%`}
+        aria-valuetext={skeleton ? "Loading" : empty ? "No data" : `${Math.round(pct)}%`}
+        aria-busy={loading || undefined}
         data-level={level}
         className={cn("inline-flex items-center gap-1.5 align-middle", className)}
         style={accentStyle(accent, style)}
         {...props}
       >
         <ProgressRingSvg percent={pct} size={size} strokeWidth={sw} fillStroke={fill} fillSlot="ring-fill" />
-        {shown ? (
+        {skeleton ? (
+          <span data-slot="ring-value" className="inline-flex items-center">
+            <span className="sr-only">{`Loading ${label}…`}</span>
+            <Skeleton shape="text" className="h-3 w-7" />
+          </span>
+        ) : shown ? (
           <span data-slot="ring-value" className={cn("text-xs font-medium tabular-nums", levelText[level] === "text-foreground" ? "text-muted-foreground" : levelText[level])}>
             {Math.round(pct)}%
           </span>

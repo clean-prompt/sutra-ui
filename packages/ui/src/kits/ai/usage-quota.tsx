@@ -8,6 +8,7 @@ import { describeUsagePace, formatResetsIn, usagePace, type UsagePace, type Usag
 import { RingMeter } from "../../patterns/gauge";
 import { Meter } from "../../primitives/meter";
 import { Monogram } from "../../primitives/monogram";
+import { Skeleton } from "../../primitives/progress";
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */
@@ -125,6 +126,61 @@ export interface QuotaRingProps extends Omit<UsageQuota, "id">, Omit<React.HTMLA
   tolerance?: number;
   /** Ring diameter: sm 44, md 56 (default), lg 72. */
   size?: "sm" | "md" | "lg";
+  /** Waiting for the first reading: with no `used`/`percent` the ring is an empty track and the status line a placeholder. */
+  loading?: boolean;
+}
+
+const quotaLine = "flex h-[1.375em] min-w-0 items-center";
+
+/** Ring and text placeholders in QuotaRing's layout; `provider`, `label` and `icon` stay real when known. */
+function QuotaRingSkeleton({
+  size,
+  provider,
+  label,
+  icon,
+}: {
+  size: NonNullable<QuotaRingProps["size"]>;
+  provider?: string;
+  label?: string;
+  icon?: React.ReactNode;
+}) {
+  const s = ringSizes[size];
+  return (
+    <>
+      <span
+        aria-hidden
+        data-slot="quota-ring-skeleton"
+        className="block shrink-0 animate-pulse rounded-full border-solid border-muted motion-reduce:animate-none"
+        style={{ width: s.box, height: s.box, borderWidth: s.stroke }}
+      />
+      <div className="min-w-0 flex-1 text-sm leading-snug">
+        {provider ? (
+          <div className="flex min-w-0 items-center gap-1.5 font-medium text-foreground">
+            {icon ? (
+              <span aria-hidden className="inline-flex shrink-0 items-center [&_img]:size-4 [&_svg]:size-4">
+                {icon}
+              </span>
+            ) : null}
+            <span className="truncate">{provider}</span>
+          </div>
+        ) : (
+          <div className={quotaLine}>
+            <Skeleton shape="text" className="w-20" />
+          </div>
+        )}
+        {label ? (
+          <div className="truncate text-muted-foreground">{label}</div>
+        ) : (
+          <div className={quotaLine}>
+            <Skeleton shape="text" className="w-16" />
+          </div>
+        )}
+        <div className={quotaLine}>
+          <Skeleton shape="text" className="w-28 max-w-full" />
+        </div>
+      </div>
+    </>
+  );
 }
 
 /**
@@ -149,12 +205,30 @@ export const QuotaRing = React.forwardRef<HTMLDivElement, QuotaRingProps>(
       now: nowProp,
       tolerance,
       size = "md",
+      loading,
       className,
       style,
       ...props
     },
     ref
   ) => {
+    const ringAccent = accent ?? usageQuotaAccent(provider);
+    if (loading && used === undefined && percent === undefined) {
+      return (
+        <div
+          ref={ref}
+          aria-busy
+          data-slot="quota-ring"
+          data-mode={mode}
+          style={accentStyle(ringAccent, style)}
+          className={cn("flex min-w-0 items-center gap-3", className)}
+          {...props}
+        >
+          <QuotaRingSkeleton size={size} provider={provider} label={label} icon={icon} />
+          <span className="sr-only">{`Loading ${provider ? `${provider} quota` : "quota"}…`}</span>
+        </div>
+      );
+    }
     const now = nowProp ?? Date.now();
     const usedPct = usageQuotaPercent({ used, percent, limit });
     const shown = Math.round(mode === "left" ? 100 - usedPct : usedPct);
@@ -162,10 +236,10 @@ export const QuotaRing = React.forwardRef<HTMLDivElement, QuotaRingProps>(
     const statusText: React.ReactNode =
       (status.source === "reset" || status.source === "none") && resetLabel != null ? resetLabel : status.text;
     const s = ringSizes[size];
-    const ringAccent = accent ?? usageQuotaAccent(provider);
     return (
       <div
         ref={ref}
+        aria-busy={loading || undefined}
         data-slot="quota-ring"
         data-mode={mode}
         data-pace={status.pace?.status}
@@ -228,26 +302,45 @@ export interface QuotaStripProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "card" | "plain";
   /** Shown when `quotas` is empty. Default "No quotas". */
   emptyState?: React.ReactNode;
+  /** Waiting for the quotas: with none yet, `loadingRows` placeholder rings stand in (rings without a reading show placeholders too). */
+  loading?: boolean;
+  /** Placeholder rings while loading with no quotas. Default 4. */
+  loadingRows?: number;
 }
 
 /** Row of provider quota rings: one column on phones, two on small screens, four on wide ones. */
 export const QuotaStrip = React.forwardRef<HTMLDivElement, QuotaStripProps>(
-  ({ quotas, mode, now: nowProp, tolerance, size, variant = "card", emptyState = "No quotas", className, ...props }, ref) => {
+  (
+    { quotas, mode, now: nowProp, tolerance, size, variant = "card", emptyState = "No quotas", loading, loadingRows = 4, className, ...props },
+    ref
+  ) => {
     const now = nowProp ?? Date.now();
     return (
       <div
         ref={ref}
+        aria-busy={loading || undefined}
         data-slot="quota-strip"
         className={cn(variant === "card" && "rounded-box border border-border bg-card p-4 text-card-foreground shadow-xs", className)}
         {...props}
       >
-        {quotas.length === 0 ? (
+        {quotas.length === 0 && loading ? (
+          <>
+            <ul aria-hidden className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
+              {Array.from({ length: Math.max(0, loadingRows) }, (_, i) => (
+                <li key={i} data-slot="quota-strip-skeleton" className="flex min-w-0 items-center gap-3">
+                  <QuotaRingSkeleton size={size ?? "md"} />
+                </li>
+              ))}
+            </ul>
+            <span className="sr-only">Loading quotas…</span>
+          </>
+        ) : quotas.length === 0 ? (
           <p className="text-sm text-muted-foreground">{emptyState}</p>
         ) : (
           <ul className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
             {quotas.map(({ id, ...q }) => (
               <li key={id} data-quota={id} className="min-w-0">
-                <QuotaRing {...q} mode={mode} now={now} tolerance={tolerance} size={size} />
+                <QuotaRing {...q} mode={mode} now={now} tolerance={tolerance} size={size} loading={loading} />
               </li>
             ))}
           </ul>
@@ -266,6 +359,10 @@ export interface QuotaBarsProps extends React.HTMLAttributes<HTMLUListElement> {
   quotas: UsageQuota[];
   /** What each bar shows. Default "left". */
   mode?: UsageQuotaMode;
+  /** Waiting for the quotas: with none yet, `loadingRows` placeholder bars stand in (bars without a reading show an empty track). */
+  loading?: boolean;
+  /** Placeholder bars while loading with no quotas. Default 3. */
+  loadingRows?: number;
 }
 
 /**
@@ -282,9 +379,19 @@ export interface QuotaBarsProps extends React.HTMLAttributes<HTMLUListElement> {
  * </StatCard>
  * ```
  */
-export const QuotaBars = React.forwardRef<HTMLUListElement, QuotaBarsProps>(({ quotas, mode = "left", className, ...props }, ref) => (
-  <ul ref={ref} data-slot="quota-bars" className={cn("flex items-center gap-3", className)} {...props}>
+export const QuotaBars = React.forwardRef<HTMLUListElement, QuotaBarsProps>(({ quotas, mode = "left", loading, loadingRows = 3, className, ...props }, ref) => (
+  <ul ref={ref} aria-busy={loading || undefined} data-slot="quota-bars" className={cn("flex items-center gap-3", className)} {...props}>
+    {quotas.length === 0 && loading
+      ? Array.from({ length: Math.max(1, loadingRows) }, (_, i) => (
+          <li key={i} data-slot="quota-bars-skeleton" className="flex min-w-0 flex-1 items-center gap-2">
+            <Skeleton shape="circle" className="size-5" />
+            <span aria-hidden className="block h-1 min-w-0 flex-1 animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
+            {i === 0 ? <span className="sr-only">Loading quotas…</span> : null}
+          </li>
+        ))
+      : null}
     {quotas.map((q) => {
+      const reading = q.used !== undefined || q.percent !== undefined;
       const usedPct = usageQuotaPercent(q);
       const shown = Math.round(mode === "left" ? 100 - usedPct : usedPct);
       const barAccent = q.accent ?? usageQuotaAccent(q.provider);
@@ -303,7 +410,8 @@ export const QuotaBars = React.forwardRef<HTMLUListElement, QuotaBarsProps>(({ q
           )}
           <Meter
             label={q.provider}
-            value={shown}
+            value={loading && !reading ? null : shown}
+            loading={(loading && !reading) || undefined}
             showValue={false}
             thresholds={false}
             accent={barAccent}

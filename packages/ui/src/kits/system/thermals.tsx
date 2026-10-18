@@ -19,6 +19,7 @@ import { Meter } from "../../primitives/meter";
 import { Slider } from "../../primitives/slider";
 import { SegmentedControl } from "../../primitives/segmented-control";
 import { InlineAlert } from "../../primitives/inline-alert";
+import { Skeleton } from "../../primitives/progress";
 import {
   joinReadoutUnit,
   readoutLevel,
@@ -291,6 +292,10 @@ export interface ThermalSensorsProps extends Omit<React.HTMLAttributes<HTMLDivEl
   /** Accessible name of the list. Default "Temperature sensors". */
   label?: string;
   locale?: string;
+  /** Data is on its way. With no sensors yet the card shows placeholder rows; with sensors the root is only marked busy. */
+  loading?: boolean;
+  /** Placeholder sensors while loading. Default 4. */
+  loadingRows?: number;
 }
 
 /** CPU / GPU / SSD / battery temperatures in a card, coloured by thresholds, with an optional °C / °F switch. */
@@ -312,12 +317,15 @@ export const ThermalSensors = React.forwardRef<HTMLDivElement, ThermalSensorsPro
       emptyState = "No temperature sensors",
       label = "Temperature sensors",
       locale,
+      loading = false,
+      loadingRows = 4,
       className,
       style,
       ...props
     },
     ref
   ) => {
+    const skeleton = loading && sensors.length === 0;
     const [unit, setUnit] = useControllableState<TemperatureUnit>({ value: unitProp, defaultValue: defaultUnit, onChange: onUnitChange });
     const titleId = React.useId();
     const showHeader = title != null || showUnitToggle;
@@ -326,6 +334,7 @@ export const ThermalSensors = React.forwardRef<HTMLDivElement, ThermalSensorsPro
       <section
         ref={ref}
         data-slot="thermal-sensors"
+        aria-busy={loading || undefined}
         aria-labelledby={title != null ? titleId : undefined}
         aria-label={title != null ? undefined : label}
         style={accentStyle(accent, style)}
@@ -360,7 +369,40 @@ export const ThermalSensors = React.forwardRef<HTMLDivElement, ThermalSensorsPro
             ) : null}
           </div>
         ) : null}
-        {sensors.length === 0 ? (
+        {skeleton ? (
+          <>
+            <span className="sr-only">Loading temperatures…</span>
+            <ul
+              aria-hidden
+              className={cn(
+                "m-0 list-none p-0",
+                variant === "gauge" ? "grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4" : "flex flex-col gap-4"
+              )}
+            >
+              {Array.from({ length: Math.max(0, loadingRows) }, (_, i) => (
+                <li key={i} data-slot="thermal-sensors-skeleton" className="min-w-0">
+                  {variant === "gauge" ? (
+                    <div className="flex flex-col items-center gap-1.5">
+                      <Skeleton shape="circle" width={112} />
+                      <Skeleton shape="text" className="w-12" />
+                    </div>
+                  ) : (
+                    <div className="w-full">
+                      <div className="mb-1.5 flex items-center justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <Skeleton className="size-6 shrink-0 rounded-md" />
+                          <Skeleton shape="text" className="w-20" />
+                        </div>
+                        <Skeleton shape="text" className="w-12 shrink-0" />
+                      </div>
+                      <Skeleton className="h-2 rounded-full" />
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : sensors.length === 0 ? (
           <div data-slot="thermal-sensors-empty" className="py-6 text-center text-muted-foreground">
             {emptyState}
           </div>
@@ -446,6 +488,10 @@ export interface FanControlProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   /** Accessible name of the list. Default "Fans". */
   label?: string;
   locale?: string;
+  /** Data is on its way. With no fans yet placeholder fan cards are shown (no mode switch or slider); with fans the root is only marked busy. */
+  loading?: boolean;
+  /** Placeholder fans while loading. Default 2. */
+  loadingRows?: number;
 }
 
 const MODE_OPTIONS = [
@@ -473,18 +519,22 @@ export const FanControl = React.forwardRef<HTMLDivElement, FanControlProps>(
       emptyState = "No controllable fans",
       label = "Fans",
       locale,
+      loading = false,
+      loadingRows = 2,
       className,
       style,
       ...props
     },
     ref
   ) => {
+    const skeleton = loading && fans.length === 0;
     const baseId = React.useId();
     return (
       <div
         ref={ref}
         data-slot="fan-control"
         data-disabled={disabled ? "" : undefined}
+        aria-busy={loading || undefined}
         style={accentStyle(accent, style)}
         className={cn("flex flex-col gap-3 text-sm", className)}
         {...props}
@@ -494,7 +544,30 @@ export const FanControl = React.forwardRef<HTMLDivElement, FanControlProps>(
             {disabledReason}
           </InlineAlert>
         ) : null}
-        {fans.length === 0 ? (
+        {skeleton ? (
+          <>
+            <span className="sr-only">Loading fans…</span>
+            <ul aria-hidden className="m-0 flex list-none flex-col gap-3 p-0">
+              {Array.from({ length: Math.max(0, loadingRows) }, (_, i) => (
+                <li key={i} data-slot="fan-control-skeleton" className="flex flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <Skeleton className="size-9 shrink-0 rounded-lg" />
+                      <div className="flex min-w-0 flex-1 flex-col gap-1">
+                        <Skeleton shape="text" className="w-24 max-w-full" />
+                        <Skeleton shape="text" className="h-[0.7em] w-28 max-w-full" />
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      <Skeleton data-slot="fan-control-skeleton-rpm" shape="text" className="h-[1.1em] w-20" />
+                      <span className="text-xs text-muted-foreground">Current</span>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : fans.length === 0 ? (
           <div data-slot="fan-control-empty" className="rounded-box border border-border bg-card px-4 py-6 text-center text-muted-foreground shadow-xs">
             {emptyState}
           </div>
@@ -629,13 +702,15 @@ export const HeatByApp = React.forwardRef<HTMLDivElement, HeatByAppProps>(
       highlightFirst = true,
       emptyState = "No apps adding heat",
       valueFormatter = (v) => new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 }).format(v),
+      loading,
+      loadingRows,
       className,
       style,
       ...props
     },
     ref
   ) => (
-    <div ref={ref} data-slot="heat-by-app" style={accentStyle(accent, style)} className={cn("flex flex-col gap-2", className)}>
+    <div ref={ref} data-slot="heat-by-app" aria-busy={loading || undefined} style={accentStyle(accent, style)} className={cn("flex flex-col gap-2", className)}>
       <BarList
         items={apps.map((app) => ({
           id: app.id,
@@ -652,6 +727,8 @@ export const HeatByApp = React.forwardRef<HTMLDivElement, HeatByAppProps>(
         highlightFirst={highlightFirst}
         emptyState={emptyState}
         valueFormatter={valueFormatter}
+        loading={loading}
+        loadingRows={loadingRows}
         {...props}
       />
       {explanation !== false && explanation != null ? (

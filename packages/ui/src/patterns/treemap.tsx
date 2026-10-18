@@ -26,6 +26,7 @@ import {
   BreadcrumbSeparator,
 } from "../primitives/breadcrumbs";
 import { BreakdownList } from "../primitives/meter";
+import { Skeleton } from "../primitives/progress";
 import { ChartTooltip } from "./chart";
 import { StatValue } from "./stat-card";
 
@@ -87,6 +88,8 @@ export interface TreemapProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   tooltip?: boolean;
   /** Shown when nothing has a size. Default "No data". */
   emptyState?: React.ReactNode;
+  /** Data is on its way: with nothing to draw, placeholder tiles (and legend rows) fill the map; otherwise the root is marked busy. */
+  loading?: boolean;
 }
 
 const DEFAULT_PALETTE: readonly string[] = [
@@ -147,6 +150,7 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
       breadcrumb,
       tooltip = true,
       emptyState = "No data",
+      loading,
       className,
       ...props
     },
@@ -267,7 +271,7 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
     const inset = Math.max(0, gap) / 2;
 
     return (
-      <div ref={ref} data-slot="treemap" className={cn("flex min-w-0 flex-col gap-3", className)} {...props} onKeyDown={onKeyDown}>
+      <div ref={ref} data-slot="treemap" aria-busy={loading || undefined} className={cn("flex min-w-0 flex-col gap-3", className)} {...props} onKeyDown={onKeyDown}>
         {showBreadcrumb ? (
           <Breadcrumb size="sm" aria-label={`${label} location`} data-slot="treemap-breadcrumb">
             <BreadcrumbList>
@@ -294,7 +298,38 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
           </Breadcrumb>
         ) : null}
 
-        {tiles.length === 0 ? (
+        {tiles.length === 0 && loading ? (
+          <>
+            <span className="sr-only">{`Loading ${label}…`}</span>
+            <div aria-hidden data-slot="treemap-skeleton" className="relative w-full" style={{ height }}>
+              {TREEMAP_SKELETON_TILES.map(([x, y, w, h], i) => (
+                <Skeleton
+                  key={i}
+                  className="absolute rounded-md"
+                  style={{
+                    left: `calc(${x}% + ${Math.max(0, gap) / 2}px)`,
+                    top: `calc(${y}% + ${Math.max(0, gap) / 2}px)`,
+                    width: `calc(${w}% - ${Math.max(0, gap)}px)`,
+                    height: `calc(${h}% - ${Math.max(0, gap)}px)`,
+                  }}
+                />
+              ))}
+            </div>
+            {legend ? (
+              <div aria-hidden data-slot="treemap-legend-skeleton" className="grid gap-1 gap-x-6 text-xs sm:grid-cols-2">
+                {[52, 40, 60, 34].map((w, i) => (
+                  <div key={i} className="flex items-center gap-2 py-1">
+                    <Skeleton className="size-2.5 shrink-0 rounded-[3px]" />
+                    <span className="min-w-0 flex-1">
+                      <Skeleton shape="text" className="h-3" width={`${w}%`} />
+                    </span>
+                    <Skeleton shape="text" className="h-3 w-10 shrink-0" />
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </>
+        ) : tiles.length === 0 ? (
           <div
             data-slot="treemap-empty"
             className="flex items-center justify-center rounded-box border border-dashed border-border text-sm text-muted-foreground"
@@ -450,6 +485,15 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
 );
 Treemap.displayName = "Treemap";
 
+/** Placeholder tiles as [left, top, width, height] in percent: a squarified-looking split. */
+const TREEMAP_SKELETON_TILES: readonly (readonly [number, number, number, number])[] = [
+  [0, 0, 46, 100],
+  [46, 0, 54, 55],
+  [46, 55, 30, 45],
+  [76, 55, 24, 25],
+  [76, 80, 24, 20],
+];
+
 function pathNames(root: TreemapNode, ids: readonly string[]): string[] {
   return resolveTreemapPath(root, ids).map((n) => n.name);
 }
@@ -518,6 +562,8 @@ export interface StorageMapProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   categories?: Partial<Record<StorageCategory, { label?: string; color?: string }>>;
   /** Formats byte counts. Default decimal units ("412.5 GB"), like the system kit. */
   formatBytes?: (bytes: number) => string;
+  /** Data is on its way: with no items, placeholders stand in for the used and free values, the map and the legend. */
+  loading?: boolean;
 }
 
 const toNode = (item: StorageMapItem): TreemapNode => ({
@@ -551,6 +597,7 @@ export const StorageMap = React.forwardRef<HTMLDivElement, StorageMapProps>(
       breadcrumb,
       tooltip,
       emptyState,
+      loading,
       className,
       ...props
     },
@@ -571,20 +618,33 @@ export const StorageMap = React.forwardRef<HTMLDivElement, StorageMapProps>(
     const used = finiteOr(usedProp) ?? treemapValue(data);
     const free = finiteOr(freeProp) ?? (cap !== undefined ? Math.max(0, cap - used) : undefined);
     const usedText = splitValueUnit(formatBytes(used));
+    const skeleton = !!loading && items.length === 0;
 
     return (
       <div
         ref={ref}
         data-slot="storage-map"
+        aria-busy={loading || undefined}
         className={cn("flex min-w-0 flex-col gap-4 rounded-box border border-border bg-card p-5 text-card-foreground shadow-xs", className)}
         {...props}
       >
         <div data-slot="storage-map-header" className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
           <div className="flex min-w-0 flex-col gap-1">
             <div className="text-sm text-muted-foreground">{cap !== undefined ? `In use of ${formatBytes(cap)}` : "In use"}</div>
-            <StatValue data-slot="storage-map-used" value={usedText.value} unit={usedText.unit} size="lg" className="text-foreground" />
+            {skeleton ? (
+              <Skeleton data-slot="storage-map-used-skeleton" className="my-0.5 h-8 w-28" />
+            ) : (
+              <StatValue data-slot="storage-map-used" value={usedText.value} unit={usedText.unit} size="lg" className="text-foreground" />
+            )}
           </div>
-          {free !== undefined ? (
+          {skeleton && cap !== undefined && finiteOr(freeProp) === undefined ? (
+            <dl className="flex items-baseline gap-2 text-sm">
+              <dt className="text-muted-foreground">Free</dt>
+              <dd className="self-center">
+                <Skeleton shape="text" className="h-3.5 w-16" />
+              </dd>
+            </dl>
+          ) : free !== undefined ? (
             <dl className="flex items-baseline gap-2 text-sm">
               <dt className="text-muted-foreground">Free</dt>
               <dd data-slot="storage-map-free" className="font-medium tabular-nums text-foreground">
@@ -611,6 +671,7 @@ export const StorageMap = React.forwardRef<HTMLDivElement, StorageMapProps>(
           breadcrumb={breadcrumb}
           tooltip={tooltip}
           emptyState={emptyState}
+          loading={loading}
         />
       </div>
     );
