@@ -144,6 +144,10 @@ Before writing a new pill, list, banner or picker, check this table. A domain co
 | Plan limits | `QuotaRing`, `QuotaStrip`, `QuotaBars` with `usagePace` / `describeUsagePace` (on pace, spare, runs out) | — |
 | Compact reading with strain colour | `MetricReadout`, `MetricReadoutGroup` (thresholds in either direction) | — |
 | Area by size | `Treemap` (drill-down, keyboard, screen-reader table) | StorageMap |
+| File preview | `FileViewer` (`renderers` for pdf.js / office previews supplied by the app, `files` gallery, `actions`, `panel`, `blob`) | FilePreviewCard |
+| Time series | `AreaChart` / `LineChart` with `xAxis.type="time"`, `domain`, `maxGap`, `connectNulls` | — |
+| Collaborative editing | `RichTextEditor` / `CodeEditor` with `history={false}` plus Yjs `extensions` | — |
+| Folder upload | `Dropzone` / `FileUploadTrigger` `directory`; read paths with `getFileRelativePath` | — |
 | Apps instead of processes | `ProcessTable` `groupBy` with `onQuitGroup`; `groupProcesses` / `buildProcessTree` in lib | — |
 | Temperatures | `lib/temperature` (store °C, convert for display) | ThermalSensors, FanControl, alert rules |
 | Attachment tile | `ChatAttachment` (`status`, `progress`, `onRetry`, `onPreview`) | AttachmentThumbnails |

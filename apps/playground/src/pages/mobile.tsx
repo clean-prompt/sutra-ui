@@ -281,6 +281,19 @@ function ImageStatesDemo() {
   );
 }
 
+function FileDetails({ file }: { file: ViewerFile }) {
+  return (
+    <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 p-4 text-sm">
+      <dt className="text-muted-foreground">Name</dt>
+      <dd className="truncate">{file.name}</dd>
+      <dt className="text-muted-foreground">Size</dt>
+      <dd>{file.size ? `${(file.size / 1000).toFixed(1)} kB` : "—"}</dd>
+      <dt className="text-muted-foreground">Type</dt>
+      <dd>{file.mimeType ?? file.name.split(".").pop()}</dd>
+    </dl>
+  );
+}
+
 function FileViewerDemo() {
   const pdfUrl = React.useMemo(() => URL.createObjectURL(new Blob([PDF_SOURCE], { type: "application/pdf" })), []);
   React.useEffect(() => () => URL.revokeObjectURL(pdfUrl), [pdfUrl]);
@@ -291,6 +304,7 @@ function FileViewerDemo() {
     { name: "document.json", size: jsonSample.length, textContent: jsonSample },
     { name: "backup-2026-10.zip", size: 48_200_000, url: "data:application/zip;base64,UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==" },
   ];
+  const viewerFiles: ViewerFile[] = files.map(({ textContent, ...f }) => ({ ...f, text: textContent }));
   const [active, setActive] = React.useState<number | null>(null);
   const current = active === null ? null : files[active]!;
   return (
@@ -302,14 +316,19 @@ function FileViewerDemo() {
       </div>
       {current && (
         <FileViewer
-          file={current}
-          text={current.textContent}
+          files={viewerFiles}
+          index={active ?? 0}
+          onIndexChange={(i) => setActive(i)}
+          thumbnails
+          actions={<Button size="xs" variant="ghost">Share</Button>}
+          panel={(file) => <FileDetails file={file} />}
+          defaultPanelOpen={false}
           open={active !== null}
           onOpenChange={(o) => !o && setActive(null)}
         />
       )}
-      <DemoLabel>Inline</DemoLabel>
-      <FileViewer inline file={files[3]!} text={jsonSample} className="max-h-80" />
+      <DemoLabel>Inline gallery with a details panel (arrow keys move between files)</DemoLabel>
+      <FileViewer inline files={viewerFiles} defaultIndex={0} panel={(file) => <FileDetails file={file} />} className="h-[28rem]" />
     </div>
   );
 }

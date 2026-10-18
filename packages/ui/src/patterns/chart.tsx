@@ -4,7 +4,17 @@ import { chartColors } from "../lib/tokens";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useElementWidth } from "../hooks/use-resize-observer";
 import { useSafeId } from "../hooks/use-safe-id";
-import { formatShortDate } from "../lib/time";
+import {
+  DAY_MS,
+  HOUR_MS,
+  MINUTE_MS,
+  SECOND_MS,
+  formatClockTime,
+  formatDateTime,
+  formatShortDate,
+  toMs,
+  type TimeInput,
+} from "../lib/time";
 import { BreakdownList } from "../primitives/meter";
 import { Skeleton } from "../primitives/progress";
 
@@ -20,13 +30,38 @@ export interface ChartSeries {
   label?: string;
   /** Token name (primary, success, warning, destructive, info, muted) or any CSS color. */
   color?: string;
+  /** Area and line charts: bridge null values for this series. Overrides the chart's `connectNulls`. */
+  connectNulls?: boolean;
 }
+
+/**
+ * How the index axis places points. `"category"` (default) spaces them evenly by position in `data`;
+ * `"time"` places them by time (the `index` field holds a Date, epoch ms or ISO string) and `"linear"` by
+ * number, so unevenly spaced samples keep their real spacing. Bar charts always use categories.
+ */
+export type ChartXAxisType = "category" | "time" | "linear";
 
 /** Options for the index (category / time) axis. */
 export interface ChartXAxisOptions {
   hide?: boolean;
+  /** Scale type. Default `"category"`. Ignored by `BarChart`, whose bars are categorical. */
+  type?: ChartXAxisType;
+  /**
+   * Fixed axis range for `"time"` / `"linear"` (e.g. the last 24 h even when data starts later). Either end may be
+   * `"auto"` to fit the data. Points outside are clipped and can't be hovered.
+   */
+  domain?: [TimeInput | "auto", TimeInput | "auto"];
+  /**
+   * Break the line between consecutive samples further apart than this (ms for `"time"`, axis units for
+   * `"linear"`), so a period with no data shows as a gap instead of a straight line.
+   */
+  maxGap?: number;
   /** Approximate maximum number of tick labels. */
   tickCount?: number;
+  /**
+   * Label for a data point (tooltip, table, category ticks). On a `"time"` axis the value is passed as a `Date`;
+   * generated time/linear tick labels are passed with `index` -1.
+   */
   formatter?: (value: ChartValue, index: number) => string;
   /** Column header in the screen-reader table. Defaults to the `index` key. */
   label?: string;
@@ -43,17 +78,22 @@ export interface ChartYAxisOptions {
   min?: number | "auto";
   /** Fixed upper bound (default fits the data, rounded to a nice tick). */
   max?: number | "auto";
+  /** `[min, max]` in one prop, matching `xAxis.domain`. `min`/`max` win when both are given. */
+  domain?: [number | "auto", number | "auto"];
   /** Gutter width in px when the axis is vertical. */
   width?: number;
 }
 
-export interface ChartReferenceLine {
-  value: number;
+/**
+ * A threshold or target line. By default it is horizontal at a value (`axis: "y"`); with `axis: "x"` it is
+ * vertical at an index value (a time or number), which needs a `"time"` or `"linear"` x axis.
+ */
+export type ChartReferenceLine = {
   label?: string;
   color?: string;
   /** Default true. */
   dashed?: boolean;
-}
+} & ({ axis?: "y"; value: number } | { axis: "x"; value: TimeInput });
 
 export type ChartCurve = "linear" | "monotone" | "step";
 
@@ -180,19 +220,7 @@ function curvePath(points: readonly Point[], curve: ChartCurve) {
   return curve === "monotone" ? monotonePath(points) : curve === "step" ? stepPath(points) : linearPath(points);
 }
 
-/** Split a series into runs of finite values so gaps (null) break the line. */
-function segments(values: (number | null)[]) {
-  const runs: { i: number; v: number }[][] = [];
-  let run: { i: number; v: number }[] = [];
-  values.forEach((v, i) => {
-    if (v === null) {
-      if (run.length) runs.push(run);
-      run = [];
-    } else run.push({ i, v });
-  });
-  if (run.length) runs.push(run);
-  return runs;
-}
+type Run = { i: number; v: number }[];
 
 type BarEnd = "top" | "bottom" | "left" | "right" | "none";
 
@@ -252,6 +280,140 @@ function defaultIndexFormatter(v: ChartValue) {
   if (v instanceof Date) return formatShortDate(v, { year: "never" });
   if (v === null || v === undefined) return "";
   return String(v);
+}
+
+/* Time axis ---------------------------------------------------------------------------------------- */
+
+export type TimeTickUnit = "second" | "minute" | "hour" | "day" | "week" | "month" | "year";
+
+export interface TimeTicks {
+  /** Tick positions in epoch ms, aligned to local boundaries (whole minutes, hours, midnights, Mondays, months). */
+  ticks: number[];
+  unit: TimeTickUnit;
+  /** Number of `unit`s between ticks. */
+  step: number;
+}
+
+const TIME_INTERVALS: [TimeTickUnit, number, number][] = [
+  ["second", 1, SECOND_MS],
+  ["second", 5, 5 * SECOND_MS],
+  ["second", 15, 15 * SECOND_MS],
+  ["second", 30, 30 * SECOND_MS],
+  ["minute", 1, MINUTE_MS],
+  ["minute", 5, 5 * MINUTE_MS],
+  ["minute", 15, 15 * MINUTE_MS],
+  ["minute", 30, 30 * MINUTE_MS],
+  ["hour", 1, HOUR_MS],
+  ["hour", 3, 3 * HOUR_MS],
+  ["hour", 6, 6 * HOUR_MS],
+  ["hour", 12, 12 * HOUR_MS],
+  ["day", 1, DAY_MS],
+  ["day", 2, 2 * DAY_MS],
+  ["week", 1, 7 * DAY_MS],
+  ["month", 1, 30 * DAY_MS],
+  ["month", 3, 91 * DAY_MS],
+];
+const YEAR_MS = 365.25 * DAY_MS;
+
+function timeFloor(ms: number, unit: TimeTickUnit, step: number) {
+  const d = new Date(ms);
+  const [y, mo, day, h, mi, s] = [d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()];
+  switch (unit) {
+    case "second":
+      return new Date(y, mo, day, h, mi, Math.floor(s / step) * step).getTime();
+    case "minute":
+      return new Date(y, mo, day, h, Math.floor(mi / step) * step).getTime();
+    case "hour":
+      return new Date(y, mo, day, Math.floor(h / step) * step).getTime();
+    case "day":
+      return new Date(y, mo, day).getTime();
+    case "week":
+      return new Date(y, mo, day - ((d.getDay() + 6) % 7)).getTime();
+    case "month":
+      return new Date(y, Math.floor(mo / step) * step, 1).getTime();
+    case "year":
+      return new Date(Math.floor(y / step) * step, 0, 1).getTime();
+  }
+}
+
+function timeOffset(start: number, unit: TimeTickUnit, step: number, k: number) {
+  if (unit === "second" || unit === "minute") return start + k * step * (unit === "second" ? SECOND_MS : MINUTE_MS);
+  const d = new Date(start);
+  const [y, mo, day, h] = [d.getFullYear(), d.getMonth(), d.getDate(), d.getHours()];
+  switch (unit) {
+    case "hour":
+      return new Date(y, mo, day, h + k * step).getTime();
+    case "day":
+      return new Date(y, mo, day + k * step).getTime();
+    case "week":
+      return new Date(y, mo, day + 7 * k * step).getTime();
+    case "month":
+      return new Date(y, mo + k * step, 1).getTime();
+    default:
+      return new Date(y + k * step, 0, 1).getTime();
+  }
+}
+
+/**
+ * "Nice" time ticks within [min, max] (epoch ms): at most about `count` ticks at 1/5/15/30 s, 1/5/15/30 min,
+ * 1/3/6/12 h, 1/2 days, weeks (Mondays), 1/3 months or years, aligned to local-time boundaries.
+ */
+export function timeTicks(min: number, max: number, count = 6): TimeTicks {
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return { ticks: [], unit: "day", step: 1 };
+  const lo = Math.min(min, max);
+  const hi = Math.max(min, max);
+  const target = (hi - lo) / Math.max(1, count);
+  const hit = TIME_INTERVALS.find(([, , ms]) => ms >= target);
+  const [unit, step] = hit ?? ["year", Math.max(1, Math.ceil(niceStep(Math.max(1, target / YEAR_MS))))];
+  const start = timeFloor(lo, unit, step);
+  const ticks: number[] = [];
+  for (let k = 0; k < 10000; k++) {
+    const t = timeOffset(start, unit, step, k);
+    if (t > hi) break;
+    if (t >= lo && t !== ticks[ticks.length - 1]) ticks.push(t);
+  }
+  return { ticks, unit, step };
+}
+
+const intlCache = new Map<string, Intl.DateTimeFormat>();
+function intl(locale: string | undefined, options: Intl.DateTimeFormatOptions) {
+  const key = `${locale ?? ""}|${JSON.stringify(options)}`;
+  let f = intlCache.get(key);
+  if (!f) {
+    f = new Intl.DateTimeFormat(locale, options);
+    intlCache.set(key, f);
+  }
+  return f;
+}
+
+const isMidnight = (d: Date) => d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0 && d.getMilliseconds() === 0;
+
+/**
+ * Default label for a time tick of the given unit: clock time for seconds/minutes/hours (`10:30`, a midnight tick shows
+ * the day), weekday and day for days (`Mon 14`, the 1st shows the month), month and day for weeks (`Oct 3`), the month
+ * for months (January adds the year) and the year for years.
+ */
+export function formatTimeTick(value: TimeInput, unit: TimeTickUnit, locale?: string): string {
+  const ms = toMs(value);
+  if (ms === undefined) return "";
+  const d = new Date(ms);
+  switch (unit) {
+    case "second":
+      return formatClockTime(d, { locale, seconds: true });
+    case "minute":
+    case "hour":
+      return isMidnight(d) ? intl(locale, { weekday: "short", day: "numeric" }).format(d) : formatClockTime(d, { locale });
+    case "day":
+      return d.getDate() === 1
+        ? formatShortDate(d, { locale, year: "never" })
+        : intl(locale, { weekday: "short", day: "numeric" }).format(d);
+    case "week":
+      return formatShortDate(d, { locale, year: "never" });
+    case "month":
+      return intl(locale, d.getMonth() === 0 ? { month: "short", year: "numeric" } : { month: "short" }).format(d);
+    case "year":
+      return intl(locale, { year: "numeric" }).format(d);
+  }
 }
 
 function useMergedRef<T>(...refs: (React.Ref<T> | undefined)[]) {
@@ -593,6 +755,11 @@ interface PlotContext {
   plot: { left: number; top: number; width: number; height: number };
   horizontal: boolean;
   cat: (i: number) => number;
+  /**
+   * Runs of drawable points in x order, broken at nulls (unless the series bridges them with `connectNulls`) and at
+   * `xAxis.maxGap` on a time/linear axis.
+   */
+  runs: (values: (number | null)[], series?: ChartSeries) => Run[];
   bandwidth: number;
   val: (v: number) => number;
   baseline: number;
@@ -603,6 +770,7 @@ interface PlotContext {
 }
 
 interface CartesianInternalProps extends CartesianChartProps {
+  connectNulls?: boolean;
   chartType: string;
   band: boolean;
   horizontal?: boolean;
@@ -637,6 +805,7 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
       onHiddenSeriesChange,
       onActiveIndexChange,
       loading,
+      connectNulls,
       chartType,
       band,
       horizontal = false,
@@ -658,11 +827,76 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
     const [activeRaw, setActive] = React.useState<number | null>(null);
     const [announce, setAnnounce] = React.useState("");
     const n = data.length;
-    const active = activeRaw !== null && activeRaw < n ? activeRaw : null;
 
-    const onActiveRef = React.useRef(onActiveIndexChange);
-    onActiveRef.current = onActiveIndexChange;
-    React.useEffect(() => onActiveRef.current?.(active), [active]);
+    // Index scale: categories (evenly spaced by position) or continuous time / linear values.
+    const xType: ChartXAxisType = band ? "category" : xAxis.type ?? "category";
+    const continuous = xType !== "category";
+    const xs: (number | null)[] = continuous
+      ? data.map((d) => {
+          const raw = d[index];
+          return xType === "time" ? toMs(raw) ?? null : toNumber(raw);
+        })
+      : [];
+    const readX = (v: TimeInput | "auto" | undefined) =>
+      v === undefined || v === "auto" ? undefined : xType === "time" ? toMs(v) : toNumber(v as ChartValue) ?? undefined;
+    let x0 = 0;
+    let x1 = 1;
+    if (continuous) {
+      let lo = Infinity;
+      let hi = -Infinity;
+      for (const x of xs)
+        if (x !== null) {
+          lo = Math.min(lo, x);
+          hi = Math.max(hi, x);
+        }
+      x0 = readX(xAxis.domain?.[0]) ?? lo;
+      x1 = readX(xAxis.domain?.[1]) ?? hi;
+      if (!Number.isFinite(x0) || !Number.isFinite(x1)) {
+        x0 = Number.isFinite(x0) ? x0 : Number.isFinite(x1) ? x1 : 0;
+        x1 = x0;
+      }
+      if (x1 < x0) [x0, x1] = [x1, x0];
+      if (x1 === x0) {
+        const pad = xType === "time" ? HOUR_MS / 2 : Math.abs(x0) * 0.1 || 1;
+        x0 -= pad;
+        x1 += pad;
+      }
+    }
+    const inDomain = (i: number) => !continuous || (xs[i] !== null && xs[i]! >= x0 && xs[i]! <= x1);
+    /** Indices in drawing order: every point with a readable x, sorted by x. */
+    const drawOrder: number[] = continuous
+      ? data
+          .map((_, i) => i)
+          .filter((i) => xs[i] !== null)
+          .sort((a, b) => xs[a]! - xs[b]! || a - b)
+      : data.map((_, i) => i);
+    /** Points inside the x domain, in x order. */
+    const inView = continuous ? drawOrder.filter(inDomain) : drawOrder;
+    const clipped = continuous && drawOrder.length !== inView.length;
+    const maxGap = continuous && typeof xAxis.maxGap === "number" && xAxis.maxGap > 0 ? xAxis.maxGap : Infinity;
+    const runs = (values: (number | null)[], bridge = false): Run[] => {
+      const out: Run[] = [];
+      let run: Run = [];
+      let prev = 0;
+      for (const i of drawOrder) {
+        const v = values[i];
+        if (v === null || v === undefined) {
+          if (bridge) continue;
+          if (run.length) out.push(run);
+          run = [];
+          continue;
+        }
+        const x = continuous ? xs[i]! : i;
+        if (run.length && x - prev > maxGap) {
+          out.push(run);
+          run = [];
+        }
+        run.push({ i, v });
+        prev = x;
+      }
+      if (run.length) out.push(run);
+      return out;
+    };
 
     const resolved: ResolvedSeries[] = series.map((s, i) => ({
       ...s,
@@ -671,7 +905,40 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
       order: i,
     }));
     const visible = resolved.filter((s) => !hidden.includes(s.key));
-    const fmtIndex = (i: number) => (xAxis.formatter ?? defaultIndexFormatter)(data[i]?.[index], i);
+    const bridges = (s: ChartSeries) => !band && !stacked && (s.connectNulls ?? connectNulls ?? false);
+    /** With bridged series, rows where every visible series is null are not points: no hover or keyboard stop. */
+    const skipEmpty = visible.some(bridges);
+    /** Points that can be hovered and stepped through with the keyboard, in x order. */
+    const nav = skipEmpty ? inView.filter((i) => visible.some((s) => toNumber(data[i]?.[s.key]) !== null)) : inView;
+    const sparse = nav.length !== inView.length;
+
+    const active =
+      activeRaw !== null && activeRaw < n && (continuous || sparse ? nav.includes(activeRaw) : true) ? activeRaw : null;
+
+    const onActiveRef = React.useRef(onActiveIndexChange);
+    onActiveRef.current = onActiveIndexChange;
+    React.useEffect(() => onActiveRef.current?.(active), [active]);
+    let timeDetail: "date" | "minutes" | "seconds" = "date";
+    if (xType === "time")
+      for (const x of xs) {
+        if (x === null) continue;
+        const d = new Date(x);
+        if (d.getSeconds() !== 0 || d.getMilliseconds() !== 0) {
+          timeDetail = "seconds";
+          break;
+        }
+        if (!isMidnight(d)) timeDetail = "minutes";
+      }
+    const fmtIndex = (i: number) => {
+      const raw = data[i]?.[index];
+      const x = continuous ? xs[i] : null;
+      if (x === null || x === undefined) return (xAxis.formatter ?? defaultIndexFormatter)(raw, i);
+      if (xType === "time") {
+        if (xAxis.formatter) return xAxis.formatter(new Date(x), i);
+        return timeDetail === "date" ? formatShortDate(x) : formatDateTime(x, { seconds: timeDetail === "seconds" });
+      }
+      return xAxis.formatter ? xAxis.formatter(raw, i) : plainFormat.format(x);
+    };
 
     const stacks = React.useMemo(() => {
       if (!stacked) return null;
@@ -729,20 +996,22 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
       let next: number | null = active;
+      const pos = active === null ? -1 : nav.indexOf(active);
+      const last = nav.length - 1;
       switch (e.key) {
         case "ArrowRight":
         case "ArrowDown":
-          next = active === null ? 0 : Math.min(n - 1, active + 1);
+          next = nav[pos < 0 ? 0 : Math.min(last, pos + 1)] ?? null;
           break;
         case "ArrowLeft":
         case "ArrowUp":
-          next = active === null ? n - 1 : Math.max(0, active - 1);
+          next = nav[pos < 0 ? last : Math.max(0, pos - 1)] ?? null;
           break;
         case "Home":
-          next = 0;
+          next = nav[0] ?? null;
           break;
         case "End":
-          next = n - 1;
+          next = nav[last] ?? null;
           break;
         case "Escape":
           next = null;
@@ -766,26 +1035,39 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
       ]),
     };
 
-    // Value domain
+    // Value domain: with a clipped x domain, the visible points plus the neighbours the line enters from.
+    let fits: ((i: number) => boolean) | null = null;
+    if (clipped) {
+      const keep = new Set(inView);
+      const first = drawOrder.indexOf(inView[0] ?? -1);
+      const lastIn = drawOrder.indexOf(inView[inView.length - 1] ?? -1);
+      const before = first > 0 ? drawOrder[first - 1] : drawOrder.filter((i) => xs[i]! < x0).pop();
+      const after = lastIn >= 0 ? drawOrder[lastIn + 1] : drawOrder.find((i) => xs[i]! > x1);
+      if (before !== undefined) keep.add(before);
+      if (after !== undefined) keep.add(after);
+      fits = (i) => keep.has(i);
+    }
     let lo = Infinity;
     let hi = -Infinity;
     if (stacks) {
       for (const vals of stacks.values())
-        for (const [a, b] of vals) {
+        vals.forEach(([a, b], i) => {
+          if (fits && !fits(i)) return;
           lo = Math.min(lo, a, b);
           hi = Math.max(hi, a, b);
-        }
+        });
     } else {
       for (const s of visible)
-        for (const d of data) {
+        data.forEach((d, i) => {
           const v = toNumber(d[s.key]);
-          if (v !== null) {
+          if (v !== null && (!fits || fits(i))) {
             lo = Math.min(lo, v);
             hi = Math.max(hi, v);
           }
-        }
+        });
     }
     for (const r of referenceLines) {
+      if (r.axis === "x") continue;
       lo = Math.min(lo, r.value);
       hi = Math.max(hi, r.value);
     }
@@ -793,12 +1075,14 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
       lo = 0;
       hi = 1;
     }
-    const dMin = typeof yAxis.min === "number" ? yAxis.min : yAxis.min === "auto" ? lo : Math.min(0, lo);
-    let dMax = typeof yAxis.max === "number" ? yAxis.max : hi;
+    const yMin = yAxis.min ?? yAxis.domain?.[0];
+    const yMax = yAxis.max ?? yAxis.domain?.[1];
+    const dMin = typeof yMin === "number" ? yMin : yMin === "auto" ? lo : Math.min(0, lo);
+    let dMax = typeof yMax === "number" ? yMax : hi;
     if (dMax <= dMin) dMax = dMin + 1;
     let ticks = niceTicks(dMin, dMax, yAxis.tickCount ?? 5);
-    const d0 = typeof yAxis.min === "number" ? yAxis.min : ticks[0]!;
-    const d1 = typeof yAxis.max === "number" ? yAxis.max : ticks[ticks.length - 1]!;
+    const d0 = typeof yMin === "number" ? yMin : ticks[0]!;
+    const d1 = typeof yMax === "number" ? yMax : ticks[ticks.length - 1]!;
     const eps = (d1 - d0) * 1e-6;
     ticks = ticks.filter((t) => t >= d0 - eps && t <= d1 + eps);
     const yFmt = yAxis.formatter ?? tickFormatter(ticks);
@@ -833,8 +1117,15 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
             const catStart = horizontal ? plot.top : plot.left;
             const catLen = horizontal ? plot.height : plot.width;
             const bandwidth = band ? catLen / n : 0;
+            const xPos = (x: number) => catStart + ((x - x0) / (x1 - x0)) * catLen;
             const cat = (i: number) =>
-              band ? catStart + (i + 0.5) * bandwidth : n === 1 ? catStart + catLen / 2 : catStart + (i / (n - 1)) * catLen;
+              continuous
+                ? xPos(xs[i] ?? NaN)
+                : band
+                  ? catStart + (i + 0.5) * bandwidth
+                  : n === 1
+                    ? catStart + catLen / 2
+                    : catStart + (i / (n - 1)) * catLen;
             const span = d1 - d0 || 1;
             const val = (v: number) =>
               horizontal
@@ -847,6 +1138,7 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
               plot,
               horizontal,
               cat,
+              runs: (values, s) => runs(values, s ? bridges(s) : false),
               bandwidth,
               val,
               baseline,
@@ -857,13 +1149,59 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
             };
 
             const maxCatTicks =
-              xAxis.tickCount ?? Math.max(2, Math.floor(catLen / (horizontal ? 18 : 64)));
+              xAxis.tickCount ?? Math.max(2, Math.floor(catLen / (horizontal ? 18 : xType === "time" ? 80 : 64)));
             const every = Math.max(1, Math.ceil(n / maxCatTicks));
-            const catTicks = data.map((_, i) => i).filter((i) => i % every === 0);
+            type CatTick = { key: string; p: number; label: string; anchor: "start" | "middle" | "end" };
+            let catTicks: CatTick[];
+            if (continuous) {
+              let values: number[];
+              let fmt: (v: number) => string;
+              if (xType === "time") {
+                const tt = timeTicks(x0, x1, maxCatTicks);
+                values = tt.ticks;
+                fmt = xAxis.formatter ? (v) => xAxis.formatter!(new Date(v), -1) : (v) => formatTimeTick(v, tt.unit);
+              } else {
+                const e = (x1 - x0) * 1e-9;
+                values = niceTicks(x0, x1, maxCatTicks).filter((t) => t >= x0 - e && t <= x1 + e);
+                const base = tickFormatter(values);
+                fmt = xAxis.formatter ? (v) => xAxis.formatter!(v, -1) : base;
+              }
+              catTicks = values.map((v) => {
+                const p = xPos(v);
+                const anchor = p - catStart < 16 ? "start" : catStart + catLen - p < 16 ? "end" : "middle";
+                return { key: `t${v}`, p, label: fmt(v), anchor };
+              });
+            } else {
+              catTicks = data
+                .map((_, i) => i)
+                .filter((i) => i % every === 0)
+                .map((i) => ({
+                  key: `c${i}`,
+                  p: cat(i),
+                  label: fmtIndex(i),
+                  anchor: horizontal || band ? "middle" : n > 1 && i === 0 ? "start" : n > 1 && i === n - 1 ? "end" : "middle",
+                }));
+            }
             const showValueGrid = grid === true || grid === "horizontal" || grid === "both";
             const showCatGrid = grid === "vertical" || grid === "both";
 
-            const nearest = (p: number) => {
+            const nearest = (p: number): number | null => {
+              if (!band && (continuous || sparse)) {
+                if (nav.length === 0) return null;
+                const frac = (p - catStart) / catLen;
+                const x = continuous ? x0 + frac * (x1 - x0) : frac * (n - 1);
+                const xOf = (i: number) => (continuous ? xs[i]! : i);
+                let a = 0;
+                let b = nav.length - 1;
+                while (a < b) {
+                  const m = (a + b) >> 1;
+                  if (xOf(nav[m]!) < x) a = m + 1;
+                  else b = m;
+                }
+                const i = nav[a]!;
+                const prev = nav[a - 1];
+                return prev !== undefined && x - xOf(prev) <= xOf(i) - x ? prev : i;
+              }
               if (band) return Math.max(0, Math.min(n - 1, Math.floor((p - catStart) / bandwidth)));
               if (n === 1) return 0;
               return Math.max(0, Math.min(n - 1, Math.round(((p - catStart) / catLen) * (n - 1))));
@@ -923,11 +1261,9 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
                     );
                   })}
                   {/* category grid + labels */}
-                  {catTicks.map((i) => {
-                    const p = cat(i);
-                    const anchor = horizontal || band ? "middle" : n > 1 && i === 0 ? "start" : n > 1 && i === n - 1 ? "end" : "middle";
+                  {catTicks.map(({ key, p, label: tickLabel, anchor }) => {
                     return (
-                      <g key={`c${i}`}>
+                      <g key={key}>
                         {showCatGrid ? (
                           horizontal ? (
                             <line x1={plot.left} x2={plot.left + plot.width} y1={p} y2={p} className="stroke-border" shapeRendering="crispEdges" />
@@ -938,11 +1274,11 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
                         {!catAxisHidden ? (
                           horizontal ? (
                             <text x={plot.left - 8} y={p} dy="0.32em" textAnchor="end" className="fill-muted-foreground text-2xs">
-                              {fmtIndex(i)}
+                              {tickLabel}
                             </text>
                           ) : (
                             <text x={p} y={plot.top + plot.height + 16} textAnchor={anchor} className="fill-muted-foreground text-2xs">
-                              {fmtIndex(i)}
+                              {tickLabel}
                             </text>
                           )
                         ) : null}
@@ -956,10 +1292,39 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
                       <rect x={ax - bandwidth / 2} y={plot.top} width={bandwidth} height={plot.height} className="fill-foreground/5" />
                     )
                   ) : null}
-                  {renderMarks(ctx)}
+                  {clipped ? (
+                    <>
+                      <defs>
+                        <clipPath id={`${uid}-clip`}>
+                          <rect x={plot.left - 4} y={0} width={plot.width + 8} height={height} />
+                        </clipPath>
+                      </defs>
+                      <g data-slot="chart-marks" clipPath={`url(#${uid}-clip)`}>
+                        {renderMarks(ctx)}
+                      </g>
+                    </>
+                  ) : (
+                    renderMarks(ctx)
+                  )}
                   {referenceLines.map((r, i) => {
-                    const p = val(r.value);
                     const color = resolveChartColor(r.color ?? "muted");
+                    if (r.axis === "x") {
+                      const x = continuous ? readX(r.value) : undefined;
+                      if (x === undefined || x < x0 || x > x1) return null;
+                      const p = xPos(x);
+                      const end = catStart + catLen - p < 48;
+                      return (
+                        <g key={`r${i}`} data-slot="chart-reference-line">
+                          <line x1={p} x2={p} y1={plot.top} y2={plot.top + plot.height} stroke={color} strokeWidth={1} strokeDasharray={r.dashed === false ? undefined : "4 3"} />
+                          {r.label ? (
+                            <text x={end ? p - 4 : p + 4} y={plot.top + 10} textAnchor={end ? "end" : "start"} className="fill-muted-foreground text-2xs font-medium">
+                              {r.label}
+                            </text>
+                          ) : null}
+                        </g>
+                      );
+                    }
+                    const p = val(r.value);
                     return (
                       <g key={`r${i}`} data-slot="chart-reference-line">
                         {horizontal ? (
@@ -1067,6 +1432,13 @@ function activeDots(ctx: PlotContext & { active: number }, stacked: boolean) {
 
 export interface AreaChartProps extends CartesianChartProps {
   stacked?: boolean;
+  /**
+   * Draw straight through null values instead of breaking the line (the null points themselves stay absent).
+   * `xAxis.maxGap` still breaks it. Per-series `connectNulls` wins. Default false. Ignored when `stacked`
+   * (stacked nulls count as 0).
+   */
+  connectNulls?: boolean;
+
   curve?: ChartCurve;
   /** Gradient fill fading to the baseline. Default true. */
   gradient?: boolean;
@@ -1093,13 +1465,15 @@ export const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
           let line = "";
           if (stacked && ctx.stacks) {
             const st = ctx.stacks.get(s.key) ?? [];
-            const upper = st.map(([, b], i): Point => [ctx.cat(i), ctx.val(b)]);
-            const lower = st.map(([a], i): Point => [ctx.cat(i), ctx.val(a)]).reverse();
-            line = curvePath(upper, curve);
-            const back = curvePath(lower, curve);
-            area = `${line}L${back.slice(1)}Z`;
+            for (const run of ctx.runs(st.map(([, b]) => b))) {
+              const upper = run.map(({ i, v }): Point => [ctx.cat(i), ctx.val(v)]);
+              const lower = run.map(({ i }): Point => [ctx.cat(i), ctx.val(st[i]![0])]).reverse();
+              const top = curvePath(upper, curve);
+              line += top;
+              area += `${top}L${curvePath(lower, curve).slice(1)}Z`;
+            }
           } else {
-            for (const run of segments(ctx.data.map((d) => toNumber(d[s.key])))) {
+            for (const run of ctx.runs(ctx.data.map((d) => toNumber(d[s.key])), s)) {
               const pts: Point[] = run.map(({ i, v }) => [ctx.cat(i), ctx.val(v)]);
               const top = curvePath(pts, curve);
               line += top;
@@ -1146,6 +1520,12 @@ AreaChart.displayName = "AreaChart";
 
 export interface LineChartProps extends CartesianChartProps {
   curve?: ChartCurve;
+  /**
+   * Draw straight through null values instead of breaking the line (the null points themselves stay absent).
+   * `xAxis.maxGap` still breaks it. Per-series `connectNulls` wins. Default false.
+   */
+  connectNulls?: boolean;
+
   /** Draw a dot on every data point. */
   dots?: boolean;
   strokeWidth?: number;
@@ -1163,7 +1543,7 @@ export const LineChart = React.forwardRef<HTMLDivElement, LineChartProps>(
       renderActive={(ctx) => activeDots(ctx, false)}
       renderMarks={(ctx) =>
         ctx.series.map((s) => {
-          const runs = segments(ctx.data.map((d) => toNumber(d[s.key])));
+          const runs = ctx.runs(ctx.data.map((d) => toNumber(d[s.key])), s);
           const d = runs.map((run) => curvePath(run.map(({ i, v }) => [ctx.cat(i), ctx.val(v)] as Point), curve)).join("");
           return (
             <g key={s.key}>

@@ -155,6 +155,12 @@ function GpuGauges() {
 }
 
 /** Data visualization: charts, stat tiles, meters and gauges. */
+/* Uneven samples: every 10 minutes, a missing reading at 02:00 and no data between 04:00 and 05:30. */
+const timeStart = new Date(2026, 9, 19, 0, 0).getTime();
+const timeSamples: ChartDatum[] = Array.from({ length: 48 }, (_, i) => timeStart + i * 10 * 60_000)
+  .filter((t) => t < timeStart + 4 * 3_600_000 || t >= timeStart + 5.5 * 3_600_000)
+  .map((t, i) => ({ t, used: t === timeStart + 2 * 3_600_000 ? null : Math.min(100, 8 + i * 1.6 + (i % 5) * 2) }));
+
 export function DataVizPage() {
   const ctx = useJitter(64, 18);
   return (
@@ -229,6 +235,21 @@ export function DataVizPage() {
         />
       </Demo>
 
+      <Demo id="time-axis" title="Time axis" description="Samples placed by their real time: an hour with no data (maxGap breaks the line) and a single missing reading bridged with connectNulls, on a step curve." align="start">
+        <LineChart
+          className="w-full"
+          data={timeSamples}
+          index="t"
+          series={[{ key: "used", label: "Usage %", color: "#d97757" }]}
+          curve="step"
+          connectNulls
+          height={220}
+          xAxis={{ type: "time", maxGap: 45 * 60_000 }}
+          yAxis={{ domain: [0, 100] }}
+          valueFormatter={(v) => `${Math.round(v)}%`}
+          label="Usage over time"
+        />
+      </Demo>
       <Demo id="live-chart" title="Live multi-series" description="VRAM per GPU, rolling 40-sample window updated every 2 s, with a threshold line." align="start">
         <LiveVramChart />
       </Demo>

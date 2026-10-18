@@ -213,13 +213,14 @@ describe("ProcessTable groupBy", () => {
 
   it("animates a removed child row and a removed group out", async () => {
     const { container, rerender } = render(
-      <ProcessTable processes={procs} groupBy="app" defaultExpandedGroups={["Google Chrome"]} exitDuration={30} />
+      // 500ms leaves room to observe the exit state even when the whole suite is loading the CPU.
+      <ProcessTable processes={procs} groupBy="app" defaultExpandedGroups={["Google Chrome"]} exitDuration={500} />
     );
-    rerender(<ProcessTable processes={procs.filter((p) => p.pid !== 102 && p.app !== "Visual Studio Code")} groupBy="app" exitDuration={30} />);
+    rerender(<ProcessTable processes={procs.filter((p) => p.pid !== 102 && p.app !== "Visual Studio Code")} groupBy="app" exitDuration={500} />);
     await waitFor(() => expect(container.querySelector('tr[data-pid="102"]')).toHaveAttribute("data-state", "exit"));
     expect(container.querySelector('tr[data-group-key="Visual Studio Code"]')).toHaveAttribute("data-state", "exit");
-    await waitFor(() => expect(container.querySelector('tr[data-pid="102"]')).not.toBeInTheDocument());
-    await waitFor(() => expect(container.querySelector('tr[data-group-key="Visual Studio Code"]')).not.toBeInTheDocument());
+    await waitFor(() => expect(container.querySelector('tr[data-pid="102"]')).not.toBeInTheDocument(), { timeout: 3000 });
+    await waitFor(() => expect(container.querySelector('tr[data-group-key="Visual Studio Code"]')).not.toBeInTheDocument(), { timeout: 3000 });
     expect(container.querySelector('tr[data-group-key="Google Chrome"]')).toHaveTextContent("2 processes");
   });
 

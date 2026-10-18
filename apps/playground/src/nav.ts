@@ -111,6 +111,7 @@ export const nav: NavSection[] = [
           { id: "stat-card", label: "Stat Card" },
           { id: "area-chart", label: "Area Chart" },
           { id: "stacked-area", label: "Stacked Area" },
+          { id: "time-axis", label: "Time Axis" },
           { id: "live-chart", label: "Live Chart" },
           { id: "bar-chart", label: "Bar Chart" },
           { id: "stacked-bar", label: "Stacked Bar" },

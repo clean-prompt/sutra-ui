@@ -3,6 +3,7 @@ import {
   RiCheckboxCircleFill,
   RiCloseLine,
   RiErrorWarningFill,
+  RiFolderUploadLine,
   RiUploadLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
@@ -10,7 +11,17 @@ import { Progress } from "../primitives/progress";
 import { formatBytes as formatBytesLib } from "../lib/format";
 import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { Button, type ButtonProps } from "../primitives/button";
-import { Dropzone, validateFiles, type DropzoneProps, type FileRejection } from "../primitives/dropzone";
+import {
+  DIRECTORY_UNSUPPORTED_REASON,
+  Dropzone,
+  directoryInputAttrs,
+  useDirectoryPickerSupport,
+  validateFiles,
+  withPickedPaths,
+  type DropzoneProps,
+  type FileRejection,
+  type FileWithPath,
+} from "../primitives/dropzone";
 
 export interface UploadFile {
   id: string;
@@ -184,14 +195,16 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
           />
           {children}
           {showErrors && rejections.length > 0 && (
-            <ul role="alert" className="flex flex-col gap-1">
-              {rejections.map((r, i) => (
-                <li key={`${r.file.name}-${i}`} className="flex items-start gap-1.5 text-xs text-destructive">
-                  <RiErrorWarningFill aria-hidden className="mt-px size-3.5 shrink-0" />
-                  {r.errors[0]?.message}
-                </li>
-              ))}
-            </ul>
+            <div role="alert">
+              <ul className="flex flex-col gap-1">
+                {rejections.map((r, i) => (
+                  <li key={`${r.file.name}-${i}`} className="flex items-start gap-1.5 text-xs text-destructive">
+                    <RiErrorWarningFill aria-hidden className="mt-px size-3.5 shrink-0" />
+                    {r.errors[0]?.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       </FileUploadContext.Provider>
@@ -200,26 +213,87 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
 );
 FileUpload.displayName = "FileUpload";
 
-export interface FileUploadTriggerProps extends ButtonProps {}
+export interface FileUploadTriggerProps extends ButtonProps {
+  /**
+   * Open a folder picker instead of the file picker: every file inside is validated on its own and keeps
+   * its `relativePath` (see `getFileRelativePath`). Where the browser can't pick folders the button stays
+   * focusable but inert (`aria-disabled`) and describes why; set `hideWhenUnsupported` to drop it instead.
+   * Pair it with a plain trigger for "Upload files" / "Upload folder".
+   */
+  directory?: boolean;
+  /** With `directory`, render nothing where folder picking is unsupported (instead of an inert button). */
+  hideWhenUnsupported?: boolean;
+}
 
-/** Button that opens the file picker. */
+/** Button that opens the file picker (or, with `directory`, a folder picker). */
 export const FileUploadTrigger = React.forwardRef<HTMLButtonElement, FileUploadTriggerProps>(
-  ({ children, onClick, variant = "secondary", leadingIcon, disabled, ...props }, ref) => {
-    const { openPicker, disabled: ctxDisabled, multiple } = useFileUpload();
+  (
+    { children, onClick, variant = "secondary", leadingIcon, disabled, directory, hideWhenUnsupported, ...props },
+    ref
+  ) => {
+    const { openPicker, addFiles, disabled: ctxDisabled, multiple, accept } = useFileUpload();
+    const canPickFolder = useDirectoryPickerSupport();
+    const folderInputRef = React.useRef<HTMLInputElement>(null);
+    const reasonId = React.useId();
+    if (!directory) {
+      return (
+        <Button
+          ref={ref}
+          variant={variant}
+          disabled={disabled || ctxDisabled}
+          leadingIcon={leadingIcon ?? <RiUploadLine aria-hidden />}
+          onClick={(e) => {
+            onClick?.(e);
+            if (!e.defaultPrevented) openPicker();
+          }}
+          {...props}
+        >
+          {children ?? (multiple ? "Upload files" : "Upload file")}
+        </Button>
+      );
+    }
+    if (!canPickFolder && hideWhenUnsupported) return null;
+    const isDisabled = disabled || ctxDisabled;
+    const describedBy = [props["aria-describedby"], canPickFolder ? "" : reasonId].filter(Boolean).join(" ");
     return (
-      <Button
-        ref={ref}
-        variant={variant}
-        disabled={disabled || ctxDisabled}
-        leadingIcon={leadingIcon ?? <RiUploadLine aria-hidden />}
-        onClick={(e) => {
-          onClick?.(e);
-          if (!e.defaultPrevented) openPicker();
-        }}
-        {...props}
-      >
-        {children ?? (multiple ? "Upload files" : "Upload file")}
-      </Button>
+      <>
+        <Button
+          ref={ref}
+          variant={variant}
+          disabled={isDisabled}
+          leadingIcon={leadingIcon ?? <RiFolderUploadLine aria-hidden />}
+          {...props}
+          aria-disabled={!canPickFolder || props["aria-disabled"] || undefined}
+          aria-describedby={describedBy || undefined}
+          onClick={(e) => {
+            onClick?.(e);
+            if (!e.defaultPrevented && canPickFolder && !isDisabled) folderInputRef.current?.click();
+          }}
+        >
+          {children ?? "Upload folder"}
+        </Button>
+        {canPickFolder ? (
+          <input
+            ref={folderInputRef}
+            type="file"
+            accept={accept}
+            multiple
+            disabled={isDisabled}
+            tabIndex={-1}
+            aria-hidden
+            className="sr-only"
+            {...directoryInputAttrs}
+            onChange={(e) => {
+              addFiles(withPickedPaths(Array.from(e.currentTarget.files ?? [])));
+              e.currentTarget.value = "";
+            }}
+          />
+        ) : (
+          <span id={reasonId} className="sr-only">
+            {DIRECTORY_UNSUPPORTED_REASON}
+          </span>
+        )}
+      </>
     );
   }
 );
@@ -324,6 +398,9 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
     const pct = Math.min(100, Math.max(0, progress ?? 0));
     const showProgress = phase === "running" || (progress !== undefined && phase !== "succeeded" && phase !== "failed");
     const isError = phase === "failed";
+    // Files from a folder show where they sit in it ("Trip/Photos/a.jpg"); loose files keep their bare name.
+    const relativePath = (file as FileWithPath).relativePath;
+    const label = relativePath || file.name;
 
     return (
       <li
@@ -339,8 +416,8 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
         <FileTypeIcon name={file.name} />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="truncate text-sm font-medium text-foreground" title={file.name}>
-              {file.name}
+            <span className="truncate text-sm font-medium text-foreground" title={label}>
+              {label}
             </span>
             {phase === "succeeded" && (
               <RiCheckboxCircleFill aria-label="Uploaded" className="size-4 shrink-0 text-success" />
@@ -372,7 +449,7 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
             <Progress
               size="sm"
               value={progress === undefined ? null : Math.round(pct)}
-              aria-label={`Uploading ${file.name}`}
+              aria-label={`Uploading ${label}`}
               className="mt-1"
               indicatorClassName="duration-300"
             />
@@ -382,7 +459,7 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={`Remove ${file.name}`}
+            aria-label={`Remove ${label}`}
             className="shrink-0 self-start text-muted-foreground hover:text-foreground"
             onClick={() => (onRemove ? onRemove(item) : ctx?.removeFile(item.id))}
           >

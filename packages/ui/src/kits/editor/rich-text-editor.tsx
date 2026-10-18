@@ -1,6 +1,6 @@
 import * as React from "react";
 import { EditorContent, useEditor, useEditorState, type Editor, type Extensions, type JSONContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import StarterKit, { type StarterKitOptions } from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import {
@@ -44,6 +44,8 @@ interface FormatState {
   blockquote: boolean;
   codeBlock: boolean;
   link: string | undefined;
+  /** The editor has undo/redo commands. */
+  history: boolean;
   canUndo: boolean;
   canRedo: boolean;
   empty: boolean;
@@ -53,12 +55,23 @@ interface FormatState {
   to: number;
 }
 
+/**
+ * Whether the editor registers undo/redo commands: StarterKit's UndoRedo, or a replacement such as
+ * TipTap's Collaboration extension (Yjs undo). False when `history={false}` and nothing else adds them.
+ */
+function hasHistory(e: Editor | null | undefined) {
+  // The editor is null on the first browser render (and its extension manager is gone once destroyed).
+  const commands = e?.extensionManager?.commands as Record<string, unknown> | undefined;
+  return !!commands && typeof commands.undo === "function" && typeof commands.redo === "function";
+}
+
 function useFormatState(editor: Editor | null): FormatState | null {
   return useEditorState({
     editor,
     selector: ({ editor: e }) => {
       if (!e) return null;
       const { from, to, empty } = e.state.selection;
+      const undoable = hasHistory(e);
       return {
         bold: e.isActive("bold"),
         italic: e.isActive("italic"),
@@ -70,8 +83,9 @@ function useFormatState(editor: Editor | null): FormatState | null {
         blockquote: e.isActive("blockquote"),
         codeBlock: e.isActive("codeBlock"),
         link: e.getAttributes("link").href as string | undefined,
-        canUndo: e.can().undo(),
-        canRedo: e.can().redo(),
+        history: undoable,
+        canUndo: undoable && e.can().undo(),
+        canRedo: undoable && e.can().redo(),
         empty,
         focused: e.isFocused,
         editable: e.isEditable,
@@ -190,7 +204,10 @@ export interface RichTextToolbarProps extends Omit<React.HTMLAttributes<HTMLDivE
   editor: Editor | null;
   /** Extra tools appended after the defaults. */
   children?: React.ReactNode;
-  /** Undo / redo buttons. Default true. */
+  /**
+   * Undo / redo buttons. Default true; they are left out anyway when the editor has no undo/redo commands
+   * (`RichTextEditor history={false}` without a replacement such as TipTap's Collaboration extension).
+   */
   history?: boolean;
 }
 
@@ -223,7 +240,7 @@ export const RichTextToolbar = React.forwardRef<HTMLDivElement, RichTextToolbarP
     );
     return (
       <EditorToolbar ref={ref} aria-label="Text formatting" className={className} {...props}>
-        {history && (
+        {history && state.history && (
           <>
             <EditorToolbarButton label="Undo" shortcut="mod+z" icon={<RiArrowGoBackLine aria-hidden />} disabled={!state.canUndo} onClick={() => editor.chain().focus().undo().run()} />
             <EditorToolbarButton label="Redo" shortcut="mod+shift+z" icon={<RiArrowGoForwardLine aria-hidden />} disabled={!state.canRedo} onClick={() => editor.chain().focus().redo().run()} />
@@ -349,8 +366,23 @@ export interface RichTextEditorProps extends Omit<React.HTMLAttributes<HTMLDivEl
   placeholder?: string;
   /** "bubble" (on selection), "fixed" (above), "both" or "none". Default "bubble". */
   toolbar?: "bubble" | "fixed" | "both" | "none";
-  /** Extra TipTap extensions (mentions, tables…). Read once at mount. */
+  /**
+   * Extra TipTap extensions (mentions, tables, Collaboration…), appended after the built-ins. Read once at mount:
+   * the TipTap editor is created once, so remount (change `key`) to apply a different set.
+   */
   extensions?: Extensions;
+  /**
+   * StarterKit's undo/redo history. Default true. Set false when something else owns undo, e.g. Yjs through TipTap's
+   * Collaboration extension (which brings its own undo/redo, so the toolbar buttons stay). Without a replacement the
+   * toolbar's undo/redo buttons are hidden. Read once at mount (remount with a new `key` to change it); wins over
+   * `starterKit.undoRedo`.
+   */
+  history?: boolean;
+  /**
+   * StarterKit options merged over the defaults (`{ link: false }`; the editor adds its own Link). Set a key to `false`
+   * to drop that extension, e.g. `{ heading: { levels: [1, 2] }, codeBlock: false }`. Read once at mount.
+   */
+  starterKit?: Partial<StarterKitOptions>;
   /** Receives the TipTap editor instance. */
   editorRef?: React.Ref<Editor | null>;
   /** Prose size. Default "md". */
@@ -373,6 +405,10 @@ function sameValue(a: RichTextValue, b: RichTextValue) {
 /**
  * TipTap 3 WYSIWYG editor (StarterKit + Link + Placeholder) with Sutra prose styling, a bubble
  * toolbar on selection and/or a fixed `RichTextToolbar`, controlled HTML or JSON value.
+ *
+ * The extension setup (`extensions`, `starterKit`, `history`, `placeholder`) is read when the editor is
+ * created, as in TipTap; remount with a new `key` to change it. For Yjs: `history={false}` plus
+ * `extensions={[Collaboration.configure({ document: ydoc })]}`, and leave `value`/`defaultValue` unset.
  */
 export const RichTextEditor = React.forwardRef<HTMLDivElement, RichTextEditorProps>(
   (
@@ -386,6 +422,8 @@ export const RichTextEditor = React.forwardRef<HTMLDivElement, RichTextEditorPro
       placeholder = "Start writing…",
       toolbar = "bubble",
       extensions,
+      history = true,
+      starterKit,
       editorRef,
       size = "md",
       contentClassName,
@@ -407,7 +445,7 @@ export const RichTextEditor = React.forwardRef<HTMLDivElement, RichTextEditorPro
 
     const editor = useEditor({
       extensions: [
-        StarterKit.configure({ link: false }),
+        StarterKit.configure({ link: false, ...starterKit, ...(history ? null : { undoRedo: false }) }),
         Link.configure({ openOnClick: false, autolink: true, defaultProtocol: "https" }),
         Placeholder.configure({ placeholder }),
         ...(extensions ?? []),

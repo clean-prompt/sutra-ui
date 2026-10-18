@@ -244,7 +244,11 @@ export interface CodeEditorProps
   onChange?: (value: string, update: ViewUpdate) => void;
   /** "markdown" (built in) or "plain"; pass other languages through `extensions`. Default "markdown". */
   language?: "markdown" | "plain";
-  /** Extra CodeMirror extensions (languages, autocompletion, linting, collaboration…). Re-applied when an element changes, so memoize them (an inline `[lang()]` builds new ones every render). */
+  /**
+   * Extra CodeMirror extensions (languages, autocompletion, linting, collaboration…). Re-applied when an element changes, so
+   * memoize them (an inline `[lang()]` builds new ones every render). For Yjs, pass `yCollab(text, awareness, { undoManager })`
+   * here with `history={false}` and `keyBindings={yUndoManagerKeymap}`.
+   */
   extensions?: Extension[];
   lineNumbers?: boolean;
   /** Soft-wrap long lines. Default true. */
@@ -257,6 +261,12 @@ export interface CodeEditorProps
   onSave?: () => void;
   /** Extra key bindings (take precedence over defaults). Re-applied when an element changes; memoize them. */
   keyBindings?: KeyBinding[];
+  /**
+   * Built-in undo history (`history()` and its Mod-Z / Mod-Shift-Z / Mod-Y / Mod-U keymap). Default true. Set false when
+   * something else owns undo, e.g. a Yjs `UndoManager` (add its keymap through `keyBindings`). Toggling it after mount
+   * reconfigures the editor and drops the undo stack.
+   */
+  history?: boolean;
   onSelectionChange?: (selection: CodeEditorSelection) => void;
   /** Scroll position, for preview sync. */
   onScroll?: (info: CodeEditorScrollInfo) => void;
@@ -289,6 +299,7 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
       search: searchEnabled = true,
       onSave,
       keyBindings,
+      history: historyEnabled = true,
       onSelectionChange,
       onScroll,
       onFocusChange,
@@ -307,8 +318,8 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
     const cb = React.useRef({ onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange });
     cb.current = { onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange };
     // Options as of the latest render, read when the view is (re)created, e.g. after <Activity> hides and shows it.
-    const latest = React.useRef({ value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, spellCheck, label, extensions, autoFocus });
-    latest.current = { value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, spellCheck, label, extensions, autoFocus };
+    const latest = React.useRef({ value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, historyEnabled, spellCheck, label, extensions, autoFocus });
+    latest.current = { value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, historyEnabled, spellCheck, label, extensions, autoFocus };
     /** The document when the view was last destroyed, so a remount keeps unsaved text. */
     const docRef = React.useRef<string | null>(null);
     const stableExtensions = useShallowStable(extensions);
@@ -323,6 +334,7 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
         readOnly: new Compartment(),
         search: new Compartment(),
         keys: new Compartment(),
+        history: new Compartment(),
         attrs: new Compartment(),
       }),
       []
@@ -343,6 +355,8 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
             ]
           : []),
       ]);
+    // After the custom key bindings and before the default keymap, so `keyBindings` still win over Mod-Z.
+    const historyExt = (on: boolean): Extension => (on ? [history(), keymap.of(historyKeymap)] : []);
     const attrsExt = (spell: boolean, name: string): Extension =>
       EditorView.contentAttributes.of({ spellcheck: spell ? "true" : "false", "aria-label": name, "aria-multiline": "true" });
 
@@ -358,6 +372,7 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
         readOnly,
         searchEnabled,
         keyBindings,
+        historyEnabled,
         spellCheck,
         label,
         extensions,
@@ -370,7 +385,6 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
           extensions: [
             compartments.gutter.of(gutterExt(lineNumbers)),
             highlightSpecialChars(),
-            history(),
             drawSelection(),
             dropCursor(),
             EditorState.allowMultipleSelections.of(true),
@@ -381,7 +395,8 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
             syntaxHighlighting(sutraHighlightStyle()),
             syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
             compartments.keys.of(keysExt(language, keyBindings)),
-            keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
+            compartments.history.of(historyExt(historyEnabled)),
+            keymap.of([...defaultKeymap, indentWithTab]),
             compartments.search.of(searchExt(searchEnabled)),
             compartments.lang.of(langExt(language)),
             compartments.wrap.of(wrap ? EditorView.lineWrapping : []),
@@ -481,6 +496,10 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
       if (!first.current) reconfigure(compartments.search, searchExt(searchEnabled));
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchEnabled]);
+    React.useEffect(() => {
+      if (!first.current) reconfigure(compartments.history, historyExt(historyEnabled));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [historyEnabled]);
     React.useEffect(() => {
       if (!first.current) reconfigure(compartments.attrs, attrsExt(spellCheck, label));
       // eslint-disable-next-line react-hooks/exhaustive-deps

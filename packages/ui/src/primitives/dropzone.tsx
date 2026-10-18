@@ -107,6 +107,104 @@ export function describeFileConstraints({ accept, maxSize, maxFiles }: FileValid
   return parts.join(" · ");
 }
 
+/* ------------------------------------------------------------------ */
+/* Folders                                                             */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A `File` that came from a picked or dropped folder, carrying its path inside that folder
+ * (`"Trip/Photos/a.jpg"`). `Dropzone` and `FileUpload` set `relativePath` in their folder flows;
+ * read it through `getFileRelativePath`, which also covers plain files.
+ */
+export type FileWithPath = File & { readonly relativePath?: string };
+
+function withRelativePath(file: File, path: string): FileWithPath {
+  try {
+    Object.defineProperty(file, "relativePath", { value: path, enumerable: false, configurable: true });
+  } catch {
+    // A frozen or exotic File keeps working without the path.
+  }
+  return file as FileWithPath;
+}
+
+/** Marks files from an `<input webkitdirectory>` pick with their `relativePath` (from `webkitRelativePath`). */
+export function withPickedPaths(files: File[]): FileWithPath[] {
+  return files.map((file) => withRelativePath(file, file.webkitRelativePath || file.name));
+}
+
+/** A file's path inside the folder it came from: `relativePath`, else `webkitRelativePath`, else its name. */
+export function getFileRelativePath(file: File): string {
+  const f = file as FileWithPath;
+  return f.relativePath || f.webkitRelativePath || f.name;
+}
+
+/** Whether this browser can open a folder picker (`webkitdirectory` on a real input). False during SSR. */
+export function supportsDirectoryPicker(): boolean {
+  return typeof document !== "undefined" && "webkitdirectory" in document.createElement("input");
+}
+
+/** Attributes that turn a file input into a folder picker (React has no typed prop for them). */
+export const directoryInputAttrs = { webkitdirectory: "", directory: "" } as React.InputHTMLAttributes<HTMLInputElement>;
+
+/** Shown (and announced) where a folder option can't work. */
+export const DIRECTORY_UNSUPPORTED_REASON = "This browser can't choose folders. Choose files instead.";
+
+const noSubscribe = () => () => {};
+
+/** `supportsDirectoryPicker()` as a hook: `false` on the server and during hydration, then the real answer. */
+export function useDirectoryPickerSupport(): boolean {
+  return React.useSyncExternalStore(noSubscribe, supportsDirectoryPicker, () => false);
+}
+
+function readEntryFile(entry: FileSystemFileEntry) {
+  return new Promise<File>((resolve, reject) => entry.file(resolve, reject));
+}
+
+/** All children of a directory: `readEntries` hands them out in batches until it returns an empty one. */
+async function readDirectory(entry: FileSystemDirectoryEntry) {
+  const reader = entry.createReader();
+  const all: FileSystemEntry[] = [];
+  for (;;) {
+    const batch = await new Promise<FileSystemEntry[]>((resolve, reject) => reader.readEntries(resolve, reject));
+    if (batch.length === 0) return all;
+    all.push(...batch);
+  }
+}
+
+async function walkEntry(entry: FileSystemEntry, parent: string): Promise<FileWithPath[]> {
+  const path = parent ? `${parent}/${entry.name}` : entry.name;
+  try {
+    if (entry.isFile) return [withRelativePath(await readEntryFile(entry as FileSystemFileEntry), path)];
+    if (entry.isDirectory) {
+      const children = await readDirectory(entry as FileSystemDirectoryEntry);
+      return (await Promise.all(children.map((child) => walkEntry(child, path)))).flat();
+    }
+  } catch {
+    // An unreadable entry (permissions, a file removed mid-walk) is skipped; the rest still arrive.
+  }
+  return [];
+}
+
+/**
+ * Every file in a drop, with dropped folders walked recursively and each file's `relativePath` set
+ * (`"Trip/Photos/a.jpg"`; a loose file's path is its name). Call it synchronously inside the `drop`
+ * handler: the browser empties `dataTransfer` once the event returns. Falls back to `dataTransfer.files`
+ * where the entry API (`webkitGetAsEntry`) is missing.
+ */
+export function getDroppedFiles(dataTransfer: Pick<DataTransfer, "items" | "files">): Promise<FileWithPath[]> {
+  const items = Array.from(dataTransfer.items ?? []).filter((item) => item.kind === "file");
+  if (items.length === 0 || typeof items[0]!.webkitGetAsEntry !== "function") {
+    return Promise.resolve(Array.from(dataTransfer.files ?? []));
+  }
+  const sources = items.map((item) => item.webkitGetAsEntry() ?? item.getAsFile());
+  return Promise.all(
+    sources.map((source) =>
+      !source ? [] : source instanceof File ? [source] : walkEntry(source, "")
+    )
+  ).then((groups) => groups.flat());
+}
+
+
 export interface DropzoneProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onDrop" | "title"> {
   /** Called with accepted files and rejections after a drop or pick. */
@@ -129,6 +227,13 @@ export interface DropzoneProps
   /** Name for the underlying file input. */
   name?: string;
   inputRef?: React.Ref<HTMLInputElement>;
+  /**
+   * Upload whole folders: clicking opens a folder picker (`webkitdirectory`) and dropped folders are
+   * walked recursively. Every file is validated on its own and carries its `relativePath`
+   * (see `getFileRelativePath`). Where the browser can't pick folders, clicking falls back to the file
+   * picker and the hint says why.
+   */
+  directory?: boolean;
 }
 
 /** Drag-and-drop file area that also opens the file picker on click, Enter or Space. */
@@ -149,6 +254,7 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       hint,
       name,
       inputRef: inputRefProp,
+      directory = false,
       className,
       children,
       onClick,
@@ -163,6 +269,17 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
     const dragDepth = React.useRef(0);
     const [dragState, setDragState] = React.useState<"idle" | "accept" | "reject">("idle");
     const hintId = React.useId();
+    const reasonId = React.useId();
+    const canPickFolder = useDirectoryPickerSupport();
+    const folderPick = directory && canPickFolder;
+    const [reading, setReading] = React.useState(false);
+    const alive = React.useRef(true);
+    React.useEffect(() => {
+      alive.current = true;
+      return () => {
+        alive.current = false;
+      };
+    }, []);
 
     const setInputRef = (node: HTMLInputElement | null) => {
       inputRef.current = node;
@@ -174,7 +291,7 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       if (!disabled) inputRef.current?.click();
     };
 
-    const handleFiles = (list: FileList | null) => {
+    const handleFiles = (list: FileList | File[] | null) => {
       if (!list || disabled) return;
       const { accepted, rejections } = validateFiles(Array.from(list), {
         accept,
@@ -194,66 +311,124 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
     };
 
     const hintText = hint ?? describeFileConstraints({ accept, maxSize, maxFiles });
-    const titleNode = title ?? (
-      <>
-        <span className="font-semibold text-primary">Click to upload</span> or drag and drop
-      </>
-    );
+    const titleNode =
+      title ??
+      (folderPick ? (
+        <>
+          <span className="font-semibold text-primary">Click to choose a folder</span> or drag and drop
+        </>
+      ) : (
+        <>
+          <span className="font-semibold text-primary">Click to upload</span> or drag and drop
+        </>
+      ));
+    const folderReason = directory && !canPickFolder;
+    const describedBy = [hintText ? hintId : "", folderReason ? reasonId : ""].filter(Boolean).join(" ");
 
     return (
-      <div
-        ref={ref}
-        role="button"
-        tabIndex={disabled ? -1 : 0}
-        aria-disabled={disabled || undefined}
-        aria-describedby={hintText ? hintId : undefined}
-        data-drag={dragState === "idle" ? undefined : dragState}
-        data-density={density}
-        onClick={(e) => {
-          onClick?.(e);
-          if (!e.defaultPrevented) open();
-        }}
-        onKeyDown={(e) => {
-          onKeyDown?.(e);
-          if (e.defaultPrevented || e.target !== e.currentTarget) return;
-          if (e.key === "Enter" || e.key === " ") {
+      <>
+        <div
+          ref={ref}
+          role="button"
+          tabIndex={disabled ? -1 : 0}
+          aria-disabled={disabled || undefined}
+          aria-describedby={describedBy || undefined}
+          aria-busy={reading || undefined}
+          data-drag={dragState === "idle" ? undefined : dragState}
+          data-density={density}
+          onClick={(e) => {
+            onClick?.(e);
+            if (!e.defaultPrevented) open();
+          }}
+          onKeyDown={(e) => {
+            onKeyDown?.(e);
+            if (e.defaultPrevented || e.target !== e.currentTarget) return;
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              open();
+            }
+          }}
+          onDragEnter={(e) => {
             e.preventDefault();
-            open();
-          }
-        }}
-        onDragEnter={(e) => {
-          e.preventDefault();
-          if (disabled) return;
-          dragDepth.current += 1;
-          setDragState(isDragAcceptable(e) ? "accept" : "reject");
-        }}
-        onDragOver={(e) => {
-          e.preventDefault();
-          if (!disabled) e.dataTransfer.dropEffect = "copy";
-        }}
-        onDragLeave={(e) => {
-          e.preventDefault();
-          dragDepth.current = Math.max(0, dragDepth.current - 1);
-          if (dragDepth.current === 0) setDragState("idle");
-        }}
-        onDrop={(e) => {
-          e.preventDefault();
-          dragDepth.current = 0;
-          setDragState("idle");
-          handleFiles(e.dataTransfer.files);
-        }}
-        className={cn(
-          "group/dropzone relative flex cursor-pointer rounded-box border border-dashed border-border-strong bg-background text-center",
-          "transition-[background-color,border-color,box-shadow] duration-200 hover:border-primary/50 hover:bg-subtle",
-          "data-[drag=accept]:border-primary data-[drag=accept]:bg-primary-soft/60 data-[drag=accept]:ring-4 data-[drag=accept]:ring-primary/10",
-          "data-[drag=reject]:border-destructive data-[drag=reject]:bg-destructive-soft/60",
-          "aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:border-border-strong aria-disabled:hover:bg-background",
-          compact ? "flex-row items-center gap-3 px-4 py-3 text-left" : "flex-col items-center justify-center gap-3 px-6 py-8",
-          focusRing,
-          className
-        )}
-        {...props}
-      >
+            if (disabled) return;
+            dragDepth.current += 1;
+            setDragState(isDragAcceptable(e) ? "accept" : "reject");
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            if (!disabled) e.dataTransfer.dropEffect = "copy";
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            dragDepth.current = Math.max(0, dragDepth.current - 1);
+            if (dragDepth.current === 0) setDragState("idle");
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            dragDepth.current = 0;
+            setDragState("idle");
+            if (!directory) {
+              handleFiles(e.dataTransfer.files);
+              return;
+            }
+            if (disabled) return;
+            setReading(true);
+            getDroppedFiles(e.dataTransfer)
+              .catch(() => [] as File[])
+              .then((files) => {
+                if (!alive.current) return;
+                setReading(false);
+                handleFiles(files);
+              });
+          }}
+          className={cn(
+            "group/dropzone relative flex cursor-pointer rounded-box border border-dashed border-border-strong bg-background text-center",
+            "transition-[background-color,border-color,box-shadow] duration-200 hover:border-primary/50 hover:bg-subtle",
+            "data-[drag=accept]:border-primary data-[drag=accept]:bg-primary-soft/60 data-[drag=accept]:ring-4 data-[drag=accept]:ring-primary/10",
+            "data-[drag=reject]:border-destructive data-[drag=reject]:bg-destructive-soft/60",
+            "aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:border-border-strong aria-disabled:hover:bg-background",
+            compact ? "flex-row items-center gap-3 px-4 py-3 text-left" : "flex-col items-center justify-center gap-3 px-6 py-8",
+            focusRing,
+            className
+          )}
+          {...props}
+        >
+          <span
+            aria-hidden
+            className={cn(
+              "flex shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-xs ring-4 ring-muted",
+              "transition-[color,transform,box-shadow] duration-200 group-hover/dropzone:text-foreground",
+              "group-data-[drag=accept]/dropzone:-translate-y-0.5 group-data-[drag=accept]/dropzone:text-primary group-data-[drag=accept]/dropzone:ring-primary-soft",
+              "group-data-[drag=reject]/dropzone:text-destructive group-data-[drag=reject]/dropzone:ring-destructive-soft",
+              compact ? "size-9 [&_svg]:size-4" : "size-11 [&_svg]:size-5"
+            )}
+          >
+            {icon ?? <RiUploadCloud2Line aria-hidden />}
+          </span>
+          <span className={cn("flex min-w-0 flex-col gap-1", compact && "flex-1")}>
+            <span className="text-sm text-muted-foreground">
+              {dragState === "reject" ? (
+                <span className="font-medium text-destructive">Some files aren't supported</span>
+              ) : dragState === "accept" ? (
+                <span className="font-medium text-primary">Drop to upload</span>
+              ) : (
+                titleNode
+              )}
+            </span>
+            {hintText && (
+              <span id={hintId} className="text-xs text-muted-foreground">
+                {hintText}
+              </span>
+            )}
+            {folderReason && (
+              <span id={reasonId} className="text-xs text-muted-foreground">
+                {DIRECTORY_UNSUPPORTED_REASON}
+              </span>
+            )}
+          </span>
+          {children}
+        </div>
+        {/* A sibling, not a child: an input inside role="button" is nested-interactive. */}
         <input
           ref={setInputRef}
           type="file"
@@ -264,42 +439,15 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           tabIndex={-1}
           aria-hidden
           className="sr-only"
+          {...(folderPick ? directoryInputAttrs : null)}
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
-            handleFiles(e.currentTarget.files);
+            const picked = Array.from(e.currentTarget.files ?? []);
+            handleFiles(folderPick ? withPickedPaths(picked) : picked);
             e.currentTarget.value = "";
           }}
         />
-        <span
-          aria-hidden
-          className={cn(
-            "flex shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-xs ring-4 ring-muted",
-            "transition-[color,transform,box-shadow] duration-200 group-hover/dropzone:text-foreground",
-            "group-data-[drag=accept]/dropzone:-translate-y-0.5 group-data-[drag=accept]/dropzone:text-primary group-data-[drag=accept]/dropzone:ring-primary-soft",
-            "group-data-[drag=reject]/dropzone:text-destructive group-data-[drag=reject]/dropzone:ring-destructive-soft",
-            compact ? "size-9 [&_svg]:size-4" : "size-11 [&_svg]:size-5"
-          )}
-        >
-          {icon ?? <RiUploadCloud2Line aria-hidden />}
-        </span>
-        <span className={cn("flex min-w-0 flex-col gap-1", compact && "flex-1")}>
-          <span className="text-sm text-muted-foreground">
-            {dragState === "reject" ? (
-              <span className="font-medium text-destructive">Some files aren't supported</span>
-            ) : dragState === "accept" ? (
-              <span className="font-medium text-primary">Drop to upload</span>
-            ) : (
-              titleNode
-            )}
-          </span>
-          {hintText && (
-            <span id={hintId} className="text-xs text-muted-foreground">
-              {hintText}
-            </span>
-          )}
-        </span>
-        {children}
-      </div>
+      </>
     );
   }
 );

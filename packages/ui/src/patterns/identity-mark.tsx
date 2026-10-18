@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { colorForSeed, hashString } from "../lib/hash";
+import { isSafeHref } from "../lib/validate";
 import { TextLink, type TextLinkProps } from "../primitives/text-link";
 
 /* ------------------------------------------------------------------ */
@@ -59,6 +60,30 @@ const stateRing: Record<IdentityMarkState, string> = {
 
 const stateLabel: Record<IdentityMarkState, string> = { live: "live", busy: "busy", offline: "offline" };
 
+/** A picture URL that is safe in an `<img>`, or null (pictures can come from user-supplied profiles). */
+function safePictureSrc(picture: string | null | undefined): string | null {
+  if (typeof picture !== "string") return null;
+  const src = picture.trim();
+  if (!src) return null;
+  return /^(blob:|data:image\/)/i.test(src) || (isSafeHref(src) && !/^(mailto|tel):/i.test(src)) ? src : null;
+}
+
+const pct = (units: number) => `${(units / 48) * 100}%`;
+
+/** The picture's box in the 48-unit viewBox: the inside of the core's outline, so the outline frames it. */
+function pictureBox(kind: IdentityMarkKind, ticks: boolean): React.CSSProperties {
+  if (kind === "person") {
+    const r = (ticks ? 13.5 : 20) - 1;
+    return { left: pct(24 - r), top: pct(24 - r), width: pct(r * 2), height: pct(r * 2), borderRadius: "50%" };
+  }
+  const outlined = kind === "machine";
+  const inset = outlined ? 1 : 0;
+  const x = (ticks ? 11 : 5) + inset;
+  const w = (ticks ? 26 : 38) - inset * 2;
+  const rx = (kind === "machine" ? (ticks ? 7 : 10) : ticks ? 9.5 : 13) - inset;
+  return { left: pct(x), top: pct(x), width: pct(w), height: pct(w), borderRadius: `${(rx / w) * 100}%` };
+}
+
 export interface IdentityMarkProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
   /** Identity string (person, machine or app id). The same seed always draws the same mark. */
   seed: string;
@@ -75,6 +100,12 @@ export interface IdentityMarkProps extends Omit<React.HTMLAttributes<HTMLSpanEle
   label?: string;
   /** Hide from assistive tech (when the name is already next to it). */
   decorative?: boolean;
+  /**
+   * Image URL (a photo or app icon) drawn inside the core shape, with the tick dial and outline kept as
+   * its frame. The generated mark shows while it loads and stays if the image fails or the URL is unsafe
+   * (http(s), relative, `blob:` and `data:image/` are allowed). The mark's `label` is its accessible name.
+   */
+  picture?: string | null;
 }
 
 /** Procedural identity glyph: a dial of twelve ticks, five lit by a hash of the seed. */
@@ -89,6 +120,7 @@ export const IdentityMark = React.forwardRef<HTMLSpanElement, IdentityMarkProps>
       letter,
       label,
       decorative,
+      picture,
       className,
       style,
       ...props
@@ -101,6 +133,9 @@ export const IdentityMark = React.forwardRef<HTMLSpanElement, IdentityMarkProps>
     const tint = color === "hash" ? identityColor(seed) : color === "current" ? "currentColor" : color;
     const initial = letter === false ? "" : (letter ?? identityInitial(seed));
     const name = `${label ?? seed}${state ? `, ${stateLabel[state]}` : ""}`;
+    const src = safePictureSrc(picture);
+    const [failedSrc, setFailedSrc] = React.useState<string | null>(null);
+    const showPicture = src !== null && failedSrc !== src;
 
     return (
       <span
@@ -110,6 +145,7 @@ export const IdentityMark = React.forwardRef<HTMLSpanElement, IdentityMarkProps>
         aria-hidden={decorative || undefined}
         data-kind={kind}
         data-state={state ?? undefined}
+        data-picture={showPicture ? "" : undefined}
         className={cn("relative inline-flex shrink-0 select-none items-center justify-center", className)}
         style={{ width: px, height: px, color: tint, ...style }}
         {...props}
@@ -177,6 +213,18 @@ export const IdentityMark = React.forwardRef<HTMLSpanElement, IdentityMarkProps>
             </text>
           ) : null}
         </svg>
+        {showPicture ? (
+          <img
+            src={src}
+            alt=""
+            aria-hidden
+            draggable={false}
+            data-slot="picture"
+            className="pointer-events-none absolute object-cover"
+            style={pictureBox(kind, showTicks)}
+            onError={() => setFailedSrc(src)}
+          />
+        ) : null}
       </span>
     );
   }
