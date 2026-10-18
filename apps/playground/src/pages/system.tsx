@@ -1,6 +1,20 @@
 import * as React from "react";
 import {
   AgentProcessList,
+  AlertRuleList,
+  FanControl,
+  HeatByApp,
+  MetricReadout,
+  MetricReadoutGroup,
+  ProcessTable,
+  StorageMap,
+  ThermalSensors,
+  ALERT_RULE_PRESETS,
+  type AlertRule,
+  type FanControlFan,
+  type ProcessInfo,
+  type StorageMapItem,
+  type ThermalSensor,
   ContainerList,
   ContainerSummary,
   DevServerList,
@@ -187,6 +201,155 @@ function ContainersDemo() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Menu bar readouts                                                   */
+/* ------------------------------------------------------------------ */
+
+function ReadoutsDemo() {
+  return (
+    <div className="flex w-full flex-col gap-4">
+      <MetricReadoutGroup label="Menu bar" className="w-fit rounded-control border border-border bg-card px-3 py-1.5">
+        <MetricReadout label="CPU" value={34} unit="%" thresholds={{ warning: 70, danger: 90 }} />
+        <MetricReadout label="MEM" value={84} unit="%" thresholds={{ warning: 80, danger: 92 }} />
+        <MetricReadout label="GPU" value={96} unit="%" thresholds={{ warning: 70, danger: 90 }} />
+        <MetricReadout label="NET" value="4.9" unit="MB/s" />
+        <MetricReadout label="TEMP" value={72} unit="°C" thresholds={{ warning: 80, danger: 95 }} />
+      </MetricReadoutGroup>
+      <MetricReadoutGroup label="Menu bar, pill style" separator="none" className="flex-wrap">
+        <MetricReadout variant="pill" label="CPU" value={34} unit="%" thresholds={{ warning: 70, danger: 90 }} />
+        <MetricReadout variant="pill" label="MEM" value={84} unit="%" thresholds={{ warning: 80, danger: 92 }} />
+        <MetricReadout variant="pill" label="GPU" value={96} unit="%" thresholds={{ warning: 70, danger: 90 }} />
+        <MetricReadout variant="pill" label="BAT" value={9} unit="%" thresholds={{ warning: 20, danger: 10 }} />
+      </MetricReadoutGroup>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Thermals                                                            */
+/* ------------------------------------------------------------------ */
+
+const sensors: ThermalSensor[] = [
+  { id: "cpu", label: "CPU", kind: "cpu", value: 72, history: [64, 66, 70, 68, 71, 74, 73, 72] },
+  { id: "gpu", label: "GPU", kind: "gpu", value: 86, history: [70, 74, 79, 82, 85, 88, 87, 86] },
+  { id: "ssd", label: "SSD", kind: "ssd", value: 41 },
+  { id: "battery", label: "Battery", kind: "battery", value: 31 },
+];
+
+const initialFans: FanControlFan[] = [
+  { id: "left", name: "Left fan", rpm: 2380, minRpm: 1200, maxRpm: 5800, mode: "auto" },
+  { id: "right", name: "Right fan", rpm: 2410, minRpm: 1200, maxRpm: 5800, mode: "fixed", targetRpm: 1800, needRpm: 2300 },
+];
+
+function ThermalsDemo() {
+  const [fans, setFans] = React.useState(initialFans);
+  const update = (id: string, patch: Partial<FanControlFan>) => setFans((list) => list.map((f) => (f.id === id ? { ...f, ...patch } : f)));
+  return (
+    <div className="grid w-full gap-4 lg:grid-cols-2">
+      <ThermalSensors sensors={sensors} showUnitToggle />
+      <FanControl
+        fans={fans}
+        onModeChange={(id, mode) => update(id, { mode, targetRpm: mode === "fixed" ? fans.find((f) => f.id === id)?.rpm ?? 2000 : undefined })}
+        onTargetChange={(id, rpm) => update(id, { targetRpm: rpm })}
+      />
+      <HeatByApp
+        className="lg:col-span-2"
+        explanation="Apps ranked by energy impact over the last minute, the closest proxy for heat."
+        apps={[
+          { id: "figma", name: "Figma", impact: 61, description: "14 processes" },
+          { id: "chrome", name: "Google Chrome", impact: 48, description: "96 processes" },
+          { id: "zoom", name: "Zoom", impact: 33, description: "8 processes" },
+          { id: "docker", name: "Docker", impact: 12, description: "9 processes" },
+        ]}
+      />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Alerts                                                              */
+/* ------------------------------------------------------------------ */
+
+function AlertsDemo() {
+  const [rules, setRules] = React.useState<AlertRule[]>(() =>
+    ALERT_RULE_PRESETS.map((preset, i) => ({ ...preset.rule, id: `preset-${i}`, enabled: i !== 2 }))
+  );
+  return (
+    <AlertRuleList
+      className="w-full"
+      rules={rules}
+      onRulesChange={setRules}
+      firingIds={["preset-0"]}
+      apps={["Google Chrome", "Slack", "Zoom", "Music", "Docker"]}
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Storage                                                             */
+/* ------------------------------------------------------------------ */
+
+const GB = 1_000_000_000;
+const storage: StorageMapItem[] = [
+  { id: "system", name: "System", category: "macos", size: 24 * GB },
+  { id: "system-data", name: "System Data", category: "macos", size: 14 * GB },
+  { id: "docker", name: "Docker images", category: "app-data", size: 64 * GB },
+  { id: "xcode", name: "Xcode", category: "app-data", size: 41 * GB },
+  { id: "caches", name: "Caches", category: "app-data", size: 18 * GB },
+  { id: "photos", name: "Photos Library", category: "yours", size: 128 * GB },
+  {
+    id: "projects",
+    name: "Projects",
+    category: "yours",
+    children: [
+      { id: "nm", name: "node_modules", size: 52 * GB },
+      { id: "src", name: "Source", size: 44 * GB },
+    ],
+  },
+  { id: "downloads", name: "Downloads", category: "yours", size: 37 * GB },
+  { id: "snapshots", name: "Local snapshots", category: "other", size: 34 * GB },
+  { id: "purgeable", name: "Purgeable", category: "other", size: 18 * GB },
+];
+
+/* ------------------------------------------------------------------ */
+/* Apps, not processes                                                 */
+/* ------------------------------------------------------------------ */
+
+const helpers = (app: string, base: number, n: number, cpu: number, mem: number): ProcessInfo[] =>
+  Array.from({ length: n }, (_, i) => ({
+    pid: base + i,
+    name: i === 0 ? app : `${app} Helper${i > 1 ? ` (${i})` : ""}`,
+    app,
+    user: "vyom",
+    cpu: Math.round((cpu / n) * (i === 0 ? 2 : 1) * 10) / 10,
+    memory: Math.round((mem / n) * MB),
+    state: "running",
+    startedAt: NOW - (3 * HOUR + i * MIN),
+  }));
+
+const initialProcesses: ProcessInfo[] = [
+  ...helpers("Google Chrome", 4100, 6, 37, 21230),
+  ...helpers("Visual Studio Code", 5200, 4, 9.2, 8530),
+  ...helpers("Terminal", 6300, 3, 14.6, 4060),
+  { pid: 88, name: "WindowServer", user: "_windowserver", cpu: 6.1, memory: 690 * MB, state: "running", startedAt: NOW - 2 * DAY },
+];
+
+function AppsDemo() {
+  const [processes, setProcesses] = React.useState(initialProcesses);
+  return (
+    <ProcessTable
+      className="w-full"
+      processes={processes}
+      groupBy={(p) => p.app}
+      defaultExpandedGroups={["Google Chrome"]}
+      defaultSort={{ key: "cpu", direction: "desc" }}
+      now={NOW}
+      onQuitGroup={(group) => setProcesses((list) => list.filter((p) => p.app !== group.key))}
+      onKill={(p) => setProcesses((list) => list.filter((x) => x.pid !== p.pid))}
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
@@ -208,6 +371,21 @@ export function SystemPage() {
       </Demo>
       <Demo id="agents" title="Agent quotas and sessions" description="Plan limits with a pace forecast, and each coding-agent session with the processes it started." align="start">
         <AgentsDemo />
+      </Demo>
+      <Demo id="readouts" title="Menu bar readouts" description="Compact readings that turn amber and red under strain; lower-is-worse thresholds work too (battery)." align="start">
+        <ReadoutsDemo />
+      </Demo>
+      <Demo id="thermals" title="Temperatures and fans" description="Sensor readings in °C or °F, fans held at a fixed speed with a warning when it is below what the system needs, and apps ranked by heat." align="start">
+        <ThermalsDemo />
+      </Demo>
+      <Demo id="alerts" title="Alert rules" description="Rules written as sentences, with presets, a firing badge, mute lists and an editor with a live preview." align="start">
+        <AlertsDemo />
+      </Demo>
+      <Demo id="storage" title="Storage map" description="A treemap of disk usage by category. Click or press Enter to drill into a category or folder; Backspace goes back." align="start">
+        <StorageMap className="w-full" items={storage} capacity={994.66 * GB} label="Macintosh HD" />
+      </Demo>
+      <Demo id="apps" title="Apps, not processes" description="ProcessTable grouped by app: totals per app, expandable helpers, and Quit or Force Quit with confirmation." align="start">
+        <AppsDemo />
       </Demo>
       <Demo id="containers" title="Containers" description="Memory by container, the container closest to its limit, and Compose projects with their containers." align="start">
         <ContainersDemo />

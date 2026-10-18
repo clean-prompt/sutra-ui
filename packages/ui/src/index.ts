@@ -24,7 +24,9 @@ export * from "./lib/encoding";
 export * from "./lib/format";
 export * from "./lib/hash";
 export * from "./lib/math";
+export * from "./lib/process-groups";
 export * from "./lib/status";
+export * from "./lib/temperature";
 export * from "./lib/text";
 export * from "./lib/time";
 export * from "./lib/tokens";
@@ -85,6 +87,7 @@ export * from "./primitives/label";
 export * from "./primitives/layout";
 export * from "./primitives/mesh-gradient";
 export * from "./primitives/meter";
+export * from "./primitives/metric-readout";
 export * from "./primitives/monogram";
 export * from "./primitives/number-input";
 export * from "./primitives/pagination";
@@ -171,6 +174,7 @@ export * from "./patterns/tiling-model";
 export * from "./patterns/timeline-bar";
 export * from "./patterns/transfer-list";
 export * from "./patterns/tree-view";
+export * from "./patterns/treemap";
 export * from "./patterns/zoom-pan";
 
 /* Kit: agent (src/kits/agent) */
@@ -288,9 +292,11 @@ export * from "./kits/social/messenger";
 export * from "./kits/social/presence";
 
 /* Kit: system (src/kits/system) */
+export * from "./kits/system/alert-rules";
 export * from "./kits/system/containers";
 export * from "./kits/system/dev-servers";
 export * from "./kits/system/device-battery";
+export * from "./kits/system/thermals";
 export * from "./kits/system/volume-mixer";
 
 /* Kit: terminal (src/kits/terminal) */

@@ -82,6 +82,11 @@ export interface GaugeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   tone?: ToneInput;
   /** @deprecated Use `tone`. */
   color?: MeterColor | ToneInput;
+  /**
+   * Categorical arc colour (a sensor or metric colour). Colour order: `colorStops`, then the warning/danger threshold
+   * colours, then `tone`/`color`, then `accent`, then primary. Sets `--sutra-accent` on the root.
+   */
+  accent?: Accent;
   size?: "sm" | "md" | "lg";
   /** Stroke width override in px. */
   thickness?: number;
@@ -108,6 +113,7 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
       colorStops,
       tone,
       color,
+      accent,
       size = "md",
       thickness,
       glow,
@@ -125,7 +131,8 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
     const empty = value === null || !Number.isFinite(value);
     const v = empty ? min : clamp(value as number, min, max);
     const pct = empty ? 0 : toPercent(v, max, min);
-    const { color: fill, level } = pickColor(empty ? min : (value as number), pct, thresholds, colorStops, normalizeTone(tone ?? color, "primary"));
+    const base = tone == null && color == null && accent ? accentColorValue : normalizeTone(tone ?? color, "primary");
+    const { color: fill, level } = pickColor(empty ? min : (value as number), pct, thresholds, colorStops, base);
     const c = s.box / 2;
     const r = c - stroke / 2 - (glow ? 3 : 1);
     const d = arc(c, c, r, startAngle, endAngle);
@@ -144,7 +151,7 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
         aria-label={label ? undefined : "Gauge"}
         data-level={level}
         className={cn("relative inline-flex shrink-0 items-center justify-center", className)}
-        style={{ width: s.box, height: s.box, ...style }}
+        style={accentStyle(accent, { width: s.box, height: s.box, ...style })}
         {...props}
       >
         <svg width={s.box} height={s.box} viewBox={`0 0 ${s.box} ${s.box}`} aria-hidden="true" className="absolute inset-0 overflow-visible">

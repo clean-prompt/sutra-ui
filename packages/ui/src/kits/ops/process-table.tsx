@@ -1,13 +1,26 @@
 import * as React from "react";
-import { RiCloseCircleLine, RiSkullLine } from "@remixicon/react";
-import { cn, focusRing, type Density } from "../../lib/cn";
+import { RiArrowRightSLine, RiCloseCircleLine, RiSkullLine } from "@remixicon/react";
+import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
 import { toneClasses } from "../../lib/tone";
 import { formatDuration } from "../../lib/duration";
 import { formatBytes, pluralize } from "../../lib/format";
 import { safeISO, toMs, type TimeInput } from "../../lib/time";
+import {
+  buildProcessTree,
+  defaultProcessGroupKey,
+  processGroupStartedAt,
+  processGroupUser,
+  sortProcessList,
+  type ProcessColumn,
+  type ProcessGroup,
+  type ProcessSort,
+  type ProcessTreeItem,
+} from "../../lib/process-groups";
 import { useAsyncAction } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
+import { ConfirmDialog } from "../../primitives/dialog";
+import { Monogram } from "../../primitives/monogram";
 import { Spinner } from "../../primitives/spinner";
 import { SimpleTooltip } from "../../primitives/tooltip";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, type TableSortDirection } from "../../primitives/table";
@@ -159,13 +172,20 @@ export interface ProcessInfo {
   gpuIndex?: number;
   state?: "running" | "sleeping" | "idle" | "stopped" | "zombie" | (string & {});
   startedAt?: TimeInput;
+  /** The owning app's name ("Google Chrome" for its helpers). `groupBy="app"` groups by it, falling back to `name`. */
+  app?: string;
+  /** App icon, shown on group rows. */
+  icon?: React.ReactNode;
 }
 
-export type ProcessColumn = "pid" | "name" | "user" | "cpu" | "memory" | "vram" | "state" | "started";
+export type { ProcessColumn, ProcessSort };
 
-export interface ProcessSort {
-  key: ProcessColumn;
-  direction: "asc" | "desc";
+/** An app group in a grouped `ProcessTable`: summed CPU and memory, process count and the processes. */
+export type ProcessTableGroup = ProcessGroup<ProcessInfo>;
+
+export interface ProcessQuitOptions {
+  /** Force Quit (may lose unsaved work) rather than a normal Quit. */
+  force: boolean;
 }
 
 /** Human bytes: 1536 → "1.5 KB" (base 1024). */
@@ -176,87 +196,69 @@ export function formatProcessBytes(bytes: number | null | undefined): string {
 /** Elapsed time: "45s", "5m", "2h 5m", "3d 4h" (floored). */
 const formatElapsed = (ms: number) => formatDuration(ms, { round: "floor", minUnit: ms < 60_000 ? "s" : "m" });
 
-const sortValue = (p: ProcessInfo, key: ProcessColumn): number | string => {
-  switch (key) {
-    case "pid":
-      return p.pid;
-    case "name":
-      return p.name.toLowerCase();
-    case "user":
-      return (p.user ?? "").toLowerCase();
-    case "cpu":
-      return p.cpu ?? -1;
-    case "memory":
-      return p.memory ?? -1;
-    case "vram":
-      return p.vram ?? -1;
-    case "state":
-      return p.state ?? "";
-    case "started":
-      return toMs(p.startedAt) ?? 0;
-  }
-};
-
 /** Sort processes by a column (stable, nulls last for desc). */
 export function sortProcesses(processes: ProcessInfo[], sort: ProcessSort | null): ProcessInfo[] {
-  if (!sort) return processes;
-  const dir = sort.direction === "asc" ? 1 : -1;
-  return processes
-    .map((p, i) => [p, i] as const)
-    .sort(([a, ia], [b, ib]) => {
-      const va = sortValue(a, sort.key);
-      const vb = sortValue(b, sort.key);
-      return (va < vb ? -1 : va > vb ? 1 : ia - ib) * (va === vb ? 1 : dir);
-    })
-    .map(([p]) => p);
+  return sortProcessList(processes, sort);
 }
 
 type Presence = "enter" | "idle" | "exit";
 
-/** Keeps removed rows briefly (state "exit") so they can animate out; new rows get "enter". */
-function usePresence(items: ProcessInfo[], duration: number) {
-  const seen = React.useRef<Set<number> | null>(null);
-  const prevList = React.useRef<ProcessInfo[]>([]);
-  const [exiting, setExiting] = React.useState<Map<number, { item: ProcessInfo; index: number }>>(new Map());
+/** Keeps removed items briefly (state "exit") so they can animate out; new items get "enter". */
+function usePresence<T, K>(items: T[], getKey: (item: T) => K, duration: number) {
+  const seen = React.useRef<Set<K> | null>(null);
+  const prevList = React.useRef<T[]>([]);
+  const timers = React.useRef(new Set<ReturnType<typeof setTimeout>>());
+  const [exiting, setExiting] = React.useState<Map<K, { item: T; index: number }>>(new Map());
 
-  const currentPids = new Set(items.map((p) => p.pid));
+  const currentKeys = new Set(items.map(getKey));
   const firstRender = seen.current === null;
-  if (seen.current === null) seen.current = new Set(currentPids);
+  if (seen.current === null) seen.current = new Set(currentKeys);
 
   React.useEffect(() => {
-    const removed = new Map<number, { item: ProcessInfo; index: number }>();
-    prevList.current.forEach((p, index) => {
-      if (!currentPids.has(p.pid)) removed.set(p.pid, { item: p, index });
+    const pending = timers.current;
+    return () => {
+      pending.forEach(clearTimeout);
+      pending.clear();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const removed = new Map<K, { item: T; index: number }>();
+    prevList.current.forEach((item, index) => {
+      const key = getKey(item);
+      if (!currentKeys.has(key)) removed.set(key, { item, index });
     });
     prevList.current = items;
-    const timers: ReturnType<typeof setTimeout>[] = [];
     if (removed.size) {
       setExiting((prev) => new Map([...prev, ...removed]));
-      timers.push(
-        setTimeout(() => {
-          setExiting((prev) => {
-            const next = new Map(prev);
-            for (const pid of removed.keys()) next.delete(pid);
-            return next;
-          });
-        }, duration)
-      );
+      // Not cleared when `items` changes again, so a fast update stream can't strand a row in "exit".
+      const timer = setTimeout(() => {
+        timers.current.delete(timer);
+        setExiting((prev) => {
+          const next = new Map(prev);
+          for (const key of removed.keys()) next.delete(key);
+          return next;
+        });
+      }, duration);
+      timers.current.add(timer);
     }
-    for (const pid of currentPids) seen.current!.add(pid);
-    return () => timers.forEach(clearTimeout);
+    for (const key of currentKeys) seen.current!.add(key);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
-  const rows: { item: ProcessInfo; state: Presence }[] = items.map((item) => ({
+  const rows: { item: T; state: Presence }[] = items.map((item) => ({
     item,
-    state: !firstRender && !seen.current!.has(item.pid) ? "enter" : "idle",
+    state: !firstRender && !seen.current!.has(getKey(item)) ? "enter" : "idle",
   }));
-  for (const [pid, { item, index }] of exiting) {
-    if (currentPids.has(pid)) continue;
+  for (const [key, { item, index }] of exiting) {
+    if (currentKeys.has(key)) continue;
     rows.splice(Math.min(index, rows.length), 0, { item, state: "exit" });
   }
   return rows;
 }
+
+const pidOf = (p: ProcessInfo) => p.pid;
+const treeKeyOf = (item: ProcessTreeItem<ProcessInfo>) => item.key;
 
 const columnLabel: Record<ProcessColumn, string> = {
   pid: "PID",
@@ -270,6 +272,9 @@ const columnLabel: Record<ProcessColumn, string> = {
 };
 
 const numeric: ProcessColumn[] = ["pid", "cpu", "memory", "vram"];
+const alignFor = (col: ProcessColumn) => (numeric.includes(col) && col !== "pid" ? "right" : "left");
+/** Numbers, sizes and relative times never wrap; only the name column may. */
+const nowrapFor = (col: ProcessColumn) => (col === "name" ? undefined : "whitespace-nowrap");
 
 /** Process states are domain-specific (not `TaskStatus`); only their colours come from the shared tones. */
 const stateTone: Record<string, string> = {
@@ -279,6 +284,29 @@ const stateTone: Record<string, string> = {
   stopped: toneClasses.soft.warning,
   zombie: toneClasses.soft.destructive,
 };
+
+/** Matches `TableCell` padding, for the group row's `<th scope="rowgroup">`. */
+const groupHeadPadding: Record<Density, string> = {
+  compact: "px-3 py-1.5",
+  normal: "px-4 py-2.5",
+  relaxed: "px-4 py-4",
+};
+
+/** Child rows indent their label past the group's disclosure chevron. */
+const childIndent: Record<Density, string> = {
+  compact: "pl-9",
+  normal: "pl-10",
+  relaxed: "pl-10",
+};
+
+/** Every tbody but the last keeps its bottom border when groups each get their own tbody. */
+const groupBodyClass = "[&>tr:last-child>td]:border-b [&>tr:last-child>th]:border-b [&:last-of-type>tr:last-child>*]:border-b-0";
+
+const presenceRowClass = (state: Presence) =>
+  cn(
+    state === "enter" && "animate-in fade-in-0 slide-in-from-top-1 duration-300 [&>td]:bg-primary-soft/40",
+    state === "exit" && "pointer-events-none animate-out fade-out-0 opacity-0 duration-300 [&>td]:line-through"
+  );
 
 export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableElement>, "children"> {
   processes: ProcessInfo[];
@@ -307,9 +335,149 @@ export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableEl
   exitDuration?: number;
   /** Accessible table caption. */
   caption?: string;
+  /**
+   * Show apps instead of processes ("Google Chrome · 96 processes"). `"app"` groups by `ProcessInfo.app`,
+   * falling back to the process name; a function returns a group key, or `undefined` to leave a process ungrouped.
+   */
+  groupBy?: "app" | ((process: ProcessInfo) => string | undefined);
+  /** Display name for a group. Default: its key. */
+  groupName?: (key: string, processes: ProcessInfo[]) => string;
+  /** Expanded group keys (controlled). */
+  expandedGroups?: string[];
+  /** Initially expanded group keys. Default none. */
+  defaultExpandedGroups?: string[];
+  onExpandedGroupsChange?: (keys: string[]) => void;
+  /** Enables Quit… and Force Quit… on group rows; each asks for confirmation first. */
+  onQuitGroup?: (group: ProcessTableGroup, options: ProcessQuitOptions) => void | Promise<unknown>;
+  /** Whether a given group can be quit (default all). */
+  canQuitGroup?: (group: ProcessTableGroup) => boolean;
 }
 
-/** Live process list: sortable columns, totals, animated add/remove and hover-revealed kill control. */
+interface RowContext {
+  /** The group a child row belongs to. */
+  group?: ProcessTableGroup;
+  id?: string;
+}
+
+type RenderRow = (p: ProcessInfo, state: Presence, ctx?: RowContext) => React.ReactNode;
+
+function ProcessRows({
+  items,
+  exitDuration,
+  renderRow,
+  empty,
+}: {
+  items: ProcessInfo[];
+  exitDuration: number;
+  renderRow: RenderRow;
+  empty: React.ReactNode;
+}) {
+  const rows = usePresence(items, pidOf, exitDuration);
+  if (rows.length === 0) return <>{empty}</>;
+  return <TableBody>{rows.map(({ item, state }) => renderRow(item, state))}</TableBody>;
+}
+
+interface ProcessGroupBodyProps {
+  group: ProcessTableGroup;
+  state: Presence;
+  expanded: boolean;
+  exitDuration: number;
+  idPrefix: string;
+  renderRow: RenderRow;
+  renderGroupRow: (group: ProcessTableGroup, state: Presence, expanded: boolean, childIds: string[]) => React.ReactNode;
+}
+
+function ProcessGroupBody({ group, state, expanded, exitDuration, idPrefix, renderRow, renderGroupRow }: ProcessGroupBodyProps) {
+  const children = usePresence(group.processes, pidOf, exitDuration);
+  const childId = (p: ProcessInfo) => `${idPrefix}-p${p.pid}`;
+  const visible = expanded ? children : [];
+  return (
+    <tbody data-group={group.key} className={groupBodyClass}>
+      {renderGroupRow(
+        group,
+        state,
+        expanded,
+        visible.filter((c) => c.state !== "exit").map((c) => childId(c.item))
+      )}
+      {visible.map(({ item, state: childState }) =>
+        renderRow(item, state === "exit" ? "exit" : childState, { group, id: childId(item) })
+      )}
+    </tbody>
+  );
+}
+
+function ProcessTreeBodies({
+  items,
+  empty,
+  exitDuration,
+  expanded,
+  idPrefix,
+  renderRow,
+  renderGroupRow,
+}: Omit<ProcessGroupBodyProps, "group" | "state" | "expanded"> & { items: ProcessTreeItem<ProcessInfo>[]; expanded: Set<string>; empty: React.ReactNode }) {
+  const rows = usePresence(items, treeKeyOf, exitDuration);
+  if (rows.length === 0) return <>{empty}</>;
+  return (
+    <>
+      {rows.map(({ item, state }) =>
+        item.type === "group" ? (
+          <ProcessGroupBody
+            key={item.key}
+            group={item.group}
+            state={state}
+            expanded={expanded.has(item.group.key)}
+            exitDuration={exitDuration}
+            idPrefix={idPrefix}
+            renderRow={renderRow}
+            renderGroupRow={renderGroupRow}
+          />
+        ) : (
+          <tbody key={item.key} className={groupBodyClass}>
+            {renderRow(item.process, state)}
+          </tbody>
+        )
+      )}
+    </>
+  );
+}
+
+/** Quit… / Force Quit… for an app group, each behind a ConfirmDialog. */
+function ProcessGroupQuit({ group, onQuit }: { group: ProcessTableGroup; onQuit: NonNullable<ProcessTableProps["onQuitGroup"]> }) {
+  const closing = `${group.count} ${pluralize(group.count, "process", "processes")} will close.`;
+  const quit = (force: boolean) => async () => {
+    await onQuit(group, { force });
+  };
+  return (
+    <div className="inline-flex items-center gap-1" data-slot="process-group-quit">
+      <ConfirmDialog
+        title={`Quit ${group.name}?`}
+        description={closing}
+        confirmLabel="Quit"
+        tone="warning"
+        onConfirm={quit(false)}
+        trigger={
+          <Button size="xs" variant="ghost" aria-label={`Quit ${group.name}…`}>
+            Quit…
+          </Button>
+        }
+      />
+      <ConfirmDialog
+        title={`Force quit ${group.name}?`}
+        description={`${closing} Unsaved work may be lost.`}
+        confirmLabel="Force Quit"
+        tone="destructive"
+        onConfirm={quit(true)}
+        trigger={
+          <Button size="xs" variant="destructive-soft" aria-label={`Force Quit ${group.name}…`}>
+            Force Quit…
+          </Button>
+        }
+      />
+    </div>
+  );
+}
+
+/** Live process list: sortable columns, totals, animated add/remove, hover-revealed kill control, optional app grouping. */
 export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps>(
   (
     {
@@ -330,16 +498,39 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
       density = "compact",
       exitDuration = 250,
       caption = "Processes",
+      groupBy,
+      groupName,
+      expandedGroups: expandedProp,
+      defaultExpandedGroups = [],
+      onExpandedGroupsChange,
+      onQuitGroup,
+      canQuitGroup,
       ...props
     },
     ref
   ) => {
     const [sort, setSort] = useControllableState<ProcessSort | null>({ value: sortProp, defaultValue: defaultSort, onChange: onSortChange });
+    const [expandedList, setExpandedList] = useControllableState<string[]>({
+      value: expandedProp,
+      defaultValue: defaultExpandedGroups,
+      onChange: onExpandedGroupsChange,
+    });
     const [confirmingPid, setConfirmingPid] = React.useState<number | null>(null);
-    const sorted = React.useMemo(() => sortProcesses(processes, sort), [processes, sort]);
-    const rows = usePresence(sorted, exitDuration);
+    const idPrefix = React.useId().replace(/:/g, "");
+    const grouped = groupBy !== undefined;
+    const groupKey = groupBy === "app" ? defaultProcessGroupKey : groupBy;
+    const sorted = React.useMemo(() => (grouped ? [] : sortProcesses(processes, sort)), [grouped, processes, sort]);
+    const tree = React.useMemo(
+      () => (grouped ? buildProcessTree(processes, { key: groupKey, name: groupName, sort }) : []),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [grouped, processes, sort, groupBy, groupName]
+    );
+    const expanded = React.useMemo(() => new Set(expandedList), [expandedList]);
     const now = nowProp ?? Date.now();
     const pending = new Set(pendingPids ?? []);
+    const nDensity = normalizeDensity(density);
+    const labelCol: ProcessColumn | undefined = columns.includes("name") ? "name" : columns[0];
+    const hasActions = Boolean(onKill || (grouped && onQuitGroup));
 
     const toggleSort = (key: ProcessColumn) => {
       if (sort?.key !== key) setSort({ key, direction: numeric.includes(key) || key === "started" ? "desc" : "asc" });
@@ -347,14 +538,17 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
     };
     const dirFor = (key: ProcessColumn): TableSortDirection => (sort?.key === key ? sort.direction : false);
 
+    const setGroupExpanded = (key: string, open: boolean) =>
+      setExpandedList((prev) => (open ? (prev.includes(key) ? prev : [...prev, key]) : prev.filter((k) => k !== key)));
+
     const totals = {
       cpu: processes.reduce((s, p) => s + (p.cpu ?? 0), 0),
       memory: processes.reduce((s, p) => s + (p.memory ?? 0), 0),
       vram: processes.reduce((s, p) => s + (p.vram ?? 0), 0),
     };
-    const colCount = columns.length + (onKill ? 1 : 0);
+    const colCount = columns.length + (hasActions ? 1 : 0);
 
-    const renderCell = (p: ProcessInfo, col: ProcessColumn) => {
+    const renderCell = (p: ProcessInfo, col: ProcessColumn, group?: ProcessTableGroup) => {
       switch (col) {
         case "pid":
           return <span className="font-mono text-xs text-muted-foreground tabular-nums">{p.pid}</span>;
@@ -363,7 +557,10 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
           const short = cmd.length > commandMaxLength ? `${cmd.slice(0, commandMaxLength - 1)}…` : cmd;
           return (
             <div className="min-w-0 max-w-[22rem]">
-              <div className="truncate text-sm font-medium text-foreground">{p.name}</div>
+              <div className="truncate text-sm font-medium text-foreground">
+                {p.name}
+                {group && group.name !== p.name ? <span className="sr-only"> ({group.name})</span> : null}
+              </div>
               {p.command && p.command !== p.name ? (
                 <SimpleTooltip content={<span className="break-all font-mono">{cmd}</span>} contentClassName="max-w-md">
                   <div className="truncate font-mono text-2xs text-muted-foreground" data-command="">
@@ -402,17 +599,171 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
           ) : (
             <span className="text-xs text-muted-foreground">—</span>
           );
-        case "started": {
-          const ms = toMs(p.startedAt);
-          if (ms === undefined) return <span className="text-xs text-muted-foreground">—</span>;
-          return (
-            <time dateTime={safeISO(ms)} title={new Date(ms).toLocaleString()} className="font-mono text-xs text-muted-foreground tabular-nums">
-              {formatElapsed(now - ms)} ago
-            </time>
-          );
-        }
+        case "started":
+          return renderStarted(toMs(p.startedAt));
       }
     };
+
+    const renderStarted = (ms: number | undefined) => {
+      if (ms === undefined) return <span className="text-xs text-muted-foreground">—</span>;
+      return (
+        <time dateTime={safeISO(ms)} title={new Date(ms).toLocaleString()} className="font-mono text-xs text-muted-foreground tabular-nums">
+          {formatElapsed(now - ms)} ago
+        </time>
+      );
+    };
+
+    const renderRow: RenderRow = (p, state, ctx) => {
+      const killable = onKill && (canKill?.(p) ?? true);
+      const isPending = pending.has(p.pid);
+      return (
+        <TableRow
+          key={p.pid}
+          id={ctx?.id}
+          data-pid={p.pid}
+          data-group={ctx?.group?.key}
+          data-state={state === "idle" ? undefined : state}
+          aria-hidden={state === "exit" || undefined}
+          className={cn(
+            "group/proc transition-[opacity,background-color]",
+            presenceRowClass(state),
+            p.state === "zombie" && "[&>td]:bg-destructive-soft/40",
+            isPending && "opacity-60"
+          )}
+        >
+          {columns.map((col) => (
+            <TableCell key={col} align={alignFor(col)} className={cn(nowrapFor(col), ctx?.group && col === labelCol ? childIndent[nDensity] : undefined)}>
+              {renderCell(p, col, ctx?.group)}
+            </TableCell>
+          ))}
+          {hasActions ? (
+            <TableCell align="right" className="w-px whitespace-nowrap">
+              {killable && state !== "exit" ? (
+                <KillButton
+                  pid={p.pid}
+                  name={p.name}
+                  loading={isPending}
+                  onKill={(signal) => onKill(p, signal)}
+                  onConfirmingChange={(s) => setConfirmingPid(s ? p.pid : null)}
+                  className={cn(
+                    !isPending &&
+                      confirmingPid !== p.pid &&
+                      "opacity-0 transition-opacity focus-within:opacity-100 group-hover/proc:opacity-100 [@media(hover:none)]:opacity-100"
+                  )}
+                />
+              ) : null}
+            </TableCell>
+          ) : null}
+        </TableRow>
+      );
+    };
+
+    const renderGroupCell = (group: ProcessTableGroup, col: ProcessColumn) => {
+      switch (col) {
+        case "cpu":
+          return <span className={cn("font-mono text-xs font-medium tabular-nums", group.cpu >= 80 && "text-warning-soft-foreground")}>{group.cpu.toFixed(1)}%</span>;
+        case "memory":
+          return <span className="font-mono text-xs font-medium tabular-nums">{formatProcessBytes(group.memory)}</span>;
+        case "vram":
+          return group.vram ? (
+            <span className="font-mono text-xs font-medium tabular-nums">{formatProcessBytes(group.vram)}</span>
+          ) : (
+            <span className="text-xs text-muted-foreground">—</span>
+          );
+        case "user": {
+          const user = processGroupUser(group);
+          return user ? <span className="font-mono text-xs">{user}</span> : null;
+        }
+        case "started":
+          return renderStarted(processGroupStartedAt(group));
+        default:
+          return null;
+      }
+    };
+
+    const renderGroupRow = (group: ProcessTableGroup, state: Presence, open: boolean, childIds: string[]) => {
+      const quittable = grouped && onQuitGroup && (canQuitGroup?.(group) ?? true);
+      const count = `${group.count} ${pluralize(group.count, "process", "processes")}`;
+      return (
+        <TableRow
+          data-group-row=""
+          data-group-key={group.key}
+          data-state={state === "idle" ? undefined : state}
+          aria-hidden={state === "exit" || undefined}
+          className={cn("group/proc transition-[opacity,background-color]", presenceRowClass(state))}
+        >
+          {columns.map((col) =>
+            col === labelCol ? (
+              <th
+                key={col}
+                scope="rowgroup"
+                className={cn("border-b border-border text-left align-middle font-normal", groupHeadPadding[nDensity])}
+              >
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  aria-label={`${group.name}, ${count}`}
+                  tabIndex={state === "exit" ? -1 : undefined}
+                  aria-controls={open && childIds.length ? childIds.join(" ") : undefined}
+                  onClick={() => setGroupExpanded(group.key, !open)}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowRight" && !open) {
+                      e.preventDefault();
+                      setGroupExpanded(group.key, true);
+                    } else if (e.key === "ArrowLeft" && open) {
+                      e.preventDefault();
+                      setGroupExpanded(group.key, false);
+                    }
+                  }}
+                  className={cn("-mx-1 flex min-w-0 max-w-[22rem] items-center gap-2 rounded-xs px-1 text-left", focusRing)}
+                >
+                  <RiArrowRightSLine
+                    aria-hidden
+                    className={cn("size-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-90")}
+                  />
+                  {group.icon != null ? (
+                    <span aria-hidden className="inline-flex size-6 shrink-0 items-center justify-center [&>img]:size-full [&>svg]:size-5">
+                      {group.icon}
+                    </span>
+                  ) : (
+                    <Monogram name={group.name} size="sm" />
+                  )}
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-medium text-foreground">{group.name}</span>
+                    <span className="block truncate text-2xs text-muted-foreground" data-slot="process-group-count">
+                      {count}
+                    </span>
+                  </span>
+                </button>
+              </th>
+            ) : (
+              <TableCell key={col} align={alignFor(col)} className={nowrapFor(col)}>
+                {renderGroupCell(group, col)}
+              </TableCell>
+            )
+          )}
+          {hasActions ? (
+            <TableCell align="right" className="w-px whitespace-nowrap">
+              {quittable && state !== "exit" ? (
+                <div className="opacity-0 transition-opacity focus-within:opacity-100 group-hover/proc:opacity-100 has-[[data-state=open]]:opacity-100 [@media(hover:none)]:opacity-100">
+                  <ProcessGroupQuit group={group} onQuit={onQuitGroup} />
+                </div>
+              ) : null}
+            </TableCell>
+          ) : null}
+        </TableRow>
+      );
+    };
+
+    const emptyBody = (
+      <TableBody>
+        <TableRow>
+          <TableCell colSpan={colCount} className="py-8 text-center text-sm text-muted-foreground">
+            {emptyState}
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    );
 
     return (
       <Table ref={ref} density={density} stickyHeader={maxHeight !== undefined} maxHeight={maxHeight} className={className} {...props}>
@@ -420,75 +771,35 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
         <TableHeader>
           <TableRow>
             {columns.map((col) => (
-              <TableHead key={col} align={numeric.includes(col) && col !== "pid" ? "right" : "left"} sortDirection={dirFor(col)} onSort={() => toggleSort(col)}>
-                {columnLabel[col]}
+              <TableHead key={col} align={alignFor(col)} sortDirection={dirFor(col)} onSort={() => toggleSort(col)}>
+                {grouped && col === "name" ? "Name" : columnLabel[col]}
               </TableHead>
             ))}
-            {onKill ? (
+            {hasActions ? (
               <TableHead align="right">
                 <span className="sr-only">Actions</span>
               </TableHead>
             ) : null}
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {rows.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={colCount} className="py-8 text-center text-sm text-muted-foreground">
-                {emptyState}
-              </TableCell>
-            </TableRow>
-          ) : (
-            rows.map(({ item: p, state }) => {
-              const killable = onKill && (canKill?.(p) ?? true);
-              const isPending = pending.has(p.pid);
-              return (
-                <TableRow
-                  key={p.pid}
-                  data-pid={p.pid}
-                  data-state={state === "idle" ? undefined : state}
-                  aria-hidden={state === "exit" || undefined}
-                  className={cn(
-                    "group/proc transition-[opacity,background-color]",
-                    state === "enter" && "animate-in fade-in-0 slide-in-from-top-1 duration-300 [&>td]:bg-primary-soft/40",
-                    state === "exit" && "pointer-events-none animate-out fade-out-0 opacity-0 duration-300 [&>td]:line-through",
-                    p.state === "zombie" && "[&>td]:bg-destructive-soft/40",
-                    isPending && "opacity-60"
-                  )}
-                >
-                  {columns.map((col) => (
-                    <TableCell key={col} align={numeric.includes(col) && col !== "pid" ? "right" : "left"}>
-                      {renderCell(p, col)}
-                    </TableCell>
-                  ))}
-                  {onKill ? (
-                    <TableCell align="right" className="w-px whitespace-nowrap">
-                      {killable && state !== "exit" ? (
-                        <KillButton
-                          pid={p.pid}
-                          name={p.name}
-                          loading={isPending}
-                          onKill={(signal) => onKill(p, signal)}
-                          onConfirmingChange={(s) => setConfirmingPid(s ? p.pid : null)}
-                          className={cn(
-                            !isPending &&
-                              confirmingPid !== p.pid &&
-                              "opacity-0 transition-opacity focus-within:opacity-100 group-hover/proc:opacity-100 [@media(hover:none)]:opacity-100"
-                          )}
-                        />
-                      ) : null}
-                    </TableCell>
-                  ) : null}
-                </TableRow>
-              );
-            })
-          )}
-        </TableBody>
+        {grouped ? (
+          <ProcessTreeBodies
+              empty={emptyBody}
+              items={tree}
+              expanded={expanded}
+              exitDuration={exitDuration}
+              idPrefix={idPrefix}
+              renderRow={renderRow}
+              renderGroupRow={renderGroupRow}
+            />
+        ) : (
+          <ProcessRows items={sorted} exitDuration={exitDuration} renderRow={renderRow} empty={emptyBody} />
+        )}
         {showTotals && processes.length > 0 ? (
           <TableFooter>
             <TableRow data-totals="">
               {columns.map((col, i) => (
-                <TableCell key={col} align={numeric.includes(col) && col !== "pid" ? "right" : "left"} className="font-medium">
+                <TableCell key={col} align={alignFor(col)} className="whitespace-nowrap font-medium">
                   {col === "cpu" ? (
                     <span className="font-mono text-xs tabular-nums">{totals.cpu.toFixed(1)}%</span>
                   ) : col === "memory" ? (
@@ -502,7 +813,7 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
                   ) : null}
                 </TableCell>
               ))}
-              {onKill ? <TableCell /> : null}
+              {hasActions ? <TableCell /> : null}
             </TableRow>
           </TableFooter>
         ) : null}

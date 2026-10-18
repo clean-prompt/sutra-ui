@@ -42,6 +42,7 @@ export * from "../primitives/label";
 export * from "../primitives/layout";
 export * from "../primitives/mesh-gradient";
 export * from "../primitives/meter";
+export * from "../primitives/metric-readout";
 export * from "../primitives/monogram";
 export * from "../primitives/number-input";
 export * from "../primitives/pagination";
