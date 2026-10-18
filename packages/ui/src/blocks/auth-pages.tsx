@@ -1,8 +1,8 @@
 import * as React from "react";
 import { RiDoubleQuotesL, RiStarFill } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { Avatar } from "../components/avatar";
-import { MeshGradient } from "../components/mesh-gradient";
+import { Avatar } from "../primitives/avatar";
+import { MeshGradient } from "../primitives/mesh-gradient";
 import { SutraLogo, SutraMark, SutraAppIcon, sutraApps } from "../assets/brand";
 import { LogoCloud, type PlaceholderLogoEntry } from "../assets/placeholder-logos";
 import { BackgroundPattern, DeviceFrame } from "../assets/misc";

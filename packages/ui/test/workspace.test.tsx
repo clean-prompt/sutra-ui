@@ -2,18 +2,18 @@ import * as React from "react";
 import { act, fireEvent, render, renderHook, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { ShortcutProvider, useShortcut } from "../src/components/shortcuts";
+import { ShortcutProvider, useShortcut } from "../src/patterns/shortcuts";
 import {
   ConnectionRegistry,
   GatewayStatusPopover,
   ProfileScopeBanner,
   WorkspaceProfileSwitcher,
   type WorkspaceGateway,
-} from "../src/components/workspace-switcher";
-import { RotatingNoticeBar, useNoticeQueue, type NoticeItem } from "../src/components/notice-bar";
-import { CoachmarkTour, TipBubble, type CoachmarkStep } from "../src/components/coachmarks";
-import { KeybindEditor, recordKeyCombo, type KeybindItem } from "../src/components/keybind-editor";
-import { TranscriptTimelineRail, type TimelineRailTurn } from "../src/components/timeline-rail";
+} from "../src/kits/workspace/workspace-switcher";
+import { RotatingNoticeBar, useNoticeQueue, type NoticeItem } from "../src/patterns/notice-bar";
+import { CoachmarkTour, TipBubble, type CoachmarkStep } from "../src/patterns/coachmarks";
+import { KeybindEditor, recordKeyCombo, type KeybindItem } from "../src/patterns/keybind-editor";
+import { TranscriptTimelineRail, type TimelineRailTurn } from "../src/kits/workspace/timeline-rail";
 import { axeViolations } from "./a11y";
 
 /* ------------------------------------------------------------------ */

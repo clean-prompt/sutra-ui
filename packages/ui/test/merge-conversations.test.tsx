@@ -1,18 +1,18 @@
 import * as React from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { InlineEditText } from "../src/components/inline-edit-text";
+import { InlineEditText } from "../src/primitives/inline-edit-text";
 import {
   ConversationList,
   ConversationRow,
   groupConversationsByDate,
   type ConversationListItem,
-} from "../src/components/conversation-list";
-import { ChatListView, groupChatsByDate } from "../src/components/chat-list-view";
-import { ConversationSidebarList } from "../src/components/conversation-sidebar";
-import { AgentStatusDot } from "../src/components/agent-sessions";
-import { detectSlashTrigger } from "../src/components/slash-menu";
-import { MentionInput } from "../src/components/entity-mention";
+} from "../src/kits/ai/conversation-list";
+import { ChatListView, groupChatsByDate } from "../src/kits/ai/chat-list-view";
+import { ConversationSidebarList } from "../src/kits/ai/conversation-sidebar";
+import { AgentStatusDot } from "../src/kits/agent/agent-sessions";
+import { detectSlashTrigger } from "../src/kits/ai/slash-menu";
+import { MentionInput } from "../src/kits/workspace/entity-mention";
 import { axeViolations } from "./a11y";
 
 const IME = { isComposing: true, keyCode: 229 };

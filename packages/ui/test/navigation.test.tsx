@@ -1,11 +1,11 @@
 import { act, render, renderHook, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../src/components/tabs";
-import { TabMenu } from "../src/components/tab-menu";
-import { Pagination, getPaginationRange, usePagination } from "../src/components/pagination";
-import { Breadcrumbs } from "../src/components/breadcrumbs";
-import { TreeView, type TreeNode } from "../src/components/tree-view";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../src/primitives/tabs";
+import { TabMenu } from "../src/patterns/tab-menu";
+import { Pagination, getPaginationRange, usePagination } from "../src/primitives/pagination";
+import { Breadcrumbs } from "../src/primitives/breadcrumbs";
+import { TreeView, type TreeNode } from "../src/patterns/tree-view";
 import {
   Sidebar,
   SidebarContent,
@@ -15,7 +15,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-} from "../src/components/sidebar-navigation";
+} from "../src/patterns/sidebar-navigation";
 import {
   HeaderNav,
   HeaderNavActions,
@@ -26,8 +26,8 @@ import {
   HeaderNavMenu,
   HeaderNavMobile,
   HeaderNavTrigger,
-} from "../src/components/header-navigation";
-import { PageHeader, SectionHeader } from "../src/components/section-header";
+} from "../src/patterns/header-navigation";
+import { PageHeader, SectionHeader } from "../src/patterns/section-header";
 import { axeViolations } from "./a11y";
 
 /* ------------------------------------------------------------------ */

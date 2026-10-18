@@ -26,24 +26,24 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { useCopy } from "../hooks/use-copy";
 import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
 import { pluralize } from "../lib/format";
-import { CopyButton } from "../components/copy-button";
-import { Button } from "../components/button";
-import { Badge } from "../components/badge";
-import { Avatar } from "../components/avatar";
-import { Kbd } from "../components/typography";
-import { ShortcutKeys, useShortcutRegistry } from "../components/shortcuts";
-import { Input, SearchInput } from "../components/input";
-import { Textarea } from "../components/textarea";
-import { TagInput } from "../components/tag-input";
-import { Field, FieldDescription, FieldLabel, FieldGroup, FieldError } from "../components/field";
-import { SimpleSelect, type SelectOption } from "../components/select";
-import { SegmentedControl } from "../components/segmented-control";
-import { Rating } from "../components/rating";
-import { DatePicker } from "../components/date-picker";
-import { SwitchField } from "../components/switch";
-import { CheckboxField } from "../components/checkbox";
-import { Steps } from "../components/step-indicator";
-import { InlineAlert } from "../components/inline-alert";
+import { CopyButton } from "../primitives/copy-button";
+import { Button } from "../primitives/button";
+import { Badge } from "../primitives/badge";
+import { Avatar } from "../primitives/avatar";
+import { Kbd } from "../primitives/typography";
+import { ShortcutKeys, useShortcutRegistry } from "../patterns/shortcuts";
+import { Input, SearchInput } from "../primitives/input";
+import { Textarea } from "../primitives/textarea";
+import { TagInput } from "../primitives/tag-input";
+import { Field, FieldDescription, FieldLabel, FieldGroup, FieldError } from "../primitives/field";
+import { SimpleSelect, type SelectOption } from "../primitives/select";
+import { SegmentedControl } from "../primitives/segmented-control";
+import { Rating } from "../primitives/rating";
+import { DatePicker } from "../primitives/date-picker";
+import { SwitchField } from "../primitives/switch";
+import { CheckboxField } from "../primitives/checkbox";
+import { Steps } from "../primitives/step-indicator";
+import { InlineAlert } from "../primitives/inline-alert";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -61,7 +61,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../components/dialog";
+} from "../primitives/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,7 +70,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../components/dropdown-menu";
+} from "../primitives/dropdown-menu";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
 import { FeaturedIcon } from "../assets/icons";
 import { useBlockAction as useAsyncAction } from "./block-utils";

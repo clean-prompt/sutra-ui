@@ -2,72 +2,67 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 /**
- * Layering guard: primitives must not depend on patterns or kits, and lib/, hooks/ and assets/ must not depend on
- * components at all. A later phase turns these lists into folder rules (src/primitives, src/patterns, src/kits).
+ * Layering guard for the folder structure:
+ *
+ *   lib/  hooks/  assets/   pure helpers, generic hooks, art (never import UI layers)
+ *   primitives/             basic controls; import only primitives, lib, hooks, assets, styles
+ *   patterns/               composed views; may also import primitives
+ *   kits/<domain>/          domain features; may also import patterns and the kits listed in KIT_DEPS
+ *   blocks/, entries/, index.ts   top level; may import anything
  */
 
 const SRC = path.resolve(__dirname, "../src");
-const COMPONENTS = path.join(SRC, "components");
-
-/** Basenames in src/components that form the primitive layer. They may import only each other, lib, hooks, assets, styles. */
-const PRIMITIVES = [
-  "button",
-  "button-group",
-  "close-button",
-  "text-link",
-  "badge",
-  "chip",
-  "status-badge",
-  "spinner",
-  "progress",
-  "avatar",
-  "separator",
-  "label",
-  "field",
-  "input",
-  "textarea",
-  "checkbox",
-  "radio",
-  "switch",
-  "select",
-  "tooltip",
-  "popover",
-  "dialog",
-  "drawer",
-  "dropdown-menu",
-  "context-menu",
-  "tabs",
-  "typography",
-  "layout",
-  "table",
-  "inline-alert",
-  "alert-banner",
-  "toast",
-  "empty-state",
-  "meter",
-  "shortcut-keys",
-  "scroll-area",
-  "kbd",
-];
-
-/** Directories (relative to src) any primitive may import from. */
-const ALLOWED_DIRS = ["lib", "hooks", "assets", "styles"];
-
-/**
- * Cross-layer imports that are known and owned elsewhere. Each entry must still exist (stale entries fail),
- * so remove it when the import is fixed.
- */
-const KNOWN_EXCEPTIONS: Record<string, string[]> = {
-};
-
 const SOURCE_EXTS = [".ts", ".tsx"];
 
-function sourceFile(dir: string, base: string): string | null {
-  for (const ext of SOURCE_EXTS) {
-    const p = path.join(dir, base + ext);
-    if (fs.existsSync(p)) return p;
+/** Which other kits each kit may import. Anything not listed here is a layering violation. */
+const KIT_DEPS: Record<string, string[]> = {
+  ai: [],
+  agent: ["ai"],
+  "agent-admin": ["ai", "agent", "identity"],
+  identity: [],
+  billing: [],
+  workspace: ["ai"],
+  ops: ["ai"],
+  media: [],
+  voice: [],
+  social: [],
+  editor: [],
+  terminal: [],
+};
+
+const BASE = ["lib", "hooks", "assets", "styles"];
+
+/** Allowed target layers per source layer. */
+function allowed(from: string): (to: string) => boolean {
+  if (from === "lib") return (to) => to === "lib";
+  if (from === "hooks") return (to) => to === "lib" || to === "hooks";
+  if (from === "assets") return (to) => ["lib", "hooks", "assets"].includes(to);
+  if (from === "primitives") return (to) => BASE.includes(to) || to === "primitives";
+  if (from === "patterns") return (to) => BASE.includes(to) || to === "primitives" || to === "patterns";
+  if (from.startsWith("kits/")) {
+    const kit = from.slice(5);
+    return (to) =>
+      BASE.includes(to) ||
+      to === "primitives" ||
+      to === "patterns" ||
+      to === from ||
+      (to.startsWith("kits/") && (KIT_DEPS[kit] ?? []).includes(to.slice(5)));
   }
-  return null;
+  return () => true; // blocks, entries, index
+}
+
+function layerOf(rel: string): string {
+  const [top, second] = rel.split("/");
+  if (top === "kits") return `kits/${second}`;
+  if (!rel.includes("/")) return rel.replace(/\.tsx?$/, "");
+  return top!;
+}
+
+function filesIn(dir: string): string[] {
+  return fs
+    .readdirSync(dir, { withFileTypes: true })
+    .flatMap((e) => (e.isDirectory() ? filesIn(path.join(dir, e.name)) : [path.join(dir, e.name)]))
+    .filter((f) => SOURCE_EXTS.includes(path.extname(f)) && !/\.test\.tsx?$/.test(f));
 }
 
 /** Relative specifiers of every static import / export-from / dynamic import in a file. */
@@ -83,73 +78,48 @@ function relativeSpecifiers(file: string): string[] {
   return [...specs];
 }
 
-/** Resolve a relative specifier to a src-relative module id without extension, e.g. "components/button", "lib/cn". */
-function resolveToSrc(file: string, spec: string): string {
-  const abs = path.resolve(path.dirname(file), spec);
-  return path.relative(SRC, abs).split(path.sep).join("/").replace(/\.(tsx?|css)$/, "").replace(/\/index$/, "");
-}
-
-function filesIn(dir: string): string[] {
-  if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir, { withFileTypes: true })
-    .flatMap((e) => (e.isDirectory() ? filesIn(path.join(dir, e.name)) : [path.join(dir, e.name)]))
-    .filter((f) => SOURCE_EXTS.includes(path.extname(f)) && !/\.test\.tsx?$/.test(f));
-}
-
-const primitiveSet = new Set(PRIMITIVES);
-
-function isAllowedForPrimitive(target: string) {
-  const [top, ...rest] = target.split("/");
-  if (ALLOWED_DIRS.includes(top!)) return true;
-  return top === "components" && rest.length === 1 && primitiveSet.has(rest[0]!);
-}
+const files = filesIn(SRC);
 
 describe("layering", () => {
-  const present = PRIMITIVES.filter((name) => sourceFile(COMPONENTS, name));
-
-  it("finds the primitive files", () => {
-    // `kbd` is optional (Kbd currently lives in typography); everything else should exist.
-    const missing = PRIMITIVES.filter((name) => name !== "kbd" && !present.includes(name));
-    expect(missing).toEqual([]);
+  it("every source file sits in a known layer", () => {
+    const known = new Set(["lib", "hooks", "assets", "styles", "primitives", "patterns", "blocks", "entries", "index"]);
+    const strays = files
+      .map((f) => path.relative(SRC, f).split(path.sep).join("/"))
+      .filter((rel) => {
+        const layer = layerOf(rel);
+        return layer.startsWith("kits/") ? !(layer.slice(5) in KIT_DEPS) : !known.has(layer);
+      });
+    expect(strays).toEqual([]);
   });
 
-  it("primitives import only primitives, lib, hooks, assets and styles", () => {
+  it("no file imports a higher layer or an unlisted kit", () => {
     const violations: string[] = [];
-    const usedExceptions = new Set<string>();
-    for (const name of present) {
-      const file = sourceFile(COMPONENTS, name)!;
+    for (const file of files) {
+      const rel = path.relative(SRC, file).split(path.sep).join("/");
+      const from = layerOf(rel);
+      const ok = allowed(from);
       for (const spec of relativeSpecifiers(file)) {
-        const target = resolveToSrc(file, spec);
-        if (isAllowedForPrimitive(target)) continue;
-        if (KNOWN_EXCEPTIONS[name]?.includes(target)) {
-          usedExceptions.add(`${name} -> ${target}`);
-          continue;
-        }
-        violations.push(`components/${name} -> ${target}`);
+        const target = path.relative(SRC, path.resolve(path.dirname(file), spec)).split(path.sep).join("/");
+        const to = layerOf(target);
+        if (!ok(to)) violations.push(`${rel} -> ${target}`);
       }
     }
     expect(violations).toEqual([]);
-
-    const stale = Object.entries(KNOWN_EXCEPTIONS).flatMap(([name, targets]) =>
-      targets.map((t) => `${name} -> ${t}`).filter((e) => !usedExceptions.has(e))
-    );
-    expect(stale, "remove fixed entries from KNOWN_EXCEPTIONS").toEqual([]);
   });
 
-  it("lib, hooks and assets never import components or blocks", () => {
-    const violations: string[] = [];
-    for (const dir of ["lib", "hooks", "assets"]) {
-      for (const file of filesIn(path.join(SRC, dir))) {
-        for (const spec of relativeSpecifiers(file)) {
-          const target = resolveToSrc(file, spec);
-          if (/^(components|blocks|entries)(\/|$)/.test(target) || target === "index") {
-            violations.push(`${path.relative(SRC, file)} -> ${target}`);
-          }
-        }
+  it("KIT_DEPS lists only edges that exist (keeps the table honest)", () => {
+    const used = new Set<string>();
+    for (const file of files) {
+      const rel = path.relative(SRC, file).split(path.sep).join("/");
+      const from = layerOf(rel);
+      if (!from.startsWith("kits/")) continue;
+      for (const spec of relativeSpecifiers(file)) {
+        const to = layerOf(path.relative(SRC, path.resolve(path.dirname(file), spec)).split(path.sep).join("/"));
+        if (to.startsWith("kits/") && to !== from) used.add(`${from.slice(5)} -> ${to.slice(5)}`);
       }
     }
-    expect(violations).toEqual([]);
+    const declared = Object.entries(KIT_DEPS).flatMap(([kit, deps]) => deps.map((d) => `${kit} -> ${d}`));
+    expect(declared.filter((e) => !used.has(e))).toEqual([]);
   });
 
   it("lib stays free of React components (type-only React imports are fine)", () => {

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { CalendarHeatmap, HeatmapGrid, calendarHeatmapLayout, heatmapColor, heatmapLevel } from "../src/components/heatmap";
-import { TimelineBar, UptimeBar, formatTimelineDuration, timelinePosition, timelineTicks, uptimePercent } from "../src/components/timeline-bar";
-import { GpuCard, NodeCard, NodeGrid, ResourceHero } from "../src/components/node-card";
-import { ProcessTable, sortProcesses, formatProcessBytes, type ProcessInfo } from "../src/components/process-table";
-import { AlertGroup, sortAlerts, summarizeAlerts, type AlertItem } from "../src/components/alert-group";
-import { JsonInline, JsonViewer, formatJsonPath, safeJsonStringify } from "../src/components/json-viewer";
+import { CalendarHeatmap, HeatmapGrid, calendarHeatmapLayout, heatmapColor, heatmapLevel } from "../src/patterns/heatmap";
+import { TimelineBar, UptimeBar, formatTimelineDuration, timelinePosition, timelineTicks, uptimePercent } from "../src/patterns/timeline-bar";
+import { GpuCard, NodeCard, NodeGrid, ResourceHero } from "../src/kits/ops/node-card";
+import { ProcessTable, sortProcesses, formatProcessBytes, type ProcessInfo } from "../src/kits/ops/process-table";
+import { AlertGroup, sortAlerts, summarizeAlerts, type AlertItem } from "../src/kits/ops/alert-group";
+import { JsonInline, JsonViewer, formatJsonPath, safeJsonStringify } from "../src/patterns/json-viewer";
 import {
   RequestInspector,
   RequestLogTable,
@@ -13,9 +13,9 @@ import {
   filterRequestLogs,
   formatRequestLatency,
   type RequestLogRecord,
-} from "../src/components/request-inspector";
-import { DownloadBadge, ModelStatePill, ModelTable, modelActionsFor, modelFamily, type ModelInfo } from "../src/components/model-row";
-import { Terminal, TerminalSessionPicker, getTerminalTheme, type TerminalHandle } from "../src/components/terminal";
+} from "../src/kits/ops/request-inspector";
+import { DownloadBadge, ModelStatePill, ModelTable, modelActionsFor, modelFamily, type ModelInfo } from "../src/kits/ops/model-row";
+import { Terminal, TerminalSessionPicker, getTerminalTheme, type TerminalHandle } from "../src/kits/terminal/terminal";
 import { axeViolations } from "./a11y";
 
 /* ------------------------------------------------------------------ */

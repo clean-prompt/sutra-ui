@@ -32,16 +32,16 @@ import { useSafeId } from "../hooks/use-safe-id";
 import { hashString } from "../lib/hash";
 import { initials } from "../lib/text";
 import { formatShortDate } from "../lib/time";
-import { Avatar } from "../components/avatar";
-import { Badge, type BadgeColor } from "../components/badge";
-import { Breadcrumbs, type BreadcrumbRenderLink } from "../components/breadcrumbs";
-import { Button } from "../components/button";
-import { InlineCopy } from "../components/code-block";
-import { SearchInput } from "../components/input";
-import { Markdown } from "../components/markdown";
-import { MeshGradient } from "../components/mesh-gradient";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/tabs";
+import { Avatar } from "../primitives/avatar";
+import { Badge, type BadgeColor } from "../primitives/badge";
+import { Breadcrumbs, type BreadcrumbRenderLink } from "../primitives/breadcrumbs";
+import { Button } from "../primitives/button";
+import { InlineCopy } from "../patterns/code-block";
+import { SearchInput } from "../primitives/input";
+import { Markdown } from "../patterns/markdown";
+import { MeshGradient } from "../primitives/mesh-gradient";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../primitives/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../primitives/tabs";
 import { EmptyStateIllustration } from "../assets/misc";
 
 /* ------------------------------------------------------------------ */

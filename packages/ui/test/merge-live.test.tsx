@@ -1,10 +1,10 @@
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AgentStatusLine, ToolTimeline, ToolTimelineDot, ToolTimelineItem } from "../src/components/tool-timeline";
-import { ContextBanner, SpinnerVerbs } from "../src/components/agent-transcript";
-import { PresenceAvatars, PresenceIndicator, TypingIndicator } from "../src/components/presence";
-import { StatusStrip } from "../src/components/status-strip";
+import { AgentStatusLine, ToolTimeline, ToolTimelineDot, ToolTimelineItem } from "../src/kits/agent/tool-timeline";
+import { ContextBanner, SpinnerVerbs } from "../src/kits/agent/agent-transcript";
+import { PresenceAvatars, PresenceIndicator, TypingIndicator } from "../src/kits/social/presence";
+import { StatusStrip } from "../src/kits/ai/status-strip";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {

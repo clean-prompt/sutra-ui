@@ -9,7 +9,7 @@ import {
   SvgEmbed,
   embedProviders,
   resolveEmbed,
-} from "../src/components/embeds";
+} from "../src/kits/ai/embeds";
 import {
   ChatMessageAction,
   ChatMessageActions,
@@ -17,10 +17,10 @@ import {
   MessageTimestampHover,
   formatMessageRelativeTime,
   toggleChatReaction,
-} from "../src/components/chat-message-actions";
-import { QueuedMessages } from "../src/components/agent-composer";
-import { PromptInput, PromptInputRestoredDraft, PromptInputTextarea } from "../src/components/prompt-input";
-import { ApprovalStack } from "../src/components/approval-stack";
+} from "../src/kits/ai/chat-message-actions";
+import { QueuedMessages } from "../src/kits/agent/agent-composer";
+import { PromptInput, PromptInputRestoredDraft, PromptInputTextarea } from "../src/kits/ai/prompt-input";
+import { ApprovalStack } from "../src/kits/ai/approval-stack";
 import {
   ClarifySettled,
   DecodeText,
@@ -32,7 +32,7 @@ import {
   UndeliveredNotice,
   ZoomPan,
   glyphSpinnerFrames,
-} from "../src/components/primitives-extra";
+} from "../src/kits/ai/primitives-extra";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {

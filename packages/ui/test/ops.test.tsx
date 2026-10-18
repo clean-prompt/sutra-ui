@@ -1,6 +1,6 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { LogViewer, detectLogLevel, parseAnsi, stripAnsi, type LogLine } from "../src/components/log-viewer";
+import { LogViewer, detectLogLevel, parseAnsi, stripAnsi, type LogLine } from "../src/patterns/log-viewer";
 import {
   TransferItem,
   TransferList,
@@ -10,9 +10,9 @@ import {
   getTransferStats,
   summarizeTransfers,
   type TransferItemData,
-} from "../src/components/transfer-list";
-import { ProgressDialog, useStreamingTask, type StreamingTaskEvent } from "../src/components/progress-dialog";
-import { Markdown } from "../src/components/markdown";
+} from "../src/patterns/transfer-list";
+import { ProgressDialog, useStreamingTask, type StreamingTaskEvent } from "../src/kits/ops/progress-dialog";
+import { Markdown } from "../src/patterns/markdown";
 import { axeViolations } from "./a11y";
 
 // jsdom has no Element#scrollTo; useStickToBottom calls it.

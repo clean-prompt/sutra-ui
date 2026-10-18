@@ -2,30 +2,30 @@ import * as React from "react";
 import { act, fireEvent, render, renderHook, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useControllableState } from "../src/hooks/use-controllable-state";
-import { Field, FieldDescription, FieldError, FieldHint, FieldLabel } from "../src/components/field";
-import { Input, PasswordInput } from "../src/components/input";
-import { NumberInput } from "../src/components/number-input";
-import { TagInput } from "../src/components/tag-input";
-import { OTPField } from "../src/components/input-otp";
-import { Textarea } from "../src/components/textarea";
+import { Field, FieldDescription, FieldError, FieldHint, FieldLabel } from "../src/primitives/field";
+import { Input, PasswordInput } from "../src/primitives/input";
+import { NumberInput } from "../src/primitives/number-input";
+import { TagInput } from "../src/primitives/tag-input";
+import { OTPField } from "../src/primitives/input-otp";
+import { Textarea } from "../src/primitives/textarea";
 import {
   Checkbox,
   CheckboxField,
   CheckboxGroup,
   CheckboxGroupItem,
   CheckboxGroupSelectAll,
-} from "../src/components/checkbox";
-import { RadioGroupField } from "../src/components/radio";
-import { Switch, SwitchField } from "../src/components/switch";
-import { SegmentedControl } from "../src/components/segmented-control";
-import { Rating } from "../src/components/rating";
-import { RangeSlider, Slider } from "../src/components/slider";
-import { Combobox, type ComboboxOption } from "../src/components/combobox";
-import { SimpleSelect } from "../src/components/select";
-import { DatePicker } from "../src/components/date-picker";
-import { Dropzone, isFileAccepted, validateFiles, describeFileConstraints } from "../src/components/dropzone";
-import { FileUpload, FileUploadDropzone, FileUploadList, formatBytes } from "../src/components/file-upload";
-import { PasswordStrength, getPasswordScore } from "../src/components/password-strength";
+} from "../src/primitives/checkbox";
+import { RadioGroupField } from "../src/primitives/radio";
+import { Switch, SwitchField } from "../src/primitives/switch";
+import { SegmentedControl } from "../src/primitives/segmented-control";
+import { Rating } from "../src/primitives/rating";
+import { RangeSlider, Slider } from "../src/primitives/slider";
+import { Combobox, type ComboboxOption } from "../src/primitives/combobox";
+import { SimpleSelect } from "../src/primitives/select";
+import { DatePicker } from "../src/primitives/date-picker";
+import { Dropzone, isFileAccepted, validateFiles, describeFileConstraints } from "../src/primitives/dropzone";
+import { FileUpload, FileUploadDropzone, FileUploadList, formatBytes } from "../src/patterns/file-upload";
+import { PasswordStrength, getPasswordScore } from "../src/patterns/password-strength";
 import { axeViolations } from "./a11y";
 
 // input-otp probes document.elementFromPoint (password-manager badge detection); jsdom lacks it.

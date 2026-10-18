@@ -16,7 +16,7 @@ import {
   yearlySavings,
   type BillingPlan,
   type CheckoutOutcome,
-} from "../src/components/billing";
+} from "../src/kits/billing/billing";
 import {
   AuthorShelf,
   ComparisonTable,

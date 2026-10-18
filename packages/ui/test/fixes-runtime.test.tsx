@@ -1,11 +1,11 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { vi } from "vitest";
-import { SlotFill, SlotOutlet, SlotProvider, createSlotRegistry, useSlotContributions } from "../src/components/slot-outlet";
-import { TilingLayout, type FloatingPaneState, type LayoutNode } from "../src/components/tiling-layout";
-import { detectShortcutPlatform } from "../src/components/shortcuts";
-import { CallScreen } from "../src/components/call-overlay";
-import { ApiKeyCreateDialog } from "../src/components/api-keys";
+import { SlotFill, SlotOutlet, SlotProvider, createSlotRegistry, useSlotContributions } from "../src/kits/agent-admin/slot-outlet";
+import { TilingLayout, type FloatingPaneState, type LayoutNode } from "../src/patterns/tiling-layout";
+import { detectShortcutPlatform } from "../src/patterns/shortcuts";
+import { CallScreen } from "../src/kits/social/call-overlay";
+import { ApiKeyCreateDialog } from "../src/kits/identity/api-keys";
 
 // jsdom may lack PointerEvent; without it fireEvent.pointer* drops pointer fields.
 if (typeof window.PointerEvent === "undefined") {

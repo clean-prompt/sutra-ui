@@ -1,40 +1,40 @@
 import * as React from "react";
 import { act, render, renderHook, screen } from "@testing-library/react";
 
-import * as primitivesExtra from "../src/components/primitives-extra";
-import { SplitButton } from "../src/components/split-button";
-import { FanMenu } from "../src/components/fan-menu";
-import { DecodeText } from "../src/components/decode-text";
-import { ZoomPan, useZoomPan as useZoomPanFromComponent } from "../src/components/zoom-pan";
+import * as primitivesExtra from "../src/kits/ai/primitives-extra";
+import { SplitButton } from "../src/primitives/split-button";
+import { FanMenu } from "../src/patterns/fan-menu";
+import { DecodeText } from "../src/patterns/decode-text";
+import { ZoomPan, useZoomPan as useZoomPanFromComponent } from "../src/patterns/zoom-pan";
 import { useZoomPan } from "../src/hooks/use-zoom-pan";
-import { TabDropdown } from "../src/components/tab-dropdown";
-import { GlyphSpinner, glyphSpinnerFrames } from "../src/components/glyph-spinner";
-import { spinnerGlyphFrames } from "../src/components/spinner";
-import { FadeText } from "../src/components/fade-text";
-import { ClarifySettled } from "../src/components/clarify-settled";
-import { UndeliveredNotice } from "../src/components/undelivered-notice";
+import { TabDropdown } from "../src/primitives/tab-dropdown";
+import { GlyphSpinner, glyphSpinnerFrames } from "../src/primitives/glyph-spinner";
+import { spinnerGlyphFrames } from "../src/primitives/spinner";
+import { FadeText } from "../src/patterns/fade-text";
+import { ClarifySettled } from "../src/kits/ai/clarify-settled";
+import { UndeliveredNotice } from "../src/kits/ai/undelivered-notice";
 import { assignRef } from "../src/lib/refs";
 
-import * as cronUi from "../src/components/cron";
+import * as cronUi from "../src/patterns/cron";
 import * as cronLib from "../src/lib/cron";
 
-import * as kanban from "../src/components/kanban";
-import { filterBoard, kanbanColumnWip, moveCard, moveColumn, type KanbanBoardModel } from "../src/components/kanban-model";
-import { KanbanCard, KanbanRunBadge } from "../src/components/kanban-card";
-import { KanbanBoard } from "../src/components/kanban-board";
-import { KanbanToolbar } from "../src/components/kanban-toolbar";
-import { TaskDetailDialog } from "../src/components/kanban-task-dialog";
-import { OrchestrationPanel } from "../src/components/orchestration-panel";
+import * as kanban from "../src/kits/workspace/kanban";
+import { filterBoard, kanbanColumnWip, moveCard, moveColumn, type KanbanBoardModel } from "../src/kits/workspace/kanban-model";
+import { KanbanCard, KanbanRunBadge } from "../src/kits/workspace/kanban-card";
+import { KanbanBoard } from "../src/kits/workspace/kanban-board";
+import { KanbanToolbar } from "../src/kits/workspace/kanban-toolbar";
+import { TaskDetailDialog } from "../src/kits/workspace/kanban-task-dialog";
+import { OrchestrationPanel } from "../src/kits/workspace/orchestration-panel";
 
-import * as counters from "../src/components/counters";
-import { Countdown, splitDuration } from "../src/components/countdown";
-import { Stopwatch, useStopwatch as useStopwatchFromComponent } from "../src/components/stopwatch";
+import * as counters from "../src/patterns/counters";
+import { Countdown, splitDuration } from "../src/patterns/countdown";
+import { Stopwatch, useStopwatch as useStopwatchFromComponent } from "../src/patterns/stopwatch";
 import { useStopwatch } from "../src/hooks/use-stopwatch";
-import { TallyCounter } from "../src/components/tally-counter";
+import { TallyCounter } from "../src/patterns/tally-counter";
 import { splitDuration as rootSplitDuration } from "../src";
 
-import * as statusCycle from "../src/components/status-cycle";
-import { RecurrencePicker } from "../src/components/recurrence-picker";
+import * as statusCycle from "../src/patterns/status-cycle";
+import { RecurrencePicker } from "../src/patterns/recurrence-picker";
 import { describeRecurrence, toRRule } from "../src/lib/rrule";
 
 import * as misc from "../src/assets/misc";

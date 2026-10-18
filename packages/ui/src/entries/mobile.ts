@@ -1,7 +1,7 @@
 /* @sutra/ui/mobile: bottom tab bar, drawer, lightbox, file viewer, split pane, presence. */
-export * from "../components/bottom-tab-bar";
-export * from "../components/drawer";
-export * from "../components/lightbox";
-export * from "../components/file-viewer";
-export * from "../components/split-pane";
-export * from "../components/presence";
+export * from "../patterns/bottom-tab-bar";
+export * from "../primitives/drawer";
+export * from "../patterns/lightbox";
+export * from "../patterns/file-viewer";
+export * from "../patterns/split-pane";
+export * from "../kits/social/presence";

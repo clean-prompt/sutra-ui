@@ -22,9 +22,9 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { initials } from "../lib/text";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { Button } from "../components/button";
-import { Avatar } from "../components/avatar";
-import { Badge } from "../components/badge";
+import { Button } from "../primitives/button";
+import { Avatar } from "../primitives/avatar";
+import { Badge } from "../primitives/badge";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -39,9 +39,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "../components/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "../components/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/tabs";
+} from "../primitives/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "../primitives/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../primitives/tabs";
 import { SutraAppIcon, SutraMark, type SutraApp } from "../assets/brand";
 import { EmptyStateIllustration } from "../assets/misc";
 import { demoUser } from "./demo-data";

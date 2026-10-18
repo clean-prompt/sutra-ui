@@ -9,7 +9,7 @@ import {
   formatTokenExpiry,
   providerMonogram,
   type ProviderEntry,
-} from "../src/components/providers";
+} from "../src/kits/agent-admin/llm-providers";
 import {
   EnsembleBuilder,
   FallbackChainEditor,
@@ -21,8 +21,8 @@ import {
   formatModelPrice,
   type ModelRef,
   type RoutingProvider,
-} from "../src/components/model-routing";
-import { BackendPicker, type BackendOption } from "../src/components/backends";
+} from "../src/kits/agent-admin/model-routing";
+import { BackendPicker, type BackendOption } from "../src/kits/agent-admin/backends";
 import {
   HardwareFitHint,
   LocalModelBrowser,
@@ -32,7 +32,7 @@ import {
   quantizationBits,
   type LocalModelListing,
   type SetupStage,
-} from "../src/components/local-models";
+} from "../src/kits/agent-admin/local-models";
 import { axeViolations } from "./a11y";
 
 const NOW = Date.UTC(2026, 9, 18, 12);

@@ -20,26 +20,26 @@ import {
   RiLinkM,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { Button } from "../components/button";
-import { Badge } from "../components/badge";
-import { Avatar } from "../components/avatar";
-import { AvatarGroup } from "../components/avatar-group";
-import { Heading } from "../components/typography";
-import { PageHeader, SectionHeader } from "../components/section-header";
-import { Breadcrumbs, type BreadcrumbCrumb } from "../components/breadcrumbs";
-import { Tabs, TabsList, TabsTrigger } from "../components/tabs";
-import { Sparkline } from "../components/sparkline";
-import { SearchInput } from "../components/input";
-import { SimpleSelect, type SelectOption } from "../components/select";
-import { SegmentedControl } from "../components/segmented-control";
-import { MeshGradient } from "../components/mesh-gradient";
+import { Button } from "../primitives/button";
+import { Badge } from "../primitives/badge";
+import { Avatar } from "../primitives/avatar";
+import { AvatarGroup } from "../primitives/avatar-group";
+import { Heading } from "../primitives/typography";
+import { PageHeader, SectionHeader } from "../patterns/section-header";
+import { Breadcrumbs, type BreadcrumbCrumb } from "../primitives/breadcrumbs";
+import { Tabs, TabsList, TabsTrigger } from "../primitives/tabs";
+import { Sparkline } from "../patterns/sparkline";
+import { SearchInput } from "../primitives/input";
+import { SimpleSelect, type SelectOption } from "../primitives/select";
+import { SegmentedControl } from "../primitives/segmented-control";
+import { MeshGradient } from "../primitives/mesh-gradient";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../components/dropdown-menu";
-import { Container } from "../components/layout";
+} from "../primitives/dropdown-menu";
+import { Container } from "../primitives/layout";
 import { BackgroundPattern } from "../assets/misc";
 import { LogoCloud } from "../assets/placeholder-logos";
 

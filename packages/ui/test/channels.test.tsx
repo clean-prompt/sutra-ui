@@ -12,11 +12,11 @@ import {
   validateChannelId,
   type PlatformConnector,
   type PlatformConnectorState,
-} from "../src/components/channels";
-import { AgentMessageNotice, AgentRoom, AgentRoomMembers, parseAgentMentions, type AgentRoomMember } from "../src/components/agent-room";
-import { DelegateToolBody, RunTicker, SubagentTree, subagentRollup, type SubagentNode } from "../src/components/subagents";
-import { AgentAvatar, AgentAvatarBuilder, CreateAgentDialog, PersonaEditor, randomAvatarSpec, validateAgentName } from "../src/components/agent-persona";
-import { PermissionPreflightCard, RemoteScreenViewer } from "../src/components/remote-screen";
+} from "../src/kits/agent-admin/channels";
+import { AgentMessageNotice, AgentRoom, AgentRoomMembers, parseAgentMentions, type AgentRoomMember } from "../src/kits/agent-admin/agent-room";
+import { DelegateToolBody, RunTicker, SubagentTree, subagentRollup, type SubagentNode } from "../src/kits/agent-admin/subagents";
+import { AgentAvatar, AgentAvatarBuilder, CreateAgentDialog, PersonaEditor, randomAvatarSpec, validateAgentName } from "../src/kits/agent-admin/agent-persona";
+import { PermissionPreflightCard, RemoteScreenViewer } from "../src/kits/agent-admin/remote-screen";
 import { axeViolations } from "./a11y";
 
 afterEach(() => vi.useRealTimers());

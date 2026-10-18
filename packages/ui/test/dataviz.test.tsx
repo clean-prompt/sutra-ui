@@ -10,10 +10,10 @@ import {
   monotonePath,
   niceTicks,
   stackSeries,
-} from "../src/components/chart";
-import { StatCard, StatGroup, statDeltaDirection } from "../src/components/stat-card";
-import { Meter, MeterGroup, StackedMeter, meterLevel } from "../src/components/meter";
-import { Gauge, RingMeter } from "../src/components/gauge";
+} from "../src/patterns/chart";
+import { StatCard, StatGroup, statDeltaDirection } from "../src/patterns/stat-card";
+import { Meter, MeterGroup, StackedMeter, meterLevel } from "../src/primitives/meter";
+import { Gauge, RingMeter } from "../src/patterns/gauge";
 import { axeViolations } from "./a11y";
 
 const days = [

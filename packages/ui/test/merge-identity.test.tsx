@@ -1,17 +1,17 @@
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { colorForSeed } from "../src/lib/hash";
-import { Avatar, seedColorStyle } from "../src/components/avatar";
-import { Monogram, monogramInitials } from "../src/components/monogram";
-import { ProviderLogo, providerMonogram } from "../src/components/providers";
-import { CapabilityMonogram } from "../src/components/capabilities";
-import { ChatMessage, ChatMessageAvatar } from "../src/components/chat-message";
-import { SidebarUserCard } from "../src/components/sidebar-navigation";
-import { EmptyState } from "../src/components/empty-state";
-import { ChatEmptyState } from "../src/components/chat-conversation";
-import { TextLink } from "../src/components/text-link";
-import { TextButton } from "../src/components/identity-mark";
-import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "../src/components/dialog";
+import { Avatar, seedColorStyle } from "../src/primitives/avatar";
+import { Monogram, monogramInitials } from "../src/primitives/monogram";
+import { ProviderLogo, providerMonogram } from "../src/kits/agent-admin/llm-providers";
+import { CapabilityMonogram } from "../src/kits/agent-admin/capabilities";
+import { ChatMessage, ChatMessageAvatar } from "../src/kits/ai/chat-message";
+import { SidebarUserCard } from "../src/patterns/sidebar-navigation";
+import { EmptyState } from "../src/primitives/empty-state";
+import { ChatEmptyState } from "../src/kits/ai/chat-conversation";
+import { TextLink } from "../src/primitives/text-link";
+import { TextButton } from "../src/patterns/identity-mark";
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "../src/primitives/dialog";
 import {
   Drawer,
   DrawerBody,
@@ -21,11 +21,11 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "../src/components/drawer";
-import { BlogContent, Prose } from "../src/components/blog-content";
-import { ContentDivider, Separator } from "../src/components/separator";
-import { FilterBarChip, FilterPill } from "../src/components/filter-bar";
-import { ActivityFeed, SecurityActivityFeed } from "../src/components/connected-apps";
+} from "../src/primitives/drawer";
+import { BlogContent, Prose } from "../src/patterns/blog-content";
+import { ContentDivider, Separator } from "../src/primitives/separator";
+import { FilterBarChip, FilterPill } from "../src/patterns/filter-bar";
+import { ActivityFeed, SecurityActivityFeed } from "../src/kits/identity/connected-apps";
 import {
   DeviceSessionList,
   DeviceSessionRow,
@@ -33,8 +33,8 @@ import {
   SessionRow,
   type DeviceSession,
   type Session,
-} from "../src/components/sessions";
-import { ChatHeader, MessengerHeader } from "../src/components/messenger";
+} from "../src/kits/identity/device-sessions";
+import { ChatHeader, MessengerHeader } from "../src/kits/social/messenger";
 import { axeViolations } from "./a11y";
 
 /** Browser-normalised form of a CSS colour, for comparing inline styles. */

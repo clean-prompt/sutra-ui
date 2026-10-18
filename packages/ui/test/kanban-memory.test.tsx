@@ -12,7 +12,7 @@ import {
   moveColumn,
   type KanbanBoardModel,
   type KanbanCardData,
-} from "../src/components/kanban";
+} from "../src/kits/workspace/kanban";
 import {
   MemoryMap,
   ShareCodeControls,
@@ -23,7 +23,7 @@ import {
   layoutMemoryGraph,
   memoryMapLegend,
   type MemoryNode,
-} from "../src/components/memory-map";
+} from "../src/kits/workspace/memory-map";
 import { axeViolations } from "./a11y";
 
 // LogViewer scrolls its tail; jsdom has no Element.scrollTo.

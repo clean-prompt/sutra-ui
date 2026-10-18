@@ -1,12 +1,12 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { PermissionPendingHint, PermissionPrompt, RuleScopePicker } from "../src/components/permission-prompt";
-import { ChatToolApproval } from "../src/components/chat-tool";
-import { EffortSlider, PermissionModeSwitcher } from "../src/components/agent-mode";
-import { PlanReviewCard, truncatePlanQuote } from "../src/components/plan-review";
-import { CheckpointMarker, RewindButton, RewindDialog } from "../src/components/rewind";
-import { QuestionCard, type QuestionItem } from "../src/components/ai-extras";
+import { PermissionPendingHint, PermissionPrompt, RuleScopePicker } from "../src/kits/ai/permission-prompt";
+import { ChatToolApproval } from "../src/kits/ai/chat-tool";
+import { EffortSlider, PermissionModeSwitcher } from "../src/kits/agent/agent-mode";
+import { PlanReviewCard, truncatePlanQuote } from "../src/kits/agent/plan-review";
+import { CheckpointMarker, RewindButton, RewindDialog } from "../src/kits/agent/rewind";
+import { QuestionCard, type QuestionItem } from "../src/kits/ai/ai-extras";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {

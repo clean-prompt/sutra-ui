@@ -7,8 +7,8 @@ import {
   ScopeChip,
   ScopeSelector,
   TrustBadge,
-} from "../src/components/capabilities";
-import { ToolToggleList, ToolsetCard, ToolsetProviderDrawer, type ToolToggleItem, type ToolsetProvider } from "../src/components/tool-toggles";
+} from "../src/kits/agent-admin/capabilities";
+import { ToolToggleList, ToolsetCard, ToolsetProviderDrawer, type ToolToggleItem, type ToolsetProvider } from "../src/kits/agent-admin/tool-toggles";
 import {
   ConnectionMethodChooser,
   ConnectorAccounts,
@@ -22,7 +22,7 @@ import {
   type ConnectorAccount,
   type ConnectorCatalogEntry,
   type KeyValueRowsEntry,
-} from "../src/components/mcp";
+} from "../src/kits/agent-admin/mcp";
 import {
   CatalogCard,
   ExtensionInstallDialog,
@@ -34,9 +34,9 @@ import {
   countScanFindings,
   type ScanFinding,
   type SkillSummary,
-} from "../src/components/extensions-catalog";
-import { SchemaForm, schemaDefaults, validateAgainstSchema, type SchemaFormSchema } from "../src/components/schema-form";
-import { SlotFill, SlotOutlet, SlotProvider, createSlotRegistry, useSlotRegistry } from "../src/components/slot-outlet";
+} from "../src/kits/agent-admin/extensions-catalog";
+import { SchemaForm, schemaDefaults, validateAgainstSchema, type SchemaFormSchema } from "../src/patterns/schema-form";
+import { SlotFill, SlotOutlet, SlotProvider, createSlotRegistry, useSlotRegistry } from "../src/kits/agent-admin/slot-outlet";
 import { axeViolations } from "./a11y";
 
 const flush = () => act(async () => {});

@@ -1,18 +1,18 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { RichTextEditor, type RichTextEditorInstance } from "../src/components/rich-text-editor";
-import { NestedValueEditor, SchemaForm, type SchemaFormSchema } from "../src/components/schema-form";
-import { PromptInput, PromptInputRestoredDraft, PromptInputSubmit, PromptInputTextarea, usePromptInput } from "../src/components/prompt-input";
-import { Progress, ProgressCircle, ProgressSegments } from "../src/components/progress";
-import { SidebarMenuButton, SidebarMenuSub, SidebarMenuSubButton, SidebarProvider } from "../src/components/sidebar-navigation";
-import { KillButton } from "../src/components/process-table";
-import { ZoomPan } from "../src/components/primitives-extra";
-import { ProgressDialog, toStreamingTaskState } from "../src/components/progress-dialog";
-import { Sparkline } from "../src/components/sparkline";
-import { RequestIdCopy } from "../src/components/request-inspector";
-import { SettingsRow } from "../src/components/settings";
-import { RuleScopePicker, PermissionPrompt } from "../src/components/permission-prompt";
-import { SessionList } from "../src/components/sessions";
+import { RichTextEditor, type RichTextEditorInstance } from "../src/kits/editor/rich-text-editor";
+import { NestedValueEditor, SchemaForm, type SchemaFormSchema } from "../src/patterns/schema-form";
+import { PromptInput, PromptInputRestoredDraft, PromptInputSubmit, PromptInputTextarea, usePromptInput } from "../src/kits/ai/prompt-input";
+import { Progress, ProgressCircle, ProgressSegments } from "../src/primitives/progress";
+import { SidebarMenuButton, SidebarMenuSub, SidebarMenuSubButton, SidebarProvider } from "../src/patterns/sidebar-navigation";
+import { KillButton } from "../src/kits/ops/process-table";
+import { ZoomPan } from "../src/kits/ai/primitives-extra";
+import { ProgressDialog, toStreamingTaskState } from "../src/kits/ops/progress-dialog";
+import { Sparkline } from "../src/patterns/sparkline";
+import { RequestIdCopy } from "../src/kits/ops/request-inspector";
+import { SettingsRow } from "../src/patterns/settings";
+import { RuleScopePicker, PermissionPrompt } from "../src/kits/ai/permission-prompt";
+import { SessionList } from "../src/kits/identity/device-sessions";
 
 /* jsdom has no layout: ProseMirror measures through Range/Element rects. */
 const emptyRect = { x: 0, y: 0, top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0, toJSON: () => ({}) } as DOMRect;

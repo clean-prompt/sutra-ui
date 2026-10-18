@@ -29,7 +29,7 @@ import {
   type BillingPlan,
   type CheckoutOutcome,
   type PlanComparisonSection,
-} from "@sutra/ui/components/billing";
+} from "@sutra/ui/kits/billing/billing";
 import { RiArrowLeftLine } from "@sutra/ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 

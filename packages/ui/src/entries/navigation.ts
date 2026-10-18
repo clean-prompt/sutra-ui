@@ -1,9 +1,9 @@
 /* @sutra/ui/navigation: breadcrumbs, pagination, tabs, headers, sidebars and trees. */
-export * from "../components/breadcrumbs";
-export * from "../components/pagination";
-export * from "../components/tab-menu";
-export * from "../components/tabs";
-export * from "../components/header-navigation";
-export * from "../components/sidebar-navigation";
-export * from "../components/section-header";
-export * from "../components/tree-view";
+export * from "../primitives/breadcrumbs";
+export * from "../primitives/pagination";
+export * from "../patterns/tab-menu";
+export * from "../primitives/tabs";
+export * from "../patterns/header-navigation";
+export * from "../patterns/sidebar-navigation";
+export * from "../patterns/section-header";
+export * from "../patterns/tree-view";

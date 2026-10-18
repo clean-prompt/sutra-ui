@@ -24,8 +24,8 @@ import {
   type QueuedMessage,
 } from "@sutra/ui";
 // New families: import per file until they are added to the root barrel.
-import { EmbedConsentProvider, LinkPreviewCard, RichEmbed, SvgEmbed } from "@sutra/ui/components/embeds";
-import { ApprovalStack } from "@sutra/ui/components/approval-stack";
+import { EmbedConsentProvider, LinkPreviewCard, RichEmbed, SvgEmbed } from "@sutra/ui/kits/ai/embeds";
+import { ApprovalStack } from "@sutra/ui/kits/ai/approval-stack";
 import {
   ClarifySettled,
   DecodeText,
@@ -38,7 +38,7 @@ import {
   ZoomPan,
   glyphSpinnerFrames,
   type GlyphSpinnerVariant,
-} from "@sutra/ui/components/primitives-extra";
+} from "@sutra/ui";
 import {
   RiChatVoiceLine,
   RiCloseLine,

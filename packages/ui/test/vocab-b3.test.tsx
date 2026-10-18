@@ -1,15 +1,15 @@
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { InlineAlert } from "../src/components/inline-alert";
-import { RotatingNoticeBar, normalizeNoticeTone, type NoticeItem } from "../src/components/notice-bar";
-import { Meter, meterLevel, meterLevelTone } from "../src/components/meter";
-import { Gauge, RingMeter } from "../src/components/gauge";
-import { KanbanRunBadge, TaskDetailDialog, type KanbanBoardModel } from "../src/components/kanban";
-import { TrackCycleChip } from "../src/components/media-controls";
-import { PaginationItem } from "../src/components/pagination";
-import { TextButton } from "../src/components/identity-mark";
-import { LogViewer } from "../src/components/log-viewer";
-import { HardwareFitHint } from "../src/components/local-models";
+import { InlineAlert } from "../src/primitives/inline-alert";
+import { RotatingNoticeBar, normalizeNoticeTone, type NoticeItem } from "../src/patterns/notice-bar";
+import { Meter, meterLevel, meterLevelTone } from "../src/primitives/meter";
+import { Gauge, RingMeter } from "../src/patterns/gauge";
+import { KanbanRunBadge, TaskDetailDialog, type KanbanBoardModel } from "../src/kits/workspace/kanban";
+import { TrackCycleChip } from "../src/kits/media/media-controls";
+import { PaginationItem } from "../src/primitives/pagination";
+import { TextButton } from "../src/patterns/identity-mark";
+import { LogViewer } from "../src/patterns/log-viewer";
+import { HardwareFitHint } from "../src/kits/agent-admin/local-models";
 
 describe("InlineAlert tone", () => {
   it("accepts the canonical tone and the deprecated variant alike", () => {

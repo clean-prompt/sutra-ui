@@ -33,8 +33,8 @@ import {
   type LayoutSplitNode,
   type LayoutTabsNode,
   type SavedLayoutPreset,
-} from "../src/components/tiling-layout";
-import { detectShortcutPlatform } from "../src/components/shortcuts";
+} from "../src/patterns/tiling-layout";
+import { detectShortcutPlatform } from "../src/patterns/shortcuts";
 import { axeViolations } from "./a11y";
 
 // jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY.

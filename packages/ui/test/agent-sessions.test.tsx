@@ -13,8 +13,8 @@ import {
   useFocusView,
   type AgentRosterAgent,
   type AgentTodoItem,
-} from "../src/components/agent-tasks";
-import { AgentSessionList, AgentStatusDot, type AgentSession, type AgentSessionGroup } from "../src/components/agent-sessions";
+} from "../src/kits/agent/agent-tasks";
+import { AgentSessionList, AgentStatusDot, type AgentSession, type AgentSessionGroup } from "../src/kits/agent/agent-sessions";
 import {
   BookmarkButton,
   BookmarksPane,
@@ -25,9 +25,9 @@ import {
   TranscriptTurn,
   TurnStickyHeader,
   useTranscriptBookmarks,
-} from "../src/components/agent-transcript";
-import { ContextUsageBreakdown, SessionStats, UsageLimitBars, formatResetCaption } from "../src/components/agent-usage";
-import { ConnectionState, OnboardingChecklist, PasteCodeAuth } from "../src/components/agent-onboarding";
+} from "../src/kits/agent/agent-transcript";
+import { ContextUsageBreakdown, SessionStats, UsageLimitBars, formatResetCaption } from "../src/kits/ai/agent-usage";
+import { ConnectionState, OnboardingChecklist, PasteCodeAuth } from "../src/kits/agent/agent-onboarding";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {

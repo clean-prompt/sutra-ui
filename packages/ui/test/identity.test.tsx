@@ -1,14 +1,14 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { encode } from "uqr";
-import { QRCode, QRCodeCard } from "../src/components/qr-code";
-import { QRScanner, type QRScannerDetector } from "../src/components/qr-scanner";
-import { SettingsGroup, SettingsRow, SettingsSection, SettingsShell, SettingsDangerZone } from "../src/components/settings";
-import { KeyValue, KeyValueList } from "../src/components/key-value";
-import { EmptyState, Note } from "../src/components/empty-state";
-import { BootScreen, LockScreen } from "../src/components/loading-screen";
-import { AccountPanel, SessionList, formatSessionLastActive, type Session } from "../src/components/sessions";
-import { ThemeToggle } from "../src/components/theme-toggle";
+import { QRCode, QRCodeCard } from "../src/kits/identity/qr-code";
+import { QRScanner, type QRScannerDetector } from "../src/kits/identity/qr-scanner";
+import { SettingsGroup, SettingsRow, SettingsSection, SettingsShell, SettingsDangerZone } from "../src/patterns/settings";
+import { KeyValue, KeyValueList } from "../src/primitives/key-value";
+import { EmptyState, Note } from "../src/primitives/empty-state";
+import { BootScreen, LockScreen } from "../src/patterns/loading-screen";
+import { AccountPanel, SessionList, formatSessionLastActive, type Session } from "../src/kits/identity/device-sessions";
+import { ThemeToggle } from "../src/patterns/theme-toggle";
 import { axeViolations } from "./a11y";
 
 beforeAll(() => {

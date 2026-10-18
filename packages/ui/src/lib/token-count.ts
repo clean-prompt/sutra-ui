@@ -6,3 +6,8 @@ export function formatTokenCount(n: number) {
   // Whole thousands from 10K up; millions keep one decimal.
   return formatCompact(n, { suffixCase: "upper", wholeAbove: Math.abs(n) < 1_000_000 ? 10 : undefined });
 }
+
+/** "980", "12.4k", "1.2M". */
+export function formatAgentTokens(n: number) {
+  return formatCompact(n, { wholeAbove: 100 });
+}

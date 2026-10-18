@@ -14,8 +14,8 @@ import {
   nextRepeatMode,
   useMediaElement,
   type RepeatMode,
-} from "../src/components/media-controls";
-import { VideoPlayer } from "../src/components/video-player";
+} from "../src/kits/media/media-controls";
+import { VideoPlayer } from "../src/kits/media/video-player";
 import {
   MiniPlayer,
   NowPlaying,
@@ -26,9 +26,9 @@ import {
   shufflePlayOrder,
   usePlayerQueue,
   type PlayerTrack,
-} from "../src/components/audio-player";
-import { AlbumCard, EpisodeCard, MediaHero, MediaShelf, PlaylistCard, PosterCard } from "../src/components/media-cards";
-import { CastPicker, DeviceIcon, resolveDeviceKind, type CastDevice } from "../src/components/cast-picker";
+} from "../src/kits/media/audio-player";
+import { AlbumCard, EpisodeCard, MediaHero, MediaShelf, PlaylistCard, PosterCard } from "../src/kits/media/media-cards";
+import { CastPicker, DeviceIcon, resolveDeviceKind, type CastDevice } from "../src/kits/media/cast-picker";
 import { axeViolations } from "./a11y";
 
 // jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY and pointerType.

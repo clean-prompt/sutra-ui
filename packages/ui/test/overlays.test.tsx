@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../src/components/dialog";
+} from "../src/primitives/dialog";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -32,17 +32,17 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../src/components/dropdown-menu";
+} from "../src/primitives/dropdown-menu";
 import {
   ContextMenu,
   ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "../src/components/context-menu";
-import { SimpleTooltip, Tooltip, TooltipContent, TooltipTrigger } from "../src/components/tooltip";
-import { InfoTooltip } from "../src/components/info-tooltip";
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../src/components/popover";
+} from "../src/primitives/context-menu";
+import { SimpleTooltip, Tooltip, TooltipContent, TooltipTrigger } from "../src/primitives/tooltip";
+import { InfoTooltip } from "../src/primitives/info-tooltip";
+import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "../src/primitives/popover";
 import {
   CommandDialog,
   CommandEmpty,
@@ -51,8 +51,8 @@ import {
   CommandItem,
   CommandList,
   useCommandMenuShortcut,
-} from "../src/components/command-menu";
-import { Button } from "../src/components/button";
+} from "../src/patterns/command-menu";
+import { Button } from "../src/primitives/button";
 import { axeViolations } from "./a11y";
 
 /** Promise whose resolution is controlled by the test. */

@@ -8,12 +8,12 @@ import {
   modelStateRank,
   normalizeModelState,
   type ModelStateInput,
-} from "../src/components/model-state";
-import { ModelSelect, ModelSelectOption, modelWaitHint, rankModels, type PickerModel } from "../src/components/model-select";
-import { ModelPicker, ModelStateGlyph as PickerGlyph, modelStateLabels as pickerLabels } from "../src/components/model-picker";
-import { DownloadBadge, ModelStatePill as RowPill, ModelTable, modelActionsFor, type ModelInfo } from "../src/components/model-row";
-import { PromptInputModelSelect } from "../src/components/prompt-input";
-import { ProviderModelPicker, type RoutingProvider } from "../src/components/model-routing";
+} from "../src/kits/ai/model-state";
+import { ModelSelect, ModelSelectOption, modelWaitHint, rankModels, type PickerModel } from "../src/kits/ai/model-select";
+import { ModelPicker, ModelStateGlyph as PickerGlyph, modelStateLabels as pickerLabels } from "../src/kits/ai/model-picker";
+import { DownloadBadge, ModelStatePill as RowPill, ModelTable, modelActionsFor, type ModelInfo } from "../src/kits/ops/model-row";
+import { PromptInputModelSelect } from "../src/kits/ai/prompt-input";
+import { ProviderModelPicker, type RoutingProvider } from "../src/kits/agent-admin/model-routing";
 import { axeViolations } from "./a11y";
 
 describe("model state vocabulary", () => {

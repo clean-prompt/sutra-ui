@@ -1,9 +1,9 @@
 /* @sutra/ui/workspace: workspace/profile switcher, connections, notices, tours, keybinds, timeline rail, tiling layout, kanban, memory map. */
-export * from "../components/workspace-switcher";
-export * from "../components/notice-bar";
-export * from "../components/coachmarks";
-export * from "../components/keybind-editor";
-export * from "../components/timeline-rail";
-export * from "../components/tiling-layout";
-export * from "../components/kanban";
-export * from "../components/memory-map";
+export * from "../kits/workspace/workspace-switcher";
+export * from "../patterns/notice-bar";
+export * from "../patterns/coachmarks";
+export * from "../patterns/keybind-editor";
+export * from "../kits/workspace/timeline-rail";
+export * from "../patterns/tiling-layout";
+export * from "../kits/workspace/kanban";
+export * from "../kits/workspace/memory-map";

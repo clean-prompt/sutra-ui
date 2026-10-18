@@ -1,19 +1,19 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { DocumentOutline, extractOutline, findActiveHeading } from "../src/components/document-outline";
-import { EditorStatusBar, SaveStatus, countWords, formatSavedAgo, getTextStats } from "../src/components/editor-status";
+import { DocumentOutline, extractOutline, findActiveHeading } from "../src/kits/editor/document-outline";
+import { EditorStatusBar, SaveStatus, countWords, formatSavedAgo, getTextStats } from "../src/kits/editor/editor-status";
 import {
   EditorToolbar,
   EditorToolbarButton,
   EditorToolbarMenu,
   EditorToolbarSeparator,
-} from "../src/components/editor-toolbar";
-import { DiffViewer, SuggestionDiff, computeDiff } from "../src/components/diff-viewer";
-import { VersionHistory, groupVersionsByDay, type DocumentVersion } from "../src/components/version-history";
-import { CommentsPanel, type CommentThreadData } from "../src/components/comments";
-import { CodeEditor, type CodeEditorHandle } from "../src/components/code-editor";
-import { RichTextEditor, type RichTextEditorInstance } from "../src/components/rich-text-editor";
+} from "../src/kits/editor/editor-toolbar";
+import { DiffViewer, SuggestionDiff, computeDiff } from "../src/patterns/diff-viewer";
+import { VersionHistory, groupVersionsByDay, type DocumentVersion } from "../src/kits/editor/version-history";
+import { CommentsPanel, type CommentThreadData } from "../src/patterns/comments";
+import { CodeEditor, type CodeEditorHandle } from "../src/kits/editor/code-editor";
+import { RichTextEditor, type RichTextEditorInstance } from "../src/kits/editor/rich-text-editor";
 import { axeViolations } from "./a11y";
 
 /* jsdom has no layout: CodeMirror and ProseMirror measure through Range/Element rects. */

@@ -2,7 +2,7 @@ import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { AdaptiveTabs, BottomTabBar, BottomTabBarItem } from "../src/components/bottom-tab-bar";
+import { AdaptiveTabs, BottomTabBar, BottomTabBarItem } from "../src/patterns/bottom-tab-bar";
 import {
   Drawer,
   DrawerBody,
@@ -13,10 +13,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
   useSwipe,
-} from "../src/components/drawer";
-import { ImageWithFallback, Lightbox, LightboxTrigger, type LightboxItem } from "../src/components/lightbox";
-import { FilePreviewCard, FileViewer, getFilePreviewKind } from "../src/components/file-viewer";
-import { SplitPane, SplitPaneHandle, SplitPanePanel } from "../src/components/split-pane";
+} from "../src/primitives/drawer";
+import { ImageWithFallback, Lightbox, LightboxTrigger, type LightboxItem } from "../src/patterns/lightbox";
+import { FilePreviewCard, FileViewer, getFilePreviewKind } from "../src/patterns/file-viewer";
+import { SplitPane, SplitPaneHandle, SplitPanePanel } from "../src/patterns/split-pane";
 import {
   PresenceAvatars,
   PresenceIndicator,
@@ -24,7 +24,7 @@ import {
   TypingIndicator,
   formatTypingText,
   type PresenceUser,
-} from "../src/components/presence";
+} from "../src/kits/social/presence";
 import { ShareDialog } from "../src/blocks/modal-dialog-blocks";
 import { axeViolations } from "./a11y";
 

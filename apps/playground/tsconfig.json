@@ -11,9 +11,11 @@
     "noEmit": true,
     "paths": {
       "@sutra/ui": ["../../packages/ui/src/index.ts"],
-      "@sutra/ui/components/*": ["../../packages/ui/src/components/*.tsx"],
-      "@sutra/ui/blocks/*": ["../../packages/ui/src/blocks/*.tsx"],
-      "@sutra/ui/assets/*": ["../../packages/ui/src/assets/*.tsx"],
+      "@sutra/ui/primitives/*": ["../../packages/ui/src/primitives/*.tsx", "../../packages/ui/src/primitives/*.ts"],
+      "@sutra/ui/patterns/*": ["../../packages/ui/src/patterns/*.tsx", "../../packages/ui/src/patterns/*.ts"],
+      "@sutra/ui/kits/*": ["../../packages/ui/src/kits/*.tsx", "../../packages/ui/src/kits/*.ts"],
+      "@sutra/ui/blocks/*": ["../../packages/ui/src/blocks/*.tsx", "../../packages/ui/src/blocks/*.ts"],
+      "@sutra/ui/assets/*": ["../../packages/ui/src/assets/*.tsx", "../../packages/ui/src/assets/*.ts"],
       "@sutra/ui/*": ["../../packages/ui/src/entries/*.ts"]
     }
   },

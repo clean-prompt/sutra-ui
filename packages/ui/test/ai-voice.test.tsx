@@ -15,8 +15,8 @@ import {
   type ModelPickerModel,
   type SlashCommand,
   type UsageDay,
-} from "../src/components/ai-extras";
-import { AudioLevelMeter, SpeakButton, useSpeechRecognition, VoiceInput } from "../src/components/voice";
+} from "../src/kits/ai/ai-extras";
+import { AudioLevelMeter, SpeakButton, useSpeechRecognition, VoiceInput } from "../src/kits/voice/voice";
 import {
   ConversationTurns,
   DictionaryCard,
@@ -27,7 +27,7 @@ import {
   SourcePane,
   TargetPane,
   TransliterationCandidates,
-} from "../src/components/translate";
+} from "../src/kits/voice/translate";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {

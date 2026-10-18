@@ -20,11 +20,11 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { Kbd } from "../components/typography";
-import { Progress } from "../components/progress";
-import { SearchInput } from "../components/input";
-import { SimpleSelect } from "../components/select";
-import { TreeView, type TreeNode } from "../components/tree-view";
+import { Kbd } from "../primitives/typography";
+import { Progress } from "../primitives/progress";
+import { SearchInput } from "../primitives/input";
+import { SimpleSelect } from "../primitives/select";
+import { TreeView, type TreeNode } from "../patterns/tree-view";
 import {
   Sidebar,
   SidebarContent,
@@ -42,7 +42,7 @@ import {
   SidebarUserCard,
   type SidebarProps,
   type SidebarProviderProps,
-} from "../components/sidebar-navigation";
+} from "../patterns/sidebar-navigation";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
 import { UserAccountMenu, WorkspaceSwitcher, type UserAccountMenuUser, type Workspace } from "./dropdown-menu-blocks";
 import { AppHeader, type AppHeaderProps } from "./header-navigation-blocks";

@@ -1,16 +1,16 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { vi } from "vitest";
-import { AlertBanner, type AlertBannerAction, type BannerAction } from "../src/components/alert-banner";
-import { RotatingNoticeBar, normalizeNoticeTone, type NoticeAction, type NoticeItem } from "../src/components/notice-bar";
-import { InlineAlert } from "../src/components/inline-alert";
-import { BillingBanner } from "../src/components/billing";
-import { OfflineBanner } from "../src/components/sync-status";
-import { ProfileScopeBanner } from "../src/components/workspace-switcher";
-import { QRCodeCard } from "../src/components/qr-code";
-import { GuidedSetupSteps, RotatingQRPairing } from "../src/components/channels";
-import { StepIndicator, Steps } from "../src/components/step-indicator";
-import { OnboardingChecklist } from "../src/components/agent-onboarding";
+import { AlertBanner, type AlertBannerAction, type BannerAction } from "../src/primitives/alert-banner";
+import { RotatingNoticeBar, normalizeNoticeTone, type NoticeAction, type NoticeItem } from "../src/patterns/notice-bar";
+import { InlineAlert } from "../src/primitives/inline-alert";
+import { BillingBanner } from "../src/kits/billing/billing";
+import { OfflineBanner } from "../src/kits/workspace/sync-status";
+import { ProfileScopeBanner } from "../src/kits/workspace/workspace-switcher";
+import { QRCodeCard } from "../src/kits/identity/qr-code";
+import { GuidedSetupSteps, RotatingQRPairing } from "../src/kits/agent-admin/channels";
+import { StepIndicator, Steps } from "../src/primitives/step-indicator";
+import { OnboardingChecklist } from "../src/kits/agent/agent-onboarding";
 import { QRCodePlaceholder } from "../src/assets/misc";
 import { axeViolations } from "./a11y";
 

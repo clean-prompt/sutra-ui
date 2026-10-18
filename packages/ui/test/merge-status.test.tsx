@@ -2,14 +2,14 @@ import * as React from "react";
 import { act, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { RiStarLine } from "@remixicon/react";
-import { StatusBadge, StatusDot } from "../src/components/status-badge";
-import { Spinner, spinnerGlyphFrames } from "../src/components/spinner";
-import { ChatLoader, type ChatLoaderVariant } from "../src/components/chat-loader";
-import { GlyphSpinner, glyphSpinnerFrames } from "../src/components/primitives-extra";
-import { JobStatePill } from "../src/components/agent-jobs";
-import { ChatToolStateBadge } from "../src/components/chat-tool";
-import { BackendHealthPill } from "../src/components/backends";
-import { SubagentStatusGlyph } from "../src/components/subagents";
+import { StatusBadge, StatusDot } from "../src/primitives/status-badge";
+import { Spinner, spinnerGlyphFrames } from "../src/primitives/spinner";
+import { ChatLoader, type ChatLoaderVariant } from "../src/kits/ai/chat-loader";
+import { GlyphSpinner, glyphSpinnerFrames } from "../src/kits/ai/primitives-extra";
+import { JobStatePill } from "../src/kits/agent-admin/agent-jobs";
+import { ChatToolStateBadge } from "../src/kits/ai/chat-tool";
+import { BackendHealthPill } from "../src/kits/agent-admin/backends";
+import { SubagentStatusGlyph } from "../src/kits/agent-admin/subagents";
 import { axeViolations } from "./a11y";
 
 describe("StatusDot: variant + icon", () => {

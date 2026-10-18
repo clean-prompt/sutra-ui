@@ -15,4 +15,4 @@ export const demoUser = {
   avatarSrc: undefined as string | undefined,
 };
 
-export { createMockKunjiClient, type KunjiMockClientOptions, type KunjiMockOutcome } from "../components/kunji-client";
+export { createMockKunjiClient, type KunjiMockClientOptions, type KunjiMockOutcome } from "../kits/identity/kunji-client";

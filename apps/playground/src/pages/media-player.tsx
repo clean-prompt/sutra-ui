@@ -12,11 +12,11 @@ import {
   VolumeControl,
   useMediaElement,
   type RepeatMode,
-} from "@sutra/ui/components/media-controls";
-import { VideoPlayer } from "@sutra/ui/components/video-player";
-import { MiniPlayer, NowPlaying, QueueList, TrackRow, usePlayerQueue, type PlayerTrack } from "@sutra/ui/components/audio-player";
-import { AlbumCard, EpisodeCard, MediaHero, MediaShelf, PlaylistCard, PosterCard } from "@sutra/ui/components/media-cards";
-import { CastPicker, DeviceIcon, type CastDevice } from "@sutra/ui/components/cast-picker";
+} from "@sutra/ui/kits/media/media-controls";
+import { VideoPlayer } from "@sutra/ui/kits/media/video-player";
+import { MiniPlayer, NowPlaying, QueueList, TrackRow, usePlayerQueue, type PlayerTrack } from "@sutra/ui/kits/media/audio-player";
+import { AlbumCard, EpisodeCard, MediaHero, MediaShelf, PlaylistCard, PosterCard } from "@sutra/ui/kits/media/media-cards";
+import { CastPicker, DeviceIcon, type CastDevice } from "@sutra/ui/kits/media/cast-picker";
 import {
   RiArchiveLine,
   RiCastLine,

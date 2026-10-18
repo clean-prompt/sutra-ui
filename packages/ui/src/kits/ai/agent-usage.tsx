@@ -1,0 +1,402 @@
+import * as React from "react";
+import { cn, focusRing } from "../../lib/cn";
+import { chartColors } from "../../lib/tokens";
+import { formatDuration } from "../../lib/duration";
+import { formatCost } from "../../lib/format";
+import { roundTo } from "../../lib/math";
+import { MINUTE_MS, toMs, type TimeInput } from "../../lib/time";
+import { Button } from "../../primitives/button";
+import { Meter, meterLevel, StackedMeter, type MeterThresholds } from "../../primitives/meter";
+import { formatAgentTokens } from "../../lib/token-count";
+
+function pctText(n: number) {
+  if (n > 0 && n < 0.1) return "<0.1%";
+  return `${roundTo(n, n < 10 ? 1 : 0)}%`;
+}
+
+/* ------------------------------------------------------------------ */
+/* ContextUsageBreakdown                                               */
+/* ------------------------------------------------------------------ */
+
+export interface ContextUsageCategory {
+  key: string;
+  label: string;
+  tokens: number;
+  /** CSS color or token name (primary, info, warning…). Defaults to the chart palette. */
+  color?: string;
+  /**
+   * Tokens held back (e.g. reserved for the reply): drawn and listed, and subtracted from free space,
+   * but not counted as "used" in the summary and percentage.
+   */
+  reserved?: boolean;
+}
+
+const tokenColor: Record<string, string> = {
+  primary: "var(--primary)",
+  success: "var(--success)",
+  warning: "var(--warning)",
+  destructive: "var(--destructive)",
+  info: "var(--info)",
+  muted: "var(--muted-foreground)",
+  neutral: "var(--muted-foreground)",
+};
+
+const resolveColor = (c: string | undefined, i: number) => (c ? (tokenColor[c] ?? c) : chartColors[i % chartColors.length]!);
+
+export interface ContextUsageBreakdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  categories: ContextUsageCategory[];
+  /** Context window size in tokens. */
+  max: number;
+  /** Tokens in use. Defaults to the sum of the non-reserved categories; a larger value adds an "Other" part. */
+  used?: number;
+  /** Default "Context window". */
+  title?: React.ReactNode;
+  /** Show the free-space row and track remainder. Default true. */
+  showFree?: boolean;
+  freeLabel?: string;
+  /** Token formatter for the summary and rows. Default `formatAgentTokens` ("100k"). */
+  valueFormatter?: (tokens: number) => string;
+  /** Short line under the bar, e.g. "Getting full". */
+  caption?: React.ReactNode;
+  onCompact?: () => void;
+  compactLabel?: string;
+  /** Shows a spinner on the compact button and disables it. */
+  compacting?: boolean;
+  /** Label while `compacting`. Default "Compacting…". */
+  compactingLabel?: string;
+  /** Default true. */
+  canCompact?: boolean;
+  /** `inline` (default): small button on the right · `block`: full-width button, as in the ContextMeter popover. */
+  actionLayout?: "inline" | "block";
+  /** Percent thresholds for the summary color. */
+  thresholds?: MeterThresholds;
+  /** Extra content between the rows and the compact button. */
+  children?: React.ReactNode;
+}
+
+/** Context-window bar (a StackedMeter with meter semantics) with per-category rows and an optional "Compact now" action. Also the body of the ContextMeter popover. */
+export const ContextUsageBreakdown = React.forwardRef<HTMLDivElement, ContextUsageBreakdownProps>(
+  (
+    {
+      categories,
+      max,
+      used: usedProp,
+      title = "Context window",
+      showFree = true,
+      freeLabel = "Free space",
+      valueFormatter: fmt = formatAgentTokens,
+      caption,
+      onCompact,
+      compactLabel = "Compact now",
+      compacting = false,
+      compactingLabel = "Compacting…",
+      canCompact = true,
+      actionLayout = "inline",
+      thresholds,
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const titleId = React.useId();
+    const usedSum = categories.reduce((s, c) => s + (c.reserved ? 0 : Math.max(0, c.tokens)), 0);
+    const reserved = categories.reduce((s, c) => s + (c.reserved ? Math.max(0, c.tokens) : 0), 0);
+    const used = usedProp ?? usedSum;
+    const rows: ContextUsageCategory[] =
+      used > usedSum ? [...categories, { key: "other", label: "Other", tokens: used - usedSum, color: "neutral" }] : categories;
+    const resolved = rows.map((c, i) => ({ ...c, color: resolveColor(c.color, i) }));
+    const free = Math.max(0, max - used - reserved);
+    const pct = max > 0 ? Math.min(100, (used / max) * 100) : 0;
+    const level = meterLevel(pct, thresholds);
+    const summary = `${fmt(used)} / ${fmt(max)} tokens (${Math.round(pct)}%)`;
+    const share = (n: number) => pctText(max > 0 ? (n / max) * 100 : 0);
+    return (
+      <div ref={ref} data-level={level} className={cn("w-full space-y-3", className)} {...props}>
+        <div className="flex items-baseline justify-between gap-3">
+          <span id={titleId} className="text-sm font-medium text-foreground">
+            {title}
+          </span>
+          <span
+            data-slot="context-usage-summary"
+            className={cn(
+              "font-mono text-xs tabular-nums",
+              level === "danger" ? "text-destructive" : level === "warn" ? "text-warning-soft-foreground" : "text-muted-foreground"
+            )}
+          >
+            {summary}
+          </span>
+        </div>
+        <StackedMeter
+          showValue={false}
+          legend={false}
+          max={Math.max(max, used + reserved)}
+          valueFormatter={fmt}
+          caption={caption}
+          partSlot="context-usage-segment"
+          parts={resolved.map((c) => ({ key: c.key, label: c.label, value: c.tokens, color: c.color }))}
+          trackProps={{
+            role: "meter",
+            "aria-label": undefined,
+            "aria-labelledby": titleId,
+            "aria-valuenow": used,
+            "aria-valuemin": 0,
+            "aria-valuemax": max,
+            "aria-valuetext": summary,
+            className: "h-2.5 gap-px",
+          }}
+        />
+        <ul className="space-y-1">
+          {resolved.map((c) => (
+            <li key={c.key} data-key={c.key} className="flex items-center gap-2 text-xs">
+              <span aria-hidden className="size-2.5 shrink-0 rounded-xs" style={{ background: c.color }} />
+              <span className="min-w-0 flex-1 truncate text-foreground">{c.label}</span>
+              <span className="font-mono tabular-nums text-muted-foreground">{fmt(c.tokens)}</span>
+              <span data-slot="context-usage-percent" className="w-12 text-right font-mono tabular-nums text-muted-foreground">
+                {share(c.tokens)}
+              </span>
+            </li>
+          ))}
+          {showFree && (
+            <li data-key="free" className="flex items-center gap-2 text-xs">
+              <span aria-hidden className="size-2.5 shrink-0 rounded-xs border border-border-strong bg-muted" />
+              <span className="min-w-0 flex-1 truncate text-muted-foreground">{freeLabel}</span>
+              <span className="font-mono tabular-nums text-muted-foreground">{fmt(free)}</span>
+              <span className="w-12 text-right font-mono tabular-nums text-muted-foreground">{share(free)}</span>
+            </li>
+          )}
+        </ul>
+        {children}
+        {onCompact && (
+          <div className={cn(actionLayout === "inline" && "flex justify-end")}>
+            <Button
+              variant={actionLayout === "block" ? "secondary" : "outline"}
+              size={actionLayout === "block" ? "sm" : "xs"}
+              className={cn(actionLayout === "block" && "w-full")}
+              loading={compacting}
+              disabled={!canCompact || compacting}
+              onClick={onCompact}
+            >
+              {compacting ? compactingLabel : compactLabel}
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+ContextUsageBreakdown.displayName = "ContextUsageBreakdown";
+
+/* ------------------------------------------------------------------ */
+/* UsageLimitBars                                                      */
+/* ------------------------------------------------------------------ */
+
+/** "Resets in 2h 14m" within a day, otherwise "Resets Mon". */
+export function formatResetCaption(resetsAt: TimeInput, now: number = Date.now()) {
+  const t = toMs(resetsAt);
+  if (t == null) return "";
+  const diff = t - now;
+  if (diff <= 0) return "Resets now";
+  const mins = Math.ceil(diff / MINUTE_MS);
+  if (mins < 24 * 60) return `Resets in ${formatDuration(mins * MINUTE_MS, { maxUnit: "h", minUnit: "m" })}`;
+  return `Resets ${new Date(t).toLocaleDateString(undefined, { weekday: "short" })}`;
+}
+
+export interface UsageLimitWindow {
+  id: string;
+  /** "Current session", "Weekly", "Weekly (Opus)". */
+  label: string;
+  /** Percent of the limit used, 0–100. */
+  percent: number;
+  resetsAt?: TimeInput;
+  /** Overrides the computed reset caption. */
+  resetLabel?: React.ReactNode;
+  /** Only shown when this view is selected in the window toggle. */
+  view?: string;
+}
+
+export interface UsageModelShare {
+  name: string;
+  /** Percent of total usage, 0–100. */
+  percent: number;
+  color?: string;
+  view?: string;
+}
+
+export interface UsageLimitBarsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  windows: UsageLimitWindow[];
+  title?: React.ReactNode;
+  /** Toggle options for the window views, e.g. Session / Weekly. */
+  views?: { value: string; label: string }[];
+  view?: string;
+  defaultView?: string;
+  onViewChange?: (view: string) => void;
+  /** Per-model attribution ("Opus 62% of usage"). */
+  models?: UsageModelShare[];
+  thresholds?: MeterThresholds;
+  now?: number;
+}
+
+/** Rolling usage-limit bars with threshold coloring, reset captions, a window toggle and per-model attribution. */
+export const UsageLimitBars = React.forwardRef<HTMLDivElement, UsageLimitBarsProps>(
+  (
+    {
+      windows,
+      title,
+      views,
+      view: viewProp,
+      defaultView,
+      onViewChange,
+      models,
+      thresholds = { warn: 75, danger: 90 },
+      now: nowProp,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const [internalView, setInternalView] = React.useState(defaultView ?? views?.[0]?.value);
+    const view = viewProp ?? internalView;
+    const setView = (v: string) => {
+      if (viewProp === undefined) setInternalView(v);
+      onViewChange?.(v);
+    };
+    const now = nowProp ?? Date.now();
+    const shown = windows.filter((w) => !views || !w.view || w.view === view);
+    const shownModels = models?.filter((m) => !views || !m.view || m.view === view);
+    return (
+      <div ref={ref} className={cn("w-full space-y-4", className)} {...props}>
+        {(title || views) && (
+          <div className="flex items-center justify-between gap-3">
+            {title ? <span className="text-sm font-medium text-foreground">{title}</span> : <span />}
+            {views && (
+              <div role="group" aria-label="Usage window" className="flex rounded-control bg-muted p-0.5">
+                {views.map((v) => (
+                  <button
+                    key={v.value}
+                    type="button"
+                    aria-pressed={view === v.value}
+                    onClick={() => setView(v.value)}
+                    className={cn(
+                      "h-6 rounded-[calc(var(--radius-control)-2px)] px-2.5 text-xs font-medium text-muted-foreground transition-colors",
+                      "aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-xs",
+                      focusRing
+                    )}
+                  >
+                    {v.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        <div className="space-y-3.5">
+          {shown.map((w) => {
+            const caption = w.resetLabel ?? (w.resetsAt != null ? formatResetCaption(w.resetsAt, now) : undefined);
+            return (
+              <Meter
+                key={w.id}
+                data-window={w.id}
+                label={w.label}
+                value={Math.max(0, Math.min(100, w.percent))}
+                thresholds={thresholds}
+                valueText={`${Math.round(w.percent)}% used`}
+                caption={caption}
+                size="sm"
+              />
+            );
+          })}
+        </div>
+        {shownModels && shownModels.length > 0 && (
+          <div className="space-y-1.5">
+            <p className="text-xs font-medium text-muted-foreground">By model</p>
+            <ul className="space-y-1">
+              {shownModels.map((m, i) => (
+                <li key={m.name} className="flex items-center gap-2 text-xs">
+                  <span aria-hidden className="size-2 shrink-0 rounded-full" style={{ background: resolveColor(m.color, i) }} />
+                  <span className="min-w-0 flex-1 truncate text-foreground">
+                    {m.name}{" "}
+                    <span className="text-muted-foreground">
+                      <span className="font-mono tabular-nums">{Math.round(m.percent)}%</span> of usage
+                    </span>
+                  </span>
+                  <span aria-hidden className="h-1 w-20 overflow-hidden rounded-full bg-muted">
+                    <span className="block h-full rounded-full" style={{ width: `${Math.min(100, m.percent)}%`, background: resolveColor(m.color, i) }} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+UsageLimitBars.displayName = "UsageLimitBars";
+
+/* ------------------------------------------------------------------ */
+/* SessionStats                                                        */
+/* ------------------------------------------------------------------ */
+
+/** "850ms", "42s", "4m 12s", "1h 03m". */
+export function formatAgentDuration(ms: number) {
+  return formatDuration(ms, { ms: true, pad: true });
+}
+
+export interface SessionStatsItem {
+  label: React.ReactNode;
+  value: React.ReactNode;
+}
+
+export interface SessionStatsProps extends Omit<React.HTMLAttributes<HTMLDListElement>, "title"> {
+  /** Total cost in `currency`. */
+  cost?: number;
+  currency?: string;
+  apiDurationMs?: number;
+  wallDurationMs?: number;
+  linesAdded?: number;
+  linesRemoved?: number;
+  /** Extra rows appended at the end. */
+  extra?: SessionStatsItem[];
+}
+
+/** Cost, API vs wall duration and code changes, as a key/value summary. */
+export const SessionStats = React.forwardRef<HTMLDListElement, SessionStatsProps>(
+  ({ cost, currency = "USD", apiDurationMs, wallDurationMs, linesAdded, linesRemoved, extra = [], className, ...props }, ref) => {
+    const rows: SessionStatsItem[] = [];
+    if (cost != null) {
+      rows.push({
+        label: "Total cost",
+        value: formatCost(cost, { currency, locale: "en-US", maxFraction: cost < 1 ? 4 : 2, tiny: 0 }),
+      });
+    }
+    if (apiDurationMs != null) rows.push({ label: "API duration", value: formatAgentDuration(apiDurationMs) });
+    if (wallDurationMs != null) rows.push({ label: "Wall duration", value: formatAgentDuration(wallDurationMs) });
+    if (linesAdded != null || linesRemoved != null) {
+      rows.push({
+        label: "Code changes",
+        value: (
+          <span>
+            <span className="text-success">+{linesAdded ?? 0}</span>
+            <span className="sr-only"> lines added, </span>
+            <span aria-hidden> </span>
+            <span className="text-destructive">−{linesRemoved ?? 0}</span>
+            <span className="sr-only"> lines removed</span>
+          </span>
+        ),
+      });
+    }
+    rows.push(...extra);
+    return (
+      <dl ref={ref} className={cn("w-full divide-y divide-border text-sm", className)} {...props}>
+        {rows.map((r, i) => (
+          <div key={i} className="flex items-baseline justify-between gap-4 py-1.5">
+            <dt className="text-muted-foreground">{r.label}</dt>
+            <dd className="font-mono tabular-nums text-foreground">{r.value}</dd>
+          </div>
+        ))}
+      </dl>
+    );
+  }
+);
+SessionStats.displayName = "SessionStats";

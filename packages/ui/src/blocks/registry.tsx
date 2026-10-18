@@ -6,10 +6,10 @@
  * adapter used by the kunji demos are created lazily, the first time one of those demos renders.
  */
 import * as React from "react";
-import { Button } from "../components/button";
-import type { KunjiClient } from "../components/kunji-client";
-import { SidebarProvider } from "../components/sidebar-navigation";
-import { TabsContent } from "../components/tabs";
+import { Button } from "../primitives/button";
+import type { KunjiClient } from "../kits/identity/kunji-client";
+import { SidebarProvider } from "../patterns/sidebar-navigation";
+import { TabsContent } from "../primitives/tabs";
 import {
   ForgotPasswordCard,
   LoginCard,

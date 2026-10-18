@@ -1,11 +1,11 @@
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import { PermissionPrompt } from "../src/components/permission-prompt";
-import { EmbedConsentProvider, RichEmbed, resolveEmbed } from "../src/components/embeds";
+import { PermissionPrompt } from "../src/kits/ai/permission-prompt";
+import { EmbedConsentProvider, RichEmbed, resolveEmbed } from "../src/kits/ai/embeds";
 import { TwoFactorSetupCard, buildOtpauthUri } from "../src/blocks/auth-blocks";
-import { QRCode } from "../src/components/qr-code";
-import { SecretText } from "../src/components/secret";
-import { useSpeechRecognition, VoiceInput } from "../src/components/voice";
+import { QRCode } from "../src/kits/identity/qr-code";
+import { SecretText } from "../src/kits/identity/secret";
+import { useSpeechRecognition, VoiceInput } from "../src/kits/voice/voice";
 
 const flush = () => act(async () => {});
 

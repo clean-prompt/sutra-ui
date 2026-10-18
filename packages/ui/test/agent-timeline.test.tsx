@@ -14,15 +14,15 @@ import {
   ToolTimelineItem,
   ToolTimelineText,
   WebToolBody,
-} from "../src/components/tool-timeline";
-import { DiffCard, DiffStat } from "../src/components/diff-viewer";
+} from "../src/kits/agent/tool-timeline";
+import { DiffCard, DiffStat } from "../src/patterns/diff-viewer";
 import {
   ChainOfThought,
   ChainOfThoughtContent,
   ThinkingExpandAllProvider,
   ThinkingToggle,
   formatTokenLabel,
-} from "../src/components/chain-of-thought";
+} from "../src/kits/ai/chain-of-thought";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {

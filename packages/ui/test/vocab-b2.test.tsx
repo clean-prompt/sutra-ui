@@ -1,25 +1,25 @@
 import * as React from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CodeEditor, type CodeEditorHandle } from "../src/components/code-editor";
-import { ChatFeedbackActions } from "../src/components/chat-message-actions";
-import { Combobox } from "../src/components/combobox";
-import { DatePicker } from "../src/components/date-picker";
-import { Note } from "../src/components/empty-state";
-import { Dropzone } from "../src/components/dropzone";
-import { Chip, ChipGroup } from "../src/components/chip";
-import { ChatTool, ChatToolStateBadge } from "../src/components/chat-tool";
-import { CommentComposer } from "../src/components/comments";
-import { ActivityFeed, ConnectedAppList } from "../src/components/connected-apps";
-import { SecurityScanVerdict, ExtensionInstallDialog } from "../src/components/extensions-catalog";
-import { ConfirmDialog } from "../src/components/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../src/components/dropdown-menu";
-import { FileUploadItem } from "../src/components/file-upload";
-import { ChatListView } from "../src/components/chat-list-view";
-import { DocumentOutline } from "../src/components/document-outline";
-import { DiffViewer } from "../src/components/diff-viewer";
-import { TipBubble } from "../src/components/coachmarks";
-import { ScopeIcon } from "../src/components/consent";
+import { CodeEditor, type CodeEditorHandle } from "../src/kits/editor/code-editor";
+import { ChatFeedbackActions } from "../src/kits/ai/chat-message-actions";
+import { Combobox } from "../src/primitives/combobox";
+import { DatePicker } from "../src/primitives/date-picker";
+import { Note } from "../src/primitives/empty-state";
+import { Dropzone } from "../src/primitives/dropzone";
+import { Chip, ChipGroup } from "../src/primitives/chip";
+import { ChatTool, ChatToolStateBadge } from "../src/kits/ai/chat-tool";
+import { CommentComposer } from "../src/patterns/comments";
+import { ActivityFeed, ConnectedAppList } from "../src/kits/identity/connected-apps";
+import { SecurityScanVerdict, ExtensionInstallDialog } from "../src/kits/agent-admin/extensions-catalog";
+import { ConfirmDialog } from "../src/primitives/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../src/primitives/dropdown-menu";
+import { FileUploadItem } from "../src/patterns/file-upload";
+import { ChatListView } from "../src/kits/ai/chat-list-view";
+import { DocumentOutline } from "../src/kits/editor/document-outline";
+import { DiffViewer } from "../src/patterns/diff-viewer";
+import { TipBubble } from "../src/patterns/coachmarks";
+import { ScopeIcon } from "../src/kits/identity/consent";
 
 describe("vocabulary: controlled triads", () => {
   it("CodeEditor fires onValueChange and the deprecated onChange", () => {

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { TOTPCard, TOTPCode, base32Decode, formatOtpCode, generateTOTP, parseOtpauthUri } from "../src/components/totp";
-import { SecretField, SecretRevealOnce, SecretText } from "../src/components/secret";
-import { RecoveryKey, RecoveryKeyInput, groupRecoveryKey } from "../src/components/recovery-key";
-import { ConsentScreen, ScopeList, ScopeMatrix, formatScope } from "../src/components/consent";
-import { ApiKeyCreateDialog, ApiKeyList, ApiKeyUsage, formatRelativeDate, maskApiKey, type ApiKey } from "../src/components/api-keys";
-import { CredentialCard, CredentialDetail, credentialStatus, type Credential } from "../src/components/credential-card";
+import { TOTPCard, TOTPCode, base32Decode, formatOtpCode, generateTOTP, parseOtpauthUri } from "../src/kits/identity/totp";
+import { SecretField, SecretRevealOnce, SecretText } from "../src/kits/identity/secret";
+import { RecoveryKey, RecoveryKeyInput, groupRecoveryKey } from "../src/kits/identity/recovery-key";
+import { ConsentScreen, ScopeList, ScopeMatrix, formatScope } from "../src/kits/identity/consent";
+import { ApiKeyCreateDialog, ApiKeyList, ApiKeyUsage, formatRelativeDate, maskApiKey, type ApiKey } from "../src/kits/identity/api-keys";
+import { CredentialCard, CredentialDetail, credentialStatus, type Credential } from "../src/kits/identity/credential-card";
 import {
   PaymentCard,
   PaymentCardInput,
@@ -14,8 +14,8 @@ import {
   luhnCheck,
   validateCardExpiry,
   validateCardNumber,
-} from "../src/components/payment-card";
-import { ActivityFeed, ConnectedAppList, groupEventsByDay, type ConnectedApp, type SecurityEvent } from "../src/components/connected-apps";
+} from "../src/kits/billing/payment-card";
+import { ActivityFeed, ConnectedAppList, groupEventsByDay, type ConnectedApp, type SecurityEvent } from "../src/kits/identity/connected-apps";
 import { axeViolations } from "./a11y";
 
 const RFC_SECRET = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"; // base32("12345678901234567890")

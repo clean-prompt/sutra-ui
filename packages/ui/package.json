@@ -135,10 +135,20 @@
       "import": "./dist/entries/tokens.js",
       "default": "./dist/entries/tokens.js"
     },
-    "./components/*": {
-      "types": "./dist/components/*.d.ts",
-      "import": "./dist/components/*.js",
-      "default": "./dist/components/*.js"
+    "./primitives/*": {
+      "types": "./dist/primitives/*.d.ts",
+      "import": "./dist/primitives/*.js",
+      "default": "./dist/primitives/*.js"
+    },
+    "./patterns/*": {
+      "types": "./dist/patterns/*.d.ts",
+      "import": "./dist/patterns/*.js",
+      "default": "./dist/patterns/*.js"
+    },
+    "./kits/*": {
+      "types": "./dist/kits/*.d.ts",
+      "import": "./dist/kits/*.js",
+      "default": "./dist/kits/*.js"
     },
     "./blocks/*": {
       "types": "./dist/blocks/*.d.ts",
@@ -149,6 +159,1176 @@
       "types": "./dist/assets/*.d.ts",
       "import": "./dist/assets/*.js",
       "default": "./dist/assets/*.js"
+    },
+    "./components/accordion": {
+      "types": "./dist/primitives/accordion.d.ts",
+      "import": "./dist/primitives/accordion.js",
+      "default": "./dist/primitives/accordion.js"
+    },
+    "./components/agent-avatar": {
+      "types": "./dist/patterns/agent-avatar.d.ts",
+      "import": "./dist/patterns/agent-avatar.js",
+      "default": "./dist/patterns/agent-avatar.js"
+    },
+    "./components/agent-browser": {
+      "types": "./dist/kits/agent/agent-browser.d.ts",
+      "import": "./dist/kits/agent/agent-browser.js",
+      "default": "./dist/kits/agent/agent-browser.js"
+    },
+    "./components/agent-composer": {
+      "types": "./dist/kits/agent/agent-composer.d.ts",
+      "import": "./dist/kits/agent/agent-composer.js",
+      "default": "./dist/kits/agent/agent-composer.js"
+    },
+    "./components/agent-jobs": {
+      "types": "./dist/kits/agent-admin/agent-jobs.d.ts",
+      "import": "./dist/kits/agent-admin/agent-jobs.js",
+      "default": "./dist/kits/agent-admin/agent-jobs.js"
+    },
+    "./components/agent-mode": {
+      "types": "./dist/kits/agent/agent-mode.d.ts",
+      "import": "./dist/kits/agent/agent-mode.js",
+      "default": "./dist/kits/agent/agent-mode.js"
+    },
+    "./components/agent-onboarding": {
+      "types": "./dist/kits/agent/agent-onboarding.d.ts",
+      "import": "./dist/kits/agent/agent-onboarding.js",
+      "default": "./dist/kits/agent/agent-onboarding.js"
+    },
+    "./components/agent-persona": {
+      "types": "./dist/kits/agent-admin/agent-persona.d.ts",
+      "import": "./dist/kits/agent-admin/agent-persona.js",
+      "default": "./dist/kits/agent-admin/agent-persona.js"
+    },
+    "./components/agent-room": {
+      "types": "./dist/kits/agent-admin/agent-room.d.ts",
+      "import": "./dist/kits/agent-admin/agent-room.js",
+      "default": "./dist/kits/agent-admin/agent-room.js"
+    },
+    "./components/agent-sessions": {
+      "types": "./dist/kits/agent/agent-sessions.d.ts",
+      "import": "./dist/kits/agent/agent-sessions.js",
+      "default": "./dist/kits/agent/agent-sessions.js"
+    },
+    "./components/agent-tasks": {
+      "types": "./dist/kits/agent/agent-tasks.d.ts",
+      "import": "./dist/kits/agent/agent-tasks.js",
+      "default": "./dist/kits/agent/agent-tasks.js"
+    },
+    "./components/agent-transcript": {
+      "types": "./dist/kits/agent/agent-transcript.d.ts",
+      "import": "./dist/kits/agent/agent-transcript.js",
+      "default": "./dist/kits/agent/agent-transcript.js"
+    },
+    "./components/agent-usage": {
+      "types": "./dist/kits/ai/agent-usage.d.ts",
+      "import": "./dist/kits/ai/agent-usage.js",
+      "default": "./dist/kits/ai/agent-usage.js"
+    },
+    "./components/ai-extras": {
+      "types": "./dist/kits/ai/ai-extras.d.ts",
+      "import": "./dist/kits/ai/ai-extras.js",
+      "default": "./dist/kits/ai/ai-extras.js"
+    },
+    "./components/alert-banner": {
+      "types": "./dist/primitives/alert-banner.d.ts",
+      "import": "./dist/primitives/alert-banner.js",
+      "default": "./dist/primitives/alert-banner.js"
+    },
+    "./components/alert-group": {
+      "types": "./dist/kits/ops/alert-group.d.ts",
+      "import": "./dist/kits/ops/alert-group.js",
+      "default": "./dist/kits/ops/alert-group.js"
+    },
+    "./components/api-keys": {
+      "types": "./dist/kits/identity/api-keys.d.ts",
+      "import": "./dist/kits/identity/api-keys.js",
+      "default": "./dist/kits/identity/api-keys.js"
+    },
+    "./components/app-launcher": {
+      "types": "./dist/kits/workspace/app-launcher.d.ts",
+      "import": "./dist/kits/workspace/app-launcher.js",
+      "default": "./dist/kits/workspace/app-launcher.js"
+    },
+    "./components/app-store-badge": {
+      "types": "./dist/primitives/app-store-badge.d.ts",
+      "import": "./dist/primitives/app-store-badge.js",
+      "default": "./dist/primitives/app-store-badge.js"
+    },
+    "./components/approval-stack": {
+      "types": "./dist/kits/ai/approval-stack.d.ts",
+      "import": "./dist/kits/ai/approval-stack.js",
+      "default": "./dist/kits/ai/approval-stack.js"
+    },
+    "./components/artifacts": {
+      "types": "./dist/kits/agent/artifacts.d.ts",
+      "import": "./dist/kits/agent/artifacts.js",
+      "default": "./dist/kits/agent/artifacts.js"
+    },
+    "./components/aspect-ratio": {
+      "types": "./dist/primitives/aspect-ratio.d.ts",
+      "import": "./dist/primitives/aspect-ratio.js",
+      "default": "./dist/primitives/aspect-ratio.js"
+    },
+    "./components/audio-player": {
+      "types": "./dist/kits/media/audio-player.d.ts",
+      "import": "./dist/kits/media/audio-player.js",
+      "default": "./dist/kits/media/audio-player.js"
+    },
+    "./components/avatar": {
+      "types": "./dist/primitives/avatar.d.ts",
+      "import": "./dist/primitives/avatar.js",
+      "default": "./dist/primitives/avatar.js"
+    },
+    "./components/avatar-group": {
+      "types": "./dist/primitives/avatar-group.d.ts",
+      "import": "./dist/primitives/avatar-group.js",
+      "default": "./dist/primitives/avatar-group.js"
+    },
+    "./components/backends": {
+      "types": "./dist/kits/agent-admin/backends.d.ts",
+      "import": "./dist/kits/agent-admin/backends.js",
+      "default": "./dist/kits/agent-admin/backends.js"
+    },
+    "./components/backlinks": {
+      "types": "./dist/kits/workspace/backlinks.d.ts",
+      "import": "./dist/kits/workspace/backlinks.js",
+      "default": "./dist/kits/workspace/backlinks.js"
+    },
+    "./components/badge": {
+      "types": "./dist/primitives/badge.d.ts",
+      "import": "./dist/primitives/badge.js",
+      "default": "./dist/primitives/badge.js"
+    },
+    "./components/billing": {
+      "types": "./dist/kits/billing/billing.d.ts",
+      "import": "./dist/kits/billing/billing.js",
+      "default": "./dist/kits/billing/billing.js"
+    },
+    "./components/blog-content": {
+      "types": "./dist/patterns/blog-content.d.ts",
+      "import": "./dist/patterns/blog-content.js",
+      "default": "./dist/patterns/blog-content.js"
+    },
+    "./components/bottom-tab-bar": {
+      "types": "./dist/patterns/bottom-tab-bar.d.ts",
+      "import": "./dist/patterns/bottom-tab-bar.js",
+      "default": "./dist/patterns/bottom-tab-bar.js"
+    },
+    "./components/breadcrumbs": {
+      "types": "./dist/primitives/breadcrumbs.d.ts",
+      "import": "./dist/primitives/breadcrumbs.js",
+      "default": "./dist/primitives/breadcrumbs.js"
+    },
+    "./components/button": {
+      "types": "./dist/primitives/button.d.ts",
+      "import": "./dist/primitives/button.js",
+      "default": "./dist/primitives/button.js"
+    },
+    "./components/button-group": {
+      "types": "./dist/primitives/button-group.d.ts",
+      "import": "./dist/primitives/button-group.js",
+      "default": "./dist/primitives/button-group.js"
+    },
+    "./components/calendar": {
+      "types": "./dist/primitives/calendar.d.ts",
+      "import": "./dist/primitives/calendar.js",
+      "default": "./dist/primitives/calendar.js"
+    },
+    "./components/call-overlay": {
+      "types": "./dist/kits/social/call-overlay.d.ts",
+      "import": "./dist/kits/social/call-overlay.js",
+      "default": "./dist/kits/social/call-overlay.js"
+    },
+    "./components/capabilities": {
+      "types": "./dist/kits/agent-admin/capabilities.d.ts",
+      "import": "./dist/kits/agent-admin/capabilities.js",
+      "default": "./dist/kits/agent-admin/capabilities.js"
+    },
+    "./components/cast-picker": {
+      "types": "./dist/kits/media/cast-picker.d.ts",
+      "import": "./dist/kits/media/cast-picker.js",
+      "default": "./dist/kits/media/cast-picker.js"
+    },
+    "./components/chain-of-thought": {
+      "types": "./dist/kits/ai/chain-of-thought.d.ts",
+      "import": "./dist/kits/ai/chain-of-thought.js",
+      "default": "./dist/kits/ai/chain-of-thought.js"
+    },
+    "./components/channels": {
+      "types": "./dist/kits/agent-admin/channels.d.ts",
+      "import": "./dist/kits/agent-admin/channels.js",
+      "default": "./dist/kits/agent-admin/channels.js"
+    },
+    "./components/chart": {
+      "types": "./dist/patterns/chart.d.ts",
+      "import": "./dist/patterns/chart.js",
+      "default": "./dist/patterns/chart.js"
+    },
+    "./components/chat-attachment": {
+      "types": "./dist/kits/ai/chat-attachment.d.ts",
+      "import": "./dist/kits/ai/chat-attachment.js",
+      "default": "./dist/kits/ai/chat-attachment.js"
+    },
+    "./components/chat-conversation": {
+      "types": "./dist/kits/ai/chat-conversation.d.ts",
+      "import": "./dist/kits/ai/chat-conversation.js",
+      "default": "./dist/kits/ai/chat-conversation.js"
+    },
+    "./components/chat-list-view": {
+      "types": "./dist/kits/ai/chat-list-view.d.ts",
+      "import": "./dist/kits/ai/chat-list-view.js",
+      "default": "./dist/kits/ai/chat-list-view.js"
+    },
+    "./components/chat-loader": {
+      "types": "./dist/kits/ai/chat-loader.d.ts",
+      "import": "./dist/kits/ai/chat-loader.js",
+      "default": "./dist/kits/ai/chat-loader.js"
+    },
+    "./components/chat-message": {
+      "types": "./dist/kits/ai/chat-message.d.ts",
+      "import": "./dist/kits/ai/chat-message.js",
+      "default": "./dist/kits/ai/chat-message.js"
+    },
+    "./components/chat-message-actions": {
+      "types": "./dist/kits/ai/chat-message-actions.d.ts",
+      "import": "./dist/kits/ai/chat-message-actions.js",
+      "default": "./dist/kits/ai/chat-message-actions.js"
+    },
+    "./components/chat-source": {
+      "types": "./dist/kits/ai/chat-source.d.ts",
+      "import": "./dist/kits/ai/chat-source.js",
+      "default": "./dist/kits/ai/chat-source.js"
+    },
+    "./components/chat-tool": {
+      "types": "./dist/kits/ai/chat-tool.d.ts",
+      "import": "./dist/kits/ai/chat-tool.js",
+      "default": "./dist/kits/ai/chat-tool.js"
+    },
+    "./components/checkbox": {
+      "types": "./dist/primitives/checkbox.d.ts",
+      "import": "./dist/primitives/checkbox.js",
+      "default": "./dist/primitives/checkbox.js"
+    },
+    "./components/chip": {
+      "types": "./dist/primitives/chip.d.ts",
+      "import": "./dist/primitives/chip.js",
+      "default": "./dist/primitives/chip.js"
+    },
+    "./components/clarify-settled": {
+      "types": "./dist/kits/ai/clarify-settled.d.ts",
+      "import": "./dist/kits/ai/clarify-settled.js",
+      "default": "./dist/kits/ai/clarify-settled.js"
+    },
+    "./components/close-button": {
+      "types": "./dist/primitives/close-button.d.ts",
+      "import": "./dist/primitives/close-button.js",
+      "default": "./dist/primitives/close-button.js"
+    },
+    "./components/coachmarks": {
+      "types": "./dist/patterns/coachmarks.d.ts",
+      "import": "./dist/patterns/coachmarks.js",
+      "default": "./dist/patterns/coachmarks.js"
+    },
+    "./components/code-block": {
+      "types": "./dist/patterns/code-block.d.ts",
+      "import": "./dist/patterns/code-block.js",
+      "default": "./dist/patterns/code-block.js"
+    },
+    "./components/code-editor": {
+      "types": "./dist/kits/editor/code-editor.d.ts",
+      "import": "./dist/kits/editor/code-editor.js",
+      "default": "./dist/kits/editor/code-editor.js"
+    },
+    "./components/combobox": {
+      "types": "./dist/primitives/combobox.d.ts",
+      "import": "./dist/primitives/combobox.js",
+      "default": "./dist/primitives/combobox.js"
+    },
+    "./components/command-menu": {
+      "types": "./dist/patterns/command-menu.d.ts",
+      "import": "./dist/patterns/command-menu.js",
+      "default": "./dist/patterns/command-menu.js"
+    },
+    "./components/comments": {
+      "types": "./dist/patterns/comments.d.ts",
+      "import": "./dist/patterns/comments.js",
+      "default": "./dist/patterns/comments.js"
+    },
+    "./components/connected-apps": {
+      "types": "./dist/kits/identity/connected-apps.d.ts",
+      "import": "./dist/kits/identity/connected-apps.js",
+      "default": "./dist/kits/identity/connected-apps.js"
+    },
+    "./components/consent": {
+      "types": "./dist/kits/identity/consent.d.ts",
+      "import": "./dist/kits/identity/consent.js",
+      "default": "./dist/kits/identity/consent.js"
+    },
+    "./components/context-menu": {
+      "types": "./dist/primitives/context-menu.d.ts",
+      "import": "./dist/primitives/context-menu.js",
+      "default": "./dist/primitives/context-menu.js"
+    },
+    "./components/context-meter": {
+      "types": "./dist/kits/ai/context-meter.d.ts",
+      "import": "./dist/kits/ai/context-meter.js",
+      "default": "./dist/kits/ai/context-meter.js"
+    },
+    "./components/conversation-list": {
+      "types": "./dist/kits/ai/conversation-list.d.ts",
+      "import": "./dist/kits/ai/conversation-list.js",
+      "default": "./dist/kits/ai/conversation-list.js"
+    },
+    "./components/conversation-sidebar": {
+      "types": "./dist/kits/ai/conversation-sidebar.d.ts",
+      "import": "./dist/kits/ai/conversation-sidebar.js",
+      "default": "./dist/kits/ai/conversation-sidebar.js"
+    },
+    "./components/copy-button": {
+      "types": "./dist/primitives/copy-button.d.ts",
+      "import": "./dist/primitives/copy-button.js",
+      "default": "./dist/primitives/copy-button.js"
+    },
+    "./components/countdown": {
+      "types": "./dist/patterns/countdown.d.ts",
+      "import": "./dist/patterns/countdown.js",
+      "default": "./dist/patterns/countdown.js"
+    },
+    "./components/counters": {
+      "types": "./dist/patterns/counters.d.ts",
+      "import": "./dist/patterns/counters.js",
+      "default": "./dist/patterns/counters.js"
+    },
+    "./components/credential-card": {
+      "types": "./dist/kits/identity/credential-card.d.ts",
+      "import": "./dist/kits/identity/credential-card.js",
+      "default": "./dist/kits/identity/credential-card.js"
+    },
+    "./components/cron": {
+      "types": "./dist/patterns/cron.d.ts",
+      "import": "./dist/patterns/cron.js",
+      "default": "./dist/patterns/cron.js"
+    },
+    "./components/date-picker": {
+      "types": "./dist/primitives/date-picker.d.ts",
+      "import": "./dist/primitives/date-picker.js",
+      "default": "./dist/primitives/date-picker.js"
+    },
+    "./components/decode-text": {
+      "types": "./dist/patterns/decode-text.d.ts",
+      "import": "./dist/patterns/decode-text.js",
+      "default": "./dist/patterns/decode-text.js"
+    },
+    "./components/dialog": {
+      "types": "./dist/primitives/dialog.d.ts",
+      "import": "./dist/primitives/dialog.js",
+      "default": "./dist/primitives/dialog.js"
+    },
+    "./components/diff-viewer": {
+      "types": "./dist/patterns/diff-viewer.d.ts",
+      "import": "./dist/patterns/diff-viewer.js",
+      "default": "./dist/patterns/diff-viewer.js"
+    },
+    "./components/document-outline": {
+      "types": "./dist/kits/editor/document-outline.d.ts",
+      "import": "./dist/kits/editor/document-outline.js",
+      "default": "./dist/kits/editor/document-outline.js"
+    },
+    "./components/drawer": {
+      "types": "./dist/primitives/drawer.d.ts",
+      "import": "./dist/primitives/drawer.js",
+      "default": "./dist/primitives/drawer.js"
+    },
+    "./components/dropdown-menu": {
+      "types": "./dist/primitives/dropdown-menu.d.ts",
+      "import": "./dist/primitives/dropdown-menu.js",
+      "default": "./dist/primitives/dropdown-menu.js"
+    },
+    "./components/dropzone": {
+      "types": "./dist/primitives/dropzone.d.ts",
+      "import": "./dist/primitives/dropzone.js",
+      "default": "./dist/primitives/dropzone.js"
+    },
+    "./components/editor-status": {
+      "types": "./dist/kits/editor/editor-status.d.ts",
+      "import": "./dist/kits/editor/editor-status.js",
+      "default": "./dist/kits/editor/editor-status.js"
+    },
+    "./components/editor-toolbar": {
+      "types": "./dist/kits/editor/editor-toolbar.d.ts",
+      "import": "./dist/kits/editor/editor-toolbar.js",
+      "default": "./dist/kits/editor/editor-toolbar.js"
+    },
+    "./components/embeds": {
+      "types": "./dist/kits/ai/embeds.d.ts",
+      "import": "./dist/kits/ai/embeds.js",
+      "default": "./dist/kits/ai/embeds.js"
+    },
+    "./components/empty-state": {
+      "types": "./dist/primitives/empty-state.d.ts",
+      "import": "./dist/primitives/empty-state.js",
+      "default": "./dist/primitives/empty-state.js"
+    },
+    "./components/entity-mention": {
+      "types": "./dist/kits/workspace/entity-mention.d.ts",
+      "import": "./dist/kits/workspace/entity-mention.js",
+      "default": "./dist/kits/workspace/entity-mention.js"
+    },
+    "./components/extensions-catalog": {
+      "types": "./dist/kits/agent-admin/extensions-catalog.d.ts",
+      "import": "./dist/kits/agent-admin/extensions-catalog.js",
+      "default": "./dist/kits/agent-admin/extensions-catalog.js"
+    },
+    "./components/fab": {
+      "types": "./dist/primitives/fab.d.ts",
+      "import": "./dist/primitives/fab.js",
+      "default": "./dist/primitives/fab.js"
+    },
+    "./components/fade-text": {
+      "types": "./dist/patterns/fade-text.d.ts",
+      "import": "./dist/patterns/fade-text.js",
+      "default": "./dist/patterns/fade-text.js"
+    },
+    "./components/fan-menu": {
+      "types": "./dist/patterns/fan-menu.d.ts",
+      "import": "./dist/patterns/fan-menu.js",
+      "default": "./dist/patterns/fan-menu.js"
+    },
+    "./components/favicon": {
+      "types": "./dist/primitives/favicon.d.ts",
+      "import": "./dist/primitives/favicon.js",
+      "default": "./dist/primitives/favicon.js"
+    },
+    "./components/field": {
+      "types": "./dist/primitives/field.d.ts",
+      "import": "./dist/primitives/field.js",
+      "default": "./dist/primitives/field.js"
+    },
+    "./components/file-upload": {
+      "types": "./dist/patterns/file-upload.d.ts",
+      "import": "./dist/patterns/file-upload.js",
+      "default": "./dist/patterns/file-upload.js"
+    },
+    "./components/file-viewer": {
+      "types": "./dist/patterns/file-viewer.d.ts",
+      "import": "./dist/patterns/file-viewer.js",
+      "default": "./dist/patterns/file-viewer.js"
+    },
+    "./components/filter-bar": {
+      "types": "./dist/patterns/filter-bar.d.ts",
+      "import": "./dist/patterns/filter-bar.js",
+      "default": "./dist/patterns/filter-bar.js"
+    },
+    "./components/gauge": {
+      "types": "./dist/patterns/gauge.d.ts",
+      "import": "./dist/patterns/gauge.js",
+      "default": "./dist/patterns/gauge.js"
+    },
+    "./components/git-review": {
+      "types": "./dist/kits/agent/git-review.d.ts",
+      "import": "./dist/kits/agent/git-review.js",
+      "default": "./dist/kits/agent/git-review.js"
+    },
+    "./components/glyph-spinner": {
+      "types": "./dist/primitives/glyph-spinner.d.ts",
+      "import": "./dist/primitives/glyph-spinner.js",
+      "default": "./dist/primitives/glyph-spinner.js"
+    },
+    "./components/header-navigation": {
+      "types": "./dist/patterns/header-navigation.d.ts",
+      "import": "./dist/patterns/header-navigation.js",
+      "default": "./dist/patterns/header-navigation.js"
+    },
+    "./components/heatmap": {
+      "types": "./dist/patterns/heatmap.d.ts",
+      "import": "./dist/patterns/heatmap.js",
+      "default": "./dist/patterns/heatmap.js"
+    },
+    "./components/identity-mark": {
+      "types": "./dist/patterns/identity-mark.d.ts",
+      "import": "./dist/patterns/identity-mark.js",
+      "default": "./dist/patterns/identity-mark.js"
+    },
+    "./components/info-tooltip": {
+      "types": "./dist/primitives/info-tooltip.d.ts",
+      "import": "./dist/primitives/info-tooltip.js",
+      "default": "./dist/primitives/info-tooltip.js"
+    },
+    "./components/inline-alert": {
+      "types": "./dist/primitives/inline-alert.d.ts",
+      "import": "./dist/primitives/inline-alert.js",
+      "default": "./dist/primitives/inline-alert.js"
+    },
+    "./components/inline-citation": {
+      "types": "./dist/patterns/inline-citation.d.ts",
+      "import": "./dist/patterns/inline-citation.js",
+      "default": "./dist/patterns/inline-citation.js"
+    },
+    "./components/inline-edit-text": {
+      "types": "./dist/primitives/inline-edit-text.d.ts",
+      "import": "./dist/primitives/inline-edit-text.js",
+      "default": "./dist/primitives/inline-edit-text.js"
+    },
+    "./components/input": {
+      "types": "./dist/primitives/input.d.ts",
+      "import": "./dist/primitives/input.js",
+      "default": "./dist/primitives/input.js"
+    },
+    "./components/input-group": {
+      "types": "./dist/primitives/input-group.d.ts",
+      "import": "./dist/primitives/input-group.js",
+      "default": "./dist/primitives/input-group.js"
+    },
+    "./components/input-otp": {
+      "types": "./dist/primitives/input-otp.d.ts",
+      "import": "./dist/primitives/input-otp.js",
+      "default": "./dist/primitives/input-otp.js"
+    },
+    "./components/install-prompt": {
+      "types": "./dist/kits/workspace/install-prompt.d.ts",
+      "import": "./dist/kits/workspace/install-prompt.js",
+      "default": "./dist/kits/workspace/install-prompt.js"
+    },
+    "./components/job-banner": {
+      "types": "./dist/kits/ai/job-banner.d.ts",
+      "import": "./dist/kits/ai/job-banner.js",
+      "default": "./dist/kits/ai/job-banner.js"
+    },
+    "./components/json-viewer": {
+      "types": "./dist/patterns/json-viewer.d.ts",
+      "import": "./dist/patterns/json-viewer.js",
+      "default": "./dist/patterns/json-viewer.js"
+    },
+    "./components/kanban": {
+      "types": "./dist/kits/workspace/kanban.d.ts",
+      "import": "./dist/kits/workspace/kanban.js",
+      "default": "./dist/kits/workspace/kanban.js"
+    },
+    "./components/kanban-board": {
+      "types": "./dist/kits/workspace/kanban-board.d.ts",
+      "import": "./dist/kits/workspace/kanban-board.js",
+      "default": "./dist/kits/workspace/kanban-board.js"
+    },
+    "./components/kanban-card": {
+      "types": "./dist/kits/workspace/kanban-card.d.ts",
+      "import": "./dist/kits/workspace/kanban-card.js",
+      "default": "./dist/kits/workspace/kanban-card.js"
+    },
+    "./components/kanban-internal": {
+      "types": "./dist/kits/workspace/kanban-internal.d.ts",
+      "import": "./dist/kits/workspace/kanban-internal.js",
+      "default": "./dist/kits/workspace/kanban-internal.js"
+    },
+    "./components/kanban-model": {
+      "types": "./dist/kits/workspace/kanban-model.d.ts",
+      "import": "./dist/kits/workspace/kanban-model.js",
+      "default": "./dist/kits/workspace/kanban-model.js"
+    },
+    "./components/kanban-task-dialog": {
+      "types": "./dist/kits/workspace/kanban-task-dialog.d.ts",
+      "import": "./dist/kits/workspace/kanban-task-dialog.js",
+      "default": "./dist/kits/workspace/kanban-task-dialog.js"
+    },
+    "./components/kanban-toolbar": {
+      "types": "./dist/kits/workspace/kanban-toolbar.d.ts",
+      "import": "./dist/kits/workspace/kanban-toolbar.js",
+      "default": "./dist/kits/workspace/kanban-toolbar.js"
+    },
+    "./components/key-value": {
+      "types": "./dist/primitives/key-value.d.ts",
+      "import": "./dist/primitives/key-value.js",
+      "default": "./dist/primitives/key-value.js"
+    },
+    "./components/keybind-editor": {
+      "types": "./dist/patterns/keybind-editor.d.ts",
+      "import": "./dist/patterns/keybind-editor.js",
+      "default": "./dist/patterns/keybind-editor.js"
+    },
+    "./components/kunji": {
+      "types": "./dist/kits/identity/kunji.d.ts",
+      "import": "./dist/kits/identity/kunji.js",
+      "default": "./dist/kits/identity/kunji.js"
+    },
+    "./components/kunji-client": {
+      "types": "./dist/kits/identity/kunji-client.d.ts",
+      "import": "./dist/kits/identity/kunji-client.js",
+      "default": "./dist/kits/identity/kunji-client.js"
+    },
+    "./components/label": {
+      "types": "./dist/primitives/label.d.ts",
+      "import": "./dist/primitives/label.js",
+      "default": "./dist/primitives/label.js"
+    },
+    "./components/layout": {
+      "types": "./dist/primitives/layout.d.ts",
+      "import": "./dist/primitives/layout.js",
+      "default": "./dist/primitives/layout.js"
+    },
+    "./components/lightbox": {
+      "types": "./dist/patterns/lightbox.d.ts",
+      "import": "./dist/patterns/lightbox.js",
+      "default": "./dist/patterns/lightbox.js"
+    },
+    "./components/loading-screen": {
+      "types": "./dist/patterns/loading-screen.d.ts",
+      "import": "./dist/patterns/loading-screen.js",
+      "default": "./dist/patterns/loading-screen.js"
+    },
+    "./components/local-models": {
+      "types": "./dist/kits/agent-admin/local-models.d.ts",
+      "import": "./dist/kits/agent-admin/local-models.js",
+      "default": "./dist/kits/agent-admin/local-models.js"
+    },
+    "./components/log-viewer": {
+      "types": "./dist/patterns/log-viewer.d.ts",
+      "import": "./dist/patterns/log-viewer.js",
+      "default": "./dist/patterns/log-viewer.js"
+    },
+    "./components/markdown": {
+      "types": "./dist/patterns/markdown.d.ts",
+      "import": "./dist/patterns/markdown.js",
+      "default": "./dist/patterns/markdown.js"
+    },
+    "./components/mcp": {
+      "types": "./dist/kits/agent-admin/mcp.d.ts",
+      "import": "./dist/kits/agent-admin/mcp.js",
+      "default": "./dist/kits/agent-admin/mcp.js"
+    },
+    "./components/media-cards": {
+      "types": "./dist/kits/media/media-cards.d.ts",
+      "import": "./dist/kits/media/media-cards.js",
+      "default": "./dist/kits/media/media-cards.js"
+    },
+    "./components/media-controls": {
+      "types": "./dist/kits/media/media-controls.d.ts",
+      "import": "./dist/kits/media/media-controls.js",
+      "default": "./dist/kits/media/media-controls.js"
+    },
+    "./components/memory-map": {
+      "types": "./dist/kits/workspace/memory-map.d.ts",
+      "import": "./dist/kits/workspace/memory-map.js",
+      "default": "./dist/kits/workspace/memory-map.js"
+    },
+    "./components/mesh-gradient": {
+      "types": "./dist/primitives/mesh-gradient.d.ts",
+      "import": "./dist/primitives/mesh-gradient.js",
+      "default": "./dist/primitives/mesh-gradient.js"
+    },
+    "./components/messenger": {
+      "types": "./dist/kits/social/messenger.d.ts",
+      "import": "./dist/kits/social/messenger.js",
+      "default": "./dist/kits/social/messenger.js"
+    },
+    "./components/meter": {
+      "types": "./dist/primitives/meter.d.ts",
+      "import": "./dist/primitives/meter.js",
+      "default": "./dist/primitives/meter.js"
+    },
+    "./components/model-picker": {
+      "types": "./dist/kits/ai/model-picker.d.ts",
+      "import": "./dist/kits/ai/model-picker.js",
+      "default": "./dist/kits/ai/model-picker.js"
+    },
+    "./components/model-routing": {
+      "types": "./dist/kits/agent-admin/model-routing.d.ts",
+      "import": "./dist/kits/agent-admin/model-routing.js",
+      "default": "./dist/kits/agent-admin/model-routing.js"
+    },
+    "./components/model-row": {
+      "types": "./dist/kits/ops/model-row.d.ts",
+      "import": "./dist/kits/ops/model-row.js",
+      "default": "./dist/kits/ops/model-row.js"
+    },
+    "./components/model-select": {
+      "types": "./dist/kits/ai/model-select.d.ts",
+      "import": "./dist/kits/ai/model-select.js",
+      "default": "./dist/kits/ai/model-select.js"
+    },
+    "./components/model-state": {
+      "types": "./dist/kits/ai/model-state.d.ts",
+      "import": "./dist/kits/ai/model-state.js",
+      "default": "./dist/kits/ai/model-state.js"
+    },
+    "./components/monogram": {
+      "types": "./dist/primitives/monogram.d.ts",
+      "import": "./dist/primitives/monogram.js",
+      "default": "./dist/primitives/monogram.js"
+    },
+    "./components/node-card": {
+      "types": "./dist/kits/ops/node-card.d.ts",
+      "import": "./dist/kits/ops/node-card.js",
+      "default": "./dist/kits/ops/node-card.js"
+    },
+    "./components/notice-bar": {
+      "types": "./dist/patterns/notice-bar.d.ts",
+      "import": "./dist/patterns/notice-bar.js",
+      "default": "./dist/patterns/notice-bar.js"
+    },
+    "./components/number-input": {
+      "types": "./dist/primitives/number-input.d.ts",
+      "import": "./dist/primitives/number-input.js",
+      "default": "./dist/primitives/number-input.js"
+    },
+    "./components/orchestration-panel": {
+      "types": "./dist/kits/workspace/orchestration-panel.d.ts",
+      "import": "./dist/kits/workspace/orchestration-panel.js",
+      "default": "./dist/kits/workspace/orchestration-panel.js"
+    },
+    "./components/pagination": {
+      "types": "./dist/primitives/pagination.d.ts",
+      "import": "./dist/primitives/pagination.js",
+      "default": "./dist/primitives/pagination.js"
+    },
+    "./components/password-strength": {
+      "types": "./dist/patterns/password-strength.d.ts",
+      "import": "./dist/patterns/password-strength.js",
+      "default": "./dist/patterns/password-strength.js"
+    },
+    "./components/payment-card": {
+      "types": "./dist/kits/billing/payment-card.d.ts",
+      "import": "./dist/kits/billing/payment-card.js",
+      "default": "./dist/kits/billing/payment-card.js"
+    },
+    "./components/permission-prompt": {
+      "types": "./dist/kits/ai/permission-prompt.d.ts",
+      "import": "./dist/kits/ai/permission-prompt.js",
+      "default": "./dist/kits/ai/permission-prompt.js"
+    },
+    "./components/plan-review": {
+      "types": "./dist/kits/agent/plan-review.d.ts",
+      "import": "./dist/kits/agent/plan-review.js",
+      "default": "./dist/kits/agent/plan-review.js"
+    },
+    "./components/popover": {
+      "types": "./dist/primitives/popover.d.ts",
+      "import": "./dist/primitives/popover.js",
+      "default": "./dist/primitives/popover.js"
+    },
+    "./components/presence": {
+      "types": "./dist/kits/social/presence.d.ts",
+      "import": "./dist/kits/social/presence.js",
+      "default": "./dist/kits/social/presence.js"
+    },
+    "./components/primitives-extra": {
+      "types": "./dist/kits/ai/primitives-extra.d.ts",
+      "import": "./dist/kits/ai/primitives-extra.js",
+      "default": "./dist/kits/ai/primitives-extra.js"
+    },
+    "./components/process-table": {
+      "types": "./dist/kits/ops/process-table.d.ts",
+      "import": "./dist/kits/ops/process-table.js",
+      "default": "./dist/kits/ops/process-table.js"
+    },
+    "./components/progress": {
+      "types": "./dist/primitives/progress.d.ts",
+      "import": "./dist/primitives/progress.js",
+      "default": "./dist/primitives/progress.js"
+    },
+    "./components/progress-dialog": {
+      "types": "./dist/kits/ops/progress-dialog.d.ts",
+      "import": "./dist/kits/ops/progress-dialog.js",
+      "default": "./dist/kits/ops/progress-dialog.js"
+    },
+    "./components/prompt-input": {
+      "types": "./dist/kits/ai/prompt-input.d.ts",
+      "import": "./dist/kits/ai/prompt-input.js",
+      "default": "./dist/kits/ai/prompt-input.js"
+    },
+    "./components/prompt-suggestion": {
+      "types": "./dist/kits/ai/prompt-suggestion.d.ts",
+      "import": "./dist/kits/ai/prompt-suggestion.js",
+      "default": "./dist/kits/ai/prompt-suggestion.js"
+    },
+    "./components/providers": {
+      "types": "./dist/kits/agent-admin/llm-providers.d.ts",
+      "import": "./dist/kits/agent-admin/llm-providers.js",
+      "default": "./dist/kits/agent-admin/llm-providers.js"
+    },
+    "./components/qr-code": {
+      "types": "./dist/kits/identity/qr-code.d.ts",
+      "import": "./dist/kits/identity/qr-code.js",
+      "default": "./dist/kits/identity/qr-code.js"
+    },
+    "./components/qr-scanner": {
+      "types": "./dist/kits/identity/qr-scanner.d.ts",
+      "import": "./dist/kits/identity/qr-scanner.js",
+      "default": "./dist/kits/identity/qr-scanner.js"
+    },
+    "./components/question-card": {
+      "types": "./dist/kits/ai/question-card.d.ts",
+      "import": "./dist/kits/ai/question-card.js",
+      "default": "./dist/kits/ai/question-card.js"
+    },
+    "./components/quick-capture": {
+      "types": "./dist/kits/workspace/quick-capture.d.ts",
+      "import": "./dist/kits/workspace/quick-capture.js",
+      "default": "./dist/kits/workspace/quick-capture.js"
+    },
+    "./components/radio": {
+      "types": "./dist/primitives/radio.d.ts",
+      "import": "./dist/primitives/radio.js",
+      "default": "./dist/primitives/radio.js"
+    },
+    "./components/rating": {
+      "types": "./dist/primitives/rating.d.ts",
+      "import": "./dist/primitives/rating.js",
+      "default": "./dist/primitives/rating.js"
+    },
+    "./components/recovery-key": {
+      "types": "./dist/kits/identity/recovery-key.d.ts",
+      "import": "./dist/kits/identity/recovery-key.js",
+      "default": "./dist/kits/identity/recovery-key.js"
+    },
+    "./components/recurrence-picker": {
+      "types": "./dist/patterns/recurrence-picker.d.ts",
+      "import": "./dist/patterns/recurrence-picker.js",
+      "default": "./dist/patterns/recurrence-picker.js"
+    },
+    "./components/remote-screen": {
+      "types": "./dist/kits/agent-admin/remote-screen.d.ts",
+      "import": "./dist/kits/agent-admin/remote-screen.js",
+      "default": "./dist/kits/agent-admin/remote-screen.js"
+    },
+    "./components/reorderable-list": {
+      "types": "./dist/patterns/reorderable-list.d.ts",
+      "import": "./dist/patterns/reorderable-list.js",
+      "default": "./dist/patterns/reorderable-list.js"
+    },
+    "./components/request-inspector": {
+      "types": "./dist/kits/ops/request-inspector.d.ts",
+      "import": "./dist/kits/ops/request-inspector.js",
+      "default": "./dist/kits/ops/request-inspector.js"
+    },
+    "./components/rewind": {
+      "types": "./dist/kits/agent/rewind.d.ts",
+      "import": "./dist/kits/agent/rewind.js",
+      "default": "./dist/kits/agent/rewind.js"
+    },
+    "./components/rich-text-editor": {
+      "types": "./dist/kits/editor/rich-text-editor.d.ts",
+      "import": "./dist/kits/editor/rich-text-editor.js",
+      "default": "./dist/kits/editor/rich-text-editor.js"
+    },
+    "./components/schema-form": {
+      "types": "./dist/patterns/schema-form.d.ts",
+      "import": "./dist/patterns/schema-form.js",
+      "default": "./dist/patterns/schema-form.js"
+    },
+    "./components/scroll-area": {
+      "types": "./dist/primitives/scroll-area.d.ts",
+      "import": "./dist/primitives/scroll-area.js",
+      "default": "./dist/primitives/scroll-area.js"
+    },
+    "./components/secret": {
+      "types": "./dist/kits/identity/secret.d.ts",
+      "import": "./dist/kits/identity/secret.js",
+      "default": "./dist/kits/identity/secret.js"
+    },
+    "./components/section-header": {
+      "types": "./dist/patterns/section-header.d.ts",
+      "import": "./dist/patterns/section-header.js",
+      "default": "./dist/patterns/section-header.js"
+    },
+    "./components/segmented-control": {
+      "types": "./dist/primitives/segmented-control.d.ts",
+      "import": "./dist/primitives/segmented-control.js",
+      "default": "./dist/primitives/segmented-control.js"
+    },
+    "./components/select": {
+      "types": "./dist/primitives/select.d.ts",
+      "import": "./dist/primitives/select.js",
+      "default": "./dist/primitives/select.js"
+    },
+    "./components/separator": {
+      "types": "./dist/primitives/separator.d.ts",
+      "import": "./dist/primitives/separator.js",
+      "default": "./dist/primitives/separator.js"
+    },
+    "./components/sessions": {
+      "types": "./dist/kits/identity/device-sessions.d.ts",
+      "import": "./dist/kits/identity/device-sessions.js",
+      "default": "./dist/kits/identity/device-sessions.js"
+    },
+    "./components/settings": {
+      "types": "./dist/patterns/settings.d.ts",
+      "import": "./dist/patterns/settings.js",
+      "default": "./dist/patterns/settings.js"
+    },
+    "./components/shortcut-keys": {
+      "types": "./dist/primitives/shortcut-keys.d.ts",
+      "import": "./dist/primitives/shortcut-keys.js",
+      "default": "./dist/primitives/shortcut-keys.js"
+    },
+    "./components/shortcuts": {
+      "types": "./dist/patterns/shortcuts.d.ts",
+      "import": "./dist/patterns/shortcuts.js",
+      "default": "./dist/patterns/shortcuts.js"
+    },
+    "./components/sidebar-navigation": {
+      "types": "./dist/patterns/sidebar-navigation.d.ts",
+      "import": "./dist/patterns/sidebar-navigation.js",
+      "default": "./dist/patterns/sidebar-navigation.js"
+    },
+    "./components/slash-menu": {
+      "types": "./dist/kits/ai/slash-menu.d.ts",
+      "import": "./dist/kits/ai/slash-menu.js",
+      "default": "./dist/kits/ai/slash-menu.js"
+    },
+    "./components/slider": {
+      "types": "./dist/primitives/slider.d.ts",
+      "import": "./dist/primitives/slider.js",
+      "default": "./dist/primitives/slider.js"
+    },
+    "./components/slot-outlet": {
+      "types": "./dist/kits/agent-admin/slot-outlet.d.ts",
+      "import": "./dist/kits/agent-admin/slot-outlet.js",
+      "default": "./dist/kits/agent-admin/slot-outlet.js"
+    },
+    "./components/social-button": {
+      "types": "./dist/primitives/social-button.d.ts",
+      "import": "./dist/primitives/social-button.js",
+      "default": "./dist/primitives/social-button.js"
+    },
+    "./components/sparkline": {
+      "types": "./dist/patterns/sparkline.d.ts",
+      "import": "./dist/patterns/sparkline.js",
+      "default": "./dist/patterns/sparkline.js"
+    },
+    "./components/spinner": {
+      "types": "./dist/primitives/spinner.d.ts",
+      "import": "./dist/primitives/spinner.js",
+      "default": "./dist/primitives/spinner.js"
+    },
+    "./components/split-button": {
+      "types": "./dist/primitives/split-button.d.ts",
+      "import": "./dist/primitives/split-button.js",
+      "default": "./dist/primitives/split-button.js"
+    },
+    "./components/split-pane": {
+      "types": "./dist/patterns/split-pane.d.ts",
+      "import": "./dist/patterns/split-pane.js",
+      "default": "./dist/patterns/split-pane.js"
+    },
+    "./components/stat-card": {
+      "types": "./dist/patterns/stat-card.d.ts",
+      "import": "./dist/patterns/stat-card.js",
+      "default": "./dist/patterns/stat-card.js"
+    },
+    "./components/status-badge": {
+      "types": "./dist/primitives/status-badge.d.ts",
+      "import": "./dist/primitives/status-badge.js",
+      "default": "./dist/primitives/status-badge.js"
+    },
+    "./components/status-cycle": {
+      "types": "./dist/patterns/status-cycle.d.ts",
+      "import": "./dist/patterns/status-cycle.js",
+      "default": "./dist/patterns/status-cycle.js"
+    },
+    "./components/status-stack": {
+      "types": "./dist/kits/agent-admin/status-stack.d.ts",
+      "import": "./dist/kits/agent-admin/status-stack.js",
+      "default": "./dist/kits/agent-admin/status-stack.js"
+    },
+    "./components/status-strip": {
+      "types": "./dist/kits/ai/status-strip.d.ts",
+      "import": "./dist/kits/ai/status-strip.js",
+      "default": "./dist/kits/ai/status-strip.js"
+    },
+    "./components/step-indicator": {
+      "types": "./dist/primitives/step-indicator.d.ts",
+      "import": "./dist/primitives/step-indicator.js",
+      "default": "./dist/primitives/step-indicator.js"
+    },
+    "./components/stopwatch": {
+      "types": "./dist/patterns/stopwatch.d.ts",
+      "import": "./dist/patterns/stopwatch.js",
+      "default": "./dist/patterns/stopwatch.js"
+    },
+    "./components/subagents": {
+      "types": "./dist/kits/agent-admin/subagents.d.ts",
+      "import": "./dist/kits/agent-admin/subagents.js",
+      "default": "./dist/kits/agent-admin/subagents.js"
+    },
+    "./components/switch": {
+      "types": "./dist/primitives/switch.d.ts",
+      "import": "./dist/primitives/switch.js",
+      "default": "./dist/primitives/switch.js"
+    },
+    "./components/sync-status": {
+      "types": "./dist/kits/workspace/sync-status.d.ts",
+      "import": "./dist/kits/workspace/sync-status.js",
+      "default": "./dist/kits/workspace/sync-status.js"
+    },
+    "./components/tab-dropdown": {
+      "types": "./dist/primitives/tab-dropdown.d.ts",
+      "import": "./dist/primitives/tab-dropdown.js",
+      "default": "./dist/primitives/tab-dropdown.js"
+    },
+    "./components/tab-menu": {
+      "types": "./dist/patterns/tab-menu.d.ts",
+      "import": "./dist/patterns/tab-menu.js",
+      "default": "./dist/patterns/tab-menu.js"
+    },
+    "./components/table": {
+      "types": "./dist/primitives/table.d.ts",
+      "import": "./dist/primitives/table.js",
+      "default": "./dist/primitives/table.js"
+    },
+    "./components/tabs": {
+      "types": "./dist/primitives/tabs.d.ts",
+      "import": "./dist/primitives/tabs.js",
+      "default": "./dist/primitives/tabs.js"
+    },
+    "./components/tag-input": {
+      "types": "./dist/primitives/tag-input.d.ts",
+      "import": "./dist/primitives/tag-input.js",
+      "default": "./dist/primitives/tag-input.js"
+    },
+    "./components/tally-counter": {
+      "types": "./dist/patterns/tally-counter.d.ts",
+      "import": "./dist/patterns/tally-counter.js",
+      "default": "./dist/patterns/tally-counter.js"
+    },
+    "./components/terminal": {
+      "types": "./dist/kits/terminal/terminal.d.ts",
+      "import": "./dist/kits/terminal/terminal.js",
+      "default": "./dist/kits/terminal/terminal.js"
+    },
+    "./components/text-caret": {
+      "types": "./dist/kits/ai/text-caret.d.ts",
+      "import": "./dist/kits/ai/text-caret.js",
+      "default": "./dist/kits/ai/text-caret.js"
+    },
+    "./components/text-link": {
+      "types": "./dist/primitives/text-link.d.ts",
+      "import": "./dist/primitives/text-link.js",
+      "default": "./dist/primitives/text-link.js"
+    },
+    "./components/text-shimmer": {
+      "types": "./dist/primitives/text-shimmer.d.ts",
+      "import": "./dist/primitives/text-shimmer.js",
+      "default": "./dist/primitives/text-shimmer.js"
+    },
+    "./components/textarea": {
+      "types": "./dist/primitives/textarea.d.ts",
+      "import": "./dist/primitives/textarea.js",
+      "default": "./dist/primitives/textarea.js"
+    },
+    "./components/theme-toggle": {
+      "types": "./dist/patterns/theme-toggle.d.ts",
+      "import": "./dist/patterns/theme-toggle.js",
+      "default": "./dist/patterns/theme-toggle.js"
+    },
+    "./components/tiling-layout": {
+      "types": "./dist/patterns/tiling-layout.d.ts",
+      "import": "./dist/patterns/tiling-layout.js",
+      "default": "./dist/patterns/tiling-layout.js"
+    },
+    "./components/tiling-model": {
+      "types": "./dist/patterns/tiling-model.d.ts",
+      "import": "./dist/patterns/tiling-model.js",
+      "default": "./dist/patterns/tiling-model.js"
+    },
+    "./components/timeline-bar": {
+      "types": "./dist/patterns/timeline-bar.d.ts",
+      "import": "./dist/patterns/timeline-bar.js",
+      "default": "./dist/patterns/timeline-bar.js"
+    },
+    "./components/timeline-rail": {
+      "types": "./dist/kits/workspace/timeline-rail.d.ts",
+      "import": "./dist/kits/workspace/timeline-rail.js",
+      "default": "./dist/kits/workspace/timeline-rail.js"
+    },
+    "./components/toast": {
+      "types": "./dist/primitives/toast.d.ts",
+      "import": "./dist/primitives/toast.js",
+      "default": "./dist/primitives/toast.js"
+    },
+    "./components/today-timeline": {
+      "types": "./dist/kits/workspace/today-timeline.d.ts",
+      "import": "./dist/kits/workspace/today-timeline.js",
+      "default": "./dist/kits/workspace/today-timeline.js"
+    },
+    "./components/tool-timeline": {
+      "types": "./dist/kits/agent/tool-timeline.d.ts",
+      "import": "./dist/kits/agent/tool-timeline.js",
+      "default": "./dist/kits/agent/tool-timeline.js"
+    },
+    "./components/tool-toggles": {
+      "types": "./dist/kits/agent-admin/tool-toggles.d.ts",
+      "import": "./dist/kits/agent-admin/tool-toggles.js",
+      "default": "./dist/kits/agent-admin/tool-toggles.js"
+    },
+    "./components/tooltip": {
+      "types": "./dist/primitives/tooltip.d.ts",
+      "import": "./dist/primitives/tooltip.js",
+      "default": "./dist/primitives/tooltip.js"
+    },
+    "./components/totp": {
+      "types": "./dist/kits/identity/totp.d.ts",
+      "import": "./dist/kits/identity/totp.js",
+      "default": "./dist/kits/identity/totp.js"
+    },
+    "./components/transfer-list": {
+      "types": "./dist/patterns/transfer-list.d.ts",
+      "import": "./dist/patterns/transfer-list.js",
+      "default": "./dist/patterns/transfer-list.js"
+    },
+    "./components/translate": {
+      "types": "./dist/kits/voice/translate.d.ts",
+      "import": "./dist/kits/voice/translate.js",
+      "default": "./dist/kits/voice/translate.js"
+    },
+    "./components/tree-view": {
+      "types": "./dist/patterns/tree-view.d.ts",
+      "import": "./dist/patterns/tree-view.js",
+      "default": "./dist/patterns/tree-view.js"
+    },
+    "./components/typography": {
+      "types": "./dist/primitives/typography.d.ts",
+      "import": "./dist/primitives/typography.js",
+      "default": "./dist/primitives/typography.js"
+    },
+    "./components/undelivered-notice": {
+      "types": "./dist/kits/ai/undelivered-notice.d.ts",
+      "import": "./dist/kits/ai/undelivered-notice.js",
+      "default": "./dist/kits/ai/undelivered-notice.js"
+    },
+    "./components/usage-summary": {
+      "types": "./dist/kits/ai/usage-summary.d.ts",
+      "import": "./dist/kits/ai/usage-summary.js",
+      "default": "./dist/kits/ai/usage-summary.js"
+    },
+    "./components/version-history": {
+      "types": "./dist/kits/editor/version-history.d.ts",
+      "import": "./dist/kits/editor/version-history.js",
+      "default": "./dist/kits/editor/version-history.js"
+    },
+    "./components/video-player": {
+      "types": "./dist/kits/media/video-player.d.ts",
+      "import": "./dist/kits/media/video-player.js",
+      "default": "./dist/kits/media/video-player.js"
+    },
+    "./components/voice": {
+      "types": "./dist/kits/voice/voice.d.ts",
+      "import": "./dist/kits/voice/voice.js",
+      "default": "./dist/kits/voice/voice.js"
+    },
+    "./components/webhooks": {
+      "types": "./dist/kits/agent-admin/webhooks.d.ts",
+      "import": "./dist/kits/agent-admin/webhooks.js",
+      "default": "./dist/kits/agent-admin/webhooks.js"
+    },
+    "./components/workspace-switcher": {
+      "types": "./dist/kits/workspace/workspace-switcher.d.ts",
+      "import": "./dist/kits/workspace/workspace-switcher.js",
+      "default": "./dist/kits/workspace/workspace-switcher.js"
+    },
+    "./components/zoom-pan": {
+      "types": "./dist/patterns/zoom-pan.d.ts",
+      "import": "./dist/patterns/zoom-pan.js",
+      "default": "./dist/patterns/zoom-pan.js"
     },
     "./styles.css": "./src/styles/sutra.css",
     "./package.json": "./package.json"

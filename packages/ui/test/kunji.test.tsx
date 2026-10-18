@@ -12,7 +12,7 @@ import {
   normalizeKunjiStatus,
   type KunjiClient,
   type KunjiPollResult,
-} from "../src/components/kunji-client";
+} from "../src/kits/identity/kunji-client";
 import {
   AccessGate,
   AuthProblem,
@@ -28,7 +28,7 @@ import {
   type AuthProblemVariant,
   type KunjiSignInState,
   type KunjiSignInStatus,
-} from "../src/components/kunji";
+} from "../src/kits/identity/kunji";
 import {
   AwaitingApproval,
   DevicePairingFlow,

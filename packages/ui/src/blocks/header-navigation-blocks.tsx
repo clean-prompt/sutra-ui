@@ -18,10 +18,10 @@ import {
   RiArrowDownSLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { Button } from "../components/button";
-import { Badge } from "../components/badge";
-import { Kbd } from "../components/typography";
-import { Separator } from "../components/separator";
+import { Button } from "../primitives/button";
+import { Badge } from "../primitives/badge";
+import { Kbd } from "../primitives/typography";
+import { Separator } from "../primitives/separator";
 import {
   HeaderNav,
   HeaderNavActions,
@@ -33,9 +33,9 @@ import {
   HeaderNavMobile,
   HeaderNavTrigger,
   type HeaderNavMobileItem,
-} from "../components/header-navigation";
-import { Breadcrumbs, type BreadcrumbCrumb } from "../components/breadcrumbs";
-import { SidebarTrigger } from "../components/sidebar-navigation";
+} from "../patterns/header-navigation";
+import { Breadcrumbs, type BreadcrumbCrumb } from "../primitives/breadcrumbs";
+import { SidebarTrigger } from "../patterns/sidebar-navigation";
 import {
   CommandDialog,
   CommandEmpty,
@@ -45,7 +45,7 @@ import {
   CommandList,
   CommandSeparator,
   useCommandMenuShortcut,
-} from "../components/command-menu";
+} from "../patterns/command-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,9 +53,9 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "../components/dropdown-menu";
-import { SimpleTooltip } from "../components/tooltip";
-import { MeshGradient } from "../components/mesh-gradient";
+} from "../primitives/dropdown-menu";
+import { SimpleTooltip } from "../primitives/tooltip";
+import { MeshGradient } from "../primitives/mesh-gradient";
 import { SutraAppIcon, SutraLogo, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
 import { NotificationsMenu, UserAccountMenu, type NotificationItem, type UserAccountMenuUser } from "./dropdown-menu-blocks";
 import { BlockLink, sutraAppDescriptions, type BlockLinkRenderer } from "./block-utils";

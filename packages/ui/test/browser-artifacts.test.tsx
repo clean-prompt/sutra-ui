@@ -9,7 +9,7 @@ import {
   normalizeBrowserInput,
   type BrowserAnnotation,
   type BrowserConsoleEntry,
-} from "../src/components/agent-browser";
+} from "../src/kits/agent/agent-browser";
 import {
   ArtifactCard,
   ArtifactLibrary,
@@ -17,7 +17,7 @@ import {
   formatArtifactTime,
   type ArtifactData,
   type ArtifactVersion,
-} from "../src/components/artifacts";
+} from "../src/kits/agent/artifacts";
 import {
   BranchPill,
   ChangedFilesCard,
@@ -31,7 +31,7 @@ import {
   validateWorktreeName,
   type ChangedFile,
   type WorktreeBranch,
-} from "../src/components/git-review";
+} from "../src/kits/agent/git-review";
 import { axeViolations } from "./a11y";
 
 afterEach(() => vi.useRealTimers());

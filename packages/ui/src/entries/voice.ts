@@ -1,3 +1,3 @@
 /* @sutra/ui/voice: speech input, read-aloud, language picker, translation panes, transliteration, dictionary. */
-export * from "../components/voice";
-export * from "../components/translate";
+export * from "../kits/voice/voice";
+export * from "../kits/voice/translate";

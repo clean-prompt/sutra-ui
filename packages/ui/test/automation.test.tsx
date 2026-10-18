@@ -16,7 +16,7 @@ import {
   toScheduleString,
   type CronSchedule,
   type CronScheduleValue,
-} from "../src/components/cron";
+} from "../src/patterns/cron";
 import {
   AgentJobForm,
   BlueprintCard,
@@ -35,9 +35,9 @@ import {
   type AgentJobDraft,
   type AgentJobRun,
   type Blueprint,
-} from "../src/components/agent-jobs";
-import { GoalStatusRow, HeartbeatStatusRow, LoopStatusRow, StatusStack, StatusStackRow } from "../src/components/status-stack";
-import { WebhookRouteEditor, WebhookRouteList, type WebhookRoute } from "../src/components/webhooks";
+} from "../src/kits/agent-admin/agent-jobs";
+import { GoalStatusRow, HeartbeatStatusRow, LoopStatusRow, StatusStack, StatusStackRow } from "../src/kits/agent-admin/status-stack";
+import { WebhookRouteEditor, WebhookRouteList, type WebhookRoute } from "../src/kits/agent-admin/webhooks";
 import { axeViolations } from "./a11y";
 
 const T0 = Date.UTC(2026, 0, 1, 8, 0); // Thu 1 Jan 2026 08:00 UTC

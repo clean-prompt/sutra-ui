@@ -14,7 +14,7 @@ import {
   formatContextRange,
   highlightTextSegments,
   mentionHighlightRules,
-} from "../src/components/prompt-input";
+} from "../src/kits/ai/prompt-input";
 import {
   AttachmentThumbnails,
   ComposerToolbar,
@@ -23,7 +23,7 @@ import {
   useComposerHistory,
   type QueuedMessage,
   type SideThreadExchange,
-} from "../src/components/agent-composer";
+} from "../src/kits/agent/agent-composer";
 import { axeViolations } from "./a11y";
 
 afterEach(() => {

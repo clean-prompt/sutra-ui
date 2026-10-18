@@ -1,9 +1,9 @@
 import * as React from "react";
 import { act, fireEvent, render, renderHook, screen, within } from "@testing-library/react";
-import { AppLauncher, filterLauncherItems, type AppLauncherItem } from "../src/components/app-launcher";
-import { IdentityMark, TextButton, identitySegments } from "../src/components/identity-mark";
-import { InstallButton, useInstallPrompt } from "../src/components/install-prompt";
-import { CallScreen, IncomingCall, formatCallDuration } from "../src/components/call-overlay";
+import { AppLauncher, filterLauncherItems, type AppLauncherItem } from "../src/kits/workspace/app-launcher";
+import { IdentityMark, TextButton, identitySegments } from "../src/patterns/identity-mark";
+import { InstallButton, useInstallPrompt } from "../src/kits/workspace/install-prompt";
+import { CallScreen, IncomingCall, formatCallDuration } from "../src/kits/social/call-overlay";
 import {
   ChatHeader,
   GroupInfoPanel,
@@ -14,10 +14,10 @@ import {
   formatMessageDay,
   groupMessages,
   type MessengerMessage,
-} from "../src/components/messenger";
-import { Checklist, ReorderableList, reorderArray, reorderBy, useReorder, type ChecklistEntry } from "../src/components/reorderable-list";
-import { Countdown, Stopwatch, TallyCounter, formatCompactDuration, splitDuration, useStopwatch } from "../src/components/counters";
-import { RecurrencePicker, StatusCycle, describeRecurrence, toRRule, type StatusCycleOption } from "../src/components/status-cycle";
+} from "../src/kits/social/messenger";
+import { Checklist, ReorderableList, reorderArray, reorderBy, useReorder, type ChecklistEntry } from "../src/patterns/reorderable-list";
+import { Countdown, Stopwatch, TallyCounter, formatCompactDuration, splitDuration, useStopwatch } from "../src/patterns/counters";
+import { RecurrencePicker, StatusCycle, describeRecurrence, toRRule, type StatusCycleOption } from "../src/patterns/status-cycle";
 import { axeViolations } from "./a11y";
 
 /* ------------------------------------------------------------------ */

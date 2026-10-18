@@ -1,2 +1,2 @@
 /* @sutra/ui/billing: plans, comparison, current plan, credits and auto-reload, invoices, banners, checkout. */
-export * from "../components/billing";
+export * from "../kits/billing/billing";
