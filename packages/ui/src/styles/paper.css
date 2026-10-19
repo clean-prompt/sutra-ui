@@ -1,0 +1,178 @@
+/*
+ * Sutra UI: the "paper" style.
+ *
+ * A calm, monochrome look: warm paper and warm ink (pure black and white in dark mode), no accent hue,
+ * hairline borders instead of shadows, a system font with tightly tracked headlines, and one quick
+ * ease. Everything is a token override, so every component picks it up without changing.
+ *
+ * Usage (after the base styles, so the overrides win):
+ *   @import "tailwindcss";
+ *   @import "@sutra/ui/styles.css";
+ *   @import "@sutra/ui/paper.css";
+ *
+ *   <html data-style="paper">            or any subtree: <section data-style="paper">
+ *   <html data-style="paper" class="dark">
+ *
+ * `useTheme({ style: "paper" })` sets the attribute. The brand colour is ignored in this style (the
+ * ink is the accent); status colours (success, warning, destructive, info) keep their hues.
+ *
+ * Muted text and the red and green status colours are tuned so they clear 4.5:1 on every paper surface
+ * (page, card, well, hover fill). Keep the light and dark blocks defining the same colour tokens:
+ * test/paper-style.test.ts checks that and the contrast pairs.
+ */
+
+/* ------------------------------------------------------------------ */
+/* Light                                                               */
+/* ------------------------------------------------------------------ */
+
+[data-style="paper"] {
+  color-scheme: light;
+
+  /* Surfaces: the page is the darkest paper, cards sit slightly lighter. */
+  --background: #f7f5f0;
+  --foreground: #1c1915;
+  --card: #fcfbf9;
+  --card-foreground: #1c1915;
+  --popover: #fcfbf9;
+  --popover-foreground: #1c1915;
+  --subtle: #f9f8f5;
+  --muted: #f2f0eb; /* wells, tracks */
+  --muted-foreground: #625f5c;
+  --accent: rgb(28 25 21 / 0.06); /* hover fill: translucent ink works on any surface */
+  --accent-foreground: #1c1915;
+  --secondary: #f2f0eb;
+  --secondary-foreground: #1c1915;
+
+  /* Lines: hairlines of ink. */
+  --border: rgb(28 25 21 / 0.08);
+  --border-strong: rgb(28 25 21 / 0.13);
+  --input: rgb(28 25 21 / 0.13);
+  --ring: #1c1915;
+
+  /* The ink is the primary colour. */
+  --primary: #1c1915;
+  --primary-hover: #2d2b28;
+  --primary-foreground: #f7f5f0;
+  --primary-soft: rgb(28 25 21 / 0.07);
+  --primary-soft-foreground: #1c1915;
+
+  /* Status hues stay, except red and green: the stock ones are 4.3-4.4:1 on warm paper, so they are deepened
+     a touch to pass AA as text. */
+  --success: #007d34;
+  --destructive: #c70008;
+  --destructive-hover: #a80006;
+
+  --overlay: rgb(0 0 0 / 0.32);
+  --inverse: #1c1915;
+  --inverse-foreground: #f7f5f0;
+  --inverse-primary: #f7f5f0;
+  --code: #1c1915;
+  --code-foreground: #f2f0eb;
+  --code-muted: #a09c97;
+  --code-border: #2d2b28;
+
+  --scrollbar: rgb(28 25 21 / 0.2);
+  --scrollbar-hover: rgb(28 25 21 / 0.32);
+
+  /* Brand scale (gradients, illustrations): a warm grey ramp that reads on both paper and black. */
+  --b-50: #f2f0eb;
+  --b-100: #e6e3dd;
+  --b-200: #cfccc6;
+  --b-400: #8a8784;
+  --b-500: #57534e;
+  --b-600: #44403b;
+  --b-700: #33302c;
+  --b-900: #1c1915;
+  --b-950: #0e0c0a;
+  --b-fg: #ffffff;
+
+  /* Shape and depth: flat. Only floating layers (menus, dialogs, popovers) get a soft shadow. */
+  --paper-float: 0 24px 80px rgb(28 25 21 / 0.16), 0 2px 8px rgb(28 25 21 / 0.08);
+  --sutra-shadow-xs: 0 0 #0000;
+  --sutra-shadow-sm: 0 0 #0000;
+  --sutra-shadow-md: 0 0 #0000;
+  --sutra-shadow-lg: var(--paper-float);
+  --sutra-shadow-xl: var(--paper-float);
+  --sutra-shadow-2xl: var(--paper-float);
+  --sutra-shadow-3xl: var(--paper-float);
+  --sutra-shadow-inner-highlight: 0 0 #0000;
+  --sutra-shadow-skeuo: 0 0 #0000;
+
+  /* Type: the system font, headlines tracked in tight. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --text-display-2xl--letter-spacing: -0.05em;
+  --text-display-xl--letter-spacing: -0.045em;
+  --text-display-lg--letter-spacing: -0.04em;
+  --text-display-md--letter-spacing: -0.035em;
+  --text-display-sm--letter-spacing: -0.03em;
+  --text-display-xs--letter-spacing: -0.02em;
+
+  /* Motion: one ease, three speeds. */
+  --ease-out-quart: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --sutra-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --sutra-duration-fast: 150ms;
+  --sutra-duration: 200ms;
+  --sutra-duration-slow: 300ms;
+
+  font-family: var(--font-sans);
+}
+
+/* ------------------------------------------------------------------ */
+/* Dark: pure black, white at graded opacity                           */
+/* ------------------------------------------------------------------ */
+
+[data-style="paper"]:is(.dark, [data-theme="dark"]),
+:is(.dark, [data-theme="dark"]) [data-style="paper"],
+[data-style="paper"] :is(.dark, [data-theme="dark"]) {
+  color-scheme: dark;
+
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0b0b0b;
+  --card-foreground: #ffffff;
+  --popover: #0b0b0b;
+  --popover-foreground: #ffffff;
+  --subtle: #060606;
+  --muted: #111111;
+  --muted-foreground: #a1a1a1; /* as bright as the stock dark muted text, so opacity-80 labels still pass */
+  --accent: rgb(255 255 255 / 0.06);
+  --accent-foreground: #ffffff;
+  --secondary: #161616;
+  --secondary-foreground: #ffffff;
+
+  --border: rgb(255 255 255 / 0.08);
+  --border-strong: rgb(255 255 255 / 0.13);
+  --input: rgb(255 255 255 / 0.13);
+  --ring: #ffffff;
+
+  --primary: #ffffff;
+  --primary-hover: #e8e8e8;
+  --primary-foreground: #000000;
+  --primary-soft: rgb(255 255 255 / 0.08);
+  --primary-soft-foreground: #ffffff;
+
+  /* Back to the stock dark status colours (the light block above deepens them for paper). */
+  --success: #00a63e;
+  --destructive: #fb2c36;
+  --destructive-hover: #ff6467;
+
+  --overlay: rgb(0 0 0 / 0.7);
+  --inverse: #ffffff;
+  --inverse-foreground: #000000;
+  --inverse-primary: #000000;
+  --code: #060606;
+  --code-foreground: #e8e8e8;
+  --code-muted: #8e8e8e;
+  --code-border: rgb(255 255 255 / 0.1);
+
+  --scrollbar: rgb(255 255 255 / 0.2);
+  --scrollbar-hover: rgb(255 255 255 / 0.32);
+
+  --paper-float: 0 24px 80px rgb(0 0 0 / 0.65), 0 2px 8px rgb(0 0 0 / 0.5);
+  --sutra-shadow-lg: var(--paper-float);
+  --sutra-shadow-xl: var(--paper-float);
+  --sutra-shadow-2xl: var(--paper-float);
+  --sutra-shadow-3xl: var(--paper-float);
+}

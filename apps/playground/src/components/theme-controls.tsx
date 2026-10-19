@@ -3,6 +3,7 @@ import {
   brands,
   neutrals,
   radiusModes,
+  themeStyles,
   cn,
   focusRing,
   useTheme,
@@ -60,9 +61,28 @@ type ThemeApi = ReturnType<typeof useTheme>;
 
 const title = (s: string) => s[0]!.toUpperCase() + s.slice(1);
 
-function BrandSwatches({ theme, setTheme }: ThemeApi) {
+function StyleControl({ theme, setTheme, fullWidth }: ThemeApi & { fullWidth?: boolean }) {
   return (
-    <div role="radiogroup" aria-label="Brand color" className="flex flex-wrap items-center gap-1">
+    <SegmentedControl
+      aria-label="Visual style"
+      size="sm"
+      fullWidth={fullWidth}
+      value={theme.style ?? "default"}
+      onValueChange={(style) => style && setTheme({ style: style as SutraTheme["style"] })}
+      options={themeStyles.map((st) => ({ value: st, label: title(st) }))}
+    />
+  );
+}
+
+function BrandSwatches({ theme, setTheme }: ThemeApi) {
+  const paper = theme.style === "paper";
+  return (
+    <div
+      role="radiogroup"
+      aria-label="Brand color"
+      title={paper ? "The paper style uses ink as its accent, so the brand color has no effect" : undefined}
+      className={cn("flex flex-wrap items-center gap-1", paper && "opacity-40")}
+    >
       {brands.map((brand) => (
         <SimpleTooltip key={brand} content={title(brand)}>
           <button
@@ -70,6 +90,7 @@ function BrandSwatches({ theme, setTheme }: ThemeApi) {
             role="radio"
             aria-checked={theme.brand === brand}
             aria-label={title(brand)}
+            disabled={paper}
             onClick={() => setTheme({ brand })}
             className={cn(
               "size-5 rounded-full ring-offset-2 ring-offset-background transition-shadow",
@@ -131,6 +152,7 @@ export function ThemeControls(api: ThemeApi) {
   return (
     <div className="flex items-center gap-3">
       <div className="hidden items-center gap-3 xl:flex">
+        <StyleControl {...api} />
         <BrandSwatches {...api} />
         <NeutralSelect {...api} className="w-28" />
         <RadiusControl {...api} />
@@ -142,6 +164,10 @@ export function ThemeControls(api: ThemeApi) {
           </Button>
         </PopoverTrigger>
         <PopoverContent align="end" className="w-72 space-y-4 p-4">
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground">Style</p>
+            <StyleControl {...api} fullWidth />
+          </div>
           <div className="space-y-2">
             <p className="text-xs font-medium text-muted-foreground">Brand</p>
             <BrandSwatches {...api} />

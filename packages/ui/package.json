@@ -1351,6 +1351,7 @@
       "default": "./dist/patterns/zoom-pan.js"
     },
     "./styles.css": "./src/styles/sutra.css",
+    "./paper.css": "./src/styles/paper.css",
     "./package.json": "./package.json"
   },
   "files": [

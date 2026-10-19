@@ -52,9 +52,10 @@ Every color, radius and shadow is a CSS variable (`src/styles/sutra.css`). Set t
 | `data-brand` | `indigo` (default), `blue`, `sky`, `cyan`, `violet`, `rose`, `lime`, `green`, `yellow`, `orange`, `red` |
 | `data-neutral` | `zinc` (default), `slate`, `gray`, `stone` |
 | `data-radius` | `rounded` (default), `pill`, `square` |
+| `data-style` | `paper`: a calm, monochrome style (warm paper and ink, pure black in dark mode, hairline borders, flat, system font, tight headlines). Needs `@import "@sutra/ui/paper.css";` after the base styles. The ink is the accent, so `data-brand` and `data-app` have no effect in it; status colors keep their hues |
 | `data-app` | `notes`, `tasks`, `calendar`, `mail`, `files`, `journal`, `finance`, `habits`: retunes the brand scale to that app's accent (exposes `--app-from` / `--app-to`) |
 
-`useTheme()` reads and sets mode, brand, neutral and radius on `<html>`. Tokens are Tailwind utilities (`bg-primary`, `text-muted-foreground`, `rounded-control`, `rounded-box`, `shadow-lg` …) and JS values (`colors`, `chartColors`, `typography`, `spacing`, `radii`, `shadows`, `breakpoints`, `grid`).
+`useTheme()` reads and sets mode, brand, neutral, radius and style on `<html>` (`style: "paper"` sets `data-style`). Tokens are Tailwind utilities (`bg-primary`, `text-muted-foreground`, `rounded-control`, `rounded-box`, `shadow-lg` …) and JS values (`colors`, `chartColors`, `typography`, `spacing`, `radii`, `shadows`, `breakpoints`, `grid`).
 
 ## Imports
 
@@ -64,6 +65,7 @@ The build emits one ES module per source file. `"use client"` is added only to m
 | --- | --- |
 | `@sutra/ui` | Every asset, primitive, pattern, kit module and block, plus the `/tokens` foundations. **Not** the Remix icon set (`/icons`) or the optional-peer modules (`CodeEditor`, `RichTextEditor` → `/editor`; `Terminal` → `/terminal`) |
 | `@sutra/ui/styles.css` | Tokens and Tailwind theme (`src/styles/sutra.css`) |
+| `@sutra/ui/paper.css` | The optional paper style (`src/styles/paper.css`); import it after `styles.css` and set `data-style="paper"` |
 | `@sutra/ui/blocks/registry` | `blockRegistry`, `blockCategoryLabels`, demo fixtures and mocks (demo-only; the same names on `@sutra/ui` and `/blocks` are deprecated) |
 
 Subpath entries, generated from `src/entries/*.ts` (one barrel per subpath; modules are listed by file name):

@@ -348,16 +348,17 @@
   --text-2xs: 0.6875rem;
   --text-2xs--line-height: 1rem;
 
-  /* Shadows & effects */
-  --shadow-xs: 0 1px 2px 0 rgb(10 13 18 / 0.05);
-  --shadow-sm: 0 1px 3px 0 rgb(10 13 18 / 0.08), 0 1px 2px -1px rgb(10 13 18 / 0.06);
-  --shadow-md: 0 4px 8px -2px rgb(10 13 18 / 0.08), 0 2px 4px -2px rgb(10 13 18 / 0.05);
-  --shadow-lg: 0 12px 16px -4px rgb(10 13 18 / 0.08), 0 4px 6px -2px rgb(10 13 18 / 0.03);
-  --shadow-xl: 0 20px 24px -4px rgb(10 13 18 / 0.08), 0 8px 8px -4px rgb(10 13 18 / 0.03);
-  --shadow-2xl: 0 24px 48px -12px rgb(10 13 18 / 0.18);
-  --shadow-3xl: 0 32px 64px -12px rgb(10 13 18 / 0.14);
-  --shadow-inner-highlight: inset 0 1px 0 0 rgb(255 255 255 / 0.16);
-  --shadow-skeuo: inset 0 0 0 1px rgb(10 13 18 / 0.18), inset 0 -2px 0 0 rgb(10 13 18 / 0.05);
+  /* Shadows & effects. Each reads --sutra-shadow-<name> first so a style (see paper.css) can replace it:
+     Tailwind inlines plain theme shadows at build time, but it keeps a var() reference. */
+  --shadow-xs: var(--sutra-shadow-xs, 0 1px 2px 0 rgb(10 13 18 / 0.05));
+  --shadow-sm: var(--sutra-shadow-sm, 0 1px 3px 0 rgb(10 13 18 / 0.08), 0 1px 2px -1px rgb(10 13 18 / 0.06));
+  --shadow-md: var(--sutra-shadow-md, 0 4px 8px -2px rgb(10 13 18 / 0.08), 0 2px 4px -2px rgb(10 13 18 / 0.05));
+  --shadow-lg: var(--sutra-shadow-lg, 0 12px 16px -4px rgb(10 13 18 / 0.08), 0 4px 6px -2px rgb(10 13 18 / 0.03));
+  --shadow-xl: var(--sutra-shadow-xl, 0 20px 24px -4px rgb(10 13 18 / 0.08), 0 8px 8px -4px rgb(10 13 18 / 0.03));
+  --shadow-2xl: var(--sutra-shadow-2xl, 0 24px 48px -12px rgb(10 13 18 / 0.18));
+  --shadow-3xl: var(--sutra-shadow-3xl, 0 32px 64px -12px rgb(10 13 18 / 0.14));
+  --shadow-inner-highlight: var(--sutra-shadow-inner-highlight, inset 0 1px 0 0 rgb(255 255 255 / 0.16));
+  --shadow-skeuo: var(--sutra-shadow-skeuo, inset 0 0 0 1px rgb(10 13 18 / 0.18), inset 0 -2px 0 0 rgb(10 13 18 / 0.05));
 
   --blur-glass: 16px;
 

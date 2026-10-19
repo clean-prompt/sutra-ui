@@ -13,6 +13,10 @@ export type Neutral = (typeof neutrals)[number];
 export const radiusModes = ["rounded", "pill", "square"] as const;
 export type RadiusMode = (typeof radiusModes)[number];
 
+/** Visual styles. `default` is the stock look; `paper` (`@sutra/ui/paper.css`) is calm, monochrome and flat. */
+export const themeStyles = ["default", "paper"] as const;
+export type ThemeStyle = (typeof themeStyles)[number];
+
 const v = (name: string) => `var(--${name})`;
 
 export const colors = {

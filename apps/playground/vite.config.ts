@@ -12,6 +12,7 @@ export default defineConfig({
     alias: [
       { find: /^@sutra\/ui$/, replacement: path.join(ui, "index.ts") },
       { find: "@sutra/ui/styles.css", replacement: path.join(ui, "styles/sutra.css") },
+      { find: "@sutra/ui/paper.css", replacement: path.join(ui, "styles/paper.css") },
       // Per-file subpaths: @sutra/ui/primitives/button, @sutra/ui/kits/ai/chat-message → src/… (same for patterns, blocks, assets).
       { find: /^@sutra\/ui\/(primitives|patterns|blocks|assets)\/([\w-]+)$/, replacement: `${ui}/$1/$2` },
       { find: /^@sutra\/ui\/kits\/([\w-]+)\/([\w-]+)$/, replacement: `${ui}/kits/$1/$2` },
