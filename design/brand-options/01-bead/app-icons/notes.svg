@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Sutra Notes">
+<title>Sutra Notes</title>
+<g transform="scale(16)">
+<rect width="64" height="64" rx="14.3" fill="#f7f5f0"/><rect y="30.7" width="64" height="2.6" fill="#1c1915"/><circle cx="32" cy="32" r="21" fill="#a87f1d"/><g transform="translate(19 19) scale(1.08)"><path d="M6.8 3.8h6.9l4.5 4.5v10.9a1.6 1.6 0 0 1-1.6 1.6H6.8a1.6 1.6 0 0 1-1.6-1.6V5.4a1.6 1.6 0 0 1 1.6-1.6Z" fill="none" stroke="#f7f5f0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 3.8v4.5h4.5" fill="none" stroke="#f7f5f0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.9 13.2h6.2M8.9 16.5h3.8" fill="none" stroke="#f7f5f0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+</g>
+</svg>

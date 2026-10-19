@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Sutra Journal">
+<title>Sutra Journal</title>
+<g transform="scale(16)">
+<rect width="64" height="64" rx="14.3" fill="#7f3471"/><rect x="5.5" y="5.5" width="53" height="53" rx="9" fill="none" stroke="#f4d2eb" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="4.69 3.5" stroke-dashoffset="1.22"/><g transform="translate(18.5 18.5) scale(1.13)"><path d="M7.4 3.8h9.8a1.6 1.6 0 0 1 1.6 1.6v13.2a1.6 1.6 0 0 1-1.6 1.6H7.4a1.6 1.6 0 0 1-1.6-1.6V5.4a1.6 1.6 0 0 1 1.6-1.6Z" fill="none" stroke="#f7f5f0" stroke-width="2.22" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 3.8v16.4" fill="none" stroke="#f7f5f0" stroke-width="2.22" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.2 8.2h2.6" fill="none" stroke="#f7f5f0" stroke-width="2.22" stroke-linecap="round" stroke-linejoin="round"/></g>
+</g>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Sutra Calendar">
+<title>Sutra Calendar</title>
+<g transform="scale(16)">
+<rect width="64" height="64" rx="14.3" fill="#1c1915"/><path d="M14 16H50" fill="none" stroke="#ff7e88" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="28" r="2.8" fill="#f7f5f0"/><circle cx="32" cy="28" r="2.8" fill="#f7f5f0"/><circle cx="47" cy="28" r="2.8" fill="#f7f5f0"/><circle cx="17" cy="38" r="2.8" fill="#f7f5f0"/><circle cx="32" cy="38" r="2.8" fill="#f7f5f0"/><circle cx="47" cy="38" r="2.8" fill="#f7f5f0"/><circle cx="17" cy="48" r="2.8" fill="#f7f5f0"/><circle cx="32" cy="48" r="2.8" fill="#f7f5f0"/><circle cx="47" cy="48" r="2.8" fill="#f7f5f0"/>
+</g>
+</svg>
