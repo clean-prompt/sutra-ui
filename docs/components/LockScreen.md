@@ -4,7 +4,7 @@
 
 - Import: `import { LockScreen } from "@sutra/ui"` (or from `@sutra/ui/identity`)
 - Source: `packages/ui/src/patterns/loading-screen` (patterns)
-- `data-slot`: `lock-screen`
+- `data-slot`: `lock-screen`, `lock-screen-pin-slot`
 - Also accepts the props of HTMLAttributes
 
 ## Props

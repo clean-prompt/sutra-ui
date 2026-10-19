@@ -19,7 +19,7 @@
 | `label` | `string` | `"Volume"` | Accessible name of the slider, e.g. "Music volume". Default "Volume". |
 | `levelClassName` | `string` |  | Class for the level label. |
 | `muteButtonClassName` | `string` |  | Class for the mute toggle, merged last (e.g. another button style). |
-| `muted` | `boolean` |  | Controlled muted state; the slider shows zero while muted. Use with `onMutedChange`. |
+| `muted` | `boolean` |  | Controlled muted state. While muted the slider keeps the stored level (turned neutral grey) unless `zeroWhenMuted` shows it at 0. Use with `onMutedChange`. |
 | `muteLabel` | `string` |  | Accessible name of the mute toggle. Default `Mute ${label}`. |
 | `muteToggle` | `"pressed" \| "label"` | `"pressed"` | How the toggle exposes its state: `"pressed"` (default) keeps one name with `aria-pressed`; `"label"` swaps its name between `muteLabel` and `unmuteLabel`. |
 | `onMutedChange` | `(muted: boolean) => void` |  | Called when the mute button toggles the muted state. |

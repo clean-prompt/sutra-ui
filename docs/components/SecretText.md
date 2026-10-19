@@ -4,7 +4,7 @@
 
 - Import: `import { SecretText } from "@sutra/ui"` (or from `@sutra/ui/security`)
 - Source: `packages/ui/src/kits/identity/secret` (kit `identity`)
-- `data-slot`: `secret-text`, `secret-value`, `secret-mask`, `secret-strength`
+- `data-slot`: `secret-text`, `secret-value`, `secret-mask`, `secret-strength`, `secret-canvas`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -507,6 +507,8 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
                                 disabled={option.disabled}
                                 onSelect={() => toggle(option.value)}
                                 data-checked={isSelected ? "" : undefined}
+                                /* cmdk's aria-selected means "highlighted", so the chosen state is aria-checked (valid on option). */
+                                aria-checked={multiple ? isSelected : isSelected || undefined}
                                 className={cn(
                                   "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none",
                                   "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground",

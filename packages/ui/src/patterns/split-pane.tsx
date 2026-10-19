@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useElementWidth } from "../hooks/use-resize-observer";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { logicalArrow } from "../lib/direction";
@@ -107,12 +108,25 @@ export const SplitPane = React.forwardRef<HTMLDivElement, SplitPaneProps>(
   ) => {
     const rootRef = React.useRef<HTMLDivElement | null>(null);
     const setRefs = useMergedRefs(rootRef, forwardedRef);
-    const [initialSize] = React.useState(() => clamp(readStored(storageKey) ?? defaultSize, min, max));
+    const restoring = React.useRef(false);
+    // The first render (server and hydration) starts at `defaultSize`: the saved size is read after mount.
     const [size, setSizeState] = useControllableState({
       value: sizeProp === undefined ? undefined : clamp(sizeProp, min, max),
-      defaultValue: initialSize,
-      onChange: onSizeChange,
+      defaultValue: clamp(defaultSize, min, max),
+      onChange: (next: number) => {
+        if (!restoring.current) onSizeChange?.(next);
+      },
     });
+    // Restore the saved size before paint. It is not a user move, so it does not call onSizeChange.
+    useIsoLayoutEffect(() => {
+      if (sizeProp !== undefined) return;
+      const stored = readStored(storageKey);
+      if (stored === undefined) return;
+      restoring.current = true;
+      setSizeState(clamp(stored, min, max));
+      restoring.current = false;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const [collapsed, setCollapsed] = React.useState(false);
     const [dragging, setDragging] = React.useState(false);
     const [activePanel, setActivePanel] = React.useState(0);

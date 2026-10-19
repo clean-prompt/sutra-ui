@@ -52,7 +52,7 @@ The sun, moon and computer icons turn and fade into each other over 500 ms; `mot
 
 ### Server rendering
 
-Server render: part of it fills in after mount. The first client render reads the saved mode from `localStorage`, while the server renders `defaultValue` or "system", so the label, `data-mode` and icon of the server HTML can disagree with the first client render for a returning visitor. The `dark` class on `<html>` is set in an effect after mount, so the first paint shows the page's own theme: set the class early with a small inline script that reads the same key.
+Server render: part of it fills in after mount. The server and the hydrating client render `defaultValue` or "system" (or "light" when `modes` has no system), so the markup matches. Right after hydration, before paint, an uncontrolled toggle reads the saved mode from `localStorage` (or a dark `<html>` when `modes` has no system and there is no `defaultValue`) and switches to it: that restore does not call `onValueChange`, and nothing is written to storage or `<html>` until it is done. The `dark` class on `<html>` is set in an effect after mount, so the first paint shows the page's own theme: set the class early with a small inline script that reads the same key.
 
 ### Gotchas
 

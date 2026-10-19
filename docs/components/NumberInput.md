@@ -22,7 +22,7 @@
 | `locale` | `string` |  | BCP 47 locale for number formatting and parsing (decimal and group separators). Defaults to the user's locale. |
 | `max` | `number` |  | Largest allowed value; stepping and blur clamp to it. |
 | `min` | `number` |  | Smallest allowed value; stepping and blur clamp to it. |
-| `onValueChange` | `(value: number \| null) => void` |  | Called with the parsed number (or `null` when emptied) as the user types or steps. |
+| `onValueChange` | `(value: number \| null) => void` |  | Called with the parsed number (or `null` when emptied) when a typed entry is committed (blur or Enter) and on each step, Home or End; not on every keystroke. |
 | `precision` | `number` |  | Fixed number of decimals; values are rounded to it. |
 | `size` | `Size` | `"md"` | Field height and text size. |
 | `step` | `number` | `1` | Amount added or removed by the buttons and the arrow keys. |

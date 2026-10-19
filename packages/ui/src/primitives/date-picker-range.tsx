@@ -16,6 +16,7 @@ import {
   isSameRange,
   popoverContentClass,
   startOfMonth,
+  useCalendarLocale,
   useOptionalControlled,
   type BasePickerProps,
 } from "./date-picker-internal";
@@ -151,6 +152,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       setOpenState(next);
     };
 
+    const calendarLocale = useCalendarLocale(locale);
     const formatter = React.useMemo(
       () => new Intl.DateTimeFormat(locale, formatOptions ?? { dateStyle: "medium" }),
       [locale, formatOptions]
@@ -240,6 +242,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
               )}
               <div className="flex flex-col">
                 <Calendar
+                  {...calendarLocale}
                   mode="range"
                   numberOfMonths={numberOfMonths}
                   month={month}

@@ -52,7 +52,7 @@ Only a colour and border transition on hover, which the global net ends within 1
 
 ### Server rendering
 
-Server render: part of it fills in after mount. The shortcut chips depend on the platform, found with `navigator` in the first client render (the server assumes a non-Mac), so a Mac user's first client render shows the command key where the server HTML has "Ctrl". Inside a `ShortcutProvider` the provider's platform is used on both sides. The hotkey listener is attached in an effect.
+Server render: part of it fills in after mount. The shortcut chips depend on the platform: the server and the hydrating client render the non-Mac labels ("Ctrl") and a Mac browser switches to the command key right after hydration, before paint, so the markup matches. Inside a `ShortcutProvider` with a `platform` prop that platform is used from the first render on both sides. The hotkey listener is attached in an effect.
 
 ### Slots
 

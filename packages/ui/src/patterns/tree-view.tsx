@@ -493,7 +493,7 @@ function TreeViewItem({
           data-selected={isSelected || undefined}
           data-disabled={node.disabled || undefined}
           onClick={(e) => ctx.onRowClick(e, node)}
-          style={{ paddingLeft: padLeft }}
+          style={{ paddingInlineStart: padLeft }}
           className={cn(
             "relative flex cursor-pointer items-center gap-1.5 rounded-sm pe-2 text-foreground transition-colors duration-150",
             rowHeight,

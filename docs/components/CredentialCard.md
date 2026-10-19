@@ -4,6 +4,7 @@
 
 - Import: `import { CredentialCard } from "@sutra/ui"` (or from `@sutra/ui/security`)
 - Source: `packages/ui/src/kits/identity/credential-card` (kit `identity`)
+- `data-slot`: `credential-card`
 - Also accepts the props of HTMLAttributes
 
 ## Props

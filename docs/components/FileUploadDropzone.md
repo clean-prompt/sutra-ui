@@ -18,7 +18,7 @@
 | `hint` | `React.ReactNode` |  | Defaults to a description of `accept` / `maxSize`. |
 | `icon` | `React.ReactNode` |  | Icon above the title. Defaults to an upload icon. |
 | `inputRef` | `React.Ref<HTMLInputElement>` |  | Ref to the hidden `<input type="file">`, e.g. to open the picker from your own button. |
-| `name` | `string` |  | Name for the underlying file input. |
+| `name` | `string` |  | Name for the underlying file input. With it, the accepted files stay on the input so a native form post sends them. |
 | `title` | `React.ReactNode` |  | Headline of the drop target. Defaults to a prompt to drop or choose files. |
 
 ## Notes

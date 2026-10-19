@@ -19,9 +19,9 @@ server: mixed
 In RTL on a horizontal slider ArrowLeft raises and ArrowRight lowers, and the track fills from the right; Up and Down do not change. The direction is read from the parent (a `DirectionProvider`, a `dir` container or `<html dir>`), and a `dir` you pass wins. Thumbs keep a minimum gap of `minStepsBetweenThumbs` steps (1 for `RangeSlider`).
 
 ## Screen readers
-- Each thumb is a `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation`. A single thumb has no name unless you pass `thumbLabels`, such as `["Volume"]`; two thumbs are named "Minimum" and "Maximum" by default, more are "Value 1 of 3" and so on. `getValueText` sets `aria-valuetext` per thumb, for example `(v) => v + "%"`.
-- `aria-label` and `id` go to the Radix root `span`, which has no role, so they do not name a thumb. The slider does not read `Field`, so a `FieldLabel` does not name it either: use `thumbLabels`.
-- The value bubble and the tick marks and their labels are `aria-hidden`; put what matters in `getValueText`. `invalid` sets `aria-invalid` on the root and turns the range red.
+- Each thumb is a `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation`. A single thumb is named by `thumbLabels` (such as `["Volume"]`), else by `aria-label` or `aria-labelledby` on the `Slider`, else by a surrounding `FieldLabel`; two thumbs are named "Minimum" and "Maximum" by default (an `aria-label` on the `Slider` then becomes a `role="group"` around them), more are "Value 1 of 3" and so on. `getValueText` sets `aria-valuetext` per thumb, for example `(v) => v + "%"`.
+- `id` stays on the Radix root `span` (which has no role), so a `FieldLabel` click does not focus a thumb. The slider reads `Field`: its id, `disabled`, invalid state and description, hint and error ids (`aria-describedby`, also on every thumb); an explicit prop wins.
+- The value bubble and the tick marks and their labels are `aria-hidden`; put what matters in `getValueText`. `invalid` (or an invalid `Field`) sets `aria-invalid` on the root and on each thumb and turns the range red.
 
 ## Reduced motion
 The thumb ring, press scale and value bubble use short transitions, which the reduced-motion net ends in 1 ms.

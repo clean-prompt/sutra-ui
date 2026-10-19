@@ -174,7 +174,7 @@ export const SectionRail = React.forwardRef<HTMLElement, SectionRailProps>(
                         ? "border-primary font-medium text-foreground"
                         : "border-transparent text-muted-foreground hover:border-border-strong hover:text-foreground"
                     )}
-                    style={vertical ? { paddingLeft: 12 + depth * 12 } : undefined}
+                    style={vertical ? { paddingInlineStart: 12 + depth * 12 } : undefined}
                   >
                     {s.label}
                   </a>

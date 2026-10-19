@@ -24,7 +24,7 @@ There is no Home or End. The ring is a `dir="ltr"` island, so the arrows never s
 - The chip legend is a `group` named "Toggle series" of `aria-pressed` buttons; with `legendValues` or `iconFor` it becomes a `list` named "Legend" whose rows are the same toggle buttons. With `loading`, the root has `aria-busy` and one hidden "Loading donut chart…".
 
 ## Reduced motion
-Segments change with `motion-safe:transition-all duration-500` when data or the hidden set changes (`animate`, default true), so under `prefers-reduced-motion` they update with no transition. The loading ring pulses with `animate-pulse` and carries `motion-reduce:animate-none`. There is no entrance animation on mount.
+Segments carry `motion-safe:transition-all duration-500` (`animate`, default true), which eases the hover dimming and colour changes; the arc shape is a `d` attribute, so it changes at once when data or the hidden set changes, and under `prefers-reduced-motion` nothing eases. The loading ring pulses with `animate-pulse` and carries `motion-reduce:animate-none`. There is no entrance animation on mount.
 
 ## Server rendering
 The ring is drawn from `size` alone, so the server HTML already contains the segments, centre text and legend; nothing waits for mount. The one thing that can differ is number text: values and shares go through `Intl` with the runtime default locale, so pass `valueFormatter` when the server and the browser locale differ.

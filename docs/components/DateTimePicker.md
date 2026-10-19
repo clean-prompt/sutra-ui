@@ -15,7 +15,7 @@
 | `aria-label` | `string` |  | Accessible name of the trigger when there is no visible label. |
 | `aria-labelledby` | `string` |  | Id(s) of the element(s) that label the trigger. |
 | `captionLayout` | `"label" \| "dropdown" \| "dropdown-months" \| "dropdown-years"` |  | Show month/year dropdowns in the calendar caption. |
-| `className` | `string` |  | Classes for the trigger button. |
+| `className` | `string` |  | Classes for the wrapper around the trigger button (the button itself takes no class). |
 | `clearable` | `boolean` |  | Show an inline button that resets the value. |
 | `contentClassName` | `string` |  | Classes for the calendar popover. |
 | `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled. |
@@ -31,7 +31,7 @@
 | `hourCycle` | `12 \| 24` |  | Force a 12- or 24-hour clock. Defaults to the locale's convention. |
 | `id` | `string` |  | `id` of the trigger, so a `<label htmlFor>` or `Field` can point at it. |
 | `invalid` | `boolean` |  | Marks the picker invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
-| `locale` | `string` |  | BCP 47 locale passed to `Intl.DateTimeFormat`. |
+| `locale` | `string` |  | BCP 47 locale for the trigger text (`Intl.DateTimeFormat`) and the calendar's month and weekday names, digits and first weekday. |
 | `max` | `DateTimeInput` |  | Latest selectable moment. |
 | `min` | `DateTimeInput` |  | Earliest selectable moment. Days before it are disabled and times are clamped. |
 | `name` | `string` |  | Name of the hidden input that submits the value with a surrounding form. |
@@ -89,7 +89,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 - Changes apply at once: picking a day, or stepping the time, calls `onValueChange(date, { localValue })` and the popover stays open until Done, Escape or an outside click. Picking a preset sets the value and closes. Clicking the selected day does not unselect it.
 - A day picked before any time is set uses the time typed so far, else `defaultTime` (`"00:00"`). A time typed before a day exists is held until a day is picked.
 - `min` and `max` disable days outside them, clamp the result, and limit the time on the boundary day; strings without a zone are read as local time.
-- With `name` a hidden input posts `YYYY-MM-DDTHH:mm` (with `:ss` for seconds, empty when none). `locale` formats the trigger and sets the time field's clock and segment order, but the calendar keeps DayPicker's default language.
+- With `name` a hidden input posts `YYYY-MM-DDTHH:mm` (with `:ss` for seconds, empty when none). `locale` formats the trigger, sets the time field's clock and segment order, and sets the calendar's month and weekday names, digits and first weekday (its aria labels stay English).
 
 ## Example
 

@@ -10,6 +10,7 @@ import {
   RiZoomOutLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { useReturnFocus } from "../hooks/use-return-focus";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { clamp } from "../lib/math";
 import { useSwipe } from "../hooks/use-swipe";
@@ -397,6 +398,8 @@ export function Lightbox({
   };
 
   const counter = count > 0 ? `${index + 1} / ${count}` : "0 / 0";
+  // There is no Radix trigger (LightboxTrigger only flips state), so hand focus back to whatever opened the viewer.
+  const returnFocus = useReturnFocus();
 
   return (
     <LightboxContext.Provider value={ctx}>
@@ -408,6 +411,7 @@ export function Lightbox({
             aria-label={label}
             aria-describedby={undefined}
             onKeyDown={onKeyDown}
+            {...returnFocus}
             data-slot="lightbox"
             className={cn(
               "fixed inset-0 z-50 flex flex-col text-white outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-[0.98] data-[state=closed]:animate-out data-[state=closed]:fade-out-0",

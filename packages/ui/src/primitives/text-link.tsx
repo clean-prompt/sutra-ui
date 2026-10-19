@@ -120,6 +120,7 @@ export const TextLink = React.forwardRef<HTMLAnchorElement, TextLinkProps>(
         <Slot.Root ref={ref} className={cn("group/text-link", classes)} {...externalProps} {...props} {...disabledProps}>
           <Slot.Slottable>{children}</Slot.Slottable>
           {icon}
+          {external && <span className="sr-only"> (opens in a new tab)</span>}
         </Slot.Root>
       );
     }

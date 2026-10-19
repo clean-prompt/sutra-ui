@@ -4,6 +4,7 @@
 
 - Import: `import { ApprovalStack } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/ai/approval-stack` (kit `ai`)
+- `data-slot`: `approval-stack-more`, `approval-stack-shell`, `approval-stack-top`
 - Also accepts the props of HTMLAttributes
 
 ## Props

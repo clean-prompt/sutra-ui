@@ -1,6 +1,6 @@
 # PopoverDescription
 
-> Muted supporting text.
+> Muted supporting text. Inside `PopoverContent` it describes the dialog (`aria-describedby`).
 
 - Import: `import { PopoverDescription } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
 - Source: `packages/ui/src/primitives/popover` (primitives)

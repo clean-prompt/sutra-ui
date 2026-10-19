@@ -24,7 +24,7 @@ Renders on the server, but direction is read from the page after mount: the serv
 
 ## Gotchas
 - `value` is clamped to 0 to `max`; an out-of-range value never reaches Radix's console error. `max <= 0` reads as an empty bar. `showValue` is `true` (above next to the label, else on the right), `"top"` or `"right"`.
-- `formatValue` changes only the visible text, not `aria-valuetext`. Pass Radix's `getValueLabel` for that.
+- `formatValue` also sets `aria-valuetext` when it returns text or a number ("3 / 8 GB"), so the bar reads what it shows; a JSX result cannot be spoken, so the default percentage stays. Radix's `getValueLabel` or an explicit `aria-valuetext` overrides it.
 - When there is a `label` or a shown value, the bar sits in a wrapper: `className` then styles the wrapper, not the track (use `indicatorClassName` for the fill).
 - `ProgressCircle` has no indeterminate state; use `Spinner` for that. Its centre text is `children`, or the percentage unless `showValue={false}`.
 

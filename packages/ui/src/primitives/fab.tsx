@@ -301,7 +301,11 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
               return;
             }
             action.onClick?.(e);
+            // The menu hides as it closes: if focus is still on the action (and the handler did not move it), hand it back
+            // to the trigger so a keyboard user keeps their place (and a dialog the action opens returns here, too).
+            const focusInMenu = menuRef.current?.contains(document.activeElement) ?? false;
             setOpen(false);
+            if (focusInMenu) triggerRef.current?.focus();
           };
           return (
             <li

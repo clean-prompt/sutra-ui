@@ -4,7 +4,7 @@
 
 - Import: `import { SecretRevealOnce } from "@sutra/ui"` (or from `@sutra/ui/security`)
 - Source: `packages/ui/src/kits/identity/secret` (kit `identity`)
-- `data-slot`: `secret-reveal-once`, `secret-reveal-value`
+- `data-slot`: `secret-reveal-once`, `secret-reveal-value`, `secret-canvas`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -58,7 +58,8 @@ export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
    */
   tooltip?: boolean;
   /**
-   * Animates the segments in when the chart mounts; off under reduced motion.
+   * Eases the hover dimming and the colour of the segments over 500 ms; off under reduced motion. There is no
+   * entrance animation, and a segment changes its shape (data or the hidden set) at once.
    * @default true
    */
   animate?: boolean;

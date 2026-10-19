@@ -24,7 +24,7 @@ Pure SVG computed from `data`, `width` and `height`, with an id from `useId` for
 ## Gotchas
 - A line or area scales to the range of its data (`min` and `max` override), so a flat series fills the box and a tiny change looks large. `type="bar"` always includes 0 on its scale, so the same data looks different; set `min` and `max` on both to compare them.
 - Colour precedence is `tone`, then `color`, then `accent`; `trend` (green when the last value is at least the first, red otherwise) only applies when none of the three is set. A token name such as `"success"` works in `color`.
-- With `responsive` the SVG stretches to the container width (`preserveAspectRatio="none"`, strokes keep their width) and `width` only sets the viewBox; without it the box is `width` by `height` (default 120 by 32).
+- With `responsive` the SVG stretches to the container width (`preserveAspectRatio="none"`, strokes keep their width) and `width` only sets the viewBox; without it the box is `width` by `height` (default 120 by 32). Both charts are left-to-right islands (`dir="ltr"` on the wrapper, like the other charts): the series starts at the physical left and the `highlightLast` dot sits on the last point, also on an RTL page.
 - `type="bar"` ignores `smooth`, `strokeWidth` and `gradient`; `mutedColor`, `gap` and `radius` are props of `SparkBar` only, so render it directly to set them. `highlightLast` is the dot on a line and the full-colour bar on bars.
 
 ## Example

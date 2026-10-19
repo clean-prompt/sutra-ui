@@ -27,7 +27,7 @@ The press effect (`active:scale-[0.98]`) and the colour fades are transitions, w
 Plain markup with no browser API, so server and client output match. The logos are inline SVG or icon components.
 
 ## Gotchas
-- With `asChild`, `disabled` and `loading` do less than on a button: `disabled` is not applied to the child and `loading` only swaps the logo for a spinner (no `aria-busy`, no blocking). Block the click yourself, or use the plain button.
+- With `asChild`, `disabled` and `loading` cannot set the native `disabled` on the child (often a link), so, like `Button asChild`, the child gets `aria-disabled="true"`, `data-disabled`, `tabindex="-1"` and its clicks are swallowed in the capture phase; `loading` also sets `aria-busy` and swaps the logo for a spinner.
 - `variant="brand"` paints the provider's own colours as fixed values (white for Google, black for Apple, and so on), so it does not follow the theme or `data-style`; the `default` (outlined) and `icon` variants do. `fullWidth` is ignored for `variant="icon"`.
 - `children` replaces the whole label, including the provider name: the default text is only used when there are no `children`. The label is English unless you pass `children`.
 - The element carries `data-provider` with the provider key, which is handy for tests and analytics.

@@ -22,7 +22,7 @@ Plain markup; the column counts come from CSS breakpoints (`md`, `lg`), so there
 ## Gotchas
 - `GridItem span` counts columns of the 4-column mobile grid and defaults to `"full"`: an item with only `lg={4}` is full width on mobile and tablet too. Give `md` when the tablet layout should differ.
 - `span` above 4 on mobile makes implicit columns; use `md` (of 8) and `lg` (of 12) for larger spans.
-- `md` is typed up to 12 but only 1 to 8 and `"full"` produce a class: a `md` of 9 or more silently has no effect.
+- `md` is typed 1 to 8 or `"full"` because the tablet grid has 8 columns (a larger value used to compile and do nothing); `span` and `lg` accept 1 to 12 and `"full"`.
 - `gap` is `sm`, `md` (default, wider from `md` up) or `lg`.
 
 ## Example

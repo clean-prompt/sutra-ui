@@ -4,6 +4,7 @@
 
 - Import: `import { SwipeDeck } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
 - Source: `packages/ui/src/patterns/swipe-deck` (patterns)
+- `data-slot`: `swipe-deck`, `swipe-deck-stage`, `swipe-deck-empty`, `swipe-deck-actions`, `swipe-deck-card`, `swipe-deck-stamp`
 - Also accepts the props of HTMLAttributes
 
 ## Props

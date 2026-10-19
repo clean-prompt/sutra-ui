@@ -13,6 +13,7 @@ import {
   dateTriggerVariants,
   isSameDay,
   popoverContentClass,
+  useCalendarLocale,
   useOptionalControlled,
   type BasePickerProps,
 } from "./date-picker-internal";
@@ -180,6 +181,7 @@ export const DateTimePicker = React.forwardRef<HTMLButtonElement, DateTimePicker
     setOpen(next);
   };
 
+  const calendarLocale = useCalendarLocale(locale);
   const formatter = React.useMemo(
     () =>
       new Intl.DateTimeFormat(
@@ -280,6 +282,7 @@ export const DateTimePicker = React.forwardRef<HTMLButtonElement, DateTimePicker
             )}
             <div className="flex flex-col">
               <Calendar
+                {...calendarLocale}
                 mode="single"
                 required
                 selected={value}

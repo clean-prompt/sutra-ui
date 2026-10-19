@@ -14,6 +14,7 @@
 | `interval` | `number` |  | Milliseconds per frame. Default 80. |
 | `label` | `string` |  | Screen reader label. Default "Loading". |
 | `paused` | `boolean` |  | Pause on the current frame. |
+| `size` | `NonNullable<SpinnerProps["size"]>` |  | Glyph size as on `Spinner`: `xs` to `xl` sets the font size. Leave it out to inherit the parent's font size. |
 | `variant` | `GlyphSpinnerVariant` | `"dots"` | Which glyph animation to play (a key of the spinner glyph frame sets). |
 
 ## Notes
@@ -44,7 +45,7 @@ Server render: same markup as the client. Always renders frame 0 first: the pref
 ### Gotchas
 
 - `frames` overrides `variant` when it is not empty; an empty array falls back to `variant`. `variant` is one of `dots` (default), `line`, `arc`, `circle`, `bounce`, `star` or `pulse`, the same sets as `glyphSpinnerFrames`.
-- There is no `size` prop in its type. The glyph takes the font size and colour of its parent, so size it with a `text-*` class on `className` or a wrapper.
+- `size` (`xs` to `xl`, as on `Spinner`) sets the font size; without it the glyph takes the font size and colour of its parent, so a `text-*` class on `className` or a wrapper also works.
 - `interval` is milliseconds per frame (default 80) and is clamped to at least 16; `paused` holds the current frame, as does a single-frame `frames` array.
 - The glyph sits in a `min-w-[1ch]` monospace box, so a custom frame set should use characters of similar width to avoid jitter.
 

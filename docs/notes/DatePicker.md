@@ -30,7 +30,7 @@ The popover fades and zooms in with `animate-in`; the reduced-motion net removes
 The trigger renders on the server and the popover is portalled, so it appears only after mount. A trigger with a `value` or `defaultValue` is formatted with `Intl.DateTimeFormat` in the runtime's default locale and time zone unless you pass `locale` or `formatDate`, so a server and a browser that differ can print different text and trigger a hydration warning. The portalled layer does not inherit a subtree `dir` or `data-style`; set them on `<html>`.
 
 ## Gotchas
-- `locale` and `formatOptions` only format the trigger text. The calendar is not given the locale, so its month names, weekdays and week start stay at DayPicker's defaults.
+- `locale` formats the trigger text and also sets the calendar's month and weekday names, digits and first weekday (through `Intl`); `formatOptions` only formats the trigger. The calendar's aria labels ("Go to the Next Month", the day names read by a screen reader) stay English: they are not derived from `locale`.
 - `className` goes to the wrapper `div` around the trigger, not to the button; `contentClassName` styles the popover.
 - Clicking the day that is already selected clears the value (`onValueChange(undefined)`) and leaves the popover open; `clearable` adds an explicit button.
 - With `name` a hidden input posts the local day as `YYYY-MM-DD` (empty when none). `required` blocks nothing in a native form. `startMonth` and `endMonth` limit navigation, `disabledDates` takes react-day-picker matchers.

@@ -12,7 +12,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `lg` | `Span` |  | Columns on desktop (of 12). |
-| `md` | `Span` |  | Columns on tablet (of 8). |
+| `md` | `TabletSpan` |  | Columns on tablet (of 8: 1 to 8 or `"full"`). |
 | `span` | `Span` | `"full"` | Columns on mobile (of 4). Default: full. |
 
 ## Notes

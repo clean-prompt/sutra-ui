@@ -20,7 +20,7 @@ Plain markup and inline CSS variables, no browser API, so server and client outp
 
 ## Gotchas
 - `duration` is in seconds (default 2) and `spread` is the half-width of the bright band as a percentage of the gradient, clamped to 1 to 50 (default 12). The gradient is twice as wide as the text, so the band covers about twice that share of the text.
-- The text is `color: transparent` with the gradient clipped to it, and the gradient reads `--muted-foreground` and `--foreground`. Do not pass a `text-<colour>` class in `className` (`text-foreground`, `text-primary`): the class merge takes `text-shimmer` for a text colour and drops it, so the shimmer disappears. Size classes such as `text-sm` are fine.
+- The text is `color: transparent` with the gradient clipped to it, and the gradient reads `--muted-foreground` and `--foreground`. A `text-<colour>` class in `className` (`text-foreground`, `text-primary`) is dropped by the class merge so the shimmer keeps working; colour the two ends of the sweep with `--muted-foreground` and `--foreground` instead. Size classes such as `text-sm` are kept.
 - It is `inline-block`, so it does not wrap with the surrounding line like inline text; give it a block parent for long text. `style` you pass is merged after the shimmer variables, so you can override them.
 
 ## Example

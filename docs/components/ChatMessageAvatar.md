@@ -11,7 +11,7 @@
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `alt` | `string` |  | Alt text of the image. Defaults to `name`. |
+| `alt` | `string` |  | Alt text of the image and label of the initials fallback. Defaults to `name`; `""` marks the avatar decorative (use it beside a visible name). |
 | `color` | `string` |  | Explicit fallback colour (any CSS colour); overrides the colour derived from `name`. |
 | `colorful` | `boolean` |  | Colorize the initials fallback deterministically from `name` (via `colorForSeed`). Default true. |
 | `fallback` | `React.ReactNode` |  | Custom fallback content (overrides initials / the assistant spark). |

@@ -39,7 +39,7 @@ Static: no animation.
 
 ### Server rendering
 
-Server render: part of it fills in after mount. The platform is detected during the first render: the server has no `navigator` and uses the non-Mac labels ("Ctrl", "Shift"), while a Mac browser computes the glyphs (command, option) on its first client render, so hydration can differ there. Pass `platform` (or set it on a `ShortcutProvider`, which `ShortcutKeys` reads) to make server and client agree.
+Server render: part of it fills in after mount. The server has no `navigator` and uses the non-Mac labels ("Ctrl", "Shift"). The hydrating client render uses the same default, so the markup matches, and a Mac browser switches to the glyphs (command, option) right after hydration, before paint. A client-only render detects the platform at once. Pass `platform` (or set it on a `ShortcutProvider`, which `ShortcutKeys` reads) to make the first render already right.
 
 ### Gotchas
 

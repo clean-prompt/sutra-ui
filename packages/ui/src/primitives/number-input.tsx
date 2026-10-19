@@ -16,7 +16,7 @@ export interface NumberInputProps
   value?: number | null;
   /** Initial number when uncontrolled; `null` starts empty. */
   defaultValue?: number | null;
-  /** Called with the parsed number (or `null` when emptied) as the user types or steps. */
+  /** Called with the parsed number (or `null` when emptied) when a typed entry is committed (blur or Enter) and on each step, Home or End; not on every keystroke. */
   onValueChange?: (value: number | null) => void;
   /** Smallest allowed value; stepping and blur clamp to it. */
   min?: number;

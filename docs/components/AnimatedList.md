@@ -4,6 +4,7 @@
 
 - Import: `import { AnimatedList } from "@sutra/ui"` (or from `@sutra/ui/motion`)
 - Source: `packages/ui/src/patterns/animated-list` (patterns)
+- `data-slot`: `animated-list`, `animated-list-item`, `animated-list-content`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@ import { RiCloseLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useReturnFocus } from "../hooks/use-return-focus";
 import { DialogOverlay, SheetBody, SheetClose, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./dialog";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useDrag, type DragInfo } from "../hooks/use-drag";
@@ -202,10 +203,14 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
       onEscapeKeyDown,
       onPointerDownOutside,
       onInteractOutside,
+      onOpenAutoFocus,
+      onCloseAutoFocus,
       ...props
     },
     forwardedRef
   ) => {
+    // A drawer opened without a DrawerTrigger (hotkey, controlled `open`) hands focus back to whatever opened it.
+    const returnFocus = useReturnFocus({ onOpenAutoFocus, onCloseAutoFocus });
     const ctx = useDrawerContext();
     const { dismissible, snapPoints, snap, setSnap, setOpen } = ctx;
     const nodeRef = React.useRef<HTMLDivElement | null>(null);
@@ -339,6 +344,7 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
             if (!dismissible) event.preventDefault();
           }}
           {...props}
+          {...returnFocus}
         >
           {showHandle &&
             (snapPoints && snapPoints.length > 1 ? (

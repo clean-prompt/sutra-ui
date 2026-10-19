@@ -32,7 +32,7 @@
 
 | Key | Action |
 |---|---|
-| Tab / Shift+Tab | The selected visible tab is the only tab stop (the first one when the selected tab is in the overflow); then the More button |
+| Tab / Shift+Tab | The selected visible tab is the only tab stop (the first enabled one when the selected tab is in the overflow or disabled); then the More button |
 | ArrowRight, ArrowLeft | Focus and select the next or previous enabled tab, wrapping around |
 | Home, End | Focus and select the first or last enabled tab |
 | Enter, Space | Select the focused tab (native button) |

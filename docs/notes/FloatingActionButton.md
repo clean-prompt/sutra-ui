@@ -39,7 +39,7 @@ No browser API at render: the document listeners attach in an effect and `useId`
 - `strategy` defaults to `fixed`, pinned to the viewport corner with `z-50`. In a card, a demo or any container use `absolute` (inside a `relative` parent) or `static`, which ignores `position` offsets.
 - `label` is required and is not shown unless `extended`; there is no tooltip. Default icon is a plus; it turns only when you pass `actions` and no `icon`.
 - Your `onClick` runs first, and `preventDefault()` in it stops the toggle. `open` and the actions do nothing without a non-empty `actions` array.
-- Running an action closes the dial but does not move focus back to the button (Escape does), and clicking elsewhere closes it the same way.
+- Running an action closes the dial and, when focus is still on the action (its handler did not move it), puts focus back on the button, as Escape does; clicking elsewhere closes it and leaves focus where you clicked.
 
 ## Example
 ```tsx

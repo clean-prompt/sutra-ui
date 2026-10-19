@@ -4,6 +4,7 @@
 
 - Import: `import { EpisodeCard } from "@sutra/ui"` (or from `@sutra/ui/media`)
 - Source: `packages/ui/src/kits/media/media-cards` (kit `media`)
+- `data-slot`: `media-status`, `media-actions`, `media-progress`, `media-busy`
 - Also accepts the props of HTMLAttributes
 
 ## Props

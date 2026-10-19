@@ -7,11 +7,11 @@ server: ssr-safe
 ---
 
 ## Keyboard
-There is no keyboard handling of its own. Links are normal tab stops, and so are each code block's "Copy code" button and, with `onCite`, each citation pill (a button; Enter and Space activate it).
+There is no keyboard handling of its own. Links are normal tab stops, and so are each code block and each table wrapper while it overflows (scroll boxes, so the arrow keys scroll them), each code block's "Copy code" button and, with `onCite`, each citation pill (a button; Enter and Space activate it).
 
 ## Screen readers
 - The output is plain semantic HTML: `h1` to `h6`, `p`, `ul`, `ol`, `blockquote`, `table` with `thead` and `th`, `img`. Heading levels are written as in the source and are not shifted. An image without alt text gets `alt=""`.
-- A fenced block is a header with the language (or "text") and a button named "Copy code", which becomes "Copied" after a copy, then a `pre`. The code is not highlighted, and the scrolling `pre` and wide tables are not focusable.
+- A fenced block is a header with the language (or "text") and a button named "Copy code", which becomes "Copied" after a copy, then a `pre`. The code is not highlighted. The `pre` and the wrapper around a table are scroll boxes that get `tabindex="0"` while they overflow (arrow keys scroll them), and always have a name through `role="group"`: "ts code" (the language, or "Code") and "Table".
 - Citation pills: a `button` named "Source 2: Title" with `onCite`, a link with a hover card when the source has `href`, else a plain `sup`.
 - Task-list items are native checkboxes rendered by GFM.
 

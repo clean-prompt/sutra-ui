@@ -21,7 +21,7 @@ export interface StepIndicatorStep {
 }
 
 export interface StepsProps extends Omit<React.HTMLAttributes<HTMLOListElement>, "onChange"> {
-  /** Steps in order; each has a `label` and optional description. */
+  /** Steps in order; each has a `title` and optional description. */
   steps: StepIndicatorStep[];
   /** Zero-based index of the current step. Use `steps.length` to mark all complete. */
   current: number;
@@ -246,13 +246,13 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                   <span
                     aria-hidden
                     className={cn("absolute w-0.5 -translate-x-1/2 rtl:translate-x-1/2 rounded-full transition-colors duration-300", connectorColor)}
-                    style={{ left: markerSize / 2, top: markerSize + 6, bottom: 6 }}
+                    style={{ insetInlineStart: markerSize / 2, top: markerSize + 6, bottom: 6 }}
                   />
                 ) : null}
                 {content ? (
                   <div className="flex min-w-0 flex-1 flex-col gap-2">
                     {row}
-                    <div className="min-w-0" style={{ paddingLeft: markerSize + 12 }}>
+                    <div className="min-w-0" style={{ paddingInlineStart: markerSize + 12 }}>
                       {content}
                     </div>
                   </div>
@@ -277,8 +277,8 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                   className={cn("absolute h-0.5 -translate-y-1/2 rounded-full transition-colors duration-300", connectorColor)}
                   style={{
                     top: markerSize / 2,
-                    left: `calc(50% + ${markerSize / 2 + 8}px)`,
-                    right: `calc(-50% + ${markerSize / 2 + 8}px)`,
+                    insetInlineStart: `calc(50% + ${markerSize / 2 + 8}px)`,
+                    insetInlineEnd: `calc(-50% + ${markerSize / 2 + 8}px)`,
                   }}
                 />
               ) : null}

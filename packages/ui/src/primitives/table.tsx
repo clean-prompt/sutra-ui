@@ -9,6 +9,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing, hitArea, normalizeDensity, type Density } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useScrollable } from "../hooks/use-scrollable";
 import { Skeleton } from "./progress";
 
 /** Table row density: the shared `Density`, plus the legacy `"comfortable"` (→ `relaxed`). */
@@ -61,7 +62,7 @@ export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> 
   bare?: boolean;
 }
 
-/** Data table inside a bordered, scrollable box. */
+/** Data table inside a bordered, scrollable box. The box takes focus while it overflows (so the arrow keys scroll it) and becomes a named `region` when the table has an `aria-label` or `aria-labelledby`. */
 export const Table = React.forwardRef<HTMLTableElement, TableProps>(
   (
     {
@@ -77,6 +78,8 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
     ref
   ) => {
     const density = normalizeDensity(densityProp);
+    const boxRef = React.useRef<HTMLDivElement>(null);
+    const scrollable = useScrollable(boxRef);
     const ctx = React.useMemo(
       () => ({ density, striped, stickyHeader }),
       [density, striped, stickyHeader]
@@ -84,8 +87,15 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(
     return (
       <TableContext.Provider value={ctx}>
         <div
+          ref={boxRef}
+          tabIndex={scrollable ? 0 : undefined}
+          {...(props["aria-label"] || props["aria-labelledby"]
+            ? { role: "region", "aria-label": props["aria-label"], "aria-labelledby": props["aria-labelledby"] }
+            : {})}
           className={cn(
             "relative w-full overflow-auto scrollbar-thin",
+            focusRing,
+            "focus-visible:ring-inset",
             !bare && "rounded-box border border-border bg-card shadow-xs",
             containerClassName
           )}
@@ -396,8 +406,17 @@ export interface DataTableProps<T> {
   loadingRows?: number;
   /** Content shown in place of the body when `data` is empty. */
   emptyState?: React.ReactNode;
-  /** Called with the row and its index when a row is clicked; rows get a pointer cursor. */
+  /** Called with the row and its index when a row is clicked, or activated with Enter or Space; clickable rows get a pointer cursor and are focusable. */
   onRowClick?: (row: T, index: number) => void;
+  /**
+   * Accessible name of a row's selection checkbox (with `selectable`). Default "Select row" for every row: pass e.g.
+   * `(row) => "Select " + row.name` so the boxes can be told apart.
+   */
+  rowLabel?: (row: T, index: number) => string;
+  /** Names the scrollable region around the table (see `caption` for the table's own title). */
+  "aria-label"?: string;
+  /** Id of the element that names the scrollable region around the table. */
+  "aria-labelledby"?: string;
   /** Caption rendered under the table (`<caption>`), e.g. a source note or the table title. */
   caption?: React.ReactNode;
   /** Row density. Default `normal`; `"comfortable"` is accepted as a legacy alias of `relaxed`. */
@@ -426,10 +445,14 @@ function readKey<T>(row: T, key: string): unknown {
   return undefined;
 }
 
+function isEmptyValue(v: unknown) {
+  return v === null || v === undefined || v === "";
+}
+
 function compareValues(a: unknown, b: unknown) {
   if (a === b) return 0;
-  if (a === null || a === undefined || a === "") return 1;
-  if (b === null || b === undefined || b === "") return -1;
+  if (isEmptyValue(a)) return 1;
+  if (isEmptyValue(b)) return -1;
   if (a instanceof Date && b instanceof Date) return a.getTime() - b.getTime();
   if (typeof a === "number" && typeof b === "number") return a - b;
   if (typeof a === "boolean" && typeof b === "boolean") return a === b ? 0 : a ? -1 : 1;
@@ -459,6 +482,9 @@ export function DataTable<T>({
   loadingRows = 5,
   emptyState,
   onRowClick,
+  rowLabel,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   caption,
   density,
   striped,
@@ -485,7 +511,13 @@ export function DataTable<T>({
     if (!column) return indexed;
     const value = (row: T) => (column.sortValue ? column.sortValue(row) : readKey(row, column.key));
     const dir = sort.direction === "asc" ? 1 : -1;
-    return [...indexed].sort((a, b) => compareValues(value(a.row), value(b.row)) * dir || a.index - b.index);
+    return [...indexed].sort((a, b) => {
+      const va = value(a.row);
+      const vb = value(b.row);
+      // Empty values stay last in both directions: only real values flip with the direction.
+      const cmp = isEmptyValue(va) || isEmptyValue(vb) ? compareValues(va, vb) : compareValues(va, vb) * dir;
+      return cmp || a.index - b.index;
+    });
   }, [data, columns, sort, manualSorting, getRowId]);
 
   const cycleSort = (key: string) => {
@@ -510,6 +542,8 @@ export function DataTable<T>({
       containerClassName={className}
       className={tableClassName}
       aria-busy={loading || undefined}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
     >
       <TableHeader>
         <TableRow>
@@ -590,12 +624,23 @@ export function DataTable<T>({
                 key={id}
                 data-state={isSelected ? "selected" : undefined}
                 onClick={onRowClick ? () => onRowClick(row, index) : undefined}
-                className={cn(onRowClick && "cursor-pointer")}
+                {...(onRowClick
+                  ? {
+                      tabIndex: 0,
+                      onKeyDown: (e: React.KeyboardEvent<HTMLTableRowElement>) => {
+                        // Only the row itself: Enter / Space on a button or link inside keeps its own meaning.
+                        if (e.target !== e.currentTarget || (e.key !== "Enter" && e.key !== " ")) return;
+                        e.preventDefault();
+                        onRowClick(row, index);
+                      },
+                    }
+                  : {})}
+                className={cn(onRowClick && cn("cursor-pointer focus-visible:bg-accent/60", focusRing))}
               >
                 {selectable ? (
                   <TableCell>
                     <TableCheckbox
-                      aria-label="Select row"
+                      aria-label={rowLabel ? rowLabel(row, index) : "Select row"}
                       checked={isSelected}
                       onCheckedChange={(checked) =>
                         setSelected(checked ? [...selected, id] : selected.filter((x) => x !== id))

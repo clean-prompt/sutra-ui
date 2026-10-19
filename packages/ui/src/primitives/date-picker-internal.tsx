@@ -6,8 +6,59 @@ import { cn, focusRing, type Size } from "../lib/cn";
 import { addDays, calendarDayDiff, startOfDay } from "../lib/time";
 import { inputShellVariants } from "./input";
 import { filledTrigger } from "./input-internal";
+import type { CalendarProps } from "./calendar";
 
 // Private parts shared by DatePicker, DateRangePicker and DateTimePicker (date-picker.tsx re-exports the public names).
+
+/* ---------------------------------------------------------------- */
+/* Calendar language                                                 */
+/* ---------------------------------------------------------------- */
+
+type CalendarLocaleProps = Pick<CalendarProps, "formatters" | "weekStartsOn">;
+type WeekInfoLocale = Intl.Locale & { getWeekInfo?: () => { firstDay: number }; weekInfo?: { firstDay: number } };
+
+/**
+ * DayPicker takes a date-fns `Locale` object, but the pickers take a BCP 47 string (like `Intl`). This turns the string into the
+ * DayPicker props that matter: the visible month and weekday names and the digits through `Intl`, and the first day of the week
+ * from `Intl.Locale` where the runtime knows it. Without a locale (or with one `Intl` rejects) it returns {} and DayPicker keeps
+ * its defaults. The aria labels ("Go to the Next Month", "Tuesday, October 20th, 2026") stay DayPicker's English: they are not
+ * derived from the locale, so pass `labels` to a `Calendar` where they must be translated.
+ */
+export function calendarLocaleProps(locale: string | undefined): CalendarLocaleProps {
+  if (!locale) return {};
+  try {
+    const dtf = (options: Intl.DateTimeFormatOptions, tz?: string) =>
+      new Intl.DateTimeFormat(locale, tz ? { ...options, timeZone: tz } : options);
+    const nf = new Intl.NumberFormat(locale);
+    let weekStartsOn: CalendarProps["weekStartsOn"];
+    try {
+      const info = new Intl.Locale(locale) as WeekInfoLocale;
+      const first = (info.getWeekInfo?.() ?? info.weekInfo)?.firstDay;
+      // Intl counts Monday as 1 and Sunday as 7; DayPicker counts Sunday as 0.
+      if (typeof first === "number" && first >= 1 && first <= 7) weekStartsOn = (first % 7) as CalendarProps["weekStartsOn"];
+    } catch {
+      /* no week info in this runtime: DayPicker keeps its default */
+    }
+    // DayPicker hands either its options or its DateLib to a formatter.
+    const zone = (o?: { timeZone?: string; options?: { timeZone?: string } }) => o?.timeZone ?? o?.options?.timeZone;
+    return {
+      weekStartsOn,
+      formatters: {
+        formatCaption: (month, options) => dtf({ month: "long", year: "numeric" }, zone(options)).format(month),
+        formatMonthDropdown: (month, lib) => dtf({ month: "long" }, zone(lib)).format(month),
+        formatYearDropdown: (year, lib) => dtf({ year: "numeric" }, zone(lib)).format(year),
+        formatWeekdayName: (weekday, options) => dtf({ weekday: "short" }, zone(options)).format(weekday),
+        formatDay: (date, options) => dtf({ day: "numeric" }, zone(options)).format(date),
+        formatWeekNumber: (week) => nf.format(week),
+      },
+    };
+  } catch {
+    return {};
+  }
+}
+
+/** `calendarLocaleProps`, computed once per locale. */
+export const useCalendarLocale = (locale: string | undefined) => React.useMemo(() => calendarLocaleProps(locale), [locale]);
 
 /* ---------------------------------------------------------------- */
 /* Date helpers                                                      */
@@ -107,7 +158,7 @@ export interface BasePickerProps {
   size?: Size;
   /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
   variant?: "outline" | "filled";
-  /** BCP 47 locale passed to `Intl.DateTimeFormat`. */
+  /** BCP 47 locale for the trigger text (`Intl.DateTimeFormat`) and the calendar's month and weekday names, digits and first weekday. */
   locale?: string;
   /** Options passed to `Intl.DateTimeFormat`. Defaults to `{ dateStyle: "medium" }`. */
   formatOptions?: Intl.DateTimeFormatOptions;
@@ -128,7 +179,7 @@ export interface BasePickerProps {
   defaultOpen?: boolean;
   /** Called when the popover opens or closes (selection, Escape, outside click). */
   onOpenChange?: (open: boolean) => void;
-  /** Classes for the trigger button. */
+  /** Classes for the wrapper around the trigger button (the button itself takes no class). */
   className?: string;
   /** Classes for the calendar popover. */
   contentClassName?: string;

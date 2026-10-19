@@ -17,7 +17,7 @@
 | `marks` | `(number \| SliderMark)[]` |  | Tick marks under the track; numbers or `{ value, label }`. |
 | `showValue` | `boolean \| "always"` | `false` | Show a value bubble above the thumb on hover, focus and drag. `"always"` keeps it visible. |
 | `size` | `Size` | `"md"` | Track and thumb size. |
-| `thumbLabels` | `string[]` |  | Accessible labels per thumb, e.g. `["Minimum", "Maximum"]`. |
+| `thumbLabels` | `string[]` |  | Accessible labels per thumb, e.g. `["Volume"]` or `["Minimum", "Maximum"]`. Without it a single thumb is named by `aria-label` / `aria-labelledby` (or the surrounding `FieldLabel`); two thumbs are "Minimum" and "Maximum". |
 | `tone` | `ToneInput` |  | Semantic colour (`success`, `warning`, …). Takes precedence over `accent`. |
 
 ## Notes
@@ -45,9 +45,9 @@ In RTL on a horizontal slider ArrowLeft raises and ArrowRight lowers, and the tr
 
 ### Screen readers
 
-- Each thumb is a `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation`. A single thumb has no name unless you pass `thumbLabels`, such as `["Volume"]`; two thumbs are named "Minimum" and "Maximum" by default, more are "Value 1 of 3" and so on. `getValueText` sets `aria-valuetext` per thumb, for example `(v) => v + "%"`.
-- `aria-label` and `id` go to the Radix root `span`, which has no role, so they do not name a thumb. The slider does not read `Field`, so a `FieldLabel` does not name it either: use `thumbLabels`.
-- The value bubble and the tick marks and their labels are `aria-hidden`; put what matters in `getValueText`. `invalid` sets `aria-invalid` on the root and turns the range red.
+- Each thumb is a `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation`. A single thumb is named by `thumbLabels` (such as `["Volume"]`), else by `aria-label` or `aria-labelledby` on the `Slider`, else by a surrounding `FieldLabel`; two thumbs are named "Minimum" and "Maximum" by default (an `aria-label` on the `Slider` then becomes a `role="group"` around them), more are "Value 1 of 3" and so on. `getValueText` sets `aria-valuetext` per thumb, for example `(v) => v + "%"`.
+- `id` stays on the Radix root `span` (which has no role), so a `FieldLabel` click does not focus a thumb. The slider reads `Field`: its id, `disabled`, invalid state and description, hint and error ids (`aria-describedby`, also on every thumb); an explicit prop wins.
+- The value bubble and the tick marks and their labels are `aria-hidden`; put what matters in `getValueText`. `invalid` (or an invalid `Field`) sets `aria-invalid` on the root and on each thumb and turns the range red.
 
 ### Reduced motion
 

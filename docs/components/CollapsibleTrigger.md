@@ -4,6 +4,7 @@
 
 - Import: `import { CollapsibleTrigger } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/collapsible` (primitives)
+- `data-slot`: `collapsible-trigger`
 - Part of [`Collapsible`](Collapsible.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

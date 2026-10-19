@@ -4,7 +4,7 @@
 
 - Import: `import { BottomTabBarItem } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
 - Source: `packages/ui/src/patterns/bottom-tab-bar` (patterns)
-- `data-slot`: `indicator`
+- `data-slot`: `indicator`, `badge-dot`, `badge-count`
 - Part of [`BottomTabBar`](BottomTabBar.md)
 - Also accepts the props of HTMLAttributes
 

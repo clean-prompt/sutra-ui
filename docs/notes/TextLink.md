@@ -30,7 +30,7 @@ Plain markup with no browser API, so server and client output match.
 - The element is chosen for you: a `<button>` when there is an `onClick` and no `href`, otherwise an `<a>`. Pass `as="a"` or `as="button"` to force one. `as="a"` without `href` is not focusable. `ref` is typed as an anchor in both cases, and `external` does nothing on a button.
 - `underline` defaults to `hover`: inside running text the link shows only its colour until the pointer is over it, so use `underline="always"` there. `size` defaults to `inherit`, which takes the surrounding font size.
 - `target="_blank"` on its own gets `rel="noopener noreferrer"` but not the screen reader hint; only `external` adds the hint. An explicit `target` or `rel` always wins over what `external` would set.
-- With `asChild`, `external` still sets `target` and `rel` on the child and adds the arrow, but not the screen reader hint. A disabled `asChild` link keeps the child's `href`, with `aria-disabled`, `tabindex="-1"` and clicks blocked in the capture phase, so a router link does not navigate.
+- With `asChild`, `external` still sets `target` and `rel` on the child and adds the arrow and the hidden " (opens in a new tab)" text, as the plain link does. A disabled `asChild` link keeps the child's `href`, with `aria-disabled`, `tabindex="-1"` and clicks blocked in the capture phase, so a router link does not navigate.
 
 ## Example
 ```tsx

@@ -4,7 +4,7 @@
 
 - Import: `import { QueueList } from "@sutra/ui"` (or from `@sutra/ui/media`)
 - Source: `packages/ui/src/kits/media/audio-player` (kit `media`)
-- `data-slot`: `${p.slot}`, `queue-drop-indicator`, `queue-handle`, `queue-select`, `queue-remove`, `queue-announcer`
+- `data-slot`: `queue-drop-indicator`, `queue-handle`, `queue-select`, `queue-remove`, `queue-announcer`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { BlueprintCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-blueprints` (kit `agent-admin`)
+- `data-slot`: `blueprint-cli`
 - Also accepts the props of HTMLAttributes
 
 ## Props

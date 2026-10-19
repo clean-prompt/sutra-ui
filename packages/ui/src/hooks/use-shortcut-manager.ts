@@ -5,6 +5,10 @@ import { detectShortcutPlatform, type ShortcutManager, type ShortcutPlatform } f
 export const ShortcutManagerContext = React.createContext<ShortcutManager | null>(null);
 ShortcutManagerContext.displayName = "ShortcutManagerContext";
 
+/** The `platform` a `ShortcutProvider` was given explicitly (undefined when it detects the platform itself). */
+export const ShortcutPlatformContext = React.createContext<ShortcutPlatform | undefined>(undefined);
+ShortcutPlatformContext.displayName = "ShortcutPlatformContext";
+
 /** Scope name set by `<ShortcutScope>`; `useShortcut` calls inside default to it. */
 export const ShortcutScopeNameContext = React.createContext<string | undefined>(undefined);
 ShortcutScopeNameContext.displayName = "ShortcutScopeNameContext";
@@ -19,9 +23,16 @@ export function useHasShortcutProvider() {
   return React.useContext(ShortcutManagerContext) != null;
 }
 
-/** Platform used for `mod` and glyphs (from the provider, else detected). */
+const subscribeNever = () => () => {};
+const serverPlatform = (): ShortcutPlatform => "other";
+
+/**
+ * Platform used for `mod` and glyphs: the `platform` given to the `ShortcutProvider`, else detected. Detection is not read
+ * during the hydrating render: the server and the first client render use the non-Mac default and a Mac browser settles on its
+ * own platform right after hydration, so the markup never mismatches. (A client-only render detects at once.)
+ */
 export function useShortcutPlatform(): ShortcutPlatform {
-  const manager = React.useContext(ShortcutManagerContext);
-  const [detected] = React.useState(detectShortcutPlatform);
-  return manager?.platform ?? detected;
+  const explicit = React.useContext(ShortcutPlatformContext);
+  const detected = React.useSyncExternalStore(subscribeNever, detectShortcutPlatform, serverPlatform);
+  return explicit ?? detected;
 }

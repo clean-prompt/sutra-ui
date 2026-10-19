@@ -4,7 +4,7 @@
 
 - Import: `import { ToolGroup } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
-- `data-slot`: `tool-group`
+- `data-slot`: `tool-group`, `tool-timeline-rail`
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
 
 ## Props

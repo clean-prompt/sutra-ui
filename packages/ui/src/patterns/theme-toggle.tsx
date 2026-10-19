@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiComputerLine, RiMoonClearLine, RiSunLine } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useMediaQuery } from "../hooks/use-media-query";
 import { Button } from "../primitives/button";
 import { SegmentedControl, type SegmentedControlProps } from "../primitives/segmented-control";
@@ -67,32 +68,55 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement & HTMLDivElement, 
     },
     ref
   ) => {
-    const [initial] = React.useState<ThemeToggleMode>(() => {
-      const stored = value === undefined ? readStored(storageKey) : undefined;
-      if (stored && modes.includes(stored)) return stored;
-      if (defaultValue) return defaultValue;
-      if (modes.includes("system")) return "system";
-      return typeof document !== "undefined" && document.documentElement.classList.contains("dark") ? "dark" : "light";
+    // The first render (server and hydration) uses only props: the saved mode and the page theme are read after mount.
+    const firstMode: ThemeToggleMode = defaultValue ?? (modes.includes("system") ? "system" : "light");
+    const [ready, setReady] = React.useState(false);
+    const restoring = React.useRef(false);
+    const [mode, setMode] = useControllableState<ThemeToggleMode>({
+      value,
+      defaultValue: firstMode,
+      onChange: (next) => {
+        if (!restoring.current) onValueChange?.(next);
+      },
     });
-    const [mode, setMode] = useControllableState<ThemeToggleMode>({ value, defaultValue: initial, onChange: onValueChange });
     const systemDark = useMediaQuery(DARK_QUERY);
     const resolved: "light" | "dark" = mode === "system" ? (systemDark ? "dark" : "light") : mode;
 
+    // Restore before paint (no flash of the wrong label). It is not a user change, so it does not call onValueChange.
+    useIsoLayoutEffect(() => {
+      if (value === undefined) {
+        const stored = readStored(storageKey);
+        const restored: ThemeToggleMode | undefined =
+          stored && modes.includes(stored)
+            ? stored
+            : !defaultValue && !modes.includes("system") && document.documentElement.classList.contains("dark")
+              ? "dark"
+              : undefined;
+        if (restored) {
+          restoring.current = true;
+          setMode(restored);
+          restoring.current = false;
+        }
+      }
+      setReady(true);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     React.useEffect(() => {
-      if (!applyToDocument || typeof document === "undefined") return;
+      if (!ready || !applyToDocument || typeof document === "undefined") return;
       const root = document.documentElement;
       root.classList.toggle("dark", resolved === "dark");
       root.style.colorScheme = resolved;
-    }, [resolved, applyToDocument]);
+    }, [ready, resolved, applyToDocument]);
 
     React.useEffect(() => {
-      if (value !== undefined || !storageKey) return;
+      if (!ready || value !== undefined || !storageKey) return;
       try {
         window.localStorage.setItem(storageKey, mode);
       } catch {
         /* storage blocked: still applies for this page */
       }
-    }, [mode, value, storageKey]);
+    }, [ready, mode, value, storageKey]);
 
     if (variant === "segmented") {
       return (

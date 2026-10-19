@@ -11,6 +11,7 @@ import { Progress } from "../primitives/progress";
 import { formatBytes as formatBytesLib } from "../lib/format";
 import { clamp } from "../lib/math";
 import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
+import { setInputFiles } from "../lib/file-input";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useChangeKey } from "../hooks/use-change-key";
 import { Button, type ButtonProps } from "../primitives/button";
@@ -165,6 +166,12 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
       [commit]
     );
 
+    // With a `name`, the hidden input carries the whole list so a native form post sends the files.
+    const syncInput = React.useCallback(() => {
+      if (name) setInputFiles(inputRef.current, filesRef.current.map((f) => f.file));
+    }, [name]);
+    React.useEffect(syncInput, [syncInput, files]);
+
     const ctx = React.useMemo<FileUploadContextValue>(
       () => ({
         files,
@@ -205,6 +212,7 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
             onChange={(e) => {
               addFiles(Array.from(e.currentTarget.files ?? []));
               e.currentTarget.value = "";
+              syncInput();
             }}
           />
           {children}

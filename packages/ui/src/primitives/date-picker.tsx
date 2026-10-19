@@ -9,6 +9,7 @@ import {
   ClearButton,
   dateTriggerVariants,
   popoverContentClass,
+  useCalendarLocale,
   useOptionalControlled,
   type BasePickerProps,
 } from "./date-picker-internal";
@@ -97,6 +98,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
     onOpenChange
   );
 
+  const calendarLocale = useCalendarLocale(locale);
   const formatter = React.useMemo(
     () => new Intl.DateTimeFormat(locale, formatOptions ?? { dateStyle: "medium" }),
     [locale, formatOptions]
@@ -138,6 +140,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
           className={cn(popoverContentClass, "w-auto", contentClassName)}
         >
           <Calendar
+            {...calendarLocale}
             mode="single"
             selected={value}
             defaultMonth={value}

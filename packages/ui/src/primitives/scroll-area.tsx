@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useScrollEdges, type ScrollEdges as Edges } from "../hooks/use-scroll-edges";
 import { useRootDirection } from "../hooks/use-direction";
+import { useScrollable } from "../hooks/use-scrollable";
 
 type FadeEdges = boolean | "vertical" | "horizontal";
 
@@ -38,7 +39,7 @@ function buildMask(edges: Edges, fade: FadeEdges): string | undefined {
   return layers.length ? layers.join(", ") : undefined;
 }
 
-/** Custom-styled scroll container with thin overlay scrollbars and optional edge fades. */
+/** Custom-styled scroll container with thin overlay scrollbars and optional edge fades. The viewport is focusable while it overflows; `aria-label` / `aria-labelledby` name it as a `region`. */
 export const ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPrimitive.Root>, ScrollAreaProps>(
   (
     {
@@ -49,6 +50,8 @@ export const ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPri
       fadeEdges = false,
       viewportClassName,
       viewportRef,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
       ...props
     },
     ref
@@ -57,6 +60,7 @@ export const ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPri
     const localRef = React.useRef<HTMLDivElement | null>(null);
     const edges = useScrollEdges(localRef, { enabled: !!fadeEdges });
     const handleViewportRef = useMergedRefs(localRef, viewportRef);
+    const scrollable = useScrollable(localRef);
 
     const mask = fadeEdges ? buildMask(edges, fadeEdges) : undefined;
     const maskStyle: React.CSSProperties | undefined = mask
@@ -74,6 +78,9 @@ export const ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPri
         <ScrollAreaPrimitive.Viewport
           ref={handleViewportRef}
           style={maskStyle}
+          // The viewport is the scroller, so it takes the keyboard focus (while it overflows) that lets arrow keys scroll it, and the name.
+          tabIndex={scrollable ? 0 : undefined}
+          {...(ariaLabel || ariaLabelledBy ? { role: "region", "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy } : {})}
           className={cn(
             "size-full rounded-[inherit] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35",
             viewportClassName

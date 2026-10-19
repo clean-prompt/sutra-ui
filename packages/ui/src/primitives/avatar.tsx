@@ -96,7 +96,7 @@ export interface AvatarProps
   shape?: AvatarShape;
   /** Image URL; the initials fallback shows while it loads or when it fails. */
   src?: string;
-  /** Alt text of the image. Defaults to `name`. */
+  /** Alt text of the image and label of the initials fallback. Defaults to `name`; `""` marks the avatar decorative (use it beside a visible name). */
   alt?: string;
   /** Used to derive initials, the fallback color and the default alt text. */
   name?: string;
@@ -156,7 +156,8 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
     const ring = ringProp ?? ctx.ring ?? false;
     const monogram = initials(name, initialsOptions);
     const tint = color ?? (name && colorful && !fallback ? colorForSeed(name) : undefined);
-    const label = alt || name || undefined;
+    // `alt=""` marks the avatar decorative (the name is next to it): no image alt and no fallback label.
+    const label = alt === "" ? undefined : alt || name || undefined;
     const square = shape === "square";
 
     return (
@@ -293,6 +294,7 @@ export const AvatarLabelGroup = React.forwardRef<HTMLDivElement, AvatarLabelGrou
             size={s.avatar}
             src={src}
             name={typeof name === "string" ? name : undefined}
+            alt=""
             status={status}
             verified={verified}
             shape={shape}

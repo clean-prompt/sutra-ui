@@ -4,7 +4,7 @@
 
 - Import: `import { LocalModelBrowser } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/local-models` (kit `agent-admin`)
-- `data-slot`: `local-model-browser`
+- `data-slot`: `local-model-browser`, `local-model-item`, `local-model-progress`
 - Also accepts the props of HTMLAttributes
 
 ## Props

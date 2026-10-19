@@ -13,13 +13,13 @@
 | `as` | `"p" \| "span" \| "div" \| "small" \| "strong" \| "em"` | `"p"` | Element to render, independent of the visual styles. |
 | `asChild` | `boolean` |  | Render as the child element instead of the text tag, keeping the text styles. |
 | `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Type scale step: `xs`, `sm`, `md` (base), `lg` or `xl`. |
-| `tone` | `"default" \| "muted"` | `"default"` | `default` is plain foreground text; the semantic tones follow `Tone` (`muted` is the legacy name of `neutral`). |
+| `tone` | `"default" \| "primary" \| "neutral" \| "success" \| "warning" \| "destructive" \| "info" \| "muted"` | `"default"` | `default` is plain foreground text; the semantic tones follow `Tone` (`muted` is the legacy name of `neutral`). |
 | `weight` | `"regular" \| "medium" \| "semibold"` | `"regular"` | Font weight. |
 
 ## Variants
 
 - `size`: `xs`, `sm`, `md`, `lg`, `xl` (default "md")
-- `tone`: `default`, `muted` (default "default")
+- `tone`: `default`, `primary`, `neutral`, `success`, `warning`, `destructive`, `info`, `muted` (default "default")
 - `weight`: `regular`, `medium`, `semibold` (default "regular")
 
 ## Notes

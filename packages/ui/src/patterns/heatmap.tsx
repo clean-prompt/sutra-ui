@@ -417,7 +417,10 @@ export interface HeatmapGridProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   legendLabels?: [React.ReactNode, React.ReactNode];
   /** Show column indices below the grid, labelling every Nth (true = every 1). */
   showIndices?: boolean | number;
-  /** Called with the cell and its index when a cell is clicked; cells then become buttons. */
+  /**
+   * Called with the cell and its index when a cell is clicked, or activated with Enter or Space. Cells stay
+   * `gridcell`s with roving focus (they do not become buttons) and get a pointer cursor.
+   */
   onCellClick?: (cell: HeatmapGridCell, index: number) => void;
 }
 
@@ -621,7 +624,10 @@ export interface CalendarHeatmapProps
   legend?: boolean;
   /** Show day numbers inside cells (month mode default). */
   showDayNumbers?: boolean;
-  /** Called with the day and its value when a cell is clicked; cells then become buttons. */
+  /**
+   * Called with the day and its value when a cell is clicked, or activated with Enter or Space. Cells stay
+   * `gridcell`s with roving focus (they do not become buttons) and get a pointer cursor.
+   */
   onCellClick?: (date: Date, value: number) => void;
 }
 

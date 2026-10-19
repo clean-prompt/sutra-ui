@@ -4,7 +4,7 @@
 
 - Import: `import { ToolTimelineItem } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
-- `data-slot`: `tool-exit-code`, `tool-timeline-item`
+- `data-slot`: `tool-exit-code`, `tool-timeline-item`, `tool-timeline-rail`
 - Part of [`ToolTimeline`](ToolTimeline.md)
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
 

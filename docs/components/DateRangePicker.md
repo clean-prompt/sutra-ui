@@ -16,7 +16,7 @@
 | `aria-label` | `string` |  | Accessible name of the trigger when there is no visible label. |
 | `aria-labelledby` | `string` |  | Id(s) of the element(s) that label the trigger. |
 | `cancelLabel` | `string` | `"Cancel"` | Text of the cancel button. |
-| `className` | `string` |  | Classes for the trigger button. |
+| `className` | `string` |  | Classes for the wrapper around the trigger button (the button itself takes no class). |
 | `clearable` | `boolean` |  | Show an inline button that resets the value. |
 | `contentClassName` | `string` |  | Classes for the calendar popover. |
 | `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled. |
@@ -28,7 +28,7 @@
 | `formatRange` | `(range: DateRange) => string` |  | Custom formatter for the trigger text. |
 | `id` | `string` |  | `id` of the trigger, so a `<label htmlFor>` or `Field` can point at it. |
 | `invalid` | `boolean` |  | Marks the picker invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
-| `locale` | `string` |  | BCP 47 locale passed to `Intl.DateTimeFormat`. |
+| `locale` | `string` |  | BCP 47 locale for the trigger text (`Intl.DateTimeFormat`) and the calendar's month and weekday names, digits and first weekday. |
 | `name` | `string` |  | Name of the hidden input that submits the value with a surrounding form. |
 | `numberOfMonths` | `number` | `2` | Number of months shown side by side. |
 | `onOpenChange` | `(open: boolean) => void` |  | Called when the popover opens or closes (selection, Escape, outside click). |
@@ -83,7 +83,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 - Nothing is committed until Apply: clicking days, presets or closing with Escape or an outside click leaves `value` alone, and the next open starts from the committed value. `clearable` clears at once, with no Apply.
 - Apply is disabled until a start day is picked, and a range with only a start is applied as a one day range (`to` equals `from`).
 - `presets` replaces the defaults (`defaultDateRangePresets`: Today, Yesterday, Last 7 days, Last 30 days, This month, Last month); `presets={[]}` hides the sidebar. Each `getRange` runs when a preset is chosen and when the popover renders, so relative ranges stay current. `numberOfMonths` defaults to 2.
-- `locale` only formats the trigger and footer text; the calendar keeps DayPicker's default language and week start. With `name`, two hidden inputs post `name[from]` and `name[to]` as `YYYY-MM-DD`.
+- `locale` formats the trigger and footer text and sets the calendar's month and weekday names, digits and first weekday; its aria labels stay English. With `name`, two hidden inputs post `name[from]` and `name[to]` as `YYYY-MM-DD`.
 
 ## Example
 

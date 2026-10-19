@@ -126,6 +126,8 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
       barClassName,
       loading,
       style,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
       ...props
     },
     ref
@@ -206,12 +208,12 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
         ) : (
         <div
           role="meter"
-          aria-valuenow={v}
+          aria-valuenow={Math.min(Math.max(v, Math.min(min, max)), Math.max(min, max))}
           aria-valuemin={min}
           aria-valuemax={max}
           aria-valuetext={ariaText}
-          aria-labelledby={label ? labelId : undefined}
-          aria-label={label ? undefined : "Usage"}
+          aria-labelledby={ariaLabelledBy ?? (ariaLabel ? undefined : label ? labelId : undefined)}
+          aria-label={ariaLabel ?? (ariaLabelledBy || label ? undefined : "Usage")}
           className={cn(segments ? "flex gap-0.5" : "relative overflow-hidden rounded-full bg-muted", trackHeight[size], barClassName)}
         >
           {segments ? (

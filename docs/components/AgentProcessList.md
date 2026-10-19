@@ -4,7 +4,7 @@
 
 - Import: `import { AgentProcessList } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-processes` (kit `agent`)
-- `data-slot`: `agent-process-list-skeleton`
+- `data-slot`: `agent-process-list-skeleton`, `agent-process-skeleton`
 - Also accepts the props of HTMLAttributes
 
 ## Props

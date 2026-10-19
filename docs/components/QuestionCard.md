@@ -4,6 +4,7 @@
 
 - Import: `import { QuestionCard } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/question-card` (kit `ai`)
+- `data-slot`: `question-answers`, `question-card`, `question-review`, `question-answer`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -188,7 +188,7 @@ describe("SectionRail", () => {
     const links = within(nav).getAllByRole("link");
     expect(links.map((l) => l.getAttribute("href"))).toEqual(["#intro", "#usage", "#api"]);
     expect(links[0]).toHaveAttribute("aria-current", "location");
-    expect(links[2]!.style.paddingLeft).toBe("24px");
+    expect(links[2]!.style.paddingInlineStart).toBe("24px");
     see("usage");
     expect(links[1]).toHaveAttribute("aria-current", "location");
     expect(links[0]).not.toHaveAttribute("aria-current");
@@ -290,7 +290,7 @@ describe("SectionRail", () => {
     const nav = screen.getByRole("navigation", { name: "Sections" });
     expect(nav).toHaveAttribute("data-orientation", "horizontal");
     expect(within(nav).queryByText("On this page")).toBeNull();
-    expect(within(nav).getAllByRole("link")[2]!.style.paddingLeft).toBe("");
+    expect(within(nav).getAllByRole("link")[2]!.style.paddingInlineStart).toBe("");
     expect(nav.querySelector("ul")!.className).toContain("overflow-x-auto");
     see("api");
     expect(within(nav).getByRole("link", { name: "API" })).toHaveAttribute("aria-current", "location");

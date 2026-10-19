@@ -12,7 +12,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `color` | `ProgressColor` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
-| `formatValue` | `(value: number, max: number) => React.ReactNode` |  | Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". |
+| `formatValue` | `(value: number, max: number) => React.ReactNode` |  | Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". A text or number result is also used as `aria-valuetext`. |
 | `indeterminate` | `boolean` |  | Forces the looping animation regardless of `value` (also used when `value` is null). |
 | `indicatorClassName` | `string` |  | Classes for the filled indicator bar (`className` styles the track). |
 | `label` | `React.ReactNode` |  | Text shown above the bar; it also becomes the accessible name. |
@@ -106,7 +106,7 @@ Server render: part of it fills in after mount. Renders on the server, but direc
 ### Gotchas
 
 - `value` is clamped to 0 to `max`; an out-of-range value never reaches Radix's console error. `max <= 0` reads as an empty bar. `showValue` is `true` (above next to the label, else on the right), `"top"` or `"right"`.
-- `formatValue` changes only the visible text, not `aria-valuetext`. Pass Radix's `getValueLabel` for that.
+- `formatValue` also sets `aria-valuetext` when it returns text or a number ("3 / 8 GB"), so the bar reads what it shows; a JSX result cannot be spoken, so the default percentage stays. Radix's `getValueLabel` or an explicit `aria-valuetext` overrides it.
 - When there is a `label` or a shown value, the bar sits in a wrapper: `className` then styles the wrapper, not the track (use `indicatorClassName` for the fill).
 - `ProgressCircle` has no indeterminate state; use `Spinner` for that. Its centre text is `children`, or the percentage unless `showValue={false}`.
 

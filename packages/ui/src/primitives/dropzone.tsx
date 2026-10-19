@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiUploadCloud2Line } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { formatBytes } from "../lib/format";
+import { sameFile, setInputFiles } from "../lib/file-input";
 import { useMountedRef } from "../hooks/use-async-action";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { getFileCategory } from "../assets/file-format";
@@ -239,7 +240,7 @@ export interface DropzoneProps
   title?: React.ReactNode;
   /** Defaults to a description of `accept` / `maxSize`. */
   hint?: React.ReactNode;
-  /** Name for the underlying file input. */
+  /** Name for the underlying file input. With it, the accepted files stay on the input so a native form post sends them. */
   name?: string;
   /** Ref to the hidden `<input type="file">`, e.g. to open the picker from your own button. */
   inputRef?: React.Ref<HTMLInputElement>;
@@ -299,6 +300,24 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       if (!disabled) inputRef.current?.click();
     };
 
+    // With a `name`, the input keeps the accepted files so a native form post sends them (the earlier ones too while
+    // `currentCount` says you still hold some).
+    const held = React.useRef<File[]>([]);
+    const keepOnInput = (accepted: File[]) => {
+      if (!name || !accepted.length) return;
+      const earlier = multiple && currentCount > 0 ? held.current : [];
+      const next = [...earlier, ...accepted.filter((f) => !earlier.some((e) => sameFile(e, f)))];
+      if (setInputFiles(inputRef.current, next)) held.current = next;
+    };
+
+    // Holding nothing any more (`currentCount` back to 0) empties the input too.
+    React.useEffect(() => {
+      if (name && currentCount === 0 && held.current.length) {
+        held.current = [];
+        setInputFiles(inputRef.current, []);
+      }
+    }, [name, currentCount]);
+
     const handleFiles = (list: FileList | File[] | null) => {
       if (!list || disabled) return;
       const { accepted, rejections } = validateFiles(Array.from(list), {
@@ -308,6 +327,7 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
         multiple,
         currentCount,
       });
+      keepOnInput(accepted);
       onDrop?.(accepted, rejections);
     };
 
@@ -455,7 +475,9 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           onChange={(e) => {
             const picked = Array.from(e.currentTarget.files ?? []);
             handleFiles(folderPick ? withPickedPaths(picked) : picked);
-            e.currentTarget.value = "";
+            // Today's behaviour: empty the input so the same file can be picked again. With a `name` (and a browser that can
+            // set `input.files`) the accepted files stay on it instead; a rejected pick must not be posted, so it goes back to them.
+            if (!name || !setInputFiles(inputRef.current, held.current)) e.currentTarget.value = "";
           }}
         />
       </>

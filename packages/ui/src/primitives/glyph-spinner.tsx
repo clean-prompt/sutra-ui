@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Spinner, spinnerGlyphFrames, type SpinnerGlyphFrameSet } from "./spinner";
+import { Spinner, spinnerGlyphFrames, type SpinnerGlyphFrameSet, type SpinnerProps } from "./spinner";
 
 /* ------------------------------------------------------------------ */
 /* GlyphSpinner                                                        */
@@ -21,6 +21,8 @@ export interface GlyphSpinnerProps extends React.HTMLAttributes<HTMLSpanElement>
   label?: string;
   /** Pause on the current frame. */
   paused?: boolean;
+  /** Glyph size as on `Spinner`: `xs` to `xl` sets the font size. Leave it out to inherit the parent's font size. */
+  size?: NonNullable<SpinnerProps["size"]>;
 }
 
 /** Text-glyph spinner (braille dots, arcs, …): a preset of `<Spinner variant="glyph">`. Holds a static frame under reduced motion. */

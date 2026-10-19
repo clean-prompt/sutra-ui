@@ -465,7 +465,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
               size="icon-xs"
               aria-label={`Delete ${item.text}`}
               onClick={() => remove(item.id)}
-              className="opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100"
+              className="opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100"
             >
               <RiDeleteBinLine aria-hidden />
             </Button>

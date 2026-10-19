@@ -4,7 +4,7 @@
 
 - Import: `import { ProcessTable } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ops/process-table` (kit `ops`)
-- `data-slot`: `process-group-count`, `process-table-skeleton`
+- `data-slot`: `process-group-count`, `process-table-skeleton`, `process-group-quit`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,7 +4,7 @@
 
 - Import: `import { GeoMarkerLayer } from "@sutra/ui"` (or from `@sutra/ui/geo`)
 - Source: `packages/ui/src/kits/geo/geo-marker-layer` (kit `geo`)
-- `data-slot`: `geo-marker-layer`, `geo-marker-item`, `geo-marker-visual`, `geo-marker-cluster`, `geo-marker-badge`, `geo-marker`
+- `data-slot`: `geo-marker-layer`, `geo-marker-item`, `geo-marker-visual`, `geo-marker-cluster`, `geo-marker-badge`, `geo-marker`, `geo-marker-tooltip`
 - Also accepts the props of HTMLAttributes
 
 ## Props

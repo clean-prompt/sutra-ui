@@ -11,7 +11,7 @@
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `alt` | `string` |  | Alt text of the image. Defaults to `name`. |
+| `alt` | `string` |  | Alt text of the image and label of the initials fallback. Defaults to `name`; `""` marks the avatar decorative (use it beside a visible name). |
 | `color` | `string` |  | Explicit fallback colour (any CSS colour); overrides the colour derived from `name`. |
 | `colorful` | `boolean` | `true` | Colorize the initials fallback deterministically from `name` (via `colorForSeed`). Default true. |
 | `fallback` | `React.ReactNode` |  | Custom fallback content (overrides auto initials). |
@@ -66,9 +66,9 @@ Not focusable: no keyboard interaction. Wrap it in a `Button` or a link when it 
 
 ### Screen readers
 
-- With `name` or `alt` the fallback is a `role="img"` whose `aria-label` is `alt` (or `name` when `alt` is empty); the loaded `<img>` gets `alt` or `name` as its alt text. With neither, the fallback is an unlabelled `RiUserLine` icon (`aria-hidden`), so a nameless avatar is silent.
+- With `name` or `alt` the fallback is a `role="img"` whose `aria-label` is `alt` (or `name` when `alt` is not given; `alt=""` leaves it unlabelled); the loaded `<img>` gets `alt` or `name` as its alt text. With neither, the fallback is an unlabelled `RiUserLine` icon (`aria-hidden`), so a nameless avatar is silent.
 - `status` renders a `role="img"` dot labelled with the status word ("online", "offline", "busy", "away"). `verified` adds a check icon (`aria-hidden`) with sr-only text "Verified".
-- `AvatarLabelGroup` shows the name and supporting text as plain text, and the avatar inside it is labelled with the same name when `name` is a string, so it can be heard twice. Pass your own `avatar` (for example an `Avatar` with `aria-hidden`) to avoid that.
+- `AvatarLabelGroup` shows the name and supporting text as plain text, and the avatar it generates is decorative (`alt=""`), so the name is heard once; its status dot is still announced. Pass `avatarProps={{ alt: "…" }}` to name it anyway. On a plain `Avatar`, `alt=""` likewise drops the image alt and the fallback label.
 
 ### Reduced motion
 

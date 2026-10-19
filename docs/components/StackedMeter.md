@@ -4,7 +4,7 @@
 
 - Import: `import { StackedMeter } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
 - Source: `packages/ui/src/primitives/meter` (primitives)
-- `data-slot`: `stacked-meter-track`, `stacked-meter-legend-skeleton`
+- `data-slot`: `stacked-meter-track`, `stacked-meter-legend-skeleton`, `stacked-meter-part`
 - Also accepts the props of HTMLAttributes
 
 ## Props

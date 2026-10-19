@@ -12,7 +12,7 @@ import {
   type ShortcutOptions,
   type ShortcutPlatform,
 } from "../lib/shortcuts";
-import { ShortcutManagerContext, ShortcutScopeNameContext } from "../hooks/use-shortcut-manager";
+import { ShortcutManagerContext, ShortcutPlatformContext, ShortcutScopeNameContext } from "../hooks/use-shortcut-manager";
 import { SearchInput } from "../primitives/input";
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../primitives/dialog";
 import { ShortcutKeys } from "../primitives/shortcut-keys";
@@ -61,7 +61,11 @@ export function ShortcutProvider({ children, platform, sequenceTimeout, target }
     el.addEventListener("keydown", listener);
     return () => el.removeEventListener("keydown", listener);
   }, [manager, target]);
-  return <ShortcutManagerContext.Provider value={manager}>{children}</ShortcutManagerContext.Provider>;
+  return (
+    <ShortcutManagerContext.Provider value={manager}>
+      <ShortcutPlatformContext.Provider value={platform}>{children}</ShortcutPlatformContext.Provider>
+    </ShortcutManagerContext.Provider>
+  );
 }
 ShortcutProvider.displayName = "ShortcutProvider";
 

@@ -4,7 +4,7 @@
 
 - Import: `import { BashToolBody } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
-- `data-slot`: `bash-tool-body`, `bash-exit-code`
+- `data-slot`: `bash-tool-body`, `bash-exit-code`, `bash-stderr`, `bash-output`
 - Also accepts the props of HTMLAttributes
 
 ## Props

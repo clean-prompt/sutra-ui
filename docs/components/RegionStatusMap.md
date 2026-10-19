@@ -4,7 +4,7 @@
 
 - Import: `import { RegionStatusMap } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ops/region-status-map` (kit `ops`)
-- `data-slot`: `region-status-panel`, `region-status-map`, `region-status-empty`, `region-status-map-canvas`
+- `data-slot`: `region-status-map`, `region-status-empty`, `region-status-map-canvas`, `region-status-panel`
 - Also accepts the props of HTMLAttributes
 
 ## Props

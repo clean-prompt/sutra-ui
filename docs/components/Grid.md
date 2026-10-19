@@ -22,7 +22,7 @@ A cell of `Grid`: `span` columns on mobile, with `md` and `lg` spans for larger 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `lg` | `Span` |  | Columns on desktop (of 12). |
-| `md` | `Span` |  | Columns on tablet (of 8). |
+| `md` | `TabletSpan` |  | Columns on tablet (of 8: 1 to 8 or `"full"`). |
 | `span` | `Span` | `"full"` | Columns on mobile (of 4). Default: full. |
 
 ## Notes
@@ -54,7 +54,7 @@ Server render: same markup as the client. Plain markup; the column counts come f
 
 - `GridItem span` counts columns of the 4-column mobile grid and defaults to `"full"`: an item with only `lg={4}` is full width on mobile and tablet too. Give `md` when the tablet layout should differ.
 - `span` above 4 on mobile makes implicit columns; use `md` (of 8) and `lg` (of 12) for larger spans.
-- `md` is typed up to 12 but only 1 to 8 and `"full"` produce a class: a `md` of 9 or more silently has no effect.
+- `md` is typed 1 to 8 or `"full"` because the tablet grid has 8 columns (a larger value used to compile and do nothing); `span` and `lg` accept 1 to 12 and `"full"`.
 - `gap` is `sm`, `md` (default, wider from `md` up) or `lg`.
 
 ## Example

@@ -32,7 +32,7 @@ The trigger renders on the server and the popover is portalled, so it appears af
 - Changes apply at once: picking a day, or stepping the time, calls `onValueChange(date, { localValue })` and the popover stays open until Done, Escape or an outside click. Picking a preset sets the value and closes. Clicking the selected day does not unselect it.
 - A day picked before any time is set uses the time typed so far, else `defaultTime` (`"00:00"`). A time typed before a day exists is held until a day is picked.
 - `min` and `max` disable days outside them, clamp the result, and limit the time on the boundary day; strings without a zone are read as local time.
-- With `name` a hidden input posts `YYYY-MM-DDTHH:mm` (with `:ss` for seconds, empty when none). `locale` formats the trigger and sets the time field's clock and segment order, but the calendar keeps DayPicker's default language.
+- With `name` a hidden input posts `YYYY-MM-DDTHH:mm` (with `:ss` for seconds, empty when none). `locale` formats the trigger, sets the time field's clock and segment order, and sets the calendar's month and weekday names, digits and first weekday (its aria labels stay English).
 
 ## Example
 ```tsx

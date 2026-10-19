@@ -4,6 +4,7 @@
 
 - Import: `import { Pagination } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/primitives/pagination` (primitives)
+- `data-slot`: `pagination-jump`
 - Parts: [`PaginationEllipsis`](PaginationEllipsis.md), [`PaginationItem`](PaginationItem.md), [`PaginationNext`](PaginationNext.md), [`PaginationPrev`](PaginationPrev.md), [`PaginationStatus`](PaginationStatus.md)
 - Also accepts the props of HTMLAttributes
 

@@ -26,7 +26,8 @@ export const TextShimmer = React.forwardRef<HTMLElement, TextShimmerProps>(
     return (
       <Comp
         ref={ref}
-        className={cn("text-shimmer inline-block motion-reduce:animate-none", className)}
+        // text-shimmer goes last: twMerge reads it as a text colour, so a text colour in className is dropped instead of the shimmer
+        className={cn("inline-block motion-reduce:animate-none", className, "text-shimmer")}
         style={shimmerStyle}
         {...props}
       />

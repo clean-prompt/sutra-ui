@@ -1,6 +1,6 @@
 # Table
 
-> Data table inside a bordered, scrollable box.
+> Data table inside a bordered, scrollable box. The box takes focus while it overflows (so the arrow keys scroll it) and becomes a named `region` when the table has an `aria-label` or `aria-labelledby`.
 
 - Import: `import { Table } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/table` (primitives)
@@ -67,14 +67,14 @@ Header cell, optionally sortable.
 | Enter, Space | On a sortable header, calls its `onSort` (native `<button>`) |
 | Space | On a `TableCheckbox`, toggles it (native checkbox) |
 
-There is no arrow-key navigation between cells and rows are not focusable; this is a plain table. No key depends on direction, but `align` is logical: `left` and `right` mean start and end, so they flip in RTL.
+There is no arrow-key navigation between cells and rows are not focusable; this is a plain table (only the scroll box around it takes focus, and only while the table is wider or taller than it). No key depends on direction, but `align` is logical: `left` and `right` mean start and end, so they flip in RTL.
 
 ### Screen readers
 
 - Real `table`, `thead`, `tbody`, `tfoot`, `tr`, `th` and `td` elements, so row and column navigation comes from the browser. `TableHead` sets `scope="col"` unless you pass another `scope`. `TableCaption` is a real `<caption>` that names the table, even though it is drawn under it.
 - A header is sortable when it has `onSort` or `sortDirection`: it then holds a button named by the header text, and `aria-sort` is `ascending`, `descending` or `none` (`sortDirection={false}`). Without either it has no `aria-sort`. The arrow icon is `aria-hidden`.
 - `TableCheckbox` is a native checkbox with the `checkbox` role and no label of its own: pass `aria-label` ("Select row Ada"). `indeterminate` sets the DOM mixed state.
-- The scroll container around the table has no role and is not given a `tabIndex`.
+- The scroll container around the table has `tabIndex="0"` and a focus ring while the content overflows it (measured after mount and on resize; not on the server), so a keyboard user can scroll it; a table that fits adds no tab stop. It becomes a `role="region"` named like the table when the `Table` has an `aria-label` or `aria-labelledby`; otherwise it has no role. `DataTable` takes the same two props.
 
 ### Reduced motion
 

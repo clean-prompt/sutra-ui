@@ -22,7 +22,7 @@
 | `maxFiles` | `number` |  | Most files accepted per drop or pick (counted with `currentCount`); extra files are rejected. |
 | `maxSize` | `number` |  | Largest accepted file in bytes; larger files are rejected. |
 | `multiple` | `boolean` | `true` | Accept more than one file per drop or pick. |
-| `name` | `string` |  | Name for the underlying file input. |
+| `name` | `string` |  | Name for the underlying file input. With it, the accepted files stay on the input so a native form post sends them. |
 | `onDrop` | `(files: File[], rejections: FileRejection[]) => void` |  | Called with accepted files and rejections after a drop or pick. |
 | `title` | `React.ReactNode` |  | Headline of the drop target. Defaults to a prompt to drop or choose files. |
 
@@ -64,7 +64,7 @@ Server render: part of it fills in after mount. Without `directory` the zone ren
 
 - `onDrop` is `(accepted, rejections)` and runs for every drop or pick, also when everything was rejected or `accepted` is empty. A rejection is `{ file, errors: [{ code, message }] }` with codes `file-invalid-type`, `file-too-large` and `too-many-files`. It does not run while `disabled`.
 - The red drag state only reflects what the browser reveals mid-drag: MIME types (and `multiple={false}` with several files). Extension rules such as `accept=".pdf"` and `maxSize` are checked at drop. `multiple={false}` keeps the first file and rejects the rest.
-- `currentCount` counts files you already hold against `maxFiles`. The picker input is cleared after each pick, so the same file can be chosen again.
+- `currentCount` counts files you already hold against `maxFiles`. Without `name` the picker input is cleared after each pick, so the same file can be chosen again. With `name` the accepted files stay on the input through `DataTransfer` (picks and drops; a rejected pick is not kept), so a native form post sends them: the earlier ones are kept while `currentCount` is above 0 and the input is emptied when it returns to 0. Where `input.files` cannot be set it is cleared as before.
 - `directory` walks dropped folders and sets each file's `relativePath` (read it with `getFileRelativePath`); every file is validated on its own and counts toward `maxFiles`. `compact` is a deprecated alias of `density="compact"`. The helpers `validateFiles`, `isFileAccepted` and `describeFileConstraints` are exported for your own checks.
 
 ## Example

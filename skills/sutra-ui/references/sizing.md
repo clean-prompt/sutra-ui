@@ -18,6 +18,12 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | Avatar | lg | 48px square |  | base (16px) | 24px |  |
 | Avatar | xl | 56px square |  | lg (18px) | 28px |  |
 | Avatar | 2xl | 64px square |  | xl (20px) | 32px |  |
+| AvatarGroup | xs | see source |  |  |  |  |
+| AvatarGroup | sm | see source |  |  |  |  |
+| AvatarGroup | md (default) | see source |  |  |  |  |
+| AvatarGroup | lg | see source |  |  |  |  |
+| AvatarGroup | xl | see source |  |  |  |  |
+| AvatarGroup | 2xl | see source |  |  |  |  |
 | AvatarLabelGroup | xs | 24px square |  | 2xs (11px) | 14px |  |
 | AvatarLabelGroup | sm | 32px square |  | xs (12px) | 16px |  |
 | AvatarLabelGroup | md (default) | 40px square |  | sm (14px) | 20px |  |
@@ -30,6 +36,10 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | BatteryLevel | sm | see source |  |  |  |  |
 | BatteryLevel | md (default) | see source |  |  |  |  |
 | BatteryLevel | lg | see source |  |  |  |  |
+| Breadcrumb | sm |  |  | xs (12px) |  |  |
+| Breadcrumb | md (default) |  |  | sm (14px) |  |  |
+| BreakdownList | sm |  | y 0px | xs (12px) |  |  |
+| BreakdownList | md (default) |  | y 2px | sm (14px) |  |  |
 | Button | xs | h 28px | x 10px | xs (12px) | 14px |  |
 | Button | sm | h 32px | x 12px | sm (14px) | 16px |  |
 | Button | md (default) | h 36px | x 14px | sm (14px) | 16px |  |
@@ -104,16 +114,30 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | InputGroup | sm | h 32px |  | sm (14px) |  |  |
 | InputGroup | md (default) | h 36px |  | sm (14px) |  |  |
 | InputGroup | lg | h 40px |  | sm (14px) |  |  |
+| InputOTP | sm | 32px square |  | sm (14px) |  |  |
+| InputOTP | md (default) | 40px square |  | base (16px) |  |  |
+| InputOTP | lg | 48px square |  | lg (18px) |  |  |
 | Item | default (default) |  | x 16px, y 12px |  |  |  |
 | Item | sm |  | x 12px, y 8px |  |  |  |
 | Item | xs |  | x 10px, y 6px |  |  |  |
+| Meter | sm | h 6px |  | xs (12px) |  | under 24px |
+| Meter | md (default) | h 8px |  | sm (14px) |  | under 24px |
+| Meter | lg | h 12px |  | sm (14px) |  | under 24px |
 | MetricReadout | xs | see source |  |  |  |  |
 | MetricReadout | sm (default) | see source |  |  |  |  |
+| MetricReadoutGroup | xs | h 12px |  |  |  | under 24px |
+| MetricReadoutGroup | sm (default) | h 14px |  |  |  | under 24px |
 | Monogram | xs | 20px square |  | 9px |  | under 24px |
 | Monogram | sm | 24px square |  | 2xs (11px) |  |  |
 | Monogram | md (default) | 32px square |  | xs (12px) |  |  |
 | Monogram | lg | 40px square |  | sm (14px) |  |  |
 | Monogram | xl | 48px square |  | base (16px) |  |  |
+| NumberInput | sm | w 32px |  |  |  |  |
+| NumberInput | md (default) | w 36px |  |  |  |  |
+| NumberInput | lg | w 40px |  |  |  |  |
+| Pagination | sm | h 32px |  | xs (12px) |  |  |
+| Pagination | md (default) | h 36px |  | sm (14px) |  |  |
+| Pagination | lg | h 40px |  | sm (14px) |  |  |
 | PaginationEllipsis | sm | h 32px |  | xs (12px) |  |  |
 | PaginationEllipsis | md (default) | h 36px |  | sm (14px) |  |  |
 | PaginationEllipsis | lg | h 40px |  | sm (14px) |  |  |
@@ -123,6 +147,14 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | PopoverContent | sm | w 224px |  |  |  |  |
 | PopoverContent | md (default) | w 288px |  |  |  |  |
 | PopoverContent | lg | w 384px |  |  |  |  |
+| Progress | 2xs | h 2px |  |  |  | under 24px |
+| Progress | xs | h 4px |  |  |  | under 24px |
+| Progress | sm | h 6px |  |  |  | under 24px |
+| Progress | md (default) | h 8px |  |  |  | under 24px |
+| Progress | lg | h 12px |  |  |  | under 24px |
+| ProgressSegments | sm | h 4px |  |  |  | under 24px |
+| ProgressSegments | md (default) | h 6px |  |  |  | under 24px |
+| ProgressSegments | lg | h 8px |  |  |  | under 24px |
 | RadioCard | sm | 14px square |  |  |  | under 24px, hit area extended |
 | RadioCard | md (default) | 16px square |  |  |  | under 24px, hit area extended |
 | RadioField | sm | 14px square |  |  |  | under 24px, hit area extended |
@@ -157,6 +189,9 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | Spinner | md (default) | 20px square |  |  |  | under 24px |
 | Spinner | lg | 24px square |  |  |  |  |
 | Spinner | xl | 32px square |  |  |  |  |
+| StackedMeter | sm | h 6px |  |  |  | under 24px |
+| StackedMeter | md (default) | h 8px |  |  |  | under 24px |
+| StackedMeter | lg | h 12px |  |  |  | under 24px |
 | StatusBadge | sm | 10px square |  |  |  | under 24px |
 | StatusBadge | md (default) | 12px square |  |  |  | under 24px |
 | StatusBadge | lg | 14px square |  |  |  | under 24px |
@@ -172,6 +207,14 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | SwitchGroup | sm | h 16px, w 28px |  |  |  | under 24px, hit area extended |
 | SwitchGroup | md (default) | h 20px, w 36px |  |  |  | under 24px, hit area extended |
 | SwitchGroup | lg | h 24px, w 44px |  |  |  |  |
+| TabDropdown | sm | h 28px | x 10px | xs (12px) |  |  |
+| TabDropdown | md (default) | h 32px | x 12px | sm (14px) |  |  |
+| Tabs | sm | see source |  |  |  |  |
+| Tabs | md (default) | see source |  |  |  |  |
+| Tabs | lg | see source |  |  |  |  |
+| TagInput | sm | h 32px |  | xs (12px) |  |  |
+| TagInput | md (default) | h 36px |  | xs (12px) |  |  |
+| TagInput | lg | h 40px |  | sm (14px) |  |  |
 | Text | xs |  |  | xs (12px) |  |  |
 | Text | sm |  |  | sm (14px) |  |  |
 | Text | md (default) |  |  | base (16px) |  |  |
@@ -201,36 +244,62 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | Countdown | sm | see source |  |  |  |  |
 | Countdown | md (default) | see source |  |  |  |  |
 | Countdown | lg | see source |  |  |  |  |
+| FilterBarSearch | sm (default) | h 32px |  |  |  |  |
+| FilterBarSearch | md | h 36px |  |  |  |  |
 | Gauge | sm | see source |  |  |  |  |
 | Gauge | md (default) | see source |  |  |  |  |
 | Gauge | lg | see source |  |  |  |  |
+| InlineCopy | sm | h 32px |  | xs (12px) |  |  |
+| InlineCopy | md (default) | h 36px |  | 13px |  |  |
+| InlineCopy | lg | h 44px | x 16px | sm (14px) |  |  |
+| SearchTrigger | sm | h 32px |  |  |  |  |
+| SearchTrigger | md (default) | h 36px |  |  |  |  |
+| SearchTrigger | lg | h 40px |  |  |  |  |
+| SectionHeader | sm |  |  | sm (14px) |  |  |
+| SectionHeader | md (default) |  |  | sm (14px) |  |  |
+| SectionHeader | lg |  |  | base (16px) |  |  |
 | SidebarMenuButton | sm | h 28px |  | xs (12px) |  |  |
 | SidebarMenuButton | md (default) | h 32px |  |  |  |  |
 | SidebarMenuButton | lg | h 48px |  |  |  |  |
 | SidebarMenuSubButton | sm | h 28px |  | xs (12px) |  |  |
 | SidebarMenuSubButton | md (default) | h 32px |  |  |  |  |
 | SidebarMenuSubButton | lg | h 48px |  |  |  |  |
-| SidebarTrigger | sm | h 28px |  | xs (12px) |  |  |
-| SidebarTrigger | md (default) | h 32px |  |  |  |  |
-| SidebarTrigger | lg | h 48px |  |  |  |  |
 | StatementHero | lg (default) | see source |  |  |  |  |
 | StatementHero | md | see source |  |  |  |  |
+| StatusCycle | sm | h 28px |  | xs (12px) | 14px |  |
+| StatusCycle | md (default) | h 32px |  | sm (14px) | 16px |  |
 | StatValue | sm |  |  | xl (20px) |  |  |
 | TabMenu | sm | h 36px |  | xs (12px) |  |  |
 | TabMenu | md (default) | h 44px |  | sm (14px) |  |  |
 | TabMenu | lg | h 48px |  | sm (14px) |  |  |
+| AudioLevelMeter | sm | see source |  |  |  |  |
+| AudioLevelMeter | md (default) | see source |  |  |  |  |
+| AudioLevelMeter | lg | see source |  |  |  |  |
+| BranchPill | sm | h 24px | x 6px | 2xs (11px) | 12px |  |
+| BranchPill | md (default) | h 28px | x 8px | xs (12px) | 14px |  |
 | ChatLoader | sm |  |  | xs (12px) |  |  |
 | ChatLoader | md (default) |  |  | sm (14px) |  |  |
 | ChatLoader | lg |  |  | base (16px) |  |  |
 | ChatMessageAvatar | sm | see source |  |  |  |  |
 | ChatMessageAvatar | md (default) | see source |  |  |  |  |
 | ChatMessageAvatar | lg | see source |  |  |  |  |
+| ChatReactions | sm (default) | h 24px, w 28px |  |  |  |  |
+| ChatReactions | md | h 28px, w 32px |  |  |  |  |
+| DeliveryPlatformIcon | sm | 20px square |  |  | 12px | under 24px |
+| DeliveryPlatformIcon | md (default) | 28px square |  |  | 16px |  |
+| EntityChip | sm | h 20px | x 6px | xs (12px) |  | under 24px |
+| EntityChip | md (default) | h 24px | x 8px | 13px |  |  |
 | KunjiButton | sm | h 32px | x 12px | sm (14px) | 16px |  |
 | KunjiButton | md (default) | h 40px | x 20px | 15px | 18px |  |
 | KunjiButton | lg | h 48px | x 20px | base (16px) | 20px |  |
+| NowPlayingBars | sm (default) | 12px square |  |  |  | under 24px |
+| NowPlayingBars | md | 16px square |  |  |  | under 24px |
+| NowPlayingBars | lg | 20px square |  |  |  | under 24px |
 | PaymentCard | sm | see source |  |  |  |  |
 | PaymentCard | md (default) | see source |  |  |  |  |
 | PaymentCard | lg | see source |  |  |  |  |
+| PermissionModeSwitcher | sm (default) | h 28px | x 8px | xs (12px) | 14px |  |
+| PermissionModeSwitcher | md | h 32px | x 10px | sm (14px) | 16px |  |
 | PlatformIcon | sm | 24px square |  |  | 16px |  |
 | PlatformIcon | md (default) | 32px square |  |  | 20px |  |
 | PlatformIcon | lg | 40px square |  |  | 24px |  |
@@ -247,6 +316,10 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | RepeatButton | sm | 32px square |  |  | 16px |  |
 | RepeatButton | md (default) | 36px square |  |  | 18px |  |
 | RepeatButton | lg | 44px square |  |  | 24px |  |
+| SaveStatus | sm (default) |  |  | xs (12px) |  |  |
+| SaveStatus | md |  |  | sm (14px) |  |  |
+| SeekBar | sm | h 16px, w 12px |  |  |  | under 24px |
+| SeekBar | md (default) | h 20px, w 14px |  |  |  | under 24px |
 | ShuffleButton | sm | 32px square |  |  | 16px |  |
 | ShuffleButton | md (default) | 36px square |  |  | 18px |  |
 | ShuffleButton | lg | 44px square |  |  | 24px |  |
@@ -258,6 +331,10 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | VolumeControl | sm | 32px square |  |  | 16px |  |
 | VolumeControl | md (default) | 36px square |  |  | 18px |  |
 | VolumeControl | lg | 44px square |  |  | 24px |  |
+| EmojiReaction | sm | h 24px | x 8px | sm (14px) |  |  |
+| EmojiReaction | md (default) | h 28px | x 10px | base (16px) |  |  |
+| EmojiReactionBar | sm | h 24px, w 32px |  |  |  |  |
+| EmojiReactionBar | md (default) | h 28px, w 36px |  |  |  |  |
 | FeaturedIcon | sm | 32px square |  |  | 16px |  |
 | FeaturedIcon | md (default) | 40px square |  |  | 20px |  |
 | FeaturedIcon | lg | 48px square |  |  | 24px |  |

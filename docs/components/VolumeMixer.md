@@ -4,7 +4,7 @@
 
 - Import: `import { VolumeMixer } from "@sutra/ui"` (or from `@sutra/ui/system`)
 - Source: `packages/ui/src/kits/system/volume-mixer` (kit `system`)
-- `data-slot`: `volume-mixer`, `volume-mixer-output`, `volume-mixer-skeleton`, `volume-mixer-apps`, `volume-mixer-skeleton-row`
+- `data-slot`: `volume-mixer`, `volume-mixer-output`, `volume-mixer-skeleton`, `volume-mixer-apps`, `volume-mixer-skeleton-row`, `volume-mixer-playing`
 - Also accepts the props of HTMLAttributes
 
 ## Props

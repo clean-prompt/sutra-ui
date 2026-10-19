@@ -28,7 +28,7 @@ The divider follows the arrow you press in both directions: in RTL the first pan
 Nothing moves except a colour fade on the divider, which the global net ends in 1 ms. Resizing follows the pointer or key presses directly with no animation.
 
 ## Server rendering
-The panes render on the server at `defaultSize` (or `size`). With `storageKey` the saved size is read from `localStorage` during the first client render, so when one is saved the client disagrees with the server markup (a hydration mismatch on the first panel's size); `collapseBelow` is judged from a measured width, so stacking only happens after mount.
+The panes render on the server and on the hydrating client render at `defaultSize` (or `size`), so the markup matches. With `storageKey` the saved size is read right after hydration, before paint, and applied without calling `onSizeChange`; `collapseBelow` is judged from a measured width, so stacking only happens after mount.
 
 ## Slots
 - `split-pane`: the root (`data-orientation`, `data-stacked`, `data-dragging`)

@@ -53,7 +53,7 @@ The sheet panel: grabber, drag-to-dismiss (80px or a fast flick), rubber-band up
 | Enter, Space | On the handle button (only with two or more `snapPoints`): go to the next snap point and wrap to the smallest |
 | Enter, Space | Activate the focused button, including `DrawerClose` and the close button from `showClose` |
 
-Dragging is pointer-only. Without snap points the handle is a decorative `aria-hidden` bar, so keyboard users close with Escape or a `DrawerClose` button. There are no direction-dependent keys, so RTL changes nothing. Focus returns to the `DrawerTrigger` on close (Radix). Unlike `SheetContent`, `DrawerContent` does not restore focus for a drawer opened without a trigger (a hotkey, controlled `open`): move focus back yourself in `onCloseAutoFocus`.
+Dragging is pointer-only. Without snap points the handle is a decorative `aria-hidden` bar, so keyboard users close with Escape or a `DrawerClose` button. There are no direction-dependent keys, so RTL changes nothing. Focus returns to the `DrawerTrigger` on close (Radix), and for a drawer opened without a trigger (a hotkey, controlled `open`) to the element that had focus when it opened, as `SheetContent` does; a `preventDefault()` in your `onCloseAutoFocus` still wins.
 
 ### Screen readers
 

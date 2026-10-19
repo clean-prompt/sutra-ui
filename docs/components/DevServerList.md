@@ -4,7 +4,7 @@
 
 - Import: `import { DevServerList } from "@sutra/ui"` (or from `@sutra/ui/system`)
 - Source: `packages/ui/src/kits/system/dev-servers` (kit `system`)
-- `data-slot`: `dev-server-list`, `dev-server-idle-banner`, `dev-server-skeleton-row`, `dev-server-skeleton-port`, `dev-server-skeleton-pill`, `dev-server-empty`, `dev-server-row`, `dev-server-memory`
+- `data-slot`: `dev-server-list`, `dev-server-idle-banner`, `dev-server-skeleton-row`, `dev-server-skeleton-port`, `dev-server-skeleton-pill`, `dev-server-empty`, `dev-server-row`, `dev-server-memory`, `dev-server-activity`
 - Also accepts the props of HTMLAttributes
 
 ## Props

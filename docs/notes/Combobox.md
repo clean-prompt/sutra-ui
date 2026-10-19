@@ -23,7 +23,7 @@ server: ssr-safe
 ## Screen readers
 - The trigger is a `div role="combobox"` with `aria-haspopup="listbox"`, `aria-expanded`, and `aria-required`, `aria-invalid` and `aria-disabled` when set. It is named by `aria-label`, `aria-labelledby` or a surrounding `FieldLabel` (a `<label htmlFor>` cannot name a div, so the wrapper points at the label id). The selected labels are its text.
 - The popover is a `role="dialog"` with the same name, or the `placeholder` as a fallback. Inside, the search box is a combobox with `aria-activedescendant`, the list is a `listbox` (`aria-multiselectable` when `multiple`, `aria-busy` while `loading`) and each row is an `option`.
-- The chosen options are marked only visually (a check icon and `data-checked`); in cmdk `aria-selected` means highlighted, not chosen.
+- Chosen options carry `aria-checked="true"` (and `data-checked`, for styling): in `multiple` mode every option is `true` or `false`, in single mode only the chosen one has it. The check icon is decoration. In cmdk `aria-selected` means highlighted, not chosen.
 - The empty message sits in a polite live region next to a hidden listbox. The `confirmBackspace` prompt ("Press Backspace again to remove ...") is a polite live region on the trigger. The loading text is not a live region.
 - Chip remove buttons are named "Remove" plus the label; the clear button uses `clearLabel`.
 

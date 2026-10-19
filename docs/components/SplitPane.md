@@ -77,7 +77,7 @@ Nothing moves except a colour fade on the divider, which the global net ends in 
 
 ### Server rendering
 
-Server render: part of it fills in after mount. The panes render on the server at `defaultSize` (or `size`). With `storageKey` the saved size is read from `localStorage` during the first client render, so when one is saved the client disagrees with the server markup (a hydration mismatch on the first panel's size); `collapseBelow` is judged from a measured width, so stacking only happens after mount.
+Server render: part of it fills in after mount. The panes render on the server and on the hydrating client render at `defaultSize` (or `size`), so the markup matches. With `storageKey` the saved size is read right after hydration, before paint, and applied without calling `onSizeChange`; `collapseBelow` is judged from a measured width, so stacking only happens after mount.
 
 ### Slots
 

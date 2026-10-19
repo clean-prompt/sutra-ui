@@ -5,12 +5,20 @@ import { toPercent } from "../lib/math";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
 import { normalizeTone, type ToneInput } from "../lib/tone";
 import { useRootDirection } from "../hooks/use-direction";
+import { useField, useFieldContext } from "./field";
 
 const sizes: Record<Size, { track: string; thumb: string; thumbPx: number }> = {
   sm: { track: "h-1", thumb: "size-3.5", thumbPx: 14 },
   md: { track: "h-1.5", thumb: "size-4", thumbPx: 16 },
   lg: { track: "h-2", thumb: "size-5", thumbPx: 20 },
 };
+
+/** Name for a thumb without `thumbLabels`: the slider's own `aria-label` for one thumb, Radix's wording for several (an explicit `aria-label` prop on a Radix thumb replaces its default, so spell it out). */
+function defaultThumbLabel(index: number, total: number, ariaLabel: string | undefined) {
+  if (total === 1) return ariaLabel;
+  if (total === 2) return index === 0 ? "Minimum" : "Maximum";
+  return `Value ${index + 1} of ${total}`;
+}
 
 export interface SliderMark {
   value: number;
@@ -26,7 +34,10 @@ export interface SliderProps extends React.ComponentPropsWithoutRef<typeof Slide
   marks?: (number | SliderMark)[];
   /** Formats the number shown in the value bubble (see `showValue`). Default shows the raw value. */
   formatValue?: (value: number) => React.ReactNode;
-  /** Accessible labels per thumb, e.g. `["Minimum", "Maximum"]`. */
+  /**
+   * Accessible labels per thumb, e.g. `["Volume"]` or `["Minimum", "Maximum"]`. Without it a single thumb is named by
+   * `aria-label` / `aria-labelledby` (or the surrounding `FieldLabel`); two thumbs are "Minimum" and "Maximum".
+   */
   thumbLabels?: string[];
   /** Accessible value text per thumb (`aria-valuetext`), e.g. `(v) => v + "%"`. */
   getValueText?: (value: number, index: number) => string;
@@ -52,7 +63,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       formatValue = (v) => v,
       thumbLabels,
       getValueText,
-      invalid,
+      invalid: invalidProp,
       accent: accentProp,
       tone,
       min = 0,
@@ -61,10 +72,21 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
       defaultValue,
       onValueChange,
       onPointerDown,
+      id,
+      disabled,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
+      "aria-describedby": ariaDescribedBy,
+      "aria-invalid": ariaInvalid,
       ...props
     },
     ref
   ) => {
+    const field = useField({ id, disabled, invalid: invalidProp, "aria-describedby": ariaDescribedBy, "aria-invalid": ariaInvalid });
+    const invalid = field.invalid;
+    /* A <label htmlFor> can't name a span, so reference the surrounding FieldLabel explicitly. */
+    const fieldCtx = useFieldContext();
+    const labelledBy = ariaLabelledBy ?? (ariaLabel ? undefined : fieldCtx?.labelId);
     const { ref: rootRef, dir } = useRootDirection<HTMLSpanElement>();
     const [internal, setInternal] = React.useState<number[]>(value ?? defaultValue ?? [min]);
     const current = value ?? internal;
@@ -108,7 +130,12 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
             onPointerDown?.(e);
           }}
           data-dragging={dragging ? "" : undefined}
-          aria-invalid={invalid || undefined}
+          id={field.id}
+          disabled={field.disabled}
+          aria-invalid={field["aria-invalid"]}
+          {...(current.length > 1 && (ariaLabel || labelledBy)
+            ? { role: "group", "aria-label": ariaLabel, "aria-labelledby": labelledBy }
+            : {})}
           className={cn(
             "relative flex w-full touch-none select-none items-center py-1.5",
             "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
@@ -134,7 +161,10 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
           {current.map((v, i) => (
             <SliderPrimitive.Thumb
               key={i}
-              aria-label={thumbLabels?.[i] ?? (current.length > 1 ? (i === 0 ? "Minimum" : "Maximum") : undefined)}
+              aria-label={thumbLabels?.[i] ?? defaultThumbLabel(i, current.length, ariaLabel)}
+              aria-labelledby={current.length === 1 && !thumbLabels?.[i] ? labelledBy : undefined}
+              aria-describedby={field["aria-describedby"]}
+              aria-invalid={field["aria-invalid"]}
               aria-valuetext={getValueText?.(v, i)}
               className={cn(
                 hitArea,

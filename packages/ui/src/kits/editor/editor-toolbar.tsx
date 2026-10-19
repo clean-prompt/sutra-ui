@@ -6,7 +6,8 @@ import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../../hooks/use-resize-observer";
 import { Button } from "../../primitives/button";
 import { SimpleTooltip } from "../../primitives/tooltip";
-import { formatShortcut, isShortcutKeys } from "../../patterns/shortcuts";
+import type { ShortcutPlatform } from "../../lib/shortcuts";
+import { formatShortcut, isShortcutKeys, useShortcutPlatform } from "../../patterns/shortcuts";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -69,9 +70,9 @@ function useToolbarItem(meta: ItemMeta) {
   return { id, hidden: ctx?.hidden.has(id) ?? false, size: ctx?.size ?? "sm" };
 }
 
-function shortcutText(shortcut?: string) {
+function shortcutText(shortcut: string | undefined, platform: ShortcutPlatform) {
   if (!shortcut) return undefined;
-  return isShortcutKeys(shortcut) && /^[\w+\- ]+$/.test(shortcut) && !/^\[/.test(shortcut) ? formatShortcut(shortcut) : shortcut;
+  return isShortcutKeys(shortcut) && /^[\w+\- ]+$/.test(shortcut) && !/^\[/.test(shortcut) ? formatShortcut(shortcut, { platform }) : shortcut;
 }
 
 const ITEM_SELECTOR = "[data-toolbar-item]";
@@ -118,6 +119,7 @@ export const EditorToolbar = React.forwardRef<HTMLDivElement, EditorToolbarProps
     const widths = React.useRef(new Map<string, number>());
     const [hidden, setHidden] = React.useState<ReadonlySet<string>>(() => new Set());
     const [moreOpen, setMoreOpen] = React.useState(false);
+    const platform = useShortcutPlatform();
     const active = React.useRef(0);
     React.useImperativeHandle(forwardedRef, () => rootRef.current as HTMLDivElement);
 
@@ -266,7 +268,7 @@ export const EditorToolbar = React.forwardRef<HTMLDivElement, EditorToolbarProps
                   </DropdownMenuTrigger>
                 </SimpleTooltip>
                 <DropdownMenuContent align="end" className="min-w-56">
-                  {overflowItems().map((meta, i) => renderOverflowMeta(meta, i))}
+                  {overflowItems().map((meta, i) => renderOverflowMeta(meta, i, platform))}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -279,7 +281,7 @@ export const EditorToolbar = React.forwardRef<HTMLDivElement, EditorToolbarProps
 );
 EditorToolbar.displayName = "EditorToolbar";
 
-function renderMenuItems(items: EditorToolbarMenuItem[]) {
+function renderMenuItems(items: EditorToolbarMenuItem[], platform: ShortcutPlatform) {
   return items.map((item, i) => {
     const key = item.id ?? (typeof item.label === "string" ? item.label : String(i));
     if (item.type === "separator") return <DropdownMenuSeparator key={`sep-${i}`} />;
@@ -289,7 +291,7 @@ function renderMenuItems(items: EditorToolbarMenuItem[]) {
         key={key}
         icon={item.icon}
         description={item.description}
-        shortcut={shortcutText(item.shortcut)}
+        shortcut={shortcutText(item.shortcut, platform)}
         disabled={item.disabled}
         onSelect={() => item.onSelect?.()}
       >
@@ -299,7 +301,7 @@ function renderMenuItems(items: EditorToolbarMenuItem[]) {
   });
 }
 
-function renderOverflowMeta(meta: ItemMeta, i: number) {
+function renderOverflowMeta(meta: ItemMeta, i: number, platform: ShortcutPlatform) {
   if (meta.kind === "separator") return <DropdownMenuSeparator key={`sep-${i}`} />;
   if (meta.kind === "menu")
     return (
@@ -307,7 +309,7 @@ function renderOverflowMeta(meta: ItemMeta, i: number) {
         <DropdownMenuSubTrigger icon={meta.icon} disabled={meta.disabled}>
           {meta.label}
         </DropdownMenuSubTrigger>
-        <DropdownMenuSubContent className="min-w-56">{renderMenuItems(meta.items)}</DropdownMenuSubContent>
+        <DropdownMenuSubContent className="min-w-56">{renderMenuItems(meta.items, platform)}</DropdownMenuSubContent>
       </DropdownMenuSub>
     );
   if (meta.pressed != null)
@@ -316,7 +318,7 @@ function renderOverflowMeta(meta: ItemMeta, i: number) {
         key={`${meta.label}-${i}`}
         checked={meta.pressed}
         disabled={meta.disabled}
-        shortcut={shortcutText(meta.shortcut)}
+        shortcut={shortcutText(meta.shortcut, platform)}
         onSelect={() => meta.onSelect?.()}
       >
         {meta.label}
@@ -327,7 +329,7 @@ function renderOverflowMeta(meta: ItemMeta, i: number) {
       key={`${meta.label}-${i}`}
       icon={meta.icon}
       disabled={meta.disabled}
-      shortcut={shortcutText(meta.shortcut)}
+      shortcut={shortcutText(meta.shortcut, platform)}
       onSelect={() => meta.onSelect?.()}
     >
       {meta.label}
@@ -456,6 +458,7 @@ export const EditorToolbarMenu = React.forwardRef<HTMLButtonElement, EditorToolb
   ({ label, icon, items, showLabel = true, disabled, footer, align = "start", className, contentClassName }, ref) => {
     const { id, hidden, size } = useToolbarItem({ kind: "menu", label, icon, items, disabled });
     const [open, setOpen] = React.useState(false);
+    const platform = useShortcutPlatform();
     const iconOnly = !showLabel && icon != null;
     return (
       <span data-toolbar-slot={id} data-toolbar-kind="menu" hidden={hidden || undefined} className="inline-flex shrink-0">
@@ -477,7 +480,7 @@ export const EditorToolbarMenu = React.forwardRef<HTMLButtonElement, EditorToolb
             </DropdownMenuTrigger>
           </SimpleTooltip>
           <DropdownMenuContent align={align} className={cn("min-w-60", contentClassName)}>
-            {renderMenuItems(items)}
+            {renderMenuItems(items, platform)}
             {footer != null && (
               <>
                 <DropdownMenuSeparator />

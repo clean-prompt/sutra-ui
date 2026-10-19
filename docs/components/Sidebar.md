@@ -99,7 +99,7 @@ Button that toggles the sidebar (⌘B).
 | `fullWidth` | `boolean \| null` |  | Stretches the button to the width of its container. |
 | `leadingIcon` | `React.ReactNode` |  | Icon before the label. |
 | `loading` | `boolean` |  | Shows a spinner and disables the button. |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button height and padding; `icon-*` sizes are square. |
+| `size` | `"icon" \| "sm" \| "md" \| "lg" \| "xs" \| "xl" \| "icon-xs" \| "icon-sm" \| "icon-lg" \| "icon-xl" \| null` | `"md"` | Button height and padding; `icon-*` sizes are square. |
 | `spinnerProps` | `Partial<SpinnerProps>` |  | Overrides for the loading spinner (variant, size, `label`, colour via `className`); it inherits the button text colour by default. |
 | `trailingIcon` | `React.ReactNode` |  | Icon after the label. |
 | `variant` | `"link" \| "ghost" \| "primary" \| "destructive" \| "soft" \| "outline" \| "inverse" \| "secondary" \| "tertiary" \| "destructive-soft" \| null` | `"primary"` | Visual style: `primary` (filled), `secondary` (bordered), `tertiary` (muted fill), `soft`, `ghost`, `outline`, `destructive`, `destructive-soft`, `inverse` or `link`. |

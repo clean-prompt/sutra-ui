@@ -4,6 +4,7 @@
 
 - Import: `import { ForgotPasswordCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
 - Source: `packages/ui/src/blocks/auth-blocks` (blocks)
+- `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes
 
 ## Props

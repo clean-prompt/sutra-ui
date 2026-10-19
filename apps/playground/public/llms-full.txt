@@ -397,7 +397,7 @@ Server render: same markup as the client. Plain markup with no browser API. The 
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `alt` | `string` |  | Alt text of the image. Defaults to `name`. |
+| `alt` | `string` |  | Alt text of the image and label of the initials fallback. Defaults to `name`; `""` marks the avatar decorative (use it beside a visible name). |
 | `color` | `string` |  | Explicit fallback colour (any CSS colour); overrides the colour derived from `name`. |
 | `colorful` | `boolean` | `true` | Colorize the initials fallback deterministically from `name` (via `colorForSeed`). Default true. |
 | `fallback` | `React.ReactNode` |  | Custom fallback content (overrides auto initials). |
@@ -438,9 +438,9 @@ Not focusable: no keyboard interaction. Wrap it in a `Button` or a link when it 
 
 #### Screen readers
 
-- With `name` or `alt` the fallback is a `role="img"` whose `aria-label` is `alt` (or `name` when `alt` is empty); the loaded `<img>` gets `alt` or `name` as its alt text. With neither, the fallback is an unlabelled `RiUserLine` icon (`aria-hidden`), so a nameless avatar is silent.
+- With `name` or `alt` the fallback is a `role="img"` whose `aria-label` is `alt` (or `name` when `alt` is not given; `alt=""` leaves it unlabelled); the loaded `<img>` gets `alt` or `name` as its alt text. With neither, the fallback is an unlabelled `RiUserLine` icon (`aria-hidden`), so a nameless avatar is silent.
 - `status` renders a `role="img"` dot labelled with the status word ("online", "offline", "busy", "away"). `verified` adds a check icon (`aria-hidden`) with sr-only text "Verified".
-- `AvatarLabelGroup` shows the name and supporting text as plain text, and the avatar inside it is labelled with the same name when `name` is a string, so it can be heard twice. Pass your own `avatar` (for example an `Avatar` with `aria-hidden`) to avoid that.
+- `AvatarLabelGroup` shows the name and supporting text as plain text, and the avatar it generates is decorative (`alt=""`), so the name is heard once; its status dot is still announced. Pass `avatarProps={{ alt: "…" }}` to name it anyway. On a plain `Avatar`, `alt=""` likewise drops the image alt and the fallback label.
 
 #### Reduced motion
 
@@ -1481,7 +1481,7 @@ Server render: same markup as the client. Renders the same markup on server and 
 
 - The trigger is a `div role="combobox"` with `aria-haspopup="listbox"`, `aria-expanded`, and `aria-required`, `aria-invalid` and `aria-disabled` when set. It is named by `aria-label`, `aria-labelledby` or a surrounding `FieldLabel` (a `<label htmlFor>` cannot name a div, so the wrapper points at the label id). The selected labels are its text.
 - The popover is a `role="dialog"` with the same name, or the `placeholder` as a fallback. Inside, the search box is a combobox with `aria-activedescendant`, the list is a `listbox` (`aria-multiselectable` when `multiple`, `aria-busy` while `loading`) and each row is an `option`.
-- The chosen options are marked only visually (a check icon and `data-checked`); in cmdk `aria-selected` means highlighted, not chosen.
+- Chosen options carry `aria-checked="true"` (and `data-checked`, for styling): in `multiple` mode every option is `true` or `false`, in single mode only the chosen one has it. The check icon is decoration. In cmdk `aria-selected` means highlighted, not chosen.
 - The empty message sits in a polite live region next to a hidden listbox. The `confirmBackspace` prompt ("Press Backspace again to remove ...") is a polite live region on the trigger. The loading text is not a live region.
 - Chip remove buttons are named "Remove" plus the label; the clear button uses `clearLabel`.
 
@@ -1866,6 +1866,8 @@ Server render: same markup as the client. Plain markup with no browser API at re
 |---|---|---|---|
 | `columns` (required) | `DataTableColumn<T>[]` |  | Column definitions in display order. |
 | `data` (required) | `T[]` |  | Row objects to render; each row is passed to `cell`, `sortValue` and `onRowClick`. |
+| `aria-label` | `string` |  | Names the scrollable region around the table (see `caption` for the table's own title). |
+| `aria-labelledby` | `string` |  | Id of the element that names the scrollable region around the table. |
 | `caption` | `React.ReactNode` |  | Caption rendered under the table (`<caption>`), e.g. a source note or the table title. |
 | `className` | `string` |  | Classes for the outer wrapper. |
 | `defaultSelectedRowIds` | `string[]` | `[]` | Initially selected row ids when uncontrolled. |
@@ -1877,10 +1879,11 @@ Server render: same markup as the client. Plain markup with no browser API at re
 | `loadingRows` | `number` | `5` | Number of skeleton rows shown while `loading`. |
 | `manualSorting` | `boolean` |  | Disable built-in sorting (e.g. when sorting on the server). |
 | `maxHeight` | `number \| string` |  | Maximum height of the scroll area (px number or CSS length); the body scrolls past it. |
-| `onRowClick` | `(row: T, index: number) => void` |  | Called with the row and its index when a row is clicked; rows get a pointer cursor. |
+| `onRowClick` | `(row: T, index: number) => void` |  | Called with the row and its index when a row is clicked, or activated with Enter or Space; clickable rows get a pointer cursor and are focusable. |
 | `onSelectionChange` | `(ids: string[]) => void` |  | Called with the full list of selected row ids after every selection change. |
 | `onSortChange` | `(sort: DataTableSort \| null) => void` |  | Called with the next sort (or `null` when sorting is cleared) when a sortable header is activated. |
 | `ref` | `React.Ref<HTMLTableElement>` |  | Ref to the `<table>` element. DataTable is generic, so it takes `ref` as a plain prop (React 19) instead of going through `forwardRef`, which would erase the row type. |
+| `rowLabel` | `(row: T, index: number) => string` |  | Accessible name of a row's selection checkbox (with `selectable`). Default "Select row" for every row: pass e.g. `(row) => "Select " + row.name` so the boxes can be told apart. |
 | `selectable` | `boolean` |  | Adds a leading checkbox column (with select-all in the header) for row selection. |
 | `selectedRowIds` | `string[]` |  | Controlled selected row ids (see `getRowId`). Use with `onSelectionChange`. |
 | `sort` | `DataTableSort \| null` |  | Controlled sort (`{ key, direction }`), or `null` for unsorted. Use with `onSortChange`. |
@@ -1901,16 +1904,17 @@ Server render: same markup as the client. Plain markup with no browser API at re
 
 | Key | Action |
 |---|---|
-| Tab / Shift+Tab | Moves through the sort buttons, the checkboxes and controls inside cells |
+| Tab / Shift+Tab | Moves through the scroll box (only while the table overflows it), the sort buttons, clickable rows, the checkboxes and controls inside cells |
 | Enter, Space | On a sortable header, cycles that column: ascending, descending, unsorted |
 | Space | On a checkbox, selects or clears the row (or all rows, in the header) |
+| Enter, Space | On a focused row (only with `onRowClick`): calls `onRowClick` |
 
-Rows are not focusable and have no key handler: `onRowClick` works with a mouse or touch only, so give keyboard users a real link or button in a cell. There is no arrow-key movement. `align` is logical (`left` is the start side), so columns flip in RTL.
+With `onRowClick`, each row is a tab stop and Enter or Space on the focused row calls it (a key press on a button or link inside the row keeps its own meaning). Without `onRowClick` rows are not focusable. There is no arrow-key movement. `align` is logical (`left` is the start side), so columns flip in RTL.
 
 #### Screen readers
 
 - A native `table`; headers are `th scope="col"`. A sortable column (`sortable: true`) holds a button and carries `aria-sort` (`ascending`, `descending`, `none`); a column that is not sortable has neither.
-- With `selectable`, the header checkbox is labelled "Select all rows" and every row checkbox is labelled just "Select row", so rows are not told apart by name. When that matters, compose the table with `Table` and a `TableCheckbox` with its own `aria-label`. The select-all box shows the mixed state when some rows are selected.
+- With `selectable`, the header checkbox is labelled "Select all rows" and every row checkbox is labelled "Select row" unless you pass `rowLabel`, for example `(row) => "Select " + row.name`; without it the boxes are not told apart by name. The select-all box shows the mixed state when some rows are selected.
 - `loading` puts `aria-busy="true"` on the table and fills the body with `aria-hidden` skeleton rows. No "Loading" text is announced, so add your own status message.
 - Empty `data` shows one full-width cell with "No results", or your `emptyState`. `caption` renders a `<caption>` under the table.
 
@@ -1924,7 +1928,7 @@ Server render: part of it fills in after mount. The table renders fully on the s
 
 #### Gotchas
 
-- Sorting happens in the browser and cycles asc, desc, then none (`onSortChange(null)`). Set `manualSorting` when the server sorts: the data order stays yours and the headers still report the sort. Empty values sort last ascending but first descending, text compares case-insensitively with numeric order ("item2" before "item10"), and ties keep the original order. `sortValue` gives a column its own sort key.
+- Sorting happens in the browser and cycles asc, desc, then none (`onSortChange(null)`). Set `manualSorting` when the server sorts: the data order stays yours and the headers still report the sort. Empty values (`null`, `undefined`, "") stay last in both directions, text compares case-insensitively with numeric order ("item2" before "item10"), and ties keep the original order. `sortValue` gives a column its own sort key.
 - Selection is stored by row id: `getRowId` defaults to `row.id` (string or number), else the row's index in `data`, so supply `getRowId` when data is filtered or reordered. Select-all picks every row in `data`, not only the visible page; from a partial selection it clears the rows instead.
 - `onRowClick` is on the `<tr>`: clicks from buttons or links you put in a cell bubble to it unless you `stopPropagation` (the selection checkboxes already do).
 - `columns[].key` must be unique and reads `row[key]` unless `cell` is given. The `ref` is a plain prop (React 19) that reaches the `<table>`; `className` styles the outer box and `tableClassName` the table.
@@ -1946,7 +1950,7 @@ Server render: part of it fills in after mount. The table renders fully on the s
 | `aria-label` | `string` |  | Accessible name of the trigger when there is no visible label. |
 | `aria-labelledby` | `string` |  | Id(s) of the element(s) that label the trigger. |
 | `captionLayout` | `"label" \| "dropdown" \| "dropdown-months" \| "dropdown-years"` |  | Show month/year dropdowns in the calendar caption. |
-| `className` | `string` |  | Classes for the trigger button. |
+| `className` | `string` |  | Classes for the wrapper around the trigger button (the button itself takes no class). |
 | `clearable` | `boolean` |  | Show an inline button that resets the value. |
 | `contentClassName` | `string` |  | Classes for the calendar popover. |
 | `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled. |
@@ -1958,7 +1962,7 @@ Server render: part of it fills in after mount. The table renders fully on the s
 | `formatOptions` | `Intl.DateTimeFormatOptions` |  | Options passed to `Intl.DateTimeFormat`. Defaults to `{ dateStyle: "medium" }`. |
 | `id` | `string` |  | `id` of the trigger, so a `<label htmlFor>` or `Field` can point at it. |
 | `invalid` | `boolean` |  | Marks the picker invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
-| `locale` | `string` |  | BCP 47 locale passed to `Intl.DateTimeFormat`. |
+| `locale` | `string` |  | BCP 47 locale for the trigger text (`Intl.DateTimeFormat`) and the calendar's month and weekday names, digits and first weekday. |
 | `name` | `string` |  | Name of the hidden input that submits the value with a surrounding form. |
 | `onOpenChange` | `(open: boolean) => void` |  | Called when the popover opens or closes (selection, Escape, outside click). |
 | `onValueChange` | `(value: Date \| undefined) => void` |  | Called with the picked date, or `undefined` when cleared. |
@@ -2010,7 +2014,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 
 #### Gotchas
 
-- `locale` and `formatOptions` only format the trigger text. The calendar is not given the locale, so its month names, weekdays and week start stay at DayPicker's defaults.
+- `locale` formats the trigger text and also sets the calendar's month and weekday names, digits and first weekday (through `Intl`); `formatOptions` only formats the trigger. The calendar's aria labels ("Go to the Next Month", the day names read by a screen reader) stay English: they are not derived from `locale`.
 - `className` goes to the wrapper `div` around the trigger, not to the button; `contentClassName` styles the popover.
 - Clicking the day that is already selected clears the value (`onValueChange(undefined)`) and leaves the popover open; `clearable` adds an explicit button.
 - With `name` a hidden input posts the local day as `YYYY-MM-DD` (empty when none). `required` blocks nothing in a native form. `startMonth` and `endMonth` limit navigation, `disabledDates` takes react-day-picker matchers.
@@ -2033,7 +2037,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 | `aria-label` | `string` |  | Accessible name of the trigger when there is no visible label. |
 | `aria-labelledby` | `string` |  | Id(s) of the element(s) that label the trigger. |
 | `cancelLabel` | `string` | `"Cancel"` | Text of the cancel button. |
-| `className` | `string` |  | Classes for the trigger button. |
+| `className` | `string` |  | Classes for the wrapper around the trigger button (the button itself takes no class). |
 | `clearable` | `boolean` |  | Show an inline button that resets the value. |
 | `contentClassName` | `string` |  | Classes for the calendar popover. |
 | `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled. |
@@ -2045,7 +2049,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 | `formatRange` | `(range: DateRange) => string` |  | Custom formatter for the trigger text. |
 | `id` | `string` |  | `id` of the trigger, so a `<label htmlFor>` or `Field` can point at it. |
 | `invalid` | `boolean` |  | Marks the picker invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
-| `locale` | `string` |  | BCP 47 locale passed to `Intl.DateTimeFormat`. |
+| `locale` | `string` |  | BCP 47 locale for the trigger text (`Intl.DateTimeFormat`) and the calendar's month and weekday names, digits and first weekday. |
 | `name` | `string` |  | Name of the hidden input that submits the value with a surrounding form. |
 | `numberOfMonths` | `number` | `2` | Number of months shown side by side. |
 | `onOpenChange` | `(open: boolean) => void` |  | Called when the popover opens or closes (selection, Escape, outside click). |
@@ -2100,7 +2104,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 - Nothing is committed until Apply: clicking days, presets or closing with Escape or an outside click leaves `value` alone, and the next open starts from the committed value. `clearable` clears at once, with no Apply.
 - Apply is disabled until a start day is picked, and a range with only a start is applied as a one day range (`to` equals `from`).
 - `presets` replaces the defaults (`defaultDateRangePresets`: Today, Yesterday, Last 7 days, Last 30 days, This month, Last month); `presets={[]}` hides the sidebar. Each `getRange` runs when a preset is chosen and when the popover renders, so relative ranges stay current. `numberOfMonths` defaults to 2.
-- `locale` only formats the trigger and footer text; the calendar keeps DayPicker's default language and week start. With `name`, two hidden inputs post `name[from]` and `name[to]` as `YYYY-MM-DD`.
+- `locale` formats the trigger and footer text and sets the calendar's month and weekday names, digits and first weekday; its aria labels stay English. With `name`, two hidden inputs post `name[from]` and `name[to]` as `YYYY-MM-DD`.
 
 ## DateTimePicker
 
@@ -2119,7 +2123,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 | `aria-label` | `string` |  | Accessible name of the trigger when there is no visible label. |
 | `aria-labelledby` | `string` |  | Id(s) of the element(s) that label the trigger. |
 | `captionLayout` | `"label" \| "dropdown" \| "dropdown-months" \| "dropdown-years"` |  | Show month/year dropdowns in the calendar caption. |
-| `className` | `string` |  | Classes for the trigger button. |
+| `className` | `string` |  | Classes for the wrapper around the trigger button (the button itself takes no class). |
 | `clearable` | `boolean` |  | Show an inline button that resets the value. |
 | `contentClassName` | `string` |  | Classes for the calendar popover. |
 | `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled. |
@@ -2135,7 +2139,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 | `hourCycle` | `12 \| 24` |  | Force a 12- or 24-hour clock. Defaults to the locale's convention. |
 | `id` | `string` |  | `id` of the trigger, so a `<label htmlFor>` or `Field` can point at it. |
 | `invalid` | `boolean` |  | Marks the picker invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
-| `locale` | `string` |  | BCP 47 locale passed to `Intl.DateTimeFormat`. |
+| `locale` | `string` |  | BCP 47 locale for the trigger text (`Intl.DateTimeFormat`) and the calendar's month and weekday names, digits and first weekday. |
 | `max` | `DateTimeInput` |  | Latest selectable moment. |
 | `min` | `DateTimeInput` |  | Earliest selectable moment. Days before it are disabled and times are clamped. |
 | `name` | `string` |  | Name of the hidden input that submits the value with a surrounding form. |
@@ -2193,7 +2197,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 - Changes apply at once: picking a day, or stepping the time, calls `onValueChange(date, { localValue })` and the popover stays open until Done, Escape or an outside click. Picking a preset sets the value and closes. Clicking the selected day does not unselect it.
 - A day picked before any time is set uses the time typed so far, else `defaultTime` (`"00:00"`). A time typed before a day exists is held until a day is picked.
 - `min` and `max` disable days outside them, clamp the result, and limit the time on the boundary day; strings without a zone are read as local time.
-- With `name` a hidden input posts `YYYY-MM-DDTHH:mm` (with `:ss` for seconds, empty when none). `locale` formats the trigger and sets the time field's clock and segment order, but the calendar keeps DayPicker's default language.
+- With `name` a hidden input posts `YYYY-MM-DDTHH:mm` (with `:ss` for seconds, empty when none). `locale` formats the trigger, sets the time field's clock and segment order, and sets the calendar's month and weekday names, digits and first weekday (its aria labels stay English).
 
 ## Dialog
 
@@ -2405,7 +2409,7 @@ Props of `DrawerContent`: see [the full page](md/Drawer.md).
 | Enter, Space | On the handle button (only with two or more `snapPoints`): go to the next snap point and wrap to the smallest |
 | Enter, Space | Activate the focused button, including `DrawerClose` and the close button from `showClose` |
 
-Dragging is pointer-only. Without snap points the handle is a decorative `aria-hidden` bar, so keyboard users close with Escape or a `DrawerClose` button. There are no direction-dependent keys, so RTL changes nothing. Focus returns to the `DrawerTrigger` on close (Radix). Unlike `SheetContent`, `DrawerContent` does not restore focus for a drawer opened without a trigger (a hotkey, controlled `open`): move focus back yourself in `onCloseAutoFocus`.
+Dragging is pointer-only. Without snap points the handle is a decorative `aria-hidden` bar, so keyboard users close with Escape or a `DrawerClose` button. There are no direction-dependent keys, so RTL changes nothing. Focus returns to the `DrawerTrigger` on close (Radix), and for a drawer opened without a trigger (a hotkey, controlled `open`) to the element that had focus when it opened, as `SheetContent` does; a `preventDefault()` in your `onCloseAutoFocus` still wins.
 
 #### Screen readers
 
@@ -2520,7 +2524,7 @@ Server render: same markup as the client. A closed menu renders only its trigger
 | `maxFiles` | `number` |  | Most files accepted per drop or pick (counted with `currentCount`); extra files are rejected. |
 | `maxSize` | `number` |  | Largest accepted file in bytes; larger files are rejected. |
 | `multiple` | `boolean` | `true` | Accept more than one file per drop or pick. |
-| `name` | `string` |  | Name for the underlying file input. |
+| `name` | `string` |  | Name for the underlying file input. With it, the accepted files stay on the input so a native form post sends them. |
 | `onDrop` | `(files: File[], rejections: FileRejection[]) => void` |  | Called with accepted files and rejections after a drop or pick. |
 | `title` | `React.ReactNode` |  | Headline of the drop target. Defaults to a prompt to drop or choose files. |
 
@@ -2562,7 +2566,7 @@ Server render: part of it fills in after mount. Without `directory` the zone ren
 
 - `onDrop` is `(accepted, rejections)` and runs for every drop or pick, also when everything was rejected or `accepted` is empty. A rejection is `{ file, errors: [{ code, message }] }` with codes `file-invalid-type`, `file-too-large` and `too-many-files`. It does not run while `disabled`.
 - The red drag state only reflects what the browser reveals mid-drag: MIME types (and `multiple={false}` with several files). Extension rules such as `accept=".pdf"` and `maxSize` are checked at drop. `multiple={false}` keeps the first file and rejects the rest.
-- `currentCount` counts files you already hold against `maxFiles`. The picker input is cleared after each pick, so the same file can be chosen again.
+- `currentCount` counts files you already hold against `maxFiles`. Without `name` the picker input is cleared after each pick, so the same file can be chosen again. With `name` the accepted files stay on the input through `DataTransfer` (picks and drops; a rejected pick is not kept), so a native form post sends them: the earlier ones are kept while `currentCount` is above 0 and the input is emptied when it returns to 0. Where `input.files` cannot be set it is cleared as before.
 - `directory` walks dropped folders and sets each file's `relativePath` (read it with `getFileRelativePath`); every file is validated on its own and counts toward `maxFiles`. `compact` is a deprecated alias of `density="compact"`. The helpers `validateFiles`, `isFileAccepted` and `describeFileConstraints` are exported for your own checks.
 
 ## EmptyState
@@ -2876,7 +2880,7 @@ Server render: same markup as the client. No browser API at render: the document
 - `strategy` defaults to `fixed`, pinned to the viewport corner with `z-50`. In a card, a demo or any container use `absolute` (inside a `relative` parent) or `static`, which ignores `position` offsets.
 - `label` is required and is not shown unless `extended`; there is no tooltip. Default icon is a plus; it turns only when you pass `actions` and no `icon`.
 - Your `onClick` runs first, and `preventDefault()` in it stops the toggle. `open` and the actions do nothing without a non-empty `actions` array.
-- Running an action closes the dial but does not move focus back to the button (Escape does), and clicking elsewhere closes it the same way.
+- Running an action closes the dial and, when focus is still on the action (its handler did not move it), puts focus back on the button, as Escape does; clicking elsewhere closes it and leaves focus where you clicked.
 
 ## Frame
 
@@ -2964,6 +2968,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 | `interval` | `number` |  | Milliseconds per frame. Default 80. |
 | `label` | `string` |  | Screen reader label. Default "Loading". |
 | `paused` | `boolean` |  | Pause on the current frame. |
+| `size` | `NonNullable<SpinnerProps["size"]>` |  | Glyph size as on `Spinner`: `xs` to `xl` sets the font size. Leave it out to inherit the parent's font size. |
 | `variant` | `GlyphSpinnerVariant` | `"dots"` | Which glyph animation to play (a key of the spinner glyph frame sets). |
 
 ### Notes
@@ -2994,7 +2999,7 @@ Server render: same markup as the client. Always renders frame 0 first: the pref
 #### Gotchas
 
 - `frames` overrides `variant` when it is not empty; an empty array falls back to `variant`. `variant` is one of `dots` (default), `line`, `arc`, `circle`, `bounce`, `star` or `pulse`, the same sets as `glyphSpinnerFrames`.
-- There is no `size` prop in its type. The glyph takes the font size and colour of its parent, so size it with a `text-*` class on `className` or a wrapper.
+- `size` (`xs` to `xl`, as on `Spinner`) sets the font size; without it the glyph takes the font size and colour of its parent, so a `text-*` class on `className` or a wrapper also works.
 - `interval` is milliseconds per frame (default 80) and is clamped to at least 16; `paused` holds the current frame, as does a single-frame `frames` array.
 - The glyph sits in a `min-w-[1ch]` monospace box, so a custom frame set should use characters of similar width to avoid jitter.
 
@@ -3046,7 +3051,7 @@ Server render: same markup as the client. Plain markup; the column counts come f
 
 - `GridItem span` counts columns of the 4-column mobile grid and defaults to `"full"`: an item with only `lg={4}` is full width on mobile and tablet too. Give `md` when the tablet layout should differ.
 - `span` above 4 on mobile makes implicit columns; use `md` (of 8) and `lg` (of 12) for larger spans.
-- `md` is typed up to 12 but only 1 to 8 and `"full"` produce a class: a `md` of 9 or more silently has no effect.
+- `md` is typed 1 to 8 or `"full"` because the tablet grid has 8 columns (a larger value used to compile and do nothing); `span` and `lg` accept 1 to 12 and `"full"`.
 - `gap` is `sm`, `md` (default, wider from `md` up) or `lg`.
 
 ## Heading
@@ -3682,6 +3687,7 @@ Server render: same markup as the client. The input and the slots render on the 
 
 - Import: `import { Item } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/item` (primitives)
+- `data-slot`: `item`
 - Parts: [`ItemActions`](ItemActions.md), [`ItemContent`](ItemContent.md), [`ItemDescription`](ItemDescription.md), [`ItemGroup`](ItemGroup.md), [`ItemMedia`](ItemMedia.md), [`ItemSeparator`](ItemSeparator.md), [`ItemTitle`](ItemTitle.md)
 - Also accepts the props of HTMLAttributes
 
@@ -3690,7 +3696,7 @@ Server render: same markup as the client. The input and the slots render on the 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `asChild` | `boolean` |  | Render the child element as the row (a router link, say) instead of a `div`. |
-| `chevron` | `boolean` |  | Show a trailing chevron on a link or button row. |
+| `chevron` | `boolean` |  | Show a trailing chevron on a link, button or `asChild` row (added after the child's own content). |
 | `disabled` | `boolean` |  | A link or button row that cannot be used (`aria-disabled`, dimmed). |
 | `href` | `string` |  | Make the row one link. Put no buttons inside it (a link cannot hold interactive content). |
 | `onClick` | `React.MouseEventHandler<HTMLElement>` |  | Make the row one button. Put no buttons inside it. |
@@ -3761,7 +3767,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 
 - The element follows the props: `href` gives an `<a>`, `onClick` (without `href`) a `<button type="button">`, `asChild` renders your child (a router link) as the row, and nothing gives a `div`. With `href` and `onClick`, the link still gets the `onClick`.
 - A link or button row must hold no other buttons or links (nested interactive content). Put the actions in a static row instead.
-- `chevron` only shows on a link or button row, and not with `asChild`: put your own icon in the child.
+- `chevron` only shows on an interactive row (link, button or `asChild`), never on a static one; with `asChild` it is appended after the child's own content.
 - `ItemDescription` truncates to one line by default; pass `lines={2}` or `lines="none"`. `ItemGroup` `divided` draws hairlines, and `emptyState` shows only when there are no children and `loading` is off.
 
 ## Kbd
@@ -4035,7 +4041,7 @@ Not focusable: no keyboard interaction.
 
 #### Screen readers
 
-- The bar is a `role="meter"` with `aria-valuenow`, `aria-valuemin` (`min`), `aria-valuemax` (`max`) and `aria-valuetext`. It is named by `label` (`aria-labelledby`), or just "Usage" when there is no label, so give every meter a `label`: an `aria-label` passed to `Meter` lands on the outer div, not on the bar.
+- The bar is a `role="meter"` with `aria-valuenow`, `aria-valuemin` (`min`), `aria-valuemax` (`max`) and `aria-valuetext`. It is named by `label` (`aria-labelledby`), or just "Usage" when there is no label, so give every meter a `label`. An `aria-label` or `aria-labelledby` passed to `Meter` goes on the bar (replacing the label as its name), not on the outer div.
 - The value text is "62.1 / 80 GB" with `unit`, otherwise a rounded percentage ("62%"). A string from `valueText` (or its function) becomes `aria-valuetext` too; `ariaValueText` overrides it, and a non-text `valueText` falls back to the percentage. `value={null}` reads "No data".
 - `loading` with no value drops the meter role and shows sr-only "Loading CPU…" (or "Loading usage…" without a string label); `loading` with a value keeps the meter and only sets `aria-busy`.
 - `MeterGroup` is a `role="group"`; pass `aria-label` ("Node").
@@ -4061,7 +4067,7 @@ Server render: same markup as the client. Plain markup computed from the props (
 
 - Thresholds are percentages of the range, higher is worse, and default to warn 75 and danger 90; `thresholds={false}` turns them off. `data-level` on the root is `ok`, `warn` or `danger`.
 - Fill colour order: the threshold colour when strained, then `tone` (or the deprecated `color`), then `accent`, then primary. With `thresholds={false}` and no tone you get primary.
-- `min` and `max` set the scale and the fill is clamped to 0 to 100%, but `aria-valuenow` is the raw value, so a value above `max` is reported out of range.
+- `min` and `max` set the scale and the fill is clamped to 0 to 100%, and `aria-valuenow` is clamped to the same range, while the visible and `aria-valuetext` text keep the real value ("130 / 100 GB").
 - `segments={n}` fills `round(percent * n)` blocks, so small values can show none. For task completion use `Progress`, which has the progressbar role.
 
 ## MetricReadout
@@ -4289,7 +4295,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 | `locale` | `string` |  | BCP 47 locale for number formatting and parsing (decimal and group separators). Defaults to the user's locale. |
 | `max` | `number` |  | Largest allowed value; stepping and blur clamp to it. |
 | `min` | `number` |  | Smallest allowed value; stepping and blur clamp to it. |
-| `onValueChange` | `(value: number \| null) => void` |  | Called with the parsed number (or `null` when emptied) as the user types or steps. |
+| `onValueChange` | `(value: number \| null) => void` |  | Called with the parsed number (or `null` when emptied) when a typed entry is committed (blur or Enter) and on each step, Home or End; not on every keystroke. |
 | `precision` | `number` |  | Fixed number of decimals; values are rounded to it. |
 | `size` | `Size` | `"md"` | Field height and text size. |
 | `step` | `number` | `1` | Amount added or removed by the buttons and the arrow keys. |
@@ -4420,6 +4426,7 @@ Server render: same markup as the client. The input and the slots render on the 
 
 - Import: `import { Pagination } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/primitives/pagination` (primitives)
+- `data-slot`: `pagination-jump`
 - Parts: [`PaginationEllipsis`](PaginationEllipsis.md), [`PaginationItem`](PaginationItem.md), [`PaginationNext`](PaginationNext.md), [`PaginationPrev`](PaginationPrev.md), [`PaginationStatus`](PaginationStatus.md)
 - Also accepts the props of HTMLAttributes
 
@@ -4606,7 +4613,7 @@ Focus moves into the panel when it opens and goes back to the trigger on close (
 
 #### Screen readers
 
-The trigger gets `aria-haspopup="dialog"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="dialog"`. Sutra's `PopoverTitle` and `PopoverDescription` are plain `h3` and `p` elements, not the Radix parts, so they do not name the dialog: pass `aria-label` or `aria-labelledby` to `PopoverContent` (the tests do). The arrow is decoration. An icon-only trigger needs `aria-label`.
+The trigger gets `aria-haspopup="dialog"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="dialog"`. `PopoverTitle` and `PopoverDescription` (an `h3` and a `p`) name and describe the dialog: inside `PopoverContent` they get ids and the content sets `aria-labelledby` / `aria-describedby` while they are mounted. An `aria-label`, `aria-labelledby` or `aria-describedby` you pass to `PopoverContent` wins, and a popover without a title stays unnamed, so give it an `aria-label`. The arrow is decoration. An icon-only trigger needs `aria-label`.
 
 #### Reduced motion
 
@@ -4708,7 +4715,7 @@ Server render: same markup as the client. Plain markup built from the props, wit
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `color` | `ProgressColor` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
-| `formatValue` | `(value: number, max: number) => React.ReactNode` |  | Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". |
+| `formatValue` | `(value: number, max: number) => React.ReactNode` |  | Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". A text or number result is also used as `aria-valuetext`. |
 | `indeterminate` | `boolean` |  | Forces the looping animation regardless of `value` (also used when `value` is null). |
 | `indicatorClassName` | `string` |  | Classes for the filled indicator bar (`className` styles the track). |
 | `label` | `React.ReactNode` |  | Text shown above the bar; it also becomes the accessible name. |
@@ -4754,7 +4761,7 @@ Server render: part of it fills in after mount. Renders on the server, but direc
 #### Gotchas
 
 - `value` is clamped to 0 to `max`; an out-of-range value never reaches Radix's console error. `max <= 0` reads as an empty bar. `showValue` is `true` (above next to the label, else on the right), `"top"` or `"right"`.
-- `formatValue` changes only the visible text, not `aria-valuetext`. Pass Radix's `getValueLabel` for that.
+- `formatValue` also sets `aria-valuetext` when it returns text or a number ("3 / 8 GB"), so the bar reads what it shows; a JSX result cannot be spoken, so the default percentage stays. Radix's `getValueLabel` or an explicit `aria-valuetext` overrides it.
 - When there is a `label` or a shown value, the bar sits in a wrapper: `className` then styles the wrapper, not the track (use `indicatorClassName` for the fill).
 - `ProgressCircle` has no indeterminate state; use `Spinner` for that. Its centre text is `children`, or the percentage unless `showValue={false}`.
 
@@ -4997,7 +5004,7 @@ Server render: same markup as the client. Items and the group render on the serv
 | `marks` | `(number \| SliderMark)[]` |  | Tick marks under the track; numbers or `{ value, label }`. |
 | `showValue` | `boolean \| "always"` |  | Show a value bubble above the thumb on hover, focus and drag. `"always"` keeps it visible. |
 | `size` | `Size` |  | Track and thumb size. |
-| `thumbLabels` | `string[]` |  | Accessible labels per thumb, e.g. `["Minimum", "Maximum"]`. |
+| `thumbLabels` | `string[]` |  | Accessible labels per thumb, e.g. `["Volume"]` or `["Minimum", "Maximum"]`. Without it a single thumb is named by `aria-label` / `aria-labelledby` (or the surrounding `FieldLabel`); two thumbs are "Minimum" and "Maximum". |
 | `tone` | `ToneInput` |  | Semantic colour (`success`, `warning`, …). Takes precedence over `accent`. |
 
 ### Notes
@@ -5025,9 +5032,9 @@ In RTL on a horizontal slider ArrowLeft raises and ArrowRight lowers, and the tr
 
 #### Screen readers
 
-- Each thumb is a `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation`. A single thumb has no name unless you pass `thumbLabels`, such as `["Volume"]`; two thumbs are named "Minimum" and "Maximum" by default, more are "Value 1 of 3" and so on. `getValueText` sets `aria-valuetext` per thumb, for example `(v) => v + "%"`.
-- `aria-label` and `id` go to the Radix root `span`, which has no role, so they do not name a thumb. The slider does not read `Field`, so a `FieldLabel` does not name it either: use `thumbLabels`.
-- The value bubble and the tick marks and their labels are `aria-hidden`; put what matters in `getValueText`. `invalid` sets `aria-invalid` on the root and turns the range red.
+- Each thumb is a `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation`. A single thumb is named by `thumbLabels` (such as `["Volume"]`), else by `aria-label` or `aria-labelledby` on the `Slider`, else by a surrounding `FieldLabel`; two thumbs are named "Minimum" and "Maximum" by default (an `aria-label` on the `Slider` then becomes a `role="group"` around them), more are "Value 1 of 3" and so on. `getValueText` sets `aria-valuetext` per thumb, for example `(v) => v + "%"`.
+- `id` stays on the Radix root `span` (which has no role), so a `FieldLabel` click does not focus a thumb. The slider reads `Field`: its id, `disabled`, invalid state and description, hint and error ids (`aria-describedby`, also on every thumb); an explicit prop wins.
+- The value bubble and the tick marks and their labels are `aria-hidden`; put what matters in `getValueText`. `invalid` (or an invalid `Field`) sets `aria-invalid` on the root and on each thumb and turns the range red.
 
 #### Reduced motion
 
@@ -5122,7 +5129,7 @@ Server render: same markup as the client. Plain markup with no browser API at re
 
 ## ScrollArea
 
-> Custom-styled scroll container with thin overlay scrollbars and optional edge fades.
+> Custom-styled scroll container with thin overlay scrollbars and optional edge fades. The viewport is focusable while it overflows; `aria-label` / `aria-labelledby` name it as a `region`.
 
 - Import: `import { ScrollArea } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/scroll-area` (primitives)
@@ -5146,11 +5153,11 @@ Server render: same markup as the client. Plain markup with no browser API at re
 
 #### Keyboard
 
-No keys of its own and no tab stop: the viewport is the real scroller, so the browser's scrolling keys work whenever focus is inside it (on a focusable child, or on the viewport itself), and `ScrollArea` adds no `tabindex`. The custom scrollbars and thumbs are for the pointer only and are not focusable. Nothing swaps in RTL.
+No keys of its own: the viewport is the real scroller, so the browser's scrolling keys work whenever focus is inside it (on a focusable child, or on the viewport itself), and the viewport gets `tabindex="0"` while its content overflows (measured after mount and on resize), so a keyboard user can focus it and scroll; content that fits adds no tab stop. The custom scrollbars and thumbs are for the pointer only and are not focusable. Nothing swaps in RTL.
 
 #### Screen readers
 
-Adds no role, name or state: the content reads in its normal order and the scrollbars are not exposed. Pass `aria-label` (it lands on the root) only when the region needs a name, and give a scroll region that holds no focusable content a way into the tab order yourself (for instance through `viewportRef`). The edge fades are a visual mask only.
+Adds no state: the content reads in its normal order and the scrollbars are not exposed. Pass `aria-label` or `aria-labelledby` when the region needs a name: they go on the viewport, which then has `role="region"` (without a name it has no role). The edge fades are a visual mask only.
 
 #### Reduced motion
 
@@ -5190,11 +5197,11 @@ Server render: part of it fills in after mount. The server renders the root and 
 
 #### Keyboard
 
-No keys of its own and no tab stop: the viewport is the real scroller, so the browser's scrolling keys work whenever focus is inside it (on a focusable child, or on the viewport itself), and `ScrollArea` adds no `tabindex`. The custom scrollbars and thumbs are for the pointer only and are not focusable. Nothing swaps in RTL.
+No keys of its own: the viewport is the real scroller, so the browser's scrolling keys work whenever focus is inside it (on a focusable child, or on the viewport itself), and the viewport gets `tabindex="0"` while its content overflows (measured after mount and on resize), so a keyboard user can focus it and scroll; content that fits adds no tab stop. The custom scrollbars and thumbs are for the pointer only and are not focusable. Nothing swaps in RTL.
 
 #### Screen readers
 
-Adds no role, name or state: the content reads in its normal order and the scrollbars are not exposed. Pass `aria-label` (it lands on the root) only when the region needs a name, and give a scroll region that holds no focusable content a way into the tab order yourself (for instance through `viewportRef`). The edge fades are a visual mask only.
+Adds no state: the content reads in its normal order and the scrollbars are not exposed. Pass `aria-label` or `aria-labelledby` when the region needs a name: they go on the viewport, which then has `role="region"` (without a name it has no role). The edge fades are a visual mask only.
 
 #### Reduced motion
 
@@ -5569,7 +5576,7 @@ Static: no animation.
 
 #### Server rendering
 
-Server render: part of it fills in after mount. The platform is detected during the first render: the server has no `navigator` and uses the non-Mac labels ("Ctrl", "Shift"), while a Mac browser computes the glyphs (command, option) on its first client render, so hydration can differ there. Pass `platform` (or set it on a `ShortcutProvider`, which `ShortcutKeys` reads) to make server and client agree.
+Server render: part of it fills in after mount. The server has no `navigator` and uses the non-Mac labels ("Ctrl", "Shift"). The hydrating client render uses the same default, so the markup matches, and a Mac browser switches to the glyphs (command, option) right after hydration, before paint. A client-only render detects the platform at once. Pass `platform` (or set it on a `ShortcutProvider`, which `ShortcutKeys` reads) to make the first render already right.
 
 #### Gotchas
 
@@ -5783,7 +5790,7 @@ Server render: same markup as the client. Plain `div` markup with no browser API
 | `marks` | `(number \| SliderMark)[]` |  | Tick marks under the track; numbers or `{ value, label }`. |
 | `showValue` | `boolean \| "always"` | `false` | Show a value bubble above the thumb on hover, focus and drag. `"always"` keeps it visible. |
 | `size` | `Size` | `"md"` | Track and thumb size. |
-| `thumbLabels` | `string[]` |  | Accessible labels per thumb, e.g. `["Minimum", "Maximum"]`. |
+| `thumbLabels` | `string[]` |  | Accessible labels per thumb, e.g. `["Volume"]` or `["Minimum", "Maximum"]`. Without it a single thumb is named by `aria-label` / `aria-labelledby` (or the surrounding `FieldLabel`); two thumbs are "Minimum" and "Maximum". |
 | `tone` | `ToneInput` |  | Semantic colour (`success`, `warning`, …). Takes precedence over `accent`. |
 
 ### Notes
@@ -5811,9 +5818,9 @@ In RTL on a horizontal slider ArrowLeft raises and ArrowRight lowers, and the tr
 
 #### Screen readers
 
-- Each thumb is a `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation`. A single thumb has no name unless you pass `thumbLabels`, such as `["Volume"]`; two thumbs are named "Minimum" and "Maximum" by default, more are "Value 1 of 3" and so on. `getValueText` sets `aria-valuetext` per thumb, for example `(v) => v + "%"`.
-- `aria-label` and `id` go to the Radix root `span`, which has no role, so they do not name a thumb. The slider does not read `Field`, so a `FieldLabel` does not name it either: use `thumbLabels`.
-- The value bubble and the tick marks and their labels are `aria-hidden`; put what matters in `getValueText`. `invalid` sets `aria-invalid` on the root and turns the range red.
+- Each thumb is a `role="slider"` with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-orientation`. A single thumb is named by `thumbLabels` (such as `["Volume"]`), else by `aria-label` or `aria-labelledby` on the `Slider`, else by a surrounding `FieldLabel`; two thumbs are named "Minimum" and "Maximum" by default (an `aria-label` on the `Slider` then becomes a `role="group"` around them), more are "Value 1 of 3" and so on. `getValueText` sets `aria-valuetext` per thumb, for example `(v) => v + "%"`.
+- `id` stays on the Radix root `span` (which has no role), so a `FieldLabel` click does not focus a thumb. The slider reads `Field`: its id, `disabled`, invalid state and description, hint and error ids (`aria-describedby`, also on every thumb); an explicit prop wins.
+- The value bubble and the tick marks and their labels are `aria-hidden`; put what matters in `getValueText`. `invalid` (or an invalid `Field`) sets `aria-invalid` on the root and on each thumb and turns the range red.
 
 #### Reduced motion
 
@@ -5981,7 +5988,7 @@ Server render: same markup as the client. The server renders the empty live-regi
 | `provider` (required) | `SocialProvider` |  | Identity provider; sets the logo and the default label ("Continue with Google"). |
 | `asChild` | `boolean` |  | Render as the child element (e.g. a link) while keeping the button styles. |
 | `fullWidth` | `boolean` |  | Stretches the button to the width of its container. |
-| `loading` | `boolean` |  | Shows a spinner and disables the button. |
+| `loading` | `boolean` |  | Shows a spinner and disables the button (with `asChild`: `aria-disabled`, no tab stop, clicks swallowed, `aria-busy`). |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button height and text size. |
 | `variant` | `"default" \| "brand" \| "icon"` | `"default"` | Look: `default` (outlined), `brand` (provider colours) or `icon` (square, icon only; set an `aria-label`). |
 
@@ -6026,7 +6033,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 
 #### Gotchas
 
-- With `asChild`, `disabled` and `loading` do less than on a button: `disabled` is not applied to the child and `loading` only swaps the logo for a spinner (no `aria-busy`, no blocking). Block the click yourself, or use the plain button.
+- With `asChild`, `disabled` and `loading` cannot set the native `disabled` on the child (often a link), so, like `Button asChild`, the child gets `aria-disabled="true"`, `data-disabled`, `tabindex="-1"` and its clicks are swallowed in the capture phase; `loading` also sets `aria-busy` and swaps the logo for a spinner.
 - `variant="brand"` paints the provider's own colours as fixed values (white for Google, black for Apple, and so on), so it does not follow the theme or `data-style`; the `default` (outlined) and `icon` variants do. `fullWidth` is ignored for `variant="icon"`.
 - `children` replaces the whole label, including the provider name: the default text is only used when there are no `children`. The label is English unless you pass `children`.
 - The element carries `data-provider` with the provider key, which is handy for tests and analytics.
@@ -6225,7 +6232,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 
 - Import: `import { StackedMeter } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
 - Source: `packages/ui/src/primitives/meter` (primitives)
-- `data-slot`: `stacked-meter-track`, `stacked-meter-legend-skeleton`
+- `data-slot`: `stacked-meter-track`, `stacked-meter-legend-skeleton`, `stacked-meter-part`
 - Also accepts the props of HTMLAttributes
 
 ### Props
@@ -6407,7 +6414,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `current` (required) | `number` |  | Zero-based index of the current step. Use `steps.length` to mark all complete. |
-| `steps` (required) | `StepIndicatorStep[]` |  | Steps in order; each has a `label` and optional description. |
+| `steps` (required) | `StepIndicatorStep[]` |  | Steps in order; each has a `title` and optional description. |
 | `connector` | `boolean` |  | Draw the line between markers (circles/dots). Default true. |
 | `onStepClick` | `(index: number) => void` |  | Makes steps clickable. |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Lays the steps out in a row or a column. |
@@ -6461,7 +6468,7 @@ Server render: same markup as the client. Plain markup with no browser API or me
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `current` (required) | `number` |  | Zero-based index of the current step. Use `steps.length` to mark all complete. |
-| `steps` (required) | `StepIndicatorStep[]` |  | Steps in order; each has a `label` and optional description. |
+| `steps` (required) | `StepIndicatorStep[]` |  | Steps in order; each has a `title` and optional description. |
 | `connector` | `boolean` | `true` | Draw the line between markers (circles/dots). Default true. |
 | `onStepClick` | `(index: number) => void` |  | Makes steps clickable. |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Lays the steps out in a row or a column. |
@@ -6611,7 +6618,7 @@ Server render: same markup as the client. Plain markup: the state comes from `ch
 
 | Key | Action |
 |---|---|
-| Tab / Shift+Tab | The selected visible tab is the only tab stop (the first one when the selected tab is in the overflow); then the More button |
+| Tab / Shift+Tab | The selected visible tab is the only tab stop (the first enabled one when the selected tab is in the overflow or disabled); then the More button |
 | ArrowRight, ArrowLeft | Focus and select the next or previous enabled tab, wrapping around |
 | Home, End | Focus and select the first or last enabled tab |
 | Enter, Space | Select the focused tab (native button) |
@@ -6644,7 +6651,7 @@ Server render: part of it fills in after mount. The server renders every tab (`v
 
 ## Table
 
-> Data table inside a bordered, scrollable box.
+> Data table inside a bordered, scrollable box. The box takes focus while it overflows (so the arrow keys scroll it) and becomes a named `region` when the table has an `aria-label` or `aria-labelledby`.
 
 - Import: `import { Table } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/table` (primitives)
@@ -6684,14 +6691,14 @@ Props of `TableCell`, `TableCheckbox`, `TableHead`: see [the full page](md/Table
 | Enter, Space | On a sortable header, calls its `onSort` (native `<button>`) |
 | Space | On a `TableCheckbox`, toggles it (native checkbox) |
 
-There is no arrow-key navigation between cells and rows are not focusable; this is a plain table. No key depends on direction, but `align` is logical: `left` and `right` mean start and end, so they flip in RTL.
+There is no arrow-key navigation between cells and rows are not focusable; this is a plain table (only the scroll box around it takes focus, and only while the table is wider or taller than it). No key depends on direction, but `align` is logical: `left` and `right` mean start and end, so they flip in RTL.
 
 #### Screen readers
 
 - Real `table`, `thead`, `tbody`, `tfoot`, `tr`, `th` and `td` elements, so row and column navigation comes from the browser. `TableHead` sets `scope="col"` unless you pass another `scope`. `TableCaption` is a real `<caption>` that names the table, even though it is drawn under it.
 - A header is sortable when it has `onSort` or `sortDirection`: it then holds a button named by the header text, and `aria-sort` is `ascending`, `descending` or `none` (`sortDirection={false}`). Without either it has no `aria-sort`. The arrow icon is `aria-hidden`.
 - `TableCheckbox` is a native checkbox with the `checkbox` role and no label of its own: pass `aria-label` ("Select row Ada"). `indeterminate` sets the DOM mixed state.
-- The scroll container around the table has no role and is not given a `tabIndex`.
+- The scroll container around the table has `tabIndex="0"` and a focus ring while the content overflows it (measured after mount and on resize; not on the server), so a keyboard user can scroll it; a table that fits adds no tab stop. It becomes a `role="region"` named like the table when the `Table` has an `aria-label` or `aria-labelledby`; otherwise it has no role. `DataTable` takes the same two props.
 
 #### Reduced motion
 
@@ -6871,13 +6878,13 @@ Server render: same markup as the client. The chips, the input and the count ren
 | `as` | `"p" \| "span" \| "div" \| "small" \| "strong" \| "em"` | `"p"` | Element to render, independent of the visual styles. |
 | `asChild` | `boolean` |  | Render as the child element instead of the text tag, keeping the text styles. |
 | `size` | `"xs" \| "sm" \| "md" \| "lg" \| "xl"` | `"md"` | Type scale step: `xs`, `sm`, `md` (base), `lg` or `xl`. |
-| `tone` | `"default" \| "muted"` | `"default"` | `default` is plain foreground text; the semantic tones follow `Tone` (`muted` is the legacy name of `neutral`). |
+| `tone` | `"default" \| "primary" \| "neutral" \| "success" \| "warning" \| "destructive" \| "info" \| "muted"` | `"default"` | `default` is plain foreground text; the semantic tones follow `Tone` (`muted` is the legacy name of `neutral`). |
 | `weight` | `"regular" \| "medium" \| "semibold"` | `"regular"` | Font weight. |
 
 ### Variants
 
 - `size`: `xs`, `sm`, `md`, `lg`, `xl` (default "md")
-- `tone`: `default`, `muted` (default "default")
+- `tone`: `default`, `primary`, `neutral`, `success`, `warning`, `destructive`, `info`, `muted` (default "default")
 - `weight`: `regular`, `medium`, `semibold` (default "regular")
 
 ### Notes
@@ -7039,7 +7046,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 - The element is chosen for you: a `<button>` when there is an `onClick` and no `href`, otherwise an `<a>`. Pass `as="a"` or `as="button"` to force one. `as="a"` without `href` is not focusable. `ref` is typed as an anchor in both cases, and `external` does nothing on a button.
 - `underline` defaults to `hover`: inside running text the link shows only its colour until the pointer is over it, so use `underline="always"` there. `size` defaults to `inherit`, which takes the surrounding font size.
 - `target="_blank"` on its own gets `rel="noopener noreferrer"` but not the screen reader hint; only `external` adds the hint. An explicit `target` or `rel` always wins over what `external` would set.
-- With `asChild`, `external` still sets `target` and `rel` on the child and adds the arrow, but not the screen reader hint. A disabled `asChild` link keeps the child's `href`, with `aria-disabled`, `tabindex="-1"` and clicks blocked in the capture phase, so a router link does not navigate.
+- With `asChild`, `external` still sets `target` and `rel` on the child and adds the arrow and the hidden " (opens in a new tab)" text, as the plain link does. A disabled `asChild` link keeps the child's `href`, with `aria-disabled`, `tabindex="-1"` and clicks blocked in the capture phase, so a router link does not navigate.
 
 ## TextShimmer
 
@@ -7086,7 +7093,7 @@ Server render: same markup as the client. Plain markup and inline CSS variables,
 #### Gotchas
 
 - `duration` is in seconds (default 2) and `spread` is the half-width of the bright band as a percentage of the gradient, clamped to 1 to 50 (default 12). The gradient is twice as wide as the text, so the band covers about twice that share of the text.
-- The text is `color: transparent` with the gradient clipped to it, and the gradient reads `--muted-foreground` and `--foreground`. Do not pass a `text-<colour>` class in `className` (`text-foreground`, `text-primary`): the class merge takes `text-shimmer` for a text colour and drops it, so the shimmer disappears. Size classes such as `text-sm` are fine.
+- The text is `color: transparent` with the gradient clipped to it, and the gradient reads `--muted-foreground` and `--foreground`. A `text-<colour>` class in `className` (`text-foreground`, `text-primary`) is dropped by the class merge so the shimmer keeps working; colour the two ends of the sweep with `--muted-foreground` and `--foreground` instead. Size classes such as `text-sm` are kept.
 - It is `inline-block`, so it does not wrap with the surrounding line like inline text; give it a block parent for long text. `style` you pass is merged after the shimmer variables, so you can override them.
 
 ## TimePicker
@@ -7297,6 +7304,7 @@ Server render: same markup as the client. Plain markup: pressed state comes from
 
 - Import: `import { ToggleGroup } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/toggle-group` (primitives)
+- `data-slot`: `toggle-group`
 - Parts: [`ToggleGroupItem`](ToggleGroupItem.md)
 - Also accepts the props of HTMLAttributes
 
@@ -7309,7 +7317,7 @@ Server render: same markup as the client. Plain markup: pressed state comes from
 | `disabled` | `boolean` |  | Disables every item. |
 | `loop` | `boolean` |  | Wrap focus from the last item to the first (default true). |
 | `onValueChange` | `((value: string) => void) \| ((value: string[]) => void)` |  | Called with the pressed item value, or an empty string when it is toggled off. |
-| `orientation` | `"horizontal" \| "vertical"` |  | Arrow keys move along this axis (default horizontal). |
+| `orientation` | `"horizontal" \| "vertical"` |  | Restricts the arrow keys to this axis. Unset (the default), all four arrow keys move focus, and the group keeps its row layout either way. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Item height and padding. |
 | `type` | `"single" \| "multiple"` |  | At most one item pressed; pressing it again clears the value to `""`. Any number of items pressed. |
 | `value` | `string \| string[]` |  | Controlled pressed item value (empty string for none). Use with `onValueChange`. |
@@ -7526,7 +7534,7 @@ Server render: same markup as the client. No browser API at render: the deadline
 | `label` | `string` | `"Volume"` | Accessible name of the slider, e.g. "Music volume". Default "Volume". |
 | `levelClassName` | `string` |  | Class for the level label. |
 | `muteButtonClassName` | `string` |  | Class for the mute toggle, merged last (e.g. another button style). |
-| `muted` | `boolean` |  | Controlled muted state; the slider shows zero while muted. Use with `onMutedChange`. |
+| `muted` | `boolean` |  | Controlled muted state. While muted the slider keeps the stored level (turned neutral grey) unless `zeroWhenMuted` shows it at 0. Use with `onMutedChange`. |
 | `muteLabel` | `string` |  | Accessible name of the mute toggle. Default `Mute ${label}`. |
 | `muteToggle` | `"pressed" \| "label"` | `"pressed"` | How the toggle exposes its state: `"pressed"` (default) keeps one name with `aria-pressed`; `"label"` swaps its name between `muteLabel` and `unmuteLabel`. |
 | `onMutedChange` | `(muted: boolean) => void` |  | Called when the mute button toggles the muted state. |
@@ -7923,7 +7931,7 @@ Server render: part of it fills in after mount. Without `endDate` (year) or `def
 
 | Key | Action |
 |---|---|
-| Tab / Shift+Tab | Strip (it is focusable), then play or pause, previous, each dot, next. Slides that are off-screen keep their own tab stops |
+| Tab / Shift+Tab | Strip (it is focusable), then play or pause, previous, each dot, next. Slides that are fully off-screen are `inert`, so their links and buttons are skipped (a slide showing even a sliver stays interactive) |
 | ArrowRight, ArrowLeft | On the strip or on any control: next or previous slide. Stops at the ends unless `loop` |
 | Home, End | First or last slide |
 | Enter, Space | Press the focused button or dot |
@@ -7954,7 +7962,7 @@ Server render: part of it fills in after mount. The server renders every slide, 
 
 #### Gotchas
 
-- Off-screen slides are not `inert` and stay in the accessibility tree: focusable content inside one is still reachable by Tab, and focusing it scrolls its slide into view.
+- Slides that do not intersect the strip at all are `inert` (set from the same observer that tracks the slide in view, so they are not inert on the server or before the first report): Tab and the accessibility tree skip their content, and a keyboard user reaches them with the arrows, Home, End or the dots. If nothing reports as showing, no slide is made inert.
 - `value` follows the strip as well as the buttons, because the slide with the largest visible share wins, so `onValueChange` also fires on a free swipe. Controlled, the parent decides: a press only reports the index.
 - `autoplay` is `true` for 5 s or a number of ms (at least 1000). It pauses while the pointer or focus is inside and restarts its interval afterwards. Without `loop` it stops on the last slide. A play or pause button shows only with more than one slide.
 - Each child is one slide (the children of a fragment count one by one), `basis-full` wide unless `slideClassName` says otherwise (`basis-4/5` lets the next one peek). One slide shows no controls.
@@ -8293,7 +8301,7 @@ There is no Home or End. The ring is a `dir="ltr"` island, so the arrows never s
 
 #### Reduced motion
 
-Segments change with `motion-safe:transition-all duration-500` when data or the hidden set changes (`animate`, default true), so under `prefers-reduced-motion` they update with no transition. The loading ring pulses with `animate-pulse` and carries `motion-reduce:animate-none`. There is no entrance animation on mount.
+Segments carry `motion-safe:transition-all duration-500` (`animate`, default true), which eases the hover dimming and colour changes; the arc shape is a `d` attribute, so it changes at once when data or the hidden set changes, and under `prefers-reduced-motion` nothing eases. The loading ring pulses with `animate-pulse` and carries `motion-reduce:animate-none`. There is no entrance animation on mount.
 
 #### Server rendering
 
@@ -8387,7 +8395,7 @@ Server render: part of it fills in after mount. Without `directory` the markup i
 
 - Nothing is uploaded for you. `onFilesAdded` gives the new `UploadFile`s (`status: "idle"`): start your request there and feed `progress` and `status` back through controlled `files` (or `onFilesChange`). `status` also takes `pending`, `running`, `succeeded`, `failed` and `canceled`.
 - `accept`, `maxSize` (bytes) and `maxFiles` (in total, counting files already listed) are checked on every add; rejections go to `onFilesRejected` and the alert. `multiple={false}` makes each new file replace the previous one.
-- `name` names the hidden input, but the input is emptied right after each pick and dropped files never reach it, so a native form post carries no files: read them from the file list or `onFilesAdded`.
+- With `name` the hidden input carries the whole file list (picked, dropped and `defaultFiles`; removing a file removes it) through `DataTransfer`, so a native form post sends the files. Without `name`, or in a browser that cannot set `input.files`, the input is emptied after each pick: read the files from the list or `onFilesAdded`. Picking a file that is already on the input again may fire no change event.
 - `FileUploadList` renders nothing for an empty list; `FileUploadItem` outside a `FileUpload` needs its own `onRemove`. Read the state anywhere inside with the `useFileUpload` hook.
 
 ## FileViewer
@@ -8444,7 +8452,7 @@ Server render: same markup as the client. Plain markup from props (`useId` for t
 #### Gotchas
 
 - All filter state is yours: `FilterBarChip` takes `value` (string array) with `onValueChange`, `FilterBarSearch` takes `value` with `onValueChange`. Chips do not create tokens: map your state to `FilterBarActive filters`, or render `FilterBarToken`s yourself.
-- Every token built from `filters` has the remove button name "Remove filter". To name them, render `FilterBarToken` children with `removeLabel` ("Remove Status: Active"); setting `onRemove` is what shows the button.
+- Every token built from `filters` has the remove button name "Remove filter" unless you name them: `removeLabel` on `FilterBarActive` (a string, or a function of the filter such as `(f) => "Remove " + f.id`) or `removeLabel` on a single filter (which wins); `FilterBarToken` children take `removeLabel` too. Setting `onRemove` is what shows the button.
 - Chip options are strings or `{ value, label, icon, count, textValue }`. Search and the summary use `textValue`, else the label when it is a string or number, else the raw `value`: set `textValue` when `label` is a node.
 - `FilterPill` is a deprecated alias of `FilterBarChip`. Chip `align` sets the popover alignment (default `start`); `disabled` on the chip prevents opening.
 
@@ -8709,7 +8717,7 @@ Server render: part of it fills in after mount. With a `src` the server renders 
 | Tab / Shift+Tab | Cycles through the toolbar buttons, the previous and next buttons, and the thumbnails (focus is trapped while open) |
 | Enter, Space | Press the focused button, including a thumbnail |
 
-In RTL the arrows follow reading order: ArrowLeft goes to the next item and ArrowRight to the previous, and a swipe towards the inline start brings the next item. Closing does not send focus back to the `LightboxTrigger` (the viewer has no Radix trigger to return to), so focus ends on the page body unless you restore it in `onOpenChange`. Pointer extras: double-click toggles 200%, a drag pans a zoomed image, Ctrl or Cmd with the wheel or a trackpad pinch zooms.
+In RTL the arrows follow reading order: ArrowLeft goes to the next item and ArrowRight to the previous, and a swipe towards the inline start brings the next item. Closing sends focus back to the element that had it when the viewer opened (the `LightboxTrigger`, or a button that called `openAt`), even though the viewer has no Radix trigger; if that element is gone, focus ends on the page body. Pointer extras: double-click toggles 200%, a drag pans a zoomed image, Ctrl or Cmd with the wheel or a trackpad pinch zooms.
 
 #### Screen readers
 
@@ -8842,12 +8850,12 @@ Server render: part of it fills in after mount. The full SVG renders on the serv
 
 #### Keyboard
 
-There is no keyboard handling of its own. Links are normal tab stops, and so are each code block's "Copy code" button and, with `onCite`, each citation pill (a button; Enter and Space activate it).
+There is no keyboard handling of its own. Links are normal tab stops, and so are each code block and each table wrapper while it overflows (scroll boxes, so the arrow keys scroll them), each code block's "Copy code" button and, with `onCite`, each citation pill (a button; Enter and Space activate it).
 
 #### Screen readers
 
 - The output is plain semantic HTML: `h1` to `h6`, `p`, `ul`, `ol`, `blockquote`, `table` with `thead` and `th`, `img`. Heading levels are written as in the source and are not shifted. An image without alt text gets `alt=""`.
-- A fenced block is a header with the language (or "text") and a button named "Copy code", which becomes "Copied" after a copy, then a `pre`. The code is not highlighted, and the scrolling `pre` and wide tables are not focusable.
+- A fenced block is a header with the language (or "text") and a button named "Copy code", which becomes "Copied" after a copy, then a `pre`. The code is not highlighted. The `pre` and the wrapper around a table are scroll boxes that get `tabindex="0"` while they overflow (arrow keys scroll them), and always have a name through `role="group"`: "ts code" (the language, or "Code") and "Table".
 - Citation pills: a `button` named "Source 2: Title" with `onCite`, a link with a hover card when the source has `href`, else a plain `sup`.
 - Task-list items are native checkboxes rendered by GFM.
 
@@ -9122,7 +9130,7 @@ Only a colour and border transition on hover, which the global net ends within 1
 
 #### Server rendering
 
-Server render: part of it fills in after mount. The shortcut chips depend on the platform, found with `navigator` in the first client render (the server assumes a non-Mac), so a Mac user's first client render shows the command key where the server HTML has "Ctrl". Inside a `ShortcutProvider` the provider's platform is used on both sides. The hotkey listener is attached in an effect.
+Server render: part of it fills in after mount. The shortcut chips depend on the platform: the server and the hydrating client render the non-Mac labels ("Ctrl") and a Mac browser switches to the command key right after hydration, before paint, so the markup matches. Inside a `ShortcutProvider` with a `platform` prop that platform is used from the first render on both sides. The hotkey listener is attached in an effect.
 
 #### Slots
 
@@ -9279,14 +9287,14 @@ Server render: same markup as the client. The first render is the same on the se
 
 ## SparkBar
 
-> Tiny inline column chart.
+> Tiny inline column chart. A left-to-right island like `Sparkline`: the first bar is always on the physical left.
 
 - Import: `import { SparkBar } from "@sutra/ui/dataviz"` ([full page](md/SparkBar.md))
 - Props: `data`*, `accent`, `color`, `gap`, `height`, `highlightLast`, `label`, `max`, `min`, `mutedColor`, `radius`, `responsive`, `tone`, `width`, `wrapperClassName` (* required)
 
 ## Sparkline
 
-> Tiny inline trend chart.
+> Tiny inline trend chart. It is a left-to-right island: the series always runs from the physical left, also on a right-to-left page.
 
 - Import: `import { Sparkline } from "@sutra/ui/dataviz"` ([full page](md/Sparkline.md))
 - Props: `data`*, `accent`, `color`, `gradient`, `height`, `highlightLast`, `label`, `max`, `min`, `responsive`, `smooth`, `strokeWidth`, `tone`, `trend`, `type`, `width`, `wrapperClassName` (* required)
@@ -9321,7 +9329,7 @@ Server render: same markup as the client. Pure SVG computed from `data`, `width`
 
 - A line or area scales to the range of its data (`min` and `max` override), so a flat series fills the box and a tiny change looks large. `type="bar"` always includes 0 on its scale, so the same data looks different; set `min` and `max` on both to compare them.
 - Colour precedence is `tone`, then `color`, then `accent`; `trend` (green when the last value is at least the first, red otherwise) only applies when none of the three is set. A token name such as `"success"` works in `color`.
-- With `responsive` the SVG stretches to the container width (`preserveAspectRatio="none"`, strokes keep their width) and `width` only sets the viewBox; without it the box is `width` by `height` (default 120 by 32).
+- With `responsive` the SVG stretches to the container width (`preserveAspectRatio="none"`, strokes keep their width) and `width` only sets the viewBox; without it the box is `width` by `height` (default 120 by 32). Both charts are left-to-right islands (`dir="ltr"` on the wrapper, like the other charts): the series starts at the physical left and the `highlightLast` dot sits on the last point, also on an RTL page.
 - `type="bar"` ignores `smooth`, `strokeWidth` and `gradient`; `mutedColor`, `gap` and `radius` are props of `SparkBar` only, so render it directly to set them. `highlightLast` is the dot on a line and the full-colour bar on bars.
 
 ## SplitPane
@@ -9365,7 +9373,7 @@ Nothing moves except a colour fade on the divider, which the global net ends in 
 
 #### Server rendering
 
-Server render: part of it fills in after mount. The panes render on the server at `defaultSize` (or `size`). With `storageKey` the saved size is read from `localStorage` during the first client render, so when one is saved the client disagrees with the server markup (a hydration mismatch on the first panel's size); `collapseBelow` is judged from a measured width, so stacking only happens after mount.
+Server render: part of it fills in after mount. The panes render on the server and on the hydrating client render at `defaultSize` (or `size`), so the markup matches. With `storageKey` the saved size is read right after hydration, before paint, and applied without calling `onSizeChange`; `collapseBelow` is judged from a measured width, so stacking only happens after mount.
 
 #### Slots
 
@@ -9726,7 +9734,7 @@ The sun, moon and computer icons turn and fade into each other over 500 ms; `mot
 
 #### Server rendering
 
-Server render: part of it fills in after mount. The first client render reads the saved mode from `localStorage`, while the server renders `defaultValue` or "system", so the label, `data-mode` and icon of the server HTML can disagree with the first client render for a returning visitor. The `dark` class on `<html>` is set in an effect after mount, so the first paint shows the page's own theme: set the class early with a small inline script that reads the same key.
+Server render: part of it fills in after mount. The server and the hydrating client render `defaultValue` or "system" (or "light" when `modes` has no system), so the markup matches. Right after hydration, before paint, an uncontrolled toggle reads the saved mode from `localStorage` (or a dark `<html>` when `modes` has no system and there is no `defaultValue`) and switches to it: that restore does not call `onValueChange`, and nothing is written to storage or `<html>` until it is done. The `dark` class on `<html>` is set in an effect after mount, so the first paint shows the page's own theme: set the class early with a small inline script that reads the same key.
 
 #### Gotchas
 
@@ -10527,7 +10535,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `useSelectionArea` (`@sutra/ui`): Selection state and item props from the nearest `SelectionArea`.
 - `useShortcut` (`@sutra/ui/suite`): Bind `keys` to `handler`. Pass `null` keys (or `enabled: false`) to disable.
 - `useShortcutManager` (`@sutra/ui/suite`): The nearest `ShortcutManager`, or null outside a `ShortcutProvider`.
-- `useShortcutPlatform` (`@sutra/ui/suite`): Platform used for `mod` and glyphs (from the provider, else detected).
+- `useShortcutPlatform` (`@sutra/ui/suite`): Platform used for `mod` and glyphs: the `platform` given to the `ShortcutProvider`, else detected.
 - `useShortcutRegistry` (`@sutra/ui/suite`): All labelled, non-hidden shortcuts in the registry, grouped. Deduplicated by id (latest wins).
 - `useShortcuts` (`@sutra/ui/suite`): Register several shortcuts at once. Works standalone (local listener) without a provider.
 - `useShortcutScope` (`@sutra/ui/suite`): Push a named scope while mounted so its shortcuts shadow lower scopes.

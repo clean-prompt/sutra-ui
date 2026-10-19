@@ -4,7 +4,7 @@
 
 - Import: `import { RichTextEditor } from "@sutra/ui/editor"`
 - Source: `packages/ui/src/kits/editor/rich-text-editor` (kit `editor`)
-- `data-slot`: `rich-text-editor`
+- `data-slot`: `rich-text-editor`, `rich-text-bubble`
 - Also accepts the props of HTMLAttributes
 
 The extension setup (`extensions`, `starterKit`, `history`, `placeholder`) is read when the editor is created, as in TipTap; remount with a new `key` to change it. For Yjs: `history={false}` plus `extensions={[Collaboration.configure({ document: ydoc })]}`, and leave `value`/`defaultValue` unset.

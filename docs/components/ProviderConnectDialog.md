@@ -4,6 +4,7 @@
 
 - Import: `import { ProviderConnectDialog } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers` (kit `agent-admin`)
+- `data-slot`: `device-approved`, `device-waiting`, `device-user-code`, `device-countdown`, `api-key-result`
 
 ## Props
 

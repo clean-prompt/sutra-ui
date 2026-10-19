@@ -61,7 +61,10 @@ interface ToggleGroupBaseProps
     VariantProps<typeof toggleVariants> {
   /** Disables every item. */
   disabled?: boolean;
-  /** Arrow keys move along this axis (default horizontal). */
+  /**
+   * Restricts the arrow keys to this axis. Unset (the default), all four arrow keys move focus, and the group
+   * keeps its row layout either way.
+   */
   orientation?: "horizontal" | "vertical";
   /** Wrap focus from the last item to the first (default true). */
   loop?: boolean;

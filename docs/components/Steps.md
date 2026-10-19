@@ -11,7 +11,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `current` (required) | `number` |  | Zero-based index of the current step. Use `steps.length` to mark all complete. |
-| `steps` (required) | `StepIndicatorStep[]` |  | Steps in order; each has a `label` and optional description. |
+| `steps` (required) | `StepIndicatorStep[]` |  | Steps in order; each has a `title` and optional description. |
 | `connector` | `boolean` | `true` | Draw the line between markers (circles/dots). Default true. |
 | `onStepClick` | `(index: number) => void` |  | Makes steps clickable. |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Lays the steps out in a row or a column. |

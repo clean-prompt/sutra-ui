@@ -4,7 +4,7 @@
 
 - Import: `import { DividedGridItem } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/divided-grid` (patterns)
-- `data-slot`: `divided-grid-icon`, `divided-grid-number`, `divided-grid-badge`, `divided-grid-description`, `divided-grid-meta`
+- `data-slot`: `divided-grid-icon`, `divided-grid-number`, `divided-grid-badge`, `divided-grid-description`, `divided-grid-meta`, `divided-grid-cell`
 - Part of [`DividedGrid`](DividedGrid.md)
 - Also accepts the props of HTMLAttributes
 

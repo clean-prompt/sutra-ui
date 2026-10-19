@@ -9,6 +9,7 @@
 import { existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import ts from "typescript";
+import { parseSizeClasses } from "./sizing.mjs";
 
 const toPosix = (p) => p.split(path.sep).join("/");
 const squash = (s) => s.replace(/\s+/g, " ").trim();
@@ -122,10 +123,119 @@ function sizeMaps(sourceFile) {
   return out;
 }
 
+/** The keys of an object literal in source order: literal names, plus the keys of any `...spread` (resolved by type, e.g. `...toneClasses.text`). */
+function literalKeys(checker, obj) {
+  const keys = [];
+  for (const p of obj.properties) {
+    if (ts.isSpreadAssignment(p)) {
+      const spread = checker.getTypeAtLocation(p.expression);
+      // A spread of a non-literal type (a union, an index signature) has no fixed keys to list.
+      if (spread.flags & ts.TypeFlags.Object && !checker.getIndexInfosOfType(spread).length) for (const prop of checker.getPropertiesOfType(spread)) keys.push(prop.getName());
+    } else if (p.name && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name) || ts.isNumericLiteral(p.name))) keys.push(p.name.text);
+  }
+  return [...new Set(keys)];
+}
+
+const unwrap = (e) => {
+  while (e && (ts.isAsExpression(e) || ts.isSatisfiesExpression(e) || ts.isParenthesizedExpression(e))) e = e.expression;
+  return e;
+};
+/** A bare size name (`sm`, `icon-sm`, `display-xs`): the value of a map that hands the size on to another component, no classes. */
+const BARE_SIZE = /^(?:icon|(?:icon-|display-)?(?:[23]?xs|sm|md|lg|xl|2xl|default))$/;
+const SIZE_ORDER = ["3xs", "2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"];
+
+/** Every top-level `const name = { ... }` object literal of a file: `Map<name, ObjectLiteralExpression>`. */
+function objectConsts(sourceFile) {
+  const out = new Map();
+  for (const st of sourceFile.statements) {
+    if (!ts.isVariableStatement(st)) continue;
+    for (const d of st.declarationList.declarations) {
+      const init = unwrap(d.initializer);
+      if (ts.isIdentifier(d.name) && init && ts.isObjectLiteralExpression(init)) out.set(d.name.text, init);
+    }
+  }
+  return out;
+}
+
+const propKey = (p) => (ts.isPropertyAssignment(p) && p.name && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name) || ts.isNumericLiteral(p.name)) ? p.name.text : null);
+
+/**
+ * What a component's `size` prop selects inside its render function (no cva `size` variant, no `sizes` const): lookups in a module
+ * const (`barHeight[size]`, or per variant `triggerSize[variant][size]`, shown as `variant: classes`) and `size === "sm" ? a : size === "md" ? b : c`
+ * chains (the last branch belongs to the one size left). `sizeKeys` are the literal values of the prop's type.
+ * Returns `{ [size]: classText }` when at least two sizes set something a sizing column can read, else undefined.
+ */
+function renderSizes(decl, objects, sizeKeys) {
+  if (sizeKeys.length < 2) return undefined;
+  const found = {};
+  // One lookup is a map size -> classes. It counts only when it covers every size (a partial one is about something else), a branch that
+  // only names a size (`size === "sm" ? "xs" : "sm"`, passed on to a child) sets no classes, and the same classes twice count once.
+  const take = (map) => {
+    if (!sizeKeys.every((k) => map[k])) return;
+    for (const [key, text] of Object.entries(map)) {
+      if (!sizeKeys.includes(key) || text.split(" ").every((t) => sizeKeys.includes(t) || BARE_SIZE.test(t))) return;
+    }
+    for (const [key, text] of Object.entries(map)) if (sizeKeys.includes(key) && !(found[key] ??= []).includes(text)) found[key].push(text);
+  };
+  const isSize = (e) => e && ts.isIdentifier(e) && e.text === "size";
+  const visit = (n) => {
+    if (ts.isElementAccessExpression(n) && isSize(n.argumentExpression)) {
+      const target = unwrap(n.expression);
+      if (ts.isIdentifier(target) && objects.has(target.text)) {
+        const map = {};
+        for (const p of objects.get(target.text).properties) {
+          const key = propKey(p);
+          if (key !== null && !ts.isObjectLiteralExpression(unwrap(p.initializer))) map[key] = classText(p.initializer);
+        }
+        take(map);
+      } else if (ts.isElementAccessExpression(target) && ts.isIdentifier(unwrap(target.expression)) && objects.has(unwrap(target.expression).text)) {
+        const map = {};
+        for (const outer of objects.get(unwrap(target.expression).text).properties) {
+          const inner = propKey(outer) !== null ? unwrap(outer.initializer) : undefined;
+          if (!inner || !ts.isObjectLiteralExpression(inner)) continue;
+          for (const p of inner.properties) {
+            const key = propKey(p);
+            if (key !== null) map[key] = squash(`${map[key] ?? ""} ${propKey(outer)}: ${classText(p.initializer)}`);
+          }
+        }
+        take(map);
+      }
+    } else if (ts.isConditionalExpression(n) && !(ts.isConditionalExpression(n.parent) && n.parent.whenFalse === n)) {
+      const pairs = [];
+      let tail = n;
+      const test = (c) => {
+        const cond = unwrap(c);
+        if (!ts.isBinaryExpression(cond) || cond.operatorToken.kind !== ts.SyntaxKind.EqualsEqualsEqualsToken) return null;
+        return isSize(cond.left) && ts.isStringLiteral(cond.right) ? cond.right.text : isSize(cond.right) && ts.isStringLiteral(cond.left) ? cond.left.text : null;
+      };
+      while (ts.isConditionalExpression(tail) && test(tail.condition) !== null) {
+        pairs.push([test(tail.condition), tail.whenTrue]);
+        tail = unwrap(tail.whenFalse);
+      }
+      if (pairs.length) {
+        const map = Object.fromEntries(pairs.map(([key, value]) => [key, classText(value)]));
+        const left = sizeKeys.filter((k) => !(k in map));
+        if (left.length === 1) map[left[0]] = classText(tail);
+        take(map);
+      }
+    }
+    ts.forEachChild(n, visit);
+  };
+  visit(decl);
+  const keys = Object.keys(found);
+  if (SIZE_ORDER.some((k) => keys.includes(k)) && keys.every((k) => SIZE_ORDER.includes(k))) keys.sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
+  const sizes = Object.fromEntries(keys.map((k) => [k, squash(found[k].join(" "))]));
+  // Only when the classes say something a sizing column can read (a height, a width, padding, a text step, an icon size).
+  const readable = keys.filter((k) => {
+    const p = parseSizeClasses(sizes[k]);
+    return p.parts.length > 0 || [p.height, p.width, p.maxWidth, p.padX, p.padY, p.text, p.icon].some((v) => v !== null);
+  });
+  return readable.length >= 2 && readable.length === keys.length ? sizes : undefined;
+}
+
 /** cva() calls in a file: `Map<constName, { variants: {prop: values[]}, defaults: {prop: value} }>`. */
-function cvaTable(sourceFile) {
+function cvaTable(sourceFile, checker) {
   const table = new Map();
-  const literalKeys = (obj) => obj.properties.map((p) => (p.name && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name) || ts.isNumericLiteral(p.name)) ? p.name.text : null)).filter((k) => k !== null);
   const visit = (n) => {
     if (ts.isCallExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === "cva" && ts.isVariableDeclaration(n.parent) && ts.isIdentifier(n.parent.name)) {
       const config = n.arguments[1];
@@ -136,7 +246,7 @@ function cvaTable(sourceFile) {
           if (prop.name.text === "variants") {
             for (const v of prop.initializer.properties) {
               if (ts.isPropertyAssignment(v) && ts.isObjectLiteralExpression(v.initializer) && v.name && (ts.isIdentifier(v.name) || ts.isStringLiteral(v.name) || ts.isNumericLiteral(v.name))) {
-                entry.variants[v.name.text] = literalKeys(v.initializer);
+                entry.variants[v.name.text] = literalKeys(checker, v.initializer);
                 if (v.name.text === "size") {
                   entry.sizeClasses = Object.fromEntries(
                     v.initializer.properties
@@ -161,8 +271,85 @@ function cvaTable(sourceFile) {
   return table;
 }
 
-const SLOT = /data-slot=(?:"([^"]+)"|\{"([^"]+)"\})/;
-const SLOTS = new RegExp(SLOT.source, "g");
+/** The string values an expression can take that the source spells out: literals, both sides of `?:` / `??` / `||`, a literal-typed identifier, a destructured default. */
+function stringValues(checker, expr, defaults) {
+  const out = [];
+  const visit = (e) => {
+    if (ts.isStringLiteralLike(e)) out.push(e.text);
+    else if (ts.isParenthesizedExpression(e) || ts.isAsExpression(e) || ts.isSatisfiesExpression(e) || ts.isNonNullExpression(e)) visit(e.expression);
+    else if (ts.isConditionalExpression(e)) {
+      visit(e.whenTrue);
+      visit(e.whenFalse);
+    } else if (ts.isBinaryExpression(e) && (e.operatorToken.kind === ts.SyntaxKind.QuestionQuestionToken || e.operatorToken.kind === ts.SyntaxKind.BarBarToken)) {
+      visit(e.left);
+      visit(e.right);
+    } else if (ts.isIdentifier(e)) {
+      const type = checker.getTypeAtLocation(e);
+      const literals = (type.isUnion() ? type.types : [type]).filter((t) => t.isStringLiteral()).map((t) => t.value);
+      if (literals.length) out.push(...literals);
+      else {
+        const d = defaults.get(e.text);
+        if (d) {
+          const m = /^(["`])([^"`${}]*)\1$/.exec(d);
+          if (m) out.push(m[2]);
+        }
+      }
+    }
+  };
+  visit(expr);
+  return out;
+}
+
+/**
+ * Every `data-slot` name a component declaration renders, in source order: the JSX attribute (`data-slot="x"`, `data-slot={cond ? "a" : "b"}`,
+ * `data-slot={slotName}` with a literal type or default) and the object key (`{ "data-slot": "x" }`, also inside spreads), then the same
+ * from the file-private helpers (a non-exported function or const of the same file) it refers to, transitively.
+ */
+function slotNames(checker, decl, defaults, publicDecls) {
+  const sf = decl.getSourceFile();
+  const found = [];
+  const seen = new Set([decl]);
+  const queue = [decl];
+  // A helper is file-private: not `export`ed and not exposed through an `export { }` list or an entry (those are components of their own).
+  const isExported = (d) => (ts.getCombinedModifierFlags(d) & ts.ModifierFlags.Export) !== 0 || publicDecls.has(d);
+  const take = (expr) => {
+    if (expr) for (const v of stringValues(checker, expr, defaults)) if (!found.includes(v)) found.push(v);
+  };
+  while (queue.length) {
+    const root = queue.shift();
+    const visit = (n) => {
+      if (ts.isJsxAttribute(n) && ts.isIdentifier(n.name) && n.name.text === "data-slot" && n.initializer) {
+        take(ts.isJsxExpression(n.initializer) ? n.initializer.expression : n.initializer);
+      } else if (ts.isPropertyAssignment(n) && (ts.isStringLiteral(n.name) || ts.isIdentifier(n.name)) && n.name.text === "data-slot") {
+        take(n.initializer);
+      } else if (ts.isIdentifier(n) && !(ts.isPropertyAccessExpression(n.parent) && n.parent.name === n)) {
+        const target = checker.getSymbolAtLocation(n)?.valueDeclaration;
+        if (target && !seen.has(target) && target.getSourceFile() === sf && (ts.isFunctionDeclaration(target) || ts.isVariableDeclaration(target)) && !isExported(target)) {
+          const top = ts.isVariableDeclaration(target) ? target.parent.parent.parent : target.parent;
+          if (top === sf) {
+            seen.add(target);
+            queue.push(target);
+          }
+        }
+      }
+      ts.forEachChild(n, visit);
+    };
+    visit(root);
+  }
+  return found;
+}
+
+/** `file#constName` of the `cva()` whose `variants` declare this prop (a prop derived from `VariantProps<typeof x>`), else undefined. */
+function cvaOrigin(prop) {
+  for (const d of prop.declarations ?? []) {
+    for (let n = d.parent; n; n = n.parent) {
+      if (ts.isCallExpression(n) && ts.isIdentifier(n.expression) && n.expression.text === "cva" && ts.isVariableDeclaration(n.parent) && ts.isIdentifier(n.parent.name)) {
+        return `${n.getSourceFile().fileName}#${n.parent.name.text}`;
+      }
+    }
+  }
+  return undefined;
+}
 
 /** True when the prop has a type annotation in the source (not one derived from `VariantProps<typeof cva>`). */
 function writtenType(prop) {
@@ -271,6 +458,8 @@ export function buildApi({ root }) {
   const entryOfName = {};
   const cvaCache = new Map();
   const sizeCache = new Map();
+  const objectCache = new Map();
+  const publicDecls = new Set([...symbols.values()].map((x) => resolveAlias(checker, x).valueDeclaration).filter(Boolean));
 
   for (const [name, exported] of [...symbols.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
     const sym = resolveAlias(checker, exported);
@@ -298,7 +487,7 @@ export function buildApi({ root }) {
     const defaults = destructuringDefaults(impl);
     const text = impl.getText();
     const sf = decl.getSourceFile();
-    if (!cvaCache.has(sf.fileName)) cvaCache.set(sf.fileName, cvaTable(sf));
+    if (!cvaCache.has(sf.fileName)) cvaCache.set(sf.fileName, cvaTable(sf, checker));
     const cvas = cvaCache.get(sf.fileName);
     if (!sizeCache.has(sf.fileName)) sizeCache.set(sf.fileName, sizeMaps(sf));
     const sizeTable = sizeCache.get(sf.fileName);
@@ -318,10 +507,13 @@ export function buildApi({ root }) {
     const variants = {};
     const variantDefaults = {};
     let sizes;
+    // A prop that comes from another cva (a component typed with `ButtonProps` in a file that has its own cva) is not described by this one.
+    const origins = new Map(own.map((p) => [p.getName(), cvaOrigin(p)]));
+    const fits = (k, c) => !origins.get(k) || origins.get(k) === `${sf.fileName}#${c}`;
     for (const c of used) {
-      for (const [k, values] of Object.entries(cvas.get(c).variants)) if (ownNames.has(k) && !variants[k]) variants[k] = values;
-      for (const [k, v] of Object.entries(cvas.get(c).defaults)) if (!(k in variantDefaults)) variantDefaults[k] = v;
-      if (!sizes && cvas.get(c).sizeClasses && ownNames.has("size")) sizes = cvas.get(c).sizeClasses;
+      for (const [k, values] of Object.entries(cvas.get(c).variants)) if (ownNames.has(k) && !variants[k] && fits(k, c)) variants[k] = values;
+      for (const [k, v] of Object.entries(cvas.get(c).defaults)) if (!(k in variantDefaults) && ownNames.has(k) && fits(k, c)) variantDefaults[k] = v;
+      if (!sizes && cvas.get(c).sizeClasses && ownNames.has("size") && fits("size", c)) sizes = cvas.get(c).sizeClasses;
     }
 
     // No cva `size` variant: a `const sizes = {...}` map in the file that the component uses and whose keys are its sizes.
@@ -331,9 +523,30 @@ export function buildApi({ root }) {
       for (const [c, map] of sizeTable) {
         if (!new RegExp(`\\b${c}\\b`).test(text)) continue;
         const keys = Object.keys(map);
-        if (keys.length >= 2 && keys.every((k) => typeText.includes(k) || /^(Size|Density)/.test(typeText) || /Size/.test(typeText))) {
+        // A map from a size to another component's size name (`{ sm: "icon-sm" }`) sets no classes of its own.
+        const bare = Object.values(map).every((text) => text.split(" ").every((t) => BARE_SIZE.test(t)));
+        if (!bare && keys.length >= 2 && keys.every((k) => typeText.includes(k) || /^(Size|Density)/.test(typeText) || /Size/.test(typeText))) {
           sizes = map;
           break;
+        }
+      }
+    }
+
+    // Still none: the size is picked in the render function (a lookup in a module const, a `size === "sm" ?` chain), here or in a
+    // part that reads it from a context this component provides (Tabs and its triggers).
+    if (!sizes && ownNames.has("size")) {
+      const sizeProp = own.find((p) => p.getName() === "size");
+      const type = checker.getNonNullableType(checker.getTypeOfSymbolAtLocation(sizeProp, decl));
+      const keys = (type.isUnion() ? type.types : [type]).filter((t) => t.isStringLiteral() || t.isNumberLiteral()).map((t) => String(t.value));
+      if (!objectCache.has(sf.fileName)) objectCache.set(sf.fileName, objectConsts(sf));
+      const objects = objectCache.get(sf.fileName);
+      sizes = renderSizes(decl, objects, keys);
+      if (!sizes) {
+        const contexts = [...text.matchAll(/\b(\w+)\.Provider\b/g)].map((m) => m[1]);
+        for (const st of sf.statements) {
+          if (sizes || st === decl.parent.parent || st === decl) continue;
+          if (!(ts.isVariableStatement(st) || ts.isFunctionDeclaration(st)) || !contexts.some((c) => st.getText().includes(`useContext(${c})`))) continue;
+          sizes = renderSizes(st, objects, keys);
         }
       }
     }
@@ -358,10 +571,9 @@ export function buildApi({ root }) {
     if (description) entry.description = description;
     const dep = tagText(sym, checker, "deprecated");
     if (dep) entry.deprecated = dep === "true" ? "Deprecated." : dep;
-    const slot = SLOT.exec(text);
-    if (slot) entry.slot = slot[1] ?? slot[2];
     // Every slot the declaration renders, in source order (only when it renders more than one; `slot` is the first).
-    const allSlots = [...new Set([...text.matchAll(SLOTS)].map((m) => m[1] ?? m[2]))];
+    const allSlots = slotNames(checker, decl, defaults, publicDecls);
+    if (allSlots.length) entry.slot = allSlots[0];
     if (allSlots.length > 1) entry.slots = allSlots;
     if (Object.keys(variants).length) entry.variants = variants;
     // What each `size` step sets: the class text of the cva `size` variant (read by the playground's Sizing page).

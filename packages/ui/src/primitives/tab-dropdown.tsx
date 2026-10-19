@@ -112,6 +112,10 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
       }
     };
 
+    /** Roving tab stop: the selected tab, or the first enabled one when the selection is hidden in the overflow or disabled. */
+    const selectedIndex = visible.findIndex((v) => v.value === selected && !v.disabled);
+    const tabStop = selectedIndex >= 0 ? selectedIndex : visible.findIndex((v) => !v.disabled);
+
     const tabClass = cn(
       "relative inline-flex shrink-0 select-none items-center gap-1.5 whitespace-nowrap rounded-control font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4",
       "data-[state=active]:bg-muted data-[state=active]:text-foreground",
@@ -161,7 +165,7 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
                 type="button"
                 role="tab"
                 aria-selected={active}
-                tabIndex={active || (!visible.some((v) => v.value === selected) && i === 0) ? 0 : -1}
+                tabIndex={i === tabStop ? 0 : -1}
                 disabled={it.disabled}
                 data-state={active ? "active" : "inactive"}
                 onClick={() => setSelected(it.value)}

@@ -17,7 +17,10 @@ export interface VolumeSliderProps
   defaultValue?: number;
   /** Called with the new volume (0 to 100) as the slider moves. */
   onValueChange?: (value: number) => void;
-  /** Controlled muted state; the slider shows zero while muted. Use with `onMutedChange`. */
+  /**
+   * Controlled muted state. While muted the slider keeps the stored level (turned neutral grey) unless
+   * `zeroWhenMuted` shows it at 0. Use with `onMutedChange`.
+   */
   muted?: boolean;
   /**
    * Initial muted state when uncontrolled.

@@ -13,7 +13,7 @@
 |---|---|---|---|
 | `data` (required) | `ChartDatum[]` |  | Rows to plot; each has the `index` key (name) and the `valueKey` field (number). |
 | `index` (required) | `string` |  | Key of the segment name. |
-| `animate` | `boolean` | `true` | Animates the segments in when the chart mounts; off under reduced motion. |
+| `animate` | `boolean` | `true` | Eases the hover dimming and the colour of the segments over 500 ms; off under reduced motion. There is no entrance animation, and a segment changes its shape (data or the hidden set) at once. |
 | `centerLabel` | `React.ReactNode` |  | Small caption under the center value. |
 | `centerValue` | `React.ReactNode` |  | Center value. Defaults to the formatted total. Pass null to hide. |
 | `colorFor` | `(datum: ChartDatum, index: number) => string` |  | Returns a colour for a segment (a token name or CSS colour), or `undefined` to use the palette colour. |
@@ -67,7 +67,7 @@ There is no Home or End. The ring is a `dir="ltr"` island, so the arrows never s
 
 ### Reduced motion
 
-Segments change with `motion-safe:transition-all duration-500` when data or the hidden set changes (`animate`, default true), so under `prefers-reduced-motion` they update with no transition. The loading ring pulses with `animate-pulse` and carries `motion-reduce:animate-none`. There is no entrance animation on mount.
+Segments carry `motion-safe:transition-all duration-500` (`animate`, default true), which eases the hover dimming and colour changes; the arc shape is a `d` attribute, so it changes at once when data or the hidden set changes, and under `prefers-reduced-motion` nothing eases. The loading ring pulses with `animate-pulse` and carries `motion-reduce:animate-none`. There is no entrance animation on mount.
 
 ### Server rendering
 

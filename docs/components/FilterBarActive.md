@@ -12,6 +12,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `filters` | `FilterBarActiveFilter[]` |  | Active filters to show as removable tokens, each with a `label` and a remove handler. |
+| `removeLabel` | `string \| ((filter: FilterBarActiveFilter) => string)` | `"Remove filter"` | Accessible name of the remove buttons of `filters`: a string for all of them, or a function of the filter, e.g. `(f) => "Remove " + f.id`. A filter's own `removeLabel` wins. |
 
 ## Notes
 

@@ -23,7 +23,7 @@
 | `legendLabels` | `[React.ReactNode, React.ReactNode]` |  | Texts for the low and high ends of the legend: `[low, high]`. |
 | `max` | `number` | `100` | Value that maps to the strongest step; defaults to the largest value in the data. |
 | `min` | `number` | `0` | Value that maps to the emptiest step; defaults to the smallest value in the data (0 when all are positive). |
-| `onCellClick` | `(cell: HeatmapGridCell, index: number) => void` |  | Called with the cell and its index when a cell is clicked; cells then become buttons. |
+| `onCellClick` | `(cell: HeatmapGridCell, index: number) => void` |  | Called with the cell and its index when a cell is clicked, or activated with Enter or Space. Cells stay `gridcell`s with roving focus (they do not become buttons) and get a pointer cursor. |
 | `scale` | `HeatmapScale` | `"primary"` | Colour ramp: a semantic token (`primary`, `success`, `warning`, `destructive`, `info`) or `thresholds` to colour by `thresholds`. |
 | `shape` | `"square" \| "bar"` | `"square"` | square: color-filled tiles · bar: vertical fill bars (per-core CPU). |
 | `showIndices` | `boolean \| number` |  | Show column indices below the grid, labelling every Nth (true = every 1). |

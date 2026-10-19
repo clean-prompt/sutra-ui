@@ -146,6 +146,8 @@ export const Carousel = React.forwardRef<HTMLElement, CarouselProps>(
 
     const trackRef = React.useRef<HTMLDivElement | null>(null);
     const ratios = React.useRef<number[]>([]);
+    /** Which slides intersect the strip (null until the observer has reported): the others are `inert`, so Tab skips their content. */
+    const [shown, setShown] = React.useState<boolean[] | null>(null);
     const seen = React.useRef(-1);
     const travelling = React.useRef<{ index: number; timer: ReturnType<typeof setTimeout> } | null>(null);
     const placed = React.useRef(false);
@@ -180,9 +182,14 @@ export const Carousel = React.forwardRef<HTMLElement, CarouselProps>(
       const track = trackRef.current;
       if (!track || typeof IntersectionObserver === "undefined") return;
       ratios.current = [];
+      setShown(null);
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) ratios.current[Number((entry.target as HTMLElement).dataset.index)] = entry.intersectionRatio;
+          const seenNow = Array.from({ length: count }, (_, i) => (ratios.current[i] ?? 1) > 0);
+          // If nothing reports as showing (a layout gap), leave every slide reachable rather than none.
+          const next = seenNow.some(Boolean) ? seenNow : seenNow.map(() => true);
+          setShown((prev) => (prev && prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next));
           const at = activeSlide(ratios.current);
           if (at < 0) return;
           if (travelling.current) {
@@ -293,6 +300,7 @@ export const Carousel = React.forwardRef<HTMLElement, CarouselProps>(
                   aria-label={text.slide(i + 1, count)}
                   data-index={i}
                   data-active={i === index || undefined}
+                  inert={shown && !shown[i] ? true : undefined}
                   className={cn("min-w-0 shrink-0 grow-0 basis-full", align === "center" ? "snap-center" : "snap-start", "snap-always", slideClassName)}
                 >
                   {slide}

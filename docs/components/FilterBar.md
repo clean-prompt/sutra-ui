@@ -20,6 +20,7 @@ Row of applied filter tokens. Pass `filters` or `FilterBarToken` children.
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `filters` | `FilterBarActiveFilter[]` |  | Active filters to show as removable tokens, each with a `label` and a remove handler. |
+| `removeLabel` | `string \| ((filter: FilterBarActiveFilter) => string)` | `"Remove filter"` | Accessible name of the remove buttons of `filters`: a string for all of them, or a function of the filter, e.g. `(f) => "Remove " + f.id`. A filter's own `removeLabel` wins. |
 
 ### FilterBarChip
 
@@ -100,7 +101,7 @@ Server render: same markup as the client. Plain markup from props (`useId` for t
 ### Gotchas
 
 - All filter state is yours: `FilterBarChip` takes `value` (string array) with `onValueChange`, `FilterBarSearch` takes `value` with `onValueChange`. Chips do not create tokens: map your state to `FilterBarActive filters`, or render `FilterBarToken`s yourself.
-- Every token built from `filters` has the remove button name "Remove filter". To name them, render `FilterBarToken` children with `removeLabel` ("Remove Status: Active"); setting `onRemove` is what shows the button.
+- Every token built from `filters` has the remove button name "Remove filter" unless you name them: `removeLabel` on `FilterBarActive` (a string, or a function of the filter such as `(f) => "Remove " + f.id`) or `removeLabel` on a single filter (which wins); `FilterBarToken` children take `removeLabel` too. Setting `onRemove` is what shows the button.
 - Chip options are strings or `{ value, label, icon, count, textValue }`. Search and the summary use `textValue`, else the label when it is a string or number, else the raw `value`: set `textValue` when `label` is a node.
 - `FilterPill` is a deprecated alias of `FilterBarChip`. Chip `align` sets the popover alignment (default `start`); `disabled` on the chip prevents opening.
 

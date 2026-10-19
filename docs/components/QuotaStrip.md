@@ -4,7 +4,7 @@
 
 - Import: `import { QuotaStrip } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/usage-quota` (kit `ai`)
-- `data-slot`: `quota-strip`, `quota-strip-skeleton`
+- `data-slot`: `quota-strip`, `quota-strip-skeleton`, `quota-ring-skeleton`
 - Also accepts the props of HTMLAttributes
 
 ## Props

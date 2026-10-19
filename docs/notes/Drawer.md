@@ -15,7 +15,7 @@ server: ssr-safe
 | Enter, Space | On the handle button (only with two or more `snapPoints`): go to the next snap point and wrap to the smallest |
 | Enter, Space | Activate the focused button, including `DrawerClose` and the close button from `showClose` |
 
-Dragging is pointer-only. Without snap points the handle is a decorative `aria-hidden` bar, so keyboard users close with Escape or a `DrawerClose` button. There are no direction-dependent keys, so RTL changes nothing. Focus returns to the `DrawerTrigger` on close (Radix). Unlike `SheetContent`, `DrawerContent` does not restore focus for a drawer opened without a trigger (a hotkey, controlled `open`): move focus back yourself in `onCloseAutoFocus`.
+Dragging is pointer-only. Without snap points the handle is a decorative `aria-hidden` bar, so keyboard users close with Escape or a `DrawerClose` button. There are no direction-dependent keys, so RTL changes nothing. Focus returns to the `DrawerTrigger` on close (Radix), and for a drawer opened without a trigger (a hotkey, controlled `open`) to the element that had focus when it opened, as `SheetContent` does; a `preventDefault()` in your `onCloseAutoFocus` still wins.
 
 ## Screen readers
 Radix gives the panel `role="dialog"` with `aria-labelledby` from `DrawerTitle` and `aria-describedby` from `DrawerDescription`, and hides the rest of the page while it is open. Always render a `DrawerTitle` (it may be visually hidden). The handle button with snap points is named "Expand sheet" or "Collapse sheet" depending on the current snap point; the grabber bar itself is `aria-hidden`. The close button from `showClose` is labelled "Close".

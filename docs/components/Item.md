@@ -4,6 +4,7 @@
 
 - Import: `import { Item } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/item` (primitives)
+- `data-slot`: `item`
 - Parts: [`ItemActions`](ItemActions.md), [`ItemContent`](ItemContent.md), [`ItemDescription`](ItemDescription.md), [`ItemGroup`](ItemGroup.md), [`ItemMedia`](ItemMedia.md), [`ItemSeparator`](ItemSeparator.md), [`ItemTitle`](ItemTitle.md)
 - Also accepts the props of HTMLAttributes
 
@@ -12,7 +13,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `asChild` | `boolean` |  | Render the child element as the row (a router link, say) instead of a `div`. |
-| `chevron` | `boolean` |  | Show a trailing chevron on a link or button row. |
+| `chevron` | `boolean` |  | Show a trailing chevron on a link, button or `asChild` row (added after the child's own content). |
 | `disabled` | `boolean` |  | A link or button row that cannot be used (`aria-disabled`, dimmed). |
 | `href` | `string` |  | Make the row one link. Put no buttons inside it (a link cannot hold interactive content). |
 | `onClick` | `React.MouseEventHandler<HTMLElement>` |  | Make the row one button. Put no buttons inside it. |
@@ -109,7 +110,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 
 - The element follows the props: `href` gives an `<a>`, `onClick` (without `href`) a `<button type="button">`, `asChild` renders your child (a router link) as the row, and nothing gives a `div`. With `href` and `onClick`, the link still gets the `onClick`.
 - A link or button row must hold no other buttons or links (nested interactive content). Put the actions in a static row instead.
-- `chevron` only shows on a link or button row, and not with `asChild`: put your own icon in the child.
+- `chevron` only shows on an interactive row (link, button or `asChild`), never on a static one; with `asChild` it is appended after the child's own content.
 - `ItemDescription` truncates to one line by default; pass `lines={2}` or `lines="none"`. `ItemGroup` `divided` draws hairlines, and `emptyState` shows only when there are no children and `loading` is off.
 
 ## Example

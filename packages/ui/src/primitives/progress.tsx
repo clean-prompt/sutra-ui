@@ -39,7 +39,10 @@ export interface ProgressProps
   label?: React.ReactNode;
   /** Show the percentage on the right of the bar or above it, next to the label. */
   showValue?: boolean | "right" | "top";
-  /** Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". */
+  /**
+   * Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". A text or number
+   * result is also used as `aria-valuetext`.
+   */
   formatValue?: (value: number, max: number) => React.ReactNode;
   /** Classes for the filled indicator bar (`className` styles the track). */
   indicatorClassName?: string;
@@ -85,6 +88,12 @@ export const Progress = React.forwardRef<
       : formatValue
         ? formatValue(value as number, max)
         : `${Math.round(pct)}%`;
+    // A custom `formatValue` is also what a screen reader hears (when it returns text). Radix's `getValueLabel` and an
+    // explicit `aria-valuetext` (both in `props`) still take precedence.
+    const spokenValue =
+      formatValue && !isIndeterminate && !props.getValueLabel && (typeof valueText === "string" || typeof valueText === "number")
+        ? String(valueText)
+        : undefined;
     const position = showValue === true ? (label ? "top" : "right") : showValue || null;
     const labelId = React.useId();
 
@@ -94,6 +103,7 @@ export const Progress = React.forwardRef<
         value={isIndeterminate ? null : safeMax === max ? clamp(value as number, 0, max) : 0}
         max={safeMax}
         aria-labelledby={label ? labelId : undefined}
+        {...(spokenValue !== undefined ? { "aria-valuetext": spokenValue } : null)}
         className={cn(
           "relative w-full overflow-hidden rounded-full bg-muted",
           barHeight[size],

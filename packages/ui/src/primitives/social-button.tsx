@@ -202,7 +202,7 @@ export interface SocialButtonProps
   provider: SocialProvider;
   /** Render as the child element (e.g. a link) while keeping the button styles. */
   asChild?: boolean;
-  /** Shows a spinner and disables the button. */
+  /** Shows a spinner and disables the button (with `asChild`: `aria-disabled`, no tab stop, clicks swallowed, `aria-busy`). */
   loading?: boolean;
 }
 
@@ -242,8 +242,28 @@ export const SocialButton = React.forwardRef<HTMLButtonElement, SocialButtonProp
     const a11yLabel = ariaLabel ?? (isIcon ? `Continue with ${meta.name}` : undefined);
 
     if (asChild) {
+      // The child (often a link) can't take `disabled`: mark it aria-disabled and swallow activation in the capture
+      // phase, before the child's own handler (e.g. a router Link) runs. Same as `Button asChild`.
+      const inert = disabled || loading;
       return (
-        <Slot.Root ref={ref} className={classes} aria-label={a11yLabel} data-provider={provider} {...props}>
+        <Slot.Root
+          ref={ref}
+          className={classes}
+          aria-label={a11yLabel}
+          data-provider={provider}
+          {...props}
+          // owned after the spread: a consumer `tabIndex` or `aria-disabled` must not undo the inert state
+          {...(inert ? { "aria-disabled": true, "data-disabled": "", tabIndex: -1 } : null)}
+          aria-busy={loading ? true : props["aria-busy"]}
+          onClickCapture={
+            inert
+              ? (e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              : props.onClickCapture
+          }
+        >
           {icon}
           <Slot.Slottable>{children}</Slot.Slottable>
         </Slot.Root>

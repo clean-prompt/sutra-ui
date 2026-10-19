@@ -59,7 +59,7 @@ Opens the surrounding `Lightbox` at `index`. Render inside `<Lightbox>`'s childr
 | Tab / Shift+Tab | Cycles through the toolbar buttons, the previous and next buttons, and the thumbnails (focus is trapped while open) |
 | Enter, Space | Press the focused button, including a thumbnail |
 
-In RTL the arrows follow reading order: ArrowLeft goes to the next item and ArrowRight to the previous, and a swipe towards the inline start brings the next item. Closing does not send focus back to the `LightboxTrigger` (the viewer has no Radix trigger to return to), so focus ends on the page body unless you restore it in `onOpenChange`. Pointer extras: double-click toggles 200%, a drag pans a zoomed image, Ctrl or Cmd with the wheel or a trackpad pinch zooms.
+In RTL the arrows follow reading order: ArrowLeft goes to the next item and ArrowRight to the previous, and a swipe towards the inline start brings the next item. Closing sends focus back to the element that had it when the viewer opened (the `LightboxTrigger`, or a button that called `openAt`), even though the viewer has no Radix trigger; if that element is gone, focus ends on the page body. Pointer extras: double-click toggles 200%, a drag pans a zoomed image, Ctrl or Cmd with the wheel or a trackpad pinch zooms.
 
 ### Screen readers
 

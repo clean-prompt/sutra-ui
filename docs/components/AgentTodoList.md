@@ -4,7 +4,7 @@
 
 - Import: `import { AgentTodoList } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-tasks` (kit `agent`)
-- `data-slot`: `todo-progress-text`
+- `data-slot`: `todo-progress-text`, `todo-spinner`
 - Also accepts the props of HTMLAttributes
 
 ## Props

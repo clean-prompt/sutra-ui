@@ -41,7 +41,7 @@ Plain markup with no browser API, so server and client output match.
 ## Gotchas
 - The element follows the props: `href` gives an `<a>`, `onClick` (without `href`) a `<button type="button">`, `asChild` renders your child (a router link) as the row, and nothing gives a `div`. With `href` and `onClick`, the link still gets the `onClick`.
 - A link or button row must hold no other buttons or links (nested interactive content). Put the actions in a static row instead.
-- `chevron` only shows on a link or button row, and not with `asChild`: put your own icon in the child.
+- `chevron` only shows on an interactive row (link, button or `asChild`), never on a static one; with `asChild` it is appended after the child's own content.
 - `ItemDescription` truncates to one line by default; pass `lines={2}` or `lines="none"`. `ItemGroup` `divided` draws hairlines, and `emptyState` shows only when there are no children and `loading` is off.
 
 ## Example

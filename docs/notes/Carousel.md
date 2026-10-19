@@ -9,7 +9,7 @@ server: mixed
 ## Keyboard
 | Key | Action |
 |---|---|
-| Tab / Shift+Tab | Strip (it is focusable), then play or pause, previous, each dot, next. Slides that are off-screen keep their own tab stops |
+| Tab / Shift+Tab | Strip (it is focusable), then play or pause, previous, each dot, next. Slides that are fully off-screen are `inert`, so their links and buttons are skipped (a slide showing even a sliver stays interactive) |
 | ArrowRight, ArrowLeft | On the strip or on any control: next or previous slide. Stops at the ends unless `loop` |
 | Home, End | First or last slide |
 | Enter, Space | Press the focused button or dot |
@@ -35,7 +35,7 @@ The server renders every slide, the strip and the controls. A starting slide oth
 - `carousel-controls`: the row with play or pause, arrows and dots
 
 ## Gotchas
-- Off-screen slides are not `inert` and stay in the accessibility tree: focusable content inside one is still reachable by Tab, and focusing it scrolls its slide into view.
+- Slides that do not intersect the strip at all are `inert` (set from the same observer that tracks the slide in view, so they are not inert on the server or before the first report): Tab and the accessibility tree skip their content, and a keyboard user reaches them with the arrows, Home, End or the dots. If nothing reports as showing, no slide is made inert.
 - `value` follows the strip as well as the buttons, because the slide with the largest visible share wins, so `onValueChange` also fires on a free swipe. Controlled, the parent decides: a press only reports the index.
 - `autoplay` is `true` for 5 s or a number of ms (at least 1000). It pauses while the pointer or focus is inside and restarts its interval afterwards. Without `loop` it stops on the last slide. A play or pause button shows only with more than one slide.
 - Each child is one slide (the children of a fragment count one by one), `basis-full` wide unless `slideClassName` says otherwise (`basis-4/5` lets the next one peek). One slide shows no controls.

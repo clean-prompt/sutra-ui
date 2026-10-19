@@ -1,5 +1,5 @@
-// The sizing table: what each `size` step of a component sets, read from the class text of its cva `size` variant (or its
-// `const sizes = {...}` map) that extract-api.mjs stores as `sizes` in api.json. Shared by the playground's Sizing page,
+// The sizing table: what each `size` step of a component sets, read from the class text of its cva `size` variant, its
+// `const sizes = {...}` map, or a lookup / `size === "sm" ?` chain in its render function, that extract-api.mjs stores as `sizes` in api.json. Shared by the playground's Sizing page,
 // the llms generator and the tests, so the numbers cannot disagree.
 //
 // Tailwind spacing is 4px per step (`h-9` = 36px); text steps are the theme's (`text-sm` = 14px, `text-2xs` = 11px).

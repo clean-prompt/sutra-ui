@@ -378,16 +378,24 @@ export interface FilterBarActiveFilter {
   /** Current value, e.g. "Active, Pending". */
   value: React.ReactNode;
   onRemove?: () => void;
+  /** Accessible name of this token's remove button, e.g. "Remove Status: Active". Wins over `FilterBarActive`'s `removeLabel`. */
+  removeLabel?: string;
 }
 
 export interface FilterBarActiveProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Active filters to show as removable tokens, each with a `label` and a remove handler. */
   filters?: FilterBarActiveFilter[];
+  /**
+   * Accessible name of the remove buttons of `filters`: a string for all of them, or a function of the filter, e.g.
+   * `(f) => "Remove " + f.id`. A filter's own `removeLabel` wins.
+   * @default "Remove filter"
+   */
+  removeLabel?: string | ((filter: FilterBarActiveFilter) => string);
 }
 
 /** Row of applied filter tokens. Pass `filters` or `FilterBarToken` children. */
 export const FilterBarActive = React.forwardRef<HTMLDivElement, FilterBarActiveProps>(
-  ({ className, filters, children, ...props }, ref) => (
+  ({ className, filters, removeLabel, children, ...props }, ref) => (
     <div
       ref={ref}
       aria-label="Active filters"
@@ -396,7 +404,12 @@ export const FilterBarActive = React.forwardRef<HTMLDivElement, FilterBarActiveP
       {...props}
     >
       {filters?.map((f) => (
-        <FilterBarToken key={f.id} label={f.label} onRemove={f.onRemove}>
+        <FilterBarToken
+          key={f.id}
+          label={f.label}
+          onRemove={f.onRemove}
+          removeLabel={f.removeLabel ?? (typeof removeLabel === "function" ? removeLabel(f) : removeLabel)}
+        >
           {f.value}
         </FilterBarToken>
       ))}

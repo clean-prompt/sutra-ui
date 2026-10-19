@@ -4,7 +4,7 @@
 
 - Import: `import { SignInMap } from "@sutra/ui"` (or from `@sutra/ui/identity`)
 - Source: `packages/ui/src/kits/identity/sign-in-map` (kit `identity`)
-- `data-slot`: `sign-in-map`, `sign-in-map-empty`, `sign-in-map-canvas`, `sign-in-map-flagged`
+- `data-slot`: `sign-in-map`, `sign-in-map-empty`, `sign-in-map-canvas`, `sign-in-map-flagged`, `sign-in-map-legend`
 - Also accepts the props of HTMLAttributes
 
 ## Props

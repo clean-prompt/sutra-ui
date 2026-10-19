@@ -1,6 +1,6 @@
 # PopoverTitle
 
-> Popover heading.
+> Popover heading. Inside `PopoverContent` it names the dialog (`aria-labelledby`) unless the content has its own label.
 
 - Import: `import { PopoverTitle } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
 - Source: `packages/ui/src/primitives/popover` (primitives)

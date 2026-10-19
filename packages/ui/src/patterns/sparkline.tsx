@@ -78,7 +78,7 @@ export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>,
   wrapperClassName?: string;
 }
 
-/** Tiny inline trend chart. */
+/** Tiny inline trend chart. It is a left-to-right island: the series always runs from the physical left, also on a right-to-left page. */
 export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
   (
     {
@@ -153,6 +153,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
 
     return (
       <span
+        dir="ltr"
         className={cn("relative inline-block shrink-0 align-middle", responsive && "block w-full", wrapperClassName)}
         style={responsive ? { height } : { width, height }}
       >
@@ -195,10 +196,11 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
         {highlightLast && last && data.length > 0 ? (
           <span
             aria-hidden
-            className="pointer-events-none absolute size-1.5 -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-background"
+            className="pointer-events-none absolute size-1.5 rounded-full ring-2 ring-background"
             style={{
               left: `${(last[0] / width) * 100}%`,
               top: `${(last[1] / height) * 100}%`,
+              transform: "translate(-50%, -50%)",
               backgroundColor: stroke,
             }}
           />
@@ -251,7 +253,7 @@ export interface SparkBarProps extends Omit<React.SVGAttributes<SVGSVGElement>, 
   wrapperClassName?: string;
 }
 
-/** Tiny inline column chart. */
+/** Tiny inline column chart. A left-to-right island like `Sparkline`: the first bar is always on the physical left. */
 export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
   (
     {
@@ -290,6 +292,7 @@ export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
 
     return (
       <span
+        dir="ltr"
         className={cn("inline-block shrink-0 align-middle", responsive && "block w-full", wrapperClassName)}
         style={responsive ? { height } : { width, height }}
       >

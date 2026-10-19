@@ -1,6 +1,6 @@
 # ScrollArea
 
-> Custom-styled scroll container with thin overlay scrollbars and optional edge fades.
+> Custom-styled scroll container with thin overlay scrollbars and optional edge fades. The viewport is focusable while it overflows; `aria-label` / `aria-labelledby` name it as a `region`.
 
 - Import: `import { ScrollArea } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/scroll-area` (primitives)
@@ -24,11 +24,11 @@
 
 ### Keyboard
 
-No keys of its own and no tab stop: the viewport is the real scroller, so the browser's scrolling keys work whenever focus is inside it (on a focusable child, or on the viewport itself), and `ScrollArea` adds no `tabindex`. The custom scrollbars and thumbs are for the pointer only and are not focusable. Nothing swaps in RTL.
+No keys of its own: the viewport is the real scroller, so the browser's scrolling keys work whenever focus is inside it (on a focusable child, or on the viewport itself), and the viewport gets `tabindex="0"` while its content overflows (measured after mount and on resize), so a keyboard user can focus it and scroll; content that fits adds no tab stop. The custom scrollbars and thumbs are for the pointer only and are not focusable. Nothing swaps in RTL.
 
 ### Screen readers
 
-Adds no role, name or state: the content reads in its normal order and the scrollbars are not exposed. Pass `aria-label` (it lands on the root) only when the region needs a name, and give a scroll region that holds no focusable content a way into the tab order yourself (for instance through `viewportRef`). The edge fades are a visual mask only.
+Adds no state: the content reads in its normal order and the scrollbars are not exposed. Pass `aria-label` or `aria-labelledby` when the region needs a name: they go on the viewport, which then has `role="region"` (without a name it has no role). The edge fades are a visual mask only.
 
 ### Reduced motion
 

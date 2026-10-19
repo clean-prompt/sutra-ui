@@ -25,7 +25,7 @@
 | `min` | `number` | `0` | Value that maps to the emptiest step; defaults to the smallest value in the data (0 when all are positive). |
 | `mode` | `"year" \| "month"` | `"year"` | year: last 53 weeks · month: a single month with navigation. |
 | `month` | `Date` |  | Month mode: controlled month (any date in it). |
-| `onCellClick` | `(date: Date, value: number) => void` |  | Called with the day and its value when a cell is clicked; cells then become buttons. |
+| `onCellClick` | `(date: Date, value: number) => void` |  | Called with the day and its value when a cell is clicked, or activated with Enter or Space. Cells stay `gridcell`s with roving focus (they do not become buttons) and get a pointer cursor. |
 | `onMonthChange` | `(month: Date) => void` |  | Called with the new month when the user navigates (month mode). |
 | `scale` | `HeatmapScale` | `"primary"` | Colour ramp: a semantic token (`primary`, `success`, `warning`, `destructive`, `info`) or `thresholds` to colour by `thresholds`. |
 | `showDayNumbers` | `boolean` |  | Show day numbers inside cells (month mode default). |

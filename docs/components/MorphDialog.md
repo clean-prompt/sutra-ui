@@ -4,7 +4,7 @@
 
 - Import: `import { MorphDialog } from "@sutra/ui"` (or from `@sutra/ui/motion`)
 - Source: `packages/ui/src/patterns/morph-dialog` (patterns)
-- `data-slot`: `morph-dialog-overlay`, `morph-dialog`
+- `data-slot`: `morph-dialog-overlay`, `morph-dialog`, `morph-dialog-frame`, `morph-dialog-panel`
 
 ## Props
 

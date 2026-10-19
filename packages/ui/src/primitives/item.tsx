@@ -129,7 +129,7 @@ export interface ItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "role
   onClick?: React.MouseEventHandler<HTMLElement>;
   /** Render the child element as the row (a router link, say) instead of a `div`. */
   asChild?: boolean;
-  /** Show a trailing chevron on a link or button row. */
+  /** Show a trailing chevron on a link, button or `asChild` row (added after the child's own content). */
   chevron?: boolean;
   /** A link or button row that cannot be used (`aria-disabled`, dimmed). */
   disabled?: boolean;
@@ -150,15 +150,17 @@ export const Item = React.forwardRef<HTMLElement, ItemProps>(
       interactive && disabled && "pointer-events-none opacity-50",
       className
     );
+    const chevronIcon =
+      chevron && interactive ? (
+        <RiArrowRightSLine
+          aria-hidden
+          className="size-4 shrink-0 self-center text-muted-foreground transition-transform group-hover/item:translate-x-0.5 rtl:group-hover/item:-translate-x-0.5 rtl:-scale-x-100"
+        />
+      ) : null;
     const content = (
       <>
         {children}
-        {chevron && interactive ? (
-          <RiArrowRightSLine
-            aria-hidden
-            className="size-4 shrink-0 self-center text-muted-foreground transition-transform group-hover/item:translate-x-0.5 rtl:group-hover/item:-translate-x-0.5 rtl:-scale-x-100"
-          />
-        ) : null}
+        {chevronIcon}
       </>
     );
     const common = { "data-slot": "item", "data-size": size ?? "default", "data-disabled": disabled || undefined, className: classes };
@@ -166,7 +168,8 @@ export const Item = React.forwardRef<HTMLElement, ItemProps>(
     if (asChild) {
       row = (
         <Slot.Root ref={ref as React.Ref<HTMLElement>} aria-disabled={disabled || undefined} {...common} {...props}>
-          {children as React.ReactElement}
+          <Slot.Slottable>{children as React.ReactElement}</Slot.Slottable>
+          {chevronIcon}
         </Slot.Root>
       );
     } else if (href) {

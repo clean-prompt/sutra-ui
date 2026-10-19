@@ -47,7 +47,7 @@ Focus moves into the panel when it opens and goes back to the trigger on close (
 
 ### Screen readers
 
-The trigger gets `aria-haspopup="dialog"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="dialog"`. Sutra's `PopoverTitle` and `PopoverDescription` are plain `h3` and `p` elements, not the Radix parts, so they do not name the dialog: pass `aria-label` or `aria-labelledby` to `PopoverContent` (the tests do). The arrow is decoration. An icon-only trigger needs `aria-label`.
+The trigger gets `aria-haspopup="dialog"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="dialog"`. `PopoverTitle` and `PopoverDescription` (an `h3` and a `p`) name and describe the dialog: inside `PopoverContent` they get ids and the content sets `aria-labelledby` / `aria-describedby` while they are mounted. An `aria-label`, `aria-labelledby` or `aria-describedby` you pass to `PopoverContent` wins, and a popover without a title stays unnamed, so give it an `aria-label`. The arrow is decoration. An icon-only trigger needs `aria-label`.
 
 ### Reduced motion
 

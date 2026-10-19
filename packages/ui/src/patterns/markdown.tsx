@@ -5,6 +5,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { useScrollable } from "../hooks/use-scrollable";
 import { useCopy } from "../hooks/use-copy";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { isHttpUrl } from "../lib/validate";
@@ -126,6 +127,23 @@ function textFromChildren(children: React.ReactNode): string {
   return "";
 }
 
+/** A GFM table in a horizontal scroller that takes focus while the table is wider than the column. */
+function MarkdownTable({ className, ...props }: React.TableHTMLAttributes<HTMLTableElement>) {
+  const boxRef = React.useRef<HTMLDivElement>(null);
+  const scrollable = useScrollable(boxRef);
+  return (
+    <div
+      ref={boxRef}
+      tabIndex={scrollable ? 0 : undefined}
+      role="group"
+      aria-label="Table"
+      className={cn("scrollbar-thin my-4 w-full overflow-x-auto rounded-box border border-border", focusRing, "focus-visible:ring-inset")}
+    >
+      <table className={cn("w-full border-collapse text-sm", className)} {...props} />
+    </div>
+  );
+}
+
 interface MarkdownCodeBlockProps {
   code: string;
   language?: string;
@@ -133,6 +151,8 @@ interface MarkdownCodeBlockProps {
 
 function MarkdownCodeBlock({ code, language }: MarkdownCodeBlockProps) {
   const { copied, copy } = useCopy();
+  const preRef = React.useRef<HTMLPreElement>(null);
+  const scrollable = useScrollable(preRef);
   return (
     <div className="group/code my-4 overflow-hidden rounded-box border border-code-border bg-code text-code-foreground shadow-xs [color-scheme:dark]">
       <div className="flex h-9 items-center justify-between border-b border-code-foreground/10 bg-code-foreground/[0.03] ps-3.5 pe-1.5">
@@ -155,7 +175,13 @@ function MarkdownCodeBlock({ code, language }: MarkdownCodeBlockProps) {
           <span>{copied ? "Copied" : "Copy"}</span>
         </button>
       </div>
-      <pre className="scrollbar-thin overflow-x-auto p-4 font-mono text-[13px] leading-6">
+      <pre
+        ref={preRef}
+        tabIndex={scrollable ? 0 : undefined}
+        role="group"
+        aria-label={language ? `${language} code` : "Code"}
+        className={cn("scrollbar-thin overflow-x-auto p-4 font-mono text-[13px] leading-6", focusRing, "focus-visible:ring-inset")}
+      >
         <code>{code}</code>
       </pre>
     </div>
@@ -215,11 +241,7 @@ const defaultComponents: Components = {
     />
   ),
   hr: ({ node, className, ...props }) => <hr className={cn("my-6 border-border", className)} {...props} />,
-  table: ({ node, className, ...props }) => (
-    <div className="scrollbar-thin my-4 w-full overflow-x-auto rounded-box border border-border">
-      <table className={cn("w-full border-collapse text-sm", className)} {...props} />
-    </div>
-  ),
+  table: ({ node, className, ...props }) => <MarkdownTable className={className} {...props} />,
   thead: ({ node, className, ...props }) => <thead className={cn("bg-subtle", className)} {...props} />,
   tr: ({ node, className, ...props }) => (
     <tr className={cn("border-b border-border last:border-b-0", className)} {...props} />

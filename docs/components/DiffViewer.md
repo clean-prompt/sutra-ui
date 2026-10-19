@@ -4,7 +4,7 @@
 
 - Import: `import { DiffViewer } from "@sutra/ui"` (or from `@sutra/ui/editor`)
 - Source: `packages/ui/src/patterns/diff-viewer` (patterns)
-- `data-slot`: `diff-viewer`
+- `data-slot`: `diff-viewer`, `diff-expand`
 - Also accepts the props of HTMLAttributes
 
 ## Props

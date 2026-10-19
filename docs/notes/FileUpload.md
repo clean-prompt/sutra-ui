@@ -30,7 +30,7 @@ Without `directory` the markup is the same on both sides. The folder trigger and
 ## Gotchas
 - Nothing is uploaded for you. `onFilesAdded` gives the new `UploadFile`s (`status: "idle"`): start your request there and feed `progress` and `status` back through controlled `files` (or `onFilesChange`). `status` also takes `pending`, `running`, `succeeded`, `failed` and `canceled`.
 - `accept`, `maxSize` (bytes) and `maxFiles` (in total, counting files already listed) are checked on every add; rejections go to `onFilesRejected` and the alert. `multiple={false}` makes each new file replace the previous one.
-- `name` names the hidden input, but the input is emptied right after each pick and dropped files never reach it, so a native form post carries no files: read them from the file list or `onFilesAdded`.
+- With `name` the hidden input carries the whole file list (picked, dropped and `defaultFiles`; removing a file removes it) through `DataTransfer`, so a native form post sends the files. Without `name`, or in a browser that cannot set `input.files`, the input is emptied after each pick: read the files from the list or `onFilesAdded`. Picking a file that is already on the input again may fire no change event.
 - `FileUploadList` renders nothing for an empty list; `FileUploadItem` outside a `FileUpload` needs its own `onRemove`. Read the state anywhere inside with the `useFileUpload` hook.
 
 ## Example

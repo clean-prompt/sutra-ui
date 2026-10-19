@@ -4,7 +4,7 @@
 
 - Import: `import { QuotaRing } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/usage-quota` (kit `ai`)
-- `data-slot`: `quota-ring`, `quota-ring-value`, `quota-ring-status`
+- `data-slot`: `quota-ring`, `quota-ring-value`, `quota-ring-status`, `quota-ring-skeleton`
 - Also accepts the props of HTMLAttributes
 
 ## Props

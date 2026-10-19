@@ -394,7 +394,7 @@ export function SizingPage() {
       </Demo>
       <Demo id="scale" title="One scale, with exceptions" description="Text controls (Input, Select, Combobox, DatePicker, Tabs) take sm, md and lg. Button goes from xs to xl and adds five square icon sizes; Avatar goes up to 2xl; Progress goes down to 2xs." align="start" props={false} code={false}>
         <Text size="sm" tone="neutral" className="max-w-3xl">
-          Components whose size is chosen inside the render function rather than in a variant or a size map are not in the table yet; their <InlineCode>size</InlineCode> prop is documented under the demo's Props panel.
+          The table reads class text: a variant or size map, a lookup such as <InlineCode>barHeight[size]</InlineCode>, or a <InlineCode>size === "sm" ?</InlineCode> chain that covers every size. A numeric <InlineCode>size</InlineCode> (logos, QR codes, rings) and sizes worked out from several props are not in it; that prop is documented under the demo's Props panel.
         </Text>
       </Demo>
     </PageIntro>

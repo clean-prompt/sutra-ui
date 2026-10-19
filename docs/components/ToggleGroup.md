@@ -4,6 +4,7 @@
 
 - Import: `import { ToggleGroup } from "@sutra/ui"` (or from `@sutra/ui/core`)
 - Source: `packages/ui/src/primitives/toggle-group` (primitives)
+- `data-slot`: `toggle-group`
 - Parts: [`ToggleGroupItem`](ToggleGroupItem.md)
 - Also accepts the props of HTMLAttributes
 
@@ -16,7 +17,7 @@
 | `disabled` | `boolean` |  | Disables every item. |
 | `loop` | `boolean` |  | Wrap focus from the last item to the first (default true). |
 | `onValueChange` | `((value: string) => void) \| ((value: string[]) => void)` |  | Called with the pressed item value, or an empty string when it is toggled off. |
-| `orientation` | `"horizontal" \| "vertical"` |  | Arrow keys move along this axis (default horizontal). |
+| `orientation` | `"horizontal" \| "vertical"` |  | Restricts the arrow keys to this axis. Unset (the default), all four arrow keys move focus, and the group keeps its row layout either way. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Item height and padding. |
 | `type` | `"single" \| "multiple"` |  | At most one item pressed; pressing it again clears the value to `""`. Any number of items pressed. |
 | `value` | `string \| string[]` |  | Controlled pressed item value (empty string for none). Use with `onValueChange`. |
