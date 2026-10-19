@@ -147,7 +147,7 @@
   --popover-foreground: var(--n-950);
   --subtle: var(--n-50); /* page sections, sidebars */
   --muted: var(--n-100); /* wells, tracks, hover fills */
-  --muted-foreground: var(--n-500);
+  --muted-foreground: color-mix(in oklab, var(--n-500) 85%, var(--n-600)); /* 4.7:1 on --muted, so muted text on wells passes AA */
   --accent: var(--n-100); /* hovered menu items */
   --accent-foreground: var(--n-900);
   --secondary: var(--n-100);

@@ -45,6 +45,7 @@ export * from "./assets/backgrounds";
 export * from "./assets/brand";
 export * from "./assets/country-flags";
 export * from "./assets/device-frame";
+export * from "./assets/device-icons";
 export * from "./assets/emoji-reactions";
 export * from "./assets/empty-state-illustration";
 export * from "./assets/file-format";
@@ -304,15 +305,18 @@ export * from "./kits/editor/version-history";
 // not exported: kits/geo/globe-gestures-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/geo/globe-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/geo/globe-parts-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/geo/live-visitors-map-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/geo/world-map-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/geo/geo-marker-layer";
 export * from "./kits/geo/geo-model";
 export * from "./kits/geo/globe";
+export * from "./kits/geo/live-visitors-map";
 export * from "./kits/geo/world-data";
 export * from "./kits/geo/world-map";
 
 /* Kit: identity (src/kits/identity) */
 // not exported: kits/identity/kunji (back-compat barrel, all targets exported)
+// not exported: kits/identity/sign-in-map-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/identity/api-keys";
 export * from "./kits/identity/connected-apps";
 export * from "./kits/identity/consent";
@@ -329,6 +333,8 @@ export * from "./kits/identity/qr-code";
 export * from "./kits/identity/qr-scanner";
 export * from "./kits/identity/recovery-key";
 export * from "./kits/identity/secret";
+export * from "./kits/identity/sign-in-map";
+export * from "./kits/identity/sign-in-map-model";
 export * from "./kits/identity/totp";
 
 /* Kit: media (src/kits/media) */
@@ -339,11 +345,14 @@ export * from "./kits/media/media-controls";
 export * from "./kits/media/video-player";
 
 /* Kit: ops (src/kits/ops) */
+// not exported: kits/ops/region-status-map-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/ops/alert-group";
 export * from "./kits/ops/model-row";
 export * from "./kits/ops/node-card";
 export * from "./kits/ops/process-table";
 export * from "./kits/ops/progress-dialog";
+export * from "./kits/ops/region-status-map";
+export * from "./kits/ops/region-status-map-model";
 export * from "./kits/ops/request-inspector";
 
 /* Kit: social (src/kits/social) */

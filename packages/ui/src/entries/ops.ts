@@ -11,3 +11,5 @@ export * from "../patterns/json-viewer";
 export * from "../kits/ops/request-inspector";
 export * from "../kits/ops/model-row";
 export * from "../kits/ai/model-state";
+export * from "../kits/ops/region-status-map-model";
+export * from "../kits/ops/region-status-map";

@@ -436,6 +436,18 @@ export const nav: NavSection[] = [
         ),
       },
       {
+        id: "sign-in-map",
+        label: "Sign-in Map",
+        items: [
+          { id: "overview", label: "Overview" },
+          { id: "globe", label: "Globe" },
+          { id: "no-alerts", label: "No Alerts" },
+          { id: "loading", label: "Loading" },
+          { id: "empty", label: "Empty" },
+          { id: "narrow", label: "Narrow Width" },
+        ],
+      },
+      {
         id: "kunji",
         label: "kunji Sign-in",
         items: [
@@ -528,6 +540,19 @@ export const nav: NavSection[] = [
     route: "components",
     pages: [
       {
+        id: "region-map",
+        label: "Region Map",
+        items: [
+          { id: "fleet", label: "Global Fleet" },
+          { id: "globe-view", label: "Globe View" },
+          { id: "live", label: "Live Updates" },
+          { id: "controlled", label: "Controlled" },
+          { id: "loading", label: "Loading" },
+          { id: "empty", label: "Empty" },
+          { id: "narrow", label: "Narrow Width" },
+        ],
+      },
+      {
         id: "ops",
         label: "Ops & Data",
         items: [
@@ -587,6 +612,17 @@ export const nav: NavSection[] = [
           { id: "controlled-globe", label: "Controlled" },
           { id: "loading-globe", label: "Loading" },
           { id: "narrow-globe", label: "Narrow Width" },
+        ],
+      },
+      {
+        id: "live-visitors",
+        label: "Live Visitors",
+        items: [
+          { id: "live-screen", label: "Live Screen" },
+          { id: "controlled-view", label: "Controlled" },
+          { id: "loading-visitors", label: "Loading" },
+          { id: "empty-visitors", label: "Empty" },
+          { id: "narrow-visitors", label: "Narrow Width" },
         ],
       },
     ],

@@ -118,6 +118,11 @@ export interface GeoMapDataProps {
 
   /** Data is on its way: with nothing to show yet, a pulsing silhouette stands in; otherwise the map is marked busy. */
   loading?: boolean;
+  /**
+   * Render the visually hidden screen-reader tables (countries, markers, arcs). Default true. Set false when the page
+   * already lists the same data accessibly next to the map (as LiveVisitorsMap, SignInMap and RegionStatusMap do).
+   */
+  dataTable?: boolean;
 }
 
 export interface WorldMapProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "color">, GeoMapDataProps {
@@ -180,6 +185,7 @@ export const WorldMap = React.forwardRef<HTMLDivElement, WorldMapProps>(
       defaultSelectedCountry,
       onCountrySelect,
       loading,
+      dataTable = true,
       className,
       style,
       ...props
@@ -345,7 +351,7 @@ export const WorldMap = React.forwardRef<HTMLDivElement, WorldMapProps>(
           />
         ) : null}
 
-        {skeleton ? null : (
+        {skeleton || !dataTable ? null : (
           <GeoDataTables countries={tableCountries} valueLabel={valueLabel} markers={markers} selectedMarkerId={markerSelection} arcs={tableArcs} />
         )}
       </div>

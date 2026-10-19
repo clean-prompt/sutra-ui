@@ -2,17 +2,11 @@ import * as React from "react";
 import {
   RiArrowRightUpLine,
   RiComputerLine,
-  RiGlobalLine,
   RiLogoutBoxRLine,
-  RiMacbookLine,
   RiMapPinLine,
-  RiServerLine,
   RiShieldCheckLine,
-  RiSmartphoneLine,
-  RiTabletLine,
-  RiTvLine,
-  type RemixiconComponentType,
 } from "@remixicon/react";
+import { deviceIcon } from "../../assets/device-icons";
 import { cn, focusRing } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
 import { formatRelative, MINUTE_MS, toMs, type FormatRelativeOptions, type TimeInput } from "../../lib/time";
@@ -44,16 +38,6 @@ export interface DeviceSession {
   /** The session you are using right now. */
   current?: boolean;
 }
-
-const deviceIcons: Record<SessionDeviceType, RemixiconComponentType> = {
-  desktop: RiComputerLine,
-  laptop: RiMacbookLine,
-  phone: RiSmartphoneLine,
-  tablet: RiTabletLine,
-  tv: RiTvLine,
-  browser: RiGlobalLine,
-  server: RiServerLine,
-};
 
 /** Seen within the last two minutes (or in the future). */
 function isActiveNow(value: TimeInput | undefined, now: number) {
@@ -103,7 +87,7 @@ export const DeviceSessionRow = React.forwardRef<HTMLLIElement, DeviceSessionRow
     const { run: runRevoke, busy: revoking } = useAsyncAction((id: string) => onRevoke?.(id), {
       onSuccess: () => setConfirming(false),
     });
-    const Icon = deviceIcons[session.device ?? "browser"] ?? RiGlobalLine;
+    const Icon = deviceIcon(session.device ?? "browser");
     const last = formatRelative(session.lastActive, { ...LAST_ACTIVE, now });
     const meta = [session.browser, session.os].filter(Boolean).join(" · ");
     const place = [session.location, session.ip].filter(Boolean).join(" · ");

@@ -2,16 +2,10 @@ import * as React from "react";
 import {
   RiCastLine,
   RiCheckLine,
-  RiComputerLine,
-  RiGlobalLine,
-  RiMacbookLine,
   RiRefreshLine,
-  RiSmartphoneLine,
-  RiSpeaker2Line,
-  RiTabletLine,
-  RiTvLine,
 } from "@remixicon/react";
 import type { RemixiconComponentType } from "@remixicon/react";
+import { deviceIcons } from "../../assets/device-icons";
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
@@ -44,17 +38,6 @@ const deviceAliases: Record<string, DeviceKind> = {
   web: "browser",
   cast: "cast",
   chromecast: "cast",
-};
-
-const deviceIcons: Record<DeviceKind, RemixiconComponentType> = {
-  tv: RiTvLine,
-  phone: RiSmartphoneLine,
-  tablet: RiTabletLine,
-  laptop: RiMacbookLine,
-  desktop: RiComputerLine,
-  speaker: RiSpeaker2Line,
-  browser: RiGlobalLine,
-  cast: RiCastLine,
 };
 
 /** Normalize a free-form device type ("Mobile", "TV", "chromecast") to a `DeviceKind`. Unknown → "desktop". */

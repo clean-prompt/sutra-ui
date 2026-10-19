@@ -4,3 +4,4 @@ export * from "../kits/geo/geo-model";
 export * from "../kits/geo/geo-marker-layer";
 export * from "../kits/geo/world-map";
 export * from "../kits/geo/globe";
+export * from "../kits/geo/live-visitors-map";

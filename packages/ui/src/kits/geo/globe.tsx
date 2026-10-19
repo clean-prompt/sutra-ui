@@ -188,6 +188,7 @@ export const Globe = React.forwardRef<HTMLDivElement, GlobeProps>(
       defaultSelectedCountry,
       onCountrySelect,
       loading,
+      dataTable = true,
       className,
       ...props
     },
@@ -532,7 +533,7 @@ export const Globe = React.forwardRef<HTMLDivElement, GlobeProps>(
           />
         ) : null}
 
-        {skeleton ? null : (
+        {skeleton || !dataTable ? null : (
           <GeoDataTables
             countries={tableCountries}
             valueLabel={valueLabel}
