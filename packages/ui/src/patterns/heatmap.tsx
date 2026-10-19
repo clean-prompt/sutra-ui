@@ -2,7 +2,7 @@ import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { toPercent } from "../lib/math";
-import { resolveColorToken } from "../lib/svg-path";
+import { resolveColorToken } from "../lib/tone";
 import { addDays, dateKey, formatShortDate, toValidDate } from "../lib/time";
 import { meterLevel, type MeterThresholds } from "../primitives/meter";
 

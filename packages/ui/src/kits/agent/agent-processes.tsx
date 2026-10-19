@@ -4,7 +4,7 @@ import { cn, focusRing } from "../../lib/cn";
 import { accentClasses, accentStyle, type Accent } from "../../lib/accent";
 import { pluralize } from "../../lib/format";
 import { formatMemory } from "../../lib/system-monitor";
-import { splitDuration } from "../../lib/duration";
+import { formatDuration, type FormatDurationOptions } from "../../lib/duration";
 import { toMs, type TimeInput } from "../../lib/time";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useNow } from "../../hooks/use-now";
@@ -68,16 +68,22 @@ export const agentProcessKindLabels: Record<AgentProcessKind, string> = {
   other: "process",
 };
 
-/** Coarse elapsed time for agent sessions: "<1 min", "48 min", "2 hr 5 min", "3 d 4 hr" (floored). */
-export function formatAgentRunTime(ms: number): string {
-  if (!Number.isFinite(ms)) return "—";
-  const { days: d, hours: h, minutes: m } = splitDuration(ms);
-  if (d) return h ? `${d} d ${h} hr` : `${d} d`;
-  if (h) return m ? `${h} hr ${m} min` : `${h} hr`;
-  return m ? `${m} min` : "<1 min";
-}
+const RUN_TIME_OPTIONS: FormatDurationOptions = {
+  round: "floor",
+  minUnit: "m",
+  keepZeros: false,
+  space: true,
+  zero: "<1 min",
+  unitLabels: { d: "d", h: "hr", m: "min" },
+};
 
-/** Memory text such as "411 MB" or "1.2 GB". */
+/**
+ * Coarse elapsed time for agent sessions: "<1 min", "48 min", "2 hr 5 min", "3 d 4 hr" (floored).
+ * @deprecated Use `formatDuration(ms, { round: "floor", minUnit: "m", keepZeros: false, space: true, zero: "<1 min", unitLabels: { d: "d", h: "hr", m: "min" } })` from `@sutra/ui/tokens`.
+ */
+export function formatAgentRunTime(ms: number): string {
+  return formatDuration(ms, RUN_TIME_OPTIONS);
+}
 
 /** The session's memory: its own figure, or the sum of its processes' memory (undefined when nothing is known). */
 export function agentSessionMemory(session: Pick<AgentProcessSession, "memoryBytes" | "processes">): number | undefined {
@@ -102,7 +108,7 @@ function processDetail(p: AgentProcess): string[] {
 
 function sinceText(value: TimeInput | undefined, now: number): string | undefined {
   const ms = toMs(value);
-  return ms === undefined ? undefined : formatAgentRunTime(now - ms);
+  return ms === undefined ? undefined : formatDuration(now - ms, RUN_TIME_OPTIONS);
 }
 
 /* ------------------------------------------------------------------ */

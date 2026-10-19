@@ -124,6 +124,11 @@ export interface FormatDurationOptions {
   invalid?: string;
   /** Locale for decimal separators. */
   locale?: string;
+  /**
+   * Unit labels for the compact and decimal styles, replacing the defaults (`d`, `h`, `m`, `s`, `ms`) per unit:
+   * `{ h: "hr", m: "min" }` with `space: true` → `"1 hr 5 min"`. Ignored by `style: "long"`.
+   */
+  unitLabels?: Partial<Record<DurationUnit | "ms", string>>;
 }
 
 const LONG_UNITS: Record<DurationUnit | "ms", string> = { d: "day", h: "hour", m: "minute", s: "second", ms: "millisecond" };
@@ -154,7 +159,7 @@ export function formatDuration(ms: number, options: FormatDurationOptions = {}):
   const long = options.style === "long";
   const sp = options.space || long ? " " : "";
   const unitText = (n: number, unit: DurationUnit | "ms", text = String(n)) =>
-    long ? `${text} ${LONG_UNITS[unit]}${n === 1 ? "" : "s"}` : `${text}${sp}${unit}`;
+    long ? `${text} ${LONG_UNITS[unit]}${n === 1 ? "" : "s"}` : `${text}${sp}${options.unitLabels?.[unit] ?? unit}`;
   const mode = options.round ?? "round";
   const negative = ms < 0 && negativeMode === "sign";
   const abs = negative ? -ms : Math.max(0, ms);

@@ -1,6 +1,7 @@
 /** Chart scales: nice value ticks, series stacking, monotone paths, colors and time-axis ticks. */
 import { clamp } from "../lib/math";
-import { monotonePath as monotonePathOf, resolveColorToken } from "../lib/svg-path";
+import { monotonePath as monotonePathOf } from "../lib/svg-path";
+import { resolveColorToken } from "../lib/tone";
 import {
   DAY_MS,
   HOUR_MS,

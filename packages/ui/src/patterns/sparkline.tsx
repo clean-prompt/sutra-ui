@@ -1,10 +1,10 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
-import { normalizeTone, type ToneInput } from "../lib/tone";
+import { normalizeTone, resolveColorToken, type ToneInput } from "../lib/tone";
 import { useSafeId } from "../hooks/use-safe-id";
 import { resolveAccent, type Accent } from "../lib/accent";
 import { clamp } from "../lib/math";
-import { linearPath, monotonePath, resolveColorToken, type PathPoint } from "../lib/svg-path";
+import { linearPath, monotonePath, type PathPoint } from "../lib/svg-path";
 
 export type SparklineColor =
   | "primary"

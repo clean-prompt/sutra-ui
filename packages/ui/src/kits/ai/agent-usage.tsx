@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn, focusRing } from "../../lib/cn";
 import { chartColors } from "../../lib/tokens";
+import { resolveColorToken } from "../../lib/tone";
 import { formatDuration } from "../../lib/duration";
 import { formatCost } from "../../lib/format";
 import { clamp, roundTo } from "../../lib/math";
@@ -32,17 +33,7 @@ export interface ContextUsageCategory {
   reserved?: boolean;
 }
 
-const tokenColor: Record<string, string> = {
-  primary: "var(--primary)",
-  success: "var(--success)",
-  warning: "var(--warning)",
-  destructive: "var(--destructive)",
-  info: "var(--info)",
-  muted: "var(--muted-foreground)",
-  neutral: "var(--muted-foreground)",
-};
-
-const resolveColor = (c: string | undefined, i: number) => (c ? (tokenColor[c] ?? c) : chartColors[i % chartColors.length]!);
+const resolveColor = (c: string | undefined, i: number) => (c ? resolveColorToken(c) : chartColors[i % chartColors.length]!);
 
 export interface ContextUsageBreakdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   categories: ContextUsageCategory[];

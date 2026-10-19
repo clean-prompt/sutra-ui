@@ -57,19 +57,3 @@ export function monotonePath(points: readonly PathPoint[], round: PathRound = as
   }
   return d;
 }
-
-/** Colour tokens the chart components accept in place of a CSS colour. */
-export const COLOR_TOKENS: Readonly<Record<string, string>> = {
-  primary: "var(--primary)",
-  success: "var(--success)",
-  warning: "var(--warning)",
-  destructive: "var(--destructive)",
-  info: "var(--info)",
-  muted: "var(--muted-foreground)",
-  foreground: "var(--foreground)",
-};
-
-/** A colour token (`primary`, `success`, `muted`, …) as its CSS variable; any other string is returned as is. */
-export function resolveColorToken(color: string): string {
-  return Object.hasOwn(COLOR_TOKENS, color) ? COLOR_TOKENS[color]! : color;
-}

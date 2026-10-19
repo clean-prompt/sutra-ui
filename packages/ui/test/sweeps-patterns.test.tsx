@@ -1,7 +1,8 @@
 import * as React from "react";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { COLOR_TOKENS, linearPath, monotonePath, resolveColorToken } from "../src/lib/svg-path";
+import { linearPath, monotonePath } from "../src/lib/svg-path";
+import { COLOR_TOKENS, resolveColorToken } from "../src/lib/tone";
 import { monotonePath as chartMonotonePath, resolveChartColor } from "../src/patterns/chart";
 import { Sparkline } from "../src/patterns/sparkline";
 import { Gauge } from "../src/patterns/gauge";
@@ -77,7 +78,8 @@ describe("chart colour tokens", () => {
   it("Sparkline resolves color, tone, accent and trend the same way", () => {
     const stroke = (el: React.ReactElement) => render(el).container.querySelector("path")!.getAttribute("stroke");
     expect(stroke(<Sparkline data={[1, 2]} color="muted" />)).toBe("var(--muted-foreground)");
-    expect(stroke(<Sparkline data={[1, 2]} color="neutral" />)).toBe("neutral");
+    // `color="neutral"` used to pass through as an invalid CSS colour; it is now the muted token, like `tone="neutral"`.
+    expect(stroke(<Sparkline data={[1, 2]} color="neutral" />)).toBe("var(--muted-foreground)");
     expect(stroke(<Sparkline data={[1, 2]} tone="neutral" />)).toBe("var(--muted-foreground)");
     expect(stroke(<Sparkline data={[1, 2]} tone="danger" />)).toBe("var(--destructive)");
     expect(stroke(<Sparkline data={[1, 2]} accent="blue" />)).toBe("#2b7fff");

@@ -31,6 +31,7 @@ export interface ActiveIndicatorState {
  * Measures the active item of a tab strip / segmented control for a sliding indicator.
  * `getActive` is a selector (queried inside the container) or a function returning the element.
  * Re-measures when `deps` change, when the container or its items resize, and on `watchAttributes` mutations.
+ * Items are re-collected for the resize observer whenever `deps` change, so items added later are watched too.
  */
 export function useActiveIndicator<T extends HTMLElement>(
   containerRef: React.RefObject<T | null>,
@@ -92,7 +93,8 @@ export function useActiveIndicator<T extends HTMLElement>(
       ro?.disconnect();
       mo?.disconnect();
     };
-  }, [containerRef, enabled, itemSelector, watchKey, measure]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [containerRef, enabled, itemSelector, watchKey, measure, ...deps]);
 
   return { rect, animate, measure };
 }

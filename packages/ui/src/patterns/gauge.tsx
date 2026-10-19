@@ -1,8 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { clamp, toPercent } from "../lib/math";
-import { resolveColorToken } from "../lib/svg-path";
-import { normalizeTone, type ToneInput } from "../lib/tone";
+import { normalizeTone, resolveColorToken, type ToneInput } from "../lib/tone";
 import { accentColorValue, accentStyle, type Accent } from "../lib/accent";
 import { defaultMeterThresholds, meterLevel, type MeterColor, type MeterLevel, type MeterThresholds } from "../primitives/meter";
 import { ProgressRingSvg, Skeleton } from "../primitives/progress";

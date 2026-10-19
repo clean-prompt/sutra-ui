@@ -99,3 +99,23 @@ export const toneClasses: Record<"soft" | "solid" | "outline" | "dot" | "text" |
 export function toneClass(style: keyof typeof toneClasses, tone: ToneInput | null | undefined, fallback: Tone = "neutral") {
   return toneClasses[style][normalizeTone(tone, fallback)];
 }
+
+/**
+ * Colour tokens that colour props accept in place of a CSS colour (charts, sparklines, meters, gauges), as CSS
+ * variables. `neutral` and `muted` are the muted foreground (as in `resolveAccent`); `foreground` is full contrast.
+ */
+export const COLOR_TOKENS: Readonly<Record<Tone | "muted" | "foreground", string>> = {
+  neutral: "var(--muted-foreground)",
+  primary: "var(--primary)",
+  success: "var(--success)",
+  warning: "var(--warning)",
+  destructive: "var(--destructive)",
+  info: "var(--info)",
+  muted: "var(--muted-foreground)",
+  foreground: "var(--foreground)",
+};
+
+/** A colour token (`primary`, `success`, `muted`, …) as its CSS variable; any other string (a CSS colour) is returned as is. */
+export function resolveColorToken(color: string): string {
+  return Object.hasOwn(COLOR_TOKENS, color) ? COLOR_TOKENS[color as keyof typeof COLOR_TOKENS] : color;
+}

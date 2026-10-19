@@ -4,7 +4,7 @@ import { chartColors } from "../lib/tokens";
 import { toPercent } from "../lib/math";
 import { breakdownValue, formatShare } from "../lib/breakdown";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
+import { normalizeTone, resolveColorToken, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
 import { Skeleton } from "./progress";
 
@@ -263,15 +263,6 @@ export interface StackedMeterPart {
   icon?: React.ReactNode;
 }
 
-const tokenColor: Record<string, string> = {
-  primary: "var(--primary)",
-  success: "var(--success)",
-  warning: "var(--warning)",
-  destructive: "var(--destructive)",
-  info: "var(--info)",
-  muted: "var(--muted-foreground)",
-};
-
 export interface BreakdownListItem {
   /** Stable id, used for hidden-series toggling. Defaults to the label when it is a string, else the index. */
   key?: string;
@@ -310,7 +301,7 @@ export interface BreakdownListProps extends Omit<React.HTMLAttributes<HTMLUListE
   size?: "sm" | "md";
 }
 
-const breakdownColor = (color: string) => tokenColor[color] ?? color;
+const breakdownColor = (color: string) => resolveColorToken(color);
 
 /**
  * Legend rows for a breakdown: colour dot, optional icon, label, right-aligned value and optional percent
@@ -503,7 +494,7 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
     const resolved = parts.map((p, i) => ({
       ...p,
       key: p.key ?? p.label,
-      color: tokenColor[p.color ?? ""] ?? p.color ?? chartColors[i % chartColors.length]!,
+      color: p.color ? resolveColorToken(p.color) : chartColors[i % chartColors.length]!,
       pct: capacity > 0 ? (Math.max(0, p.value) / capacity) * 100 : 0,
     }));
     const text = valueText ?? (max !== undefined ? `${valueFormatter(used)} / ${valueFormatter(max)}` : valueFormatter(used));
