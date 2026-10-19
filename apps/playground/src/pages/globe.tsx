@@ -89,11 +89,12 @@ function LiveVisitorsDemo() {
             />
           ) : null}
         </div>
-        <div className="border-t border-border p-4 lg:border-t-0 lg:border-l">
+        {/* contain-size: the list column takes the globe column's height instead of setting it, and scrolls inside. */}
+        <div className="flex min-h-0 flex-col border-t border-border p-4 lg:border-t-0 lg:border-l lg:[contain:size]">
           <Text size="xs" tone="neutral" className="mb-2 font-medium uppercase tracking-wide">
             Recent visitors
           </Text>
-          <ul className="max-h-[440px] space-y-0.5 overflow-y-auto scrollbar-thin">
+          <ul className="max-h-96 min-h-0 flex-1 space-y-0.5 overflow-y-auto scrollbar-thin lg:max-h-none">
             {visitors.map((v) => (
               <li key={v.id}>
                 <button
