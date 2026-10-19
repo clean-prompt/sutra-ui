@@ -16,6 +16,7 @@ describe("split identity-workspace: public surface unchanged", () => {
         "KunjiRpSignIn",
         "KunjiSignIn",
         "KunjiSignInView",
+        "kunjiBrand",
         "kunjiButtonVariants",
         "kunjiStatusText",
         "useKunjiSignIn",

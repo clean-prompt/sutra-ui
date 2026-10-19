@@ -22,22 +22,27 @@ import { KunjiMark, KunjiSignIn, type KunjiSignInProps } from "./kunji-sign-in";
 /* KunjiButton                                                         */
 /* ------------------------------------------------------------------ */
 
+/**
+ * The "Sign in with kunji" button as the kunji brand guide draws it: a pill, the key mark then the label in semibold, on amber
+ * (the guide's default) or dark ink. `light` is Sutra's own white variant for neutral layouts. The guide asks for a
+ * minimum height of 40px (`md` and up); `sm` exists for dense toolbars.
+ */
 export const kunjiButtonVariants = cva(
   [
-    "inline-flex select-none items-center justify-center gap-2.5 whitespace-nowrap rounded-control font-medium shadow-xs transition-[background-color,box-shadow,scale] active:scale-[0.98]",
+    "inline-flex select-none items-center justify-center gap-2.5 whitespace-nowrap rounded-full font-semibold tracking-[-0.01em] shadow-xs transition-[background-color,box-shadow,scale] active:scale-[0.98]",
     "disabled:pointer-events-none disabled:opacity-50",
     focusRing,
   ],
   {
     variants: {
       theme: {
-        dark: "bg-[#17130f] text-[#fffaf0] hover:bg-[#2a221b]",
-        light: "border border-border-strong bg-white text-[#17130f] hover:bg-[#faf7f2]",
-        amber: "bg-[#f5b031] text-[#1f1405] hover:bg-[#eaa21c]",
+        dark: "bg-[#1a1a18] text-[#faf9f6] hover:bg-[#2c2c29]",
+        light: "border border-border-strong bg-white text-[#1a1a18] hover:bg-[#faf9f6]",
+        amber: "bg-[#f59e0b] text-[#1a1a18] hover:bg-[#d97706]",
       },
       size: {
         sm: "h-8 px-3 text-sm [&_svg]:size-4",
-        md: "h-10 px-4 text-sm [&_svg]:size-[18px]",
+        md: "h-10 px-5 text-[15px] [&_svg]:size-[18px]",
         lg: "h-12 px-5 text-base [&_svg]:size-5",
       },
       fullWidth: { true: "w-full" },
@@ -72,7 +77,7 @@ export const KunjiButton = React.forwardRef<HTMLButtonElement, KunjiButtonProps>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <button ref={ref} type="button" data-slot="kunji-button" className={cn(kunjiButtonVariants({ theme, size, fullWidth }), className)} {...props}>
-            <KunjiMark variant={theme === "amber" ? "glyph" : "tile"} />
+            <KunjiMark />
             {children ?? "Sign in with kunji"}
           </button>
         </DialogTrigger>

@@ -15,7 +15,6 @@ import { cn } from "../../lib/cn";
 import { formatCountdown } from "../../lib/duration";
 import { useNow } from "../../hooks/use-now";
 import { useMediaQuery } from "../../hooks/use-media-query";
-import { useSafeId } from "../../hooks/use-safe-id";
 import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { OTPField } from "../../primitives/input-otp";
@@ -28,22 +27,40 @@ import { useKunjiSignIn, type KunjiSignInState, type KunjiSignInStatus, type Use
 /* KunjiMark                                                           */
 /* ------------------------------------------------------------------ */
 
+/**
+ * The official kunji brand colours (the brand guide on kunji.cc/brand): amber, its hover shade, ink and paper.
+ * Use them as they are; the guide forbids recolouring the logo or the key mark.
+ */
+export const kunjiBrand = {
+  amber: "#f59e0b",
+  amberHover: "#d97706",
+  ink: "#1a1a18",
+  /** The key ink on the amber logo tile. */
+  keyInk: "#1c1606",
+  paper: "#faf9f6",
+} as const;
+
 export interface KunjiMarkProps extends Omit<React.SVGProps<SVGSVGElement>, "ref"> {
-  /** `tile` amber tile with a light key, `glyph` the key alone in `currentColor`. */
+  /** `tile` the kunji logo (the amber app icon with the ink key), `glyph` the key mark alone in `currentColor`. */
   variant?: "tile" | "glyph";
+  /** Pixel size. The brand guide asks for at least 20px for the logo; 18px is what the official button uses for the key mark. */
   size?: number;
   title?: string;
 }
 
-/** An original key glyph for "Sign in with kunji": a ring bow, a diagonal shaft and stepped bit teeth. */
+/**
+ * The kunji brand assets, as published in the kunji brand guide: `variant="tile"` is the logo (the app icon: an amber
+ * rounded square with the ink key set at -40 degrees) and `variant="glyph"` is the key mark on its own, drawn in
+ * `currentColor` (ink on the amber button, paper on the dark one). Do not recolour, rotate, stretch or add effects.
+ */
 export const KunjiMark = React.forwardRef<SVGSVGElement, KunjiMarkProps>(
   ({ variant = "glyph", size = 20, title, className, ...props }, ref) => {
-    const id = useSafeId("kunji");
-    const ink = variant === "tile" ? "#fffaf0" : "currentColor";
+    const tile = variant === "tile";
+    const ink = tile ? kunjiBrand.keyInk : "currentColor";
     return (
       <svg
         ref={ref}
-        viewBox="0 0 32 32"
+        viewBox="0 0 512 512"
         width={size}
         height={size}
         role={title ? "img" : undefined}
@@ -52,21 +69,12 @@ export const KunjiMark = React.forwardRef<SVGSVGElement, KunjiMarkProps>(
         className={cn("shrink-0", className)}
         {...props}
       >
-        {variant === "tile" && (
-          <>
-            <defs>
-              <linearGradient id={`${id}-g`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#fbbf24" />
-                <stop offset="1" stopColor="#d97706" />
-              </linearGradient>
-            </defs>
-            <rect width="32" height="32" rx="8" fill={`url(#${id}-g)`} />
-          </>
-        )}
-        <g transform={variant === "tile" ? "translate(3.2 3.2) scale(0.8)" : undefined} fill="none" stroke={ink} strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="10.5" cy="10.5" r="5.5" strokeWidth="3" />
-          <path d="M14.4 14.4 L26 26" strokeWidth="3" />
-          <path d="M21.5 21.5 l3.2 -3.2 M18.3 18.3 l2.4 -2.4" strokeWidth="2.6" />
+        {tile && <rect width="512" height="512" rx="116" fill={kunjiBrand.amber} />}
+        <g transform="rotate(-40 256 256)" fill="none" stroke={ink} strokeWidth="58" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="240" cy="172" r="56" fill={ink} />
+          <path d="M240 172 V398" />
+          <path d="M240 334 L300 314" />
+          <path d="M240 334 L300 358" />
         </g>
       </svg>
     );

@@ -178,7 +178,7 @@ export function KunjiPage() {
         </div>
       </Demo>
 
-      <Demo id="kunji-button" title="KunjiButton" description="Brand button with an original key glyph. Opens KunjiSignIn in a dialog.">
+      <Demo id="kunji-button" title="KunjiButton" description="The official kunji button (amber, dark or light) with the kunji key mark. Opens KunjiSignIn in a dialog.">
         <KunjiButton client={client} onSuccess={() => setLog("KunjiButton: signed in")} />
         <KunjiButton client={client} theme="light" />
         <KunjiButton client={client} theme="amber" size="lg" />
