@@ -5,3 +5,4 @@ export * from "../patterns/lightbox";
 export * from "../patterns/file-viewer";
 export * from "../patterns/split-pane";
 export * from "../kits/social/presence";
+export * from "../patterns/swipe-row";

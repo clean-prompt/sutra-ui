@@ -102,6 +102,7 @@ import {
   RiUserLine,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
+import { WheelPickerDemo } from "./wheel-demos";
 
 /* ------------------------------------------------------------------ */
 /* Shared sample data                                                  */
@@ -1495,6 +1496,7 @@ export function FormsPage() {
           <TimePicker granularity="second" defaultValue="07:05:30" aria-label="Alarm" />
         </div>
       </Demo>
+      <WheelPickerDemo />
       <Demo id="date-time-picker" title="Date Time Picker" description="Calendar and time in one popover, with presets; replaces native datetime-local inputs." align="start">
         <DateTimePicker
           className="w-72"

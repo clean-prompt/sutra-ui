@@ -35,6 +35,7 @@ import {
 import { RiAddLine, RiArrowDownSLine, RiCheckLine, RiCloseLine, RiRefreshLine } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { MotionLists, MotionPresence, MotionSprings, MotionText } from "./motion-demos";
+import { MotionPointer, MotionScroll, MotionViewTransitions } from "./motion-nav-demos";
 
 /* ------------------------------------------------------------------ */
 /* Colors                                                              */
@@ -744,6 +745,30 @@ export function MotionPage() {
       </Demo>
       <Demo id="text" title="Stagger and text" description="A delay per item from one token, and text that reveals or types itself while screen readers get the whole line." align="start">
         <MotionText />
+      </Demo>
+      <Demo
+        id="view-transitions"
+        title="View transitions"
+        description="A state change that morphs: a list row flies into its detail panel and back, and a tab swap crossfades. One useViewTransition call; the browser does the snapshots."
+        align="start"
+      >
+        <MotionViewTransitions />
+      </Demo>
+      <Demo
+        id="scroll"
+        title="Scroll-driven"
+        description="Reveals and a progress bar on animation-timeline (no script where the browser has it), a script fallback that writes --sutra-progress, and a sticky ScrollStage over a runway."
+        align="start"
+      >
+        <MotionScroll />
+      </Demo>
+      <Demo
+        id="pointer"
+        title="Pointer effects"
+        description="A glow, a 3D tilt and a magnetic pull that follow a mouse. They read CSS variables from one small hook, work on hover-capable fine pointers only and stay still under reduced motion."
+        align="start"
+      >
+        <MotionPointer />
       </Demo>
       <Demo id="reduced" title="Reduced motion" description="One net in sutra.css covers every utility and transition." align="start">
         <ReducedMotionNote />

@@ -49,6 +49,7 @@ import {
   RiUser3Line,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
+import { SwipeRowDemo } from "./gesture-demos";
 
 /* ------------------------------------------------------------------ */
 /* Placeholder media (no network)                                      */
@@ -420,9 +421,10 @@ export function MobilePage() {
       <Demo id="adaptive-tabs" title="Adaptive tabs" description="One list of tabs: inline pills on wide screens, a bottom bar on phones.">
         <AdaptiveTabsDemo />
       </Demo>
-      <Demo id="drawer" title="Drawer" description="Bottom sheet with drag-to-dismiss (80px or a flick), rubber-band, snap points and a non-dismissible mode.">
+      <Demo id="drawer" title="Drawer" description="Bottom sheet with drag-to-dismiss (80px or a flick), rubber-band, snap points and a non-dismissible mode. The drag runs on useDrag: no React render per move, touch-action set by the hook.">
         <DrawerDemo />
       </Demo>
+      <SwipeRowDemo />
       <Demo id="lightbox" title="Lightbox" description="Arrows, swipe, ←/→ keys, double-click or ctrl+wheel to zoom, drag to pan, thumbnails and a counter." align="start">
         <GalleryDemo />
       </Demo>

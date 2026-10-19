@@ -253,3 +253,15 @@
 [data-style="paper"] [data-side="left"][class*="slide-in-from-right-2"] {
   --tw-enter-translate-x: 6px;
 }
+
+/* ------------------------------------------------------------------ */
+/* Pointer effects                                                     */
+/* ------------------------------------------------------------------ */
+
+/* Calmer strengths for the spotlight, tilt and magnetic utilities (sutra.css, "Pointer effects"): a faint ink glow,
+   a 3 degree tilt and a pull of about half the stock size. */
+[data-style="paper"] {
+  --sutra-spotlight-alpha: 7%;
+  --sutra-tilt-max: 3deg;
+  --sutra-magnetic-scale: 0.6;
+}

@@ -33,7 +33,7 @@ const auditInPage = () => {
   };
   const demoOf = (el) => el.closest("section[id]")?.id ?? "(page)";
   const textOf = (el) => (el.innerText || el.getAttribute("aria-label") || "").replace(/\s+/g, " ").trim().slice(0, 50);
-  const skipTree = (el) => !!el.closest('[inert], [data-sutra-marquee], .sr-only, [class*="marquee"], [aria-hidden="true"][class*="animate"]');
+  const skipTree = (el) => !!el.closest('[inert], [data-sutra-marquee], .sr-only, [class*="marquee"], [aria-hidden="true"][class*="animate"], [data-slot="animated-number"] [aria-hidden="true"]');
   const scrolls = (s) => ["auto", "scroll"].includes(s.overflowX);
   const clips = (s) => ["hidden", "clip"].includes(s.overflowX);
   const inScroller = (el) => {
@@ -149,15 +149,28 @@ const auditInPage = () => {
     }
   }
 
-  // E. overlapping interactive elements (not nested)
+  // E. overlapping interactive elements (not nested). A row scrolled out of its scroller or clip box does not count:
+  // rects are cut to the clipping ancestors first (a wheel picker's rows extend far beyond its window).
+  const shownRect = (el) => {
+    let { left, top, right, bottom } = el.getBoundingClientRect();
+    for (let p = el.parentElement; p && p !== main; p = p.parentElement) {
+      const s = cs(p);
+      if (s.overflowX === "visible" && s.overflowY === "visible") continue;
+      const pr = p.getBoundingClientRect();
+      if (s.overflowX !== "visible") (left = Math.max(left, pr.left)), (right = Math.min(right, pr.right));
+      if (s.overflowY !== "visible") (top = Math.max(top, pr.top)), (bottom = Math.min(bottom, pr.bottom));
+    }
+    return { left, top, right, bottom, width: Math.max(0, right - left), height: Math.max(0, bottom - top) };
+  };
   const ctrls = all.filter((el) => el.matches(interactiveSel) && visible(el) && cs(el).pointerEvents !== "none" && inflow(cs(el))).slice(0, 500);
   for (let i = 0; i < ctrls.length; i++) {
     const a = ctrls[i];
-    const ra = a.getBoundingClientRect();
+    const ra = shownRect(a);
+    if (ra.width <= 0 || ra.height <= 0) continue;
     for (let j = i + 1; j < ctrls.length; j++) {
       const b = ctrls[j];
       if (a.contains(b) || b.contains(a)) continue;
-      const rb = b.getBoundingClientRect();
+      const rb = shownRect(b);
       const ix = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
       const iy = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
       if (ix <= 2 || iy <= 2) continue;

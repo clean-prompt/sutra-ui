@@ -11,6 +11,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useFlip, type UseFlipOptions } from "../hooks/use-flip";
 import { Button } from "../primitives/button";
 import { Checkbox } from "../primitives/checkbox";
 import { Progress } from "../primitives/progress";
@@ -49,6 +50,11 @@ export interface ReorderableListProps<T> extends Omit<React.HTMLAttributes<HTMLU
   label?: string;
   itemClassName?: string;
   disabled?: boolean;
+  /**
+   * Rows glide to their new place when the order changes (while dragging, with the keyboard or the buttons), and a
+   * dropped row settles from where it was let go (`useFlip`; pass options to tune it). Off under reduced motion. Default true.
+   */
+  flip?: boolean | UseFlipOptions;
   ref?: React.Ref<HTMLUListElement>;
 }
 
@@ -70,6 +76,7 @@ export function ReorderableList<T>({
   label = "Reorderable list",
   itemClassName,
   disabled,
+  flip = true,
   className,
   ref,
   ...props
@@ -83,6 +90,7 @@ export function ReorderableList<T>({
   const instructionsId = React.useId();
   const working = order ?? items;
   const total = working.length;
+  const place = useFlip(working.map(getKey), { ...(typeof flip === "object" ? flip : null), enabled: flip !== false && (typeof flip !== "object" || flip.enabled !== false) });
 
   useIsoLayoutEffect(() => {
     if (active?.mode !== "keyboard") return;
@@ -111,6 +119,7 @@ export function ReorderableList<T>({
     if (!active || !order) return;
     const to = indexOfKey(order, active.key);
     const name = labelOf(active.key);
+    if (pointer && active.mode === "pointer") place.from(active.key, { left: pointer.left, top: pointer.y - pointer.offsetY, width: pointer.width, height: pointer.height });
     if (to !== active.origin) onReorder(order, { from: active.origin, to });
     setAnnouncement(`Dropped ${name} at position ${to + 1} of ${order.length}.`);
     setOrder(null);
@@ -212,6 +221,7 @@ export function ReorderableList<T>({
               ref={(el) => {
                 if (el) rows.current.set(key, el);
                 else rows.current.delete(key);
+                place(key)(el);
               }}
               data-active={isActive || undefined}
               className={cn(

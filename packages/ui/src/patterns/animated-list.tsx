@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { stagger } from "../hooks/use-stagger";
 import { usePresence, type PresenceState } from "../hooks/use-presence";
+import { useFlip, type UseFlipOptions } from "../hooks/use-flip";
 
 export interface AnimatedListProps<T> extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
   items: readonly T[];
@@ -23,6 +24,12 @@ export interface AnimatedListProps<T> extends Omit<React.HTMLAttributes<HTMLElem
    * content), not as a `gap` between them, or the gap jumps when the row finally unmounts.
    */
   collapse?: boolean | "height" | "width";
+  /**
+   * Slide the siblings to their new place when rows are inserted, removed or reordered (`useFlip`; `true` or its
+   * options). With `collapse` the gap of a leaving row closes by itself, so it adds inserts and reorders; with
+   * `collapse={false}` the rows below slide up when a leaving row finally unmounts. Off under reduced motion. Default false.
+   */
+  flip?: boolean | UseFlipOptions;
   /** Class names for every row wrapper. */
   itemClassName?: string;
 }
@@ -36,10 +43,14 @@ export interface AnimatedListProps<T> extends Omit<React.HTMLAttributes<HTMLElem
  * row finally unmounts.
  */
 function AnimatedListInner<T>(
-  { items, getKey, renderItem, as = "ul", exitDuration = 200, initial = false, stagger: staggered = true, collapse = true, itemClassName, className, ...props }: AnimatedListProps<T>,
+  { items, getKey, renderItem, as = "ul", exitDuration = 200, initial = false, stagger: staggered = true, collapse = true, flip = false, itemClassName, className, ...props }: AnimatedListProps<T>,
   ref: React.ForwardedRef<HTMLElement>
 ) {
   const rows = usePresence(items, (item) => String(getKey(item)), { exitDuration, initial, holdEnter: true });
+  const place = useFlip(
+    rows.map((row) => row.key),
+    { ...(typeof flip === "object" ? flip : null), enabled: flip !== false && (typeof flip !== "object" || flip.enabled !== false) }
+  );
   // A row keeps the stagger position it entered with: changing the delay of a finished animation would replay it.
   const order = React.useRef(new Map<string, number>());
   let next = 0;
@@ -55,6 +66,7 @@ function AnimatedListInner<T>(
         return (
           <Row
             key={key}
+            ref={flip ? place(key) : undefined}
             data-slot="animated-list-item"
             data-state={leaving ? "closed" : "open"}
             data-presence={state}

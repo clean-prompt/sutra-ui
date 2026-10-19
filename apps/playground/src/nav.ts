@@ -52,6 +52,9 @@ export const nav: NavSection[] = [
           { id: "presence", label: "Presence" },
           { id: "animated-list", label: "Animated List" },
           { id: "text", label: "Stagger and Text" },
+          { id: "view-transitions", label: "View Transitions" },
+          { id: "scroll", label: "Scroll-driven" },
+          { id: "pointer", label: "Pointer Effects" },
           { id: "reduced", label: "Reduced Motion" },
         ],
       },
@@ -75,14 +78,14 @@ export const nav: NavSection[] = [
       {
         id: "buttons",
         label: "Buttons & Actions",
-        items: items("Button", "Button Group", "Toggle Group", "App Store Badge", "Close Button", "Text Link", "Social Button", "Floating Action Button"),
+        items: items("Button", "Button Group", "Toggle Group", "App Store Badge", "Close Button", "Text Link", "Social Button", "Floating Action Button", "Slide To Confirm", "Undo Action"),
       },
       {
         id: "forms",
         label: "Form Controls",
         items: items(
           "Input", "Password Input", "Search Input", "Input OTP", "Textarea", "Filled Inputs", "Number Input", "Tag Input", "Tag Input Options",
-          "Checkbox", "Radio", "Switch", "Select", "Date Picker", "Date Range Picker", "Date Time Picker", "Time Picker", "Calendar",
+          "Checkbox", "Radio", "Switch", "Select", "Date Picker", "Date Range Picker", "Date Time Picker", "Time Picker", "Wheel Picker", "Calendar",
           "Segmented Control", "Slider", "Rating", "File Upload", "Dropzone", "Combobox", "Combobox Async",
           "Password Strength", "Field", "Input Group", "Label"
         ),
@@ -141,6 +144,8 @@ export const nav: NavSection[] = [
           { id: "frame", label: "Frame" },
           { id: "search-trigger", label: "Search Trigger" },
           { id: "idle-motion", label: "Idle Motion" },
+          { id: "flip-list", label: "Flip List" },
+          { id: "morph-pill", label: "Morph Pill" },
         ],
       },
       {
@@ -157,7 +162,7 @@ export const nav: NavSection[] = [
       {
         id: "navigation",
         label: "Navigation",
-        items: items("Breadcrumbs", "Pagination", "Pagination Status", "Tab Menu", "Tabs", "Header Nav", "Sidebar", "Section Header", "Section Rail", "Tree View"),
+        items: items("Breadcrumbs", "Pagination", "Pagination Status", "Tab Menu", "Tabs", "Header Nav", "Sidebar", "Section Header", "Section Rail", "Tree View", "Carousel", "Step Wizard"),
       },
       { id: "content", label: "Content", items: items("Accordion", "Collapse", "Collapsible", "FAQ", "Blog Content", "Code Block", "Code Block Tabs") },
       {
@@ -212,6 +217,7 @@ export const nav: NavSection[] = [
           { id: "bottom-tab-bar", label: "Bottom Tab Bar" },
           { id: "adaptive-tabs", label: "Adaptive Tabs" },
           { id: "drawer", label: "Drawer" },
+          { id: "swipe-row", label: "Swipe Row" },
           { id: "lightbox", label: "Lightbox" },
           { id: "image-with-fallback", label: "Image With Fallback" },
           { id: "file-viewer", label: "File Viewer" },

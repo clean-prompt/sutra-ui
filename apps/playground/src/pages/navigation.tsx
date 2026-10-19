@@ -77,6 +77,8 @@ import {
   RiUploadCloud2Line,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
+import { CarouselDemo } from "./carousel-demos";
+import { StepWizardDemo } from "./wizard-demos";
 
 /* ------------------------------------------------------------------ */
 /* Breadcrumbs                                                         */
@@ -815,6 +817,8 @@ export function NavigationPage() {
       <Demo id="tree-view" title="Tree view" description="Keyboard-navigable file tree with selection, tri-state checkboxes and type-ahead." align="start">
         <TreeViewDemo />
       </Demo>
+      <CarouselDemo />
+      <StepWizardDemo />
     </PageIntro>
   );
 }

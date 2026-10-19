@@ -6,6 +6,9 @@ import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { DialogOverlay, SheetBody, SheetClose, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./dialog";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useDrag, type DragInfo } from "../hooks/use-drag";
+import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
+import { releaseDecision, snapIndex } from "../lib/gesture";
 
 /* useSwipe lives in hooks/use-swipe; re-exported here for back-compat. */
 export { useSwipe, type SwipeDirection, type SwipeHandlers, type SwipeInfo, type UseSwipeOptions } from "../hooks/use-swipe";
@@ -16,8 +19,7 @@ export { useSwipe, type SwipeDirection, type SwipeHandlers, type SwipeInfo, type
 
 /** Drag distance (px) past which a release dismisses the drawer. */
 export const DRAWER_DISMISS_THRESHOLD = 80;
-const FLICK_VELOCITY = 0.5; // px/ms
-const FLICK_MIN_DISTANCE = 24;
+const DRAWER_FLICK_SPEED = 500; // px/s over the last 100 ms
 
 interface DrawerContextValue {
   open: boolean;
@@ -162,6 +164,7 @@ function insideScrollable(target: EventTarget | null, root: HTMLElement) {
   return false;
 }
 
+/** Resistance beyond the drawer's limits: the sheet follows the finger at a diminishing rate, at most 48px. */
 const rubber = (distance: number) => Math.min(48, Math.sqrt(Math.max(0, distance)) * 4);
 const viewportHeight = () => (typeof window !== "undefined" && window.innerHeight) || 800;
 
@@ -187,6 +190,7 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
       onPointerMove,
       onPointerUp,
       onPointerCancel,
+      onLostPointerCapture,
       onClickCapture,
       onEscapeKeyDown,
       onPointerDownOutside,
@@ -198,141 +202,72 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
     const ctx = useDrawerContext();
     const { dismissible, snapPoints, snap, setSnap, setOpen } = ctx;
     const nodeRef = React.useRef<HTMLDivElement | null>(null);
-    const ref = useMergedRefs(nodeRef, forwardedRef);
-    const [offset, setOffset] = React.useState(0);
-    const [dragging, setDragging] = React.useState(false);
-    const justDragged = React.useRef(false);
-    const drag = React.useRef<{
-      x: number;
-      y: number;
-      at: number;
-      id: number;
-      active: boolean;
-      inScroll: boolean;
-    } | null>(null);
+    const overlayRef = React.useRef<HTMLDivElement | null>(null);
+    const inScroll = React.useRef(false);
 
     const maxSnap = snapPoints ? snapPoints[snapPoints.length - 1]! : 1;
     const minSnap = snapPoints ? snapPoints[0]! : 1;
     const currentSnap = snapPoints ? (snap !== undefined && snapPoints.includes(snap) ? snap : minSnap) : 1;
     const baseOffset = snapPoints ? (maxSnap - currentSnap) * viewportHeight() : 0;
     const canDrag = dismissible || (snapPoints?.length ?? 0) > 1;
+    const base = useLatestRef(baseOffset);
 
-    React.useEffect(() => {
-      if (!ctx.open) {
-        setOffset(0);
-        setDragging(false);
-        drag.current = null;
-      }
-    }, [ctx.open]);
-
-    const resist = (dy: number) => {
-      const vh = viewportHeight();
-      const upLimit = -baseOffset;
-      if (dy < upLimit) return upLimit - rubber(upLimit - dy);
-      if (!dismissible) {
-        const downLimit = snapPoints ? (currentSnap - minSnap) * vh : 0;
-        if (dy > downLimit) return downLimit + rubber(dy - downLimit);
-      }
-      return dy;
+    /** The sheet moves by `translate` (base offset of the snap point plus the drag offset), written straight to the element. */
+    const place = (y: number) => {
+      const el = nodeRef.current;
+      if (el) el.style.translate = base.current + y ? `0 ${base.current + y}px` : "";
     };
 
-    const finish = (clientY: number, cancelled: boolean) => {
-      const d = drag.current;
-      drag.current = null;
-      if (!d?.active) return;
-      setDragging(false);
-      justDragged.current = true;
-      setTimeout(() => (justDragged.current = false), 0);
-      if (cancelled) {
-        setOffset(0);
-        return;
-      }
-      const raw = clientY - d.y;
-      const dy = resist(raw);
-      const velocity = raw / Math.max(1, Date.now() - d.at);
-      const flick = Math.abs(velocity) > FLICK_VELOCITY && Math.abs(raw) > FLICK_MIN_DISTANCE;
-
+    const onEnd = (info: DragInfo, cancelled: boolean) => {
+      if (cancelled) return;
+      const flick = releaseDecision({ offset: info.dy, velocity: info.vy, distance: Infinity, speed: DRAWER_FLICK_SPEED });
+      const dy = info.y;
       if (!snapPoints) {
-        if (dismissible && (dy > DRAWER_DISMISS_THRESHOLD || (flick && velocity > 0))) setOpen(false);
-        setOffset(0);
+        if (dismissible && (dy > DRAWER_DISMISS_THRESHOLD || flick > 0)) setOpen(false);
         return;
       }
-
       const vh = viewportHeight();
       const visible = currentSnap - dy / vh;
       const idx = snapPoints.indexOf(currentSnap);
-      if (dismissible && ((flick && velocity > 0 && idx <= 0) || (!flick && (minSnap - visible) * vh > DRAWER_DISMISS_THRESHOLD))) {
+      if (dismissible && ((flick > 0 && idx <= 0) || (!flick && (minSnap - visible) * vh > DRAWER_DISMISS_THRESHOLD))) {
         setOpen(false);
-        setOffset(0);
         return;
       }
-      let target: number;
-      if (flick) target = clamp(idx + (velocity > 0 ? -1 : 1), 0, snapPoints.length - 1);
-      else {
-        target = 0;
-        snapPoints.forEach((p, i) => {
-          if (Math.abs(p - visible) < Math.abs(snapPoints[target]! - visible)) target = i;
-        });
-      }
-      setSnap(snapPoints[target]!);
-      setOffset(0);
+      setSnap(snapPoints[snapIndex(snapPoints, visible, { current: idx, flick: flick > 0 ? -1 : flick < 0 ? 1 : 0 })]!);
     };
 
-    const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-      onPointerDown?.(event);
-      const root = nodeRef.current;
-      if (event.defaultPrevented || !canDrag || !root) return;
-      if (event.pointerType === "mouse" && event.button !== 0) return;
-      if (blocksDragStart(event.target, root)) return;
-      drag.current = {
-        x: event.clientX,
-        y: event.clientY,
-        at: Date.now(),
-        id: event.pointerId,
-        active: false,
-        inScroll: insideScrollable(event.target, root),
-      };
-    };
+    const drag = useDrag({
+      axis: "y",
+      enabled: canDrag,
+      bounds: { top: -baseOffset, bottom: dismissible ? undefined : snapPoints ? (currentSnap - minSnap) * viewportHeight() : 0 },
+      elastic: rubber,
+      // Never start from a text field, a slider, or inside a scroll area that is scrolled down.
+      allow: (event) => {
+        const root = nodeRef.current;
+        if (!root || blocksDragStart(event.target, root)) return false;
+        inScroll.current = insideScrollable(event.target, root);
+        return true;
+      },
+      // Dragging up inside a scroll area scrolls it, unless the sheet can still grow.
+      shouldStart: (info) => !(info.dy < 0 && inScroll.current && currentSnap >= maxSnap),
+      onPosition: (_x, y) => place(y),
+      onMove: (info) => {
+        const fade = overlayRef.current;
+        if (fade && !snapPoints && info.y > 0) fade.style.opacity = String(Math.max(0.2, 1 - info.y / ((nodeRef.current?.offsetHeight || 400) * 1.2)));
+        else if (fade) fade.style.opacity = "";
+      },
+      onEnd,
+    });
+    const { dragging, set: setOffset } = drag;
+    const ref = useMergedRefs(nodeRef, forwardedRef, drag.ref);
 
-    const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-      onPointerMove?.(event);
-      const d = drag.current;
-      if (!d || d.id !== event.pointerId) return;
-      const dy = event.clientY - d.y;
-      const dx = event.clientX - d.x;
-      if (!d.active) {
-        if (Math.abs(dy) < 4 && Math.abs(dx) < 4) return;
-        if (Math.abs(dx) > Math.abs(dy)) {
-          drag.current = null;
-          return;
-        }
-        // Dragging up inside a scroll area scrolls it, unless the sheet can still grow.
-        if (dy < 0 && d.inScroll && currentSnap >= maxSnap) {
-          drag.current = null;
-          return;
-        }
-        d.active = true;
-        setDragging(true);
-        try {
-          (event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId);
-        } catch {
-          /* capture is best-effort */
-        }
-      }
-      setOffset(resist(dy));
-    };
+    // After a release (the transition is back on) and on close, the sheet returns to its snap point.
+    useIsoLayoutEffect(() => {
+      if (dragging && ctx.open) return;
+      if (overlayRef.current) overlayRef.current.style.opacity = "";
+      setOffset(0, 0);
+    }, [dragging, ctx.open, setOffset]);
 
-    const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-      onPointerUp?.(event);
-      if (drag.current?.id === event.pointerId) finish(event.clientY, false);
-    };
-
-    const handlePointerCancel = (event: React.PointerEvent<HTMLDivElement>) => {
-      onPointerCancel?.(event);
-      if (drag.current?.id === event.pointerId) finish(event.clientY, true);
-    };
-
-    const translate = baseOffset + offset;
     const cycleSnap = () => {
       if (!snapPoints) return;
       const idx = snapPoints.indexOf(currentSnap);
@@ -341,14 +276,7 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
 
     return (
       <DialogPrimitive.Portal>
-        <DialogOverlay
-          className={overlayClassName}
-          style={
-            dragging && offset > 0 && !snapPoints
-              ? { opacity: Math.max(0.2, 1 - offset / ((nodeRef.current?.offsetHeight || 400) * 1.2)) }
-              : undefined
-          }
-        />
+        <DialogOverlay ref={overlayRef} className={overlayClassName} />
         <DialogPrimitive.Content
           ref={ref}
           data-slot="drawer-content"
@@ -363,20 +291,33 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
           )}
           style={{
             ...(snapPoints ? { height: `${maxSnap * 100}dvh` } : null),
-            translate: translate ? `0 ${translate}px` : undefined,
+            translate: baseOffset ? `0 ${baseOffset}px` : undefined,
             transition: dragging ? "none" : "translate 320ms cubic-bezier(0.32, 0.72, 0, 1)",
             ...style,
           }}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerCancel}
+          onPointerDown={(event) => {
+            onPointerDown?.(event);
+            drag.handlers.onPointerDown?.(event);
+          }}
+          onPointerMove={(event) => {
+            onPointerMove?.(event);
+            drag.handlers.onPointerMove?.(event);
+          }}
+          onPointerUp={(event) => {
+            onPointerUp?.(event);
+            drag.handlers.onPointerUp?.(event);
+          }}
+          onPointerCancel={(event) => {
+            onPointerCancel?.(event);
+            drag.handlers.onPointerCancel?.(event);
+          }}
+          onLostPointerCapture={(event) => {
+            onLostPointerCapture?.(event);
+            drag.handlers.onLostPointerCapture?.(event);
+          }}
           onClickCapture={(event) => {
             onClickCapture?.(event);
-            if (justDragged.current) {
-              event.preventDefault();
-              event.stopPropagation();
-            }
+            drag.handlers.onClickCapture?.(event);
           }}
           onEscapeKeyDown={(event) => {
             onEscapeKeyDown?.(event);

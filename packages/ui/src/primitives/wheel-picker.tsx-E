@@ -1,0 +1,356 @@
+import * as React from "react";
+import { cn } from "../lib/cn";
+import { edgeEnabled, nearestEnabled, scrollTopFor, snapIndex, stepEnabled, typeAheadIndex } from "../lib/wheel";
+import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
+import { prefersReducedMotion } from "../hooks/use-media-query";
+import { Skeleton } from "./progress";
+
+export { wheelRange, type WheelRangeOptions } from "../lib/wheel";
+
+export interface WheelPickerOption {
+  value: string;
+  /** What the row shows. Default: the value. */
+  label?: React.ReactNode;
+  disabled?: boolean;
+  /** Plain text for type-ahead (defaults to the label when it is a string, else the value). */
+  textValue?: string;
+}
+
+/** Milliseconds without a scroll event before a free scroll counts as stopped (browsers without `scrollend`). */
+const SETTLE_MS = 120;
+/** Typed characters are one query until this many ms pass. */
+const TYPE_AHEAD_MS = 600;
+/** `PageUp` / `PageDown` move this many rows. */
+const PAGE_STEP = 5;
+
+const normalize = (o: string | WheelPickerOption): WheelPickerOption => (typeof o === "string" ? { value: o } : o);
+const textOf = (o: WheelPickerOption) => o.textValue ?? (typeof o.label === "string" ? o.label : o.value);
+
+const fade = "[mask-image:linear-gradient(to_bottom,transparent,black_32%,black_68%,transparent)]";
+/** The even number of rows becomes the odd one above: a wheel needs a centre row. */
+const oddRows = (n: number) => Math.max(1, Math.round(n) % 2 === 0 ? Math.round(n) + 1 : Math.round(n));
+
+export interface WheelPickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  options: readonly (string | WheelPickerOption)[];
+  value?: string | null;
+  defaultValue?: string | null;
+  onValueChange?: (value: string) => void;
+  /** Rows in view (odd; an even number is raised by one). Default 5. */
+  visibleCount?: number;
+  /** Row height in px. Default 36. */
+  itemHeight?: number;
+  disabled?: boolean;
+  /** Options are on their way: placeholder rows and `aria-busy`, no listbox. */
+  loading?: boolean;
+  /** Shown when there are no options. Default "No options". */
+  emptyState?: React.ReactNode;
+  /** Draw the highlight band behind the centre row (a `WheelPickerGroup` draws one band across its columns). Default true. */
+  band?: boolean;
+  /** Class names for the scrolling listbox. */
+  listClassName?: string;
+}
+
+/**
+ * An iOS-style wheel for one list of values (time, duration, amount, day): the rows scroll with the mouse wheel or a
+ * finger and snap one at a time (CSS scroll-snap with `scroll-snap-stop: always`, so a fling cannot skip rows), the row
+ * in the centre is the value once the scroll stops. It is a `role="listbox"` with the selected row as
+ * `aria-activedescendant`: Arrow keys move one row, Page keys five, Home and End jump to the ends, typing selects by
+ * prefix, clicking a row selects it. Disabled rows are skipped. Controlled (`value`) or uncontrolled (`defaultValue`);
+ * under reduced motion the keys jump instead of gliding. The accessible name comes from `aria-label` or `aria-labelledby`.
+ */
+export const WheelPicker = React.forwardRef<HTMLDivElement, WheelPickerProps>(
+  (
+    {
+      options,
+      value,
+      defaultValue,
+      onValueChange,
+      visibleCount = 5,
+      itemHeight = 36,
+      disabled = false,
+      loading = false,
+      emptyState = "No options",
+      band = true,
+      listClassName,
+      className,
+      style,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
+      ...props
+    },
+    ref
+  ) => {
+    const items = React.useMemo(() => options.map(normalize), [options]);
+    const flags = React.useMemo(() => items.map((o) => !!o.disabled), [items]);
+    const rows = oddRows(visibleCount);
+    const edge = ((rows - 1) / 2) * itemHeight;
+    const baseId = React.useId();
+    const listRef = React.useRef<HTMLDivElement | null>(null);
+    const [current, setCurrent] = useControllableState<string | null>({
+      value,
+      defaultValue: defaultValue !== undefined ? defaultValue : (items[edgeEnabled(flags, "first")]?.value ?? null),
+      onChange: (v) => v !== null && onValueChange?.(v),
+    });
+    const selected = items.findIndex((o) => o.value === current);
+
+    /** The row being scrolled to by the keys, a click or a prop change; a free scroll is ignored until it arrives. */
+    const travelling = React.useRef<number | null>(null);
+    const centered = React.useRef(-1);
+    const settleTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const typed = React.useRef({ text: "", timer: undefined as ReturnType<typeof setTimeout> | undefined });
+    const frame = React.useRef(0);
+
+    const mark = (index: number) => {
+      const list = listRef.current;
+      if (!list || centered.current === index) return;
+      list.querySelector("[data-centered]")?.removeAttribute("data-centered");
+      list.children[index]?.setAttribute("data-centered", "");
+      centered.current = index;
+    };
+
+    const goTo = (index: number, animate: boolean) => {
+      const list = listRef.current;
+      if (!list || index < 0) return;
+      const top = scrollTopFor(index, itemHeight);
+      travelling.current = index;
+      if (animate && !prefersReducedMotion() && typeof list.scrollTo === "function") list.scrollTo({ top, behavior: "smooth" });
+      else {
+        list.scrollTop = top;
+        travelling.current = null;
+        mark(index);
+      }
+    };
+
+    const choose = (index: number) => {
+      const option = items[index];
+      if (!option || option.disabled) return;
+      setCurrent(option.value);
+      goTo(index, true);
+    };
+
+    /** The scroll has stopped: the centre row is the value (a disabled row hands over to its nearest neighbour). */
+    const settle = () => {
+      const list = listRef.current;
+      if (!list || !items.length) return;
+      if (travelling.current !== null) {
+        if (Math.abs(list.scrollTop - scrollTopFor(travelling.current, itemHeight)) > 1.5) return;
+        travelling.current = null;
+      }
+      const at = snapIndex(list.scrollTop, itemHeight, items.length);
+      const index = nearestEnabled(flags, at);
+      if (index < 0) return;
+      if (index !== at) choose(index);
+      else if (items[index]!.value !== current) setCurrent(items[index]!.value);
+    };
+    const settleRef = useLatestRef(settle);
+
+    const onScroll = () => {
+      const list = listRef.current;
+      if (!list) return;
+      cancelAnimationFrame(frame.current);
+      frame.current = requestAnimationFrame(() => mark(snapIndex(list.scrollTop, itemHeight, items.length)));
+      clearTimeout(settleTimer.current);
+      settleTimer.current = setTimeout(() => settleRef.current(), SETTLE_MS);
+    };
+
+    // Land on the value at mount, and follow it when the parent changes it (a smooth scroll once it is on screen).
+    const placed = React.useRef<HTMLDivElement | null>(null);
+    useIsoLayoutEffect(() => {
+      const list = listRef.current;
+      if (!list) return;
+      if (placed.current !== list) centered.current = -1;
+      if (selected < 0) mark(snapIndex(list.scrollTop, itemHeight, items.length));
+      else if (snapIndex(list.scrollTop, itemHeight, items.length) !== selected || centered.current !== selected) goTo(selected, placed.current === list);
+      placed.current = list;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selected, itemHeight, items, loading]);
+
+    // `scrollend` settles at once where it exists; the timer above covers the rest.
+    React.useEffect(() => {
+      const list = listRef.current;
+      list?.addEventListener("scrollend", onScrollEnd);
+      function onScrollEnd() {
+        clearTimeout(settleTimer.current);
+        settleRef.current();
+      }
+      return () => {
+        list?.removeEventListener("scrollend", onScrollEnd);
+        clearTimeout(settleTimer.current);
+        clearTimeout(typed.current.timer);
+        cancelAnimationFrame(frame.current);
+      };
+    }, [settleRef, loading, items.length]);
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (disabled || event.altKey || event.ctrlKey || event.metaKey) return;
+      const from = selected < 0 ? nearestEnabled(flags, 0) : selected;
+      let next = -1;
+      if (event.key === "ArrowDown") next = stepEnabled(flags, from, 1);
+      else if (event.key === "ArrowUp") next = stepEnabled(flags, from, -1);
+      else if (event.key === "PageDown") next = stepEnabled(flags, from, PAGE_STEP);
+      else if (event.key === "PageUp") next = stepEnabled(flags, from, -PAGE_STEP);
+      else if (event.key === "Home") next = edgeEnabled(flags, "first");
+      else if (event.key === "End") next = edgeEnabled(flags, "last");
+      else if (event.key.length === 1 && event.key !== " ") {
+        clearTimeout(typed.current.timer);
+        typed.current.text += event.key;
+        typed.current.timer = setTimeout(() => (typed.current.text = ""), TYPE_AHEAD_MS);
+        next = typeAheadIndex(items.map(textOf), flags, typed.current.text, selected);
+      } else return;
+      event.preventDefault();
+      if (next >= 0) choose(next);
+    };
+
+    const empty = items.length === 0;
+    const shown = (index: number) => items[index]!.label ?? items[index]!.value;
+    return (
+      <div
+        ref={ref}
+        data-slot="wheel-picker"
+        data-disabled={disabled || undefined}
+        aria-busy={loading || undefined}
+        className={cn("relative min-w-16 select-none rounded-control has-focus-visible:ring-[3px] has-focus-visible:ring-ring/35", disabled && "opacity-50", className)}
+        style={{ height: rows * itemHeight, ...style }}
+        {...props}
+      >
+        {band ? <div aria-hidden data-slot="wheel-picker-band" className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 rounded-control bg-muted" style={{ height: itemHeight }} /> : null}
+        {loading ? (
+          <div className="relative flex h-full flex-col items-stretch justify-center gap-3 px-3">
+            <span className="sr-only">Loading…</span>
+            {Array.from({ length: Math.min(rows, 3) }, (_, i) => (
+              <Skeleton key={i} className="h-3 w-full" />
+            ))}
+          </div>
+        ) : empty ? (
+          <p className="relative flex h-full items-center justify-center px-3 text-center text-sm text-muted-foreground">{emptyState}</p>
+        ) : (
+          <div
+            ref={listRef}
+            role="listbox"
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledBy}
+            aria-orientation="vertical"
+            aria-disabled={disabled || undefined}
+            aria-activedescendant={selected >= 0 ? `${baseId}-${selected}` : undefined}
+            tabIndex={disabled ? -1 : 0}
+            data-slot="wheel-picker-list"
+            onScroll={onScroll}
+            onKeyDown={onKeyDown}
+            onPointerDown={() => (travelling.current = null)}
+            onWheel={() => (travelling.current = null)}
+            className={cn(
+              "relative h-full snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-control outline-none scrollbar-none",
+              fade,
+              disabled && "pointer-events-none",
+              listClassName
+            )}
+            style={{ paddingBlock: edge }}
+          >
+            {items.map((option, index) => (
+              <div
+                key={option.value}
+                id={`${baseId}-${index}`}
+                role="option"
+                aria-selected={index === selected}
+                aria-disabled={option.disabled || undefined}
+                data-value={option.value}
+                onClick={() => choose(index)}
+                style={{ height: itemHeight }}
+                className={cn(
+                  "flex snap-center snap-always items-center justify-center truncate px-3 text-sm tabular-nums text-muted-foreground transition-colors",
+                  "cursor-pointer data-centered:font-medium data-centered:text-foreground",
+                  option.disabled && "cursor-not-allowed opacity-40"
+                )}
+              >
+                {shown(index)}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+WheelPicker.displayName = "WheelPicker";
+
+/* ------------------------------------------------------------------ */
+/* WheelPickerGroup                                                    */
+/* ------------------------------------------------------------------ */
+
+export interface WheelPickerColumn {
+  id: string;
+  /** Accessible name of the column ("Hours"). */
+  label: string;
+  options: readonly (string | WheelPickerOption)[];
+  /** Drawn after the column ("h", ":"), `aria-hidden`. */
+  separator?: React.ReactNode;
+  /** Classes for the column (set a width: `w-20`). */
+  className?: string;
+}
+
+export interface WheelPickerGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  columns: readonly WheelPickerColumn[];
+  /** One value per column, in order. */
+  value?: readonly string[];
+  defaultValue?: readonly string[];
+  onValueChange?: (value: string[], meta: { columnId: string; index: number }) => void;
+  visibleCount?: number;
+  itemHeight?: number;
+  disabled?: boolean;
+  loading?: boolean;
+}
+
+/**
+ * Several wheels read as one value (hours : minutes : period, or hours and minutes of a duration) with one highlight
+ * band across them. `value` is an array with one entry per column. Each column is a `WheelPicker`, so the keys, type-ahead
+ * and reduced-motion behaviour are the same; the group is a labelled `role="group"`.
+ */
+export const WheelPickerGroup = React.forwardRef<HTMLDivElement, WheelPickerGroupProps>(
+  ({ columns, value, defaultValue, onValueChange, visibleCount = 5, itemHeight = 36, disabled, loading, className, style, ...props }, ref) => {
+    const first = (c: WheelPickerColumn) => normalize(c.options[edgeEnabled(c.options.map((o) => !!normalize(o).disabled), "first")] ?? "").value;
+    const [values, setValues] = useControllableState<readonly string[]>({
+      value,
+      defaultValue: defaultValue ?? columns.map(first),
+    });
+    const change = (index: number, next: string) => {
+      const out = columns.map((c, i) => (i === index ? next : (values[i] ?? first(c))));
+      setValues(out);
+      onValueChange?.(out, { columnId: columns[index]!.id, index });
+    };
+    return (
+      <div
+        ref={ref}
+        role="group"
+        data-slot="wheel-picker-group"
+        className={cn("relative flex min-w-0 items-stretch justify-center", className)}
+        style={{ height: oddRows(visibleCount) * itemHeight, ...style }}
+        {...props}
+      >
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 rounded-control bg-muted" style={{ height: itemHeight }} />
+        {columns.map((column, index) => (
+          <React.Fragment key={column.id}>
+            <WheelPicker
+              band={false}
+              aria-label={column.label}
+              options={column.options}
+              value={values[index] ?? first(column)}
+              onValueChange={(next) => change(index, next)}
+              visibleCount={visibleCount}
+              itemHeight={itemHeight}
+              disabled={disabled}
+              loading={loading}
+              className={cn("min-w-0 flex-1", column.className)}
+            />
+            {column.separator ? (
+              <span aria-hidden className="relative flex shrink-0 items-center px-0.5 text-sm font-medium text-foreground">
+                {column.separator}
+              </span>
+            ) : null}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  }
+);
+WheelPickerGroup.displayName = "WheelPickerGroup";

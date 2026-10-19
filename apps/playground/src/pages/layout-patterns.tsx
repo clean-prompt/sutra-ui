@@ -48,6 +48,8 @@ import {
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { href } from "../router";
+import { FlipListDemo } from "./flip-demos";
+import { MorphPillDemo } from "./morph-demos";
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */
@@ -621,6 +623,8 @@ export function LayoutPatternsPage() {
       <FrameDemo />
       <SearchTriggerDemo />
       <IdleMotionDemo />
+      <FlipListDemo />
+      <MorphPillDemo />
     </PageIntro>
   );
 }

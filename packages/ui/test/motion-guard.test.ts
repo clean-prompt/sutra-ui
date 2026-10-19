@@ -368,12 +368,16 @@ const MOTION_LAYER = [
   "patterns/animated-list.tsx",
   "patterns/split-text.tsx",
   "patterns/typewriter.tsx",
+  "hooks/use-flip.ts",
+  "lib/flip.ts",
 ];
 /** The ones that animate over time and so must look at the preference (directly or through the hook that does). */
-const READS_REDUCED = ["hooks/use-spring-value.ts", "hooks/use-presence.ts", "hooks/use-typewriter.ts", "patterns/presence.tsx", "patterns/split-text.tsx"];
+const READS_REDUCED = ["hooks/use-spring-value.ts", "hooks/use-presence.ts", "hooks/use-typewriter.ts", "patterns/presence.tsx", "patterns/split-text.tsx", "hooks/use-flip.ts"];
 /** Gzip budgets in bytes, minified (esbuild). The whole layer stays near the 8 KB of the plan: a library would cost 27 to 40 KB. */
 const BUDGET_EACH = 1024;
 const BUDGET_TOTAL = 8192;
+/** FLIP measures, inverts and plays in one hook; the plan gives it 1.5 KB. */
+const BUDGET_OVERRIDES: Record<string, number> = { "hooks/use-flip.ts": 1536 };
 
 describe("spring tokens and the native motion layer", () => {
   it("no linear() easing literal in a component: springs come from the generated --sutra-spring-* tokens", () => {
@@ -402,8 +406,79 @@ describe("spring tokens and the native motion layer", () => {
       const out = execFileSync(esbuild, [path.join(SRC, rel), "--minify", "--format=esm", "--log-level=error"], { encoding: "utf8", maxBuffer: 1 << 24 });
       return [rel, gzipSync(out, { level: 9 }).length] as const;
     });
-    expect(sizes.filter(([, n]) => n > BUDGET_EACH)).toEqual([]);
+    expect(sizes.filter(([rel, n]) => n > (BUDGET_OVERRIDES[rel] ?? BUDGET_EACH))).toEqual([]);
     expect(sizes.reduce((sum, [, n]) => sum + n, 0)).toBeLessThanOrEqual(BUDGET_TOTAL);
     expect(sizes.find(([rel]) => rel === "lib/spring.ts")![1]).toBeLessThanOrEqual(1024);
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/* 7. View transitions, scroll-driven and pointer effects              */
+/* ------------------------------------------------------------------ */
+
+/** Hooks and patterns of the navigation, scroll and pointer effects (group GN), each with its own gzip budget. */
+const EFFECTS_LAYER = [
+  "hooks/use-view-transition.ts",
+  "hooks/use-scroll-progress.ts",
+  "hooks/use-pointer-vars.ts",
+  "patterns/shared-element.tsx",
+  "patterns/scroll-reveal.tsx",
+  "patterns/scroll-stage.tsx",
+  "patterns/pointer-fx.tsx",
+];
+/** The hooks that depend on motion and so must look at the preference (directly or through the hook that does). */
+const EFFECTS_READ_REDUCED = ["hooks/use-view-transition.ts", "hooks/use-scroll-progress.ts", "hooks/use-pointer-vars.ts"];
+const EFFECTS_BUDGET_EACH = 1024;
+const EFFECTS_BUDGET_TOTAL = 5120;
+
+describe("view transitions, scroll-driven and pointer effects", () => {
+  const REDUCED = /prefers-reduced-motion|motion-reduce|prefersReducedMotion|usePrefersReducedMotion/;
+  const effect = (rel: string) => sources.find((s) => s.rel === rel)!;
+  /** The "Motion II" section of sutra.css (comments stripped): view transitions, scroll-driven and pointer effects. */
+  const effectsCss = () => {
+    const raw = readFileSync(path.join(SRC, "styles/sutra.css"), "utf8");
+    const from = raw.indexOf("Motion II: view transitions");
+    expect(from).toBeGreaterThan(-1);
+    return strip(raw.slice(from));
+  };
+
+  it("the files exist and the hooks read prefers-reduced-motion", () => {
+    for (const rel of EFFECTS_LAYER) expect(sources.some((s) => s.rel === rel), rel).toBe(true);
+    expect(EFFECTS_READ_REDUCED.filter((rel) => !REDUCED.test(effect(rel).code))).toEqual([]);
+  });
+
+  it("they animate with CSS tokens only: no linear( or cubic-bezier( literal, no infinite loop, no WAAPI, no timers", () => {
+    for (const rel of EFFECTS_LAYER) {
+      const { code, literals: lits } = effect(rel);
+      expect(/(?<![\w-])linear\(/.test(code), `${rel} linear(`).toBe(false);
+      expect(/cubic-bezier\(/.test(code), `${rel} cubic-bezier(`).toBe(false);
+      expect(lits.some((l) => /\binfinite\b/.test(l)), `${rel} infinite`).toBe(false);
+      expect(/\.animate\(|setInterval\(|setTimeout\(/.test(code), `${rel} animate/timer`).toBe(false);
+    }
+  });
+
+  it("the CSS of the three effects has no infinite animation, no linear( easing and no hand-written duration", () => {
+    const css = effectsCss();
+    expect(css).not.toMatch(/\binfinite\b|(?<![\w-])linear\(|cubic-bezier\(/);
+    // a scroll timeline is the only place `linear` appears (keyword, not a function), and times come from the tokens
+    expect([...css.matchAll(/(?:animation|transition)(?:-duration)?:[^;]*?(\d+(?:\.\d+)?m?s)\b/g)].map((m) => m[1])).toEqual([]);
+  });
+
+  it("every new utility with motion respects reduced motion (net, @media, or end state by default)", () => {
+    const css = effectsCss();
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*::view-transition-group\(\*\)/);
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*scroll-reveal/);
+    expect(blockAfter(css, "@utility tilt")).toContain("prefers-reduced-motion: no-preference");
+    expect(blockAfter(css, "@utility magnetic")).toContain("prefers-reduced-motion: no-preference");
+  });
+
+  const esbuild2 = path.join(ROOT, "node_modules/.bin/esbuild");
+  it.skipIf(!existsSync(esbuild2))("each file stays within its gzip budget (minified with esbuild)", () => {
+    const sizes = EFFECTS_LAYER.map((rel) => {
+      const out = execFileSync(esbuild2, [path.join(SRC, rel), "--minify", "--format=esm", "--log-level=error"], { encoding: "utf8", maxBuffer: 1 << 24 });
+      return [rel, gzipSync(out, { level: 9 }).length] as const;
+    });
+    expect(sizes.filter(([, n]) => n > EFFECTS_BUDGET_EACH)).toEqual([]);
+    expect(sizes.reduce((sum, [, n]) => sum + n, 0)).toBeLessThanOrEqual(EFFECTS_BUDGET_TOTAL);
   });
 });

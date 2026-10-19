@@ -22,3 +22,4 @@ export * from "../patterns/file-upload";
 export * from "../primitives/dropzone";
 export * from "../primitives/combobox";
 export * from "../patterns/password-strength";
+export * from "../primitives/wheel-picker";

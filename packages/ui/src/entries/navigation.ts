@@ -10,3 +10,5 @@ export * from "../patterns/tree-view";
 export * from "../patterns/search-trigger";
 export * from "../patterns/divided-grid";
 export * from "../patterns/section-rail";
+export * from "../patterns/carousel";
+export * from "../patterns/step-wizard";
