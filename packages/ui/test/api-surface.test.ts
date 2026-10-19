@@ -17,8 +17,6 @@ const pkg = JSON.parse(fs.readFileSync(path.join(PKG, "package.json"), "utf8"));
 
 /** Modules in src/primitives, src/patterns and src/kits that are deliberately reachable from no public barrel. */
 const INTERNAL_MODULES = [
-  // Private constants shared by the kanban modules (see the header of the file).
-  "kits/workspace/kanban-internal",
   "kits/agent-admin/secret-row",
   // Back-compat barrel: every name it re-exports reaches the root through the real modules, so
   // gen-index leaves it out; old imports keep working via @sutra/ui/components/primitives-extra.
@@ -167,7 +165,8 @@ describe("public API surface", () => {
     };
     [ROOT_FILE, ...entryFiles].forEach(visit);
     const modules = ["primitives", "patterns", "kits"].flatMap((d) => filesIn(path.join(SRC, d)));
-    const orphans = modules.filter((f) => !reachable.has(f)).map(rel);
+    // `*-internal` modules hold private helpers shared by sibling modules and are never public.
+    const orphans = modules.filter((f) => !reachable.has(f)).map(rel).filter((id) => !id.endsWith("-internal"));
     expect(orphans.sort()).toEqual([...INTERNAL_MODULES].sort());
   });
 

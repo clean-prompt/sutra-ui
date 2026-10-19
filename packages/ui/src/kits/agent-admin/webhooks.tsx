@@ -13,15 +13,9 @@ import { SecretRevealOnce } from "../identity/secret";
 import { Field, FieldError, FieldLabel } from "../../primitives/field";
 import { formatTimelineDuration } from "../../patterns/timeline-bar";
 import { formatScheduleRelative } from "../../patterns/cron";
-import {
-  DeliveryTargetPicker,
-  NameCheckboxPicker,
-  formatDeliveryTarget,
-  type DeliveryPlatform,
-  type DeliveryPlatformStatus,
-  type DeliveryTarget,
-  type NameCheckboxOption,
-} from "./agent-jobs";
+import { DeliveryTargetPicker, formatDeliveryTarget } from "./agent-jobs-delivery";
+import { NameCheckboxPicker, type NameCheckboxOption } from "./agent-jobs-form";
+import type { DeliveryPlatform, DeliveryPlatformStatus, DeliveryTarget } from "./agent-jobs-model";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */

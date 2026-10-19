@@ -27,7 +27,7 @@ import {
 } from "../primitives/breadcrumbs";
 import { BreakdownList } from "../primitives/meter";
 import { Skeleton } from "../primitives/progress";
-import { ChartTooltip } from "./chart";
+import { ChartTooltip } from "./chart-container";
 import { StatValue } from "./stat-card";
 
 /* ------------------------------------------------------------------------------------------------

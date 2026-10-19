@@ -3,7 +3,7 @@ import { cn } from "../../lib/cn";
 import { StackedMeter } from "../../primitives/meter";
 import { SegmentedControl } from "../../primitives/segmented-control";
 import { StatCard, StatGroup } from "../../patterns/stat-card";
-import { BarChart } from "../../patterns/chart";
+import { BarChart } from "../../patterns/chart-cartesian";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { formatDuration } from "../../lib/duration";
 import { formatTokenCount } from "../../lib/token-count";

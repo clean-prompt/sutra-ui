@@ -1,0 +1,240 @@
+/** FloatingPanes: draggable, resizable floating windows over the tiling layout. */
+import * as React from "react";
+import {
+  RiCloseLine,
+  RiDraggable,
+  RiPictureInPictureExitLine,
+} from "@remixicon/react";
+import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
+import { useMergedRefs } from "../hooks/use-merged-refs";
+import { Button } from "../primitives/button";
+import { textOf } from "./tiling-layout-internal";
+
+/* ------------------------------------------------------------------ */
+/* FloatingPanes                                                       */
+/* ------------------------------------------------------------------ */
+
+export interface FloatingPaneState {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface FloatingPanesProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Windows; the last one is in front. */
+  panes: FloatingPaneState[];
+  onPanesChange: (panes: FloatingPaneState[]) => void;
+  renderPane: (paneId: string) => React.ReactNode;
+  paneTitle?: (paneId: string) => React.ReactNode;
+  paneIcon?: (paneId: string) => React.ReactNode;
+  /** Plain-text name for labels (defaults to a string title or the id). */
+  paneLabel?: (paneId: string) => string;
+  /** Show a "dock" button that hands the pane back to the layout. */
+  onDock?: (paneId: string) => void;
+  onClose?: (paneId: string) => void;
+  minWidth?: number;
+  minHeight?: number;
+}
+
+/** Layer of draggable, resizable floating windows kept inside their container. */
+export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps>(
+  (
+    {
+      panes,
+      onPanesChange,
+      renderPane,
+      paneTitle,
+      paneIcon,
+      paneLabel,
+      onDock,
+      onClose,
+      minWidth = 180,
+      minHeight = 120,
+      className,
+      ...props
+    },
+    forwardedRef
+  ) => {
+    const layerRef = React.useRef<HTMLDivElement | null>(null);
+    const setRefs = useMergedRefs(layerRef, forwardedRef);
+    const panesRef = useLatestRef(panes);
+    const dragRef = React.useRef<{
+      id: string;
+      pointerId: number;
+      x: number;
+      y: number;
+      start: FloatingPaneState;
+      mode: "move" | "resize";
+    } | null>(null);
+
+    const clampRect = (rect: FloatingPaneState): FloatingPaneState => {
+      const width = Math.max(minWidth, rect.width);
+      const height = Math.max(minHeight, rect.height);
+      const bounds = layerRef.current?.getBoundingClientRect();
+      if (!bounds || !bounds.width || !bounds.height) return { ...rect, width, height };
+      const w = Math.min(width, bounds.width);
+      const h = Math.min(height, bounds.height);
+      return {
+        ...rect,
+        width: w,
+        height: h,
+        x: clamp(rect.x, 0, Math.max(0, bounds.width - w)),
+        y: clamp(rect.y, 0, Math.max(0, bounds.height - h)),
+      };
+    };
+
+    const patch = (id: string, next: (p: FloatingPaneState) => FloatingPaneState) =>
+      onPanesChange(panesRef.current.map((p) => (p.id === id ? clampRect(next(p)) : p)));
+
+    const bringToFront = (id: string) => {
+      const list = panesRef.current;
+      if (list[list.length - 1]?.id === id) return;
+      const pane = list.find((p) => p.id === id);
+      if (pane) onPanesChange([...list.filter((p) => p.id !== id), pane]);
+    };
+    const bringToFrontRef = useLatestRef(bringToFront);
+
+    // Native capture listeners: window content may be portalled in (e.g. TilingLayout keep-alive hosts),
+    // and React events from a portal don't propagate through the window wrapper.
+    React.useEffect(() => {
+      const layer = layerRef.current;
+      if (!layer) return;
+      const onActivate = (event: Event) => {
+        let el = event.target instanceof Element ? event.target : null;
+        while (el && el.parentElement !== layer) el = el.parentElement;
+        const id = el?.getAttribute("data-slot") === "floating-pane" ? el.getAttribute("data-pane-id") : null;
+        if (id != null) bringToFrontRef.current(id);
+      };
+      layer.addEventListener("pointerdown", onActivate, true);
+      layer.addEventListener("focusin", onActivate, true);
+      return () => {
+        layer.removeEventListener("pointerdown", onActivate, true);
+        layer.removeEventListener("focusin", onActivate, true);
+      };
+    }, []);
+
+    const begin = (id: string, mode: "move" | "resize") => (event: React.PointerEvent<HTMLElement>) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      const start = panesRef.current.find((p) => p.id === id);
+      if (!start) return;
+      dragRef.current = { id, pointerId: event.pointerId, x: event.clientX, y: event.clientY, start, mode };
+      try {
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+      } catch {
+        /* best effort */
+      }
+    };
+    const move = (event: React.PointerEvent<HTMLElement>) => {
+      const d = dragRef.current;
+      if (!d || d.pointerId !== event.pointerId) return;
+      const dx = event.clientX - d.x;
+      const dy = event.clientY - d.y;
+      patch(d.id, (p) =>
+        d.mode === "move"
+          ? { ...p, x: d.start.x + dx, y: d.start.y + dy }
+          : { ...p, width: d.start.width + dx, height: d.start.height + dy }
+      );
+    };
+    const end = (event: React.PointerEvent<HTMLElement>) => {
+      if (dragRef.current?.pointerId === event.pointerId) dragRef.current = null;
+    };
+    const keyNudge = (id: string, mode: "move" | "resize") => (event: React.KeyboardEvent<HTMLElement>) => {
+      const step = event.shiftKey ? 50 : 10;
+      const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[event.key];
+      if (!d) return;
+      event.preventDefault();
+      patch(id, (p) =>
+        mode === "move" ? { ...p, x: p.x + d[0], y: p.y + d[1] } : { ...p, width: p.width + d[0], height: p.height + d[1] }
+      );
+    };
+
+    // Stable DOM order (z-order via z-index) so bringing a window forward never moves its DOM node.
+    const ordered = [...panes].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+
+    return (
+      <div
+        ref={setRefs}
+        data-slot="floating-panes"
+        className={cn("pointer-events-none absolute inset-0 z-40 overflow-hidden", className)}
+        {...props}
+      >
+        {ordered.map((pane) => {
+          const z = panes.indexOf(pane);
+          const front = z === panes.length - 1;
+          const title = paneTitle?.(pane.id) ?? pane.id;
+          const label = paneLabel?.(pane.id) ?? textOf(title, pane.id);
+          return (
+            <div
+              key={pane.id}
+              role="dialog"
+              aria-label={label}
+              data-slot="floating-pane"
+              data-pane-id={pane.id}
+              data-front={front || undefined}
+              className={cn(
+                "pointer-events-auto absolute flex flex-col overflow-hidden rounded-box border bg-card shadow-2xl",
+                front ? "border-border-strong" : "border-border"
+              )}
+              style={{ left: pane.x, top: pane.y, width: pane.width, height: pane.height, zIndex: z + 1 }}
+            >
+              <div className="flex h-8 shrink-0 items-center gap-0.5 border-b border-border bg-subtle pr-1">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Move ${label}`}
+                  aria-roledescription="draggable window"
+                  data-slot="floating-pane-handle"
+                  className={cn(
+                    "flex min-w-0 flex-1 cursor-grab touch-none select-none items-center gap-1.5 self-stretch pl-2 text-xs font-medium text-foreground active:cursor-grabbing",
+                    focusRing
+                  )}
+                  onPointerDown={begin(pane.id, "move")}
+                  onPointerMove={move}
+                  onPointerUp={end}
+                  onPointerCancel={end}
+                  onKeyDown={keyNudge(pane.id, "move")}
+                >
+                  <RiDraggable aria-hidden className="size-3.5 shrink-0 text-muted-foreground" />
+                  {paneIcon?.(pane.id)}
+                  <span className="truncate">{title}</span>
+                </div>
+                {onDock && (
+                  <Button variant="ghost" size="icon-xs" aria-label={`Dock ${label}`} onClick={() => onDock(pane.id)}>
+                    <RiPictureInPictureExitLine aria-hidden className="size-3.5" />
+                  </Button>
+                )}
+                {onClose && (
+                  <Button variant="ghost" size="icon-xs" aria-label={`Close ${label}`} onClick={() => onClose(pane.id)}>
+                    <RiCloseLine aria-hidden className="size-3.5" />
+                  </Button>
+                )}
+              </div>
+              <div className="relative min-h-0 flex-1 overflow-auto">{renderPane(pane.id)}</div>
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label={`Resize ${label}`}
+                data-slot="floating-pane-resize"
+                className={cn(
+                  "absolute right-0 bottom-0 size-4 cursor-nwse-resize touch-none rounded-tl-xs",
+                  "bg-[linear-gradient(135deg,transparent_55%,var(--color-border-strong)_55%,var(--color-border-strong)_65%,transparent_65%,transparent_75%,var(--color-border-strong)_75%,var(--color-border-strong)_85%,transparent_85%)]",
+                  focusRing
+                )}
+                onPointerDown={begin(pane.id, "resize")}
+                onPointerMove={move}
+                onPointerUp={end}
+                onPointerCancel={end}
+                onKeyDown={keyNudge(pane.id, "resize")}
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+);
+FloatingPanes.displayName = "FloatingPanes";

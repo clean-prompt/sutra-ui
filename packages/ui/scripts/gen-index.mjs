@@ -9,7 +9,7 @@
 // Files are sorted within a section. A module is left out of the root when it
 //   - reaches an optional peer (package.json `peerDependenciesMeta[x].optional`) through its imports;
 //     those live only in their own entry (@sutra/ui/editor, @sutra/ui/terminal),
-//   - is listed in INTERNAL below, or
+//   - is listed in INTERNAL below or named `*-internal` (private helpers shared by sibling modules), or
 //   - is a back-compat barrel (a file made only of `export … from` lines) whose every target is
 //     already exported from the root, so it would add nothing.
 // Never edit the generated files by hand; change the folders (or the tables below) and rerun this script.
@@ -29,7 +29,6 @@ const FOUNDATIONS_ENTRY = "entries/tokens.ts";
 
 /** Modules the root does not `export *` from even though they sit in a public layer: id -> reason. */
 export const INTERNAL = {
-  "kits/workspace/kanban-internal": "private constants shared by the kanban modules",
   "kits/agent-admin/secret-row": "private secret row shared by llm-providers and tool-toggles",
   // Its public names (ChatInlineCitation, ChatSourceData) reach the root through kits/ai/chat-source;
   // CitationHoverCard and safeSourceHref are helpers shared by chat-source and Markdown.
@@ -166,7 +165,7 @@ export function planIndex() {
     section.excluded = [];
     section.modules = section.modules.filter((id) => {
       const peer = reachesPeer(id);
-      const reason = peer ? `imports optional peer ${peer}` : id in INTERNAL ? `internal: ${INTERNAL[id]}` : null;
+      const reason = peer ? `imports optional peer ${peer}` : id in INTERNAL ? `internal: ${INTERNAL[id]}` : id.endsWith("-internal") ? "internal: private helpers shared by sibling modules" : null;
       if (reason) section.excluded.push({ id, reason });
       return !reason;
     });

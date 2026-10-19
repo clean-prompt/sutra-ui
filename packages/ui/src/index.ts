@@ -128,14 +128,23 @@ export * from "./primitives/typography";
 export * from "./primitives/volume-slider";
 
 /* Patterns: src/patterns */
+// not exported: patterns/chart (back-compat barrel, all targets exported)
+// not exported: patterns/chart-cartesian-internal (internal: private helpers shared by sibling modules)
+// not exported: patterns/chart-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/counters (back-compat barrel, all targets exported)
 // not exported: patterns/inline-citation (internal: helpers; public names come from kits/ai/chat-source)
+// not exported: patterns/tiling-layout-group-internal (internal: private helpers shared by sibling modules)
+// not exported: patterns/tiling-layout-internal (internal: private helpers shared by sibling modules)
 export * from "./patterns/agent-avatar";
 export * from "./patterns/bar-list";
 export * from "./patterns/blog-content";
 export * from "./patterns/bottom-tab-bar";
 export * from "./patterns/camera-capture";
-export * from "./patterns/chart";
+export * from "./patterns/chart-cartesian";
+export * from "./patterns/chart-container";
+export * from "./patterns/chart-donut";
+export * from "./patterns/chart-scale";
+export * from "./patterns/chart-types";
 export * from "./patterns/coachmarks";
 export * from "./patterns/code-block";
 export * from "./patterns/command-menu";
@@ -180,6 +189,9 @@ export * from "./patterns/tab-menu";
 export * from "./patterns/tally-counter";
 export * from "./patterns/theme-toggle";
 export * from "./patterns/tiling-layout";
+export * from "./patterns/tiling-layout-floating";
+export * from "./patterns/tiling-layout-presets";
+export * from "./patterns/tiling-layout-zone-editor";
 export * from "./patterns/tiling-model";
 export * from "./patterns/timeline-bar";
 export * from "./patterns/transfer-list";
@@ -203,8 +215,14 @@ export * from "./kits/agent/rewind";
 export * from "./kits/agent/tool-timeline";
 
 /* Kit: agent-admin (src/kits/agent-admin) */
+// not exported: kits/agent-admin/agent-jobs (back-compat barrel, all targets exported)
+// not exported: kits/agent-admin/agent-jobs-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/agent-admin/secret-row (internal: private secret row shared by llm-providers and tool-toggles)
-export * from "./kits/agent-admin/agent-jobs";
+export * from "./kits/agent-admin/agent-jobs-blueprints";
+export * from "./kits/agent-admin/agent-jobs-delivery";
+export * from "./kits/agent-admin/agent-jobs-form";
+export * from "./kits/agent-admin/agent-jobs-list";
+export * from "./kits/agent-admin/agent-jobs-model";
 export * from "./kits/agent-admin/agent-persona";
 export * from "./kits/agent-admin/agent-room";
 export * from "./kits/agent-admin/backends";
@@ -225,6 +243,7 @@ export * from "./kits/agent-admin/webhooks";
 /* Kit: ai (src/kits/ai) */
 // not exported: kits/ai/ai-extras (back-compat barrel, all targets exported)
 // not exported: kits/ai/primitives-extra (back-compat barrel, all targets exported)
+// not exported: kits/ai/prompt-input-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/ai/agent-usage";
 export * from "./kits/ai/approval-stack";
 export * from "./kits/ai/chain-of-thought";
@@ -247,6 +266,10 @@ export * from "./kits/ai/model-select";
 export * from "./kits/ai/model-state";
 export * from "./kits/ai/permission-prompt";
 export * from "./kits/ai/prompt-input";
+export * from "./kits/ai/prompt-input-attachments";
+export * from "./kits/ai/prompt-input-model";
+export * from "./kits/ai/prompt-input-textarea";
+export * from "./kits/ai/prompt-input-toolbar";
 export * from "./kits/ai/prompt-suggestion";
 export * from "./kits/ai/question-card";
 export * from "./kits/ai/slash-menu";
@@ -257,7 +280,15 @@ export * from "./kits/ai/usage-quota";
 export * from "./kits/ai/usage-summary";
 
 /* Kit: billing (src/kits/billing) */
-export * from "./kits/billing/billing";
+// not exported: kits/billing/billing (back-compat barrel, all targets exported)
+// not exported: kits/billing/billing-internal (internal: private helpers shared by sibling modules)
+export * from "./kits/billing/billing-banner";
+export * from "./kits/billing/billing-checkout";
+export * from "./kits/billing/billing-credits";
+export * from "./kits/billing/billing-current-plan";
+export * from "./kits/billing/billing-format";
+export * from "./kits/billing/billing-invoices";
+export * from "./kits/billing/billing-plans";
 export * from "./kits/billing/payment-card";
 
 /* Kit: editor (src/kits/editor) */
@@ -270,13 +301,19 @@ export * from "./kits/editor/editor-toolbar";
 export * from "./kits/editor/version-history";
 
 /* Kit: identity (src/kits/identity) */
+// not exported: kits/identity/kunji (back-compat barrel, all targets exported)
 export * from "./kits/identity/api-keys";
 export * from "./kits/identity/connected-apps";
 export * from "./kits/identity/consent";
 export * from "./kits/identity/credential-card";
 export * from "./kits/identity/device-sessions";
-export * from "./kits/identity/kunji";
+export * from "./kits/identity/kunji-access-gate";
+export * from "./kits/identity/kunji-auth-problem";
+export * from "./kits/identity/kunji-buttons";
 export * from "./kits/identity/kunji-client";
+export * from "./kits/identity/kunji-link";
+export * from "./kits/identity/kunji-sign-in";
+export * from "./kits/identity/kunji-sign-in-state";
 export * from "./kits/identity/qr-code";
 export * from "./kits/identity/qr-scanner";
 export * from "./kits/identity/recovery-key";
@@ -320,7 +357,10 @@ export * from "./kits/voice/voice";
 
 /* Kit: workspace (src/kits/workspace) */
 // not exported: kits/workspace/kanban (back-compat barrel, all targets exported)
-// not exported: kits/workspace/kanban-internal (internal: private constants shared by the kanban modules)
+// not exported: kits/workspace/kanban-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/workspace/memory-map-canvas-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/workspace/memory-map-detail-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/workspace/memory-map-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/workspace/app-launcher";
 export * from "./kits/workspace/backlinks";
 export * from "./kits/workspace/entity-mention";
@@ -331,6 +371,10 @@ export * from "./kits/workspace/kanban-model";
 export * from "./kits/workspace/kanban-task-dialog";
 export * from "./kits/workspace/kanban-toolbar";
 export * from "./kits/workspace/memory-map";
+export * from "./kits/workspace/memory-map-legend";
+export * from "./kits/workspace/memory-map-model";
+export * from "./kits/workspace/memory-map-scrubber";
+export * from "./kits/workspace/memory-map-share";
 export * from "./kits/workspace/orchestration-panel";
 export * from "./kits/workspace/quick-capture";
 export * from "./kits/workspace/sync-status";

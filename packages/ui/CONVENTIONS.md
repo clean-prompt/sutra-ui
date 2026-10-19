@@ -91,6 +91,7 @@ Tests render everything inside `<StrictMode>` (see `test/setup.ts`), which mount
 - State: `hooks/use-reorder` (controlled/uncontrolled list with move helpers), `hooks/use-pagination`, `hooks/use-stopwatch` (laps), `hooks/use-online-status`, `hooks/use-theme`.
 - `primitives/copy-button`: `CopyButton` (icon/button/ghost, announces "Copied to clipboard") and `CopyField` (value + copy button, optional `$` prefix).
 - Only the lib/hooks modules in `entries/tokens.ts` are public (`@sutra/ui/tokens` and the root). The rest are internal helpers: import them inside the package, and add a module to `entries/tokens.ts` (then `pnpm gen:index`) only when it should become public API.
+- Large files split into sibling modules that share the base name (`chart.tsx` → `chart-cartesian.tsx`, `chart-donut.tsx`…); the original path keeps re-exporting every public name, so deep imports stay valid. Inside the package, import the piece directly, not the original. Private helpers shared by sibling pieces go in a `<base>-internal` module: `scripts/gen-index.mjs` and the API-surface test treat any `*-internal` module as non-public.
 - Root-barrel note: `formatBytes`, `splitDuration` and `base32Decode` from the root are still the older component versions (`patterns/file-upload`, `patterns/countdown`, `kits/identity/totp`; see `OVERRIDES` in `scripts/gen-index.mjs`). The lib versions are exported from `@sutra/ui/tokens`. Inside the package, import from `lib/*` directly.
 
 ## Vocabulary (props and values)

@@ -3,7 +3,7 @@ import { cn } from "../lib/cn";
 import { accentColorValue, accentStyle, type Accent } from "../lib/accent";
 import { KeyValueList } from "../primitives/key-value";
 import { Skeleton } from "../primitives/progress";
-import { AreaChart } from "./chart";
+import { AreaChart } from "./chart-cartesian";
 import { StatValue } from "./stat-card";
 
 export interface MetricHeroDetail {

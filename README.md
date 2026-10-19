@@ -4,7 +4,7 @@ Monorepo for the Sutra personal suite.
 
 | Path | What |
 | --- | --- |
-| `packages/ui` | **@sutra/ui**: design tokens, 226 React component modules (primitives, patterns and domain kits), assets and blocks |
+| `packages/ui` | **@sutra/ui**: design tokens, 289 component modules (primitives, patterns and domain kits), assets and blocks |
 | `apps/playground` | Vite showcase for every component and block |
 
 ```bash
@@ -70,7 +70,7 @@ Subpath entries, generated from `src/entries/*.ts` (one barrel per subpath; modu
 
 | Import | Holds | Modules |
 | --- | --- | --- |
-| `@sutra/ui/core` | Every primitive (src/primitives), the basic controls everything else builds on | every module in `src/primitives` (67) |
+| `@sutra/ui/core` | Every primitive (src/primitives), the basic controls everything else builds on | every module in `src/primitives` (73) |
 | `@sutra/ui/tokens` | Design tokens, class helpers, shared formatters/validators and hooks | `tokens`, `cn`, `time`, `duration`, `format`, `hash`, `text`, `validate`, `math`, `encoding`, `tone`, `status`, `use-controllable-state`, `use-copy`, `use-theme`, `use-now`, `use-media-query`, `use-resize-observer`, `use-iso-layout-effect`, `use-async-action`, `use-safe-id`, `use-active-indicator`, `use-scroll-edges` |
 | `@sutra/ui/forms` | Form controls | `label`, `field`, `input`, `input-group`, `input-otp`, `textarea`, `number-input`, `tag-input`, `checkbox`, `radio`, `switch`, `select`, `calendar`, `date-picker`, `segmented-control`, `slider`, `rating`, `file-upload`, `dropzone`, `combobox`, `password-strength` |
 | `@sutra/ui/overlays` | Tooltips, popovers, dialogs, menus and the command palette | `tooltip`, `info-tooltip`, `popover`, `dialog`, `dropdown-menu`, `context-menu`, `command-menu` |

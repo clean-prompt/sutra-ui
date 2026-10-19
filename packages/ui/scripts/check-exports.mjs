@@ -91,7 +91,9 @@ for (const [subpath, js, types] of targets) {
   if (resolved !== expected) fail(`${specifier}: resolves to ${resolved}, expected ${expected}`);
   try {
     const mod = await import(specifier);
-    if (Object.keys(mod).length === 0) fail(`${specifier}: module has no exports`);
+    // A types-only module (e.g. patterns/chart-types) is empty at runtime; its .d.ts must still export something.
+    const typesOnly = existsSync(abs(types)) && /^export\s/m.test(readFileSync(abs(types), "utf8"));
+    if (Object.keys(mod).length === 0 && !typesOnly) fail(`${specifier}: module has no exports`);
     imported++;
   } catch (err) {
     fail(`${specifier}: import failed: ${err?.stack?.split("\n").slice(0, 3).join(" | ") ?? err}`);
