@@ -17,13 +17,17 @@ export * from "./hooks/use-media-query";
 export * from "./hooks/use-merged-refs";
 export * from "./hooks/use-now";
 export * from "./hooks/use-object-url";
+export * from "./hooks/use-presence";
 export * from "./hooks/use-previous";
 export * from "./hooks/use-resize-observer";
 export * from "./hooks/use-rolling-series";
 export * from "./hooks/use-safe-id";
 export * from "./hooks/use-scroll-edges";
 export * from "./hooks/use-scroll-sections";
+export * from "./hooks/use-spring-value";
+export * from "./hooks/use-stagger";
 export * from "./hooks/use-theme";
+export * from "./hooks/use-typewriter";
 export * from "./lib/accent";
 export * from "./lib/breakdown";
 export * from "./lib/cn";
@@ -34,6 +38,7 @@ export * from "./lib/format";
 export * from "./lib/hash";
 export * from "./lib/math";
 export * from "./lib/process-groups";
+export * from "./lib/spring";
 export * from "./lib/status";
 export * from "./lib/temperature";
 export * from "./lib/text";
@@ -59,6 +64,8 @@ export * from "./assets/placeholder-logos";
 export * from "./assets/qr-placeholder";
 
 /* Primitives: src/primitives */
+// not exported: primitives/date-picker-internal (internal: private helpers shared by sibling modules)
+// not exported: primitives/input-internal (internal: private helpers shared by sibling modules)
 // not exported: primitives/item-internal (internal: private helpers shared by sibling modules)
 export * from "./primitives/accordion";
 export * from "./primitives/alert-banner";
@@ -82,6 +89,8 @@ export * from "./primitives/confirm";
 export * from "./primitives/context-menu";
 export * from "./primitives/copy-button";
 export * from "./primitives/date-picker";
+export * from "./primitives/date-picker-datetime";
+export * from "./primitives/date-picker-range";
 export * from "./primitives/dialog";
 export * from "./primitives/drawer";
 export * from "./primitives/dropdown-menu";
@@ -149,6 +158,7 @@ export * from "./primitives/volume-slider";
 // not exported: patterns/tiling-layout-group-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/tiling-layout-internal (internal: private helpers shared by sibling modules)
 export * from "./patterns/agent-avatar";
+export * from "./patterns/animated-list";
 export * from "./patterns/animated-number";
 export * from "./patterns/bar-list";
 export * from "./patterns/blog-content";
@@ -191,6 +201,7 @@ export * from "./patterns/markdown";
 export * from "./patterns/metric-hero";
 export * from "./patterns/notice-bar";
 export * from "./patterns/password-strength";
+export * from "./patterns/presence";
 export * from "./patterns/recurrence-picker";
 export * from "./patterns/reorderable-list";
 export * from "./patterns/schema-form";
@@ -203,6 +214,7 @@ export * from "./patterns/shortcuts";
 export * from "./patterns/sidebar-navigation";
 export * from "./patterns/sparkline";
 export * from "./patterns/split-pane";
+export * from "./patterns/split-text";
 export * from "./patterns/stat-card";
 export * from "./patterns/statement-hero";
 export * from "./patterns/status-cycle";
@@ -219,6 +231,7 @@ export * from "./patterns/timeline-bar";
 export * from "./patterns/transfer-list";
 export * from "./patterns/tree-view";
 export * from "./patterns/treemap";
+export * from "./patterns/typewriter";
 export * from "./patterns/zoom-pan";
 
 /* Kit: agent (src/kits/agent) */

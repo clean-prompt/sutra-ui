@@ -7,6 +7,8 @@ import { clamp } from "../lib/math";
 import { usePagination } from "../hooks/use-pagination";
 import { getPageWindow, type PageWindow } from "../lib/pagination";
 import { Skeleton } from "./progress";
+import { Input } from "./input";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 export { getPaginationRange, type PaginationRangeItem, type UsePaginationOptions, type PageWindow } from "../lib/pagination";
 export { usePagination } from "../hooks/use-pagination";
@@ -54,20 +56,122 @@ export const PaginationItem = React.forwardRef<HTMLButtonElement, PaginationItem
 );
 PaginationItem.displayName = "PaginationItem";
 
-/** Gap marker between page ranges. */
-export const PaginationEllipsis = React.forwardRef<HTMLSpanElement, React.HTMLAttributes<HTMLSpanElement> & { size?: Size }>(
-  ({ className, size = "md", ...props }, ref) => (
-    <span
-      ref={ref}
-      aria-hidden
-      className={cn("inline-flex items-center justify-center text-muted-foreground", itemSize[size], className)}
-      {...props}
-    >
-      <RiMoreLine aria-hidden className="size-4" />
-    </span>
-  )
+export interface PaginationEllipsisProps extends React.HTMLAttributes<HTMLSpanElement> {
+  size?: Size;
+  /** Which gap this marks (before or after the current range); handed to `onJump`. Default `"end"`. */
+  direction?: "start" | "end";
+  /** Makes the ellipsis a button that reports the gap it marks, so the app can offer a way to jump to a page (see `Pagination pageJump`). */
+  onJump?: (direction: "start" | "end") => void;
+  /** Accessible name of the jump button. Default "Jump to a page". */
+  jumpLabel?: string;
+}
+
+/** Gap marker between page ranges. With `onJump` it is a button that offers a jump to a page; without it, a decorative marker. */
+export const PaginationEllipsis = React.forwardRef<HTMLSpanElement, PaginationEllipsisProps>(
+  ({ className, size = "md", direction = "end", onJump, jumpLabel = "Jump to a page", ...props }, ref) =>
+    onJump ? (
+      <span ref={ref} data-slot="pagination-ellipsis" className={cn("inline-flex", itemSize[size], className)} {...props}>
+        <button
+          type="button"
+          aria-label={jumpLabel}
+          title={jumpLabel}
+          onClick={() => onJump(direction)}
+          className={cn(
+            "inline-flex size-full items-center justify-center rounded-control text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-foreground",
+            focusRing
+          )}
+        >
+          <RiMoreLine aria-hidden className="size-4" />
+        </button>
+      </span>
+    ) : (
+      <span
+        ref={ref}
+        aria-hidden
+        className={cn("inline-flex items-center justify-center text-muted-foreground", itemSize[size], className)}
+        {...props}
+      >
+        <RiMoreLine aria-hidden className="size-4" />
+      </span>
+    )
 );
 PaginationEllipsis.displayName = "PaginationEllipsis";
+
+interface PaginationJumpProps {
+  direction: "start" | "end";
+  size: Size;
+  total: number;
+  onGo: (page: number) => void;
+}
+
+/** An ellipsis that turns into a small page field in place: Enter jumps, Escape or leaving the field cancels. */
+function PaginationJump({ direction, size, total, onGo }: PaginationJumpProps) {
+  const [editing, setEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState("");
+  const [invalid, setInvalid] = React.useState(false);
+  const wrapRef = React.useRef<HTMLSpanElement>(null);
+  const restoreFocus = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!editing && restoreFocus.current) {
+      restoreFocus.current = false;
+      wrapRef.current?.querySelector("button")?.focus();
+    }
+  }, [editing]);
+
+  if (!editing) {
+    return (
+      <PaginationEllipsis
+        ref={wrapRef}
+        size={size}
+        direction={direction}
+        onJump={() => {
+          setDraft("");
+          setInvalid(false);
+          setEditing(true);
+        }}
+      />
+    );
+  }
+  const submit = () => {
+    const n = Number.parseInt(draft, 10);
+    if (!Number.isFinite(n)) {
+      setInvalid(true);
+      return;
+    }
+    setEditing(false);
+    onGo(clamp(n, 1, total));
+  };
+  return (
+    <Input
+      autoFocus
+      size={size}
+      inputMode="numeric"
+      autoComplete="off"
+      data-slot="pagination-jump"
+      aria-label={`Go to page, 1 to ${total}`}
+      placeholder="Page"
+      value={draft}
+      invalid={invalid}
+      onChange={(e) => {
+        setDraft(e.target.value.replace(/\D/g, "").slice(0, String(total).length));
+        setInvalid(false);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submit();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          restoreFocus.current = true;
+          setEditing(false);
+        }
+      }}
+      onBlur={() => setEditing(false)}
+      className="w-16 px-1.5 text-center tabular-nums"
+    />
+  );
+}
 
 export interface PaginationNavButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
@@ -130,6 +234,11 @@ export interface PaginationProps extends Omit<React.HTMLAttributes<HTMLElement>,
   /** load-more: spinner on the button. */
   loading?: boolean;
   loadMoreLabel?: React.ReactNode;
+  /**
+   * numbered: activating an ellipsis turns it into a page field (Enter jumps to that page, Escape cancels), so a long
+   * range can be crossed in one step. Opt-in; the page list is shown from the `@lg` container width up.
+   */
+  pageJump?: boolean;
   disabled?: boolean;
 }
 
@@ -151,6 +260,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
       pageSizeLabel = "Rows per page",
       loading,
       loadMoreLabel = "Load more",
+      pageJump = false,
       disabled,
       className,
       ...props
@@ -165,6 +275,13 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
       const next = clamp(p, 1, total);
       if (next !== page) setPage(next);
     };
+    // After a jump the field is gone: put focus on the page it landed on (the ellipsis it came from may no longer exist).
+    const [jumps, setJumps] = React.useState(0);
+    const navRef = React.useRef<HTMLElement>(null);
+    const mergedRef = useMergedRefs<HTMLElement>(ref, navRef);
+    React.useEffect(() => {
+      if (jumps > 0) navRef.current?.querySelector<HTMLElement>("[aria-current=page]")?.focus();
+    }, [jumps]);
     const canPrev = page > 1 && !disabled;
     const canNext = page < total && !disabled;
 
@@ -269,7 +386,19 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
                 </li>
               ) : (
                 <li key={item}>
-                  <PaginationEllipsis size={size} />
+                  {pageJump && !disabled ? (
+                    <PaginationJump
+                      direction={item === "ellipsis-start" ? "start" : "end"}
+                      size={size}
+                      total={total}
+                      onGo={(target) => {
+                        go(target);
+                        setJumps((n) => n + 1);
+                      }}
+                    />
+                  ) : (
+                    <PaginationEllipsis size={size} />
+                  )}
                 </li>
               )
             )}
@@ -282,7 +411,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
 
     return (
       <nav
-        ref={ref}
+        ref={mergedRef}
         role="navigation"
         aria-label="Pagination"
         className={cn(

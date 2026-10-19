@@ -151,6 +151,9 @@ export const directoryInputAttrs = { webkitdirectory: "", directory: "" } as Rea
 /** Shown (and announced) where a folder option can't work. */
 export const DIRECTORY_UNSUPPORTED_REASON = "This browser can't choose folders. Choose files instead.";
 
+/** Brand text that stays AA on the page, the hover fill and the accept tint in both themes (plain `text-primary` is 4.35:1 on the stock dark page). */
+const READABLE_PRIMARY = "text-[color-mix(in_oklab,var(--primary)_88%,var(--foreground))]";
+
 const noSubscribe = () => () => {};
 
 /** `supportsDirectoryPicker()` as a hook: `false` on the server and during hydration, then the real answer. */
@@ -261,6 +264,9 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       children,
       onClick,
       onKeyDown,
+      onDragEnter,
+      onDragOver,
+      onDragLeave,
       ...props
     },
     ref
@@ -306,11 +312,11 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
       title ??
       (folderPick ? (
         <>
-          <span className="font-semibold text-primary">Click to choose a folder</span> or drag and drop
+          <span className={cn("font-semibold", READABLE_PRIMARY)}>Click to choose a folder</span> or drag and drop
         </>
       ) : (
         <>
-          <span className="font-semibold text-primary">Click to upload</span> or drag and drop
+          <span className={cn("font-semibold", READABLE_PRIMARY)}>Click to upload</span> or drag and drop
         </>
       ));
     const folderReason = directory && !canPickFolder;
@@ -321,10 +327,11 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
         <div
           ref={ref}
           role="button"
-          tabIndex={disabled ? -1 : 0}
-          aria-disabled={disabled || undefined}
-          aria-describedby={describedBy || undefined}
-          aria-busy={reading || undefined}
+          {...props}
+          tabIndex={disabled ? -1 : (props.tabIndex ?? 0)}
+          aria-disabled={disabled ? true : props["aria-disabled"]}
+          aria-describedby={[props["aria-describedby"], describedBy].filter(Boolean).join(" ") || undefined}
+          aria-busy={reading ? true : props["aria-busy"]}
           data-drag={dragState === "idle" ? undefined : dragState}
           data-density={density}
           onClick={(e) => {
@@ -340,16 +347,19 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
             }
           }}
           onDragEnter={(e) => {
+            onDragEnter?.(e);
             e.preventDefault();
             if (disabled) return;
             dragDepth.current += 1;
             setDragState(isDragAcceptable(e) ? "accept" : "reject");
           }}
           onDragOver={(e) => {
+            onDragOver?.(e);
             e.preventDefault();
             if (!disabled) e.dataTransfer.dropEffect = "copy";
           }}
           onDragLeave={(e) => {
+            onDragLeave?.(e);
             e.preventDefault();
             dragDepth.current = Math.max(0, dragDepth.current - 1);
             if (dragDepth.current === 0) setDragState("idle");
@@ -382,7 +392,6 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
             focusRing,
             className
           )}
-          {...props}
         >
           <span
             aria-hidden
@@ -401,7 +410,7 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
               {dragState === "reject" ? (
                 <span className="font-medium text-destructive">Some files aren't supported</span>
               ) : dragState === "accept" ? (
-                <span className="font-medium text-primary">Drop to upload</span>
+                <span className={cn("font-medium", READABLE_PRIMARY)}>Drop to upload</span>
               ) : (
                 titleNode
               )}

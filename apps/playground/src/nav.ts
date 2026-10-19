@@ -40,7 +40,21 @@ export const nav: NavSection[] = [
       { id: "shadows", label: "Shadows & Effects" },
       { id: "radius", label: "Corner Radius" },
       { id: "spacing", label: "Spacing" },
-      { id: "motion", label: "Motion" },
+      {
+        id: "motion",
+        label: "Motion",
+        items: [
+          { id: "tokens", label: "Tokens" },
+          { id: "utilities", label: "Utilities" },
+          { id: "change", label: "Animate on Change" },
+          { id: "entrances", label: "Entrances" },
+          { id: "springs", label: "Springs" },
+          { id: "presence", label: "Presence" },
+          { id: "animated-list", label: "Animated List" },
+          { id: "text", label: "Stagger and Text" },
+          { id: "reduced", label: "Reduced Motion" },
+        ],
+      },
       { id: "paper", label: "Paper Showcase" },
       {
         id: "assets",

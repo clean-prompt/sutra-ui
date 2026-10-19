@@ -9,7 +9,7 @@ import {
   RiLinksLine,
   RiSearchLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { pluralize } from "../lib/format";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useCopy } from "../hooks/use-copy";
@@ -195,6 +195,7 @@ function CopyActions({ value, path }: { value: unknown; path: string }) {
   const valueText =
     kind === "string" ? (value as string) : kind === "object" || kind === "array" ? safeJsonStringify(value, 2) : primitiveText(value, kind);
   const btn = cn(
+    hitArea,
     "inline-flex size-5 items-center justify-center rounded-xs text-muted-foreground hover:bg-accent hover:text-foreground [&_svg]:size-3",
     focusRing
   );
@@ -283,7 +284,7 @@ function JsonNode({ name, value, segs, depth, ancestors, last }: JsonNodeProps) 
             aria-label={`${expanded ? "Collapse" : "Expand"} ${path}`}
             aria-expanded={expanded}
             aria-controls={groupId}
-            className={cn("inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground", focusRing)}
+            className={cn(hitArea, "inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground", focusRing)}
           >
             <RiArrowRightSLine aria-hidden className={cn("chevron-turn size-3.5", expanded && "rotate-90")} />
           </button>

@@ -37,3 +37,8 @@ export * from "../hooks/use-debounced-value";
 export * from "../hooks/use-previous";
 export * from "../hooks/use-disclosure";
 export * from "../hooks/use-scroll-sections";
+export * from "../hooks/use-presence";
+export * from "../hooks/use-spring-value";
+export * from "../hooks/use-stagger";
+export * from "../hooks/use-typewriter";
+export * from "../lib/spring";

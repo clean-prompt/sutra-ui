@@ -25,6 +25,8 @@ export * from "../primitives/confirm";
 export * from "../primitives/context-menu";
 export * from "../primitives/copy-button";
 export * from "../primitives/date-picker";
+export * from "../primitives/date-picker-datetime";
+export * from "../primitives/date-picker-range";
 export * from "../primitives/dialog";
 export * from "../primitives/drawer";
 export * from "../primitives/dropdown-menu";

@@ -5,6 +5,7 @@ import { RiArrowDownSLine, RiArrowUpSLine, RiCheckLine } from "@remixicon/react"
 import { cn } from "../lib/cn";
 import { useField } from "./field";
 import { inputShellVariants } from "./input";
+import { filledTrigger } from "./input-internal";
 
 /** Root of a select. Re-export of Radix `Select.Root`. */
 export const Select = SelectPrimitive.Root;
@@ -27,8 +28,10 @@ export const selectTriggerVariants = cva(
         md: "h-9 px-3 text-sm [&_svg]:size-4",
         lg: "h-10 px-3.5 text-sm [&_svg]:size-[18px]",
       },
+      /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
+      variant: { outline: "", filled: filledTrigger },
     },
-    defaultVariants: { size: "md" },
+    defaultVariants: { size: "md", variant: "outline" },
   }
 );
 
@@ -45,10 +48,10 @@ export interface SelectTriggerProps
 export const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   SelectTriggerProps
->(({ className, size, leadingIcon, invalid, children, ...props }, ref) => (
+>(({ className, size, variant, leadingIcon, invalid, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
-    className={cn(selectTriggerVariants({ size }), className)}
+    className={cn(selectTriggerVariants({ size, variant }), className)}
     {...props}
     aria-invalid={invalid || props["aria-invalid"] || undefined}
   >

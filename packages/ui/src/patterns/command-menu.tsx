@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Command as CommandPrimitive } from "cmdk";
+import { createPortal } from "react-dom";
+import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { Dialog as DialogPrimitive, VisuallyHidden } from "radix-ui";
 import { RiArrowDownLine, RiArrowUpLine, RiCornerDownLeftLine, RiSearchLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
@@ -72,34 +73,62 @@ export const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrim
 );
 CommandInput.displayName = "CommandInput";
 
-/** Scrollable results list; animates its height as results change. */
+/** Where a `CommandEmpty` renders: `undefined` outside a `CommandList`, `null` until the list has mounted its slot. */
+const CommandEmptySlot = React.createContext<HTMLElement | null | undefined>(undefined);
+
+/**
+ * Scrollable results list; animates its height as results change. While no item matches, the (then option-less)
+ * listbox is hidden and the `CommandEmpty` message shows in a polite live region beside it, because a listbox without
+ * options is invalid ARIA.
+ */
 export const CommandList = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive.List
-    ref={ref}
-    className={cn(
-      "max-h-[min(24rem,60dvh)] scroll-py-1 overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin",
-      "h-(--cmdk-list-height) transition-[height] duration-150 ease-out-quart",
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, children, ...props }, forwardedRef) => {
+  const listRef = React.useRef<HTMLDivElement | null>(null);
+  const ref = useMergedRefs(listRef, forwardedRef);
+  const [slot, setSlot] = React.useState<HTMLElement | null>(null);
+  const noMatches = useCommandState((state) => state.filtered.count === 0);
+  // An item kept on screen with forceMount is an option too: only a list with none is hidden.
+  React.useLayoutEffect(() => {
+    const el = listRef.current;
+    if (el) el.hidden = noMatches && !el.querySelector("[role=option]");
+  });
+  return (
+    <>
+      <CommandPrimitive.List
+        ref={ref}
+        className={cn(
+          "max-h-[min(24rem,60dvh)] scroll-py-1 overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin",
+          "h-(--cmdk-list-height) transition-[height] duration-150 ease-out-quart",
+          className
+        )}
+        {...props}
+      >
+        <CommandEmptySlot.Provider value={slot}>{children}</CommandEmptySlot.Provider>
+      </CommandPrimitive.List>
+      <div ref={setSlot} data-slot="command-empty" aria-live="polite" />
+    </>
+  );
+});
 CommandList.displayName = "CommandList";
 
-/** Shown when no items match. */
+/** Shown when no items match (beside the list, in a live region, so the list never has to be an empty listbox). */
 export const CommandEmpty = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Empty>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>
->(({ className, ...props }, ref) => (
-  <CommandPrimitive.Empty
-    ref={ref}
-    className={cn("py-10 text-center text-sm text-muted-foreground", className)}
-    {...props}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const slot = React.useContext(CommandEmptySlot);
+  const empty = (
+    <CommandPrimitive.Empty
+      ref={ref}
+      className={cn("py-10 text-center text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  );
+  if (slot === undefined) return empty;
+  return slot ? createPortal(empty, slot) : null;
+});
 CommandEmpty.displayName = "CommandEmpty";
 
 /** Labelled group of items. */

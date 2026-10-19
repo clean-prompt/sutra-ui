@@ -24,6 +24,17 @@ export function cn(...inputs: ClassValue[]) {
 export const focusRing =
   "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35 focus-visible:border-ring";
 
+/**
+ * Minimum hit area (WCAG 2.5.8, 24 x 24 css px) for a control that is visually smaller: an invisible `::after` centred on
+ * the element, as large as the element and never under 24px, so the look is unchanged. Pass it through `cn()` first, so a
+ * later `absolute`/`fixed`/`sticky` replaces its `relative`; do not put it on an element that clips its overflow.
+ */
+export const hitArea =
+  "relative after:absolute after:left-1/2 after:top-1/2 after:h-[max(100%,1.5rem)] after:w-[max(100%,1.5rem)] after:-translate-x-1/2 after:-translate-y-1/2 after:content-['']";
+
+/** `hitArea`, and 44px under a coarse pointer (touch) for primary icon buttons. */
+export const hitAreaTouch = `${hitArea} pointer-coarse:after:h-[max(100%,2.75rem)] pointer-coarse:after:w-[max(100%,2.75rem)]`;
+
 /** Shared invalid state, driven by aria-invalid. */
 export const invalidRing =
   "aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20";

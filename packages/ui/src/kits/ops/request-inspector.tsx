@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiArrowRightSLine, RiCheckLine, RiErrorWarningLine, RiFileCopyLine } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { formatDuration } from "../../lib/duration";
 import { pluralize } from "../../lib/format";
 import { safeISO, toValidDate, type TimeInput } from "../../lib/time";
@@ -148,6 +148,7 @@ export const RequestIdCopy = React.forwardRef<HTMLButtonElement, RequestIdCopyPr
       aria-label={copied ? `Request id ${id} copied` : `Copy request id ${id}`}
       title={id}
       className={cn(
+        hitArea,
         "inline-flex max-w-40 items-center gap-1 rounded-control border border-border bg-subtle px-1.5 py-0.5 font-mono text-2xs text-muted-foreground hover:border-border-strong hover:text-foreground",
         focusRing,
         className

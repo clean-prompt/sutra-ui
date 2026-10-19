@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { clamp } from "../../lib/math";
 import { formatClockTime, toValidDate } from "../../lib/time";
 import { prefersReducedMotion } from "../../hooks/use-media-query";
@@ -198,6 +198,7 @@ export const TranscriptTimelineRail = React.forwardRef<HTMLDivElement, Transcrip
                     onKeyDown={(e) => onKeyDown(e, i)}
                     style={{ top: `${positionOf(t, i) * 100}%` }}
                     className={cn(
+                      hitArea,
                       "group/tick absolute left-1/2 flex h-3 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm",
                       focusRing
                     )}

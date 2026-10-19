@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Switch as SwitchPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useField } from "./field";
 
@@ -16,6 +16,7 @@ export const switchVariants = cva(
     "hover:bg-muted-foreground/40 data-[state=checked]:bg-primary data-[state=checked]:hover:bg-primary-hover",
     "disabled:cursor-not-allowed disabled:opacity-50",
     "aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:data-[state=unchecked]:bg-destructive/40",
+    hitArea,
     focusRing,
   ],
   {

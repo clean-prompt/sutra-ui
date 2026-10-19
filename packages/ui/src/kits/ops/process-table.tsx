@@ -18,6 +18,7 @@ import {
 } from "../../lib/process-groups";
 import { useAsyncAction } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { usePresence, type PresenceState } from "../../hooks/use-presence";
 import { Button } from "../../primitives/button";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { Monogram } from "../../primitives/monogram";
@@ -208,61 +209,7 @@ export function sortProcesses(processes: ProcessInfo[], sort: ProcessSort | null
   return sortProcessList(processes, sort);
 }
 
-type Presence = "enter" | "idle" | "exit";
-
-/** Keeps removed items briefly (state "exit") so they can animate out; new items get "enter". */
-function usePresence<T, K>(items: T[], getKey: (item: T) => K, duration: number) {
-  const seen = React.useRef<Set<K> | null>(null);
-  const prevList = React.useRef<T[]>([]);
-  const timers = React.useRef(new Set<ReturnType<typeof setTimeout>>());
-  const [exiting, setExiting] = React.useState<Map<K, { item: T; index: number }>>(new Map());
-
-  const currentKeys = new Set(items.map(getKey));
-  const firstRender = seen.current === null;
-  if (seen.current === null) seen.current = new Set(currentKeys);
-
-  React.useEffect(() => {
-    const pending = timers.current;
-    return () => {
-      pending.forEach(clearTimeout);
-      pending.clear();
-    };
-  }, []);
-
-  React.useEffect(() => {
-    const removed = new Map<K, { item: T; index: number }>();
-    prevList.current.forEach((item, index) => {
-      const key = getKey(item);
-      if (!currentKeys.has(key)) removed.set(key, { item, index });
-    });
-    prevList.current = items;
-    if (removed.size) {
-      setExiting((prev) => new Map([...prev, ...removed]));
-      // Not cleared when `items` changes again, so a fast update stream can't strand a row in "exit".
-      const timer = setTimeout(() => {
-        timers.current.delete(timer);
-        setExiting((prev) => {
-          const next = new Map(prev);
-          for (const key of removed.keys()) next.delete(key);
-          return next;
-        });
-      }, duration);
-      timers.current.add(timer);
-    }
-    for (const key of currentKeys) seen.current!.add(key);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items]);
-
-  const rows: { item: T; state: Presence }[] = items.map((item) => ({
-    item,
-    state: !firstRender && !seen.current!.has(getKey(item)) ? "enter" : "idle",
-  }));
-  for (const [key, { item, index }] of exiting) {
-    if (currentKeys.has(key)) continue;
-    rows.splice(Math.min(index, rows.length), 0, { item, state: "exit" });
-  }
-  return rows;
-}
+type Presence = PresenceState;
 
 const pidOf = (p: ProcessInfo) => p.pid;
 const treeKeyOf = (item: ProcessTreeItem<ProcessInfo>) => item.key;
@@ -396,7 +343,7 @@ function ProcessRows({
   renderRow: RenderRow;
   empty: React.ReactNode;
 }) {
-  const rows = usePresence(items, pidOf, exitDuration);
+  const rows = usePresence(items, pidOf, { exitDuration });
   if (rows.length === 0) return <>{empty}</>;
   return <TableBody>{rows.map(({ item, state }) => renderRow(item, state))}</TableBody>;
 }
@@ -412,7 +359,7 @@ interface ProcessGroupBodyProps {
 }
 
 function ProcessGroupBody({ group, state, expanded, exitDuration, idPrefix, renderRow, renderGroupRow }: ProcessGroupBodyProps) {
-  const children = usePresence(group.processes, pidOf, exitDuration);
+  const children = usePresence(group.processes, pidOf, { exitDuration });
   const childId = (p: ProcessInfo) => `${idPrefix}-p${p.pid}`;
   const visible = expanded ? children : [];
   return (
@@ -439,7 +386,7 @@ function ProcessTreeBodies({
   renderRow,
   renderGroupRow,
 }: Omit<ProcessGroupBodyProps, "group" | "state" | "expanded"> & { items: ProcessTreeItem<ProcessInfo>[]; expanded: Set<string>; empty: React.ReactNode }) {
-  const rows = usePresence(items, treeKeyOf, exitDuration);
+  const rows = usePresence(items, treeKeyOf, { exitDuration });
   if (rows.length === 0) return <>{empty}</>;
   return (
     <>

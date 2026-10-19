@@ -19,7 +19,8 @@ export function seedColorStyle(color: string, variant: AvatarVariant = "soft"): 
     ? { backgroundColor: color, color: "#ffffff" }
     : {
         backgroundColor: `color-mix(in oklab, ${color} 16%, var(--background))`,
-        color: `color-mix(in oklab, ${color} 78%, var(--foreground))`,
+        // light needs more of the foreground (yellow, cyan and green initials are under 4.5:1 at 78%); dark keeps the vivid 78%
+        color: `light-dark(color-mix(in oklab, ${color} 55%, var(--foreground)), color-mix(in oklab, ${color} 78%, var(--foreground)))`,
       };
 }
 

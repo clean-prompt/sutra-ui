@@ -26,7 +26,7 @@ import {
   RiToolsLine,
   RiVerifiedBadgeFill,
 } from "@remixicon/react";
-import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
+import { cn, focusRing, hitArea, normalizeDensity, type Density } from "../lib/cn";
 import { formatCompact } from "../lib/format";
 import { useSafeId } from "../hooks/use-safe-id";
 import { hashString } from "../lib/hash";
@@ -894,7 +894,7 @@ export const TestimonialWall = React.forwardRef<HTMLElement, TestimonialWallProp
                       {src.label}
                     </span>
                     {t.href && (
-                      <a href={t.href} className={cn("inline-flex items-center gap-1 rounded-xs text-xs text-muted-foreground hover:text-foreground", focusRing)}>
+                      <a href={t.href} className={cn(hitArea, "inline-flex items-center gap-1 rounded-xs text-xs text-muted-foreground hover:text-foreground", focusRing)}>
                         View post
                         <RiExternalLinkLine aria-hidden className="size-3.5" />
                         <span className="sr-only">by {t.name} on {src.label}</span>

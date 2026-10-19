@@ -7,7 +7,7 @@ import {
   RiInboxLine,
   RiSubtractLine,
 } from "@remixicon/react";
-import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
+import { cn, focusRing, hitArea, normalizeDensity, type Density } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Skeleton } from "./progress";
 
@@ -215,6 +215,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
             type="button"
             onClick={onSort}
             className={cn(
+              hitArea,
               "group/sort -mx-1.5 inline-flex items-center gap-1 rounded-xs px-1.5 py-0.5 transition-colors hover:bg-accent hover:text-foreground",
               sortDirection && "text-foreground",
               align === "right" && "flex-row-reverse",

@@ -35,6 +35,11 @@
       "import": "./dist/entries/dataviz.js",
       "default": "./dist/entries/dataviz.js"
     },
+    "./motion": {
+      "types": "./dist/entries/motion.d.ts",
+      "import": "./dist/entries/motion.js",
+      "default": "./dist/entries/motion.js"
+    },
     "./identity": {
       "types": "./dist/entries/identity.d.ts",
       "import": "./dist/entries/identity.js",
@@ -1364,10 +1369,11 @@
     "check:index": "node scripts/gen-index.mjs --check",
     "dev": "tsup --watch",
     "gen:index": "node scripts/gen-index.mjs",
+    "gen:springs": "node scripts/gen-springs.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "tsc --noEmit && node scripts/gen-index.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs",
+    "verify": "tsc --noEmit && node scripts/gen-index.mjs --check && node scripts/gen-springs.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs",
     "gen:world": "node scripts/gen-world.mjs"
   },
   "peerDependencies": {

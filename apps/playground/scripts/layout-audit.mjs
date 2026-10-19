@@ -125,9 +125,27 @@ const auditInPage = () => {
       }
     }
 
-    // F. small tap targets (phone widths only)
-    if (W <= 480 && el.matches(interactiveSel) && !(el.tagName === "A" && (s.display === "inline" || el.closest("p"))) && !(el.tagName === "INPUT" && /checkbox|radio/.test(el.type) && r.width <= 1)) {
-      if (r.width < 24 || r.height < 24) add("tap-target-small", el, { size: `${Math.round(r.width)}x${Math.round(r.height)}` });
+    // F. small tap targets (phone widths only). The hit area is the element or an absolutely positioned ::before/::after
+    // (the `hitArea` class), whichever is larger; links inside running text are exempt (WCAG 2.5.8 inline exception), and so
+    // is anything inside a preview that is scaled down to fit (ViewportFrame, the blocks gallery): it is not tapped at that size.
+    const scaledDown = () => {
+      for (let a = el.parentElement; a && a !== main; a = a.parentElement) {
+        const m = /^matrix\(([-\d.e]+),/.exec(cs(a).transform);
+        if (m && Number(m[1]) < 0.99 && Number(m[1]) > 0) return true;
+      }
+      return false;
+    };
+    if (W <= 480 && el.matches(interactiveSel) && !scaledDown() && !(el.tagName === "A" && (s.display === "inline" || el.closest("p") || [...(el.parentElement?.childNodes ?? [])].some((n) => n.nodeType === 3 && n.textContent.trim()))) && !(el.tagName === "INPUT" && /checkbox|radio/.test(el.type) && r.width <= 1)) {
+      let w = r.width;
+      let h = r.height;
+      for (const pseudo of ["::before", "::after"]) {
+        const p = getComputedStyle(el, pseudo);
+        if (p.content !== "none" && p.content !== "normal" && p.position === "absolute" && p.pointerEvents !== "none") {
+          w = Math.max(w, parseFloat(p.width) || 0);
+          h = Math.max(h, parseFloat(p.height) || 0);
+        }
+      }
+      if (w < 24 || h < 24) add("tap-target-small", el, { size: `${Math.round(w)}x${Math.round(h)}` });
     }
   }
 

@@ -23,7 +23,7 @@ import {
   RiShieldLine,
   RiStarLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { normalizeTaskStatus, type TaskStatusInput } from "../../lib/status";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../../lib/tone";
 import { formatCompact } from "../../lib/format";
@@ -61,7 +61,7 @@ function ExternalLink({ href, icon, children }: { href: string; icon: React.Reac
       href={isSafeHref(href) ? href : undefined}
       target="_blank"
       rel="noreferrer"
-      className={cn("inline-flex items-center gap-1 rounded-sm text-xs font-medium text-muted-foreground hover:text-foreground [&_svg]:size-3.5", focusRing)}
+      className={cn(hitArea, "inline-flex items-center gap-1 rounded-sm text-xs font-medium text-muted-foreground hover:text-foreground [&_svg]:size-3.5", focusRing)}
     >
       <span aria-hidden>{icon}</span>
       {children}

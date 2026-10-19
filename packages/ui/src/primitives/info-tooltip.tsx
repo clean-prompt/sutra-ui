@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Tooltip as TooltipPrimitive } from "radix-ui";
 import { RiInformationLine, RiQuestionLine } from "@remixicon/react";
-import { cn, focusRing, type Size } from "../lib/cn";
+import { cn, focusRing, hitArea, type Size } from "../lib/cn";
 import { Tooltip, TooltipContent, type TooltipContentProps } from "./tooltip";
 
 const iconSize: Record<Size, string> = { sm: "size-3.5", md: "size-4", lg: "size-[18px]" };
@@ -51,6 +51,7 @@ export const InfoTooltip = React.forwardRef<HTMLButtonElement, InfoTooltipProps>
             type="button"
             aria-label={label ?? (typeof title === "string" ? title : icon === "help" ? "Help" : "More information")}
             className={cn(
+              hitArea,
               "inline-flex shrink-0 items-center justify-center rounded-full align-middle text-muted-foreground transition-colors hover:text-foreground data-[state=delayed-open]:text-foreground data-[state=instant-open]:text-foreground",
               hitSize[size],
               focusRing,

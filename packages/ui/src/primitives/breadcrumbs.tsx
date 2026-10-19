@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "radix-ui";
 import { RiArrowRightSLine, RiMoreLine } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -77,6 +77,7 @@ export const BreadcrumbLink = React.forwardRef<HTMLAnchorElement, BreadcrumbLink
       <Comp
         ref={ref}
         className={cn(
+          hitArea,
           crumbInner,
           "rounded-xs transition-colors hover:text-foreground",
           focusRing,

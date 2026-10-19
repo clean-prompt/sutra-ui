@@ -2,7 +2,7 @@ import * as React from "react";
 import { Checkbox as CheckboxPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiCheckLine, RiSubtractLine } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useSafeId } from "../hooks/use-safe-id";
 import { useField } from "./field";
@@ -19,6 +19,7 @@ export const checkboxVariants = cva(
     "data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary",
     "disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100",
     "aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20",
+    hitArea,
     focusRing,
   ],
   {

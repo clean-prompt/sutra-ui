@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiCloseLine } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea, hitAreaTouch } from "../lib/cn";
 
 export const closeButtonVariants = cva("inline-flex shrink-0 items-center justify-center", {
   variants: {
@@ -12,12 +12,13 @@ export const closeButtonVariants = cva("inline-flex shrink-0 items-center justif
     shape: {
       control: [
         "select-none rounded-control",
+        hitAreaTouch,
         "transition-[color,background-color,transform,translate,scale,rotate] duration-150 active:scale-95",
         "disabled:pointer-events-none disabled:opacity-50",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0",
         focusRing,
       ],
-      pill: "rounded-full",
+      pill: ["rounded-full", hitArea],
     },
     variant: {
       ghost: "text-muted-foreground hover:bg-accent hover:text-foreground",

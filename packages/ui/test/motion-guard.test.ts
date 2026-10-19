@@ -9,6 +9,8 @@
  *   3. Durations sit on the scale (75, 150, 200, 300, 500, 1000 ms).
  *   4. Curves come from the shared ease: no `cubic-bezier(` / `ease-[` literals and no bare `ease-out` / `ease-in`.
  *   5. No JS animation library.
+ *   6. Springs are tokens: no `linear(` easing literal in a component (it is generated into the token file), the files of
+ *      the native motion layer read reduced motion, and each stays within its gzip budget.
  *
  * Rules 2 to 4 keep an ALLOW map of the deliberate exceptions, keyed `"<path under src> <token>"`. A map is asserted
  * both ways: a site that offends and is not listed fails, and so does an entry that no longer offends (like KIT_DEPS
@@ -16,8 +18,10 @@
  *
  *   MOTION_GUARD_PRINT=1 npx vitest run test/motion-guard.test.ts
  */
-import { readdirSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 
 const ROOT = path.resolve(__dirname, "..");
@@ -48,6 +52,11 @@ const ALLOW_CURVES: Record<string, Allowed> = {
   "patterns/chart-cartesian-internal.tsx ease-out": { n: 1, why: "charts tween their own data (own engine, motion-safe)" },
   "patterns/chart-donut.tsx ease-out": { n: 1, why: "charts tween their own data (own engine, motion-safe)" },
   "primitives/drawer.tsx cubic-bezier(": { n: 1, why: "the drawer translates with a gesture-matched curve while it is dragged and released" },
+};
+
+/** `linear(` easing literals outside the generated token file. */
+const ALLOW_LINEAR: Record<string, Allowed> = {
+  "lib/spring.ts linear(": { n: 1, why: "springToLinear builds the string that scripts/gen-springs.mjs writes into the token files" },
 };
 
 /* ------------------------------------------------------------------ */
@@ -219,6 +228,13 @@ function scanCurves(): Record<string, number> {
   return found;
 }
 
+/** `linear(` easings: they are generated tokens (--sutra-spring-*), never pasted into a component. */
+function scanLinear(): Record<string, number> {
+  const found: Record<string, number> = {};
+  for (const s of sources) for (const m of s.code.matchAll(/(?<![\w-])linear\(/g)) count(found, `${s.rel} ${m[0]}`);
+  return found;
+}
+
 const counts = (allow: Record<string, Allowed>) => Object.fromEntries(Object.entries(allow).map(([k, v]) => [k, v.n]));
 const sorted = (o: Record<string, number>) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
 
@@ -234,7 +250,12 @@ const asMap = (name: string, found: Record<string, number>, known: Record<string
 // MOTION_GUARD_PRINT=1 prints the maps as they would have to be for the tree as it is now.
 it.runIf(process.env.MOTION_GUARD_PRINT)("prints the current offenders as ALLOW maps", () => {
   console.log(
-    [asMap("ALLOW_LOOPS", scanLoops(), ALLOW_LOOPS), asMap("ALLOW_DURATIONS", scanDurations(), ALLOW_DURATIONS), asMap("ALLOW_CURVES", scanCurves(), ALLOW_CURVES)].join("\n\n")
+    [
+      asMap("ALLOW_LOOPS", scanLoops(), ALLOW_LOOPS),
+      asMap("ALLOW_DURATIONS", scanDurations(), ALLOW_DURATIONS),
+      asMap("ALLOW_CURVES", scanCurves(), ALLOW_CURVES),
+      asMap("ALLOW_LINEAR", scanLinear(), ALLOW_LINEAR),
+    ].join("\n\n")
   );
 });
 
@@ -329,5 +350,60 @@ describe("no JS animation library", () => {
     const names = ["dependencies", "peerDependencies", "optionalDependencies"].flatMap((k) => Object.keys(pkg[k] ?? {}));
     const banned = /^(framer-motion|motion|motion-dom|gsap|animejs|popmotion|react-spring|@react-spring\/.+|react-transition-group|lottie-web|@lottiefiles\/.+)$/;
     expect(names.filter((n) => banned.test(n))).toEqual([]);
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/* 6. Springs and the native motion layer                              */
+/* ------------------------------------------------------------------ */
+
+/** The files of the CSS-first motion layer (JS that runs timers or frames, or builds motion markup). */
+const MOTION_LAYER = [
+  "lib/spring.ts",
+  "hooks/use-spring-value.ts",
+  "hooks/use-presence.ts",
+  "hooks/use-stagger.ts",
+  "hooks/use-typewriter.ts",
+  "patterns/presence.tsx",
+  "patterns/animated-list.tsx",
+  "patterns/split-text.tsx",
+  "patterns/typewriter.tsx",
+];
+/** The ones that animate over time and so must look at the preference (directly or through the hook that does). */
+const READS_REDUCED = ["hooks/use-spring-value.ts", "hooks/use-presence.ts", "hooks/use-typewriter.ts", "patterns/presence.tsx", "patterns/split-text.tsx"];
+/** Gzip budgets in bytes, minified (esbuild). The whole layer stays near the 8 KB of the plan: a library would cost 27 to 40 KB. */
+const BUDGET_EACH = 1024;
+const BUDGET_TOTAL = 8192;
+
+describe("spring tokens and the native motion layer", () => {
+  it("no linear() easing literal in a component: springs come from the generated --sutra-spring-* tokens", () => {
+    expect(sorted(scanLinear())).toEqual(sorted(counts(ALLOW_LINEAR)));
+    // the scanner sees a literal when there is one
+    expect(sources.some((s) => /(?<![\w-])linear\(/.test(s.code))).toBe(true);
+    expect(/(?<![\w-])linear\(/.test("background: linear-gradient(red, blue); linearPath(x)")).toBe(false);
+  });
+
+  it("the motion layer files exist and the animating ones read prefers-reduced-motion", () => {
+    const REDUCED = /prefers-reduced-motion|motion-reduce|prefersReducedMotion|usePrefersReducedMotion/;
+    for (const rel of MOTION_LAYER) expect(sources.some((s) => s.rel === rel), rel).toBe(true);
+    expect(READS_REDUCED.filter((rel) => !REDUCED.test(sources.find((s) => s.rel === rel)!.code))).toEqual([]);
+  });
+
+  it("the token file defines each spring easing and its -duration once", () => {
+    for (const name of ["gentle", "snappy", "bouncy"]) {
+      expect(sutraCss.match(new RegExp(`--sutra-spring-${name}:`, "g")), name).toHaveLength(1);
+      expect(sutraCss.match(new RegExp(`--sutra-spring-${name}-duration:`, "g")), name).toHaveLength(1);
+    }
+  });
+
+  const esbuild = path.join(ROOT, "node_modules/.bin/esbuild");
+  it.skipIf(!existsSync(esbuild))("each file stays within its gzip budget and the layer within the total (minified with esbuild)", () => {
+    const sizes = MOTION_LAYER.map((rel) => {
+      const out = execFileSync(esbuild, [path.join(SRC, rel), "--minify", "--format=esm", "--log-level=error"], { encoding: "utf8", maxBuffer: 1 << 24 });
+      return [rel, gzipSync(out, { level: 9 }).length] as const;
+    });
+    expect(sizes.filter(([, n]) => n > BUDGET_EACH)).toEqual([]);
+    expect(sizes.reduce((sum, [, n]) => sum + n, 0)).toBeLessThanOrEqual(BUDGET_TOTAL);
+    expect(sizes.find(([rel]) => rel === "lib/spring.ts")![1]).toBeLessThanOrEqual(1024);
   });
 });

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn, Eyebrow, Heading, Text } from "@sutra/ui";
+import { cn, Eyebrow, Heading, prefersReducedMotion, Text } from "@sutra/ui";
 import { href, useHashRoute } from "../router";
 
 export interface DemoProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
@@ -39,7 +39,7 @@ export function Demo({
                 // Let modified clicks (new tab, new window) follow the link.
                 if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                 e.preventDefault();
-                document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
               }}
               className="hover:underline underline-offset-4"
             >

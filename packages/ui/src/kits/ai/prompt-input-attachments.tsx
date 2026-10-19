@@ -11,7 +11,7 @@ import {
   RiFileCodeLine,
   RiUploadCloud2Line,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
 import { DropdownMenu as Menu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../primitives/dropdown-menu";
@@ -137,6 +137,7 @@ export const PromptInputContextChip = React.forwardRef<HTMLDivElement, PromptInp
     const base = path.split(/[\\/]/).filter(Boolean).pop() ?? path;
     const range = formatContextRange("", lines);
     const iconButton = cn(
+      hitArea,
       "inline-flex size-5 shrink-0 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-3.5",
       focusRing
     );

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Popover as PopoverPrimitive } from "radix-ui";
-import { Command as CommandPrimitive } from "cmdk";
+import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { cva } from "class-variance-authority";
 import {
   RiAddLine,
@@ -16,6 +16,7 @@ import { usePendingRemoval } from "../hooks/use-pending-removal";
 import { useField, useFieldContext } from "./field";
 import { CloseButton } from "./close-button";
 import { inputShellVariants } from "./input";
+import { filledTrigger } from "./input-internal";
 import { Spinner } from "./spinner";
 
 export interface ComboboxOption {
@@ -50,6 +51,8 @@ interface ComboboxBaseProps {
   onCreate?: (query: string) => string | void;
   createLabel?: (query: string) => React.ReactNode;
   size?: Size;
+  /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
+  variant?: "outline" | "filled";
   disabled?: boolean;
   /** Marks the combobox required. Inherited from a surrounding `Field` when omitted. */
   required?: boolean;
@@ -126,10 +129,17 @@ const triggerVariants = cva(
         lg: "min-h-10 px-3.5 [&_svg]:size-[18px]",
       },
       multiple: { true: "py-1", false: "" },
+      variant: { outline: "", filled: filledTrigger },
     },
-    defaultVariants: { size: "md", multiple: false },
+    defaultVariants: { size: "md", multiple: false, variant: "outline" },
   }
 );
+
+/** Hands its children whether cmdk currently matches no item, so the empty message can sit outside the listbox. */
+function ComboboxEmptyGate({ children }: { children: (noMatches: boolean) => React.ReactNode }) {
+  const noMatches = useCommandState((state) => state.filtered.count === 0);
+  return <>{children(noMatches)}</>;
+}
 
 /** Searchable select built on Popover + cmdk, with multi-select chips and creatable options. */
 export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, forwardedRef) => {
@@ -148,6 +158,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
       </>
     ),
     size = "md",
+    variant,
     disabled: disabledProp,
     required: requiredProp,
     invalid: invalidProp,
@@ -322,7 +333,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
               else if (removal.press(e.repeat)) emit(selected.slice(0, -1));
             }
           }}
-          className={cn(triggerVariants({ size, multiple }), className)}
+          className={cn(triggerVariants({ size, multiple, variant }), className)}
         >
           {multiple ? (
             <span className="flex min-w-0 flex-1 flex-wrap items-center gap-1">
@@ -429,88 +440,99 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
                 {loading && visibleOptions.length > 0 && <Spinner size="sm" label="" className="text-muted-foreground" />}
               </div>
             )}
-            <CommandPrimitive.List
-              aria-multiselectable={multiple || undefined}
-              aria-busy={loading || undefined}
-              className="scrollbar-thin max-h-72 overflow-y-auto overscroll-contain p-1"
-            >
-              {loading && visibleOptions.length === 0 && (
-                <div data-slot="combobox-loading" className="flex items-center justify-center gap-2 px-2 py-6 text-sm text-muted-foreground">
-                  <Spinner size="sm" label="" className="text-muted-foreground" />
-                  {loadingState ?? "Loading…"}
-                </div>
-              )}
-              {loading && visibleOptions.length > 0 && <span className="sr-only">Loading…</span>}
-              {!canCreate && !loading && (
-                <CommandPrimitive.Empty className="px-2 py-6 text-center text-sm text-muted-foreground">
-                  {emptyState ?? emptyText ?? "No results"}
-                </CommandPrimitive.Empty>
-              )}
-              {groups.map(([heading, items]) => (
-                <CommandPrimitive.Group
-                  key={heading || "__default"}
-                  heading={heading || undefined}
-                  className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground"
-                >
-                  {items.map((option) => {
-                    const isSelected = selected.includes(option.value);
-                    return (
-                      <CommandPrimitive.Item
-                        key={option.value}
-                        value={option.value}
-                        keywords={[option.label, ...(option.keywords ?? [])]}
-                        disabled={option.disabled}
-                        onSelect={() => toggle(option.value)}
-                        data-checked={isSelected ? "" : undefined}
-                        className={cn(
-                          "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none",
-                          "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground",
-                          "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
-                          "[&_svg]:pointer-events-none [&_svg]:shrink-0",
-                          option.description && "items-start"
-                        )}
-                      >
-                        {multiple && (
-                          <span
-                            aria-hidden
-                            className={cn(
-                              "flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-border-strong transition-colors [&_svg]:size-3",
-                              option.description && "mt-0.5",
-                              isSelected && "border-primary bg-primary text-primary-foreground"
-                            )}
-                          >
-                            {isSelected && <RiCheckLine aria-hidden />}
-                          </span>
-                        )}
-                        {option.icon && (
-                          <span className={cn("flex text-muted-foreground [&_svg]:size-4", option.description && "mt-0.5")}>
-                            {option.icon}
-                          </span>
-                        )}
-                        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                          <span className="truncate">{option.label}</span>
-                          {option.description && (
-                            <span className="text-xs text-muted-foreground">{option.description}</span>
-                          )}
-                        </span>
-                        {!multiple && isSelected && <RiCheckLine aria-hidden className="size-4 text-primary" />}
-                      </CommandPrimitive.Item>
-                    );
-                  })}
-                </CommandPrimitive.Group>
-              ))}
-              {canCreate && (
-                <CommandPrimitive.Item
-                  forceMount
-                  value={`__create__${query}`}
-                  onSelect={handleCreate}
-                  className="flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-muted-foreground outline-none data-[selected=true]:bg-accent"
-                >
-                  <RiAddLine aria-hidden className="size-4 shrink-0" />
-                  <span className="truncate">{createLabel(query)}</span>
-                </CommandPrimitive.Item>
-              )}
-            </CommandPrimitive.List>
+            <ComboboxEmptyGate>
+              {(noMatches) => {
+                const showEmpty = noMatches && !canCreate && !loading;
+                return (
+                  <>
+                    {/* A listbox with no option is invalid (aria-required-children): the message lives beside it, in a live region, and the empty listbox is hidden. */}
+                    <div data-slot="combobox-empty" aria-live="polite">
+                      {showEmpty && (
+                        <div className="px-2 py-6 text-center text-sm text-muted-foreground">{emptyState ?? emptyText ?? "No results"}</div>
+                      )}
+                    </div>
+                    <CommandPrimitive.List
+                      hidden={showEmpty || undefined}
+                      aria-multiselectable={multiple || undefined}
+                      aria-busy={loading || undefined}
+                      className="scrollbar-thin max-h-72 overflow-y-auto overscroll-contain p-1"
+                    >
+                      {loading && visibleOptions.length === 0 && (
+                        <div data-slot="combobox-loading" className="flex items-center justify-center gap-2 px-2 py-6 text-sm text-muted-foreground">
+                          <Spinner size="sm" label="" className="text-muted-foreground" />
+                          {loadingState ?? "Loading…"}
+                        </div>
+                      )}
+                      {loading && visibleOptions.length > 0 && <span className="sr-only">Loading…</span>}
+                      {groups.map(([heading, items]) => (
+                        <CommandPrimitive.Group
+                          key={heading || "__default"}
+                          heading={heading || undefined}
+                          className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground"
+                        >
+                          {items.map((option) => {
+                            const isSelected = selected.includes(option.value);
+                            return (
+                              <CommandPrimitive.Item
+                                key={option.value}
+                                value={option.value}
+                                keywords={[option.label, ...(option.keywords ?? [])]}
+                                disabled={option.disabled}
+                                onSelect={() => toggle(option.value)}
+                                data-checked={isSelected ? "" : undefined}
+                                className={cn(
+                                  "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none",
+                                  "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground",
+                                  "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
+                                  "[&_svg]:pointer-events-none [&_svg]:shrink-0",
+                                  option.description && "items-start"
+                                )}
+                              >
+                                {multiple && (
+                                  <span
+                                    aria-hidden
+                                    className={cn(
+                                      "flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-border-strong transition-colors [&_svg]:size-3",
+                                      option.description && "mt-0.5",
+                                      isSelected && "border-primary bg-primary text-primary-foreground"
+                                    )}
+                                  >
+                                    {isSelected && <RiCheckLine aria-hidden />}
+                                  </span>
+                                )}
+                                {option.icon && (
+                                  <span className={cn("flex text-muted-foreground [&_svg]:size-4", option.description && "mt-0.5")}>
+                                    {option.icon}
+                                  </span>
+                                )}
+                                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                                  <span className="truncate">{option.label}</span>
+                                  {option.description && (
+                                    <span className="text-xs text-muted-foreground">{option.description}</span>
+                                  )}
+                                </span>
+                                {!multiple && isSelected && <RiCheckLine aria-hidden className="size-4 text-primary" />}
+                              </CommandPrimitive.Item>
+                            );
+                          })}
+                        </CommandPrimitive.Group>
+                      ))}
+                      {canCreate && (
+                        <CommandPrimitive.Item
+                          forceMount
+                          value={`__create__${query}`}
+                          onSelect={handleCreate}
+                          className="flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-muted-foreground outline-none data-[selected=true]:bg-accent"
+                        >
+                          <RiAddLine aria-hidden className="size-4 shrink-0" />
+                          <span className="truncate">{createLabel(query)}</span>
+                        </CommandPrimitive.Item>
+                      )}
+                    </CommandPrimitive.List>
+                  </>
+                );
+              }}
+            </ComboboxEmptyGate>
           </CommandPrimitive>
         </PopoverPrimitive.Content>
       </PopoverPrimitive.Portal>

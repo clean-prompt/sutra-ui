@@ -8,7 +8,7 @@ import {
   RiExpandUpDownLine,
   RiSparkling2Line,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { pluralize } from "../lib/format";
 import { Button } from "../primitives/button";
 import { SegmentedControl } from "../primitives/segmented-control";
@@ -821,7 +821,7 @@ export const SuggestionDiff = React.forwardRef<HTMLDivElement, SuggestionDiffPro
                       type="button"
                       onClick={() => decide(t.index, "accepted")}
                       aria-label={`Accept change ${t.index + 1}`}
-                      className={cn("inline-flex size-5 items-center justify-center rounded-xs text-success hover:bg-success-soft", focusRing)}
+                      className={cn(hitArea, "inline-flex size-5 items-center justify-center rounded-xs text-success hover:bg-success-soft", focusRing)}
                     >
                       <RiCheckLine aria-hidden className="size-3.5" />
                     </button>
@@ -829,7 +829,7 @@ export const SuggestionDiff = React.forwardRef<HTMLDivElement, SuggestionDiffPro
                       type="button"
                       onClick={() => decide(t.index, "rejected")}
                       aria-label={`Reject change ${t.index + 1}`}
-                      className={cn("inline-flex size-5 items-center justify-center rounded-xs text-destructive hover:bg-destructive-soft", focusRing)}
+                      className={cn(hitArea, "inline-flex size-5 items-center justify-center rounded-xs text-destructive hover:bg-destructive-soft", focusRing)}
                     >
                       <RiCloseLine aria-hidden className="size-3.5" />
                     </button>

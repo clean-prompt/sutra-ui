@@ -2,10 +2,11 @@ import * as React from "react";
 import { Slot } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiArrowRightUpLine } from "@remixicon/react";
-import { cn } from "../lib/cn";
+import { cn, hitArea } from "../lib/cn";
 
 export const textLinkVariants = cva(
   [
+    hitArea,
     "inline-flex items-center gap-0.5 rounded-xs font-medium underline-offset-4 decoration-1",
     "transition-[color,text-decoration-color] duration-150",
     "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35",

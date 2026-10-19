@@ -4,6 +4,7 @@ import { cn, type Size } from "../lib/cn";
 import { Button, type ButtonProps } from "./button";
 import { useField } from "./field";
 import { inputShellVariants } from "./input";
+import { filledShell } from "./input-internal";
 
 const CONTROL = "[data-slot=input-group-control]";
 
@@ -25,8 +26,10 @@ export const inputGroupVariants = cva(
         md: "h-9 text-sm",
         lg: "h-10 text-sm",
       },
+      /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border (the surface returns to normal on focus). */
+      variant: { outline: "", filled: [filledShell, "has-[[data-slot=input-group-control]:focus-visible]:bg-background"] },
     },
-    defaultVariants: { size: "md" },
+    defaultVariants: { size: "md", variant: "outline" },
   }
 );
 
@@ -35,13 +38,13 @@ export interface InputGroupProps
     VariantProps<typeof inputGroupVariants> {}
 
 /** A container that looks like a single input and hosts addons around a control. */
-export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(({ className, size, ...props }, ref) => (
+export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(({ className, size, variant, ...props }, ref) => (
   <div
     ref={ref}
     role="group"
     data-slot="input-group"
     data-size={size ?? "md"}
-    className={cn(inputGroupVariants({ size }), className)}
+    className={cn(inputGroupVariants({ size, variant }), className)}
     {...props}
   />
 ));

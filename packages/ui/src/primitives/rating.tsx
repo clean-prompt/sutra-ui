@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiStarFill } from "@remixicon/react";
-import { cn, type Size } from "../lib/cn";
+import { cn, hitArea, type Size } from "../lib/cn";
 import { pluralize } from "../lib/format";
 import { clamp, toPercent } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
@@ -176,6 +176,7 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
                 commit(allowClear && next === value ? 0 : next);
               }}
               className={cn(
+                hitArea,
                 "relative inline-flex cursor-pointer rounded-xs outline-none transition-transform duration-150",
                 "hover:scale-110 active:scale-95 focus-visible:ring-[3px] focus-visible:ring-ring/35"
               )}

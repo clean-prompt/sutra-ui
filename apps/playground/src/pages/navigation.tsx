@@ -120,6 +120,10 @@ function PaginationDemo() {
         <Pagination defaultPage={10} totalPages={20} siblingCount={2} boundaryCount={2} size="sm" />
       </div>
       <div className="space-y-3">
+        <DemoLabel>pageJump · activate an ellipsis, type a page number, Enter jumps (Escape cancels)</DemoLabel>
+        <Pagination defaultPage={40} totalPages={80} pageJump />
+      </div>
+      <div className="space-y-3">
         <DemoLabel>With page size selector</DemoLabel>
         <Pagination
           defaultPage={1}
@@ -581,7 +585,7 @@ export function NavigationPage() {
         </div>
       </Demo>
 
-      <Demo id="pagination" title="Pagination" description="Numbered, simple, dots and load-more variants, with an optional page-size selector." align="start">
+      <Demo id="pagination" title="Pagination" description="Numbered, simple, dots and load-more variants, with an optional page-size selector and a page jump on the ellipsis (pageJump)." align="start">
         <PaginationDemo />
       </Demo>
 

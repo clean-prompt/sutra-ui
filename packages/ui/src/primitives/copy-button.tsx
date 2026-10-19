@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { useCopy } from "../hooks/use-copy";
 import { buttonVariants } from "./button";
 
@@ -94,6 +94,7 @@ export const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
           className={cn(
             isIcon
               ? [
+                  hitArea,
                   "relative inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-50",
                   iconSize[size],
                   focusRing,

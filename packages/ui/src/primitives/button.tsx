@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitAreaTouch } from "../lib/cn";
 import { Spinner, type SpinnerProps } from "./spinner";
 
 export const buttonVariants = cva(
@@ -37,10 +37,10 @@ export const buttonVariants = cva(
         md: "h-9 px-3.5 text-sm [&_svg]:size-4",
         lg: "h-10 px-4 text-sm [&_svg]:size-[18px]",
         xl: "h-12 rounded-action px-5 text-base [&_svg]:size-5",
-        "icon-xs": "size-7 [&_svg]:size-3.5",
-        "icon-sm": "size-8 [&_svg]:size-4",
-        icon: "size-9 [&_svg]:size-4",
-        "icon-lg": "size-10 [&_svg]:size-[18px]",
+        "icon-xs": ["size-7 [&_svg]:size-3.5", hitAreaTouch],
+        "icon-sm": ["size-8 [&_svg]:size-4", hitAreaTouch],
+        icon: ["size-9 [&_svg]:size-4", hitAreaTouch],
+        "icon-lg": ["size-10 [&_svg]:size-[18px]", hitAreaTouch],
         "icon-xl": "size-12 [&_svg]:size-5",
       },
       fullWidth: { true: "w-full" },
@@ -90,11 +90,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <Slot.Root
           ref={ref}
           className={classes}
-          aria-disabled={inert || undefined}
-          aria-busy={loading || undefined}
-          data-disabled={inert ? "" : undefined}
-          tabIndex={inert ? -1 : undefined}
           {...props}
+          // owned after the spread: a consumer `tabIndex`, `aria-disabled` or `aria-busy` must not undo the inert state
+          {...(inert ? { "aria-disabled": true, "data-disabled": "", tabIndex: -1 } : null)}
+          aria-busy={loading ? true : props["aria-busy"]}
           onClickCapture={
             inert
               ? (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -115,9 +114,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type ?? "button"}
         className={classes}
-        disabled={disabled || loading}
-        aria-busy={loading || undefined}
         {...props}
+        disabled={disabled || loading}
+        aria-busy={loading ? true : props["aria-busy"]}
       >
         {loading ? <Spinner size="sm" {...spinnerProps} className={cn("text-current", spinnerProps?.className)} /> : leadingIcon}
         {children}

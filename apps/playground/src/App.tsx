@@ -22,6 +22,7 @@ import {
   CommandPaletteFromRegistry,
   ShortcutsDialog,
   useShortcuts,
+  prefersReducedMotion,
 } from "@sutra/ui";
 import {
   RiArrowRightSLine,
@@ -39,6 +40,7 @@ import {
 import { nav, findPage, routeOf } from "./nav";
 import { href, useHashRoute } from "./router";
 import { ThemeControls, usePersistedTheme } from "./components/theme-controls";
+import { PageRail } from "./components/page-rail";
 /** Lazy-load a named page export so each page ships as its own chunk. */
 function lazyPage<M extends Record<string, unknown>>(load: () => Promise<M>, name: keyof M) {
   return React.lazy(async () => ({ default: (await load())[name] as React.ComponentType }));
@@ -232,7 +234,7 @@ export function App() {
     const deadline = performance.now() + 3000;
     const tryScroll = () => {
       const el = document.getElementById(anchor);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+      if (el) el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
       else if (performance.now() < deadline) frame = requestAnimationFrame(tryScroll);
     };
     frame = requestAnimationFrame(tryScroll);
@@ -265,6 +267,7 @@ export function App() {
             }
           >
             <Page key={`${section}/${page}`} />
+            {meta.page?.items && <PageRail key={`${section}/${page}/rail`} section={section} page={page} items={meta.page.items} />}
           </React.Suspense>
         ) : (
           <div className="grid flex-1 place-items-center p-10 text-center">

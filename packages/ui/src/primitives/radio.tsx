@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { useField } from "./field";
 
 function joinIds(...ids: Array<string | undefined>) {
@@ -52,6 +52,7 @@ export const radioItemVariants = cva(
     "hover:border-primary/60 data-[state=checked]:border-primary data-[state=checked]:bg-primary",
     "disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100",
     "group-aria-invalid/radio-group:border-destructive aria-invalid:border-destructive",
+    hitArea,
     focusRing,
   ],
   {

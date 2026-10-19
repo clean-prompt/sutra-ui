@@ -4,12 +4,10 @@ import { RiCloseCircleFill, RiEyeLine, RiEyeOffLine, RiSearchLine } from "@remix
 import { cn, focusRing, invalidRing, type Size } from "../lib/cn";
 import { Kbd } from "./typography";
 import { useField } from "./field";
+import { filledShell } from "./input-internal";
 import { detectShortcutPlatform, getShortcutKeyLabels } from "../lib/shortcuts";
 
 const shellHeights: Record<Size, string> = { sm: "h-8", md: "h-9", lg: "h-10" };
-
-/** The `filled` look: a tinted surface with no visible border and no shadow (the border and surface come back on focus). */
-const filledShell = "border-transparent bg-muted shadow-none";
 
 /**
  * The bordered box shared by the text-entry controls (input, textarea, select / combobox / date triggers,

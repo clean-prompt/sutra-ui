@@ -1127,6 +1127,59 @@ function FilledInputsDemo() {
           <Input variant="filled" leadingIcon={<RiUserLine />} placeholder="Narrow" aria-label="Filled narrow" />
         </div>
       </div>
+      <div className="space-y-3">
+        <DemoLabel>Select, Combobox (single and multiple), DatePicker</DemoLabel>
+        <Select>
+          <SelectTrigger variant="filled" aria-label="Filled select">
+            <SelectValue placeholder="Pick a framework" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="react">React</SelectItem>
+            <SelectItem value="vue">Vue</SelectItem>
+            <SelectItem value="svelte">Svelte</SelectItem>
+          </SelectContent>
+        </Select>
+        <Combobox variant="filled" options={frameworks} placeholder="Search frameworks" aria-label="Filled combobox" />
+        <Combobox variant="filled" multiple options={frameworks} defaultValue={["react", "vue"]} clearable aria-label="Filled multiple combobox" />
+        <DatePicker variant="filled" placeholder="Pick a date" aria-label="Filled date" />
+        <DateRangePicker variant="filled" placeholder="Pick a range" aria-label="Filled date range" />
+      </div>
+      <div className="space-y-3">
+        <DemoLabel>InputGroup, with a button, sizes and invalid</DemoLabel>
+        <InputGroup variant="filled">
+          <InputGroupAddon>
+            <InputGroupText>https://</InputGroupText>
+          </InputGroupAddon>
+          <InputGroupInput placeholder="example.com" aria-label="Filled group domain" />
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton aria-label="Send" size="icon-xs">
+              <RiSendPlaneLine />
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+        <InputGroup variant="filled" size="sm">
+          <InputGroupAddon>
+            <RiMailLine />
+          </InputGroupAddon>
+          <InputGroupInput placeholder="sm" aria-label="Filled group small" />
+        </InputGroup>
+        <InputGroup variant="filled" size="lg">
+          <InputGroupAddon>
+            <RiUserLine />
+          </InputGroupAddon>
+          <InputGroupInput invalid defaultValue="not valid" aria-label="Filled group invalid" />
+        </InputGroup>
+        <DemoLabel>Disabled</DemoLabel>
+        <Select disabled>
+          <SelectTrigger variant="filled" aria-label="Filled select disabled">
+            <SelectValue placeholder="Disabled select" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="react">React</SelectItem>
+          </SelectContent>
+        </Select>
+        <Combobox variant="filled" disabled options={frameworks} placeholder="Disabled combobox" aria-label="Filled combobox disabled" />
+      </div>
     </div>
   );
 }
@@ -1347,7 +1400,7 @@ export function FormsPage() {
         <NumberInputDemo />
       </Demo>
 
-      <Demo id="filled-inputs" title="Filled inputs" description="variant=filled on Input, PasswordInput, Textarea, NumberInput and TagInput: a tinted surface with a hidden border that returns to the normal surface on focus. The paper style follows through the same tokens." align="start">
+      <Demo id="filled-inputs" title="Filled inputs" description="variant=filled on Input, PasswordInput, Textarea, NumberInput, TagInput, the Select trigger, Combobox, the date pickers and InputGroup: a tinted surface with a hidden border that returns to the normal surface on focus. The paper style follows through the same tokens." align="start">
         <FilledInputsDemo />
       </Demo>
 

@@ -34,6 +34,7 @@ import {
 } from "@sutra/ui";
 import { RiAddLine, RiArrowDownSLine, RiCheckLine, RiCloseLine, RiRefreshLine } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
+import { MotionLists, MotionPresence, MotionSprings, MotionText } from "./motion-demos";
 
 /* ------------------------------------------------------------------ */
 /* Colors                                                              */
@@ -726,6 +727,23 @@ export function MotionPage() {
       </Demo>
       <Demo id="entrances" title="Entrances" description="Avatar images fade in once loaded; empty states rise in. A chat only animates its newest message." align="start">
         <MotionEntrances />
+      </Demo>
+      <Demo
+        id="springs"
+        title="Springs"
+        description="Three spring tokens (gentle, snappy, bouncy) generated from real spring physics into CSS linear() easings, plus a small JS spring for what CSS cannot do. Switch to the paper style: the same names, calmer."
+        align="start"
+      >
+        <MotionSprings />
+      </Demo>
+      <Demo id="presence" title="Presence" description="Mount on demand and leave properly: an exiting element is inert, hidden from assistive tech and removed after its exit animation." align="start">
+        <MotionPresence />
+      </Demo>
+      <Demo id="animated-list" title="Animated list" description="Rows and chips enter with a pop and leave with a fade and a collapse, with nothing animating on first render." align="start">
+        <MotionLists />
+      </Demo>
+      <Demo id="text" title="Stagger and text" description="A delay per item from one token, and text that reveals or types itself while screen readers get the whole line." align="start">
+        <MotionText />
       </Demo>
       <Demo id="reduced" title="Reduced motion" description="One net in sutra.css covers every utility and transition." align="start">
         <ReducedMotionNote />

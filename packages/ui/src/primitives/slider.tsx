@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Slider as SliderPrimitive } from "radix-ui";
-import { cn, focusRing, type Size } from "../lib/cn";
+import { cn, focusRing, hitArea, type Size } from "../lib/cn";
 import { toPercent } from "../lib/math";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
 import { normalizeTone, type ToneInput } from "../lib/tone";
@@ -130,6 +130,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
               aria-label={thumbLabels?.[i] ?? (current.length > 1 ? (i === 0 ? "Minimum" : "Maximum") : undefined)}
               aria-valuetext={getValueText?.(v, i)}
               className={cn(
+                hitArea,
                 "group/thumb relative block rounded-full border-2 bg-background shadow-sm",
                 "transition-[box-shadow,transform,translate,scale,rotate] duration-150 hover:ring-[3px] active:scale-110",
                 accented
