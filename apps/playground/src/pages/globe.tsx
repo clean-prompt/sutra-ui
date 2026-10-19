@@ -53,7 +53,7 @@ function LiveVisitorsDemo() {
   const markers = React.useMemo(() => visitors.map(visitorMarker), []);
   const visitor = visitors.find((v) => v.id === selected);
   return (
-    <div className="dark w-full overflow-hidden rounded-box border border-border bg-background text-foreground">
+    <div className="w-full overflow-hidden rounded-box border border-border bg-background text-foreground">
       <div className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-3">
         <span className="flex items-center gap-2 text-sm font-semibold">
           <StatusDot tone="success" pulse label="" />
