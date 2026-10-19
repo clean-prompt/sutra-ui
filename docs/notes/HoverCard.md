@@ -1,0 +1,56 @@
+---
+component: HoverCard
+module: primitives/popover
+covers: HoverCardTrigger, HoverCardContent
+use: A rich preview that appears when the pointer rests on a link or when it gains focus, for user cards and link previews. Opens after 300 ms and closes after 150 ms by default. The content is supplementary, not interactive.
+instead: Tooltip = a short plain-text label; Popover = content the user must be able to click, type in or reach by keyboard; InfoTooltip = a help icon with a short explanation
+server: ssr-safe
+---
+
+## Keyboard
+| Key | Action |
+|---|---|
+| Tab / Shift+Tab | Focusing the trigger opens the card after `openDelay`; moving focus away closes it after `closeDelay` |
+| Escape | Close the card |
+
+The trigger is an `<a>`, so it is a tab stop only when it has an `href` (or `tabIndex`). Radix sets `tabindex="-1"` on every focusable element inside the card, so keyboard users cannot reach links or buttons in it. There are no arrow keys, so RTL changes nothing.
+
+## Screen readers
+The card has no role, no label and no `aria-describedby` link to its trigger, and it is portalled to the end of `<body>`: a screen reader user may not find it, and it does not announce when it opens. Treat its content as a duplicate of something reachable elsewhere (the linked page, a profile), never as the only place for information or actions.
+
+## Reduced motion
+The card fades and zooms in from its trigger and slides slightly from its side; the reduced-motion net removes the slide and the scale and keeps only the fade. The open and close delays are timers and stay.
+
+## Server rendering
+Only the trigger renders on the server; the card is portalled after mount and only opens from pointer hover or focus. A `defaultOpen` card appears after hydration.
+
+## Gotchas
+- Touch never opens it: Radix ignores touch pointers and prevents default on `touchstart`, so a touch user taps the link and navigates. Do not rely on it for mobile.
+- `HoverCard` sets `openDelay` 300 and `closeDelay` 150, shorter than Radix's own 700 and 300; pass your own values to change them.
+- Pressing the pointer on the card, or having text selected inside it, stops it from closing when the pointer leaves.
+- `HoverCardContent` shares `size` (`md`, 18rem), `padded` and `arrow` with `PopoverContent` but has no `disablePortal`.
+
+## Example
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@sutra/ui";
+
+export function Example() {
+  return (
+    <p className="text-sm">
+      Released by{" "}
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <a href="/people/ada" className="font-medium underline underline-offset-4">
+            Ada Lovelace
+          </a>
+        </HoverCardTrigger>
+        <HoverCardContent>
+          <p className="text-sm font-semibold">Ada Lovelace</p>
+          <p className="text-sm text-muted-foreground">Maintainer of the compiler team. Joined in 2021.</p>
+        </HoverCardContent>
+      </HoverCard>{" "}
+      last week.
+    </p>
+  );
+}
+```

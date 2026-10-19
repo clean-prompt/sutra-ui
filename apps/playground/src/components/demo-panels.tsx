@@ -4,6 +4,7 @@ import {
   Button,
   CodeBlock,
   InlineCode,
+  Kbd,
   Skeleton,
   Table,
   TableBody,
@@ -14,7 +15,7 @@ import {
   Text,
   cn,
 } from "@sutra/ui";
-import { RiCodeSSlashLine, RiDownload2Line, RiListCheck3 } from "@sutra/ui/icons";
+import { RiBookOpenLine, RiCodeSSlashLine, RiDownload2Line, RiListCheck3 } from "@sutra/ui/icons";
 import demoSources from "virtual:demo-source";
 import { useHashRoute } from "../router";
 
@@ -48,6 +49,11 @@ export interface ApiEntry {
   description?: string;
   deprecated?: string;
   slot?: string;
+  /** Every `data-slot` the declaration renders, when there is more than one. */
+  slots?: string[];
+  /** Class text of each `size` step (cva variant or size map). */
+  sizes?: Record<string, string>;
+  hitArea?: boolean;
   inherits?: string[];
   signature?: string;
   props: ApiProp[];
@@ -96,6 +102,70 @@ let apiPromise: Promise<ApiIndex> | undefined;
 function loadApi(): Promise<ApiIndex> {
   apiPromise ??= import("../generated/api.json").then((m) => m.default as ApiIndex);
   return apiPromise;
+}
+
+export type NoteBlock = { type: "p"; text: string } | { type: "ul"; items: string[] } | { type: "table"; head: string[]; rows: string[][] };
+
+/** A per-component note (docs/notes/<Name>.md, parsed by `pnpm docs:gen`). */
+export interface ComponentNote {
+  component: string;
+  module: string;
+  covers: string[];
+  use: string;
+  instead: [string, string][];
+  server: "ssr-safe" | "mixed" | "client-only";
+  keyboard: NoteBlock[];
+  screenReaders: NoteBlock[];
+  motion: NoteBlock[];
+  ssr: NoteBlock[];
+  slots: string[];
+  gotchas: string[];
+  /** A minimal, type-checked example module (empty when the note has none). */
+  example: string;
+}
+
+export interface NotesData {
+  notes: Record<string, ComponentNote>;
+  /** Exported component name to the note that explains it. */
+  index: Record<string, string>;
+}
+
+let notesPromise: Promise<NotesData> | undefined;
+function loadNotesData(): Promise<NotesData> {
+  notesPromise ??= import("../generated/notes.json").then((m) => m.default as unknown as NotesData);
+  return notesPromise;
+}
+
+/** The notes data, `null` while it loads (it is a lazy chunk) and `false` if it is not generated. */
+export function useNotesData(): NotesData | null | false {
+  const [data, setData] = React.useState<NotesData | null | false>(null);
+  React.useEffect(() => {
+    let live = true;
+    loadNotesData().then(
+      (d) => live && setData(d),
+      () => live && setData(false)
+    );
+    return () => {
+      live = false;
+    };
+  }, []);
+  return data;
+}
+
+/** The generated API index, `null` while its (large, lazy) chunk loads and `false` if it is not generated. */
+export function useApiData(): ApiIndex | null | false {
+  const [api, setApi] = React.useState<ApiIndex | null | false>(null);
+  React.useEffect(() => {
+    let live = true;
+    loadApi().then(
+      (a) => live && setApi(a),
+      () => live && setApi(false)
+    );
+    return () => {
+      live = false;
+    };
+  }, []);
+  return api;
 }
 
 /** The generated source of a Demo on the current page: `undefined` while the page's sources load. */
@@ -205,12 +275,12 @@ function EntryProps({ name, entry, api }: { name: string; entry: ApiEntry; api: 
         )}
         <Text size="xs" tone="neutral" className="break-words">
           <code className="font-mono">{`import { ${name} } from "${importPath(entry.entry)}"`}</code>
-          {entry.slot && (
-            <>
+          {(entry.slots ?? (entry.slot ? [entry.slot] : [])).map((slot) => (
+            <React.Fragment key={slot}>
               {" · "}
-              <code className="font-mono">{`data-slot="${entry.slot}"`}</code>
-            </>
-          )}
+              <code className="font-mono">{`data-slot="${slot}"`}</code>
+            </React.Fragment>
+          ))}
         </Text>
         {entry.signature && <code className="block break-words font-mono text-xs text-muted-foreground">{entry.signature}</code>}
       </div>
@@ -316,6 +386,159 @@ export function CodePanel({ source, filename, id }: { source: Pick<DemoSource, "
   );
 }
 
+const KEY_TOKEN =
+  /^((Shift|Ctrl|Control|Cmd|Alt|Option|Meta)\+)*(Enter|Space|Tab|Escape|Esc|Backspace|Delete|Home|End|Page ?Up|Page ?Down|Arrow(Up|Down|Left|Right)|Up|Down|Left|Right|F\d{1,2}|[A-Za-z0-9?/.,;'\-=+]|Click|Tab)$/;
+
+/** A key cell: real keys become Kbd chips, anything else (a sentence such as "A letter or digit") stays text. */
+function KeyCell({ text }: { text: string }) {
+  const parts = text.split(/\s*[,/]\s*/).filter(Boolean);
+  if (parts.length > 0 && parts.every((p) => KEY_TOKEN.test(p.trim()))) {
+    return (
+      <span className="flex flex-wrap items-center gap-1">
+        {parts.map((p) => (
+          <Kbd key={p}>{p.trim()}</Kbd>
+        ))}
+      </span>
+    );
+  }
+  return <Prose text={text} />;
+}
+
+function NoteBlocks({ blocks, label }: { blocks: NoteBlock[]; label: string }) {
+  return (
+    <div className="space-y-2">
+      {blocks.map((b, i) =>
+        b.type === "p" ? (
+          <Text key={i} size="sm" className="max-w-3xl">
+            <Prose text={b.text} />
+          </Text>
+        ) : b.type === "ul" ? (
+          <ul key={i} className="max-w-3xl list-disc space-y-1 ps-5 text-sm marker:text-muted-foreground">
+            {b.items.map((item) => (
+              <li key={item}>
+                <Prose text={item} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Table key={i} aria-label={label} density="compact" containerClassName="bg-background">
+            <TableHeader>
+              <TableRow>
+                {b.head.map((h, j) => (
+                  <TableHead key={h} className={j === 0 ? "w-px whitespace-nowrap" : undefined}>
+                    {h}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {b.rows.map((row, r) => (
+                <TableRow key={r}>
+                  <TableCell className="align-top whitespace-nowrap">
+                    <KeyCell text={row[0] ?? ""} />
+                  </TableCell>
+                  <TableCell className="align-top whitespace-normal text-sm">
+                    <Prose text={row[1] ?? ""} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )
+      )}
+    </div>
+  );
+}
+
+const SERVER_LABEL: Record<ComponentNote["server"], { label: string; tone: "success" | "warning" | "info" }> = {
+  "ssr-safe": { label: "Server render: same markup", tone: "success" },
+  mixed: { label: "Server render: fills in after mount", tone: "warning" },
+  "client-only": { label: "Server render: client only", tone: "info" },
+};
+
+function NoteSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="min-w-0 space-y-1.5">
+      <h4 className="text-sm font-semibold text-foreground">{title}</h4>
+      {children}
+    </section>
+  );
+}
+
+function NoteView({ note }: { note: ComponentNote }) {
+  const server = SERVER_LABEL[note.server];
+  return (
+    <div className="min-w-0 space-y-4" data-slot="component-note">
+      <div className="flex flex-wrap items-center gap-2">
+        <InlineCode>{note.component}</InlineCode>
+        <Badge size="sm" tone={server.tone}>
+          {server.label}
+        </Badge>
+      </div>
+      <NoteSection title="When to use it">
+        <Text size="sm" className="max-w-3xl">
+          <Prose text={note.use} />
+        </Text>
+        {note.instead.length > 0 && (
+          <ul className="max-w-3xl list-disc space-y-1 ps-5 text-sm marker:text-muted-foreground">
+            {note.instead.map(([name, why]) => (
+              <li key={name}>
+                <InlineCode>{name}</InlineCode> instead when <Prose text={why} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </NoteSection>
+      <NoteSection title="Keyboard">
+        <NoteBlocks blocks={note.keyboard} label={`${note.component} keyboard`} />
+      </NoteSection>
+      <NoteSection title="Screen readers">
+        <NoteBlocks blocks={note.screenReaders} label={`${note.component} screen readers`} />
+      </NoteSection>
+      <NoteSection title="Reduced motion">
+        <NoteBlocks blocks={note.motion} label={`${note.component} reduced motion`} />
+      </NoteSection>
+      <NoteSection title="Server rendering">
+        <NoteBlocks blocks={note.ssr} label={`${note.component} server rendering`} />
+      </NoteSection>
+      {note.slots.length > 0 && (
+        <NoteSection title="Slots">
+          <NoteBlocks blocks={[{ type: "ul", items: note.slots }]} label={`${note.component} slots`} />
+        </NoteSection>
+      )}
+      <NoteSection title="Gotchas">
+        <NoteBlocks blocks={[{ type: "ul", items: note.gotchas }]} label={`${note.component} gotchas`} />
+      </NoteSection>
+      {note.example && (
+        <NoteSection title="Minimal example">
+          <CodeBlock code={note.example} language="tsx" theme="light" filename={`${note.component}.example.tsx`} maxHeight={360} />
+        </NoteSection>
+      )}
+    </div>
+  );
+}
+
+/** The hand-written notes (docs/notes) of the named components: use, keys, screen readers, motion, server rendering, gotchas. */
+export function NotesPanel({ keys, id }: { keys: string[]; id: string }) {
+  const data = useNotesData();
+  return (
+    <div id={id} className="space-y-6 rounded-box border border-border bg-subtle p-4" aria-busy={data === null}>
+      {data === null ? (
+        <div className="space-y-2" aria-label="Loading notes">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-24 w-full" />
+        </div>
+      ) : data === false ? (
+        <Text size="sm" tone="neutral">
+          The notes are not generated yet: run <InlineCode>pnpm docs:gen</InlineCode>.
+        </Text>
+      ) : (
+        keys.map((key) => (data.notes[key] ? <NoteView key={key} note={data.notes[key]!} /> : null))
+      )}
+    </div>
+  );
+}
+
 export interface DemoPanelsProps {
   /** The Demo's key: its `id`, else its string title. */
   demoKey?: string;
@@ -332,11 +555,15 @@ export function DemoPanels({ demoKey, props, code, className }: DemoPanelsProps)
   const uid = React.useId();
   const [codeOpen, setCodeOpen] = React.useState(false);
   const [propsOpen, setPropsOpen] = React.useState(false);
+  const [notesOpen, setNotesOpen] = React.useState(false);
+  const notesData = useNotesData();
   const loading = source === undefined;
 
   const names = props === false ? [] : props !== undefined ? ([] as string[]).concat(props) : (source?.props ?? []);
   const shown: DemoSource | null =
     code === false ? null : typeof code === "string" ? { code, imports: "", names: [], helpers: [], props: [] } : (source ?? null);
+
+  const noteKeys = notesData ? [...new Set(names.map((n) => notesData.index[n]).filter((k): k is string => !!k))] : [];
 
   if (!loading && !shown && names.length === 0) return null;
   return (
@@ -368,9 +595,23 @@ export function DemoPanels({ demoKey, props, code, className }: DemoPanelsProps)
             <span className="min-w-0 max-w-[min(16rem,40vw)] truncate font-normal text-muted-foreground">{names.join(", ")}</span>
           </Button>
         )}
+        {!loading && noteKeys.length > 0 && (
+          <Button
+            variant="ghost"
+            size="xs"
+            leadingIcon={<RiBookOpenLine />}
+            className="min-w-0 max-w-full"
+            aria-expanded={notesOpen}
+            aria-controls={`${uid}-notes`}
+            onClick={() => setNotesOpen((o) => !o)}
+          >
+            <span>{notesOpen ? "Hide notes" : "Notes"}</span>
+          </Button>
+        )}
       </div>
       {codeOpen && shown && <CodePanel id={`${uid}-code`} source={shown} filename={`${demoKey ?? "demo"}.tsx`} />}
       {propsOpen && names.length > 0 && <PropsPanel id={`${uid}-props`} names={names} />}
+      {notesOpen && noteKeys.length > 0 && <NotesPanel id={`${uid}-notes`} keys={noteKeys} />}
     </div>
   );
 }

@@ -169,12 +169,13 @@ Run in `packages/ui` (or from the root with `pnpm --filter @sutra/ui <script>`):
 | `pnpm check:index` | Fail if those generated files are stale |
 | `pnpm check:exports` | After a build: every `exports` subpath resolves, ships its types, and imports under plain Node ESM from `dist` |
 | `pnpm gen:springs` | Regenerate the spring tokens in `styles/sutra.css` and `paper.css` (`--check` runs in `verify`) |
-| `pnpm gen:docs` / `pnpm check:docs` | Regenerate / check the props reference `apps/playground/src/generated/api.json` (TypeScript compiler API + JSDoc); `test/jsdoc-coverage.test.ts` is the ratchet for missing prop descriptions |
+| `pnpm gen:docs` / `pnpm check:docs` | Regenerate / check the props reference `apps/playground/src/generated/api.json` and the notes `notes.json` (TypeScript compiler API + JSDoc + `docs/notes/*.md`); `test/jsdoc-coverage.test.ts` is the ratchet for missing prop descriptions |
+| `pnpm gen:llms` | Regenerate `llms.txt`, `llms-full.txt`, `docs/components`, `docs/hooks` and `skills/sutra-ui/references` (`--check` runs in `verify`) |
 | `pnpm verify` | `tsc --noEmit && node scripts/gen-index.mjs --check && node scripts/gen-springs.mjs --check && node scripts/gen-docs.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs` |
 
 There is no CI config in the repo. **`pnpm verify` is the pre-commit check.** Run from the repo root, it also typechecks and builds the playground.
 
-At the root: `pnpm playground`, `pnpm build`, `pnpm dev` and `pnpm typecheck` (all workspaces), `pnpm docs:gen` / `docs:check` / `docs:baseline` (props reference and the JSDoc ratchet baseline) and `pnpm audit:all` (build, serve and audit every playground page for layout problems in the stock, paper, dark and RTL passes; `--baseline <tag>` fails on new findings; Playwright is a dev dependency, install the browser once with `pnpm --filter playground exec playwright install chromium`).
+At the root: `pnpm playground`, `pnpm build`, `pnpm dev` and `pnpm typecheck` (all workspaces), `pnpm docs:gen` / `docs:check` / `docs:baseline` (props reference and the JSDoc ratchet baseline) and `pnpm docs:llms` (generated agent docs: `llms.txt`, per-component markdown, the Claude skill in `skills/sutra-ui`) and `pnpm audit:all` (build, serve and audit every playground page for layout problems in the stock, paper, dark and RTL passes; `--baseline <tag>` fails on new findings; Playwright is a dev dependency, install the browser once with `pnpm --filter playground exec playwright install chromium`).
 
 ## Right-to-left
 

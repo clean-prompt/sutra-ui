@@ -3,11 +3,12 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 import { demoSourcePlugin } from "./plugins/demo-source";
+import { docsMarkdownPlugin } from "./plugins/docs-md";
 
 const ui = path.resolve(__dirname, "../../packages/ui/src");
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), demoSourcePlugin()],
+  plugins: [react(), tailwindcss(), demoSourcePlugin(), docsMarkdownPlugin()],
   resolve: {
     // Point straight at the package source so edits hot-reload without a build.
     alias: [

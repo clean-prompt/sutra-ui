@@ -1,0 +1,13 @@
+# RequestIdCopy
+
+> Click-to-copy request id chip.
+
+- Import: `import { RequestIdCopy } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Source: `packages/ui/src/kits/ops/request-inspector` (kit `ops`)
+- Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `id` (required) | `string` |  | The request id to show and copy. |

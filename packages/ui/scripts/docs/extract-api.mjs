@@ -1,6 +1,6 @@
 // Reads the public exports of @sutra/ui with the TypeScript compiler API and describes every component
 // (and hook): where it lives, which entry exports it, its own props (type as written, required, default,
-// JSDoc description, @deprecated), the `data-slot` it renders and the cva variants it exposes.
+// JSDoc description, @deprecated), the `data-slot` names it renders (`slot`, plus `slots` when there are several) and the cva variants it exposes.
 //
 // "Own" props are those declared inside src/. Everything inherited from React (HTML attributes) or a
 // dependency (Radix) is not listed; it shows up as `inherits` instead, so the tables stay readable.
@@ -82,6 +82,46 @@ function destructuringDefaults(decl) {
   return out;
 }
 
+/** The class text of a cva value: string literals in source order, shared constants (`hitAreaTouch`) as `@name`. */
+function classText(node) {
+  const out = [];
+  const visit = (n) => {
+    if (ts.isStringLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n)) out.push(n.text);
+    else if (ts.isTemplateExpression(n)) {
+      out.push(n.head.text);
+      for (const span of n.templateSpans) {
+        visit(span.expression);
+        out.push(span.literal.text);
+      }
+    } else if (ts.isPropertyAssignment(n)) {
+      // Nested parts (`{ track: "h-1", thumb: "size-4" }`): the key labels what follows as `track:`.
+      if (n.name && (ts.isIdentifier(n.name) || ts.isStringLiteral(n.name))) out.push(`${n.name.text}:`);
+      visit(n.initializer);
+    } else if (ts.isIdentifier(n) && !["cn", "cva", "undefined"].includes(n.text)) out.push(`@${n.text}`);
+    else if (ts.isCallExpression(n)) n.arguments.forEach(visit);
+    else ts.forEachChild(n, visit);
+  };
+  visit(node);
+  return squash(out.join(" "));
+}
+
+/** Top-level `const sizes = { sm: "...", md: "..." }` style maps (a const whose name mentions size): `Map<constName, {key: classText}>`. */
+function sizeMaps(sourceFile) {
+  const out = new Map();
+  for (const st of sourceFile.statements) {
+    if (!ts.isVariableStatement(st)) continue;
+    for (const d of st.declarationList.declarations) {
+      let init = d.initializer;
+      while (init && (ts.isAsExpression(init) || ts.isSatisfiesExpression(init) || ts.isParenthesizedExpression(init))) init = init.expression;
+      if (!ts.isIdentifier(d.name) || !/size/i.test(d.name.text) || !init || !ts.isObjectLiteralExpression(init)) continue;
+      const entries = init.properties.filter((p) => ts.isPropertyAssignment(p) && p.name && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name) || ts.isNumericLiteral(p.name)));
+      if (entries.length < 2 || entries.length !== init.properties.length) continue;
+      out.set(d.name.text, Object.fromEntries(entries.map((p) => [p.name.text, classText(p.initializer)])));
+    }
+  }
+  return out;
+}
+
 /** cva() calls in a file: `Map<constName, { variants: {prop: values[]}, defaults: {prop: value} }>`. */
 function cvaTable(sourceFile) {
   const table = new Map();
@@ -95,7 +135,16 @@ function cvaTable(sourceFile) {
           if (!ts.isPropertyAssignment(prop) || !ts.isObjectLiteralExpression(prop.initializer) || !ts.isIdentifier(prop.name)) continue;
           if (prop.name.text === "variants") {
             for (const v of prop.initializer.properties) {
-              if (ts.isPropertyAssignment(v) && ts.isObjectLiteralExpression(v.initializer) && v.name && (ts.isIdentifier(v.name) || ts.isStringLiteral(v.name) || ts.isNumericLiteral(v.name))) entry.variants[v.name.text] = literalKeys(v.initializer);
+              if (ts.isPropertyAssignment(v) && ts.isObjectLiteralExpression(v.initializer) && v.name && (ts.isIdentifier(v.name) || ts.isStringLiteral(v.name) || ts.isNumericLiteral(v.name))) {
+                entry.variants[v.name.text] = literalKeys(v.initializer);
+                if (v.name.text === "size") {
+                  entry.sizeClasses = Object.fromEntries(
+                    v.initializer.properties
+                      .filter((p) => ts.isPropertyAssignment(p) && p.name && (ts.isIdentifier(p.name) || ts.isStringLiteral(p.name) || ts.isNumericLiteral(p.name)))
+                      .map((p) => [p.name.text, classText(p.initializer)])
+                  );
+                }
+              }
             }
           } else if (prop.name.text === "defaultVariants") {
             for (const d of prop.initializer.properties) {
@@ -113,6 +162,7 @@ function cvaTable(sourceFile) {
 }
 
 const SLOT = /data-slot=(?:"([^"]+)"|\{"([^"]+)"\})/;
+const SLOTS = new RegExp(SLOT.source, "g");
 
 /** True when the prop has a type annotation in the source (not one derived from `VariantProps<typeof cva>`). */
 function writtenType(prop) {
@@ -220,6 +270,7 @@ export function buildApi({ root }) {
   const hooks = {};
   const entryOfName = {};
   const cvaCache = new Map();
+  const sizeCache = new Map();
 
   for (const [name, exported] of [...symbols.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
     const sym = resolveAlias(checker, exported);
@@ -249,6 +300,8 @@ export function buildApi({ root }) {
     const sf = decl.getSourceFile();
     if (!cvaCache.has(sf.fileName)) cvaCache.set(sf.fileName, cvaTable(sf));
     const cvas = cvaCache.get(sf.fileName);
+    if (!sizeCache.has(sf.fileName)) sizeCache.set(sf.fileName, sizeMaps(sf));
+    const sizeTable = sizeCache.get(sf.fileName);
 
     let own = [];
     let inherits = [];
@@ -264,9 +317,25 @@ export function buildApi({ root }) {
     }
     const variants = {};
     const variantDefaults = {};
+    let sizes;
     for (const c of used) {
       for (const [k, values] of Object.entries(cvas.get(c).variants)) if (ownNames.has(k) && !variants[k]) variants[k] = values;
       for (const [k, v] of Object.entries(cvas.get(c).defaults)) if (!(k in variantDefaults)) variantDefaults[k] = v;
+      if (!sizes && cvas.get(c).sizeClasses && ownNames.has("size")) sizes = cvas.get(c).sizeClasses;
+    }
+
+    // No cva `size` variant: a `const sizes = {...}` map in the file that the component uses and whose keys are its sizes.
+    if (!sizes && ownNames.has("size")) {
+      const sizeProp = own.find((p) => p.getName() === "size");
+      const typeText = sizeProp ? checker.typeToString(checker.getTypeOfSymbolAtLocation(sizeProp, decl)) : "";
+      for (const [c, map] of sizeTable) {
+        if (!new RegExp(`\\b${c}\\b`).test(text)) continue;
+        const keys = Object.keys(map);
+        if (keys.length >= 2 && keys.every((k) => typeText.includes(k) || /^(Size|Density)/.test(typeText) || /Size/.test(typeText))) {
+          sizes = map;
+          break;
+        }
+      }
     }
 
     const props = own
@@ -291,7 +360,16 @@ export function buildApi({ root }) {
     if (dep) entry.deprecated = dep === "true" ? "Deprecated." : dep;
     const slot = SLOT.exec(text);
     if (slot) entry.slot = slot[1] ?? slot[2];
+    // Every slot the declaration renders, in source order (only when it renders more than one; `slot` is the first).
+    const allSlots = [...new Set([...text.matchAll(SLOTS)].map((m) => m[1] ?? m[2]))];
+    if (allSlots.length > 1) entry.slots = allSlots;
     if (Object.keys(variants).length) entry.variants = variants;
+    // What each `size` step sets: the class text of the cva `size` variant (read by the playground's Sizing page).
+    if (sizes) {
+      entry.sizes = sizes;
+      // The module extends small targets to 24px with `hitArea` / `hitAreaTouch` (lib/cn).
+      if (/\bhitArea/.test(sf.text)) entry.hitArea = true;
+    }
     if (inherits.length) entry.inherits = inherits;
     if (isHook) entry.signature = clip(squash(checker.signatureToString(sig, undefined, ts.TypeFormatFlags.NoTruncation)));
     entry.props = props;

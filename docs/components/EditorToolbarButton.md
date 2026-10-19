@@ -1,0 +1,78 @@
+# EditorToolbarButton
+
+> Toolbar tool: icon button with a tooltip (label + shortcut keys) and optional pressed state.
+
+- Import: `import { EditorToolbarButton } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Source: `packages/ui/src/kits/editor/editor-toolbar` (kit `editor`)
+- Part of [`EditorToolbar`](EditorToolbar.md)
+- Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `label` (required) | `string` |  | Accessible name, tooltip text and overflow-menu label. |
+| `icon` | `React.ReactNode` |  | Icon of the button. |
+| `pressed` | `boolean` |  | Toggle state (sets `aria-pressed`). |
+| `shortcut` | `string` |  | Keys spec for the tooltip ("mod+b"). |
+| `showLabel` | `boolean` |  | Show the label next to the icon. |
+| `tooltipSide` | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Tooltip side. Default "bottom". |
+
+## Example (live: `#/components/editor/editor-toolbar` in the playground)
+
+```tsx
+import * as React from "react";
+import {
+  EditorToolbar,
+  EditorToolbarButton,
+  EditorToolbarMenu,
+  EditorToolbarSeparator,
+} from "@sutra/ui/editor";
+import {
+  RiBold,
+  RiDoubleQuotesL,
+  RiFunctions,
+  RiImageLine,
+  RiInformationLine,
+  RiItalic,
+  RiListOrdered,
+  RiListUnordered,
+  RiStrikethrough,
+  RiTableLine,
+} from "@sutra/ui/icons";
+
+function ToolbarOverflowDemo() {
+  const [width, setWidth] = React.useState(360);
+  const [pressed, setPressed] = React.useState({ bold: true, italic: false });
+  return (
+    <div className="w-full space-y-3">
+      <label className="flex items-center gap-3 text-sm text-muted-foreground">
+        Width
+        <input type="range" min={160} max={720} value={width} onChange={(e) => setWidth(Number(e.target.value))} aria-label="Toolbar width" />
+        <span className="tabular-nums">{width}px</span>
+      </label>
+      <div style={{ width }} className="max-w-full overflow-hidden rounded-box border border-border">
+        <EditorToolbar aria-label="Overflow demo" className="border-b-0">
+          <EditorToolbarButton label="Bold" shortcut="mod+b" icon={<RiBold />} pressed={pressed.bold} onClick={() => setPressed((p) => ({ ...p, bold: !p.bold }))} />
+          <EditorToolbarButton label="Italic" shortcut="mod+i" icon={<RiItalic />} pressed={pressed.italic} onClick={() => setPressed((p) => ({ ...p, italic: !p.italic }))} />
+          <EditorToolbarButton label="Strikethrough" icon={<RiStrikethrough />} />
+          <EditorToolbarSeparator />
+          <EditorToolbarButton label="Bulleted list" icon={<RiListUnordered />} />
+          <EditorToolbarButton label="Numbered list" icon={<RiListOrdered />} />
+          <EditorToolbarButton label="Quote" icon={<RiDoubleQuotesL />} />
+          <EditorToolbarSeparator />
+          <EditorToolbarButton label="Image" icon={<RiImageLine />} />
+          <EditorToolbarButton label="Table" icon={<RiTableLine />} />
+          <EditorToolbarMenu
+            label="Insert"
+            items={[
+              { label: "Math", icon: <RiFunctions />, shortcut: "mod+shift+m" },
+              { label: "Callout", icon: <RiInformationLine /> },
+            ]}
+          />
+        </EditorToolbar>
+      </div>
+    </div>
+  );
+}
+```

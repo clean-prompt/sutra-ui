@@ -171,5 +171,6 @@ describe("props reference", () => {
     const stats = JSON.parse(execFileSync(process.execPath, [path.join(PKG, "scripts/gen-docs.mjs"), "--stats"], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }));
     expect(stats.components).toBeGreaterThan(900);
     expect(stats.undocumentedProps).toBeLessThan(stats.props);
-  });
+    // It spawns a full TypeScript scan: the default 5 s is too tight when the whole suite runs in parallel.
+  }, 60_000);
 });

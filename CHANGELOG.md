@@ -59,6 +59,9 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - `useDrag` gained `scale`, `mode: "absolute"` (position-based drags with a `trackRef`, RTL-aware), `captureOnPress`, `cancel()` and `DragInfo.fx/fy`; `use-zoom-pan` (ZoomPan, PanSurface), `Lightbox` pan, `SplitPane` handle, floating tiling windows and the media seek bar now run on it with no React state per move. `ImageCropper`, the memory-map pan and the globe keep their own engines on purpose.
 - Every public prop of the library now has a description (undocumented props fell from 3996 to 11), checked by the JSDoc ratchet.
 
+#### Agent-readable docs
+- A note per component in `docs/notes` (128 notes covering every primitive and 32 patterns: when to use, keyboard table, screen reader behaviour, reduced motion, SSR, slots, gotchas, a type-checked example) shown as a Notes panel under each demo; generated `llms.txt` and `llms-full.txt`, one markdown page per component and hook (`docs/components`, `docs/hooks`), and a Claude skill (`skills/sutra-ui`); playground pages Styling Hooks, Sizing and Form Recipes.
+
 #### Right-to-left
 - Logical utilities across the library (227 files, one reviewed `scripts/rtl-codemod.mjs` pass, pixel-identical in left-to-right), `DirectionProvider`, `useDirection` and the direction helpers, Radix roots receive the direction, `rtl:` partners for transforms and glyphs, direction-aware keys, scrolling and gestures, `dir="ltr"` islands for charts, code, maps and media timelines, and `test/rtl-conventions.test.ts` as a ratchet. A Direction toggle and an RTL audit pass in the playground.
 

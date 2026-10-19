@@ -77,6 +77,37 @@ export const nav: NavSection[] = [
       },
       { id: "paper", label: "Paper Showcase" },
       {
+        id: "styling-hooks",
+        label: "Styling Hooks",
+        ...fresh,
+        items: [
+          { id: "usage", label: "How to use the hooks", ...fresh },
+          { id: "reference", label: "data-slot by component", ...fresh },
+          { id: "variables", label: "Theme and motion variables", ...fresh },
+        ],
+      },
+      {
+        id: "sizing",
+        label: "Sizing",
+        ...fresh,
+        items: [
+          { id: "reference", label: "Sizes by component", ...fresh },
+          { id: "scale", label: "One scale, with exceptions", ...fresh },
+        ],
+      },
+      {
+        id: "form-recipes",
+        label: "Form Recipes",
+        ...fresh,
+        items: [
+          { id: "field-validation", label: "Field, validators and a submit action", ...fresh },
+          { id: "async-states", label: "useAsyncAction states", ...fresh },
+          { id: "mapping", label: "Props that map onto a form library", ...fresh },
+          { id: "react-hook-form", label: "react-hook-form (snippet)", ...fresh },
+          { id: "schema", label: "A schema library (snippet)", ...fresh },
+        ],
+      },
+      {
         id: "assets",
         route: "components",
         label: "Assets",

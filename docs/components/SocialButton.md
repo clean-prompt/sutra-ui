@@ -1,0 +1,89 @@
+# SocialButton
+
+> OAuth sign-in button with the provider's logo. Defaults to "Continue with {Provider}".
+
+- Import: `import { SocialButton } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Source: `packages/ui/src/primitives/social-button` (primitives)
+- Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `provider` (required) | `SocialProvider` |  | Identity provider; sets the logo and the default label ("Continue with Google"). |
+| `asChild` | `boolean` |  | Render as the child element (e.g. a link) while keeping the button styles. |
+| `fullWidth` | `boolean` |  | Stretches the button to the width of its container. |
+| `loading` | `boolean` |  | Shows a spinner and disables the button. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button height and text size. |
+| `variant` | `"default" \| "brand" \| "icon"` | `"default"` | Look: `default` (outlined), `brand` (provider colours) or `icon` (square, icon only; set an `aria-label`). |
+
+## Variants
+
+- `variant`: `default`, `brand`, `icon` (default "default")
+- `size`: `sm`, `md`, `lg` (default "md")
+- `fullWidth`: `true`
+
+## Notes
+
+**When to use:** A sign-in button with the logo of an identity provider. `provider` picks one of eleven (google, apple, github, microsoft, x, facebook, linkedin, discord, slack, figma, gitlab) and the label defaults to "Continue with <Provider>".
+
+**Use instead when:**
+- `Button`: a normal action with your own label and icon
+- `KunjiButton`: sign in with kunji, which has its own brand rules
+- `TextLink`: the sign-in is a link in running text
+
+### Keyboard
+
+| Key | Action |
+|---|---|
+| Tab / Shift+Tab | Moves focus to and from the button. A `disabled` or `loading` button is not focusable |
+| Enter, Space | Activates it (native `<button>` behaviour) |
+
+With `asChild` the child keeps its own keyboard behaviour: a link activates on Enter only. No arrow keys are used, so nothing changes in RTL.
+
+### Screen readers
+
+- A native `<button>` with `type="button"` unless you pass `type`; the name is its text, "Continue with GitHub" by default, or your `children`.
+- `variant="icon"` shows only the logo and ignores `children`: its `aria-label` defaults to "Continue with <Provider>" and you can pass your own.
+- The provider logos are `aria-hidden`.
+- `loading` sets `aria-busy="true"` and disables the button. The spinner keeps its own default "Loading" status label.
+
+### Reduced motion
+
+The press effect (`active:scale-[0.98]`) and the colour fades are transitions, which the reduced-motion net ends within 1 ms. The `loading` spinner keeps turning, as a progress indicator does.
+
+### Server rendering
+
+Server render: same markup as the client. Plain markup with no browser API, so server and client output match. The logos are inline SVG or icon components.
+
+### Gotchas
+
+- With `asChild`, `disabled` and `loading` do less than on a button: `disabled` is not applied to the child and `loading` only swaps the logo for a spinner (no `aria-busy`, no blocking). Block the click yourself, or use the plain button.
+- `variant="brand"` paints the provider's own colours as fixed values (white for Google, black for Apple, and so on), so it does not follow the theme or `data-style`; the `default` (outlined) and `icon` variants do. `fullWidth` is ignored for `variant="icon"`.
+- `children` replaces the whole label, including the provider name: the default text is only used when there are no `children`. The label is English unless you pass `children`.
+- The element carries `data-provider` with the provider key, which is handy for tests and analytics.
+
+## Example
+
+```tsx
+import * as React from "react";
+import { SocialButton } from "@sutra/ui";
+
+export function Example({ signIn }: { signIn: (provider: "google" | "github") => Promise<void> }) {
+  const [pending, setPending] = React.useState<"google" | "github" | null>(null);
+  const start = async (provider: "google" | "github") => {
+    setPending(provider);
+    try {
+      await signIn(provider);
+    } finally {
+      setPending(null);
+    }
+  };
+  return (
+    <div className="flex w-full max-w-xs flex-col gap-2">
+      <SocialButton provider="google" fullWidth loading={pending === "google"} onClick={() => start("google")} />
+      <SocialButton provider="github" fullWidth loading={pending === "github"} onClick={() => start("github")} />
+    </div>
+  );
+}
+```
