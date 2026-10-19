@@ -125,11 +125,15 @@
   --sutra-radius-action: 9999px;
 
   /* Motion: one ease, three speeds. */
-  --ease-out-quart: cubic-bezier(0.2, 0.8, 0.2, 1);
   --sutra-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --sutra-duration-fast: 150ms;
   --sutra-duration: 200ms;
   --sutra-duration-slow: 300ms;
+  --sutra-duration-fill: 500ms;
+  /* Derived in sutra.css, so they must be re-pointed here (a var() chain resolves where it is declared). */
+  --ease-out-quart: var(--sutra-ease);
+  --default-transition-duration: var(--sutra-duration-fast);
+  --default-transition-timing-function: var(--sutra-ease);
 
   font-family: var(--font-sans);
 }
