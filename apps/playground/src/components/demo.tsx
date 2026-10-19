@@ -31,7 +31,7 @@ export function Demo({
   return (
     <section id={id} className={cn("scroll-mt-20 space-y-3", className)} {...props}>
       <div className="space-y-1">
-        <Heading as="h3" size="lg">
+        <Heading as="h2" size="lg">
           {id ? (
             <a
               href={href(route.section, route.page, id)}
