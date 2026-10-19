@@ -29,6 +29,7 @@ import { Button } from "../../primitives/button";
 import { Chip, ChipGroup } from "../../primitives/chip";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { Favicon } from "../../primitives/favicon";
+import { Field, FieldError, FieldHint, FieldLabel } from "../../primitives/field";
 import { Input, PasswordInput } from "../../primitives/input";
 import { RadioCard, RadioGroup } from "../../primitives/radio";
 import { SegmentedControl } from "../../primitives/segmented-control";
@@ -307,6 +308,7 @@ export interface McpServerFormProps extends Omit<React.FormHTMLAttributes<HTMLFo
   allowPaste?: boolean;
 }
 
+/** A `Field` with label, control and either the error or the hint; the control picks up id, aria-describedby and aria-invalid from it. */
 function FormField({
   id,
   label,
@@ -323,22 +325,17 @@ function FormField({
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-foreground">
-        {label}
-        {required && <span aria-hidden className="ml-0.5 text-destructive">*</span>}
-      </label>
+    <Field id={id} invalid={Boolean(error)} required={required} className="gap-1.5">
+      <FieldLabel>{label}</FieldLabel>
       {children}
       {error ? (
-        <p id={`${id}-error`} className="text-xs text-destructive">
+        <FieldError hideIcon className="text-xs">
           {error}
-        </p>
+        </FieldError>
       ) : hint ? (
-        <p id={`${id}-hint`} className="text-xs text-muted-foreground">
-          {hint}
-        </p>
+        <FieldHint>{hint}</FieldHint>
       ) : null}
-    </div>
+    </Field>
   );
 }
 
@@ -435,14 +432,11 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
 
         <FormField id={`${id}-name`} label="Name" error={errors.name} required>
           <Input
-            id={`${id}-name`}
             size="sm"
             value={config.name}
             onChange={(e) => set({ name: e.target.value })}
             placeholder="github"
             className="font-mono"
-            invalid={Boolean(errors.name)}
-            aria-describedby={errors.name ? `${id}-name-error` : undefined}
           />
         </FormField>
 
@@ -467,20 +461,16 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
           <>
             <FormField id={`${id}-command`} label="Command" error={errors.command} required hint="Executable that starts the server, e.g. npx or uvx.">
               <Input
-                id={`${id}-command`}
                 size="sm"
                 value={config.command ?? ""}
                 onChange={(e) => set({ command: e.target.value })}
                 placeholder="npx"
                 className="font-mono"
                 spellCheck={false}
-                invalid={Boolean(errors.command)}
-                aria-describedby={errors.command ? `${id}-command-error` : `${id}-command-hint`}
               />
             </FormField>
             <FormField id={`${id}-args`} label="Arguments" hint="Press Enter after each argument.">
               <TagInput
-                id={`${id}-args`}
                 size="sm"
                 value={config.args ?? []}
                 onValueChange={(args) => set({ args })}
@@ -488,7 +478,6 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
                 separators={[]}
                 addOnBlur
                 placeholder="-y @scope/server"
-                aria-describedby={`${id}-args-hint`}
                 tagClassName="font-mono"
               />
             </FormField>
@@ -502,7 +491,6 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
           <>
             <FormField id={`${id}-url`} label="URL" error={errors.url} required>
               <Input
-                id={`${id}-url`}
                 size="sm"
                 type="url"
                 value={config.url ?? ""}
@@ -510,8 +498,6 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
                 placeholder={config.transport === "sse" ? "https://example.com/sse" : "https://example.com/mcp"}
                 className="font-mono"
                 spellCheck={false}
-                invalid={Boolean(errors.url)}
-                aria-describedby={errors.url ? `${id}-url-error` : undefined}
               />
             </FormField>
             <div className="space-y-1.5">
@@ -541,14 +527,11 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
             {config.auth === "bearer" && (
               <FormField id={`${id}-token`} label="Bearer token" error={errors.bearerToken} required>
                 <PasswordInput
-                  id={`${id}-token`}
                   size="sm"
                   value={config.bearerToken ?? ""}
                   onChange={(e) => set({ bearerToken: e.target.value })}
                   autoComplete="off"
                   className="font-mono"
-                  invalid={Boolean(errors.bearerToken)}
-                  aria-describedby={errors.bearerToken ? `${id}-token-error` : undefined}
                 />
               </FormField>
             )}

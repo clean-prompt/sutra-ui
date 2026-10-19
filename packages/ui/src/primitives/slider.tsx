@@ -34,8 +34,11 @@ export interface SliderProps extends React.ComponentPropsWithoutRef<typeof Slide
   tone?: ToneInput;
 }
 
-/** Range input with one or more thumbs, optional value bubble and labeled marks. */
-export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, SliderProps>(
+/**
+ * Range input with one or more thumbs, optional value bubble and labeled marks. `ref` and `className` land on the
+ * outer wrapper (which also holds the marks); the other props go to the Radix slider root inside it.
+ */
+export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
   (
     {
       className,
@@ -83,9 +86,8 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
     const inBounds = (p: number) => `calc(${p}% + ${(s.thumbPx / 2) * (1 - p / 50)}px)`;
 
     return (
-      <div className={cn("relative w-full", className)} style={accentStyle(accent)}>
+      <div ref={ref} className={cn("relative w-full", className)} style={accentStyle(accent)}>
         <SliderPrimitive.Root
-          ref={ref}
           min={min}
           max={max}
           value={value}
@@ -203,7 +205,7 @@ Slider.displayName = "Slider";
 export interface RangeSliderProps extends SliderProps {}
 
 /** `Slider` preset with two thumbs (defaults to the full min–max range). */
-export const RangeSlider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, RangeSliderProps>(
+export const RangeSlider = React.forwardRef<HTMLDivElement, RangeSliderProps>(
   ({ min = 0, max = 100, defaultValue, value, minStepsBetweenThumbs = 1, ...props }, ref) => (
     <Slider
       ref={ref}

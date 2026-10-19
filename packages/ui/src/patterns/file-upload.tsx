@@ -33,15 +33,15 @@ export interface UploadFile {
   error?: string;
 }
 
-const TB = 1024 ** 4;
+const UP_TO_TB = ["B", "KB", "MB", "GB", "TB"];
 
-/** Formats a byte count as a short human string, e.g. `1.4 MB` (`"0 B"` for zero, negative or non-numeric input). */
+/**
+ * Formats a byte count as a short human string, e.g. `1.4 MB` (`"0 B"` for zero, negative or non-numeric input).
+ * Keeps `"1.50 MB"` at `decimals = 2` but drops an all-zero fraction (`"2 KB"`); TB is the largest unit.
+ * The root `formatBytes` is this one; `@sutra/ui/tokens` exports the lib version (`"—"` for bad input, signed, up to EB).
+ */
 export function formatBytes(bytes: number, decimals = 1) {
-  if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
-  // TB is this API's largest unit ("1048576 TB").
-  if (bytes >= TB) return `${(bytes / TB).toFixed(decimals).replace(/\.0+$/, "")} TB`;
-  // Keep "1.50 MB" at decimals=2 but drop an all-zero fraction ("2.0 KB" → "2 KB").
-  return formatBytesLib(bytes, { decimals, trimZeros: false }).replace(/\.0+ /, " ");
+  return formatBytesLib(bytes, { decimals, trimZeros: "whole", units: UP_TO_TB, negative: "zero", invalid: "0 B" });
 }
 
 let uid = 0;

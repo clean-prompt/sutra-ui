@@ -1,4 +1,5 @@
 /* Shared, defensive time helpers. Pure; never throw on bad input. */
+import { roundTo, type RoundingMode } from "./math";
 
 /** Anything that can be read as a point in time. */
 export type TimeInput = Date | number | string;
@@ -229,8 +230,8 @@ export function formatDateTime(v: DateInput, options: FormatDateTimeOptions = {}
 export interface FormatDayLabelOptions {
   /** Reference time. Default `Date.now()`. */
   now?: DateInput;
-  /** Use the short weekday (`"Mon"`) for the previous six days. Default true. */
-  weekdayWithinWeek?: boolean;
+  /** Use the weekday for the previous six days: `true`/`"short"` → `"Mon"`, `"long"` → `"Monday"`. Default true. */
+  weekdayWithinWeek?: boolean | "short" | "long";
   /** Return `"Tomorrow"` for the next calendar day. Default true. */
   tomorrow?: boolean;
   /** Prefix a weekday on absolute dates (`"Mon, Mar 5"`). */
@@ -257,8 +258,9 @@ export function formatDayLabel(v: DateInput, options: FormatDayLabelOptions = {}
   if (diff === 0) return word(0, "Today");
   if (diff === 1) return word(-1, "Yesterday");
   if (diff === -1 && options.tomorrow !== false) return word(1, "Tomorrow");
-  if ((options.weekdayWithinWeek ?? true) && diff > 1 && diff < 7) {
-    return dateTimeFormat(locale, { weekday: "short" }).format(d);
+  const withinWeek = options.weekdayWithinWeek ?? true;
+  if (withinWeek && diff > 1 && diff < 7) {
+    return dateTimeFormat(locale, { weekday: withinWeek === "long" ? "long" : "short" }).format(d);
   }
   return formatShortDate(d, { locale, now, year: options.year, weekday: options.weekday });
 }
@@ -269,6 +271,9 @@ export function formatDayLabel(v: DateInput, options: FormatDayLabelOptions = {}
 
 export type RelativeTimeStyle = "narrow" | "short" | "long";
 
+/** The units `formatRelative` counts in. */
+export type RelativeTimeUnit = "second" | "minute" | "hour" | "day" | "month" | "year";
+
 export interface FormatRelativeOptions {
   /** Reference time. Default `Date.now()`. */
   now?: DateInput;
@@ -276,23 +281,44 @@ export interface FormatRelativeOptions {
   style?: RelativeTimeStyle;
   /** Below this distance the result is "just now"/"now". Default 45 000 ms. */
   justNowMs?: number;
+  /**
+   * Text inside the `justNowMs` window: one string for past and future (`"Active now"`), or `{ past, future }`
+   * (`{ past: "just now", future: "in under a minute" }`). Default `"just now"` (`"now"` for narrow). English only.
+   */
+  justNow?: string | { past: string; future: string };
   /** Show seconds (`"30s ago"`) between `justNowMs` and one minute. Default false (rounds up to minutes). */
   seconds?: boolean;
   /** Past this many days, show an absolute short date instead. Default: never. */
   maxRelativeDays?: number;
+  /** Year display for that absolute date. Default `"auto"` (only when it differs from `now`'s). */
+  dateYear?: "auto" | "always" | "never";
   /** `true` → future times read `"in 5m"`; `false` (default) clamps them to now. */
   future?: boolean;
-  /** Use `"yesterday"`/`"tomorrow"` for one day. Default: true for `"long"`, false otherwise. */
-  yesterday?: boolean;
+  /**
+   * Use `"yesterday"`/`"tomorrow"` for one day. A string turns it on and replaces the past word (`"Yesterday"`).
+   * Default: true for `"long"`, false otherwise.
+   */
+  yesterday?: boolean | string;
+  /** Append `" ago"` to past times. Default true, false for `"narrow"`. */
+  suffix?: boolean;
+  /**
+   * Unit labels written right after the number, as one string or `[singular, plural]`. English only.
+   * Defaults: `s m h d mo y` for narrow/short; `" sec"`, `" min"`, `[" hour", " hours"]`, `[" day", " days"]`,
+   * `[" month", " months"]`, `[" year", " years"]` for long. Example: `{ hour: "h" }` → `"3h ago"`, `{ month: " mo" }` → `"2 mo ago"`.
+   */
+  unitLabels?: Partial<Record<RelativeTimeUnit, string | readonly [string, string]>>;
+  /**
+   * How a count is rounded in its unit: one mode for all units, or per unit (`{ day: "floor" }`; unlisted units round).
+   * Also counts the days for `maxRelativeDays`. Default `"round"`.
+   */
+  round?: RoundingMode | Partial<Record<RelativeTimeUnit, RoundingMode>>;
   /** Text for unparseable input. Default `"—"`. */
   invalid?: string;
   /** Non-English locales are formatted with `Intl.RelativeTimeFormat`. */
   locale?: string;
 }
 
-type RelUnit = "second" | "minute" | "hour" | "day" | "month" | "year";
-
-const REL_UNITS: { unit: RelUnit; ms: number; next: number }[] = [
+const REL_UNITS: { unit: RelativeTimeUnit; ms: number; next: number }[] = [
   { unit: "second", ms: SECOND_MS, next: 60 },
   { unit: "minute", ms: MINUTE_MS, next: 60 },
   { unit: "hour", ms: HOUR_MS, next: 24 },
@@ -301,14 +327,14 @@ const REL_UNITS: { unit: RelUnit; ms: number; next: number }[] = [
   { unit: "year", ms: 365 * DAY_MS, next: Infinity },
 ];
 
-const NARROW_SUFFIX: Record<RelUnit, string> = { second: "s", minute: "m", hour: "h", day: "d", month: "mo", year: "y" };
-const LONG_WORDS: Record<RelUnit, [string, string]> = {
-  second: ["sec", "sec"],
-  minute: ["min", "min"],
-  hour: ["hour", "hours"],
-  day: ["day", "days"],
-  month: ["month", "months"],
-  year: ["year", "years"],
+const NARROW_LABELS: Record<RelativeTimeUnit, string> = { second: "s", minute: "m", hour: "h", day: "d", month: "mo", year: "y" };
+const LONG_LABELS: Record<RelativeTimeUnit, readonly [string, string]> = {
+  second: [" sec", " sec"],
+  minute: [" min", " min"],
+  hour: [" hour", " hours"],
+  day: [" day", " days"],
+  month: [" month", " months"],
+  year: [" year", " years"],
 };
 
 /**
@@ -337,24 +363,31 @@ export function formatRelative(v: DateInput, options: FormatRelativeOptions = {}
       const auto = relativeTimeFormat(locale, { numeric: "auto", style: style === "long" ? "long" : style });
       if (auto) return auto.format(0, "second");
     }
+    const { justNow } = options;
+    if (typeof justNow === "string") return justNow;
+    if (justNow) return isFuture ? justNow.future : justNow.past;
     return style === "narrow" ? "now" : "just now";
   }
 
+  const { round } = options;
+  const count = (x: number, unit: RelativeTimeUnit) =>
+    Math.max(1, roundTo(x, 0, (typeof round === "string" ? round : round?.[unit]) ?? "round"));
   let i = options.seconds ? 0 : 1;
   let value = 0;
   for (; i < REL_UNITS.length; i++) {
     const u = REL_UNITS[i]!;
-    value = Math.max(1, Math.round(abs / u.ms));
+    value = count(abs / u.ms, u.unit);
     if (value < u.next) break;
   }
   const unit = REL_UNITS[Math.min(i, REL_UNITS.length - 1)]!.unit;
 
   if (options.maxRelativeDays !== undefined && (unit === "day" || unit === "month" || unit === "year")) {
-    const days = Math.max(1, Math.round(abs / DAY_MS));
-    if (days > options.maxRelativeDays) return formatShortDate(t, { locale, now, year: "auto" });
+    if (count(abs / DAY_MS, "day") > options.maxRelativeDays) {
+      return formatShortDate(t, { locale, now, year: options.dateYear ?? "auto" });
+    }
   }
 
-  const useYesterday = options.yesterday ?? style === "long";
+  const useYesterday = options.yesterday === undefined ? style === "long" : options.yesterday !== false;
   if (rtf) {
     if (useYesterday && unit === "day" && value === 1) {
       const auto = relativeTimeFormat(locale, { numeric: "auto", style: style === "long" ? "long" : style });
@@ -363,11 +396,13 @@ export function formatRelative(v: DateInput, options: FormatRelativeOptions = {}
     return rtf.format(isFuture ? value : -value, unit);
   }
 
-  if (useYesterday && unit === "day" && value === 1) return isFuture ? "tomorrow" : "yesterday";
-  const body =
-    style === "long"
-      ? `${value} ${LONG_WORDS[unit][value === 1 ? 0 : 1]}`
-      : `${value}${NARROW_SUFFIX[unit]}`;
+  if (useYesterday && unit === "day" && value === 1) {
+    if (isFuture) return "tomorrow";
+    return typeof options.yesterday === "string" ? options.yesterday : "yesterday";
+  }
+  const custom = options.unitLabels?.[unit];
+  const label = custom ?? (style === "long" ? LONG_LABELS[unit] : NARROW_LABELS[unit]);
+  const body = `${value}${typeof label === "string" ? label : label[value === 1 ? 0 : 1]}`;
   if (isFuture) return `in ${body}`;
-  return style === "narrow" ? body : `${body} ago`;
+  return (options.suffix ?? style !== "narrow") ? `${body} ago` : body;
 }

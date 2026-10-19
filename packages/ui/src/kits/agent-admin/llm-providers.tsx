@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   RiAddLine,
   RiCloseLine,
-  RiDeleteBinLine,
   RiExternalLinkLine,
   RiKey2Line,
   RiLinkM,
@@ -36,7 +35,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../primitives/tabs"
 import { Input, PasswordInput } from "../../primitives/input";
 import { Label } from "../../primitives/label";
 import { SimpleSelect } from "../../primitives/select";
-import { SecretField, SecretText } from "../identity/secret";
+import { SecretField } from "../identity/secret";
+import { SecretRow } from "./secret-row";
 import { Spinner } from "../../primitives/spinner";
 import { InlineAlert } from "../../primitives/inline-alert";
 
@@ -1006,56 +1006,25 @@ export interface ProviderKeyGroup {
 export interface ProviderKeysGroupsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   groups: ProviderKeyGroup[];
   customKeys?: ProviderEnvKey[];
-  onSetKey?: (name: string, value: string) => void;
+  /** Store a key. May return a promise; a rejection is shown under the input. */
+  onSetKey?: (name: string, value: string) => void | Promise<void>;
   onClearKey?: (name: string) => void;
   onAddCustomKey?: (name: string, value: string) => void;
   /** Hide the custom keys section. */
   hideCustom?: boolean;
 }
 
-function EnvKeyRow({ k, onSet, onClear }: { k: ProviderEnvKey; onSet?: (name: string, value: string) => void; onClear?: (name: string) => void }) {
-  const [draft, setDraft] = React.useState("");
-  const set = !!k.value;
+function EnvKeyRow({ k, onSet, onClear }: { k: ProviderEnvKey; onSet?: (name: string, value: string) => void | Promise<void>; onClear?: (name: string) => void }) {
   return (
-    <li data-slot="env-key-row" data-set={set || undefined} className="grid gap-2 px-4 py-3 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
-      <div className="min-w-0">
-        <code className="block truncate font-mono text-xs font-medium text-foreground">{k.name}</code>
-        {k.description && <p className="truncate text-xs text-muted-foreground">{k.description}</p>}
-      </div>
-      {set ? (
-        <div className="flex min-w-0 items-center gap-1">
-          <SecretText value={k.value!} label={k.name} variant="field" className="min-w-0 flex-1" />
-          {onClear && (
-            <Button variant="ghost" size="icon-sm" aria-label={`Clear ${k.name}`} onClick={() => onClear(k.name)}>
-              <RiDeleteBinLine aria-hidden />
-            </Button>
-          )}
-        </div>
-      ) : (
-        <form
-          className="flex min-w-0 items-center gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (!draft.trim()) return;
-            onSet?.(k.name, draft.trim());
-            setDraft("");
-          }}
-        >
-          <PasswordInput
-            size="sm"
-            aria-label={`Value for ${k.name}`}
-            placeholder="Not set"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            autoComplete="off"
-            className="font-mono"
-          />
-          <Button type="submit" size="sm" variant="secondary" disabled={!draft.trim() || !onSet}>
-            Save
-          </Button>
-        </form>
-      )}
-    </li>
+    <SecretRow
+      layout="inline"
+      name={k.name}
+      isSet={!!k.value}
+      value={k.value}
+      description={k.description}
+      onSave={onSet ? (value) => onSet(k.name, value) : undefined}
+      onClear={onClear ? () => onClear(k.name) : undefined}
+    />
   );
 }
 

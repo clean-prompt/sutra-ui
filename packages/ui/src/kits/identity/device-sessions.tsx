@@ -15,7 +15,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
-import { formatShortDate, MINUTE_MS, toMs, type TimeInput } from "../../lib/time";
+import { formatRelative, MINUTE_MS, toMs, type FormatRelativeOptions, type TimeInput } from "../../lib/time";
 import { toneClasses } from "../../lib/tone";
 import { useAsyncAction } from "../../hooks/use-async-action";
 import { Avatar } from "../../primitives/avatar";
@@ -61,19 +61,26 @@ function isActiveNow(value: TimeInput | undefined, now: number) {
   return t !== undefined && now - t < 2 * MINUTE_MS;
 }
 
-/** "Active now", "5 min ago", "3h ago", "Yesterday", "4 days ago" or a date. */
+/** Last active: "Active now", "5 min ago", "3h ago", "Yesterday", "4 days ago" or "Mar 5, 2026" (counts floored). */
+const LAST_ACTIVE: FormatRelativeOptions = {
+  style: "long",
+  round: "floor",
+  justNowMs: 2 * MINUTE_MS,
+  justNow: "Active now",
+  yesterday: "Yesterday",
+  unitLabels: { hour: "h" },
+  maxRelativeDays: 29,
+  dateYear: "always",
+  invalid: "Unknown",
+};
+
+/**
+ * "Active now", "5 min ago", "3h ago", "Yesterday", "4 days ago" or a date.
+ * @deprecated Use `formatRelative(value, { now, style: "long", round: "floor", justNowMs: 120_000, justNow: "Active now",
+ * yesterday: "Yesterday", unitLabels: { hour: "h" }, maxRelativeDays: 29, dateYear: "always", invalid: "Unknown" })`.
+ */
 export function formatSessionLastActive(value: Date | number | string | undefined, now: number = Date.now()) {
-  const t = toMs(value);
-  if (t === undefined) return "Unknown";
-  if (isActiveNow(t, now)) return "Active now";
-  const mins = Math.floor((now - t) / MINUTE_MS);
-  if (mins < 60) return `${mins} min ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return "Yesterday";
-  if (days < 30) return `${days} days ago`;
-  return formatShortDate(t, { year: "always" });
+  return formatRelative(value, { ...LAST_ACTIVE, now });
 }
 
 /* ------------------------------------------------------------------ */
@@ -97,7 +104,7 @@ export const DeviceSessionRow = React.forwardRef<HTMLLIElement, DeviceSessionRow
       onSuccess: () => setConfirming(false),
     });
     const Icon = deviceIcons[session.device ?? "browser"] ?? RiGlobalLine;
-    const last = formatSessionLastActive(session.lastActive, now);
+    const last = formatRelative(session.lastActive, { ...LAST_ACTIVE, now });
     const meta = [session.browser, session.os].filter(Boolean).join(" · ");
     const place = [session.location, session.ip].filter(Boolean).join(" · ");
     const titleId = React.useId();

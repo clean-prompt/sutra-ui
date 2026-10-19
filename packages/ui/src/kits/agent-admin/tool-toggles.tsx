@@ -4,7 +4,6 @@ import {
   RiCheckLine,
   RiDeleteBin6Line,
   RiErrorWarningLine,
-  RiExternalLinkLine,
   RiFolderLine,
   RiGlobalLine,
   RiKey2Line,
@@ -21,11 +20,11 @@ import { Badge, type BadgeColor } from "../../primitives/badge";
 import { Button } from "../../primitives/button";
 import { Chip } from "../../primitives/chip";
 import { SheetBody, Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "../../primitives/dialog";
-import { PasswordInput, SearchInput } from "../../primitives/input";
+import { SearchInput } from "../../primitives/input";
 import { JsonViewer } from "../../patterns/json-viewer";
 import { LogViewer, type LogLine } from "../../patterns/log-viewer";
 import { RadioCard, RadioGroup } from "../../primitives/radio";
-import { SecretField } from "../identity/secret";
+import { SecretRow } from "./secret-row";
 import { Spinner } from "../../primitives/spinner";
 import { Switch } from "../../primitives/switch";
 import { SimpleTooltip } from "../../primitives/tooltip";
@@ -610,80 +609,19 @@ function CredentialRow({
   onSave?: (value: string) => void | Promise<void>;
   onClear?: () => void;
 }) {
-  const [editing, setEditing] = React.useState(!field.isSet);
-  const [value, setValue] = React.useState("");
-  const { run: save, busy, error } = useAsyncAction(async (next: string) => onSave?.(next), {
-    onSuccess: () => {
-      setValue("");
-      setEditing(false);
-    },
-    fallbackMessage: "Could not save the key",
-  });
-  const inputId = React.useId();
-  React.useEffect(() => setEditing(!field.isSet), [field.isSet]);
-  const link = field.getKeyUrl ? (
-    <a href={field.getKeyUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-0.5 text-xs font-medium text-primary hover:underline">
-      Get a key
-      <RiExternalLinkLine aria-hidden className="size-3" />
-      <span className="sr-only">(opens in a new tab)</span>
-    </a>
-  ) : null;
-
-  if (field.isSet && !editing) {
-    return (
-      <div className="space-y-1.5" data-credential={field.key} data-set="true">
-        <SecretField label={field.label} value={field.value ?? "••••••••••••"} revealable={field.value != null} copyable={false} description={field.description} />
-        <div className="flex items-center gap-2">
-          <Badge size="sm" color="success" leadingIcon={<RiCheckLine aria-hidden className="size-3" />}>
-            Set
-          </Badge>
-          <Button size="xs" variant="ghost" onClick={() => setEditing(true)}>
-            Replace
-          </Button>
-          {onClear && (
-            <Button size="xs" variant="ghost" className="text-destructive" onClick={onClear}>
-              Remove
-            </Button>
-          )}
-          <span className="ml-auto">{link}</span>
-        </div>
-      </div>
-    );
-  }
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!value.trim()) return;
-    await save(value.trim());
-  };
   return (
-    <form className="space-y-1.5" data-credential={field.key} data-set="false" onSubmit={submit}>
-      <div className="flex items-center justify-between gap-2">
-        <label htmlFor={inputId} className="text-sm font-medium text-foreground">
-          {field.label}
-          {field.optional && <span className="ml-1 font-normal text-muted-foreground">(optional)</span>}
-        </label>
-        {link}
-      </div>
-      <div className="flex gap-2">
-        <PasswordInput id={inputId} size="sm" value={value} onChange={(e) => setValue(e.target.value)} placeholder="Paste key" autoComplete="off" className="flex-1" wrapperClassName="flex-1" />
-        <Button type="submit" size="sm" disabled={!value.trim()} loading={busy}>
-          Save
-        </Button>
-        {field.isSet && (
-          <Button type="button" size="sm" variant="ghost" onClick={() => setEditing(false)}>
-            Cancel
-          </Button>
-        )}
-      </div>
-      {error && (
-        <p role="alert" className="inline-flex items-center gap-1 text-xs text-destructive">
-          <RiErrorWarningLine aria-hidden className="size-3.5" />
-          {error}
-        </p>
-      )}
-      {!field.isSet && <p className="text-xs text-warning-soft-foreground">Not set</p>}
-      {field.description != null && <p className="text-xs text-muted-foreground">{field.description}</p>}
-    </form>
+    <SecretRow
+      layout="stacked"
+      name={field.key}
+      label={field.label}
+      isSet={field.isSet}
+      value={field.value}
+      description={field.description}
+      optional={field.optional}
+      getKeyUrl={field.getKeyUrl}
+      onSave={onSave}
+      onClear={onClear}
+    />
   );
 }
 

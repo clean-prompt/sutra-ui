@@ -16,7 +16,7 @@ import {
 import { cn, focusRing } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useSafeId } from "../hooks/use-safe-id";
 import { Button } from "../primitives/button";
 import { Input } from "../primitives/input";
@@ -82,8 +82,7 @@ interface TilingHandleProps {
 
 function TilingHandle({ direction, sizes, index, min, step, controls, label, onResize, onEqualize }: TilingHandleProps) {
   const row = direction === "row";
-  const sizesRef = React.useRef(sizes);
-  sizesRef.current = sizes;
+  const sizesRef = useLatestRef(sizes);
   const dragRef = React.useRef<{ pointerId: number; pos: number; start: number; total: number } | null>(null);
   const [dragging, setDragging] = React.useState(false);
   const a = sizes[index] ?? 0;
@@ -237,8 +236,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
       if (typeof forwardedRef === "function") forwardedRef(node);
       else if (forwardedRef) forwardedRef.current = node;
     };
-    const panesRef = React.useRef(panes);
-    panesRef.current = panes;
+    const panesRef = useLatestRef(panes);
     const dragRef = React.useRef<{
       id: string;
       pointerId: number;
@@ -273,8 +271,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
       const pane = list.find((p) => p.id === id);
       if (pane) onPanesChange([...list.filter((p) => p.id !== id), pane]);
     };
-    const bringToFrontRef = React.useRef(bringToFront);
-    bringToFrontRef.current = bringToFront;
+    const bringToFrontRef = useLatestRef(bringToFront);
 
     // Native capture listeners: window content may be portalled in (e.g. TilingLayout keep-alive hosts),
     // and React events from a portal don't propagate through the window wrapper.
@@ -558,8 +555,7 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
     });
     const layoutRef = React.useRef(layout);
     layoutRef.current = layout;
-    const setLayoutRef = React.useRef(setLayout);
-    setLayoutRef.current = setLayout;
+    const setLayoutRef = useLatestRef(setLayout);
 
     const update = React.useCallback((fn: (l: LayoutNode) => LayoutNode) => {
       const next = fn(layoutRef.current);
@@ -574,8 +570,7 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
     const maximized = maximizedRaw && groups.some((g) => g.id === maximizedRaw) ? maximizedRaw : null;
 
     const floatingList = floating ?? [];
-    const floatingRef = React.useRef(floatingList);
-    floatingRef.current = floatingList;
+    const floatingRef = useLatestRef(floatingList);
     const floatingEnabled = Boolean(onFloatingChange);
 
     const title = (id: string) => paneTitle?.(id) ?? id;
@@ -716,10 +711,8 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
     }, [mountedKey]);
 
     /* ---- focus tracking & Escape (native: pane content is portalled into keep-alive hosts) ---- */
-    const maximizedRef = React.useRef(maximized);
-    maximizedRef.current = maximized;
-    const setMaximizedRef = React.useRef(setMaximized);
-    setMaximizedRef.current = setMaximized;
+    const maximizedRef = useLatestRef(maximized);
+    const setMaximizedRef = useLatestRef(setMaximized);
     React.useEffect(() => {
       const root = rootRef.current;
       if (!root) return;

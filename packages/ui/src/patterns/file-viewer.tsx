@@ -11,7 +11,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { formatBytes } from "../lib/format";
+import { formatBytes, type FormatBytesOptions } from "../lib/format";
 import { isEditableTarget } from "../lib/shortcuts";
 import { FileFormatIcon, getFileCategory, getFileExtension } from "../assets/file-format";
 import { Button } from "../primitives/button";
@@ -66,9 +66,15 @@ export function getFilePreviewKind(file: Pick<ViewerFile, "name" | "mimeType">):
   return "unknown";
 }
 
-/** Human-readable byte size, e.g. `1.4 MB`. */
+/** File sizes: `"1.4 MB"`, `"12 MB"`, `""` when unknown. */
+const FILE_SIZE: FormatBytesOptions = { trimZeros: false, wholeAbove: 10, invalid: "" };
+
+/**
+ * Human-readable byte size, e.g. `1.4 MB`.
+ * @deprecated Use `formatBytes(bytes, { trimZeros: false, wholeAbove: 10, invalid: "" })`.
+ */
 export function formatFileSize(bytes: number | undefined) {
-  return formatBytes(bytes, { trimZeros: false, wholeAbove: 10, invalid: "" });
+  return formatBytes(bytes, FILE_SIZE);
 }
 
 const isTextKind = (k: FilePreviewKind) => k === "markdown" || k === "json" || k === "code" || k === "text";
@@ -86,7 +92,7 @@ async function defaultLoadText(file: ViewerFile) {
 /* ------------------------------------------------------------------ */
 
 function DownloadCard({ file, message, onDownload }: { file: ViewerFile; message: React.ReactNode; onDownload?: () => void }) {
-  const size = formatFileSize(file.size);
+  const size = formatBytes(file.size, FILE_SIZE);
   return (
     <div data-renderer="unknown" className="flex flex-col items-center justify-center gap-3 rounded-box border border-dashed border-border bg-subtle px-6 py-10 text-center">
       <FileFormatIcon ext={file.name} size="xl" />
@@ -466,7 +472,7 @@ function ViewerHeader({
   actions?: React.ReactNode;
   panelToggle?: React.ReactNode;
 }) {
-  const size = formatFileSize(file.size);
+  const size = formatBytes(file.size, FILE_SIZE);
   const Title = modal ? DialogPrimitive.Title : "h2";
   const hasSubtitle = subtitle !== undefined && subtitle !== null && subtitle !== false && subtitle !== "";
   return (
@@ -947,7 +953,7 @@ export const FilePreviewCard = React.forwardRef<HTMLButtonElement, FilePreviewCa
   ({ file, meta, className, type = "button", ...props }, ref) => {
     const kind = getFilePreviewKind(file);
     const thumb = file.thumbnail ?? (kind === "image" ? file.url : undefined);
-    const sub = meta ?? (formatFileSize(file.size) || getFileExtension(file.name).toUpperCase());
+    const sub = meta ?? (formatBytes(file.size, FILE_SIZE) || getFileExtension(file.name).toUpperCase());
     return (
       <button
         ref={ref}

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { formatDuration, splitDuration as splitDurationLib } from "../lib/duration";
-import { pluralize } from "../lib/format";
 import { pad2 } from "../lib/time";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
 import { useCountdown } from "../hooks/use-now";
@@ -29,14 +28,9 @@ export function formatCompactDuration(ms: number) {
   return formatDuration(Math.ceil(ms / 1000) * 1000, { round: "floor", invalid: "0s" });
 }
 
-function spokenDuration({ days, hours, minutes, seconds }: DurationParts) {
-  const parts: string[] = [];
-  const add = (n: number, unit: string) => n > 0 && parts.push(`${n} ${pluralize(n, unit)}`);
-  add(days, "day");
-  add(hours, "hour");
-  add(minutes, "minute");
-  if (days === 0) add(seconds, "second");
-  return parts.length ? parts.join(" ") : "0 seconds";
+/** Screen-reader text: "2 days 3 hours 5 minutes", "1 hour 5 seconds" (seconds rounded up, then shown only under a day). */
+function spokenDuration(ms: number) {
+  return formatDuration(Math.ceil(ms / 1000) * 1000, { style: "long", units: 3, keepZeros: false, round: "floor", invalid: "0 seconds" });
 }
 
 /* ------------------------------------------------------------------ */
@@ -77,7 +71,7 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
     const reduced = usePrefersReducedMotion();
 
     const parts = splitDuration(remaining);
-    const label = remaining > 0 ? `Time remaining: ${spokenDuration(parts)}` : "Time is up";
+    const label = remaining > 0 ? `Time remaining: ${spokenDuration(remaining)}` : "Time is up";
 
     if (remaining <= 0 && completeContent !== undefined) {
       return (

@@ -10,7 +10,6 @@ import {
   RiErrorWarningLine,
   RiGlobalLine,
   RiHeartLine,
-  RiKeyboardBoxLine,
   RiLinkM,
   RiLockLine,
   RiLogoutBoxRLine,
@@ -30,9 +29,8 @@ import { CopyButton } from "../primitives/copy-button";
 import { Button } from "../primitives/button";
 import { Badge } from "../primitives/badge";
 import { Avatar } from "../primitives/avatar";
-import { Kbd } from "../primitives/typography";
-import { ShortcutKeys, useShortcutRegistry } from "../patterns/shortcuts";
-import { Input, SearchInput } from "../primitives/input";
+import { ShortcutsDialog, useShortcutRegistry, type ShortcutRegistryGroup } from "../patterns/shortcuts";
+import { Input } from "../primitives/input";
 import { Textarea } from "../primitives/textarea";
 import { TagInput } from "../primitives/tag-input";
 import { Field, FieldDescription, FieldLabel, FieldGroup, FieldError } from "../primitives/field";
@@ -1438,7 +1436,39 @@ const defaultShortcutGroups: ShortcutGroup[] = [
   },
 ];
 
-/** Searchable reference of keyboard shortcuts, grouped, rendered with Kbd keys. */
+const glyphKeyNames: Record<string, string> = { "⌘": "meta", "⌥": "alt", "⇧": "shift", "⌃": "ctrl" };
+const keyNames: Record<string, string> = { ...glyphKeyNames, "+": "plus", " ": "space" };
+
+/** `["⌘", "⇧", "K"]` → `"meta+shift+k"`; "then" separates sequence steps (`["G", "then", "H"]` → `"g h"`). */
+function toShortcutSpec(keys: string[]): string {
+  const steps: string[][] = [[]];
+  for (const raw of keys) {
+    const key = raw.trim();
+    const name = keyNames[raw] ?? keyNames[key] ?? key.toLowerCase().replace(/\s+/g, "");
+    if (key.toLowerCase() === "then") steps.push([]);
+    else if (name) steps[steps.length - 1].push(name);
+  }
+  return steps
+    .filter((step) => step.length > 0)
+    .map((step) => step.join("+"))
+    .join(" ");
+}
+
+/** Static groups as registry groups for `ShortcutsDialog`. */
+function toRegistryGroups(groups: ShortcutGroup[]): ShortcutRegistryGroup[] {
+  return groups.map((g, gi) => ({
+    group: g.title,
+    shortcuts: g.shortcuts.map((s, i) => {
+      const keys = toShortcutSpec(s.keys);
+      return { id: `${gi}:${i}:${s.label}`, keys, allKeys: [keys], label: s.label, group: g.title, scope: "static", active: true, run: () => {} };
+    }),
+  }));
+}
+
+/**
+ * Searchable reference of keyboard shortcuts, grouped, rendered with Kbd keys. A preset over `ShortcutsDialog`:
+ * it lists the live shortcut registry, or the static `groups` (keys written with mac glyphs keep rendering as glyphs).
+ */
 export function KeyboardShortcutsDialog({
   groups: groupsProp,
   title = "Keyboard shortcuts",
@@ -1447,74 +1477,25 @@ export function KeyboardShortcutsDialog({
   ...openProps
 }: KeyboardShortcutsDialogProps) {
   const [open, setOpen] = useDialogOpen(openProps);
-  const [query, setQuery] = React.useState("");
   const registry = useShortcutRegistry();
   const useRegistry = !groupsProp && registry.shortcuts.length > 0;
-  const groups: { title: string; shortcuts: { id: string; label: string; keys: string[]; spec?: string }[] }[] = useRegistry
-    ? registry.groups.map((g) => ({
-        title: g.group,
-        shortcuts: g.shortcuts.map((s) => ({ id: s.id, label: s.label, keys: [], spec: s.keys })),
-      }))
-    : (groupsProp ?? defaultShortcutGroups).map((g) => ({
-        title: g.title,
-        shortcuts: g.shortcuts.map((s) => ({ id: s.label, label: s.label, keys: s.keys })),
-      }));
-  const q = query.trim().toLowerCase();
-  const filtered = groups
-    .map((g) => ({ ...g, shortcuts: g.shortcuts.filter((s) => !q || s.label.toLowerCase().includes(q)) }))
-    .filter((g) => g.shortcuts.length > 0);
+  const staticGroups = groupsProp ?? defaultShortcutGroups;
+  const extraGroups = React.useMemo(() => toRegistryGroups(staticGroups), [staticGroups]);
+  const glyphs = staticGroups.some((g) => g.shortcuts.some((s) => s.keys.some((k) => k.trim() in glyphKeyNames)));
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
-      <DialogContent size="lg" className={className}>
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <RiKeyboardBoxLine aria-hidden className="size-5 text-muted-foreground" />
-            {title}
-          </DialogTitle>
-          <DialogDescription className="sr-only">All keyboard shortcuts available in Sutra.</DialogDescription>
-        </DialogHeader>
-        <SearchInput value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery("")} placeholder="Search shortcuts…" aria-label="Search shortcuts" />
-        <DialogBody className="max-h-[60dvh]">
-          {filtered.length === 0 ? (
-            <p className="py-10 text-center text-sm text-muted-foreground">No shortcuts match “{query}”</p>
-          ) : (
-            <div className="grid gap-x-8 gap-y-6 pb-1 sm:grid-cols-2">
-              {filtered.map((group) => (
-                <section key={group.title}>
-                  <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{group.title}</h3>
-                  <ul className="flex flex-col divide-y divide-border">
-                    {group.shortcuts.map((s) => (
-                      <li key={s.id} className="flex items-center justify-between gap-4 py-2 text-sm">
-                        <span className="text-foreground">{s.label}</span>
-                        {s.spec ? (
-                          <ShortcutKeys keys={s.spec} size="md" />
-                        ) : (
-                        <span className="flex shrink-0 items-center gap-1" aria-label={s.keys.join(" ")}>
-                          {s.keys.map((k, i) =>
-                            k === "then" ? (
-                              <span key={i} className="text-xs text-muted-foreground">
-                                then
-                              </span>
-                            ) : (
-                              <Kbd key={i} className="h-6 min-w-6 text-xs">
-                                {k}
-                              </Kbd>
-                            )
-                          )}
-                        </span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              ))}
-            </div>
-          )}
-        </DialogBody>
-      </DialogContent>
-    </Dialog>
+    <ShortcutsDialog
+      open={open}
+      onOpenChange={setOpen}
+      keys={null}
+      trigger={trigger}
+      title={title}
+      description="All keyboard shortcuts available in Sutra."
+      includeRegistry={useRegistry}
+      extraGroups={useRegistry ? undefined : extraGroups}
+      platform={!useRegistry && glyphs ? "mac" : undefined}
+      className={className}
+    />
   );
 }
 KeyboardShortcutsDialog.displayName = "KeyboardShortcutsDialog";

@@ -25,6 +25,7 @@ import { formatCountdown } from "../../lib/duration";
 import { toValidDate } from "../../lib/time";
 import { capitalize } from "../../lib/text";
 import { useNow } from "../../hooks/use-now";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { useMediaQuery } from "../../hooks/use-media-query";
 import { useSafeId } from "../../hooks/use-safe-id";
 import { errorMessage as messageOf, useAsyncAction } from "../../hooks/use-async-action";
@@ -176,8 +177,7 @@ export function useKunjiSignIn({
   const ctrl = React.useRef<AbortController | null>(null);
   const slowTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const successTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const callbacks = React.useRef({ onSuccess, onError, onStatusChange });
-  callbacks.current = { onSuccess, onError, onStatusChange };
+  const callbacks = useLatestRef({ onSuccess, onError, onStatusChange });
   const sessionRef = React.useRef<KunjiSession | undefined>(undefined);
 
   const disarmSlow = React.useCallback(() => clearTimeout(slowTimer.current), []);
@@ -1141,8 +1141,7 @@ export const KunjiRpSignIn = React.forwardRef<HTMLDivElement, KunjiRpSignInProps
     const [message, setMessage] = React.useState("");
     const [attempt, setAttempt] = React.useState(0);
     const adapter = React.useMemo(() => adapterProp ?? createRpScriptAdapter(), [adapterProp]);
-    const cbs = React.useRef({ onSuccess, onError });
-    cbs.current = { onSuccess, onError };
+    const cbs = useLatestRef({ onSuccess, onError });
     const key = JSON.stringify(options);
 
     React.useEffect(() => {
@@ -1225,8 +1224,8 @@ export interface AccessGateScopeOption {
 export interface AccessGateAdapter {
   /** Send the request. Resolves to the new record (usually `pending`). */
   request: (input: { purpose: string; scopes: string[] }) => Promise<AccessGateRecord>;
-  /** Poll for a decision while pending. */
-  check?: () => Promise<AccessGateRecord>;
+  /** Poll for a decision while pending. A tick is skipped while the previous check is in flight; `signal` aborts on unmount. */
+  check?: (signal?: AbortSignal) => Promise<AccessGateRecord>;
   /** Collect the issued key once approved. */
   claim?: () => Promise<unknown>;
 }
@@ -1289,17 +1288,24 @@ export const AccessGate = React.forwardRef<HTMLDivElement, AccessGateProps>(
 
     React.useEffect(() => {
       if (status !== "pending" || !check) return;
-      let alive = true;
+      const ctrl = new AbortController();
+      let inFlight = false;
       const id = setInterval(() => {
-        check().then(
-          (r) => {
-            if (alive && r.status !== "pending") setRecord(r);
-          },
-          () => {}
-        );
+        if (inFlight) return;
+        inFlight = true;
+        check(ctrl.signal)
+          .then(
+            (r) => {
+              if (!ctrl.signal.aborted && r.status !== "pending") setRecord(r);
+            },
+            () => {}
+          )
+          .finally(() => {
+            inFlight = false;
+          });
       }, pollInterval);
       return () => {
-        alive = false;
+        ctrl.abort();
         clearInterval(id);
       };
     }, [status, check, pollInterval, setRecord]);

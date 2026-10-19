@@ -523,7 +523,7 @@ describe("SyncStatus", () => {
     const { rerender } = render(
       <SyncStatus status="synced" showLabel={false} lastSyncedAt={NOW.getTime() - 5 * 60_000} now={NOW} />
     );
-    expect(screen.getByRole("button", { name: "Synced. All changes saved · Last synced 5 min ago" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Synced. All changes saved" })).toHaveAccessibleDescription("Last synced 5 min ago");
     rerender(<SyncStatus status="error" onRetry={onRetry} onResolve={onResolve} />);
     await user.click(screen.getByRole("button"));
     expect(onRetry).toHaveBeenCalledTimes(1);

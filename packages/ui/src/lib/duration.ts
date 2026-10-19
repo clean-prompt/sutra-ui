@@ -44,6 +44,8 @@ export interface FormatClockOptions {
   fractionDigits?: 0 | 1 | 2 | 3;
   /** Keep the sign of negative values (`"-1:05"`); otherwise they clamp to 0. */
   signed?: boolean;
+  /** Always prefix a minus sign, for remaining time (`"-1:05"`, also `"-0:00"`). Default false. */
+  minus?: boolean;
   /** Text for non-finite input. Default `"0:00"` (formatted zero). */
   invalid?: string;
 }
@@ -69,7 +71,7 @@ export function formatClock(seconds: number, options: FormatClockOptions = {}): 
   const body = showHours
     ? `${options.padHours ? pad(h) : h}:${pad(m)}:${pad(s)}${tail}`
     : `${options.padMinutes ? pad(m) : m}:${pad(s)}${tail}`;
-  return negative && units > 0 ? `-${body}` : body;
+  return (negative && units > 0) || options.minus ? `-${body}` : body;
 }
 
 /** Countdown clock from remaining MILLISECONDS, rounded up so it reads `"0:00"` only at the deadline. */
@@ -83,6 +85,13 @@ const UNIT_ORDER: DurationUnit[] = ["d", "h", "m", "s"];
 const UNIT_MS: Record<DurationUnit, number> = { d: 86_400_000, h: 3_600_000, m: 60_000, s: 1000 };
 
 export interface FormatDurationOptions {
+  /**
+   * `"compact"` (default) → `"1h 5m"`; `"long"` → `"1 hour 5 minutes"` (English unit words, always spaced);
+   * `"decimal"` → only the largest unit, with `decimals` places (default 1): `"1.5s"`, `"2.3m"`, `"1.2h"`.
+   * Decimal rounds before picking the unit, so 59.96 s is `"1m"`. The padded form (`"1m 05s"`) is `pad: true`;
+   * the clock form (`"1:05"`) is `formatClock`.
+   */
+  style?: "compact" | "long" | "decimal";
   /** Maximum number of units shown (`2` → `"1h 5m"`). Default 2. */
   units?: number;
   /** Zero-pad every unit after the first (`"3m 05s"`). Default false. */
@@ -91,7 +100,7 @@ export interface FormatDurationOptions {
   ms?: boolean;
   /** Space between number and unit (`"850 ms"`, `"3 m 5 s"`). Default false. */
   space?: boolean;
-  /** Decimal seconds below `decimalsBelow` (`1` → `"1.5s"`). Default 0. */
+  /** Decimal seconds below `decimalsBelow` (`1` → `"1.5s"`). Default 0 (1 for `style: "decimal"`, where it applies to every unit). */
   decimals?: number;
   /** Threshold in ms for `decimals`. Default 10 000. */
   decimalsBelow?: number;
@@ -105,8 +114,10 @@ export interface FormatDurationOptions {
   minUnit?: DurationUnit;
   /** How to reach the smallest shown unit. Default `"round"`. */
   round?: RoundingMode;
-  /** Keep the sign of negative values; otherwise they clamp to 0. */
+  /** Keep the sign of negative values; otherwise they clamp to 0. Same as `negative: "sign"`. */
   signed?: boolean;
+  /** Negative input: `"zero"` (default) clamps to 0, `"sign"` keeps the minus, `"invalid"` returns `invalid`. */
+  negative?: "zero" | "sign" | "invalid";
   /** Text when the rounded result is zero (e.g. `"<1s"`, `"a moment"`). Default: formatted zero. */
   zero?: string;
   /** Text for non-finite input. Default `"—"`. */
@@ -114,6 +125,8 @@ export interface FormatDurationOptions {
   /** Locale for decimal separators. */
   locale?: string;
 }
+
+const LONG_UNITS: Record<DurationUnit | "ms", string> = { d: "day", h: "hour", m: "minute", s: "second", ms: "millisecond" };
 
 function decimal(n: number, digits: number, trim: boolean, locale: string | undefined): string {
   if (locale) {
@@ -136,9 +149,14 @@ function decimal(n: number, digits: number, trim: boolean, locale: string | unde
  */
 export function formatDuration(ms: number, options: FormatDurationOptions = {}): string {
   if (!Number.isFinite(ms)) return options.invalid ?? "—";
-  const sp = options.space ? " " : "";
+  const negativeMode = options.negative ?? (options.signed ? "sign" : "zero");
+  if (ms < 0 && negativeMode === "invalid") return options.invalid ?? "—";
+  const long = options.style === "long";
+  const sp = options.space || long ? " " : "";
+  const unitText = (n: number, unit: DurationUnit | "ms", text = String(n)) =>
+    long ? `${text} ${LONG_UNITS[unit]}${n === 1 ? "" : "s"}` : `${text}${sp}${unit}`;
   const mode = options.round ?? "round";
-  const negative = ms < 0 && options.signed === true;
+  const negative = ms < 0 && negativeMode === "sign";
   const abs = negative ? -ms : Math.max(0, ms);
   const sign = negative ? "-" : "";
   const trim = options.trimZeros !== false;
@@ -151,8 +169,20 @@ export function formatDuration(ms: number, options: FormatDurationOptions = {}):
     const r = roundTo(abs, 0, mode);
     if (r < 1000) {
       if (r === 0 && options.zero !== undefined) return options.zero;
-      return `${r > 0 ? sign : ""}${r}${sp}ms`;
+      return `${r > 0 ? sign : ""}${unitText(r, "ms")}`;
     }
+  }
+
+  if (options.style === "decimal") {
+    const digits = Math.max(0, Math.min(3, Math.trunc(options.decimals ?? 1)));
+    let v = 0;
+    let i = minIdx;
+    for (; i >= maxIdx; i--) {
+      v = roundTo(abs / UNIT_MS[UNIT_ORDER[i]!], digits, mode);
+      if (i === maxIdx || v * UNIT_MS[UNIT_ORDER[i]!] < UNIT_MS[UNIT_ORDER[i - 1]!]) break;
+    }
+    if (v === 0 && options.zero !== undefined) return options.zero;
+    return `${v > 0 ? sign : ""}${unitText(v, UNIT_ORDER[i]!, decimal(v, digits, trim, options.locale))}`;
   }
 
   const decimals = Math.max(0, Math.min(3, Math.trunc(options.decimals ?? 0)));
@@ -161,7 +191,7 @@ export function formatDuration(ms: number, options: FormatDurationOptions = {}):
     const v = roundTo(abs / 1000, decimals, mode);
     if (v * 1000 < decimalsBelow && v < 60) {
       if (v === 0 && options.zero !== undefined) return options.zero;
-      return `${v > 0 ? sign : ""}${decimal(v, decimals, trim, options.locale)}${sp}s`;
+      return `${v > 0 ? sign : ""}${unitText(v, "s", decimal(v, decimals, trim, options.locale))}`;
     }
   }
 
@@ -194,7 +224,7 @@ export function formatDuration(ms: number, options: FormatDurationOptions = {}):
     rest -= n * size;
     if (n === 0 && options.keepZeros === false && i !== lead) continue;
     const text = options.pad && i !== lead ? pad(n) : String(n);
-    parts.push(`${text}${sp}${unit}`);
+    parts.push(unitText(n, unit, text));
   }
   return `${value > 0 ? sign : ""}${parts.join(" ")}`;
 }

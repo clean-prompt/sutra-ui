@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RiBookmarkLine, RiCheckLine, RiCloseLine, RiHistoryLine, RiPriceTag3Line, RiResetLeftLine } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
-import { dateKey, formatClockTime, formatDateTime, formatDayLabel } from "../../lib/time";
+import { dateKey, formatClockTime, formatDateTime, formatDayLabel, type FormatDayLabelOptions } from "../../lib/time";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Avatar } from "../../primitives/avatar";
 import { Button } from "../../primitives/button";
@@ -44,9 +44,15 @@ export interface VersionSelection {
 
 export type VersionHistoryTab = "all" | "named";
 
-/** "Today", "Yesterday", or a short date. */
+/** Group headers: "Today", "Yesterday", or "Mon, Mar 2". */
+const VERSION_DAY: FormatDayLabelOptions = { weekdayWithinWeek: false, tomorrow: false, weekday: true };
+
+/**
+ * "Today", "Yesterday", or a short date.
+ * @deprecated Use `formatDayLabel(value, { now, weekdayWithinWeek: false, tomorrow: false, weekday: true })`.
+ */
 export function formatVersionDay(value: Date | number | string, now: Date | number = Date.now()) {
-  return formatDayLabel(value, { now, weekdayWithinWeek: false, tomorrow: false, weekday: true });
+  return formatDayLabel(value, { ...VERSION_DAY, now });
 }
 
 /** Versions (newest first) grouped by calendar day. */
@@ -56,7 +62,7 @@ export function groupVersionsByDay<T extends Pick<DocumentVersion, "createdAt">>
     const key = dateKey(v.createdAt);
     let g = groups[groups.length - 1];
     if (!g || g.key !== key) {
-      g = { key, label: formatVersionDay(v.createdAt, now), versions: [] };
+      g = { key, label: formatDayLabel(v.createdAt, { ...VERSION_DAY, now }), versions: [] };
       groups.push(g);
     }
     g.versions.push(v);

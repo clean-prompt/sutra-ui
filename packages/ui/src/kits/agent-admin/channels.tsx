@@ -1008,7 +1008,10 @@ export interface ApprovedChannelUser {
   approvedAt?: Date | number | string;
 }
 
-/** Compact relative time ("just now", "5m ago", "3h ago", "2d ago"). */
+/**
+ * Compact relative time ("just now", "5m ago", "3h ago", "2d ago").
+ * @deprecated Use `formatRelative(at, { now })`.
+ */
 export function formatChannelAgo(at: Date | number | string, now: number = Date.now()): string {
   return formatRelative(at, { now });
 }
@@ -1061,7 +1064,7 @@ export const AccessRequestQueue = React.forwardRef<HTMLDivElement, AccessRequest
                     <p className="truncate text-sm font-medium text-foreground">{r.name ?? r.handle}</p>
                     <p className="truncate text-xs text-muted-foreground">
                       {r.name ? `${r.handle} · ` : ""}
-                      {formatChannelAgo(r.requestedAt, ref0)}
+                      {formatRelative(r.requestedAt, { now: ref0 })}
                     </p>
                   </div>
                   <code className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs font-semibold tracking-widest text-foreground" aria-label={`Code ${r.code}`}>
@@ -1092,7 +1095,7 @@ export const AccessRequestQueue = React.forwardRef<HTMLDivElement, AccessRequest
                   <PlatformIcon platform={u.platform} size="sm" className="size-5 [&_svg]:size-3.5" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm text-foreground">{u.name ?? u.handle}</p>
-                    {u.approvedAt != null && <p className="text-xs text-muted-foreground">Approved {formatChannelAgo(u.approvedAt, ref0)}</p>}
+                    {u.approvedAt != null && <p className="text-xs text-muted-foreground">Approved {formatRelative(u.approvedAt, { now: ref0 })}</p>}
                   </div>
                   <ConfirmDialog
                     tone="destructive"

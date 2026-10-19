@@ -22,7 +22,7 @@ import { cn, focusRing } from "../../lib/cn";
 import { Button, type ButtonProps } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
+import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../../hooks/use-resize-observer";
 import { ModelSelectOption, type PickerModel } from "./model-select";
 import { DropdownMenu as Menu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../primitives/dropdown-menu";
@@ -754,17 +754,17 @@ export type PromptInputFastMode = "on" | "off" | "cooldown";
 
 function useCooldownSeconds(seconds: number | undefined, active: boolean, onEnd?: () => void) {
   const [remaining, setRemaining] = React.useState(Math.max(0, Math.ceil(seconds ?? 0)));
-  const endRef = React.useRef(onEnd);
-  endRef.current = onEnd;
-  const prev = React.useRef(remaining);
+  const endRef = useLatestRef(onEnd);
   React.useEffect(() => setRemaining(Math.max(0, Math.ceil(seconds ?? 0))), [seconds, active]);
   React.useEffect(() => {
-    if (active && prev.current > 0 && remaining === 0) endRef.current?.();
-    prev.current = remaining;
     if (!active || remaining <= 0) return;
-    const t = setTimeout(() => setRemaining((r) => Math.max(0, r - 1)), 1000);
+    // onEnd fires only from the tick that reaches zero; turning the cooldown off or clearing the seconds cancels it.
+    const t = setTimeout(() => {
+      setRemaining(remaining - 1);
+      if (remaining === 1) endRef.current?.();
+    }, 1000);
     return () => clearTimeout(t);
-  }, [active, remaining]);
+  }, [active, remaining, endRef]);
   return remaining;
 }
 

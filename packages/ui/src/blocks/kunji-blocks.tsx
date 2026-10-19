@@ -32,6 +32,7 @@ import { AuthCenteredPage, type AuthPageBaseProps } from "./auth-pages";
 import { useAsyncAction } from "./block-utils";
 import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
 import { useCountdown } from "../hooks/use-now";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { formatCountdown } from "../lib/duration";
 
 /* ------------------------------------------------------------------ */
@@ -425,12 +426,21 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
     });
     const checking = poll.busy;
     const check = poll.run;
+    const checkingRef = useLatestRef(checking);
 
     React.useEffect(() => {
       if (!onCheck || approved) return;
-      const id = setInterval(() => void check(), pollInterval);
+      // Skip a tick while a check is still in flight, so slow checks don't pile up.
+      let inFlight = false;
+      const id = setInterval(() => {
+        if (inFlight || checkingRef.current) return;
+        inFlight = true;
+        void check().finally(() => {
+          inFlight = false;
+        });
+      }, pollInterval);
       return () => clearInterval(id);
-    }, [onCheck, approved, pollInterval, check]);
+    }, [onCheck, approved, pollInterval, check, checkingRef]);
 
     if (approved) {
       return (
@@ -748,8 +758,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
     const [pairedAt, setPairedAt] = React.useState(0);
     const ctrl = React.useRef<AbortController | null>(null);
     // Read through a ref: an inline `adapter` prop must not abort and restart pairing on every parent render.
-    const adapterRef = React.useRef(adapter);
-    adapterRef.current = adapter;
+    const adapterRef = useLatestRef(adapter);
 
     const fail = (e: unknown) => {
       if (isKunjiAbortError(e)) return;

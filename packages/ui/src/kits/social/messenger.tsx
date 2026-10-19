@@ -26,7 +26,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../primitives/popove
 import { Switch } from "../../primitives/switch";
 import { Textarea } from "../../primitives/textarea";
 import {
-  calendarDayDiff,
   dateKey,
   formatClockTime,
   formatDayLabel,
@@ -35,6 +34,7 @@ import {
   MINUTE_MS,
   safeISO,
   toValidDate,
+  type FormatDayLabelOptions,
 } from "../../lib/time";
 
 /* ------------------------------------------------------------------ */
@@ -84,11 +84,15 @@ export interface GroupMessagesOptions {
   now?: Date;
 }
 
-/** Day separator label: "Today", "Yesterday", a weekday within the last week, else "Oct 5" (with year if different). */
+/** Day separators: "Today", "Yesterday", "Monday" within the last week, else "Oct 5" (with year if different). */
+const MESSAGE_DAY: FormatDayLabelOptions = { weekdayWithinWeek: "long", tomorrow: false, locale: "en-US" };
+
+/**
+ * Day separator label: "Today", "Yesterday", a weekday within the last week, else "Oct 5" (with year if different).
+ * @deprecated Use `formatDayLabel(date, { now, weekdayWithinWeek: "long", tomorrow: false, locale: "en-US" })`.
+ */
 export function formatMessageDay(date: Date, now: Date = new Date()) {
-  const diff = calendarDayDiff(now, date) ?? 0;
-  if (diff > 1 && diff < 7) return date.toLocaleDateString("en-US", { weekday: "long" });
-  return formatDayLabel(date, { now, weekdayWithinWeek: false, tomorrow: false, locale: "en-US" });
+  return formatDayLabel(date, { ...MESSAGE_DAY, now });
 }
 
 /** Short clock time, e.g. "9:41 AM". */
@@ -101,7 +105,7 @@ export function formatLastSeen(date: Date | number | string, now: Date = new Dat
   const d = toValidDate(date);
   if (!d) return "last seen recently";
   if (now.getTime() - d.getTime() < 23.5 * HOUR_MS) return `last seen ${formatRelative(d, { now, justNowMs: MINUTE_MS })}`;
-  const day = formatMessageDay(d, now);
+  const day = formatDayLabel(d, { ...MESSAGE_DAY, now });
   return `last seen ${day === "Yesterday" ? "yesterday" : day}`;
 }
 
@@ -123,7 +127,7 @@ export function groupMessages(messages: MessengerMessage[], options: GroupMessag
     let breakGroup = false;
     const key = parsed ? dateKey(parsed) : lastDay;
     if (parsed && key !== lastDay) {
-      out.push({ type: "date", key: `date-${key}`, date: parsed, label: formatMessageDay(parsed, now) });
+      out.push({ type: "date", key: `date-${key}`, date: parsed, label: formatDayLabel(parsed, { ...MESSAGE_DAY, now }) });
       lastDay = key;
       breakGroup = true;
     }

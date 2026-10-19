@@ -227,7 +227,8 @@ describe("IncomingCall", () => {
     const { container } = render(
       <IncomingCall name="Ana Lima" type="video" onAccept={onAccept} onDecline={onDecline} onMessage={onMessage} ringFor={0} />
     );
-    const dialog = screen.getByRole("alertdialog", { name: "Ana Lima" });
+    // The inline card is a non-modal dialog; `variant="overlay"` is the modal alertdialog.
+    const dialog = screen.getByRole("dialog", { name: "Ana Lima" });
     expect(dialog).toHaveAccessibleDescription("Incoming video call");
     fireEvent.click(screen.getByRole("button", { name: "Accept" }));
     fireEvent.click(screen.getByRole("button", { name: "Decline" }));

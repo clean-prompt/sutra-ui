@@ -5,7 +5,7 @@ import { SegmentedControl } from "../../primitives/segmented-control";
 import { StatCard, StatGroup } from "../../patterns/stat-card";
 import { BarChart } from "../../patterns/chart";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { roundTo } from "../../lib/math";
+import { formatDuration } from "../../lib/duration";
 import { formatTokenCount } from "../../lib/token-count";
 
 /* ------------------------------------------------------------------ */
@@ -37,14 +37,8 @@ export interface UsageSummaryProps extends React.HTMLAttributes<HTMLDivElement> 
   onRangeChange?: (range: UsageRange) => void;
 }
 
-function formatDuration(ms: number) {
-  if (ms < 999.5) return `${Math.round(ms)}ms`;
-  const s = roundTo(ms / 1000, 1);
-  if (s < 60) return `${s}s`;
-  const m = roundTo(ms / 60_000, 1);
-  if (m < 60) return `${m}m`;
-  return `${roundTo(ms / 3_600_000, 1)}h`;
-}
+/** Latency: "850ms", "1.5s", "2.3m", "1.2h". */
+const formatLatency = (ms: number) => formatDuration(ms, { style: "decimal", ms: true, maxUnit: "h" });
 
 const finishLabels: Record<string, string> = { stop: "Completed", length: "Hit length limit", error: "Errored", cancelled: "Canceled", canceled: "Canceled", tool_calls: "Tool calls" };
 
@@ -91,7 +85,7 @@ export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
         <StatGroup columns={4}>
           <StatCard size="sm" label="Requests" value={totals.requests.toLocaleString("en-US")} data-stat="requests" />
           <StatCard size="sm" label="Tokens" value={formatTokenCount(totals.tokens)} data-stat="tokens" />
-          <StatCard size="sm" label="Avg latency" value={formatDuration(avgLatency)} data-stat="latency" />
+          <StatCard size="sm" label="Avg latency" value={formatLatency(avgLatency)} data-stat="latency" />
           <StatCard size="sm" label="Active days" value={String(slice.filter((d) => d.requests > 0).length)} data-stat="days" />
         </StatGroup>
         <section aria-label="Requests per day">
@@ -121,8 +115,8 @@ export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
           <section className="space-y-4">
             <StackedMeter
               label="Wait vs. generate"
-              valueText={formatDuration(totals.wait + totals.gen)}
-              valueFormatter={formatDuration}
+              valueText={formatLatency(totals.wait + totals.gen)}
+              valueFormatter={formatLatency}
               showPercent
               parts={[
                 { label: "Waiting", value: totals.wait, color: "warning" },

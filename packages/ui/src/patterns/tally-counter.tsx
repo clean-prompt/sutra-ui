@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiAddLine, RiArrowGoBackLine, RiSubtractLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { formatClockTime } from "../lib/time";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "../primitives/button";
 
@@ -41,8 +42,8 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
       defaultValue = 0,
       onValueChange,
       step = 1,
-      min = 0,
-      max = Number.POSITIVE_INFINITY,
+      min: minProp = 0,
+      max: maxProp = Number.POSITIVE_INFINITY,
       goal,
       label = "Count",
       showLog = true,
@@ -52,6 +53,9 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
     },
     ref
   ) => {
+    // Tolerate swapped bounds (`max < min`) like `clamp` does.
+    const min = Math.min(minProp, maxProp);
+    const max = Math.max(minProp, maxProp);
     const [value, setValue] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChange });
     const [log, setLog] = React.useState<TallyEntry[]>([]);
     const valueRef = React.useRef(value);
@@ -71,7 +75,7 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
 
     const apply = (dir: 1 | -1, merge: boolean) => {
       const current = valueRef.current;
-      const next = Math.min(max, Math.max(min, current + dir * step));
+      const next = clamp(current + dir * step, min, max);
       const delta = next - current;
       // Hold-to-repeat ends at the bound: the button disables there and never gets pointerup/leave.
       if (merge && (dir > 0 ? next >= max : next <= min)) {
@@ -122,7 +126,7 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
     const undo = () => {
       const [last, ...rest] = log;
       if (!last) return;
-      const next = Math.min(max, Math.max(min, value - last.delta));
+      const next = clamp(value - last.delta, min, max);
       valueRef.current = next;
       setValue(next);
       setLog(rest);

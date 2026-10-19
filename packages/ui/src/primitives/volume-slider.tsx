@@ -31,6 +31,25 @@ export interface VolumeSliderProps
   size?: Size;
   /** Class for the level label. */
   levelClassName?: string;
+  /** Slider direction. Vertical stacks the toggle, slider and level in a column. Default "horizontal". */
+  orientation?: "horizontal" | "vertical";
+  /** Class for the mute toggle, merged last (e.g. another button style). */
+  muteButtonClassName?: string;
+  /** Class for the slider. */
+  sliderClassName?: string;
+  /** Wrap the slider, e.g. in a reveal-on-hover container or a popover. */
+  renderSlider?: (slider: React.ReactElement) => React.ReactNode;
+  /** Value to set when the toggle unmutes a level of 0 (the toggle then reads as "unmute" at 0). Default: none. */
+  restoreOnUnmute?: number;
+  /**
+   * How the toggle exposes its state: `"pressed"` (default) keeps one name with `aria-pressed`;
+   * `"label"` swaps its name between `muteLabel` and `unmuteLabel`.
+   */
+  muteToggle?: "pressed" | "label";
+  /** Accessible name of the toggle when it unmutes (`muteToggle="label"`). Default `Unmute ${label}`. */
+  unmuteLabel?: string;
+  /** Show the slider at 0 while muted instead of keeping the stored level. Default false. */
+  zeroWhenMuted?: boolean;
 }
 
 const buttonSize: Record<Size, string> = { sm: "size-6 [&_svg]:size-3.5", md: "size-7 [&_svg]:size-4", lg: "size-8 [&_svg]:size-[18px]" };
@@ -64,6 +83,14 @@ export const VolumeSlider = React.forwardRef<HTMLDivElement, VolumeSliderProps>(
       step = 1,
       size = "md",
       levelClassName,
+      orientation = "horizontal",
+      muteButtonClassName,
+      sliderClassName,
+      renderSlider,
+      restoreOnUnmute,
+      muteToggle = "pressed",
+      unmuteLabel,
+      zeroWhenMuted = false,
       className,
       ...props
     },
@@ -74,58 +101,75 @@ export const VolumeSlider = React.forwardRef<HTMLDivElement, VolumeSliderProps>(
     const value = Math.round(clamp(Number.isFinite(rawValue) ? rawValue : 0, 0, 100));
     const levelText = muted ? "Muted" : `${value}%`;
     const Icon = volumeIcon(value, muted);
+    const vertical = orientation === "vertical";
+    /* With `restoreOnUnmute`, a level of 0 counts as muted for the toggle. */
+    const unmutes = muted || (restoreOnUnmute !== undefined && value <= 0);
+    const toggle = () => {
+      if (!unmutes) return setMuted(true);
+      if (muted) setMuted(false);
+      if (restoreOnUnmute !== undefined && value <= 0) setValue(Math.round(clamp(restoreOnUnmute, 0, 100)));
+    };
+
+    const slider = (
+      <Slider
+        size={sliderSize[size]}
+        min={0}
+        max={100}
+        step={step}
+        value={[muted && zeroWhenMuted ? 0 : value]}
+        disabled={disabled}
+        accent={accent}
+        tone={muted ? "neutral" : undefined}
+        orientation={orientation}
+        thumbLabels={[label]}
+        getValueText={() => levelText}
+        onValueChange={(next) => {
+          const v = next[0];
+          if (v === undefined) return;
+          if (muted) setMuted(false);
+          setValue(v);
+        }}
+        className={cn(!vertical && "min-w-10 flex-1", sliderClassName)}
+      />
+    );
 
     return (
       <div
         ref={ref}
         data-slot="volume-slider"
         data-muted={muted ? "" : undefined}
-        className={cn("flex w-full min-w-0 items-center gap-2", className)}
+        data-orientation={orientation}
+        className={cn("flex w-full min-w-0 items-center gap-2", vertical && "w-auto flex-col", className)}
         {...props}
       >
         {hideMuteButton ? null : (
           <button
             type="button"
-            aria-pressed={muted}
-            aria-label={muteLabel ?? `Mute ${label}`}
+            aria-pressed={muteToggle === "pressed" ? muted : undefined}
+            aria-label={muteToggle === "label" && unmutes ? (unmuteLabel ?? `Unmute ${label}`) : (muteLabel ?? `Mute ${label}`)}
+            data-state={unmutes ? "muted" : "unmuted"}
             disabled={disabled}
-            onClick={() => setMuted(!muted)}
+            onClick={toggle}
             className={cn(
               "inline-flex shrink-0 items-center justify-center rounded-control transition-colors",
               "hover:bg-accent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50",
               muted ? "text-destructive hover:text-destructive" : "text-muted-foreground",
               focusRing,
-              buttonSize[size]
+              buttonSize[size],
+              muteButtonClassName
             )}
           >
             <Icon aria-hidden />
           </button>
         )}
-        <Slider
-          size={sliderSize[size]}
-          min={0}
-          max={100}
-          step={step}
-          value={[value]}
-          disabled={disabled}
-          accent={accent}
-          tone={muted ? "neutral" : undefined}
-          thumbLabels={[label]}
-          getValueText={() => levelText}
-          onValueChange={(next) => {
-            const v = next[0];
-            if (v === undefined) return;
-            if (muted) setMuted(false);
-            setValue(v);
-          }}
-          className="min-w-10 flex-1"
-        />
+        {renderSlider ? renderSlider(slider) : slider}
         {showLevel ? (
           <span
             aria-hidden
             data-slot="volume-slider-level"
             className={cn(
               "w-12 shrink-0 text-right text-sm font-medium tabular-nums",
+              vertical && "text-center",
               muted ? "text-muted-foreground" : "text-foreground",
               levelClassName
             )}

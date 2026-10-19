@@ -9,17 +9,14 @@ import {
   RiRepeatOneLine,
   RiShuffleLine,
   RiTranslate2,
-  RiVolumeDownLine,
-  RiVolumeMuteLine,
-  RiVolumeUpLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
 import { formatClock } from "../../lib/duration";
 import { clamp, toPercent } from "../../lib/math";
-import { Slider } from "../../primitives/slider";
 import { Spinner } from "../../primitives/spinner";
+import { VolumeSlider } from "../../primitives/volume-slider";
 import {
   DropdownMenuLabel,
   DropdownMenuRadioItem,
@@ -40,8 +37,7 @@ export interface FormatMediaTimeOptions {
 
 /** Format seconds as `m:ss` or `h:mm:ss`. Non-finite or negative input renders `0:00`. */
 export function formatMediaTime(seconds: number, options: FormatMediaTimeOptions = {}): string {
-  const body = formatClock(seconds, { forceHours: options.forceHours });
-  return options.negative ? `-${body}` : body;
+  return formatClock(seconds, { forceHours: options.forceHours, minus: options.negative });
 }
 
 /* ------------------------------------------------------------------ */
@@ -885,7 +881,10 @@ export interface VolumeControlProps extends Omit<React.HTMLAttributes<HTMLDivEle
   size?: "sm" | "md" | "lg";
 }
 
-/** Mute toggle plus a volume slider that expands on hover/focus (or pops up vertically). */
+/**
+ * Mute toggle plus a volume slider that expands on hover/focus (or pops up vertically).
+ * A preset over `VolumeSlider`: media button style, 0–1 volume, arrow keys on the toggle, and the reveal / popover layout.
+ */
 export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps>(
   (
     {
@@ -908,9 +907,7 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
   ) => {
     const [volume, setVolume] = useControllableState({ value: volumeProp, defaultValue: defaultVolume, onChange: onVolumeChange });
     const [muted, setMuted] = useControllableState({ value: mutedProp, defaultValue: defaultMuted, onChange: onMutedChange });
-    const silent = muted || volume <= 0;
-    const level = silent ? 0 : volume;
-    const Icon = silent ? RiVolumeMuteLine : volume < 0.5 ? RiVolumeDownLine : RiVolumeUpLine;
+    const level = muted || volume <= 0 ? 0 : volume;
 
     const change = (v: number) => {
       const next = Math.round(clamp(v, 0, 1) * 100) / 100;
@@ -919,26 +916,62 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
     };
 
     const overlay = tone === "overlay";
-    const sliderTone = overlay ? "[&_.bg-muted]:bg-white/25 [&_.bg-primary]:bg-white [&_.border-primary]:border-white" : "";
-    const slider = (
-      <Slider
-        size="sm"
-        min={0}
-        max={100}
-        step={Math.max(1, Math.round(step * 100))}
-        value={[Math.round(level * 100)]}
-        onValueChange={([v]) => change(v / 100)}
-        orientation={orientation}
-        thumbLabels={["Volume"]}
-        className={cn(sliderTone, orientation === "vertical" && "h-24 w-auto")}
-      />
-    );
+    const vertical = orientation === "vertical";
 
     return (
-      <div
+      <VolumeSlider
         ref={ref}
-        data-orientation={orientation}
-        className={cn("group/volume relative inline-flex items-center", className)}
+        value={volume * 100}
+        onValueChange={(v) => setVolume(v / 100)}
+        muted={muted}
+        onMutedChange={setMuted}
+        showLevel={false}
+        size="sm"
+        step={Math.max(1, Math.round(step * 100))}
+        orientation={orientation}
+        restoreOnUnmute={50}
+        zeroWhenMuted
+        muteToggle="label"
+        muteLabel="Mute"
+        unmuteLabel="Unmute"
+        accent={overlay ? "#fff" : undefined}
+        muteButtonClassName={mediaButtonVariants({ tone, size })}
+        sliderClassName={cn(overlay && "[&_.bg-muted]:bg-white/25", vertical && "h-24 w-auto")}
+        renderSlider={(slider) =>
+          vertical ? (
+            <div
+              data-slot="volume-popover"
+              className={cn(
+                "absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 transition-[opacity,transform] duration-150",
+                "pointer-events-none translate-y-1 opacity-0",
+                "group-hover/volume:pointer-events-auto group-hover/volume:translate-y-0 group-hover/volume:opacity-100",
+                "group-focus-within/volume:pointer-events-auto group-focus-within/volume:translate-y-0 group-focus-within/volume:opacity-100"
+              )}
+            >
+              <div
+                className={cn(
+                  "flex flex-col items-center rounded-box px-1.5 py-3 shadow-lg",
+                  overlay ? "bg-black/80 backdrop-blur" : "border border-border bg-popover"
+                )}
+              >
+                {slider}
+              </div>
+            </div>
+          ) : (
+            <div
+              data-slot="volume-slider-reveal"
+              className={cn(
+                "flex items-center overflow-hidden transition-[width,opacity] duration-200 ease-out",
+                expand === "always"
+                  ? "w-24 pl-1 pr-1.5 opacity-100"
+                  : "w-0 opacity-0 group-hover/volume:w-24 group-hover/volume:pl-1 group-hover/volume:pr-1.5 group-hover/volume:opacity-100 group-focus-within/volume:w-24 group-focus-within/volume:pl-1 group-focus-within/volume:pr-1.5 group-focus-within/volume:opacity-100"
+              )}
+            >
+              {slider}
+            </div>
+          )
+        }
+        className={cn("group/volume relative inline-flex w-auto min-w-0 flex-row items-center gap-0", className)}
         onKeyDown={(e) => {
           onKeyDown?.(e);
           if (e.defaultPrevented) return;
@@ -954,54 +987,7 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
           }
         }}
         {...props}
-      >
-        <button
-          type="button"
-          aria-label={silent ? "Unmute" : "Mute"}
-          data-state={silent ? "muted" : "unmuted"}
-          onClick={() => {
-            if (silent) {
-              setMuted(false);
-              if (volume <= 0) setVolume(0.5);
-            } else setMuted(true);
-          }}
-          className={mediaButtonVariants({ tone, size })}
-        >
-          <Icon aria-hidden />
-        </button>
-        {orientation === "horizontal" ? (
-          <div
-            data-slot="volume-slider"
-            className={cn(
-              "flex items-center overflow-hidden transition-[width,opacity] duration-200 ease-out",
-              expand === "always"
-                ? "w-24 pl-1 pr-1.5 opacity-100"
-                : "w-0 opacity-0 group-hover/volume:w-24 group-hover/volume:pl-1 group-hover/volume:pr-1.5 group-hover/volume:opacity-100 group-focus-within/volume:w-24 group-focus-within/volume:pl-1 group-focus-within/volume:pr-1.5 group-focus-within/volume:opacity-100"
-            )}
-          >
-            {slider}
-          </div>
-        ) : (
-          <div
-            data-slot="volume-popover"
-            className={cn(
-              "absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 transition-[opacity,transform] duration-150",
-              "pointer-events-none translate-y-1 opacity-0",
-              "group-hover/volume:pointer-events-auto group-hover/volume:translate-y-0 group-hover/volume:opacity-100",
-              "group-focus-within/volume:pointer-events-auto group-focus-within/volume:translate-y-0 group-focus-within/volume:opacity-100"
-            )}
-          >
-            <div
-              className={cn(
-                "flex flex-col items-center rounded-box px-1.5 py-3 shadow-lg",
-                overlay ? "bg-black/80 backdrop-blur" : "border border-border bg-popover"
-              )}
-            >
-              {slider}
-            </div>
-          </div>
-        )}
-      </div>
+      />
     );
   }
 );

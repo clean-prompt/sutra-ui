@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn, Eyebrow, Heading, Text } from "@sutra/ui";
+import { href, useHashRoute } from "../router";
 
 export interface DemoProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
   /** Anchor id, matches the nav item id so `#/components/<page>/<id>` scrolls here. */
@@ -26,12 +27,22 @@ export function Demo({
   children,
   ...props
 }: DemoProps) {
+  const route = useHashRoute();
   return (
     <section id={id} className={cn("scroll-mt-20 space-y-3", className)} {...props}>
       <div className="space-y-1">
         <Heading as="h3" size="lg">
           {id ? (
-            <a href={`#${id}`} onClick={(e) => { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); }} className="hover:underline underline-offset-4">
+            <a
+              href={href(route.section, route.page, id)}
+              onClick={(e) => {
+                // Let modified clicks (new tab, new window) follow the link.
+                if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                e.preventDefault();
+                document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="hover:underline underline-offset-4"
+            >
               {title}
             </a>
           ) : (

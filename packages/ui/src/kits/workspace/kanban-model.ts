@@ -208,7 +208,7 @@ export function isKanbanOverdue(card: Pick<KanbanCardData, "dueDate" | "complete
   return (calendarDayDiff(now, card.dueDate) ?? 0) > 0;
 }
 
+/** Time in a column: "45s", "3m 20s", "26h 5m" (hours are the largest unit; "—" for negative input). */
 export function formatKanbanDuration(ms: number) {
-  if (ms < 0) return "—";
-  return formatDuration(ms, { maxUnit: "h" });
+  return formatDuration(ms, { maxUnit: "h", negative: "invalid" });
 }

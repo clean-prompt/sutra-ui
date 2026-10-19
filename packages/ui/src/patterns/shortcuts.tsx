@@ -10,10 +10,11 @@ import {
   type ShortcutHandler,
   type ShortcutManagerOptions,
   type ShortcutOptions,
+  type ShortcutPlatform,
 } from "../lib/shortcuts";
 import { ShortcutManagerContext, ShortcutScopeNameContext } from "../hooks/use-shortcut-manager";
 import { SearchInput } from "../primitives/input";
-import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../primitives/dialog";
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../primitives/dialog";
 import { ShortcutKeys } from "../primitives/shortcut-keys";
 
 /* The engine (parsing, matching, formatting, ShortcutManager) lives in lib/shortcuts; ShortcutKeys in ./shortcut-keys. */
@@ -240,6 +241,12 @@ export interface ShortcutsDialogProps {
   description?: string;
   /** Extra static groups appended to the registry listing. */
   extraGroups?: ShortcutRegistryGroup[];
+  /** List the live shortcut registry. Default true; `false` shows only `extraGroups` (a static cheat sheet). */
+  includeRegistry?: boolean;
+  /** Element that opens the sheet (rendered with `asChild`); focus returns to it on close. */
+  trigger?: React.ReactNode;
+  /** Platform for the key glyphs. Defaults to the provider's (or the detected) platform. */
+  platform?: ShortcutPlatform;
   className?: string;
 }
 
@@ -252,6 +259,9 @@ export function ShortcutsDialog({
   title = "Keyboard shortcuts",
   description = "Every shortcut available on this screen.",
   extraGroups,
+  includeRegistry = true,
+  trigger,
+  platform,
   className,
 }: ShortcutsDialogProps) {
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
@@ -265,7 +275,7 @@ export function ShortcutsDialog({
   const registry = useShortcutRegistry();
   const [query, setQuery] = React.useState("");
   const q = query.trim().toLowerCase();
-  const groups = [...registry.groups, ...(extraGroups ?? [])]
+  const groups = [...(includeRegistry ? registry.groups : []), ...(extraGroups ?? [])]
     .map((g) => ({
       ...g,
       shortcuts: g.shortcuts.filter(
@@ -287,6 +297,7 @@ export function ShortcutsDialog({
         if (!next) setQuery("");
       }}
     >
+      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
       <DialogContent size="lg" className={className}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -319,7 +330,7 @@ export function ShortcutsDialog({
                           <span className="block text-foreground">{s.label}</span>
                           {s.description && <span className="block text-xs text-muted-foreground">{s.description}</span>}
                         </span>
-                        <ShortcutKeys keys={s.keys} size="md" />
+                        <ShortcutKeys keys={s.keys} size="md" platform={platform} />
                       </li>
                     ))}
                   </ul>

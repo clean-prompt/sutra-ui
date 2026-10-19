@@ -368,7 +368,7 @@ describe("ArtifactViewer", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Fullscreen" }));
     expect(onFullscreenChange).toHaveBeenCalledWith(true);
-    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.keyDown(document.activeElement!, { key: "Escape" });
     expect(onFullscreenChange).toHaveBeenLastCalledWith(false);
     fireEvent.click(screen.getByRole("button", { name: "Close artifact" }));
     expect(onClose).toHaveBeenCalled();

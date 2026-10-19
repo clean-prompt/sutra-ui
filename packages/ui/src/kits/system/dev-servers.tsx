@@ -12,6 +12,7 @@ import {
   type IdleServerSummary,
 } from "../../lib/system-monitor";
 import type { TimeInput } from "../../lib/time";
+import { useNow } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { InlineAlert, InlineAlertDescription, InlineAlertTitle } from "../../primitives/inline-alert";
@@ -44,7 +45,7 @@ export interface DevServerListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   onStopIdle?: (ids: string[]) => void | Promise<void>;
   /** Makes the project name a button. */
   onOpen?: (id: string) => void;
-  /** Reference time for idle and uptime text (pass it for deterministic output). Default: render time. */
+  /** Reference time for idle and uptime text (pass it for deterministic output). Default: the live clock, refreshed every 30 seconds. */
   now?: TimeInput;
   /** A `running` server idle this long counts as idle. Default 30 minutes. */
   idleAfterMs?: number;
@@ -110,7 +111,8 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
     ref
   ) => {
     const skeleton = loading && projects.length === 0;
-    const now = nowProp ?? Date.now();
+    const liveNow = useNow({ active: nowProp === undefined && projects.length > 0, interval: 30_000 });
+    const now = nowProp ?? liveNow;
     const options = { now, idleAfterMs };
     const rows = projects.map((project) => ({ project, activity: classifyDevServer(project, options) }));
     const idle = summarizeIdleServers(projects, options);

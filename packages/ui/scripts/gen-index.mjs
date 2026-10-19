@@ -30,6 +30,7 @@ const FOUNDATIONS_ENTRY = "entries/tokens.ts";
 /** Modules the root does not `export *` from even though they sit in a public layer: id -> reason. */
 export const INTERNAL = {
   "kits/workspace/kanban-internal": "private constants shared by the kanban modules",
+  "kits/agent-admin/secret-row": "private secret row shared by llm-providers and tool-toggles",
   // Its public names (ChatInlineCitation, ChatSourceData) reach the root through kits/ai/chat-source;
   // CitationHoverCard and safeSourceHref are helpers shared by chat-source and Markdown.
   "patterns/inline-citation": "helpers; public names come from kits/ai/chat-source",

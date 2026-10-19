@@ -68,8 +68,7 @@ function kindOf(name: string, mimeType?: string): FileKind {
 
 /** Format bytes as "12 KB", "1.4 MB" (lib `formatBytes`; one decimal below 10, `""` for bad input). */
 export function formatAttachmentSize(bytes: number) {
-  if (!Number.isFinite(bytes) || bytes < 0) return "";
-  return formatBytes(bytes, { decimals: 1, wholeAbove: 10, trimZeros: false });
+  return formatBytes(bytes, { decimals: 1, wholeAbove: 10, trimZeros: false, negative: "invalid", invalid: "" });
 }
 
 export interface ChatAttachmentProps extends React.HTMLAttributes<HTMLDivElement> {

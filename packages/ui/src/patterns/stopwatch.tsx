@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RiFlagLine, RiPauseFill, RiPlayFill, RiRestartLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { formatClock } from "../lib/duration";
+import { formatClock, type FormatClockOptions } from "../lib/duration";
 import { Button } from "../primitives/button";
 import { useStopwatch, type StopwatchLap } from "../hooks/use-stopwatch";
 
@@ -11,9 +11,15 @@ export * from "../hooks/use-stopwatch";
 /* Stopwatch                                                           */
 /* ------------------------------------------------------------------ */
 
-/** `mm:ss.cc`, or `h:mm:ss.cc` past an hour. */
+/** Stopwatch reading: `mm:ss.cc`, or `h:mm:ss.cc` past an hour. */
+const STOPWATCH: FormatClockOptions = { padMinutes: true, fractionDigits: 2 };
+
+/**
+ * `mm:ss.cc`, or `h:mm:ss.cc` past an hour.
+ * @deprecated Use `formatClock(ms / 1000, { padMinutes: true, fractionDigits: 2 })`.
+ */
 export function formatStopwatch(ms: number) {
-  return formatClock(ms / 1000, { padMinutes: true, fractionDigits: 2 });
+  return formatClock(ms / 1000, STOPWATCH);
 }
 
 export interface StopwatchProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -41,8 +47,8 @@ export const Stopwatch = React.forwardRef<HTMLDivElement, StopwatchProps>(
 
     return (
       <div ref={ref} className={cn("flex flex-col items-center gap-4", className)} {...props}>
-        <div role="timer" aria-label={`Elapsed ${formatStopwatch(sw.elapsed)}`} className="text-display-md font-semibold tabular-nums text-foreground">
-          <span aria-hidden>{formatStopwatch(sw.elapsed)}</span>
+        <div role="timer" aria-label={`Elapsed ${formatClock(sw.elapsed / 1000, STOPWATCH)}`} className="text-display-md font-semibold tabular-nums text-foreground">
+          <span aria-hidden>{formatClock(sw.elapsed / 1000, STOPWATCH)}</span>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -74,7 +80,7 @@ export const Stopwatch = React.forwardRef<HTMLDivElement, StopwatchProps>(
                 )}
               >
                 <span>Lap {l.index}</span>
-                <span>{formatStopwatch(l.lap)}</span>
+                <span>{formatClock(l.lap / 1000, STOPWATCH)}</span>
               </li>
             ))}
           </ol>

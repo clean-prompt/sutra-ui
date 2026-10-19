@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Dialog as DialogPrimitive } from "radix-ui";
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
@@ -36,6 +37,7 @@ import { SearchInput } from "../../primitives/input";
 import { SegmentedControl } from "../../primitives/segmented-control";
 import { SimpleSelect } from "../../primitives/select";
 import { EmptyState } from "../../primitives/empty-state";
+import { Dialog, DialogPortal } from "../../primitives/dialog";
 
 /* ------------------------------------------------------------------ */
 /* Types & helpers                                                     */
@@ -528,17 +530,11 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
     const current = versions[index];
     const content = current?.content ?? "";
     const titleId = React.useId();
-
-    React.useEffect(() => {
-      if (!fullscreen) return;
-      const onKey = (e: KeyboardEvent) => e.key === "Escape" && setFullscreen(false);
-      window.addEventListener("keydown", onKey);
-      return () => window.removeEventListener("keydown", onKey);
-    }, [fullscreen, setFullscreen]);
+    const toggleRef = React.useRef<HTMLButtonElement>(null);
 
     const codeLang = language ?? (kind === "html" ? "html" : kind === "svg" ? "xml" : kind === "data" ? "json" : kind === "markdown" || kind === "document" ? "markdown" : undefined);
 
-    return (
+    const panel = (
       <section
         ref={ref}
         aria-labelledby={titleId}
@@ -546,8 +542,10 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
         data-fullscreen={fullscreen || undefined}
         className={cn(
           "flex min-h-0 flex-col overflow-hidden border border-border bg-card text-card-foreground",
-          fullscreen ? "fixed inset-0 z-50 rounded-none" : "rounded-box shadow-xs",
-          className
+          fullscreen ? undefined : "rounded-box shadow-xs",
+          className,
+          // Fullscreen wins over any size the caller set for the inline panel (e.g. a fixed height).
+          fullscreen && "fixed inset-0 z-50 m-0 h-dvh max-h-none w-screen max-w-none rounded-none border-0"
         )}
         {...props}
       >
@@ -584,6 +582,7 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
                 type="button"
                 variant="ghost"
                 size="icon-xs"
+                ref={toggleRef}
                 aria-label={fullscreen ? "Exit fullscreen" : "Fullscreen"}
                 aria-pressed={fullscreen}
                 onClick={() => setFullscreen(!fullscreen)}
@@ -647,6 +646,31 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
           </div>
         </Tabs>
       </section>
+    );
+
+    if (!fullscreen) return panel;
+    // Fullscreen is a real modal: focus is trapped, the page behind is hidden from assistive tech,
+    // Escape exits, and focus goes back to the toggle afterwards.
+    return (
+      <Dialog open onOpenChange={setFullscreen}>
+        <DialogPortal>
+          <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-background" />
+          <DialogPrimitive.Content
+            asChild
+            aria-describedby={undefined}
+            onOpenAutoFocus={(event) => {
+              event.preventDefault();
+              toggleRef.current?.focus();
+            }}
+            onCloseAutoFocus={(event) => {
+              event.preventDefault();
+              toggleRef.current?.focus();
+            }}
+          >
+            {panel}
+          </DialogPrimitive.Content>
+        </DialogPortal>
+      </Dialog>
     );
   }
 );

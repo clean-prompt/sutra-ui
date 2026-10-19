@@ -8,6 +8,7 @@ import { MINUTE_MS, toMs, type TimeInput } from "../../lib/time";
 import { Button } from "../../primitives/button";
 import { Meter, meterLevel, StackedMeter, type MeterThresholds } from "../../primitives/meter";
 import { formatAgentTokens } from "../../lib/token-count";
+import { useNow } from "../../hooks/use-now";
 
 function pctText(n: number) {
   if (n > 0 && n < 0.1) return "<0.1%";
@@ -261,8 +262,9 @@ export const UsageLimitBars = React.forwardRef<HTMLDivElement, UsageLimitBarsPro
       if (viewProp === undefined) setInternalView(v);
       onViewChange?.(v);
     };
-    const now = nowProp ?? Date.now();
     const shown = windows.filter((w) => !views || !w.view || w.view === view);
+    const live = nowProp === undefined && shown.some((w) => w.resetLabel == null && w.resetsAt != null);
+    const now = useNow({ active: live, interval: 30_000, fixed: nowProp });
     const shownModels = models?.filter((m) => !views || !m.view || m.view === view);
     return (
       <div ref={ref} className={cn("w-full space-y-4", className)} {...props}>
@@ -338,7 +340,10 @@ UsageLimitBars.displayName = "UsageLimitBars";
 /* SessionStats                                                        */
 /* ------------------------------------------------------------------ */
 
-/** "850ms", "42s", "4m 12s", "1h 03m". */
+/**
+ * "850ms", "42s", "4m 12s", "1h 03m".
+ * @deprecated Use `formatDuration(ms, { ms: true, pad: true })`.
+ */
 export function formatAgentDuration(ms: number) {
   return formatDuration(ms, { ms: true, pad: true });
 }
@@ -370,8 +375,8 @@ export const SessionStats = React.forwardRef<HTMLDListElement, SessionStatsProps
         value: formatCost(cost, { currency, locale: "en-US", maxFraction: cost < 1 ? 4 : 2, tiny: 0 }),
       });
     }
-    if (apiDurationMs != null) rows.push({ label: "API duration", value: formatAgentDuration(apiDurationMs) });
-    if (wallDurationMs != null) rows.push({ label: "Wall duration", value: formatAgentDuration(wallDurationMs) });
+    if (apiDurationMs != null) rows.push({ label: "API duration", value: formatDuration(apiDurationMs, { ms: true, pad: true }) });
+    if (wallDurationMs != null) rows.push({ label: "Wall duration", value: formatDuration(wallDurationMs, { ms: true, pad: true }) });
     if (linesAdded != null || linesRemoved != null) {
       rows.push({
         label: "Code changes",

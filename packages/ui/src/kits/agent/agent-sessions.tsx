@@ -18,7 +18,8 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { MINUTE_MS, formatRelative, type TimeInput } from "../../lib/time";
+import { useNow } from "../../hooks/use-now";
+import { MINUTE_MS, formatRelative, type FormatRelativeOptions, type TimeInput } from "../../lib/time";
 import { type Tone } from "../../lib/tone";
 import { Button } from "../../primitives/button";
 import { StatusDot, type StatusDotVariant } from "../../primitives/status-badge";
@@ -108,9 +109,15 @@ AgentStatusDot.displayName = "AgentStatusDot";
 /* AgentSessionList                                                    */
 /* ------------------------------------------------------------------ */
 
-/** Compact relative time: "now", "5m", "3h", "2d", "Oct 4". */
+/** Session row time: "now", "5m", "3h", "2d", "Oct 4". */
+const SESSION_TIME: FormatRelativeOptions = { style: "narrow", justNowMs: MINUTE_MS, maxRelativeDays: 6, invalid: "" };
+
+/**
+ * Compact relative time: "now", "5m", "3h", "2d", "Oct 4".
+ * @deprecated Use `formatRelative(value, { now, style: "narrow", justNowMs: 60_000, maxRelativeDays: 6, invalid: "" })`.
+ */
 export function formatAgentRelativeTime(value: TimeInput | undefined, now: number = Date.now()) {
-  return formatRelative(value, { now, style: "narrow", justNowMs: MINUTE_MS, maxRelativeDays: 6, invalid: "" });
+  return formatRelative(value, { ...SESSION_TIME, now });
 }
 
 export type AgentSessionFilter = "waiting" | "running" | "unread" | "failed";
@@ -257,7 +264,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
     const rowRefs = React.useRef(new Map<string, HTMLButtonElement>());
     const searchRef = React.useRef<HTMLInputElement>(null);
     const titleId = React.useId();
-    const now = nowProp ?? Date.now();
+    const now = useNow({ active: nowProp === undefined && sessions.some((s) => s.updatedAt != null), interval: 30_000, fixed: nowProp });
 
     const groupIds = new Set(groups.map((g) => g.id));
     const q = query.trim().toLowerCase();
@@ -421,7 +428,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
       const isSelected = selectedSet.has(s.id);
       const isActive = activeId === s.id;
       const meta = [s.branch, s.repo, s.cost].filter(Boolean) as string[];
-      const time = formatAgentRelativeTime(s.updatedAt, now);
+      const time = formatRelative(s.updatedAt, { ...SESSION_TIME, now });
       const editing = renaming?.kind === "session" && renaming.id === s.id;
       return (
         <ContextMenu key={s.id}>

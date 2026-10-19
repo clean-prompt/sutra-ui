@@ -1,17 +1,19 @@
 import * as React from "react";
 
-/** Tracks `navigator.onLine` with online/offline events. */
+function subscribe(onChange: () => void) {
+  window.addEventListener("online", onChange);
+  window.addEventListener("offline", onChange);
+  return () => {
+    window.removeEventListener("online", onChange);
+    window.removeEventListener("offline", onChange);
+  };
+}
+
+const getSnapshot = () => navigator.onLine;
+/* The server can't know; assume online so SSR markup matches the common case and hydration stays clean. */
+const getServerSnapshot = () => true;
+
+/** Tracks `navigator.onLine` with online/offline events. Renders `true` on the server and during hydration. */
 export function useOnlineStatus() {
-  const [online, setOnline] = React.useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
-  React.useEffect(() => {
-    const on = () => setOnline(true);
-    const off = () => setOnline(false);
-    window.addEventListener("online", on);
-    window.addEventListener("offline", off);
-    return () => {
-      window.removeEventListener("online", on);
-      window.removeEventListener("offline", off);
-    };
-  }, []);
-  return online;
+  return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

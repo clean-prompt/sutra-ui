@@ -3,7 +3,7 @@ import { RiArrowRightSLine, RiCloseCircleLine, RiSkullLine } from "@remixicon/re
 import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
 import { toneClasses } from "../../lib/tone";
 import { formatDuration } from "../../lib/duration";
-import { formatBytes, pluralize } from "../../lib/format";
+import { formatBytes, pluralize, type FormatBytesOptions } from "../../lib/format";
 import { safeISO, toMs, type TimeInput } from "../../lib/time";
 import {
   buildProcessTree,
@@ -189,9 +189,15 @@ export interface ProcessQuitOptions {
   force: boolean;
 }
 
-/** Human bytes: 1536 → "1.5 KB" (base 1024). */
+/** Memory columns: 1536 → "1.5 KB" (base 1024). */
+const PROCESS_BYTES: FormatBytesOptions = { decimals: 1, wholeAbove: 100 };
+
+/**
+ * Human bytes: 1536 → "1.5 KB" (base 1024).
+ * @deprecated Use `formatBytes(bytes, { decimals: 1, wholeAbove: 100 })`.
+ */
 export function formatProcessBytes(bytes: number | null | undefined): string {
-  return formatBytes(bytes, { decimals: 1, wholeAbove: 100 });
+  return formatBytes(bytes, PROCESS_BYTES);
 }
 
 /** Elapsed time: "45s", "5m", "2h 5m", "3d 4h" (floored). */
@@ -601,11 +607,11 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
             </span>
           );
         case "memory":
-          return <span className="font-mono text-xs tabular-nums">{formatProcessBytes(p.memory)}</span>;
+          return <span className="font-mono text-xs tabular-nums">{formatBytes(p.memory, PROCESS_BYTES)}</span>;
         case "vram":
           return p.vram ? (
             <span className="font-mono text-xs tabular-nums">
-              {formatProcessBytes(p.vram)}
+              {formatBytes(p.vram, PROCESS_BYTES)}
               {p.gpuIndex != null ? <span className="ml-1 text-2xs text-muted-foreground">G{p.gpuIndex}</span> : null}
             </span>
           ) : (
@@ -683,10 +689,10 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
         case "cpu":
           return <span className={cn("font-mono text-xs font-medium tabular-nums", group.cpu >= 80 && "text-warning-soft-foreground")}>{group.cpu.toFixed(1)}%</span>;
         case "memory":
-          return <span className="font-mono text-xs font-medium tabular-nums">{formatProcessBytes(group.memory)}</span>;
+          return <span className="font-mono text-xs font-medium tabular-nums">{formatBytes(group.memory, PROCESS_BYTES)}</span>;
         case "vram":
           return group.vram ? (
-            <span className="font-mono text-xs font-medium tabular-nums">{formatProcessBytes(group.vram)}</span>
+            <span className="font-mono text-xs font-medium tabular-nums">{formatBytes(group.vram, PROCESS_BYTES)}</span>
           ) : (
             <span className="text-xs text-muted-foreground">—</span>
           );
@@ -858,9 +864,9 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
                   {col === "cpu" ? (
                     <span className="font-mono text-xs tabular-nums">{totals.cpu.toFixed(1)}%</span>
                   ) : col === "memory" ? (
-                    <span className="font-mono text-xs tabular-nums">{formatProcessBytes(totals.memory)}</span>
+                    <span className="font-mono text-xs tabular-nums">{formatBytes(totals.memory, PROCESS_BYTES)}</span>
                   ) : col === "vram" ? (
-                    <span className="font-mono text-xs tabular-nums">{totals.vram ? formatProcessBytes(totals.vram) : "—"}</span>
+                    <span className="font-mono text-xs tabular-nums">{totals.vram ? formatBytes(totals.vram, PROCESS_BYTES) : "—"}</span>
                   ) : i === 0 ? (
                     <span className="text-xs">
                       {processes.length} {pluralize(processes.length, "process", "processes")}

@@ -11,10 +11,11 @@ import {
   RiVolumeMuteLine,
   RiVolumeUpLine,
 } from "@remixicon/react";
+import { AlertDialog as AlertDialogPrimitive } from "radix-ui";
 import { cn, focusRing } from "../../lib/cn";
 import { toneClasses } from "../../lib/tone";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
+import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { useNow } from "../../hooks/use-now";
 import { formatClock } from "../../lib/duration";
 import { toMs } from "../../lib/time";
@@ -22,7 +23,10 @@ import { Avatar } from "../../primitives/avatar";
 
 export type CallType = "video" | "audio";
 
-/** `mm:ss`, or `h:mm:ss` past an hour. */
+/**
+ * `mm:ss`, or `h:mm:ss` past an hour.
+ * @deprecated Use `formatClock(totalSeconds, { padMinutes: true })`.
+ */
 export function formatCallDuration(totalSeconds: number) {
   return formatClock(totalSeconds, { padMinutes: true });
 }
@@ -47,7 +51,11 @@ export interface IncomingCallProps extends React.HTMLAttributes<HTMLDivElement> 
   /** Auto-dismiss after this many ms (calls `onTimeout`, else `onDecline`). `0` disables. Default 30000. */
   ringFor?: number;
   onTimeout?: () => void;
-  /** `card` renders inline; `overlay` covers the viewport with a scrim. */
+  /**
+   * `card` renders inline as a non-modal dialog (focus stays where it is; Escape inside it declines).
+   * `overlay` is a modal alert dialog over a scrim: it focuses Accept, traps focus, hides the page
+   * from assistive tech, declines on Escape and returns focus when it unmounts.
+   */
   variant?: "card" | "overlay";
 }
 
@@ -73,37 +81,35 @@ export const IncomingCall = React.forwardRef<HTMLDivElement, IncomingCallProps>(
   ) => {
     const titleId = React.useId();
     const descId = React.useId();
-    const timeoutRef = React.useRef(onTimeout ?? onDecline);
-    timeoutRef.current = onTimeout ?? onDecline;
+    const timeoutRef = useLatestRef(onTimeout ?? onDecline);
     const acceptRef = React.useRef<HTMLButtonElement>(null);
+    const modal = variant === "overlay";
+    // Where focus was before the overlay opened (kept across StrictMode's simulated remount), restored on unmount.
+    const returnFocus = React.useRef<HTMLElement | null>(null);
+    useIsoLayoutEffect(() => {
+      if (modal && !returnFocus.current && document.activeElement instanceof HTMLElement) returnFocus.current = document.activeElement;
+    }, [modal]);
 
     React.useEffect(() => {
       if (!ringFor) return;
       const t = setTimeout(() => timeoutRef.current?.(), ringFor);
       return () => clearTimeout(t);
-    }, [ringFor]);
+    }, [ringFor, timeoutRef]);
 
-    React.useEffect(() => {
-      if (variant === "overlay") acceptRef.current?.focus();
-    }, [variant]);
+    const title = (
+      <p {...(modal ? {} : { id: titleId })} className="text-lg font-semibold text-foreground">
+        {name}
+      </p>
+    );
+    const description = (
+      <p {...(modal ? {} : { id: descId })} className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
+        {type === "video" ? <RiVideoOnFill aria-hidden className="size-4" /> : <RiPhoneFill aria-hidden className="size-4" />}
+        {type === "video" ? "Incoming video call" : "Incoming audio call"}
+      </p>
+    );
 
-    const card = (
-      <div
-        ref={variant === "card" ? ref : undefined}
-        role="alertdialog"
-        aria-labelledby={titleId}
-        aria-describedby={descId}
-        aria-modal={variant === "overlay" || undefined}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") onDecline?.();
-        }}
-        className={cn(
-          "relative flex w-full max-w-xs flex-col items-center gap-5 overflow-hidden rounded-box border border-border bg-card p-6 text-card-foreground shadow-2xl",
-          variant === "overlay" && "animate-in fade-in-0 zoom-in-95",
-          variant === "card" && className
-        )}
-        {...(variant === "card" ? props : {})}
-      >
+    const content = (
+      <>
         <div className="relative mt-2 flex size-24 items-center justify-center">
           {[0, 1, 2].map((i) => (
             <span
@@ -117,13 +123,8 @@ export const IncomingCall = React.forwardRef<HTMLDivElement, IncomingCallProps>(
           {avatar ?? <Avatar size="2xl" name={name} src={avatarSrc} className="size-24 text-2xl" />}
         </div>
         <div className="space-y-1 text-center">
-          <p id={titleId} className="text-lg font-semibold text-foreground">
-            {name}
-          </p>
-          <p id={descId} className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
-            {type === "video" ? <RiVideoOnFill aria-hidden className="size-4" /> : <RiPhoneFill aria-hidden className="size-4" />}
-            {type === "video" ? "Incoming video call" : "Incoming audio call"}
-          </p>
+          {modal ? <AlertDialogPrimitive.Title asChild>{title}</AlertDialogPrimitive.Title> : title}
+          {modal ? <AlertDialogPrimitive.Description asChild>{description}</AlertDialogPrimitive.Description> : description}
           {subtitle ? <p className="text-xs text-muted-foreground">{subtitle}</p> : null}
         </div>
         <div className="flex w-full items-start justify-around gap-4">
@@ -139,14 +140,61 @@ export const IncomingCall = React.forwardRef<HTMLDivElement, IncomingCallProps>(
             {type === "video" ? <RiVideoOnFill aria-hidden /> : <RiPhoneFill aria-hidden />}
           </CallRoundAction>
         </div>
-      </div>
+      </>
     );
 
-    if (variant === "card") return card;
+    const cardClass = "relative flex w-full max-w-xs flex-col items-center gap-5 overflow-hidden rounded-box border border-border bg-card p-6 text-card-foreground shadow-2xl";
+
+    if (!modal) {
+      return (
+        <div
+          ref={ref}
+          role="dialog"
+          aria-labelledby={titleId}
+          aria-describedby={descId}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") onDecline?.();
+          }}
+          className={cn(cardClass, className)}
+          {...props}
+        >
+          {content}
+        </div>
+      );
+    }
+
+    // Always open while mounted: the app unmounts it when the call is answered, declined or missed.
     return (
-      <div ref={ref} className={cn("fixed inset-0 z-50 flex items-center justify-center bg-overlay p-4 backdrop-blur-sm", className)} {...props}>
-        {card}
-      </div>
+      <AlertDialogPrimitive.Root
+        open
+        onOpenChange={(open) => {
+          if (!open) onDecline?.();
+        }}
+      >
+        <AlertDialogPrimitive.Portal>
+          <AlertDialogPrimitive.Overlay
+            ref={ref}
+            className={cn("fixed inset-0 z-50 flex items-center justify-center bg-overlay p-4 backdrop-blur-sm", className)}
+            {...props}
+          >
+            <AlertDialogPrimitive.Content
+              asChild
+              onOpenAutoFocus={(e) => {
+                e.preventDefault();
+                acceptRef.current?.focus();
+              }}
+              onCloseAutoFocus={(e) => {
+                // There is no Radix trigger to go back to, so return focus to where it was.
+                e.preventDefault();
+                const el = returnFocus.current;
+                if (el?.isConnected) el.focus();
+              }}
+            >
+              <div className={cn(cardClass, "animate-in fade-in-0 zoom-in-95")}>{content}</div>
+            </AlertDialogPrimitive.Content>
+          </AlertDialogPrimitive.Overlay>
+        </AlertDialogPrimitive.Portal>
+      </AlertDialogPrimitive.Root>
     );
   }
 );
@@ -396,8 +444,8 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
             <p className="truncate text-base font-semibold">{name}</p>
             <p className="flex items-center gap-2 text-sm text-white/75">
               {status ?? (
-                <span role="timer" aria-label={`Call duration ${formatCallDuration(seconds)}`} className="tabular-nums">
-                  {formatCallDuration(seconds)}
+                <span role="timer" aria-label={`Call duration ${formatClock(seconds, { padMinutes: true })}`} className="tabular-nums">
+                  {formatClock(seconds, { padMinutes: true })}
                 </span>
               )}
             </p>

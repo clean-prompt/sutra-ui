@@ -11,6 +11,7 @@ import {
 import { cn, focusRing } from "../../lib/cn";
 import { formatRelativeTime } from "../../lib/relative-time";
 import { useOnlineStatus } from "../../hooks/use-online-status";
+import { useNow } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
 import { InlineAlert } from "../../primitives/inline-alert";
 import { SimpleTooltip } from "../../primitives/tooltip";
@@ -67,52 +68,64 @@ export const SyncStatus = React.forwardRef<HTMLButtonElement, SyncStatusProps>(
   ) => {
     const label = syncStateLabels[status];
     const Icon = stateIcon[status];
-    const last = lastSyncedAt != null ? `Last synced ${formatRelativeTime(lastSyncedAt, now ?? Date.now())}` : undefined;
+    const showsLast = lastSyncedAt != null && status !== "conflict" && !(status === "error" && onRetry);
+    const current = useNow({ active: showsLast && now === undefined, interval: 30_000, fixed: now });
     const pending = pendingChanges > 0 ? `${pendingChanges} ${pendingChanges === 1 ? "change" : "changes"}` : undefined;
-    const detail = {
-      synced: ["All changes saved", last],
-      syncing: [pending ? `Uploading ${pending}` : "Syncing changes", last],
-      offline: [pending ? `${pending} saved locally, will sync when you reconnect` : "Changes are saved on this device", last],
-      error: ["Couldn’t reach the server", onRetry ? "Click to retry" : last],
-      conflict: ["This item changed on another device", onResolve ? "Click to resolve" : undefined],
-    }[status]
-      .filter(Boolean)
-      .join(" · ");
+    // The state part is stable between clock ticks; the relative time is kept out of the live region's text
+    // (it goes in the description), so a ticking "N min ago" is never re-announced.
+    const summary = {
+      synced: "All changes saved",
+      syncing: pending ? `Uploading ${pending}` : "Syncing changes",
+      offline: pending ? `${pending} saved locally, will sync when you reconnect` : "Changes are saved on this device",
+      error: onRetry ? "Couldn’t reach the server · Click to retry" : "Couldn’t reach the server",
+      conflict: onResolve ? "This item changed on another device · Click to resolve" : "This item changed on another device",
+    }[status];
+    const timeText = showsLast && lastSyncedAt != null ? `Last synced ${formatRelativeTime(lastSyncedAt, current)}` : undefined;
+    const detail = [summary, timeText].filter(Boolean).join(" · ");
+    const descId = React.useId();
     const action = status === "conflict" ? onResolve : status === "error" || status === "offline" ? onRetry : undefined;
 
     return (
-      <span role="status" className="inline-flex">
-        <SimpleTooltip content={detail}>
-          <button
-            ref={ref}
-            type="button"
-            data-status={status}
-            aria-label={showLabel ? undefined : `${label}. ${detail}`}
-            onClick={(e) => {
-              onClick?.(e);
-              action?.();
-            }}
-            className={cn(
-              "inline-flex h-7 items-center gap-1.5 rounded-control px-2 text-xs font-medium transition-colors hover:bg-accent",
-              stateStyle[status].text,
-              focusRing,
-              className
-            )}
-            {...props}
-          >
-            {status === "synced" || status === "syncing" ? (
-              <Icon aria-hidden className={cn("size-4", status === "syncing" && "animate-spin", status === "synced" && "text-success")} />
-            ) : (
-              <Icon aria-hidden className="size-4" />
-            )}
-            {showLabel && <span>{label}</span>}
-            {showLabel && pendingChanges > 0 && status !== "synced" && (
-              <span className="rounded-full bg-muted px-1.5 text-2xs tabular-nums text-muted-foreground">{pendingChanges}</span>
-            )}
-            <span aria-hidden className={cn("size-1.5 rounded-full", stateStyle[status].dot, showLabel && "hidden")} />
-          </button>
-        </SimpleTooltip>
-      </span>
+      <>
+        <span role="status" className="inline-flex">
+          <SimpleTooltip content={detail}>
+            <button
+              ref={ref}
+              type="button"
+              data-status={status}
+              aria-label={showLabel ? undefined : `${label}. ${summary}`}
+              aria-describedby={timeText ? descId : undefined}
+              onClick={(e) => {
+                onClick?.(e);
+                action?.();
+              }}
+              className={cn(
+                "inline-flex h-7 items-center gap-1.5 rounded-control px-2 text-xs font-medium transition-colors hover:bg-accent",
+                stateStyle[status].text,
+                focusRing,
+                className
+              )}
+              {...props}
+            >
+              {status === "synced" || status === "syncing" ? (
+                <Icon aria-hidden className={cn("size-4", status === "syncing" && "animate-spin", status === "synced" && "text-success")} />
+              ) : (
+                <Icon aria-hidden className="size-4" />
+              )}
+              {showLabel && <span>{label}</span>}
+              {showLabel && pendingChanges > 0 && status !== "synced" && (
+                <span className="rounded-full bg-muted px-1.5 text-2xs tabular-nums text-muted-foreground">{pendingChanges}</span>
+              )}
+              <span aria-hidden className={cn("size-1.5 rounded-full", stateStyle[status].dot, showLabel && "hidden")} />
+            </button>
+          </SimpleTooltip>
+        </span>
+        {timeText && (
+          <span id={descId} hidden>
+            {timeText}
+          </span>
+        )}
+      </>
     );
   }
 );
@@ -232,6 +245,7 @@ function VersionPane({
   tone: "mine" | "theirs";
   now?: Date;
 }) {
+  const current = useNow({ active: version.updatedAt != null && now === undefined, interval: 30_000, fixed: now });
   const content =
     typeof version.content === "string" && typeof compareTo.content === "string" ? (
       <pre className="whitespace-pre-wrap break-words font-sans text-sm">
@@ -255,7 +269,7 @@ function VersionPane({
       <header className="flex items-baseline justify-between gap-2 border-b border-border bg-subtle px-3 py-2">
         <span className="text-sm font-semibold text-foreground">{label}</span>
         <span className="truncate text-xs text-muted-foreground">
-          {[version.source, version.updatedAt != null ? formatRelativeTime(version.updatedAt, now ?? Date.now()) : null]
+          {[version.source, version.updatedAt != null ? formatRelativeTime(version.updatedAt, current) : null]
             .filter(Boolean)
             .join(" · ")}
         </span>

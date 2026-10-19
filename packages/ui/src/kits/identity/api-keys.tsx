@@ -9,6 +9,7 @@ import {
 } from "@remixicon/react";
 import { cn } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { DAY_MS, MINUTE_MS, formatRelative, formatShortDate, toMs, type TimeInput } from "../../lib/time";
 import { Button } from "../../primitives/button";
 import { Badge } from "../../primitives/badge";
@@ -46,13 +47,14 @@ type DateInput = TimeInput;
 
 /** "just now", "5 min ago", "3h ago", "in 3 days", "2 mo ago". */
 export function formatRelativeDate(value: DateInput, now: number = Date.now()) {
-  const t = toMs(value);
-  if (t !== undefined && t > now && t - now < MINUTE_MS) return "in under a minute";
-  // Long style with this list's compact hour/month/year units.
-  return formatRelative(t, { now, style: "long", future: true, justNowMs: MINUTE_MS })
-    .replace(/ hours?\b/, "h")
-    .replace(/ months?\b/, " mo")
-    .replace(/ years?\b/, "y");
+  return formatRelative(value, {
+    now,
+    style: "long",
+    future: true,
+    justNowMs: MINUTE_MS,
+    justNow: { past: "just now", future: "in under a minute" },
+    unitLabels: { hour: "h", month: " mo", year: "y" },
+  });
 }
 
 /** Mask a key for display: "sk-live-abc…a1b2" → "sk-…a1b2". */
@@ -364,8 +366,7 @@ export function ApiKeyCreateDialog({
   const id = React.useId();
   // Bumped on every submit, reset and unmount; a request whose token is stale has its result discarded.
   const requestRef = React.useRef(0);
-  const discardedRef = React.useRef(onCreateDiscarded);
-  discardedRef.current = onCreateDiscarded;
+  const discardedRef = useLatestRef(onCreateDiscarded);
 
   const reset = () => {
     requestRef.current += 1;

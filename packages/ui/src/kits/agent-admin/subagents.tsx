@@ -10,7 +10,7 @@ import {
   RiTimeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
-import { formatDuration } from "../../lib/duration";
+import { formatDuration, type FormatDurationOptions } from "../../lib/duration";
 import { formatCost, formatTokens } from "../../lib/format";
 import { normalizeTaskStatus, type TaskStatusInput } from "../../lib/status";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -90,9 +90,15 @@ export function subagentElapsed(node: SubagentNode, now: number): number {
   return Math.max(0, (node.endedAt ?? now) - node.startedAt);
 }
 
-/** "42s", "3m 05s", "1h 02m". */
+/** Elapsed time: "42s", "3m 05s", "1h 02m". */
+const ELAPSED: FormatDurationOptions = { pad: true, round: "floor" };
+
+/**
+ * "42s", "3m 05s", "1h 02m".
+ * @deprecated Use `formatDuration(ms, { pad: true, round: "floor" })`.
+ */
 export function formatSubagentElapsed(ms: number): string {
-  return formatDuration(ms, { pad: true, round: "floor" });
+  return formatDuration(ms, ELAPSED);
 }
 
 /** "$0.123" under a dollar, "$1.23" above. */
@@ -407,7 +413,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                   {roll.tokens > 0 && <span title="Tokens">{formatTokens(roll.tokens, { trimZeros: false })} tok</span>}
                   {roll.cost > 0 && <span title="Cost">{fmtCost(roll.cost)}</span>}
                   <span title="Elapsed" className="min-w-10 text-right">
-                    {formatSubagentElapsed(elapsed)}
+                    {formatDuration(elapsed, ELAPSED)}
                   </span>
                 </span>
               </div>
@@ -684,7 +690,7 @@ export const DelegateToolBody = React.forwardRef<HTMLDivElement, DelegateToolBod
                 )}
               </div>
               {t.elapsedMs != null && (
-                <span className="mt-0.5 shrink-0 text-2xs tabular-nums text-muted-foreground">{formatSubagentElapsed(t.elapsedMs)}</span>
+                <span className="mt-0.5 shrink-0 text-2xs tabular-nums text-muted-foreground">{formatDuration(t.elapsedMs, ELAPSED)}</span>
               )}
               {onOpen && (
                 <Button

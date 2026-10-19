@@ -25,6 +25,7 @@ import { cn, focusRing } from "../../lib/cn";
 import { chartColors } from "../../lib/tokens";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { usePrefersReducedMotion } from "../../hooks/use-media-query";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { seededRandom } from "../../lib/hash";
 import { base64UrlDecode, base64UrlEncode } from "../../lib/encoding";
 import { formatClockTime, formatShortDate, toMs, type TimeInput } from "../../lib/time";
@@ -458,10 +459,8 @@ export const TimeScrubber = React.forwardRef<HTMLDivElement, TimeScrubberProps>(
 
     const valueRef = React.useRef(value);
     valueRef.current = value;
-    const setValueRef = React.useRef(setValue);
-    setValueRef.current = setValue;
-    const setPlayingRef = React.useRef(setPlaying);
-    setPlayingRef.current = setPlaying;
+    const setValueRef = useLatestRef(setValue);
+    const setPlayingRef = useLatestRef(setPlaying);
 
     React.useEffect(() => {
       if (!playing) return;
@@ -901,8 +900,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
         drawRef.current();
       });
     }, []);
-    const onLayoutRef = React.useRef(onLayout);
-    onLayoutRef.current = onLayout;
+    const onLayoutRef = useLatestRef(onLayout);
 
     React.useEffect(() => {
       const maxWeight = Math.max(1, ...nodes.map((n) => n.weight ?? 1));
@@ -1172,17 +1170,18 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
       return { x: e.clientX - r.left, y: e.clientY - r.top };
     };
 
+    const zoomAtRef = useLatestRef(zoomAt);
     React.useEffect(() => {
       const canvas = canvasRef.current;
       if (!canvas) return;
       const onWheel = (e: WheelEvent) => {
         e.preventDefault();
         const r = canvas.getBoundingClientRect();
-        zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r.left, e.clientY - r.top);
+        zoomAtRef.current(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r.left, e.clientY - r.top);
       };
       canvas.addEventListener("wheel", onWheel, { passive: false });
       return () => canvas.removeEventListener("wheel", onWheel);
-    });
+    }, [listView, zoomAtRef]);
 
     const onPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;

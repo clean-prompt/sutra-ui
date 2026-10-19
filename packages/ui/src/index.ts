@@ -201,6 +201,7 @@ export * from "./kits/agent/rewind";
 export * from "./kits/agent/tool-timeline";
 
 /* Kit: agent-admin (src/kits/agent-admin) */
+// not exported: kits/agent-admin/secret-row (internal: private secret row shared by llm-providers and tool-toggles)
 export * from "./kits/agent-admin/agent-jobs";
 export * from "./kits/agent-admin/agent-persona";
 export * from "./kits/agent-admin/agent-room";

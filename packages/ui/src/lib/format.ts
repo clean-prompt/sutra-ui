@@ -5,7 +5,12 @@ function toNumber(v: unknown): number {
   return typeof v === "number" ? v : typeof v === "string" && v.trim() !== "" ? Number(v) : NaN;
 }
 
-function numberText(n: number, decimals: number, trimZeros: boolean, locale: string | undefined): string {
+function numberText(n: number, decimals: number, trimZeros: boolean | "whole", locale: string | undefined): string {
+  if (trimZeros === "whole") {
+    // toFixed(0), not String(), so big whole values keep every digit like the untrimmed form does.
+    if (!locale) return n.toFixed(Number.isInteger(n) ? 0 : decimals);
+    trimZeros = Number.isInteger(n);
+  }
   if (locale) {
     try {
       return new Intl.NumberFormat(locale, {
@@ -28,14 +33,24 @@ const BYTE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB"] as const;
 export interface FormatBytesOptions {
   /** Decimal places above bytes. Default 1. */
   decimals?: number;
-  /** Drop trailing zeros (`"2 KB"` instead of `"2.0 KB"`). Default true. */
-  trimZeros?: boolean;
+  /**
+   * Drop trailing zeros (`"2 KB"` instead of `"2.0 KB"`, `"1.5 MB"` instead of `"1.50 MB"`). Default true.
+   * `"whole"` drops the fraction only when it is all zeros (`"2 KB"` but `"1.50 MB"`).
+   */
+  trimZeros?: boolean | "whole";
   /** Values at or above this (in the chosen unit) show no decimals (`10` → `"12 MB"`, `"1.5 MB"`). Default: never. */
   wholeAbove?: number;
   /** `1024` (default) or `1000`. Labels are KB/MB/GB either way. */
   base?: 1024 | 1000;
   /** Space between number and unit. Default true. */
   space?: boolean;
+  /**
+   * Unit labels from bytes upward; the last one is the largest unit used (larger values count in it).
+   * Default `["B", "KB", "MB", "GB", "TB", "PB", "EB"]`. E.g. `["B", "kB", "MB", "GB"]` for SI rates, or stop at `"TB"`.
+   */
+  units?: readonly string[];
+  /** Negative input: `"sign"` (default, `"-1.5 KB"`), `"zero"` (`"0 B"`) or `"invalid"` (returns `invalid`). */
+  negative?: "sign" | "zero" | "invalid";
   /** Text for non-numeric input. Default `"—"`. */
   invalid?: string;
   locale?: string;
@@ -43,19 +58,22 @@ export interface FormatBytesOptions {
 
 /** Human file size such as `"1.5 MB"`. Re-checks the unit after rounding, so 1023.99 B is `"1 KB"`, never `"1024 B"`. */
 export function formatBytes(bytes: number | null | undefined, options: FormatBytesOptions = {}): string {
-  const n = toNumber(bytes);
-  if (!Number.isFinite(n)) return options.invalid ?? "—";
+  let n = toNumber(bytes);
+  if (!Number.isFinite(n) || (n < 0 && options.negative === "invalid")) return options.invalid ?? "—";
+  if (n < 0 && options.negative === "zero") n = 0;
+  const units = options.units && options.units.length > 0 ? options.units : BYTE_UNITS;
+  const last = units.length - 1;
   const base = options.base === 1000 ? 1000 : 1024;
   const decimals = Math.max(0, Math.min(10, Math.trunc(options.decimals ?? 1)));
-  const trim = options.trimZeros !== false;
+  const trim = options.trimZeros ?? true;
   const sp = options.space === false ? "" : " ";
   const sign = n < 0 ? "-" : "";
   const abs = Math.abs(n);
 
-  let i = abs < 1 ? 0 : Math.min(BYTE_UNITS.length - 1, Math.floor(Math.log(abs) / Math.log(base)));
+  let i = abs < 1 ? 0 : Math.min(last, Math.floor(Math.log(abs) / Math.log(base)));
   // log() can land one off at exact powers; correct it.
   while (i > 0 && abs < base ** i) i--;
-  while (i < BYTE_UNITS.length - 1 && abs >= base ** (i + 1)) i++;
+  while (i < last && abs >= base ** (i + 1)) i++;
 
   const round = (unit: number) => {
     const scaled = abs / base ** unit;
@@ -64,12 +82,12 @@ export function formatBytes(bytes: number | null | undefined, options: FormatByt
     return { v: roundTo(scaled, d), d };
   };
   let r = round(i);
-  if (r.v >= base && i < BYTE_UNITS.length - 1) {
+  if (r.v >= base && i < last) {
     i++;
     r = round(i);
   }
-  if (r.v === 0) return `0${sp}B`;
-  return `${sign}${numberText(r.v, r.d, trim || i === 0, options.locale)}${sp}${BYTE_UNITS[i]}`;
+  if (r.v === 0) return `0${sp}${units[0]}`;
+  return `${sign}${numberText(r.v, r.d, i === 0 || trim, options.locale)}${sp}${units[i]}`;
 }
 
 /* ------------------------------------------------------------------ */

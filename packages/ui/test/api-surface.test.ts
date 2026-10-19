@@ -19,6 +19,7 @@ const pkg = JSON.parse(fs.readFileSync(path.join(PKG, "package.json"), "utf8"));
 const INTERNAL_MODULES = [
   // Private constants shared by the kanban modules (see the header of the file).
   "kits/workspace/kanban-internal",
+  "kits/agent-admin/secret-row",
   // Back-compat barrel: every name it re-exports reaches the root through the real modules, so
   // gen-index leaves it out; old imports keep working via @sutra/ui/components/primitives-extra.
   "kits/ai/primitives-extra",

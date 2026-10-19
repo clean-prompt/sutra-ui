@@ -9,7 +9,7 @@ import {
 } from "@remixicon/react";
 import { cn } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
-import { DAY_MS, formatRelative, toMs } from "../../lib/time";
+import { formatRelative } from "../../lib/time";
 import { useNow } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
 import { SimpleTooltip } from "../../primitives/tooltip";
@@ -72,10 +72,8 @@ export function getTextStats(text: string, options: TextStatsOptions = {}): Text
 
 /** Compact "Saved …" label: "Saved just now", "Saved 2m ago", "Saved 3h ago", "Saved yesterday", "Saved Mar 3". */
 export function formatSavedAgo(value: Date | number | string, now: Date | number = Date.now()) {
-  const t = toMs(value);
-  const n = toMs(now);
-  if (t !== undefined && n !== undefined && n - t >= DAY_MS && n - t < 2 * DAY_MS) return "Saved yesterday";
-  return `Saved ${formatRelative(value, { now, yesterday: true, maxRelativeDays: 1 })}`;
+  // Whole days are floored, so anything under 48 hours reads "yesterday".
+  return `Saved ${formatRelative(value, { now, yesterday: true, maxRelativeDays: 1, round: { day: "floor" } })}`;
 }
 
 const nf = new Intl.NumberFormat();

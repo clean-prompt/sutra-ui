@@ -81,10 +81,10 @@ function SwitcherDemo() {
   const isDefault = value.gatewayId === defaultSelection.gatewayId && value.profileId === defaultSelection.profileId;
   return (
     <div className="flex w-full max-w-xl flex-col gap-4">
-      <div className="overflow-hidden rounded-box border border-border">
+      {/* The nav anchor lives on this always-rendered wrapper: the banner itself is absent on the default profile. */}
+      <div id="profile-scope-banner" className="scroll-mt-20 overflow-hidden rounded-box border border-border">
         {!isDefault ? (
           <ProfileScopeBanner
-            id="profile-scope-banner"
             profileName={profile.name}
             gatewayName={gateway.name}
             onSwitchBack={() => setValue(defaultSelection)}

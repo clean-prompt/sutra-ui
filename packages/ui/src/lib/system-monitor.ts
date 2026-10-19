@@ -21,10 +21,12 @@ export function formatMemory(bytes: number | null | undefined): string {
   return abs >= 1e9 ? formatBytes(bytes, { base: 1000, decimals: 2 }) : formatBytes(bytes, { base: 1000, decimals: 1, wholeAbove: 10 });
 }
 
+const SI_RATE_UNITS = ["B", "kB", "MB", "GB", "TB", "PB", "EB"];
+
 /** A transfer rate in decimal units: `"6 kB/s"`, `"1.2 MB/s"`. */
 export function formatRate(bytesPerSecond: number | null | undefined): string {
   if (typeof bytesPerSecond !== "number" || !Number.isFinite(bytesPerSecond)) return "—";
-  return `${formatBytes(bytesPerSecond, { base: 1000, decimals: 1, wholeAbove: 10 }).replace(/KB$/, "kB")}/s`;
+  return `${formatBytes(bytesPerSecond, { base: 1000, decimals: 1, wholeAbove: 10, units: SI_RATE_UNITS })}/s`;
 }
 
 /** Split formatted text such as `"674 MB"` into its number and unit (for a big value with a muted unit). */
@@ -40,10 +42,7 @@ export function formatCpu(percent: number | null | undefined): string {
 
 /** The time between `from` and `now` as words without "ago": `"3 days"`, `"2 hours"`, `"45 min"` (`undefined` when unparseable). */
 export function formatSpan(from: TimeInput | null | undefined, now: TimeInput = Date.now()): string | undefined {
-  if (from === null || from === undefined || toMs(from) === undefined || toMs(now) === undefined) return undefined;
-  const text = formatRelative(from, { now, style: "long", yesterday: false, justNowMs: MINUTE_MS / 2 });
-  if (text === "just now") return "under a minute";
-  return text.replace(/ ago$/, "");
+  return formatRelative(from, { now, style: "long", yesterday: false, suffix: false, justNowMs: MINUTE_MS / 2, justNow: "under a minute", invalid: "" }) || undefined;
 }
 
 /* ------------------------------------------------------------------ */

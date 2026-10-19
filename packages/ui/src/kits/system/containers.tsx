@@ -28,6 +28,7 @@ import {
   type ContainerInfo,
 } from "../../lib/system-monitor";
 import type { TimeInput } from "../../lib/time";
+import { useNow } from "../../hooks/use-now";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Badge } from "../../primitives/badge";
 import { Button } from "../../primitives/button";
@@ -65,7 +66,7 @@ export interface ContainerListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   onStop?: (id: string) => void | Promise<void>;
   /** Warn when memory reaches this share of the container's limit. Default 0.8. */
   limitWarnAt?: number;
-  /** Reference time for "Up 5 hours" (pass it for deterministic output). Default: render time. */
+  /** Reference time for "Up 5 hours" (pass it for deterministic output). Default: the live clock, refreshed every 30 seconds. */
   now?: TimeInput;
   /** Categorical colour for icons, port badges and CPU bars. Default "cyan". */
   accent?: Accent;
@@ -251,8 +252,9 @@ export const ContainerList = React.forwardRef<HTMLDivElement, ContainerListProps
       setCollapsed(nextCollapsed);
       onExpandedChange?.(groupNames.filter((n) => !nextCollapsed.includes(n)));
     };
+    const liveNow = useNow({ active: nowProp === undefined && containers.length > 0, interval: 30_000 });
     const ctx: RowContext = {
-      now: nowProp ?? Date.now(),
+      now: nowProp ?? liveNow,
       limitWarnAt,
       cpuMax: containers.reduce((m, c) => (Number.isFinite(c.cpu) ? Math.max(m, c.cpu) : m), 0),
       formatBytes,
