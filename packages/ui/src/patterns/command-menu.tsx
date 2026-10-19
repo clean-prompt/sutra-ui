@@ -10,6 +10,7 @@ import { ShortcutKeys, isShortcutKeys } from "../primitives/shortcut-keys";
 import { useHasShortcutProvider } from "../hooks/use-shortcut-manager";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useReturnFocus } from "../hooks/use-return-focus";
 import { useShortcut, useShortcutRegistry, type ShortcutRegistryGroup, type ShortcutRegistryItem } from "./shortcuts";
 
 /** Command palette root (cmdk). Handles filtering and keyboard navigation. */
@@ -263,6 +264,7 @@ export function CommandDialog({
   children,
   ...rootProps
 }: CommandDialogProps) {
+  const returnFocus = useReturnFocus();
   return (
     <DialogPrimitive.Root {...rootProps}>
       <DialogPrimitive.Portal>
@@ -274,6 +276,7 @@ export function CommandDialog({
             "data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 data-[state=open]:slide-in-from-top-2 duration-150",
             className
           )}
+          {...returnFocus}
         >
           <VisuallyHidden.Root>
             <DialogPrimitive.Title>{title}</DialogPrimitive.Title>

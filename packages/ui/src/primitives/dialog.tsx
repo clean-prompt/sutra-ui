@@ -7,6 +7,7 @@ import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { Button, type ButtonProps } from "./button";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useAsyncAction } from "../hooks/use-async-action";
+import { useReturnFocus } from "../hooks/use-return-focus";
 
 /* ------------------------------------------------------------------ */
 /* Shared pieces                                                       */
@@ -159,22 +160,25 @@ export interface DialogContentProps
 
 /** Dialog panel: centered modal on desktop, bottom sheet on mobile. */
 export const DialogContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Content>, DialogContentProps>(
-  ({ className, size, showClose = true, overlayClassName, children, ...props }, ref) => (
-    <DialogPrimitive.Portal>
-      <DialogOverlay className={overlayClassName} />
-      <DialogPrimitive.Content ref={ref} className={cn(dialogContentVariants({ size }), className)} {...props}>
-        <MobileHandle />
-        {children}
-        {showClose && (
-          <DialogPrimitive.Close asChild>
-            <Button variant="ghost" size="icon-sm" className={closeButtonClass} aria-label="Close">
-              <RiCloseLine aria-hidden />
-            </Button>
-          </DialogPrimitive.Close>
-        )}
-      </DialogPrimitive.Content>
-    </DialogPrimitive.Portal>
-  )
+  ({ className, size, showClose = true, overlayClassName, children, onOpenAutoFocus, onCloseAutoFocus, ...props }, ref) => {
+    const returnFocus = useReturnFocus({ onOpenAutoFocus, onCloseAutoFocus });
+    return (
+      <DialogPrimitive.Portal>
+        <DialogOverlay className={overlayClassName} />
+        <DialogPrimitive.Content ref={ref} className={cn(dialogContentVariants({ size }), className)} {...props} {...returnFocus}>
+          <MobileHandle />
+          {children}
+          {showClose && (
+            <DialogPrimitive.Close asChild>
+              <Button variant="ghost" size="icon-sm" className={closeButtonClass} aria-label="Close">
+                <RiCloseLine aria-hidden />
+              </Button>
+            </DialogPrimitive.Close>
+          )}
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    );
+  }
 );
 DialogContent.displayName = "DialogContent";
 
@@ -227,15 +231,18 @@ export interface AlertDialogContentProps
 export const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   AlertDialogContentProps
->(({ className, size = "sm", overlayClassName, children, ...props }, ref) => (
-  <AlertDialogPrimitive.Portal>
-    <AlertDialogPrimitive.Overlay className={cn(overlayClass, overlayClassName)} />
-    <AlertDialogPrimitive.Content ref={ref} className={cn(dialogContentVariants({ size }), className)} {...props}>
-      <MobileHandle />
-      {children}
-    </AlertDialogPrimitive.Content>
-  </AlertDialogPrimitive.Portal>
-));
+>(({ className, size = "sm", overlayClassName, children, onOpenAutoFocus, onCloseAutoFocus, ...props }, ref) => {
+  const returnFocus = useReturnFocus({ onOpenAutoFocus, onCloseAutoFocus });
+  return (
+    <AlertDialogPrimitive.Portal>
+      <AlertDialogPrimitive.Overlay className={cn(overlayClass, overlayClassName)} />
+      <AlertDialogPrimitive.Content ref={ref} className={cn(dialogContentVariants({ size }), className)} {...props} {...returnFocus}>
+        <MobileHandle />
+        {children}
+      </AlertDialogPrimitive.Content>
+    </AlertDialogPrimitive.Portal>
+  );
+});
 AlertDialogContent.displayName = "AlertDialogContent";
 
 /** Title block with optional featured icon. */
@@ -409,21 +416,24 @@ export interface SheetContentProps
 
 /** Sheet panel sliding in from `side`. */
 export const SheetContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Content>, SheetContentProps>(
-  ({ className, side = "right", showClose = true, overlayClassName, children, ...props }, ref) => (
-    <DialogPrimitive.Portal>
-      <DialogOverlay className={overlayClassName} />
-      <DialogPrimitive.Content ref={ref} className={cn(sheetContentVariants({ side }), className)} {...props}>
-        {children}
-        {showClose && (
-          <DialogPrimitive.Close asChild>
-            <Button variant="ghost" size="icon-sm" className={cn(closeButtonClass, focusRing)} aria-label="Close">
-              <RiCloseLine aria-hidden />
-            </Button>
-          </DialogPrimitive.Close>
-        )}
-      </DialogPrimitive.Content>
-    </DialogPrimitive.Portal>
-  )
+  ({ className, side = "right", showClose = true, overlayClassName, children, onOpenAutoFocus, onCloseAutoFocus, ...props }, ref) => {
+    const returnFocus = useReturnFocus({ onOpenAutoFocus, onCloseAutoFocus });
+    return (
+      <DialogPrimitive.Portal>
+        <DialogOverlay className={overlayClassName} />
+        <DialogPrimitive.Content ref={ref} className={cn(sheetContentVariants({ side }), className)} {...props} {...returnFocus}>
+          {children}
+          {showClose && (
+            <DialogPrimitive.Close asChild>
+              <Button variant="ghost" size="icon-sm" className={cn(closeButtonClass, focusRing)} aria-label="Close">
+                <RiCloseLine aria-hidden />
+              </Button>
+            </DialogPrimitive.Close>
+          )}
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    );
+  }
 );
 SheetContent.displayName = "SheetContent";
 
