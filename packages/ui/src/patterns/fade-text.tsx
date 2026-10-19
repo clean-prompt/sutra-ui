@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../hooks/use-resize-observer";
-import { assignRef } from "../lib/refs";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 /* ------------------------------------------------------------------ */
 /* FadeText                                                            */
@@ -30,6 +30,7 @@ export const FadeText = React.forwardRef<HTMLSpanElement, FadeTextProps>(
     }, [multi]);
     useIsoLayoutEffect(() => check(), [check, children]);
     useResizeObserver(ref, () => check());
+    const setRefs = useMergedRefs(ref, forwardedRef);
 
     const mask = overflowing
       ? multi
@@ -38,10 +39,7 @@ export const FadeText = React.forwardRef<HTMLSpanElement, FadeTextProps>(
       : undefined;
     return (
       <span
-        ref={(node) => {
-          ref.current = node;
-          assignRef(forwardedRef, node);
-        }}
+        ref={setRefs}
         data-overflowing={overflowing ? "" : undefined}
         title={title ?? (showTitle && overflowing && typeof children === "string" ? children : undefined)}
         className={cn("block min-w-0 overflow-hidden", multi ? "whitespace-normal" : "whitespace-nowrap", className)}

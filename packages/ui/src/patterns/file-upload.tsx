@@ -9,7 +9,9 @@ import {
 import { cn } from "../lib/cn";
 import { Progress } from "../primitives/progress";
 import { formatBytes as formatBytesLib } from "../lib/format";
+import { clamp } from "../lib/math";
 import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { Button, type ButtonProps } from "../primitives/button";
 import {
   DIRECTORY_UNSUPPORTED_REASON,
@@ -112,8 +114,7 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
   ) => {
     const [internal, setInternal] = React.useState<UploadFile[]>(defaultFiles);
     const files = filesProp ?? internal;
-    const filesRef = React.useRef(files);
-    filesRef.current = files;
+    const filesRef = useLatestRef(files);
     const [rejections, setRejections] = React.useState<FileRejection[]>([]);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -395,7 +396,7 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
     const ctx = React.useContext(FileUploadContext);
     const { file, progress, status = "idle", error } = item;
     const phase = status === "uploading" ? "running" : normalizeTaskStatus(status);
-    const pct = Math.min(100, Math.max(0, progress ?? 0));
+    const pct = clamp(progress ?? 0, 0, 100);
     const showProgress = phase === "running" || (progress !== undefined && phase !== "succeeded" && phase !== "failed");
     const isError = phase === "failed";
     // Files from a folder show where they sit in it ("Trip/Photos/a.jpg"); loose files keep their bare name.

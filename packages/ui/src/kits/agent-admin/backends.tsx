@@ -13,6 +13,7 @@ import { cn, focusRing } from "../../lib/cn";
 import type { Tone } from "../../lib/tone";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { errorMessage, useMountedRef } from "../../hooks/use-async-action";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
 import { StatusBadge, type StatusIndicatorIcon } from "../../primitives/status-badge";
 
@@ -133,8 +134,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
     const [health, setHealth] = React.useState<Record<string, BackendHealth>>({});
     const runs = React.useRef<Record<string, number>>({});
     const mounted = useMountedRef();
-    const backendsRef = React.useRef(backends);
-    backendsRef.current = backends;
+    const backendsRef = useLatestRef(backends);
 
     const check = React.useCallback(async (backendId: string) => {
       const b = backendsRef.current.find((x) => x.id === backendId);

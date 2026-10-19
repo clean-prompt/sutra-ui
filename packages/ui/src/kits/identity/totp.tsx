@@ -3,6 +3,7 @@ import { cn } from "../../lib/cn";
 import { base32Decode as decodeBase32 } from "../../lib/encoding";
 import { pluralize } from "../../lib/format";
 import { useNow } from "../../hooks/use-now";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { CopyButton } from "../../primitives/copy-button";
 import { Favicon } from "../../primitives/favicon";
 
@@ -186,8 +187,7 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
     const nearEnd = remaining <= nextThreshold;
     const [codes, setCodes] = React.useState<{ counter: number; current?: string; next?: string }>({ counter: -1 });
 
-    const rolloverRef = React.useRef(onRollover);
-    rolloverRef.current = onRollover;
+    const rolloverRef = useLatestRef(onRollover);
 
     const prevCounter = React.useRef(counter);
     React.useEffect(() => {

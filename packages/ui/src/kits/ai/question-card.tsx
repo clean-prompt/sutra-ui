@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiArrowRightSLine, RiAttachment2, RiCheckLine } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { clamp } from "../../lib/math";
 import { Button } from "../../primitives/button";
 import { Badge } from "../../primitives/badge";
 import { RadioGroup, RadioCard } from "../../primitives/radio";
@@ -391,7 +392,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
     const otherRef = React.useRef<HTMLInputElement>(null);
     const tabRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
 
-    const go = (i: number) => setActive(Math.max(0, Math.min(reviewIndex, i)));
+    const go = (i: number) => setActive(clamp(i, 0, reviewIndex));
     const update = (id: string, next: QuestionAnswer) => setDraft((d) => ({ ...d, [id]: next }));
 
     const choose = (q: QuestionItem, value: string) => {

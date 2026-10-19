@@ -26,6 +26,8 @@ import { chartColors } from "../../lib/tokens";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { usePrefersReducedMotion } from "../../hooks/use-media-query";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
+import { useResizeObserver } from "../../hooks/use-resize-observer";
+import { clamp } from "../../lib/math";
 import { seededRandom } from "../../lib/hash";
 import { base64UrlDecode, base64UrlEncode } from "../../lib/encoding";
 import { formatClockTime, formatShortDate, toMs, type TimeInput } from "../../lib/time";
@@ -958,17 +960,14 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
     const [width, setWidth] = React.useState(640);
     React.useEffect(() => {
-      const el = containerRef.current;
-      if (!el) return;
-      if (el.clientWidth) setWidth(el.clientWidth);
-      if (typeof ResizeObserver === "undefined") return;
-      const ro = new ResizeObserver((entries) => {
-        const w = entries[0]?.contentRect.width;
-        if (w) setWidth(w);
-      });
-      ro.observe(el);
-      return () => ro.disconnect();
+      const w = containerRef.current?.clientWidth;
+      if (w) setWidth(w);
     }, [listView]);
+    // The canvas container only exists outside list view; a new target re-subscribes when it mounts.
+    useResizeObserver(listView ? null : containerRef, (entry) => {
+      const w = entry.contentRect.width;
+      if (w) setWidth(w);
+    });
 
     const zoomRef = React.useRef<MemoryMapZoom>(zoomProp ?? defaultZoom ?? DEFAULT_ZOOM);
     React.useEffect(() => {
@@ -1014,7 +1013,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
     };
     const zoomAt = (factor: number, sx = width / 2, sy = height / 2) => {
       const z = zoomRef.current;
-      const k = Math.min(8, Math.max(0.25, z.k * factor));
+      const k = clamp(z.k * factor, 0.25, 8);
       const f = k / z.k;
       const cx = sx - width / 2;
       const cy = sy - height / 2;

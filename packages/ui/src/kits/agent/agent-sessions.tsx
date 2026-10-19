@@ -17,6 +17,7 @@ import {
   RiSearchLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { clamp } from "../../lib/math";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useNow } from "../../hooks/use-now";
 import { MINUTE_MS, formatRelative, type FormatRelativeOptions, type TimeInput } from "../../lib/time";
@@ -327,7 +328,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
         case "ArrowDown":
         case "ArrowUp": {
           e.preventDefault();
-          const next = order[Math.min(order.length - 1, Math.max(0, i + (e.key === "ArrowDown" ? 1 : -1)))];
+          const next = order[clamp(i + (e.key === "ArrowDown" ? 1 : -1), 0, order.length - 1)];
           if (e.shiftKey && next) {
             if (!anchor.current || !order.includes(anchor.current)) anchor.current = id;
             const a = order.indexOf(anchor.current);

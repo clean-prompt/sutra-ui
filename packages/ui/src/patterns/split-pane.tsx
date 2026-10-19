@@ -3,6 +3,7 @@ import { cn, focusRing } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useElementWidth } from "../hooks/use-resize-observer";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 type Orientation = "horizontal" | "vertical";
 
@@ -101,14 +102,7 @@ export const SplitPane = React.forwardRef<HTMLDivElement, SplitPaneProps>(
     forwardedRef
   ) => {
     const rootRef = React.useRef<HTMLDivElement | null>(null);
-    const setRefs = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        rootRef.current = node;
-        if (typeof forwardedRef === "function") forwardedRef(node);
-        else if (forwardedRef) forwardedRef.current = node;
-      },
-      [forwardedRef]
-    );
+    const setRefs = useMergedRefs(rootRef, forwardedRef);
     const [initialSize] = React.useState(() => clamp(readStored(storageKey) ?? defaultSize, min, max));
     const [size, setSizeState] = useControllableState({
       value: sizeProp === undefined ? undefined : clamp(sizeProp, min, max),

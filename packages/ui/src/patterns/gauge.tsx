@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { clamp, toPercent } from "../lib/math";
+import { resolveColorToken } from "../lib/svg-path";
 import { normalizeTone, type ToneInput } from "../lib/tone";
 import { accentColorValue, accentStyle, type Accent } from "../lib/accent";
 import { defaultMeterThresholds, meterLevel, type MeterColor, type MeterLevel, type MeterThresholds } from "../primitives/meter";
@@ -13,16 +14,8 @@ export interface GaugeColorStop {
   color: string;
 }
 
-const tokenColor: Record<string, string> = {
-  primary: "var(--primary)",
-  success: "var(--success)",
-  warning: "var(--warning)",
-  destructive: "var(--destructive)",
-  info: "var(--info)",
-  neutral: "var(--foreground)",
-  muted: "var(--muted-foreground)",
-};
-const resolve = (c: string) => tokenColor[c] ?? c;
+/** Colour tokens → CSS variables; a neutral gauge arc uses the foreground colour (not muted like other neutrals). */
+const resolve = (c: string) => (c === "neutral" ? "var(--foreground)" : resolveColorToken(c));
 const levelColor: Record<Exclude<MeterLevel, "ok">, string> = { warn: "var(--warning)", danger: "var(--destructive)" };
 const levelText: Record<MeterLevel, string> = { ok: "text-foreground", warn: "text-warning", danger: "text-destructive" };
 

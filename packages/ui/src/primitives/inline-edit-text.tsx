@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 export interface InlineEditTextProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange"> {
@@ -55,11 +56,7 @@ export const InlineEditText = React.forwardRef<HTMLInputElement, InlineEditTextP
     /** Set after a commit / cancel so the blur that follows (or an unmount) doesn't finish twice. */
     const done = React.useRef(false);
 
-    const setRefs = (node: HTMLInputElement | null) => {
-      inputRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    };
+    const setRefs = useMergedRefs(inputRef, ref);
 
     React.useEffect(() => {
       done.current = false;

@@ -256,7 +256,7 @@ export function movePane(
   if (edge === "center") {
     if (same) {
       const panes = source.panes.filter((p) => p !== paneId);
-      const at = index === undefined ? loc.index : Math.max(0, Math.min(index, panes.length));
+      const at = index === undefined ? loc.index : clamp(index, 0, panes.length);
       panes.splice(at, 0, paneId);
       return normalizeLayout(replaceNode(tree, source.id, () => ({ ...source, panes, active: paneId })) ?? tree);
     }
@@ -265,7 +265,7 @@ export function movePane(
       replaceNode(next, target.id, (node) => {
         const group = node as LayoutTabsNode;
         const panes = [...group.panes];
-        panes.splice(index === undefined ? panes.length : Math.max(0, Math.min(index, panes.length)), 0, paneId);
+        panes.splice(index === undefined ? panes.length : clamp(index, 0, panes.length), 0, paneId);
         return { ...group, panes, active: paneId };
       }) ?? next;
     if (source.panes.length === 1) next = removeGroup(next, source.id);

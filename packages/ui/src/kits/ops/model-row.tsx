@@ -176,7 +176,9 @@ const actionVariant: Partial<Record<ModelAction, "primary" | "secondary" | "ghos
 
 const fmtMs = (ms?: number) =>
   ms == null ? "—" : formatDuration(ms, { ms: true, space: true, decimals: 1, decimalsBelow: 60_000, maxUnit: "s" });
-const fmtIdle = (s: number) => (s < 90 ? `${Math.round(s)}s` : s < 5400 ? `${Math.round(s / 60)}m` : `${(s / 3600).toFixed(1)}h`);
+/** "45s" under 90 s, "12m" under 90 min, then "1.5h". */
+const fmtIdle = (s: number) =>
+  formatDuration(s * 1000, s < 5400 ? { units: 1, maxUnit: s < 90 ? "s" : "m" } : { style: "decimal", maxUnit: "h", minUnit: "h", trimZeros: false });
 
 export interface ModelRowProps extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "children"> {
   model: ModelInfo;

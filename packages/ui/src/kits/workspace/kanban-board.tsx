@@ -35,6 +35,8 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
 import { Input } from "../../primitives/input";
 import {
@@ -207,14 +209,7 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
     });
 
     const rootRef = React.useRef<HTMLDivElement | null>(null);
-    const setRootRef = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        rootRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      },
-      [ref]
-    );
+    const setRootRef = useMergedRefs(rootRef, ref);
 
     const [preview, setPreviewState] = React.useState<KanbanBoardModel | null>(null);
     const previewRef = React.useRef<KanbanBoardModel | null>(null);
@@ -239,10 +234,8 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
       return f;
     }, [view, filters, active]);
     const lanes = React.useMemo(() => buildLanes(filtered, swimlanes), [filtered, swimlanes]);
-    const lanesRef = React.useRef(lanes);
-    lanesRef.current = lanes;
-    const boardRef = React.useRef(board);
-    boardRef.current = board;
+    const lanesRef = useLatestRef(lanes);
+    const boardRef = useLatestRef(board);
 
     const assigneeById = React.useMemo(() => new Map((board.assignees ?? []).map((a) => [a.id, a])), [board.assignees]);
 
@@ -341,8 +334,7 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
       const neighbour = rest[pos] ?? rest[rest.length - 1];
       return neighbour ? findEl("data-kanban-activator", neighbour.id) : findEl("data-kanban-area", `${lane.key}::${targetCol}`);
     };
-    const keyboardStepRef = React.useRef(keyboardStep);
-    keyboardStepRef.current = keyboardStep;
+    const keyboardStepRef = useLatestRef(keyboardStep);
 
     const coordinateGetter = React.useCallback<KeyboardCoordinateGetter>((event, { active: a, currentCoordinates }) => {
       const dir = ({ ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] } as Record<string, [number, number]>)[

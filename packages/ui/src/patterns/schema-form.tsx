@@ -6,6 +6,7 @@ import { isEmail, isHttpUrl } from "../lib/validate";
 import { useAsyncAction } from "../hooks/use-async-action";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useSafeId } from "../hooks/use-safe-id";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { Button } from "../primitives/button";
 import { Input, PasswordInput, SearchInput } from "../primitives/input";
 import { SegmentedControl } from "../primitives/segmented-control";
@@ -634,10 +635,8 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
 
     const pending = React.useRef<Set<string>>(new Set());
     const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-    const latest = React.useRef(value);
-    latest.current = value;
-    const onSaveRef = React.useRef(onSave);
-    onSaveRef.current = onSave;
+    const latest = useLatestRef(value);
+    const onSaveRef = useLatestRef(onSave);
     React.useEffect(() => () => {
       if (timer.current) clearTimeout(timer.current);
     }, []);

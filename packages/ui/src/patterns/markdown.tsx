@@ -6,6 +6,7 @@ import rehypeKatex from "rehype-katex";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useCopy } from "../hooks/use-copy";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { isHttpUrl } from "../lib/validate";
 import { InlineCode } from "../primitives/typography";
 import { ChatInlineCitation, type ChatSourceData } from "./inline-citation";
@@ -373,8 +374,7 @@ export const Markdown = React.forwardRef<HTMLDivElement, MarkdownProps>(
       if (math) list.push([rehypeKatex, { throwOnError: false, strict: false }]);
       return [...list, ...(rehypePlugins ?? [])];
     }, [rehypePlugins, math, maxCite]);
-    const onCiteRef = React.useRef(onCite);
-    onCiteRef.current = onCite;
+    const onCiteRef = useLatestRef(onCite);
     const hasOnCite = !!onCite;
     const citation = React.useMemo<CitationContextValue>(
       () => ({ sources, onCite: hasOnCite ? (n: number) => onCiteRef.current?.(n) : undefined }),

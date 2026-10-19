@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiArrowUpSLine, RiCloseLine, RiPauseLine, RiPlayLine, RiSkipForwardLine, RiStopLine } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { clamp } from "../../lib/math";
 import { Progress } from "../../primitives/progress";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../../lib/tone";
 import { formatRelative, toMs, type TimeInput } from "../../lib/time";
@@ -57,7 +58,7 @@ export const StatusStackRow = React.forwardRef<HTMLDivElement, StatusStackRowPro
     const stack = React.useContext(StatusStackContext);
     const tone = normalizeTone(toneProp);
     const facts = (meta ?? []).filter((m) => m != null && m !== false && m !== "");
-    const pct = progress ? Math.max(0, Math.min(100, (progress.value / Math.max(1, progress.max)) * 100)) : 0;
+    const pct = progress ? clamp((progress.value / Math.max(1, progress.max)) * 100, 0, 100) : 0;
     const labelText = typeof label === "string" ? label : "status";
     return (
       <div ref={ref} data-slot="status-stack-row" className={cn("relative flex min-w-0 flex-col", className)} {...props}>

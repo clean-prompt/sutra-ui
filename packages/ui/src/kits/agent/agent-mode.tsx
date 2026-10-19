@@ -9,6 +9,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { clamp } from "../../lib/math";
 import {
   DropdownMenu,
@@ -134,14 +135,7 @@ export const PermissionModeSwitcher = React.forwardRef<HTMLButtonElement, Permis
     };
 
     const triggerRef = React.useRef<HTMLButtonElement | null>(null);
-    const setTriggerRef = React.useCallback(
-      (node: HTMLButtonElement | null) => {
-        triggerRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      },
-      [ref]
-    );
+    const setTriggerRef = useMergedRefs(triggerRef, ref);
 
     const inScope = () => {
       if (cycleScope === "global") return true;

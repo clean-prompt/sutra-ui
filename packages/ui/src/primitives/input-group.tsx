@@ -3,13 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn, type Size } from "../lib/cn";
 import { Button, type ButtonProps } from "./button";
 import { useField } from "./field";
+import { inputShellVariants } from "./input";
 
 const CONTROL = "[data-slot=input-group-control]";
 
 export const inputGroupVariants = cva(
   [
-    "group/input-group relative flex w-full min-w-0 items-center rounded-control border border-input bg-background text-foreground shadow-xs",
-    "transition-[color,box-shadow,border-color] duration-150 outline-none",
+    "group/input-group relative flex w-full min-w-0 items-center outline-none",
+    inputShellVariants({ focus: "none" }),
     "has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] has-[[data-slot=input-group-control]:focus-visible]:ring-ring/35",
     "has-[[data-slot=input-group-control][aria-invalid=true]]:border-destructive has-[[data-slot=input-group-control][aria-invalid=true]]:ring-[3px] has-[[data-slot=input-group-control][aria-invalid=true]]:ring-destructive/20",
     "has-[[data-slot=input-group-control]:disabled]:cursor-not-allowed has-[[data-slot=input-group-control]:disabled]:opacity-50",

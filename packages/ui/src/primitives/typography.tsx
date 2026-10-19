@@ -2,6 +2,7 @@ import * as React from "react";
 import { Slot } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/cn";
+import { toneClasses } from "../lib/tone";
 
 export const headingVariants = cva("font-semibold text-foreground text-balance", {
   variants: {
@@ -44,13 +45,8 @@ export const textVariants = cva("", {
     /** `default` is plain foreground text; the semantic tones follow `Tone` (`muted` is the legacy name of `neutral`). */
     tone: {
       default: "text-foreground",
-      neutral: "text-muted-foreground",
-      muted: "text-muted-foreground",
-      primary: "text-primary",
-      success: "text-success",
-      warning: "text-warning-soft-foreground",
-      destructive: "text-destructive",
-      info: "text-info",
+      ...toneClasses.text,
+      muted: toneClasses.text.neutral,
     },
     weight: { regular: "font-normal", medium: "font-medium", semibold: "font-semibold" },
   },

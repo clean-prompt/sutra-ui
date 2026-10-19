@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { formatDuration } from "../lib/duration";
+import { clamp } from "../lib/math";
 import { toMs, type TimeInput } from "../lib/time";
 import { useNow } from "../hooks/use-now";
 import { SimpleTooltip } from "../primitives/tooltip";
@@ -150,7 +151,7 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
     const range = t - f;
     // Open spans grow with the clock: tick while one is showing and no fixed `now` is given.
     const hasOpen = nowProp == null && lanes.some((l) => l.spans.some((sp) => sp.end == null));
-    const clock = useNow({ active: hasOpen, interval: Math.min(60_000, Math.max(1000, range / 1000)) });
+    const clock = useNow({ active: hasOpen, interval: clamp(range / 1000, 1000, 60_000) });
     const now = toMs(nowProp) ?? (hasOpen ? clock : Date.now());
     const sameDay = range <= 36 * 3600 * 1000;
     const timeFmt = React.useMemo(

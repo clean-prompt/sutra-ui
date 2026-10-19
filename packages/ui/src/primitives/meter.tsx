@@ -4,7 +4,7 @@ import { chartColors } from "../lib/tokens";
 import { toPercent } from "../lib/math";
 import { breakdownValue, formatShare } from "../lib/breakdown";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
 import { Skeleton } from "./progress";
 
@@ -41,16 +41,11 @@ export function meterLevel(percent: number, thresholds: MeterThresholds | false 
 /** @deprecated Use `Tone` (the `tone` prop). */
 export type MeterColor = "primary" | "success" | "warning" | "destructive" | "info" | "neutral";
 
-const fillClass: Record<Tone, string> = {
-  primary: "bg-primary",
-  success: "bg-success",
-  warning: "bg-warning",
-  destructive: "bg-destructive",
-  info: "bg-info",
-  neutral: "bg-foreground",
-};
+/** Fill per tone: `toneClasses.dot`, but a neutral fill uses the foreground colour (not muted). */
+const fillClass: Record<Tone, string> = { ...toneClasses.dot, neutral: "bg-foreground" };
 
-const levelFill: Record<MeterLevel, string> = { ok: "", warn: "bg-warning", danger: "bg-destructive" };
+const levelFill: Record<MeterLevel, string> = { ok: "", warn: toneClasses.dot.warning, danger: toneClasses.dot.destructive };
+/** Threshold text colours: the saturated tone (toneClasses.text.warning is the softer foreground). */
 const levelText: Record<MeterLevel, string> = { ok: "text-foreground", warn: "text-warning", danger: "text-destructive" };
 
 

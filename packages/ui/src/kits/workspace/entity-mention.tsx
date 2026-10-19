@@ -3,6 +3,8 @@ import { RiHashtag, RiSlashCommands2, RiUser3Line } from "@remixicon/react";
 import { normalizeTaskStatus } from "../../lib/status";
 import { cn, focusRing } from "../../lib/cn";
 import { formatDateTime, formatShortDate, toValidDate } from "../../lib/time";
+import { assignRef } from "../../lib/refs";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../../assets/brand";
 import { HoverCard, HoverCardContent, HoverCardTrigger, Popover, PopoverAnchor, PopoverContent } from "../../primitives/popover";
 import { Spinner } from "../../primitives/spinner";
@@ -379,8 +381,7 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
     const pendingCaret = React.useRef<number | null>(null);
     const setRefs = (node: HTMLTextAreaElement | HTMLInputElement | null) => {
       fieldRef.current = node;
-      if (typeof forwardedRef === "function") forwardedRef(node as HTMLTextAreaElement);
-      else if (forwardedRef) forwardedRef.current = node as HTMLTextAreaElement;
+      assignRef(forwardedRef, node as HTMLTextAreaElement | null);
     };
 
     const [active, setActive] = React.useState<{ trigger: MentionTrigger; start: number; query: string } | null>(null);
@@ -400,12 +401,8 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
 
     // Inline `onSearch` / `suggestions` props change identity every parent render; read them through refs
     // so the search only re-runs when the mention query itself changes.
-    const onSearchRef = React.useRef(onSearch);
-    const suggestionsRef = React.useRef(suggestions);
-    React.useLayoutEffect(() => {
-      onSearchRef.current = onSearch;
-      suggestionsRef.current = suggestions;
-    });
+    const onSearchRef = useLatestRef(onSearch);
+    const suggestionsRef = useLatestRef(suggestions);
 
     React.useEffect(() => {
       const onSearch = onSearchRef.current;

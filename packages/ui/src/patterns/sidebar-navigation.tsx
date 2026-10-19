@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, useHasTooltipProvider } from 
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "../primitives/dialog";
 import { isEditableTarget, matchesShortcut } from "../lib/shortcuts";
 import { useHasShortcutProvider } from "../hooks/use-shortcut-manager";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useShortcut } from "./shortcuts";
 
 /** Below the `md` breakpoint the sidebar becomes a sheet. */
@@ -87,8 +88,7 @@ export const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderP
       else setCollapsed(!collapsed);
     }, [isMobile, collapsed, setCollapsed]);
 
-    const toggleRef = React.useRef(toggleSidebar);
-    toggleRef.current = toggleSidebar;
+    const toggleRef = useLatestRef(toggleSidebar);
 
     const hasShortcutProvider = useHasShortcutProvider();
     useShortcut(hasShortcutProvider && shortcut ? `mod+${shortcut.toLowerCase()}` : null, () => toggleRef.current(), {

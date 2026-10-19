@@ -1,8 +1,10 @@
 import * as React from "react";
 import { RiCloseCircleFill, RiTimeLine } from "@remixicon/react";
 import { cn, focusRing, type Size } from "../lib/cn";
+import { clamp } from "../lib/math";
 import { pad2 } from "../lib/time";
 import { useField, useFieldContext } from "./field";
+import { inputShellVariants } from "./input";
 
 /* ---------------------------------------------------------------- */
 /* Time value helpers                                                */
@@ -182,9 +184,8 @@ export interface TimePickerProps
 }
 
 const wrapperClass = cn(
-  "group/time relative flex w-full min-w-0 cursor-text items-center gap-2 rounded-control border border-input bg-background text-sm text-foreground shadow-xs",
-  "transition-[color,box-shadow,border-color] duration-150 hover:border-border-strong",
-  "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/35",
+  "group/time relative flex w-full min-w-0 cursor-text items-center gap-2 text-sm",
+  inputShellVariants({ focus: "within", hover: true }),
   "data-[invalid]:border-destructive data-[invalid]:ring-[3px] data-[invalid]:ring-destructive/20",
   "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0"
 );
@@ -247,7 +248,7 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
   });
   const disabled = !!field.disabled;
   const labels = { ...defaultLabels, ...labelsProp };
-  const step = Math.min(59, Math.max(1, Math.round(stepProp) || 1));
+  const step = clamp(Math.round(stepProp) || 1, 1, 59);
 
   const is12 = hourCycle ? hourCycle === 12 : localeUses12h(locale);
   const { layout, periods } = React.useMemo(() => segmentLayout(locale, is12, granularity), [locale, is12, granularity]);

@@ -22,6 +22,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { isEmail } from "../../lib/validate";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { BlogContent } from "../../patterns/blog-content";
 import { Button } from "../../primitives/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../primitives/popover";
@@ -437,10 +438,8 @@ export const RichTextEditor = React.forwardRef<HTMLDivElement, RichTextEditorPro
   ) => {
     const containerRef = React.useRef<HTMLDivElement>(null);
     React.useImperativeHandle(ref, () => containerRef.current as HTMLDivElement);
-    const onChangeRef = React.useRef(onValueChange ?? onChange);
-    onChangeRef.current = onValueChange ?? onChange;
-    const formatRef = React.useRef(format);
-    formatRef.current = format;
+    const onChangeRef = useLatestRef(onValueChange ?? onChange);
+    const formatRef = useLatestRef(format);
     const [linkMode, setLinkMode] = React.useState(false);
 
     const editor = useEditor({

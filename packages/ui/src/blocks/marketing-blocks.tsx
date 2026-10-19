@@ -30,7 +30,7 @@ import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { formatCompact } from "../lib/format";
 import { useSafeId } from "../hooks/use-safe-id";
 import { hashString } from "../lib/hash";
-import { initials } from "../lib/text";
+import { initials, slugify } from "../lib/text";
 import { formatShortDate } from "../lib/time";
 import { Avatar } from "../primitives/avatar";
 import { Badge, type BadgeColor } from "../primitives/badge";
@@ -1182,12 +1182,11 @@ const rawExtensions: [string, string, number, string, MarketplaceTier, number, s
   ["Sandbox Runner", "Run untrusted tools in an isolated, network-restricted sandbox.", 3, "Security", "community", 1380, ["sandbox", "shell", "fs.read"]],
 ];
 
-const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 const iso = (dayOffset: number) => new Date(Date.UTC(2026, 0, 5) + dayOffset * 86_400_000).toISOString().slice(0, 10);
 
 const demoExtensions: MarketplaceExtension[] = rawExtensions.map(([name, description, a, category, tier, stars, capabilities], i) => {
   const author = demoAuthors[a]!;
-  const id = slug(name);
+  const id = slugify(name);
   return {
     id,
     name,

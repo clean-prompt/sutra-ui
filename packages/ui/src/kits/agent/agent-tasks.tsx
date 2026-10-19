@@ -15,7 +15,7 @@ import { toneClasses, type Tone } from "../../lib/tone";
 import { normalizeTaskStatus, type TaskStatus, type TaskStatusInput } from "../../lib/status";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useNow } from "../../hooks/use-now";
-import { formatDuration } from "../../lib/duration";
+import { formatDuration, type FormatDurationOptions } from "../../lib/duration";
 import { formatAgentTokens } from "../../lib/token-count";
 import { toMs, type TimeInput } from "../../lib/time";
 import { Button } from "../../primitives/button";
@@ -26,9 +26,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../primitives/popove
 /* Shared helpers                                                      */
 /* ------------------------------------------------------------------ */
 
-/** "8s", "1m 05s", "2h 03m". */
+const ELAPSED: FormatDurationOptions = { pad: true, round: "floor", invalid: "0s" };
+
+/**
+ * "8s", "1m 05s", "2h 03m".
+ * @deprecated Use `formatDuration(ms, { pad: true, round: "floor", invalid: "0s" })`.
+ */
 export function formatAgentElapsed(ms: number) {
-  return formatDuration(ms, { pad: true, round: "floor", invalid: "0s" });
+  return formatDuration(ms, ELAPSED);
 }
 
 export { formatAgentTokens };
@@ -316,7 +321,7 @@ export const AgentRosterRow = React.forwardRef<HTMLLIElement, AgentRosterRowProp
     const now = nowProp ?? ticking;
     const start = toMs(agent.startedAt) ?? now;
     const end = toMs(agent.endedAt) ?? now;
-    const elapsed = formatAgentElapsed(end - start);
+    const elapsed = formatDuration(end - start, ELAPSED);
     const meta = [
       elapsed,
       agent.toolUses != null ? `${agent.toolUses} tool ${agent.toolUses === 1 ? "use" : "uses"}` : null,
@@ -566,7 +571,7 @@ export const BackgroundTaskRow = React.forwardRef<HTMLDivElement, BackgroundTask
             {exitCode != null && !running ? ` (exit ${exitCode})` : ""}
           </span>
           <span data-slot="task-elapsed" className="shrink-0 text-2xs tabular-nums text-muted-foreground">
-            {formatAgentElapsed(end - start)}
+            {formatDuration(end - start, ELAPSED)}
           </span>
           {onOpen && (
             <Button variant="ghost" size="icon-xs" aria-label={`View output of ${command}`} onClick={onOpen}>

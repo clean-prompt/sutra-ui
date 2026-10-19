@@ -1,6 +1,7 @@
 import * as React from "react";
 import { normalizeTone, type ToneInput } from "../lib/tone";
 import { useSafeId } from "../hooks/use-safe-id";
+import { useMountedRef } from "../hooks/use-async-action";
 import { Button } from "./button";
 import {
   ConfirmDialog,
@@ -270,13 +271,7 @@ function PromptRequest({ request, settle }: RequestProps<"prompt">) {
   const [touched, setTouched] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const fieldId = useSafeId("prompt");
-  const alive = React.useRef(true);
-  React.useEffect(() => {
-    alive.current = true;
-    return () => {
-      alive.current = false;
-    };
-  }, []);
+  const alive = useMountedRef();
 
   const normalized = trim ? value.trim() : value;
   const empty = normalized.length === 0;

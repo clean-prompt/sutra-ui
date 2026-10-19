@@ -2,8 +2,9 @@ import * as React from "react";
 import { Select as SelectPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiArrowDownSLine, RiArrowUpSLine, RiCheckLine } from "@remixicon/react";
-import { cn, focusRing, invalidRing } from "../lib/cn";
+import { cn } from "../lib/cn";
 import { useField } from "./field";
+import { inputShellVariants } from "./input";
 
 /** Root of a select. Re-export of Radix `Select.Root`. */
 export const Select = SelectPrimitive.Root;
@@ -14,13 +15,10 @@ export const SelectValue = SelectPrimitive.Value;
 
 export const selectTriggerVariants = cva(
   [
-    "group/select-trigger flex w-full items-center gap-2 rounded-control border border-input bg-background text-left text-foreground shadow-xs",
-    "transition-[color,border-color,box-shadow] duration-150 hover:border-border-strong",
+    "group/select-trigger flex w-full items-center gap-2 text-left",
+    inputShellVariants({ hover: true }),
     "data-[placeholder]:text-muted-foreground data-[state=open]:border-ring data-[state=open]:ring-[3px] data-[state=open]:ring-ring/20",
-    "disabled:cursor-not-allowed disabled:opacity-50",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",
-    focusRing,
-    invalidRing,
   ],
   {
     variants: {

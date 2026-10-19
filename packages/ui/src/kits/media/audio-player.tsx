@@ -16,9 +16,12 @@ import {
   RiSkipForwardFill,
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { formatClock } from "../../lib/duration";
+import { reorderArray } from "../../lib/reorder";
 import { Progress } from "../../primitives/progress";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useSwipe } from "../../hooks/use-swipe";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { ImageWithFallback } from "../../patterns/lightbox";
 import {
   NowPlayingBars,
@@ -27,7 +30,6 @@ import {
   SeekBar,
   ShuffleButton,
   VolumeControl,
-  formatMediaTime,
   mediaButtonVariants,
   type MediaTimeRange,
   type RepeatMode,
@@ -92,12 +94,6 @@ export function shufflePlayOrder(ids: string[], currentId: string | null, rng: (
   return currentId !== null && ids.includes(currentId) ? [currentId, ...rest] : rest;
 }
 
-function arrayMove<T>(list: T[], from: number, to: number): T[] {
-  const next = list.slice();
-  const [moved] = next.splice(from, 1);
-  next.splice(Math.max(0, Math.min(next.length, to)), 0, moved);
-  return next;
-}
 
 export interface CreatePlayerQueueOptions {
   currentId?: string | null;
@@ -194,7 +190,7 @@ export function playerQueueReducer<T extends PlayerQueueItem>(state: PlayerQueue
     case "move": {
       const { from, to } = action;
       if (from === to || from < 0 || from >= order.length || to < 0 || to >= order.length) return state;
-      const nextOrder = arrayMove(order, from, to);
+      const nextOrder = reorderArray(order, from, to);
       if (state.shuffle) return { ...state, order: nextOrder };
       const byId = new Map(state.items.map((i) => [i.id, i]));
       return { ...state, order: nextOrder, items: nextOrder.map((id) => byId.get(id)!) };
@@ -216,10 +212,8 @@ export interface UsePlayerQueueOptions<T extends PlayerQueueItem> extends Create
 
 /** Queue state for a player: current item, play order and next/previous with repeat & shuffle semantics. */
 export function usePlayerQueue<T extends PlayerQueueItem>(options: UsePlayerQueueOptions<T> = {}) {
-  const rngRef = React.useRef(options.rng ?? Math.random);
-  rngRef.current = options.rng ?? Math.random;
-  const onChangeRef = React.useRef(options.onValueChange ?? options.onChange);
-  onChangeRef.current = options.onValueChange ?? options.onChange;
+  const rngRef = useLatestRef(options.rng ?? Math.random);
+  const onChangeRef = useLatestRef(options.onValueChange ?? options.onChange);
   const [state, setState] = React.useState<PlayerQueueState<T>>(() =>
     createPlayerQueue(options.items ?? [], { ...options, rng: rngRef.current })
   );
@@ -492,7 +486,7 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
         aria-label="Playback progress"
         aria-valuemax={Math.round(total)}
         aria-valuenow={Math.round(Math.min(currentTime, total))}
-        aria-valuetext={total > 0 ? `${formatMediaTime(currentTime)} of ${formatMediaTime(total)}` : formatMediaTime(currentTime)}
+        aria-valuetext={total > 0 ? `${formatClock(currentTime)} of ${formatClock(total)}` : formatClock(currentTime)}
         onClick={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           if (rect.width > 0 && total > 0) onSeek?.(((e.clientX - rect.left) / rect.width) * total);
@@ -892,7 +886,7 @@ export const QueueList = React.forwardRef<HTMLDivElement, QueueListProps>(
                       <span className="truncate text-xs text-muted-foreground">{trackByline(item)}</span>
                     </span>
                     {item.duration !== undefined && (
-                      <span className="shrink-0 font-mono text-xs text-muted-foreground tabular-nums">{formatMediaTime(item.duration)}</span>
+                      <span className="shrink-0 font-mono text-xs text-muted-foreground tabular-nums">{formatClock(item.duration)}</span>
                     )}
                   </button>
                   {onRemove && (
@@ -1064,7 +1058,7 @@ export const TrackRow = React.forwardRef<HTMLDivElement, TrackRowProps>(
           </div>
         )}
         <span className="w-12 shrink-0 text-right font-mono text-xs text-muted-foreground tabular-nums">
-          {track.duration !== undefined ? formatMediaTime(track.duration) : "—"}
+          {track.duration !== undefined ? formatClock(track.duration) : "—"}
         </span>
         {menu && <div className="shrink-0">{menu}</div>}
       </div>

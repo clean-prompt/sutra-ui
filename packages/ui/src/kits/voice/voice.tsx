@@ -1,9 +1,12 @@
 import * as React from "react";
 import { RiMicLine, RiStopFill, RiVolumeUpLine, RiStopCircleLine } from "@remixicon/react";
 import { cn } from "../../lib/cn";
+import { clamp } from "../../lib/math";
 import { normalizeTone, toneClasses, type ToneInput } from "../../lib/tone";
 import { formatClock } from "../../lib/duration";
 import { useNow } from "../../hooks/use-now";
+import { useMountedRef } from "../../hooks/use-async-action";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button, type ButtonProps } from "../../primitives/button";
 
 /* ------------------------------------------------------------------ */
@@ -89,8 +92,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}):
   const [transcript, setTranscript] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const recRef = React.useRef<SpeechRecognitionLike | null>(null);
-  const optsRef = React.useRef(options);
-  optsRef.current = options;
+  const optsRef = useLatestRef(options);
 
   React.useEffect(() => setSupported(getRecognitionCtor() != null), []);
   React.useEffect(
@@ -246,7 +248,7 @@ const meterBox = {
 export const AudioLevelMeter = React.forwardRef<HTMLDivElement, AudioLevelMeterProps>(
   ({ level, bars = 5, orientation = "horizontal", size = "md", label = "Input level", tone, className, ...props }, ref) => {
     const bar = toneClasses.dot[normalizeTone(tone, "primary")];
-    const v = Math.max(0, Math.min(1, Number.isFinite(level) ? level : 0));
+    const v = clamp(Number.isFinite(level) ? level : 0, 0, 1);
     const horizontal = orientation === "horizontal";
     return (
       <div
@@ -261,7 +263,7 @@ export const AudioLevelMeter = React.forwardRef<HTMLDivElement, AudioLevelMeterP
       >
         {Array.from({ length: bars }, (_, i) => {
           const center = 1 - Math.abs(i - (bars - 1) / 2) / ((bars + 1) / 2);
-          const lit = horizontal ? Math.max(0.15, Math.min(1, v * (0.6 + center * 0.9))) : v > i / bars ? 1 : 0;
+          const lit = horizontal ? clamp(v * (0.6 + center * 0.9), 0.15, 1) : v > i / bars ? 1 : 0;
           return (
             <span
               key={i}
@@ -312,8 +314,7 @@ function stopTracks(stream: MediaStream | null | undefined) {
 /** Mic toggle with a live input-level ring, timer + max-duration countdown and interim transcript preview. */
 export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
   ({ lang, onTranscript, onError, maxDuration = 60, fallback = null, showTranscript = true, meter = true, size = "md", disabled, className, ...props }, ref) => {
-    const cbRef = React.useRef(onTranscript);
-    cbRef.current = onTranscript;
+    const cbRef = useLatestRef(onTranscript);
     const sr = useSpeechRecognition({
       lang,
       onFinal: (t) => cbRef.current?.(t, { done: false }),
@@ -324,12 +325,11 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
     const streamRef = React.useRef<MediaStream | null>(null);
     // Bumped on every start and every release: a getUserMedia result for an older token is stale.
     const startToken = React.useRef(0);
-    const alive = React.useRef(true);
+    const alive = useMountedRef();
     const level = useAudioLevel(stream);
     const [startedAt, setStartedAt] = React.useState<number | null>(null);
     const now = useNow({ active: sr.listening, interval: 250 });
-    const transcriptRef = React.useRef("");
-    transcriptRef.current = sr.transcript;
+    const transcriptRef = useLatestRef(sr.transcript);
     const wasListening = React.useRef(false);
 
     const releaseStream = React.useCallback(() => {
@@ -355,9 +355,7 @@ export const VoiceInput = React.forwardRef<HTMLDivElement, VoiceInputProps>(
     }, [sr.error, sr.listening, releaseStream]);
 
     React.useEffect(() => {
-      alive.current = true;
       return () => {
-        alive.current = false;
         startToken.current++;
         const s = streamRef.current;
         streamRef.current = null;

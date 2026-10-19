@@ -16,6 +16,7 @@ import { isEditableTarget } from "../../lib/shortcuts";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../../hooks/use-resize-observer";
+import { useObjectUrl } from "../../hooks/use-object-url";
 import { FileFormatIcon } from "../../assets/file-format";
 import { Button } from "../../primitives/button";
 import { Skeleton } from "../../primitives/progress";
@@ -255,19 +256,14 @@ function renderPage(page: PDFPageProxy, canvas: HTMLCanvasElement, cssScale: num
   });
 }
 
-/** Object URL for a download fallback, created in an effect (StrictMode-safe) and revoked on change. */
+/** URL for a download fallback: the source URL, or an object URL for the bytes (revoked on change/unmount). */
 function useDownloadUrl(enabled: boolean, source: PdfSource) {
-  const [objectUrl, setObjectUrl] = React.useState<string>();
   const { url, data, blob } = source;
-  React.useEffect(() => {
-    if (!enabled || url || (!blob && !data) || typeof URL.createObjectURL !== "function") {
-      setObjectUrl(undefined);
-      return;
-    }
-    const href = URL.createObjectURL(blob ?? new Blob([data as BlobPart], { type: "application/pdf" }));
-    setObjectUrl(href);
-    return () => URL.revokeObjectURL(href);
+  const fileBlob = React.useMemo(() => {
+    if (!enabled || url || (!blob && !data) || typeof URL.createObjectURL !== "function") return null;
+    return blob ?? new Blob([data as BlobPart], { type: "application/pdf" });
   }, [enabled, url, data, blob]);
+  const objectUrl = useObjectUrl(fileBlob);
   return url ?? objectUrl;
 }
 

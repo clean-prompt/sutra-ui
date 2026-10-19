@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { dateKey, toValidDate } from "../lib/time";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Input } from "../primitives/input";
 import { SegmentedControl } from "../primitives/segmented-control";
@@ -61,7 +62,7 @@ function RuleNumberInput({ value, min, max = Number.MAX_SAFE_INTEGER, onValueCha
         const text = e.target.value;
         setDraft(text);
         const n = Number(text);
-        if (text.trim() !== "" && Number.isFinite(n)) onValueChange(Math.min(max, Math.max(min, Math.round(n))));
+        if (text.trim() !== "" && Number.isFinite(n)) onValueChange(clamp(Math.round(n), min, max));
       }}
       onBlur={(e) => {
         setDraft(null);

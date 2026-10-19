@@ -5,16 +5,17 @@ import { Favicon, domainOf } from "../../primitives/favicon";
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useNow } from "../../hooks/use-now";
-import { formatDuration as formatDurationMs } from "../../lib/duration";
+import { formatDuration } from "../../lib/duration";
 import { formatTokens } from "../../lib/format";
 import { normalizeTaskStatus, type TaskStatusInput } from "../../lib/status";
 import { Spinner } from "../../primitives/spinner";
 import { TextShimmer } from "../../primitives/text-shimmer";
 import { Button, type ButtonProps } from "../../primitives/button";
 
-function formatDuration(seconds: number) {
+/** "a moment" under a second, then "12s", "1m 15s", "62m 5s". */
+function formatThoughtDuration(seconds: number) {
   if (!(seconds >= 1)) return "a moment";
-  return formatDurationMs(seconds * 1000, { maxUnit: "m", keepZeros: false });
+  return formatDuration(seconds * 1000, { maxUnit: "m", keepZeros: false });
 }
 
 /** "950 tokens", "1.2k tokens", "3.4M tokens". */
@@ -172,7 +173,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
 
     const seconds = duration ?? measured;
     const label =
-      title ?? (streaming ? "Thinking…" : seconds != null ? `Thought for ${formatDuration(seconds)}` : "Thoughts");
+      title ?? (streaming ? "Thinking…" : seconds != null ? `Thought for ${formatThoughtDuration(seconds)}` : "Thoughts");
 
     return (
       <Collapsible.Root
@@ -199,7 +200,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
           )}
           {streaming && title == null && elapsed > 0 && (
             <span data-slot="thinking-elapsed" className="shrink-0 tabular-nums">
-              {formatDuration(elapsed)}
+              {formatThoughtDuration(elapsed)}
             </span>
           )}
           {tokenCount != null && (

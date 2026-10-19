@@ -19,6 +19,7 @@ import {
   RiUploadCloud2Line,
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { clamp } from "../../lib/math";
 import { Button, type ButtonProps } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -27,7 +28,7 @@ import { useResizeObserver } from "../../hooks/use-resize-observer";
 import { ModelSelectOption, type PickerModel } from "./model-select";
 import { DropdownMenu as Menu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../primitives/dropdown-menu";
 import { useTextareaMirror } from "../../hooks/use-textarea-mirror";
-import { assignRef } from "../../lib/refs";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 
 interface PromptInputContextValue {
   value: string;
@@ -200,7 +201,7 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
           ? pasteNotice.selection
           : [ta.selectionStart ?? value.length, ta.selectionEnd ?? value.length];
       const s0 = Math.min(start, value.length);
-      const e0 = Math.min(Math.max(end, s0), value.length);
+      const e0 = clamp(end, s0, value.length);
       setValue(value.slice(0, s0) + pasteNotice.text + value.slice(e0));
       onLargePasteUndo?.(pasteNotice.text, pasteNotice.file);
       setPasteNotice(null);
@@ -453,13 +454,7 @@ export const PromptInputTextarea = React.forwardRef<HTMLTextAreaElement, PromptI
     const { value, setValue, loading: isLoading, disabled, textareaRef, addFiles, acceptsFiles, onLargePaste: handleLargePaste } = usePromptInput();
     const composing = React.useRef(false);
 
-    const setRefs = React.useCallback(
-      (node: HTMLTextAreaElement | null) => {
-        textareaRef.current = node;
-        assignRef(ref, node);
-      },
-      [ref, textareaRef]
-    );
+    const setRefs = useMergedRefs(textareaRef, ref);
 
     const resize = React.useCallback(() => {
       const el = textareaRef.current;
@@ -470,7 +465,7 @@ export const PromptInputTextarea = React.forwardRef<HTMLTextAreaElement, PromptI
       const min = lineHeight * minRows + padding;
       const max = lineHeight * maxRows + padding;
       el.style.height = "auto";
-      const next = Math.min(Math.max(el.scrollHeight, min), max);
+      const next = clamp(el.scrollHeight, min, max);
       el.style.height = `${next}px`;
       el.style.overflowY = el.scrollHeight > max ? "auto" : "hidden";
     }, [minRows, maxRows, textareaRef]);

@@ -1,5 +1,6 @@
 import { calendarDayDiff } from "../../lib/time";
 import { formatDuration } from "../../lib/duration";
+import { clamp } from "../../lib/math";
 import type { TaskStatusInput } from "../../lib/status";
 import type { BadgeColor } from "../../primitives/badge";
 import type { AgentAvatarSpec } from "../../patterns/agent-avatar";
@@ -114,8 +115,6 @@ export interface KanbanFilters {
 
 export const KANBAN_UNASSIGNED = "__unassigned";
 
-const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
-
 /** Cards of one column, in display order. */
 export function kanbanColumnCards(board: KanbanBoardModel, columnId: string): KanbanCardData[] {
   return board.cards.filter((c) => c.columnId === columnId);
@@ -208,7 +207,10 @@ export function isKanbanOverdue(card: Pick<KanbanCardData, "dueDate" | "complete
   return (calendarDayDiff(now, card.dueDate) ?? 0) > 0;
 }
 
-/** Time in a column: "45s", "3m 20s", "26h 5m" (hours are the largest unit; "—" for negative input). */
+/**
+ * Time in a column: "45s", "3m 20s", "26h 5m" (hours are the largest unit; "—" for negative input).
+ * @deprecated Use `formatDuration(ms, { maxUnit: "h", negative: "invalid" })` from lib/duration.
+ */
 export function formatKanbanDuration(ms: number) {
   return formatDuration(ms, { maxUnit: "h", negative: "invalid" });
 }

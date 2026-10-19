@@ -3,7 +3,9 @@ import { RiAddLine, RiArrowDownSLine, RiArrowUpSLine, RiSubtractLine } from "@re
 import { cn, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { roundTo } from "../lib/math";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useField } from "./field";
+import { inputShellVariants } from "./input";
 
 export interface NumberInputProps
   extends Omit<
@@ -44,7 +46,6 @@ function decimalsOf(n: number) {
 }
 
 
-const heights: Record<Size, string> = { sm: "h-8", md: "h-9", lg: "h-10" };
 const splitButton: Record<Size, string> = { sm: "w-8", md: "w-9", lg: "w-10" };
 
 /** Numeric stepper with keyboard support, press-and-hold repeat and locale-aware formatting. */
@@ -193,8 +194,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
     valueRef.current = value;
     const draftRef = React.useRef(draft);
     draftRef.current = draft;
-    const setValueRef = React.useRef(setValue);
-    setValueRef.current = setValue;
+    const setValueRef = useLatestRef(setValue);
 
     const interactive = !field.disabled && !readOnly;
     const canIncrement = interactive && (max == null || value == null || value < max);
@@ -345,12 +345,8 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
         data-slot="number-input"
         data-layout={layout}
         className={cn(
-          "group/number relative flex w-full min-w-0 items-stretch overflow-hidden rounded-control border border-input bg-background text-foreground shadow-xs",
-          "transition-[color,box-shadow,border-color] duration-150",
-          "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/35",
-          field.invalid && "border-destructive ring-[3px] ring-destructive/20 focus-within:border-destructive focus-within:ring-destructive/20",
-          field.disabled && "cursor-not-allowed opacity-50",
-          heights[size],
+          "group/number relative flex w-full min-w-0 items-stretch overflow-hidden",
+          inputShellVariants({ focus: "within", invalid: field.invalid, disabled: field.disabled, size }),
           wrapperClassName
         )}
       >

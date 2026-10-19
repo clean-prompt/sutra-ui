@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 
 /* ------------------------------------------------------------------ */
 /* DecodeText                                                          */
@@ -45,8 +46,7 @@ export const DecodeText = React.forwardRef<HTMLSpanElement, DecodeTextProps>(
     const reduced = usePrefersReducedMotion();
     const [display, setDisplay] = React.useState(() => (trigger === "mount" && !reduced ? scramble(text, 0, charset) : text));
     const timer = React.useRef<ReturnType<typeof setInterval> | null>(null);
-    const doneRef = React.useRef(onComplete);
-    doneRef.current = onComplete;
+    const doneRef = useLatestRef(onComplete);
 
     const stop = () => {
       if (timer.current) clearInterval(timer.current);

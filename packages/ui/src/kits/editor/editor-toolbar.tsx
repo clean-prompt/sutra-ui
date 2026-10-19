@@ -61,10 +61,8 @@ const ToolbarContext = React.createContext<ToolbarContextValue | null>(null);
 function useToolbarItem(meta: ItemMeta) {
   const ctx = React.useContext(ToolbarContext);
   const id = React.useId();
-  const metaRef = React.useRef(meta);
-  metaRef.current = meta;
   useIsoLayoutEffect(() => {
-    ctx?.register(id, metaRef.current);
+    ctx?.register(id, meta);
   });
   useIsoLayoutEffect(() => () => ctx?.register(id, null), [ctx, id]);
   return { id, hidden: ctx?.hidden.has(id) ?? false, size: ctx?.size ?? "sm" };

@@ -658,7 +658,7 @@ export const MediaShelf = React.forwardRef<HTMLElement, MediaShelfProps>(
       const at = items.findIndex((li) => li.contains(target));
       if (at < 0) return;
       const to =
-        e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 : Math.min(items.length - 1, Math.max(0, at + (e.key === "ArrowRight" ? 1 : -1)));
+        e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 : clamp(at + (e.key === "ArrowRight" ? 1 : -1), 0, items.length - 1);
       if (to === at) return;
       const focusable = items[to].querySelector<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
       if (!focusable) return;

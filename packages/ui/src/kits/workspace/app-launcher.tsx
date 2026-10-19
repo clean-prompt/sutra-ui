@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiAppsLine } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
 import { formatBadgeCount } from "../../lib/format";
+import { clamp } from "../../lib/math";
 import { initials } from "../../lib/text";
 import { SutraAppIcon, type SutraApp } from "../../assets/brand";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -174,7 +175,7 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
     const current = Math.min(active, Math.max(visible.length - 1, 0));
 
     const focusAt = (index: number) => {
-      const next = Math.max(0, Math.min(visible.length - 1, index));
+      const next = clamp(index, 0, Math.max(0, visible.length - 1));
       setActive(next);
       tiles.current[next]?.focus();
     };

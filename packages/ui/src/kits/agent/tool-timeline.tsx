@@ -35,7 +35,6 @@ import { parseAnsi, ansiSegmentClassName } from "../../patterns/log-viewer";
 import { DiffCard, DiffStat, type DiffCardProps } from "../../patterns/diff-viewer";
 import { Favicon, domainOf } from "../../primitives/favicon";
 import { CodeBlock } from "../../patterns/code-block";
-import { formatAgentElapsed } from "./agent-tasks";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */
@@ -1063,7 +1062,7 @@ export const AgentStatusLine = React.forwardRef<HTMLDivElement, AgentStatusLineP
     const waiting = state === "permission" || state === "question";
     const verb = rotating ? (verbs![verbIndex] ?? "") : "";
     const stats = [
-      showElapsed ? formatAgentElapsed(seconds * 1000) : null,
+      showElapsed ? formatDuration(seconds * 1000, { pad: true, round: "floor", invalid: "0s" }) : null,
       tokens != null ? `${tokensPrefix ? `${tokensPrefix} ` : ""}${formatTokens(tokens, { label: true, wholeAbove: 100 })}` : null,
     ].filter(Boolean);
     const statsText = stats.join(" · ");

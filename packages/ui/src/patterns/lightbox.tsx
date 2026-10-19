@@ -13,6 +13,9 @@ import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { clamp } from "../lib/math";
 import { useSwipe } from "../hooks/use-swipe";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
+import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useObjectUrl } from "../hooks/use-object-url";
 
 /* ------------------------------------------------------------------ */
 /* ImageWithFallback                                                   */
@@ -67,31 +70,25 @@ export const ImageWithFallback = React.forwardRef<HTMLImageElement, ImageWithFal
     ref
   ) => {
     const [status, setStatus] = React.useState<LoadStatus>(src ? "loading" : "error");
-    const [resolved, setResolved] = React.useState<string | undefined>(fetcher ? undefined : src);
+    const [blob, setBlob] = React.useState<Blob | undefined>(undefined);
+    const blobUrl = useObjectUrl(blob);
     const imgRef = React.useRef<HTMLImageElement | null>(null);
-    const fetcherRef = React.useRef(fetcher);
-    fetcherRef.current = fetcher;
+    const fetcherRef = useLatestRef(fetcher);
     const useFetcher = Boolean(fetcher);
+    const resolved = !src ? undefined : useFetcher ? blobUrl : src;
 
     React.useEffect(() => {
+      setBlob(undefined);
       if (!src) {
         setStatus("error");
-        setResolved(undefined);
         return;
       }
       setStatus("loading");
-      if (!useFetcher) {
-        setResolved(src);
-        return;
-      }
-      setResolved(undefined);
+      if (!useFetcher) return;
       let cancelled = false;
-      let objectUrl: string | undefined;
       fetcherRef.current!(src).then(
-        (blob) => {
-          if (cancelled) return;
-          objectUrl = URL.createObjectURL(blob);
-          setResolved(objectUrl);
+        (next) => {
+          if (!cancelled) setBlob(next);
         },
         () => {
           if (!cancelled) {
@@ -102,7 +99,6 @@ export const ImageWithFallback = React.forwardRef<HTMLImageElement, ImageWithFal
       );
       return () => {
         cancelled = true;
-        if (objectUrl) URL.revokeObjectURL(objectUrl);
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [src, useFetcher]);
@@ -114,11 +110,7 @@ export const ImageWithFallback = React.forwardRef<HTMLImageElement, ImageWithFal
     }, [resolved]);
 
     const aspect = ratio ?? (width && height ? width / height : undefined);
-    const setRefs = (node: HTMLImageElement | null) => {
-      imgRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    };
+    const setRefs = useMergedRefs(imgRef, ref);
 
     return (
       <span

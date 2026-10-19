@@ -19,6 +19,7 @@ import {
   RiAddLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { toPercent } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Kbd } from "../primitives/typography";
 import { Progress } from "../primitives/progress";
@@ -179,7 +180,7 @@ export const AppSidebar = React.forwardRef<HTMLElement, AppSidebarProps>(
         onNavigate?.(id);
       },
     });
-    const pct = storage && storage.total > 0 ? Math.min(100, Math.max(0, Math.round((storage.used / storage.total) * 100))) : 0;
+    const pct = storage && storage.total > 0 ? Math.round(toPercent(storage.used, storage.total)) : 0;
 
     return (
       <Sidebar ref={ref} collapsible={collapsible} mobileTitle="Sutra navigation" {...props}>

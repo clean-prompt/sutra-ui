@@ -27,6 +27,7 @@ import { highlightSelectionMatches, search, searchKeymap } from "@codemirror/sea
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { cn } from "../../lib/cn";
 import { clamp } from "../../lib/math";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 
 /* ------------------------------------------------------------------ */
 /* Theme                                                               */
@@ -315,11 +316,9 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
   ) => {
     const hostRef = React.useRef<HTMLDivElement>(null);
     const viewRef = React.useRef<EditorView | null>(null);
-    const cb = React.useRef({ onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange });
-    cb.current = { onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange };
+    const cb = useLatestRef({ onValueChange, onChange, onSave, onSelectionChange, onScroll, onFocusChange });
     // Options as of the latest render, read when the view is (re)created, e.g. after <Activity> hides and shows it.
-    const latest = React.useRef({ value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, historyEnabled, spellCheck, label, extensions, autoFocus });
-    latest.current = { value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, historyEnabled, spellCheck, label, extensions, autoFocus };
+    const latest = useLatestRef({ value, defaultValue, language, lineNumbers, wrap, placeholder, readOnly, searchEnabled, keyBindings, historyEnabled, spellCheck, label, extensions, autoFocus });
     /** The document when the view was last destroyed, so a remount keeps unsaved text. */
     const docRef = React.useRef<string | null>(null);
     const stableExtensions = useShallowStable(extensions);
@@ -434,7 +433,7 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
           try {
             const block = view.lineBlockAtHeight(el.scrollTop);
             const n = view.state.doc.lineAt(block.from).number - 1;
-            const frac = block.height ? Math.min(1, Math.max(0, (el.scrollTop - block.top) / block.height)) : 0;
+            const frac = block.height ? clamp((el.scrollTop - block.top) / block.height, 0, 1) : 0;
             topLine = el.scrollTop < 4 ? 0 : n + frac;
           } catch {
             topLine = 0;

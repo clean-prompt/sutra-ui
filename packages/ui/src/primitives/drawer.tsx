@@ -2,8 +2,10 @@ import * as React from "react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { RiCloseLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { DialogOverlay, SheetBody, SheetClose, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./dialog";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 /* useSwipe lives in hooks/use-swipe; re-exported here for back-compat. */
 export { useSwipe, type SwipeDirection, type SwipeHandlers, type SwipeInfo, type UseSwipeOptions } from "../hooks/use-swipe";
@@ -73,7 +75,7 @@ export function Drawer({
 }: DrawerProps) {
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   const snapPoints = React.useMemo(
-    () => (snapProp && snapProp.length ? [...snapProp].map((s) => Math.min(1, Math.max(0.05, s))).sort((a, b) => a - b) : undefined),
+    () => (snapProp && snapProp.length ? [...snapProp].map((s) => clamp(s, 0.05, 1)).sort((a, b) => a - b) : undefined),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [snapProp?.join(",")]
   );
@@ -196,14 +198,7 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
     const ctx = useDrawerContext();
     const { dismissible, snapPoints, snap, setSnap, setOpen } = ctx;
     const nodeRef = React.useRef<HTMLDivElement | null>(null);
-    const ref = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        nodeRef.current = node;
-        if (typeof forwardedRef === "function") forwardedRef(node);
-        else if (forwardedRef) forwardedRef.current = node;
-      },
-      [forwardedRef]
-    );
+    const ref = useMergedRefs(nodeRef, forwardedRef);
     const [offset, setOffset] = React.useState(0);
     const [dragging, setDragging] = React.useState(false);
     const justDragged = React.useRef(false);
@@ -272,7 +267,7 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
         return;
       }
       let target: number;
-      if (flick) target = Math.min(snapPoints.length - 1, Math.max(0, idx + (velocity > 0 ? -1 : 1)));
+      if (flick) target = clamp(idx + (velocity > 0 ? -1 : 1), 0, snapPoints.length - 1);
       else {
         target = 0;
         snapPoints.forEach((p, i) => {

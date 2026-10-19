@@ -13,6 +13,7 @@ import { pluralize } from "../lib/format";
 import { useCamera, type CameraFacingMode } from "../hooks/use-camera";
 import { errorMessage, useAsyncAction, useMountedRef } from "../hooks/use-async-action";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
+import { useObjectUrl } from "../hooks/use-object-url";
 import { Button } from "../primitives/button";
 import { InlineAlert, InlineAlertDescription, InlineAlertTitle } from "../primitives/inline-alert";
 import { Skeleton } from "../primitives/progress";
@@ -178,7 +179,6 @@ export const CameraCapture = React.forwardRef<HTMLDivElement, CameraCaptureProps
   ) => {
     const [phase, setPhase] = React.useState<Phase>("live");
     const [captured, setCaptured] = React.useState<{ blob: Blob; meta: CameraCaptureMeta } | null>(null);
-    const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
     const [captureError, setCaptureError] = React.useState<string | null>(null);
     const [announcement, setAnnouncement] = React.useState("");
     const [elapsed, setElapsed] = React.useState(0);
@@ -234,15 +234,7 @@ export const CameraCapture = React.forwardRef<HTMLDivElement, CameraCaptureProps
     const finishRef = useLatestRef(finish);
 
     // Review URL for the captured blob, revoked when it changes or on unmount.
-    React.useEffect(() => {
-      if (!captured || typeof URL.createObjectURL !== "function") {
-        setPreviewUrl(null);
-        return;
-      }
-      const url = URL.createObjectURL(captured.blob);
-      setPreviewUrl(url);
-      return () => URL.revokeObjectURL(url);
-    }, [captured]);
+    const previewUrl = useObjectUrl(captured?.blob);
 
     /* ---------------- photo ---------------- */
 

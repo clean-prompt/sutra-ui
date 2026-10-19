@@ -1,10 +1,11 @@
 import * as React from "react";
 import { Popover as PopoverPrimitive } from "radix-ui";
-import { RiCloseLine } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
 import { escapeRegExp, matchRanges } from "../lib/text";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useField } from "./field";
+import { CloseButton } from "./close-button";
+import { inputShellVariants } from "./input";
 
 export type TagRejectReason = "duplicate" | "invalid" | "max";
 
@@ -277,11 +278,8 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
               innerRef.current?.focus();
             }}
             className={cn(
-              "flex w-full min-w-0 cursor-text flex-wrap items-center gap-1.5 rounded-[min(var(--radius-control),var(--radius-box))] border border-input bg-background px-2 py-1 text-sm text-foreground shadow-xs",
-              "transition-[color,box-shadow,border-color] duration-150",
-              "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/35",
-              field.invalid && "border-destructive ring-[3px] ring-destructive/20 focus-within:border-destructive focus-within:ring-destructive/20",
-              field.disabled && "cursor-not-allowed opacity-50",
+              "flex w-full min-w-0 cursor-text flex-wrap items-center gap-1.5 px-2 py-1 text-sm",
+              inputShellVariants({ focus: "within", radius: "box", invalid: field.invalid, disabled: field.disabled }),
               minHeights[size],
               wrapperClassName
             )}
@@ -300,15 +298,14 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
               >
                 <span className="truncate">{tag}</span>
                 {interactive && (
-                  <button
-                    type="button"
+                  <CloseButton
+                    shape="pill"
+                    variant="muted"
+                    size="3xs"
                     tabIndex={-1}
                     aria-label={`Remove ${tag}`}
                     onClick={() => removeAt(i)}
-                    className="inline-flex size-4 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-border hover:text-foreground"
-                  >
-                    <RiCloseLine className="size-3" aria-hidden />
-                  </button>
+                  />
                 )}
               </span>
             ))}

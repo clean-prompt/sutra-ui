@@ -3,7 +3,7 @@ import { RiCheckboxCircleFill, RiDownloadLine, RiEyeLine, RiEyeOffLine, RiPrinte
 import { cn } from "../../lib/cn";
 import { formatCountdown } from "../../lib/duration";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
+import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { useCountdown } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
 import { CopyButton } from "../../primitives/copy-button";
@@ -124,8 +124,7 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
     const [typed, setTyped] = React.useState("");
     const [error, setError] = React.useState<string>();
     const inputId = React.useId();
-    const onHideRef = React.useRef(onHide);
-    onHideRef.current = onHide;
+    const onHideRef = useLatestRef(onHide);
 
     const hide = React.useCallback(() => {
       setVisible(false);
@@ -375,8 +374,7 @@ export const RecoveryKeyInput = React.forwardRef<HTMLInputElement, RecoveryKeyIn
     const error = complete ? (verdict === true ? undefined : typeof verdict === "string" ? verdict : "This key isn't valid.") : undefined;
     const valid = complete && !error;
 
-    const completeRef = React.useRef(onComplete);
-    completeRef.current = onComplete;
+    const completeRef = useLatestRef(onComplete);
     React.useEffect(() => {
       if (valid) completeRef.current?.(value);
     }, [valid, value]);

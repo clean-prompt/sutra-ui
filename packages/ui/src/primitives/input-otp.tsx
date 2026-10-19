@@ -3,6 +3,7 @@ import { OTPInput, OTPInputContext, REGEXP_ONLY_DIGITS } from "input-otp";
 import { cn, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useField } from "./field";
+import { inputShellVariants } from "./input";
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
@@ -110,8 +111,9 @@ export const InputOTPSlot = React.forwardRef<HTMLDivElement, InputOTPSlotProps>(
       data-filled={char ? true : undefined}
       aria-invalid={invalid || undefined}
       className={cn(
-        "relative flex items-center justify-center rounded-control border border-input bg-background font-medium tabular-nums text-foreground shadow-xs",
-        "transition-[color,box-shadow,border-color,transform] duration-150",
+        inputShellVariants({ focus: "none" }),
+        "relative flex items-center justify-center font-medium tabular-nums",
+        "transition-[color,box-shadow,border-color,transform]",
         slotSize[size],
         char && "animate-in zoom-in-90 fade-in-0 duration-150",
         isActive && "z-10 border-ring ring-[3px] ring-ring/35",

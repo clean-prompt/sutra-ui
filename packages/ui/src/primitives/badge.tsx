@@ -1,8 +1,8 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { RiCloseLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { normalizeTone, type ToneInput } from "../lib/tone";
+import { CloseButton } from "./close-button";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 
 /**
  * Badge colour. The categorical palette (`gray`, `blue`, `purple`, `pink`, `orange`) lives here;
@@ -24,49 +24,20 @@ export type BadgeColor =
 
 type BadgeStyleSet = { soft: string; solid: string; outline: string; dot: string };
 
+/** Semantic colours: `toneClasses` soft/solid/dot; the outline border is a touch lighter than `toneClasses.outline`. */
+function semantic(tone: Tone, outline: string, soft: string = toneClasses.soft[tone]): BadgeStyleSet {
+  return { soft, solid: toneClasses.solid[tone], outline, dot: toneClasses.dot[tone] };
+}
+
 const palette: Record<BadgeColor, BadgeStyleSet> = {
-  neutral: {
-    soft: "bg-muted text-foreground",
-    solid: "bg-inverse text-inverse-foreground",
-    outline: "border-border-strong text-foreground",
-    dot: "bg-muted-foreground",
-  },
-  primary: {
-    soft: "bg-primary-soft text-primary-soft-foreground",
-    solid: "bg-primary text-primary-foreground",
-    outline: "border-primary/50 text-primary-soft-foreground",
-    dot: "bg-primary",
-  },
-  brand: {
-    soft: "bg-primary-soft text-primary-soft-foreground",
-    solid: "bg-primary text-primary-foreground",
-    outline: "border-primary/50 text-primary-soft-foreground",
-    dot: "bg-primary",
-  },
-  success: {
-    soft: "bg-success-soft text-success-soft-foreground",
-    solid: "bg-success text-success-foreground",
-    outline: "border-success/45 text-success-soft-foreground",
-    dot: "bg-success",
-  },
-  warning: {
-    soft: "bg-warning-soft text-warning-soft-foreground",
-    solid: "bg-warning text-warning-foreground",
-    outline: "border-warning/55 text-warning-soft-foreground",
-    dot: "bg-warning",
-  },
-  destructive: {
-    soft: "bg-destructive-soft text-destructive-soft-foreground",
-    solid: "bg-destructive text-destructive-foreground",
-    outline: "border-destructive/45 text-destructive-soft-foreground",
-    dot: "bg-destructive",
-  },
-  info: {
-    soft: "bg-info-soft text-info-soft-foreground",
-    solid: "bg-info text-info-foreground",
-    outline: "border-info/45 text-info-soft-foreground",
-    dot: "bg-info",
-  },
+  // Neutral text stays full-strength (toneClasses.soft.neutral uses muted text).
+  neutral: semantic("neutral", "border-border-strong text-foreground", "bg-muted text-foreground"),
+  primary: semantic("primary", toneClasses.outline.primary),
+  brand: semantic("primary", toneClasses.outline.primary),
+  success: semantic("success", "border-success/45 text-success-soft-foreground"),
+  warning: semantic("warning", "border-warning/55 text-warning-soft-foreground"),
+  destructive: semantic("destructive", "border-destructive/45 text-destructive-soft-foreground"),
+  info: semantic("info", "border-info/45 text-info-soft-foreground"),
   gray: {
     soft: "bg-gray-100 text-gray-700 dark:bg-gray-500/15 dark:text-gray-300",
     solid: "bg-gray-600 text-white",
@@ -176,17 +147,14 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         <span className="truncate">{children}</span>
         {trailingIcon}
         {onRemove ? (
-          <button
-            type="button"
+          <CloseButton
+            shape="pill"
+            variant="current"
+            size={size === "lg" ? "2xs" : "3xs"}
             onClick={onRemove}
             aria-label={removeLabel ?? "Remove"}
-            className={cn(
-              "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full opacity-60 outline-none transition-[opacity,background-color] hover:bg-current/15 hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring/50",
-              size === "lg" ? "size-5 [&_svg]:size-3.5" : "size-4 [&_svg]:size-3"
-            )}
-          >
-            <RiCloseLine aria-hidden />
-          </button>
+            className="outline-none hover:bg-current/15 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring/50"
+          />
         ) : null}
       </span>
     );

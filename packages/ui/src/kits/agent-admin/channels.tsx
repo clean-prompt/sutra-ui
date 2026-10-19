@@ -13,6 +13,7 @@ import { toneClasses } from "../../lib/tone";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { errorMessage, useAsyncAction } from "../../hooks/use-async-action";
 import { useCountdown } from "../../hooks/use-now";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { formatRelative } from "../../lib/time";
 import { CopyButton } from "../../primitives/copy-button";
 import { Button } from "../../primitives/button";
@@ -736,10 +737,8 @@ export const RotatingQRPairing = React.forwardRef<HTMLDivElement, RotatingQRPair
     const { expired: timeUp } = useCountdown(waiting ? deadline : undefined);
     const keyRef = React.useRef(0);
     const currentRef = React.useRef<string | null>(null);
-    const getRef = React.useRef(getPayload);
-    getRef.current = getPayload;
-    const connectedRef = React.useRef(onConnected);
-    connectedRef.current = onConnected;
+    const getRef = useLatestRef(getPayload);
+    const connectedRef = useLatestRef(onConnected);
 
     React.useEffect(() => {
       if (expiresAt != null) setDeadline(expiresAt);
@@ -922,8 +921,7 @@ export const GuidedSetupSteps = React.forwardRef<HTMLOListElement, GuidedSetupSt
   ({ steps, value, defaultValue = [], onValueChange, onComplete, className, ...props }, ref) => {
     const [done, setDone] = useControllableState<string[]>({ value, defaultValue, onChange: onValueChange });
     const currentIdx = steps.findIndex((s) => !done.includes(s.id));
-    const completeRef = React.useRef(onComplete);
-    completeRef.current = onComplete;
+    const completeRef = useLatestRef(onComplete);
 
     const toggle = (id: string, on: boolean) => {
       const next = on ? [...done.filter((d) => d !== id), id] : done.filter((d) => d !== id);

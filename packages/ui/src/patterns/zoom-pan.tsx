@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RiAddLine, RiFullscreenExitLine, RiSubtractLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { assignRef } from "../lib/refs";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useZoomPan, type UseZoomPanOptions } from "../hooks/use-zoom-pan";
 
 export * from "../hooks/use-zoom-pan";
@@ -49,6 +49,7 @@ export const ZoomPan = React.forwardRef<HTMLDivElement, ZoomPanProps>(
     forwardedRef
   ) => {
     const zp = useZoomPan({ minScale, maxScale, defaultScale, step, wheelRequiresModifier, panStep, onValueChange, onChange });
+    const setRefs = useMergedRefs(zp.ref, forwardedRef);
     const percent = Math.round(zp.scale * 100);
     const ctrl = cn(
       "inline-flex size-7 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4",
@@ -57,10 +58,7 @@ export const ZoomPan = React.forwardRef<HTMLDivElement, ZoomPanProps>(
     return (
       <div className={cn("relative overflow-hidden rounded-box border border-border bg-subtle", className)}>
         <div
-          ref={(node) => {
-            zp.ref(node);
-            assignRef(forwardedRef, node);
-          }}
+          ref={setRefs}
           role="group"
           aria-roledescription="zoomable area"
           aria-label={`${label}, ${percent}%`}

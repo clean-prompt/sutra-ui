@@ -2,7 +2,8 @@ import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { accentStyle, type Accent } from "../lib/accent";
 import { pluralize } from "../lib/format";
-import { assignRef } from "../lib/refs";
+import { clamp } from "../lib/math";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 import { isEditableTarget } from "../lib/shortcuts";
 import {
   MARQUEE_IGNORE_SELECTOR,
@@ -134,13 +135,7 @@ export const SelectionArea = React.forwardRef<HTMLDivElement, SelectionAreaProps
     forwardedRef
   ) => {
     const containerRef = React.useRef<HTMLDivElement | null>(null);
-    const setRef = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        containerRef.current = node;
-        assignRef(forwardedRef, node);
-      },
-      [forwardedRef]
-    );
+    const setRef = useMergedRefs(containerRef, forwardedRef);
 
     const { value, setValue, box, selecting } = useMarqueeSelection({
       containerRef,
@@ -284,7 +279,7 @@ export const SelectionArea = React.forwardRef<HTMLDivElement, SelectionAreaProps
               break;
             }
           }
-          nextId = order[Math.min(order.length - 1, Math.max(0, index + (forward ? 1 : -1)))] ?? null;
+          nextId = order[clamp(index + (forward ? 1 : -1), 0, order.length - 1)] ?? null;
           break;
         }
         case "Home":

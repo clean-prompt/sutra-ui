@@ -2,6 +2,8 @@ import * as React from "react";
 import { RiUploadCloud2Line } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { formatBytes } from "../lib/format";
+import { useMountedRef } from "../hooks/use-async-action";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 import { getFileCategory } from "../assets/file-format";
 
 export type FileRejectionCode = "file-invalid-type" | "file-too-large" | "too-many-files";
@@ -273,19 +275,8 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
     const canPickFolder = useDirectoryPickerSupport();
     const folderPick = directory && canPickFolder;
     const [reading, setReading] = React.useState(false);
-    const alive = React.useRef(true);
-    React.useEffect(() => {
-      alive.current = true;
-      return () => {
-        alive.current = false;
-      };
-    }, []);
-
-    const setInputRef = (node: HTMLInputElement | null) => {
-      inputRef.current = node;
-      if (typeof inputRefProp === "function") inputRefProp(node);
-      else if (inputRefProp) (inputRefProp as React.MutableRefObject<HTMLInputElement | null>).current = node;
-    };
+    const alive = useMountedRef();
+    const setInputRef = useMergedRefs(inputRef, inputRefProp);
 
     const open = () => {
       if (!disabled) inputRef.current?.click();

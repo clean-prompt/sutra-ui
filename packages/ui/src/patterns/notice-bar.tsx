@@ -3,6 +3,7 @@ import { RiArrowLeftSLine, RiArrowRightSLine, RiSparkling2Line } from "@remixico
 import { cn, focusRing } from "../lib/cn";
 import { TONES, normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { AlertBanner, type AlertBannerAppearance, type BannerAction } from "../primitives/alert-banner";
 
 /** @deprecated Use `Tone` (notices accept every canonical tone). */
@@ -76,8 +77,7 @@ export interface NoticeQueue {
 export function useNoticeQueue(source: NoticeItem[] = [], { initialDismissed, onDismiss }: UseNoticeQueueOptions = {}): NoticeQueue {
   const [pushed, setPushed] = React.useState<NoticeItem[]>([]);
   const [dismissed, setDismissed] = React.useState<Set<string>>(() => new Set(initialDismissed ?? []));
-  const onDismissRef = React.useRef(onDismiss);
-  onDismissRef.current = onDismiss;
+  const onDismissRef = useLatestRef(onDismiss);
 
   const notices = React.useMemo(() => sortNotices([...source, ...pushed], dismissed), [source, pushed, dismissed]);
 
@@ -156,8 +156,7 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
     const paused = hovered || focused;
     const rotating = autoRotate && !reduced && count > 1 && !paused;
 
-    const onIndexChangeRef = React.useRef(onIndexChange);
-    onIndexChangeRef.current = onIndexChange;
+    const onIndexChangeRef = useLatestRef(onIndexChange);
 
     const go = React.useCallback(
       (next: number) => {

@@ -1,9 +1,10 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
-import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
+import { normalizeTone, type ToneInput } from "../lib/tone";
 import { useSafeId } from "../hooks/use-safe-id";
 import { resolveAccent, type Accent } from "../lib/accent";
 import { clamp } from "../lib/math";
+import { linearPath, monotonePath, resolveColorToken, type PathPoint } from "../lib/svg-path";
 
 export type SparklineColor =
   | "primary"
@@ -15,86 +16,14 @@ export type SparklineColor =
   | "foreground"
   | (string & {});
 
-const tokenColor: Record<string, string> = {
-  primary: "var(--primary)",
-  success: "var(--success)",
-  warning: "var(--warning)",
-  destructive: "var(--destructive)",
-  info: "var(--info)",
-  muted: "var(--muted-foreground)",
-  foreground: "var(--foreground)",
-};
-
-const resolveColor = (color: string) => tokenColor[color] ?? color;
-
-const toneColor: Record<Tone, string> = {
-  neutral: "var(--muted-foreground)",
-  primary: "var(--primary)",
-  success: "var(--success)",
-  warning: "var(--warning)",
-  destructive: "var(--destructive)",
-  info: "var(--info)",
-};
-
 /** `tone` wins over `color`, which wins over `accent`; `color` stays for arbitrary CSS colours. */
 const colorFor = (tone: ToneInput | undefined, color: string | undefined, accent?: Accent) =>
-  tone ? toneColor[normalizeTone(tone)] : (color ?? resolveAccent(accent));
-
-type Point = readonly [number, number];
-
-/** Monotone cubic interpolation (Fritsch–Carlson), same shape as d3.curveMonotoneX. */
-function monotonePath(points: Point[]) {
-  const n = points.length;
-  if (n === 0) return "";
-  if (n === 1) return `M${points[0]![0]},${points[0]![1]}`;
-  if (n === 2) return `M${points[0]![0]},${points[0]![1]}L${points[1]![0]},${points[1]![1]}`;
-  const dx: number[] = [];
-  const m: number[] = [];
-  for (let i = 0; i < n - 1; i++) {
-    const h = points[i + 1]![0] - points[i]![0];
-    dx.push(h);
-    m.push(h === 0 ? 0 : (points[i + 1]![1] - points[i]![1]) / h);
-  }
-  const t: number[] = new Array(n);
-  t[0] = m[0]!;
-  t[n - 1] = m[n - 2]!;
-  for (let i = 1; i < n - 1; i++) {
-    t[i] = m[i - 1]! * m[i]! <= 0 ? 0 : (m[i - 1]! + m[i]!) / 2;
-  }
-  for (let i = 0; i < n - 1; i++) {
-    if (m[i] === 0) {
-      t[i] = 0;
-      t[i + 1] = 0;
-      continue;
-    }
-    const a = t[i]! / m[i]!;
-    const b = t[i + 1]! / m[i]!;
-    const s = a * a + b * b;
-    if (s > 9) {
-      const tau = 3 / Math.sqrt(s);
-      t[i] = tau * a * m[i]!;
-      t[i + 1] = tau * b * m[i]!;
-    }
-  }
-  let d = `M${points[0]![0]},${points[0]![1]}`;
-  for (let i = 0; i < n - 1; i++) {
-    const [x0, y0] = points[i]!;
-    const [x1, y1] = points[i + 1]!;
-    const h = dx[i]! / 3;
-    d += `C${x0 + h},${y0 + t[i]! * h},${x1 - h},${y1 - t[i + 1]! * h},${x1},${y1}`;
-  }
-  return d;
-}
-
-const linearPath = (points: Point[]) =>
-  points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join("");
+  tone ? resolveAccent(normalizeTone(tone)) : (color ?? resolveAccent(accent));
 
 function strokeFor(data: number[], color: string | undefined, trend: boolean | undefined) {
-  if (color) return resolveColor(color);
-  if (trend && data.length > 1) {
-    return data[data.length - 1]! >= data[0]! ? tokenColor.success! : tokenColor.destructive!;
-  }
-  return tokenColor.primary!;
+  if (color) return resolveColorToken(color);
+  if (trend && data.length > 1) return resolveColorToken(data[data.length - 1]! >= data[0]! ? "success" : "destructive");
+  return resolveColorToken("primary");
 }
 
 export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>, "type" | "color" | "radius"> {
@@ -186,7 +115,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
     const span = hi - lo || 1;
     const innerW = Math.max(1, width - (responsive ? 0 : pad * 2));
     const innerH = Math.max(1, height - pad * 2);
-    const points: Point[] = values.map((v, i) => [
+    const points: PathPoint[] = values.map((v, i) => [
       (responsive ? 0 : pad) + (values.length === 1 ? 0 : (i / (values.length - 1)) * innerW),
       pad + innerH - ((v - lo) / span) * innerH,
     ]);
@@ -309,7 +238,7 @@ export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
     },
     ref
   ) => {
-    const fill = resolveColor(colorFor(tone, color, accent) ?? "primary");
+    const fill = resolveColorToken(colorFor(tone, color, accent) ?? "primary");
     const n = data.length;
     const finite = data.filter(Number.isFinite);
     let hi = Number.isFinite(maxProp) ? maxProp! : Math.max(0, ...finite);

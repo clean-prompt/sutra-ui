@@ -6,22 +6,64 @@ import { Kbd } from "./typography";
 import { useField } from "./field";
 import { detectShortcutPlatform, getShortcutKeyLabels } from "../lib/shortcuts";
 
+const shellHeights: Record<Size, string> = { sm: "h-8", md: "h-9", lg: "h-10" };
+
+/**
+ * The bordered box shared by the text-entry controls (input, textarea, select / combobox / date triggers,
+ * number, tag and time inputs, input groups, OTP slots): border, radius, surface, shadow, transition and,
+ * per `focus` mode, where the focus / invalid / disabled styling comes from.
+ */
+export const inputShellVariants = cva(
+  "border border-input bg-background text-foreground shadow-xs transition-[color,box-shadow,border-color] duration-150",
+  {
+    variants: {
+      /**
+       * `control` (default): the shell is the focusable element (focus ring, `aria-invalid`, `:disabled`).
+       * `within`: the shell wraps the real control (`focus-within` ring; pass `invalid` / `disabled`).
+       * `none`: the component styles these states itself.
+       */
+      focus: {
+        control: [focusRing, invalidRing, "disabled:cursor-not-allowed disabled:opacity-50"],
+        within: "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/35",
+        none: "",
+      },
+      /** With `focus="within"`: invalid styling driven by state instead of `aria-invalid` on the shell. */
+      invalid: { true: "", false: "" },
+      /** With `focus="within"`: disabled styling driven by state instead of `:disabled` on the shell. */
+      disabled: { true: "", false: "" },
+      /** `box` caps the radius at the box radius, for multi-line shells (textarea, tag input). */
+      radius: { control: "rounded-control", box: "rounded-[min(var(--radius-control),var(--radius-box))]" },
+      /** Popover triggers lift their border on hover. */
+      hover: { true: "hover:border-border-strong", false: "" },
+      /** Fixed height (omit for auto-height shells). */
+      size: shellHeights,
+    },
+    compoundVariants: [
+      {
+        focus: "within",
+        invalid: true,
+        className: "border-destructive ring-[3px] ring-destructive/20 focus-within:border-destructive focus-within:ring-destructive/20",
+      },
+      { focus: "within", disabled: true, className: "cursor-not-allowed opacity-50" },
+    ],
+    defaultVariants: { focus: "control", radius: "control" },
+  }
+);
+
 export const inputVariants = cva(
   [
-    "flex w-full min-w-0 rounded-control border border-input bg-background text-foreground shadow-xs",
-    "transition-[color,box-shadow,border-color] duration-150",
+    "flex w-full min-w-0",
+    inputShellVariants(),
     "placeholder:text-muted-foreground selection:bg-primary/25",
     "file:mr-3 file:inline-flex file:h-full file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
-    "disabled:cursor-not-allowed disabled:opacity-50 read-only:bg-subtle",
-    focusRing,
-    invalidRing,
+    "read-only:bg-subtle",
   ],
   {
     variants: {
       size: {
-        sm: "h-8 px-2.5 text-sm",
-        md: "h-9 px-3 text-sm",
-        lg: "h-10 px-3.5 text-sm",
+        sm: [shellHeights.sm, "px-2.5 text-sm"],
+        md: [shellHeights.md, "px-3 text-sm"],
+        lg: [shellHeights.lg, "px-3.5 text-sm"],
       },
     },
     defaultVariants: { size: "md" },
@@ -30,15 +72,14 @@ export const inputVariants = cva(
 
 const wrapperVariants = cva(
   [
-    "group/input relative flex w-full min-w-0 cursor-text items-stretch overflow-hidden rounded-control border border-input bg-background text-foreground shadow-xs",
-    "transition-[color,box-shadow,border-color] duration-150",
-    "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/35",
+    "group/input relative flex w-full min-w-0 cursor-text items-stretch overflow-hidden",
+    inputShellVariants({ focus: "within" }),
     "has-[input[aria-invalid=true]]:border-destructive has-[input[aria-invalid=true]]:ring-[3px] has-[input[aria-invalid=true]]:ring-destructive/20",
     "has-[input:disabled]:cursor-not-allowed has-[input:disabled]:opacity-50",
   ],
   {
     variants: {
-      size: { sm: "h-8 text-sm", md: "h-9 text-sm", lg: "h-10 text-sm" },
+      size: { sm: [shellHeights.sm, "text-sm"], md: [shellHeights.md, "text-sm"], lg: [shellHeights.lg, "text-sm"] },
     },
     defaultVariants: { size: "md" },
   }

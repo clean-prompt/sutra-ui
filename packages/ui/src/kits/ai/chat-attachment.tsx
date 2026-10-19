@@ -15,7 +15,7 @@ import {
   RiRefreshLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
-import { formatBytes, pluralize } from "../../lib/format";
+import { formatBytes, pluralize, type FormatBytesOptions } from "../../lib/format";
 import { ProgressCircle } from "../../primitives/progress";
 import { Spinner } from "../../primitives/spinner";
 
@@ -66,9 +66,14 @@ function kindOf(name: string, mimeType?: string): FileKind {
   return "text";
 }
 
-/** Format bytes as "12 KB", "1.4 MB" (lib `formatBytes`; one decimal below 10, `""` for bad input). */
+const ATTACHMENT_SIZE: FormatBytesOptions = { decimals: 1, wholeAbove: 10, trimZeros: false, negative: "invalid", invalid: "" };
+
+/**
+ * Format bytes as "12 KB", "1.4 MB" (one decimal below 10, `""` for bad input).
+ * @deprecated Use `formatBytes(bytes, { decimals: 1, wholeAbove: 10, trimZeros: false, negative: "invalid", invalid: "" })`.
+ */
 export function formatAttachmentSize(bytes: number) {
-  return formatBytes(bytes, { decimals: 1, wholeAbove: 10, trimZeros: false, negative: "invalid", invalid: "" });
+  return formatBytes(bytes, ATTACHMENT_SIZE);
 }
 
 export interface ChatAttachmentProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -146,7 +151,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
             : [
                 ext ? ext.toUpperCase() : kind === "text" ? "File" : kind,
                 pages != null ? `${pages} ${pluralize(pages, "page")}` : null,
-                fileSize != null ? formatAttachmentSize(fileSize) : null,
+                fileSize != null ? formatBytes(fileSize, ATTACHMENT_SIZE) : null,
               ]
                 .filter(Boolean)
                 .join(" · ");

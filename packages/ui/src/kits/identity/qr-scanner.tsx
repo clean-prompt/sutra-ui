@@ -14,6 +14,7 @@ import { cn } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { errorMessage } from "../../hooks/use-async-action";
 import { useCamera, type CameraStatus } from "../../hooks/use-camera";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 
@@ -161,10 +162,8 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
     const [uploadMessage, setUploadMessage] = React.useState<string | null>(null);
     const [lastResult, setLastResult] = React.useState<string | null>(null);
 
-    const onResultRef = React.useRef(onResult);
-    onResultRef.current = onResult;
-    const onErrorRef = React.useRef(onError);
-    onErrorRef.current = onError;
+    const onResultRef = useLatestRef(onResult);
+    const onErrorRef = useLatestRef(onError);
 
     const camera = useCamera({
       facingMode: initialFacingMode,

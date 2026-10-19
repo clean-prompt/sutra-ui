@@ -3,6 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { RiAddLine } from "@remixicon/react";
 import { cn, focusRing, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 export type FabPosition = "bottom-right" | "bottom-left" | "bottom-center" | "top-right" | "top-left" | "top-center";
 
@@ -133,14 +134,7 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
     const labelSide = position.endsWith("left") ? "right" : "left";
     const resolvedSize: Size = size ?? "md";
 
-    const setRefs = React.useCallback(
-      (node: HTMLButtonElement | null) => {
-        triggerRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      },
-      [ref]
-    );
+    const setRefs = useMergedRefs(triggerRef, ref);
 
     const menuRef = React.useRef<HTMLUListElement>(null);
     const focusFirstOnOpen = React.useRef(false);

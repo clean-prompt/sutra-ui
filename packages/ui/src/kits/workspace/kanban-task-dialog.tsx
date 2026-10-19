@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiCloseLine, RiFileList3Line, RiSparkling2Line } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { formatRelative, safeISO, toMs, toValidDate } from "../../lib/time";
+import { formatDuration } from "../../lib/duration";
 import { normalizeTaskStatus } from "../../lib/status";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
@@ -21,7 +22,7 @@ import { DatePicker } from "../../primitives/date-picker";
 import { Input } from "../../primitives/input";
 import { Textarea } from "../../primitives/textarea";
 import { Markdown } from "../../patterns/markdown";
-import { formatKanbanDuration, type KanbanBoardModel, type KanbanCardData, type KanbanPriority, type KanbanRunStatusInput } from "./kanban-model";
+import { type KanbanBoardModel, type KanbanCardData, type KanbanPriority, type KanbanRunStatusInput } from "./kanban-model";
 import { NONE, priorityLabel, priorityOrder } from "./kanban-internal";
 import { KanbanAssigneeAvatar, KanbanPriorityIcon, KanbanRunBadge } from "./kanban-card";
 
@@ -378,7 +379,7 @@ function TaskDetailBody({
                 {runs.map((r) => {
                   const agent = people.find((p) => p.id === r.agentId);
                   const end = r.endedAt ? (toMs(r.endedAt) ?? NaN) : normalizeTaskStatus(r.status) === "running" ? nowMs : NaN;
-                  const duration = formatKanbanDuration(end - (toMs(r.startedAt) ?? NaN));
+                  const duration = formatDuration(end - (toMs(r.startedAt) ?? NaN), { maxUnit: "h", negative: "invalid" });
                   const isOpen = openLog === r.id;
                   return (
                     <li key={r.id} className="rounded-box border border-border bg-card p-2.5">

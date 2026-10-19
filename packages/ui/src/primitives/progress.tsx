@@ -1,22 +1,17 @@
 import * as React from "react";
 import { Progress as ProgressPrimitive } from "radix-ui";
 import { cn } from "../lib/cn";
-import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
-import { clamp, toPercent } from "../lib/math";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
+import { clamp, roundTo, toPercent } from "../lib/math";
 import { useSafeId } from "../hooks/use-safe-id";
 
 /** @deprecated Use `Tone` (the `tone` prop). */
 export type ProgressColor = Tone;
 
-const barColor: Record<Tone, string> = {
-  primary: "bg-primary",
-  success: "bg-success",
-  warning: "bg-warning",
-  destructive: "bg-destructive",
-  info: "bg-info",
-  neutral: "bg-foreground",
-};
+/** Fill per tone: `toneClasses.dot`, but a neutral bar uses the foreground colour (not muted). */
+const barColor: Record<Tone, string> = { ...toneClasses.dot, neutral: "bg-foreground" };
 
+/** SVG stroke per tone (toneClasses has no stroke style). */
 const strokeColor: Record<Tone, string> = {
   primary: "stroke-primary",
   success: "stroke-success",
@@ -226,7 +221,7 @@ export function ProgressRingSvg({
         strokeWidth={strokeWidth}
         strokeLinecap={pct > 0 ? "round" : "butt"}
         pathLength={100}
-        strokeDasharray={`${Math.round(pct * 100) / 100} 100`}
+        strokeDasharray={`${roundTo(pct, 2)} 100`}
         className={cn("transition-[stroke-dasharray,stroke] duration-500 ease-out-quart motion-reduce:transition-none", fillClassName)}
       />
     </svg>

@@ -7,7 +7,7 @@ import {
   RiInformationLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
+import { normalizeTone, TONES, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { CloseButton } from "./close-button";
 
 /** @deprecated Use `Tone` via the `tone` prop (`brand` is now `primary`). Kept as the `inlineAlertVariants` key set. */
@@ -24,6 +24,44 @@ const variantForTone: Record<Tone, InlineAlertVariant> = {
   neutral: "neutral",
   primary: "brand",
 };
+
+/** Soft border tint per tone (the fill is `toneClasses.soft`). */
+const softBorder: Record<Exclude<Tone, "neutral">, string> = {
+  info: "border-info/15",
+  success: "border-success/15",
+  warning: "border-warning/25",
+  destructive: "border-destructive/15",
+  primary: "border-primary/15",
+};
+
+/** Outline border per tone (lighter than `toneClasses.border`). */
+const outlineBorder: Record<Tone, string> = {
+  info: "border-info/40",
+  success: "border-success/40",
+  warning: "border-warning/50",
+  destructive: "border-destructive/40",
+  neutral: "border-border",
+  primary: "border-primary/40",
+};
+
+// Neutral uses the subtle surface with full-strength text instead of toneClasses.soft.neutral.
+const toneCompounds = TONES.flatMap((tone) => {
+  const variant = variantForTone[tone];
+  return [
+    {
+      variant,
+      appearance: "soft" as const,
+      className: tone === "neutral" ? "border-border bg-subtle text-foreground" : `${softBorder[tone]} ${toneClasses.soft[tone]}`,
+    },
+    { variant, appearance: "outline" as const, className: outlineBorder[tone] },
+    {
+      variant,
+      appearance: "accent" as const,
+      className:
+        tone === "neutral" ? "border-border-strong bg-subtle text-foreground" : `${toneClasses.border[tone]} ${toneClasses.soft[tone]}`,
+    },
+  ];
+});
 
 export const inlineAlertVariants = cva(
   "relative flex w-full items-start gap-3 rounded-box px-4 py-3 text-sm [&>[data-slot=inline-alert-icon]]:mt-px",
@@ -47,28 +85,7 @@ export const inlineAlertVariants = cva(
         strip: "items-center rounded-none border-x-0 border-t-0 py-2 shadow-none [&>[data-slot=inline-alert-icon]]:mt-0",
       },
     },
-    compoundVariants: [
-      { variant: "info", appearance: "soft", className: "border-info/15 bg-info-soft text-info-soft-foreground" },
-      { variant: "success", appearance: "soft", className: "border-success/15 bg-success-soft text-success-soft-foreground" },
-      { variant: "warning", appearance: "soft", className: "border-warning/25 bg-warning-soft text-warning-soft-foreground" },
-      { variant: "destructive", appearance: "soft", className: "border-destructive/15 bg-destructive-soft text-destructive-soft-foreground" },
-      { variant: "neutral", appearance: "soft", className: "border-border bg-subtle text-foreground" },
-      { variant: "brand", appearance: "soft", className: "border-primary/15 bg-primary-soft text-primary-soft-foreground" },
-
-      { variant: "info", appearance: "outline", className: "border-info/40" },
-      { variant: "success", appearance: "outline", className: "border-success/40" },
-      { variant: "warning", appearance: "outline", className: "border-warning/50" },
-      { variant: "destructive", appearance: "outline", className: "border-destructive/40" },
-      { variant: "neutral", appearance: "outline", className: "border-border" },
-      { variant: "brand", appearance: "outline", className: "border-primary/40" },
-
-      { variant: "info", appearance: "accent", className: "border-info bg-info-soft text-info-soft-foreground" },
-      { variant: "success", appearance: "accent", className: "border-success bg-success-soft text-success-soft-foreground" },
-      { variant: "warning", appearance: "accent", className: "border-warning bg-warning-soft text-warning-soft-foreground" },
-      { variant: "destructive", appearance: "accent", className: "border-destructive bg-destructive-soft text-destructive-soft-foreground" },
-      { variant: "neutral", appearance: "accent", className: "border-border-strong bg-subtle text-foreground" },
-      { variant: "brand", appearance: "accent", className: "border-primary bg-primary-soft text-primary-soft-foreground" },
-    ],
+    compoundVariants: toneCompounds,
     defaultVariants: { variant: "info", appearance: "soft", layout: "box" },
   }
 );

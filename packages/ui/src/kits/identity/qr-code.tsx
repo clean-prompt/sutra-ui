@@ -3,6 +3,7 @@ import { encode } from "uqr";
 import { RiRefreshLine, RiTimeLine } from "@remixicon/react";
 import { cn } from "../../lib/cn";
 import { formatCountdown } from "../../lib/duration";
+import { clamp } from "../../lib/math";
 import { toMs, type TimeInput } from "../../lib/time";
 import { useCountdown } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
@@ -140,7 +141,7 @@ export const QRCode = React.forwardRef<HTMLSpanElement, QRCodeProps>(
     // A logo hides modules, which only level H tolerates; drop it when the data fits only at a lower level.
     const hasLogo = wantsLogo && level === "H";
     const n = qr?.size ?? 0;
-    const plate = hasLogo ? Math.max(5, Math.round(n * Math.min(0.3, Math.max(0.1, logoSize)))) : 0;
+    const plate = hasLogo ? Math.max(5, Math.round(n * clamp(logoSize, 0.1, 0.3))) : 0;
     const plateStart = (n - plate) / 2;
 
     const { dataPath, finders } = React.useMemo(() => {

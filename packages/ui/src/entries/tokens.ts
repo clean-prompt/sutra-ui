@@ -31,3 +31,5 @@ export * from "../hooks/use-scroll-edges";
 export * from "../hooks/use-rolling-series";
 export * from "../hooks/use-marquee-selection";
 export * from "../hooks/use-camera";
+export * from "../hooks/use-merged-refs";
+export * from "../hooks/use-object-url";

@@ -14,7 +14,9 @@ import {
   RiVolumeMuteLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { formatClock } from "../../lib/duration";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { isEditableTarget } from "../../patterns/shortcuts";
 import {
   MediaBufferingIndicator,
@@ -25,7 +27,6 @@ import {
   SkipButton,
   TrackCycleChip,
   VolumeControl,
-  formatMediaTime,
   mediaButtonVariants,
   useMediaElement,
   type MediaChapter,
@@ -377,8 +378,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
     }, [resumeOffer]);
 
     const [countdown, setCountdown] = React.useState<number | null>(null);
-    const latest = React.useRef({ onEnded, onNext, upNext, upNextCountdown });
-    latest.current = { onEnded, onNext, upNext, upNextCountdown };
+    const latest = useLatestRef({ onEnded, onNext, upNext, upNextCountdown });
     React.useEffect(() => {
       const video = localVideo.current;
       if (!video) return;
@@ -647,7 +647,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
           {resumeOffer !== null && countdown === null && (
             <div className="pointer-events-none absolute inset-x-0 bottom-24 z-30 flex justify-start px-4">
               <div role="status" className={cn(pillClass, "py-1.5 pl-3.5 pr-1.5 animate-in fade-in-0 slide-in-from-bottom-2")}>
-                <span>Resume from {formatMediaTime(resumeOffer)}?</span>
+                <span>Resume from {formatClock(resumeOffer)}?</span>
                 <button
                   type="button"
                   onClick={() => {

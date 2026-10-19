@@ -4,7 +4,8 @@ import { cn, focusRing } from "../../lib/cn";
 import { accentClasses, accentStyle, type Accent } from "../../lib/accent";
 import { pluralize } from "../../lib/format";
 import { formatMemory } from "../../lib/system-monitor";
-import { DAY_MS, HOUR_MS, MINUTE_MS, toMs, type TimeInput } from "../../lib/time";
+import { splitDuration } from "../../lib/duration";
+import { toMs, type TimeInput } from "../../lib/time";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useNow } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
@@ -70,17 +71,10 @@ export const agentProcessKindLabels: Record<AgentProcessKind, string> = {
 /** Coarse elapsed time for agent sessions: "<1 min", "48 min", "2 hr 5 min", "3 d 4 hr" (floored). */
 export function formatAgentRunTime(ms: number): string {
   if (!Number.isFinite(ms)) return "—";
-  const v = Math.max(0, ms);
-  if (v < MINUTE_MS) return "<1 min";
-  if (v < HOUR_MS) return `${Math.floor(v / MINUTE_MS)} min`;
-  if (v < DAY_MS) {
-    const h = Math.floor(v / HOUR_MS);
-    const m = Math.floor((v % HOUR_MS) / MINUTE_MS);
-    return m ? `${h} hr ${m} min` : `${h} hr`;
-  }
-  const d = Math.floor(v / DAY_MS);
-  const h = Math.floor((v % DAY_MS) / HOUR_MS);
-  return h ? `${d} d ${h} hr` : `${d} d`;
+  const { days: d, hours: h, minutes: m } = splitDuration(ms);
+  if (d) return h ? `${d} d ${h} hr` : `${d} d`;
+  if (h) return m ? `${h} hr ${m} min` : `${h} hr`;
+  return m ? `${m} min` : "<1 min";
 }
 
 /** Memory text such as "411 MB" or "1.2 GB". */

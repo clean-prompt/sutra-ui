@@ -14,6 +14,7 @@ import {
   RiYoutubeLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { isSafeHref } from "../../lib/validate";
 import { Favicon, domainOf } from "../../primitives/favicon";
 import { SplitButton } from "../../primitives/split-button";
@@ -49,8 +50,7 @@ export interface EmbedConsentProviderProps {
 export function EmbedConsentProvider({ allowed: allowedProp, defaultAllowed = [], onAllowedChange, children }: EmbedConsentProviderProps) {
   const [inner, setInner] = React.useState<readonly string[]>(defaultAllowed);
   const allowed = allowedProp ?? inner;
-  const changeRef = React.useRef(onAllowedChange);
-  changeRef.current = onAllowedChange;
+  const changeRef = useLatestRef(onAllowedChange);
   const update = React.useCallback(
     (next: string[]) => {
       if (allowedProp === undefined) setInner(next);

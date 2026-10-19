@@ -9,7 +9,7 @@ import {
   RiMegaphoneLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { CloseButton } from "./close-button";
 
 /** Canonical banner tone: a semantic `Tone` or the high-contrast `inverse`. */
@@ -26,30 +26,40 @@ export type AlertBannerVariant =
   | "destructive"
   | "inverse";
 
+/** Bottom-border tint of the soft appearance (the fill is `toneClasses.soft`). Neutral and inverse have no soft look. */
+const softBorder: Record<Exclude<Tone, "neutral">, string> = {
+  primary: "border-primary/20",
+  info: "border-info/25",
+  success: "border-success/25",
+  warning: "border-warning/30",
+  destructive: "border-destructive/25",
+};
+
 export const alertBannerVariants = cva(
   "relative z-40 flex w-full items-center gap-3 px-4 py-2.5 text-sm sm:px-6",
   {
     variants: {
       variant: {
-        primary: "bg-primary text-primary-foreground",
-        brand: "bg-primary text-primary-foreground",
+        primary: toneClasses.solid.primary,
+        brand: toneClasses.solid.primary,
+        // A light bar, not toneClasses.solid.neutral (that dark fill is `inverse` here).
         neutral: "border-b border-border bg-subtle text-foreground",
-        info: "bg-info text-info-foreground",
-        success: "bg-success text-success-foreground",
-        warning: "bg-warning text-warning-foreground",
-        destructive: "bg-destructive text-destructive-foreground",
-        inverse: "bg-inverse text-inverse-foreground",
+        info: toneClasses.solid.info,
+        success: toneClasses.solid.success,
+        warning: toneClasses.solid.warning,
+        destructive: toneClasses.solid.destructive,
+        inverse: toneClasses.solid.neutral,
       },
       appearance: { solid: "", soft: "" },
       sticky: { true: "sticky top-0", false: "" },
       align: { center: "justify-center", start: "justify-start" },
     },
     compoundVariants: [
-      { appearance: "soft", variant: ["primary", "brand"], className: "border-b border-primary/20 bg-primary-soft text-primary-soft-foreground" },
-      { appearance: "soft", variant: "info", className: "border-b border-info/25 bg-info-soft text-info-soft-foreground" },
-      { appearance: "soft", variant: "success", className: "border-b border-success/25 bg-success-soft text-success-soft-foreground" },
-      { appearance: "soft", variant: "warning", className: "border-b border-warning/30 bg-warning-soft text-warning-soft-foreground" },
-      { appearance: "soft", variant: "destructive", className: "border-b border-destructive/25 bg-destructive-soft text-destructive-soft-foreground" },
+      ...(Object.keys(softBorder) as (keyof typeof softBorder)[]).map((tone) => ({
+        appearance: "soft" as const,
+        variant: (tone === "primary" ? ["primary", "brand"] : [tone]) as AlertBannerVariant[],
+        className: `border-b ${softBorder[tone]} ${toneClasses.soft[tone]}`,
+      })),
     ],
     defaultVariants: { variant: "primary", appearance: "solid", sticky: false, align: "center" },
   }

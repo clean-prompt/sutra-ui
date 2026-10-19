@@ -12,7 +12,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
+import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { formatClock } from "../../lib/duration";
 import { clamp, toPercent } from "../../lib/math";
 import { Spinner } from "../../primitives/spinner";
@@ -35,7 +35,10 @@ export interface FormatMediaTimeOptions {
   negative?: boolean;
 }
 
-/** Format seconds as `m:ss` or `h:mm:ss`. Non-finite or negative input renders `0:00`. */
+/**
+ * Format seconds as `m:ss` or `h:mm:ss`. Non-finite or negative input renders `0:00`.
+ * @deprecated Use `formatClock(seconds, { forceHours, minus: negative })` from lib/duration.
+ */
 export function formatMediaTime(seconds: number, options: FormatMediaTimeOptions = {}): string {
   return formatClock(seconds, { forceHours: options.forceHours, minus: options.negative });
 }
@@ -216,8 +219,7 @@ export function useMediaElement(
   const [el, setEl] = React.useState<MediaElementLike | null>(null);
   const elRef = React.useRef<MediaElementLike | null>(null);
   const [state, setState] = React.useState<MediaElementState>(initialMediaState);
-  const fallbackRef = React.useRef(mutedFallback);
-  fallbackRef.current = mutedFallback;
+  const fallbackRef = useLatestRef(mutedFallback);
 
   // Pick up the element after it mounts (refs are filled after render).
   useIsoLayoutEffect(() => {
@@ -714,14 +716,14 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
     const bubbleChapter = bubbleTime !== null ? chapterAt(bubbleTime) : undefined;
     const thumb = bubbleTime !== null ? thumbnails?.(bubbleTime) : undefined;
     const overlay = tone === "overlay";
-    const timeText = finite ? `${formatMediaTime(shown)} of ${formatMediaTime(total)}` : formatMediaTime(shown);
+    const timeText = finite ? `${formatClock(shown)} of ${formatClock(total)}` : formatClock(shown);
     const currentChapter = chapterAt(shown);
 
     const timeClass = cn(
       "shrink-0 font-mono text-xs tabular-nums",
       overlay ? "text-white/80" : "text-muted-foreground"
     );
-    const elapsed = <span className={cn(timeClass, showTimes !== "below" && "min-w-10 text-right")}>{formatMediaTime(shown, { forceHours })}</span>;
+    const elapsed = <span className={cn(timeClass, showTimes !== "below" && "min-w-10 text-right")}>{formatClock(shown, { forceHours })}</span>;
     const remaining = mode === "remaining";
     const totalLabel = (
       <button
@@ -730,7 +732,7 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
         aria-label={remaining ? "Show total time" : "Show remaining time"}
         className={cn(timeClass, "min-w-10 rounded-xs text-left hover:underline", showTimes === "below" && "text-right", focusRing)}
       >
-        {remaining ? formatMediaTime(total - shown, { forceHours, negative: true }) : formatMediaTime(total, { forceHours })}
+        {remaining ? formatClock(total - shown, { forceHours, minus: true }) : formatClock(total, { forceHours })}
       </button>
     );
 
@@ -819,7 +821,7 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
             )}
             <span className="whitespace-nowrap rounded-md bg-inverse px-1.5 py-0.5 text-xs font-medium text-inverse-foreground tabular-nums shadow-md">
               {bubbleChapter?.title && <span className="mr-1.5 opacity-75">{bubbleChapter.title}</span>}
-              {formatMediaTime(bubbleTime, { forceHours })}
+              {formatClock(bubbleTime, { forceHours })}
             </span>
           </div>
         )}

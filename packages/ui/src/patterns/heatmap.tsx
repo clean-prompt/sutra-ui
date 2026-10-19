@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { toPercent } from "../lib/math";
+import { resolveColorToken } from "../lib/svg-path";
 import { addDays, dateKey, formatShortDate, toValidDate } from "../lib/time";
 import { meterLevel, type MeterThresholds } from "../primitives/meter";
 
@@ -29,14 +30,6 @@ export interface HeatmapColorOptions {
   colorStops?: HeatmapColorStop[];
   thresholds?: MeterThresholds;
 }
-
-const scaleVar: Record<Exclude<HeatmapScale, "thresholds">, string> = {
-  primary: "var(--primary)",
-  success: "var(--success)",
-  warning: "var(--warning)",
-  destructive: "var(--destructive)",
-  info: "var(--info)",
-};
 
 const EMPTY_COLOR = "var(--muted)";
 
@@ -73,7 +66,7 @@ export function heatmapColor(value: number | null | undefined, options: HeatmapC
     const base = lv === "danger" ? "var(--destructive)" : lv === "warn" ? "var(--warning)" : "var(--primary)";
     return lv === "ok" ? mix(base, levelPct(level, steps)) : base;
   }
-  return mix(scaleVar[scale], levelPct(level, steps));
+  return mix(resolveColorToken(scale), levelPct(level, steps));
 }
 
 /* ------------------------------------------------------------------ */

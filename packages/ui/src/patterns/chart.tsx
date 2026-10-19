@@ -1,8 +1,12 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { chartColors } from "../lib/tokens";
+import { clamp } from "../lib/math";
+import { linearPath as linearPathOf, monotonePath as monotonePathOf, resolveColorToken, type PathPoint } from "../lib/svg-path";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useElementWidth } from "../hooks/use-resize-observer";
+import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useSafeId } from "../hooks/use-safe-id";
 import {
   DAY_MS,
@@ -97,7 +101,7 @@ export type ChartReferenceLine = {
 
 export type ChartCurve = "linear" | "monotone" | "step";
 
-type Point = readonly [number, number];
+type Point = PathPoint;
 
 /* ------------------------------------------------------------------------------------------------
  * Pure helpers
@@ -125,7 +129,7 @@ export function niceTicks(min: number, max: number, count = 5): number[] {
   const start = Math.floor(lo / step + 1e-9) * step;
   const end = Math.ceil(hi / step - 1e-9) * step;
   // toFixed accepts at most 100 digits.
-  const decimals = Math.min(100, Math.max(0, -Math.floor(Math.log10(step)) + 1));
+  const decimals = clamp(-Math.floor(Math.log10(step)) + 1, 0, 100);
   const n = Math.round((end - start) / step);
   const ticks: number[] = [];
   for (let i = 0; i <= n; i++) ticks.push(Number((start + i * step).toFixed(decimals)) || 0);
@@ -165,49 +169,10 @@ const r2 = (n: number) => Math.round(n * 100) / 100;
 
 /** SVG path through points with monotone cubic interpolation (Fritsch–Carlson, like d3.curveMonotoneX). */
 export function monotonePath(points: readonly Point[]): string {
-  const n = points.length;
-  if (n === 0) return "";
-  if (n === 1) return `M${r2(points[0]![0])},${r2(points[0]![1])}`;
-  if (n === 2) return linearPath(points);
-  const dx: number[] = [];
-  const m: number[] = [];
-  for (let i = 0; i < n - 1; i++) {
-    const h = points[i + 1]![0] - points[i]![0];
-    dx.push(h);
-    m.push(h === 0 ? 0 : (points[i + 1]![1] - points[i]![1]) / h);
-  }
-  const t: number[] = new Array(n);
-  t[0] = m[0]!;
-  t[n - 1] = m[n - 2]!;
-  for (let i = 1; i < n - 1; i++) t[i] = m[i - 1]! * m[i]! <= 0 ? 0 : (m[i - 1]! + m[i]!) / 2;
-  for (let i = 0; i < n - 1; i++) {
-    if (m[i] === 0) {
-      t[i] = 0;
-      t[i + 1] = 0;
-      continue;
-    }
-    const a = t[i]! / m[i]!;
-    const b = t[i + 1]! / m[i]!;
-    const s = a * a + b * b;
-    if (s > 9) {
-      const tau = 3 / Math.sqrt(s);
-      t[i] = tau * a * m[i]!;
-      t[i + 1] = tau * b * m[i]!;
-    }
-  }
-  let d = `M${r2(points[0]![0])},${r2(points[0]![1])}`;
-  for (let i = 0; i < n - 1; i++) {
-    const [x0, y0] = points[i]!;
-    const [x1, y1] = points[i + 1]!;
-    const h = dx[i]! / 3;
-    d += `C${r2(x0 + h)},${r2(y0 + t[i]! * h)},${r2(x1 - h)},${r2(y1 - t[i + 1]! * h)},${r2(x1)},${r2(y1)}`;
-  }
-  return d;
+  return monotonePathOf(points, r2);
 }
 
-function linearPath(points: readonly Point[]) {
-  return points.map(([x, y], i) => `${i === 0 ? "M" : "L"}${r2(x)},${r2(y)}`).join("");
-}
+const linearPath = (points: readonly Point[]) => linearPathOf(points, r2);
 
 function stepPath(points: readonly Point[]) {
   if (points.length === 0) return "";
@@ -240,18 +205,8 @@ function barPath(x: number, y: number, w: number, h: number, radius: number, end
   }
 }
 
-const tokenColor: Record<string, string> = {
-  primary: "var(--primary)",
-  success: "var(--success)",
-  warning: "var(--warning)",
-  destructive: "var(--destructive)",
-  info: "var(--info)",
-  muted: "var(--muted-foreground)",
-  foreground: "var(--foreground)",
-};
-
 /** Resolve a token name (primary, success, …) to its CSS variable; pass other colors through. */
-export const resolveChartColor = (color: string) => tokenColor[color] ?? color;
+export const resolveChartColor = (color: string) => resolveColorToken(color);
 
 const compactFormat = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
 
@@ -264,7 +219,7 @@ function tickFormatter(ticks: number[]): (v: number) => string {
   const compact = (v: number) => compactFormat.format(v);
   if (distinct(compact)) return compact;
   const step = ticks.length > 1 ? Math.abs(ticks[1]! - ticks[0]!) : 0;
-  let digits = step > 0 && Number.isFinite(step) ? Math.min(20, Math.max(0, -Math.floor(Math.log10(step)))) : 0;
+  let digits = step > 0 && Number.isFinite(step) ? clamp(-Math.floor(Math.log10(step)), 0, 20) : 0;
   for (; digits <= 20; digits++) {
     const nf = new Intl.NumberFormat(undefined, { maximumFractionDigits: digits });
     const fmt = (v: number) => nf.format(v);
@@ -416,16 +371,6 @@ export function formatTimeTick(value: TimeInput, unit: TimeTickUnit, locale?: st
   }
 }
 
-function useMergedRef<T>(...refs: (React.Ref<T> | undefined)[]) {
-  return React.useCallback((node: T | null) => {
-    for (const ref of refs) {
-      if (typeof ref === "function") ref(node);
-      else if (ref) (ref as React.MutableRefObject<T | null>).current = node;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, refs);
-}
-
 function useChartWidth(ref: React.RefObject<HTMLElement | null>, fallback: number) {
   const measured = Math.round(useElementWidth(ref));
   return measured > 0 ? measured : fallback;
@@ -461,7 +406,7 @@ export const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerPro
   ({ label, height = 240, defaultWidth = 600, table, children, className, style, ...props }, ref) => {
     const innerRef = React.useRef<HTMLDivElement>(null);
     const width = useChartWidth(innerRef, defaultWidth);
-    const mergedRef = useMergedRef(ref, innerRef);
+    const mergedRef = useMergedRefs(ref, innerRef);
     return (
       <>
         <div
@@ -915,8 +860,7 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
     const active =
       activeRaw !== null && activeRaw < n && (continuous || sparse ? nav.includes(activeRaw) : true) ? activeRaw : null;
 
-    const onActiveRef = React.useRef(onActiveIndexChange);
-    onActiveRef.current = onActiveIndexChange;
+    const onActiveRef = useLatestRef(onActiveIndexChange);
     React.useEffect(() => onActiveRef.current?.(active), [active]);
     let timeDetail: "date" | "minutes" | "seconds" = "date";
     if (xType === "time")
@@ -1202,9 +1146,9 @@ const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternalProps>(
                 const prev = nav[a - 1];
                 return prev !== undefined && x - xOf(prev) <= xOf(i) - x ? prev : i;
               }
-              if (band) return Math.max(0, Math.min(n - 1, Math.floor((p - catStart) / bandwidth)));
+              if (band) return clamp(Math.floor((p - catStart) / bandwidth), 0, n - 1);
               if (n === 1) return 0;
-              return Math.max(0, Math.min(n - 1, Math.round(((p - catStart) / catLen) * (n - 1))));
+              return clamp(Math.round(((p - catStart) / catLen) * (n - 1)), 0, n - 1);
             };
             const track = (clientX: number, clientY: number, target: Element) => {
               const svg = (target as SVGElement).ownerSVGElement ?? target;

@@ -3,10 +3,12 @@ import { createPortal } from "react-dom";
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { RiArrowRightSLine, RiCloseLine, RiLightbulbFlashLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
-import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
+import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { prefersReducedMotion } from "../hooks/use-media-query";
 import { useSafeId } from "../hooks/use-safe-id";
+import { useResizeObserver } from "../hooks/use-resize-observer";
 import { Button } from "../primitives/button";
 
 /* ------------------------------------------------------------------ */
@@ -153,11 +155,13 @@ export function CoachmarkTour({
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   const [stepState, setStep] = useControllableState({ value: stepProp, defaultValue: defaultStep, onChange: onStepChange });
   const count = steps.length;
-  const index = Math.max(0, Math.min(stepState, count - 1));
+  const index = clamp(stepState, 0, Math.max(0, count - 1));
   const current = steps[index];
   const [rect, setRect] = React.useState<Rect | null>(null);
   const [cardSize, setCardSize] = React.useState({ width: 0, height: 0 });
   const cardRef = React.useRef<HTMLDivElement>(null);
+  const [targetEl, setTargetEl] = React.useState<HTMLElement | null>(null);
+  const frameRef = React.useRef(0);
   const uid = useSafeId("coachmark");
   const { next: nextLabel = "Next", back: backLabel = "Back", skip: skipLabel = "Skip tour", finish: finishLabel = "Finish" } = labels;
 
@@ -176,35 +180,37 @@ export function CoachmarkTour({
   }, [current?.target]);
 
   React.useLayoutEffect(() => {
-    if (!open || !current) return;
+    if (!open || !current) {
+      setTargetEl(null);
+      return;
+    }
     const el = resolveTarget(current.target);
+    setTargetEl(el);
     el?.scrollIntoView?.({ block: "center", inline: "nearest", behavior: prefersReducedMotion() ? "auto" : "smooth" });
     measure();
     cardRef.current?.focus({ preventScroll: true });
   }, [open, index, current, measure]);
 
+  // Re-measure at most once per frame on scroll, resize and target resize.
+  const schedule = React.useCallback(() => {
+    cancelAnimationFrame(frameRef.current);
+    frameRef.current = requestAnimationFrame(measure);
+  }, [measure]);
+  useResizeObserver(targetEl, schedule);
+
   React.useEffect(() => {
     if (!open) return;
-    let frame = 0;
-    const schedule = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(measure);
-    };
     window.addEventListener("scroll", schedule, true);
     window.addEventListener("resize", schedule);
-    const el = resolveTarget(current?.target);
-    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(schedule) : null;
-    if (el && ro) ro.observe(el);
     // Smooth scrolling moves the target after the first measure; re-measure briefly.
     const settle = window.setTimeout(measure, 350);
     return () => {
-      cancelAnimationFrame(frame);
+      cancelAnimationFrame(frameRef.current);
       window.removeEventListener("scroll", schedule, true);
       window.removeEventListener("resize", schedule);
-      ro?.disconnect();
       window.clearTimeout(settle);
     };
-  }, [open, current?.target, measure]);
+  }, [open, measure, schedule]);
 
   React.useLayoutEffect(() => {
     const el = cardRef.current;
@@ -371,13 +377,13 @@ export interface TipBubbleItem {
 /** @deprecated Use `ToneInput` with the `tone` prop. */
 export type TipBubbleAccent = "primary" | "info" | "success" | "warning" | "destructive";
 
-const accentClass: Record<Tone, { bar: string; icon: string }> = {
-  neutral: { bar: "bg-muted-foreground", icon: "bg-muted text-muted-foreground" },
-  primary: { bar: "bg-primary", icon: "bg-primary-soft text-primary" },
-  info: { bar: "bg-info", icon: "bg-info-soft text-info" },
-  success: { bar: "bg-success", icon: "bg-success-soft text-success" },
-  warning: { bar: "bg-warning", icon: "bg-warning-soft text-warning-soft-foreground" },
-  destructive: { bar: "bg-destructive", icon: "bg-destructive-soft text-destructive" },
+const accentIcon: Record<Tone, string> = {
+  neutral: "bg-muted text-muted-foreground",
+  primary: "bg-primary-soft text-primary",
+  info: "bg-info-soft text-info",
+  success: "bg-success-soft text-success",
+  warning: "bg-warning-soft text-warning-soft-foreground",
+  destructive: "bg-destructive-soft text-destructive",
 };
 
 export interface TipBubbleProps {
@@ -436,7 +442,7 @@ export function TipBubble({
   const virtualRef = React.useRef({
     getBoundingClientRect: () => resolveTarget(targetRef.current)?.getBoundingClientRect() ?? new DOMRect(),
   });
-  const a = accentClass[normalizeTone(tone ?? accent, "primary")];
+  const accentTone = normalizeTone(tone ?? accent, "primary");
 
   const dismiss = () => {
     setOpen(false);
@@ -468,9 +474,9 @@ export function TipBubble({
             className
           )}
         >
-          <span aria-hidden className={cn("absolute inset-y-0 left-0 w-1", a.bar)} />
+          <span aria-hidden className={cn("absolute inset-y-0 left-0 w-1", toneClasses.dot[accentTone])} />
           <div className="flex items-start gap-2.5">
-            <span aria-hidden className={cn("flex size-7 shrink-0 items-center justify-center rounded-full [&_svg]:size-4", a.icon)}>
+            <span aria-hidden className={cn("flex size-7 shrink-0 items-center justify-center rounded-full [&_svg]:size-4", accentIcon[accentTone])}>
               {icon ?? <RiLightbulbFlashLine aria-hidden />}
             </span>
             <div className="min-w-0 flex-1">

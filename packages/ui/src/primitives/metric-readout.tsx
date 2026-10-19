@@ -50,14 +50,8 @@ const sizes = {
   sm: { root: "h-6 gap-1.5 text-xs", pill: "px-2", icon: "[&_svg]:size-3.5", unit: "text-[0.85em]" },
 } as const;
 
-const textTone: Record<Tone, string> = {
-  neutral: "text-foreground",
-  primary: toneClasses.text.primary,
-  success: toneClasses.text.success,
-  warning: toneClasses.text.warning,
-  destructive: toneClasses.text.destructive,
-  info: toneClasses.text.info,
-};
+/** `toneClasses.text`, but a neutral reading stays full-strength foreground. */
+const textTone: Record<Tone, string> = { ...toneClasses.text, neutral: "text-foreground" };
 
 export interface MetricReadoutProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** Short name before the value ("CPU", "GPU", "Fan"). */

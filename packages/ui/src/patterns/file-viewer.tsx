@@ -11,7 +11,10 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
+import { useObjectUrlState } from "../hooks/use-object-url";
 import { formatBytes, type FormatBytesOptions } from "../lib/format";
+import { clamp } from "../lib/math";
 import { isEditableTarget } from "../lib/shortcuts";
 import { FileFormatIcon, getFileCategory, getFileExtension } from "../assets/file-format";
 import { Button } from "../primitives/button";
@@ -131,8 +134,7 @@ function TextPreview({
     inline !== undefined ? { status: "ready", text: inline } : { status: "loading", text: "" }
   );
   const [view, setView] = React.useState<"preview" | "source">("preview");
-  const loaderRef = React.useRef(loadText);
-  loaderRef.current = loadText;
+  const loaderRef = useLatestRef(loadText);
 
   React.useEffect(() => {
     if (inline !== undefined) {
@@ -422,24 +424,6 @@ function CustomRendererView({
   );
 }
 
-/** Object URL for a blob, created in an effect (StrictMode-safe) and revoked when the blob changes. */
-function useObjectUrl(blob: Blob | undefined) {
-  const [entry, setEntry] = React.useState<{ blob: Blob; url: string | undefined }>();
-  React.useEffect(() => {
-    if (!blob) return;
-    const create = typeof URL !== "undefined" ? URL.createObjectURL : undefined;
-    if (typeof create !== "function") {
-      setEntry({ blob, url: undefined });
-      return;
-    }
-    const url = URL.createObjectURL(blob);
-    setEntry({ blob, url });
-    return () => URL.revokeObjectURL(url);
-  }, [blob]);
-  if (!blob) return { url: undefined, pending: false };
-  return entry?.blob === blob ? { url: entry.url, pending: false } : { url: undefined, pending: true };
-}
-
 const headerAction = cn(
   "inline-flex size-8 shrink-0 items-center justify-center rounded-control text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-[18px]",
   focusRing
@@ -663,10 +647,10 @@ export const FileViewer = React.forwardRef<HTMLDivElement, FileViewerProps>(
 
     const gallery = files !== undefined;
     const count = gallery ? files.length : fileProp ? 1 : 0;
-    const index = gallery ? Math.min(Math.max(0, Math.floor(rawIndex) || 0), Math.max(0, count - 1)) : 0;
+    const index = gallery ? clamp(Math.floor(rawIndex) || 0, 0, Math.max(0, count - 1)) : 0;
     const current = gallery ? files[index] : fileProp;
 
-    const { url: blobUrl, pending: blobPending } = useObjectUrl(current && !current.url ? current.blob : undefined);
+    const { url: blobUrl, pending: blobPending } = useObjectUrlState(current && !current.url ? current.blob : undefined);
     const resolved = React.useMemo(
       () => (current && !current.url && blobUrl ? { ...current, url: blobUrl } : current),
       [current, blobUrl]

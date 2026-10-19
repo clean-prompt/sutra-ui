@@ -3,6 +3,7 @@ import { cn, focusRing } from "../../lib/cn";
 import { clamp } from "../../lib/math";
 import { formatClockTime, toValidDate } from "../../lib/time";
 import { prefersReducedMotion } from "../../hooks/use-media-query";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../primitives/tooltip";
 
 export interface TimelineRailTurn {
@@ -63,8 +64,7 @@ export const TranscriptTimelineRail = React.forwardRef<HTMLDivElement, Transcrip
     const observedRef = React.useRef<string | null>(null);
     const active = activeProp !== undefined ? activeProp : observed;
     const tickRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
-    const onActiveRef = React.useRef(onActiveChange);
-    onActiveRef.current = onActiveChange;
+    const onActiveRef = useLatestRef(onActiveChange);
     const turnKey = turns.map((t) => t.id).join("|");
 
     const measure = React.useCallback(() => {

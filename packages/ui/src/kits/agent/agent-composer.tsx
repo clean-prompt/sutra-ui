@@ -19,14 +19,15 @@ import { Spinner } from "../../primitives/spinner";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
 import { useElementWidth } from "../../hooks/use-resize-observer";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { clamp } from "../../lib/math";
 import { normalizeTaskStatus, type TaskStatusInput } from "../../lib/status";
 import { Lightbox, useLightbox, type LightboxItem } from "../../patterns/lightbox";
 import { Popover, PopoverContent, PopoverTrigger } from "../../primitives/popover";
 import { SimpleTooltip } from "../../primitives/tooltip";
 import { FileFormatIcon } from "../../assets/file-format";
-import { ChatAttachment, formatAttachmentSize } from "../ai/chat-attachment";
-import { pluralize } from "../../lib/format";
+import { ChatAttachment } from "../ai/chat-attachment";
+import { formatBytes, pluralize } from "../../lib/format";
 import { PromptInput, PromptInputSubmit, PromptInputTextarea } from "../ai/prompt-input";
 
 
@@ -163,7 +164,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                         autoFocus
                         aria-label="Edit queued message"
                         value={draft}
-                        rows={Math.min(4, Math.max(1, draft.split("\n").length))}
+                        rows={clamp(draft.split("\n").length, 1, 4)}
                         onChange={(e) => setDraft(e.target.value)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -540,14 +541,7 @@ export const ComposerToolbar = React.forwardRef<HTMLDivElement, ComposerToolbarP
     const rootRef = React.useRef<HTMLDivElement | null>(null);
     const width = useElementWidth(rootRef);
     const narrow = width > 0 && width < collapseBelow;
-    const setRefs = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        rootRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      },
-      [ref]
-    );
+    const setRefs = useMergedRefs(rootRef, ref);
 
     const collapsed = collapse === "auto" ? narrow : collapse;
     const collapsible = [mode, effort, tools, meta].filter((n) => n != null && n !== false);
@@ -651,7 +645,7 @@ function isImageAttachment(item: AttachmentThumbnailItem) {
 function attachmentMeta(item: AttachmentThumbnailItem) {
   if (item.status === "failed") return item.error ?? "Upload failed";
   if (item.status === "uploading") return item.progress != null ? `Uploading… ${Math.round(item.progress)}%` : "Uploading…";
-  return [item.pages != null ? `${item.pages} ${pluralize(item.pages, "page")}` : null, item.size != null ? formatAttachmentSize(item.size) : null]
+  return [item.pages != null ? `${item.pages} ${pluralize(item.pages, "page")}` : null, item.size != null ? formatBytes(item.size, { decimals: 1, wholeAbove: 10, trimZeros: false, negative: "invalid", invalid: "" }) : null]
     .filter(Boolean)
     .join(" · ");
 }

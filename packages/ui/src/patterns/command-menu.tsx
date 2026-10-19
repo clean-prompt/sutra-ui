@@ -8,6 +8,8 @@ import { Spinner } from "../primitives/spinner";
 import { DialogOverlay } from "../primitives/dialog";
 import { ShortcutKeys, isShortcutKeys } from "../primitives/shortcut-keys";
 import { useHasShortcutProvider } from "../hooks/use-shortcut-manager";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useShortcut, useShortcutRegistry, type ShortcutRegistryGroup, type ShortcutRegistryItem } from "./shortcuts";
 
 /** Command palette root (cmdk). Handles filtering and keyboard navigation. */
@@ -38,14 +40,7 @@ export interface CommandInputProps extends React.ComponentPropsWithoutRef<typeof
 export const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Input>, CommandInputProps>(
   ({ className, wrapperClassName, loading, trailing, ...props }, forwardedRef) => {
     const innerRef = React.useRef<HTMLInputElement | null>(null);
-    const ref = React.useCallback(
-      (node: HTMLInputElement | null) => {
-        innerRef.current = node;
-        if (typeof forwardedRef === "function") forwardedRef(node);
-        else if (forwardedRef) forwardedRef.current = node;
-      },
-      [forwardedRef]
-    );
+    const ref = useMergedRefs(innerRef, forwardedRef);
     const ariaLabel = props["aria-label"];
     // cmdk always points aria-labelledby at its own label; an explicit aria-label should win.
     React.useLayoutEffect(() => {
@@ -309,8 +304,7 @@ export function useCommandMenuShortcut(
   setOpen: React.Dispatch<React.SetStateAction<boolean>>,
   key: string = "k"
 ) {
-  const setOpenRef = React.useRef(setOpen);
-  setOpenRef.current = setOpen;
+  const setOpenRef = useLatestRef(setOpen);
   const hasProvider = useHasShortcutProvider();
   useShortcut(hasProvider ? `mod+${key.toLowerCase()}` : null, () => setOpenRef.current((open) => !open), {
     id: `sutra:command-menu:${key.toLowerCase()}`,
@@ -387,8 +381,7 @@ export function CommandPaletteFromRegistry({
 }: CommandPaletteFromRegistryProps) {
   const [openState, setOpenState] = React.useState(defaultOpen);
   const open = openProp ?? openState;
-  const openRef = React.useRef(open);
-  openRef.current = open;
+  const openRef = useLatestRef(open);
   const setOpen = React.useCallback(
     (next: boolean) => {
       if (openProp === undefined) setOpenState(next);

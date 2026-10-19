@@ -136,7 +136,7 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
     const stroke = 8;
     const r = (ringSize - stroke) / 2;
     const c = 2 * Math.PI * r;
-    const pct = goal ? Math.min(1, Math.max(0, value / goal)) : 0;
+    const pct = goal ? clamp(value / goal, 0, 1) : 0;
 
     return (
       <div ref={ref} role="group" aria-label={label} className={cn("flex flex-col items-center gap-4", className)} {...props}>

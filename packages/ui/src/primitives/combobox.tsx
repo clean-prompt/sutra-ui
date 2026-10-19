@@ -5,12 +5,13 @@ import { cva } from "class-variance-authority";
 import {
   RiAddLine,
   RiCheckLine,
-  RiCloseLine,
   RiExpandUpDownLine,
   RiSearchLine,
 } from "@remixicon/react";
-import { cn, focusRing, invalidRing, type Size } from "../lib/cn";
+import { cn, type Size } from "../lib/cn";
 import { useField, useFieldContext } from "./field";
+import { CloseButton } from "./close-button";
+import { inputShellVariants } from "./input";
 
 export interface ComboboxOption {
   value: string;
@@ -80,12 +81,11 @@ export type ComboboxProps = ComboboxSingleProps | ComboboxMultipleProps;
 
 const triggerVariants = cva(
   [
-    "group/combobox flex w-full cursor-pointer items-center gap-2 rounded-control border border-input bg-background text-left text-sm text-foreground shadow-xs",
-    "transition-[color,border-color,box-shadow] duration-150 hover:border-border-strong",
+    "group/combobox flex w-full cursor-pointer items-center gap-2 text-left text-sm",
+    inputShellVariants({ hover: true }),
     "data-[state=open]:border-ring data-[state=open]:ring-[3px] data-[state=open]:ring-ring/20",
+    // The trigger is a div, so it is disabled through aria-disabled (the shell's :disabled styles never match).
     "aria-disabled:cursor-not-allowed aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-    focusRing,
-    invalidRing,
   ],
   {
     variants: {
@@ -252,8 +252,10 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
                 >
                   {option.icon && <span className="flex [&_svg]:size-3.5">{option.icon}</span>}
                   <span className="truncate">{option.label}</span>
-                  <button
-                    type="button"
+                  <CloseButton
+                    shape="pill"
+                    variant="muted"
+                    size="2xs"
                     tabIndex={-1}
                     aria-label={`Remove ${option.label}`}
                     disabled={disabled}
@@ -262,10 +264,8 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
                       e.stopPropagation();
                       emit(selected.filter((v) => v !== option.value));
                     }}
-                    className="inline-flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-border hover:text-foreground [&_svg]:size-3"
-                  >
-                    <RiCloseLine aria-hidden />
-                  </button>
+                    className="[&_svg]:size-3"
+                  />
                 </span>
               ))}
               {hiddenCount > 0 && (

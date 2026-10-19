@@ -1,8 +1,9 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
-import { RiCheckLine, RiCloseLine } from "@remixicon/react";
+import { RiCheckLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { normalizeTone, type ToneInput } from "../lib/tone";
+import { CloseButton } from "./close-button";
+import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 
 export type ChipVariant = "outline" | "soft" | "solid";
 /** @deprecated Use `ToneInput` with the `tone` prop (`brand` is `primary`). */
@@ -17,6 +18,34 @@ function chipColor(tone: ToneInput | undefined, color: ChipColor | undefined): C
   return color;
 }
 export type ChipSize = "sm" | "md" | "lg";
+
+const toneForColor: Record<ChipColor, Tone> = {
+  neutral: "neutral",
+  brand: "primary",
+  success: "success",
+  warning: "warning",
+  destructive: "destructive",
+  info: "info",
+};
+
+/** Soft and solid fills come from `toneClasses`, except neutral soft (full-strength text, hover) and the brand solid highlight. */
+const filledCompounds = (Object.keys(toneForColor) as ChipColor[]).flatMap((color) => {
+  const tone = toneForColor[color];
+  return [
+    {
+      idle: false,
+      variant: "soft" as const,
+      color,
+      className: color === "neutral" ? "bg-muted text-foreground hover:bg-border/70" : toneClasses.soft[tone],
+    },
+    {
+      idle: false,
+      variant: "solid" as const,
+      color,
+      className: color === "brand" ? `${toneClasses.solid.primary} shadow-inner-highlight` : toneClasses.solid[tone],
+    },
+  ];
+});
 
 export const chipVariants = cva(
   [
@@ -58,18 +87,7 @@ export const chipVariants = cva(
       { idle: false, variant: "outline", color: "warning", className: "border-warning/50 bg-warning-soft/50 text-warning-soft-foreground" },
       { idle: false, variant: "outline", color: "destructive", className: "border-destructive/40 bg-destructive-soft/50 text-destructive-soft-foreground" },
       { idle: false, variant: "outline", color: "info", className: "border-info/40 bg-info-soft/50 text-info-soft-foreground" },
-      { idle: false, variant: "soft", color: "neutral", className: "bg-muted text-foreground hover:bg-border/70" },
-      { idle: false, variant: "soft", color: "brand", className: "bg-primary-soft text-primary-soft-foreground" },
-      { idle: false, variant: "soft", color: "success", className: "bg-success-soft text-success-soft-foreground" },
-      { idle: false, variant: "soft", color: "warning", className: "bg-warning-soft text-warning-soft-foreground" },
-      { idle: false, variant: "soft", color: "destructive", className: "bg-destructive-soft text-destructive-soft-foreground" },
-      { idle: false, variant: "soft", color: "info", className: "bg-info-soft text-info-soft-foreground" },
-      { idle: false, variant: "solid", color: "neutral", className: "bg-inverse text-inverse-foreground" },
-      { idle: false, variant: "solid", color: "brand", className: "bg-primary text-primary-foreground shadow-inner-highlight" },
-      { idle: false, variant: "solid", color: "success", className: "bg-success text-success-foreground" },
-      { idle: false, variant: "solid", color: "warning", className: "bg-warning text-warning-foreground" },
-      { idle: false, variant: "solid", color: "destructive", className: "bg-destructive text-destructive-foreground" },
-      { idle: false, variant: "solid", color: "info", className: "bg-info text-info-foreground" },
+      ...filledCompounds,
     ],
     defaultVariants: { variant: "outline", color: "neutral", size: "md", idle: false },
   }
@@ -226,8 +244,10 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
           <span className="relative truncate">{children}</span>
         </button>
         {onRemove ? (
-          <button
-            type="button"
+          <CloseButton
+            shape="pill"
+            variant="current"
+            size={size === "sm" ? "3xs" : "2xs"}
             disabled={disabled}
             tabIndex={-1}
             aria-label={removeLabel ?? "Remove"}
@@ -235,13 +255,8 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
               e.stopPropagation();
               onRemove();
             }}
-            className={cn(
-              "relative z-[1] -mr-0.5 inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full opacity-60 transition-[opacity,background-color] hover:bg-current/10 hover:opacity-100",
-              size === "sm" ? "size-4 [&_svg]:size-3" : "size-5 [&_svg]:size-3.5"
-            )}
-          >
-            <RiCloseLine aria-hidden />
-          </button>
+            className="relative z-[1] -mr-0.5 hover:bg-current/10"
+          />
         ) : null}
       </span>
     );

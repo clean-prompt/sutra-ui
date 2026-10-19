@@ -9,6 +9,7 @@ import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { FieldContext, useField } from "./field";
 import { TimePicker, type TimeGranularity } from "./time-picker";
+import { inputShellVariants } from "./input";
 
 export type { DateRange } from "react-day-picker";
 
@@ -48,12 +49,10 @@ function useOptionalControlled<T>(
 
 const dateTriggerVariants = cva(
   [
-    "group/date-trigger flex w-full items-center gap-2 rounded-control border border-input bg-background text-left text-sm text-foreground shadow-xs",
-    "transition-[color,border-color,box-shadow] duration-150 hover:border-border-strong",
+    "group/date-trigger flex w-full items-center gap-2 text-left text-sm",
+    inputShellVariants({ hover: true }),
     "data-[state=open]:border-ring data-[state=open]:ring-[3px] data-[state=open]:ring-ring/20",
-    "disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-    focusRing,
-    invalidRing,
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0",
   ],
   {
     variants: {

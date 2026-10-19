@@ -1,7 +1,8 @@
 import * as React from "react";
 import { ScrollArea as ScrollAreaPrimitive } from "radix-ui";
 import { cn } from "../lib/cn";
-import { assignRef as setRef } from "../lib/refs";
+import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useScrollEdges, type ScrollEdges as Edges } from "../hooks/use-scroll-edges";
 
 type FadeEdges = boolean | "vertical" | "horizontal";
 
@@ -14,15 +15,6 @@ export interface ScrollAreaProps extends React.ComponentPropsWithoutRef<typeof S
   viewportClassName?: string;
   viewportRef?: React.Ref<HTMLDivElement>;
 }
-
-interface Edges {
-  top: boolean;
-  bottom: boolean;
-  left: boolean;
-  right: boolean;
-}
-
-const noEdges: Edges = { top: false, bottom: false, left: false, right: false };
 
 function buildMask(edges: Edges, fade: FadeEdges): string | undefined {
   const size = "24px";
@@ -60,45 +52,8 @@ export const ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPri
     ref
   ) => {
     const localRef = React.useRef<HTMLDivElement | null>(null);
-    const [edges, setEdges] = React.useState<Edges>(noEdges);
-
-    const update = React.useCallback(() => {
-      const el = localRef.current;
-      if (!el) return;
-      const next: Edges = {
-        top: el.scrollTop > 1,
-        bottom: el.scrollTop + el.clientHeight < el.scrollHeight - 1,
-        left: el.scrollLeft > 1,
-        right: el.scrollLeft + el.clientWidth < el.scrollWidth - 1,
-      };
-      setEdges((prev) =>
-        prev.top === next.top && prev.bottom === next.bottom && prev.left === next.left && prev.right === next.right
-          ? prev
-          : next
-      );
-    }, []);
-
-    React.useEffect(() => {
-      const el = localRef.current;
-      if (!fadeEdges || !el) return;
-      update();
-      el.addEventListener("scroll", update, { passive: true });
-      const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(update) : null;
-      ro?.observe(el);
-      if (el.firstElementChild) ro?.observe(el.firstElementChild);
-      return () => {
-        el.removeEventListener("scroll", update);
-        ro?.disconnect();
-      };
-    }, [fadeEdges, update]);
-
-    const handleViewportRef = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        localRef.current = node;
-        setRef(viewportRef, node);
-      },
-      [viewportRef]
-    );
+    const edges = useScrollEdges(localRef, { enabled: !!fadeEdges });
+    const handleViewportRef = useMergedRefs(localRef, viewportRef);
 
     const mask = fadeEdges ? buildMask(edges, fadeEdges) : undefined;
     const maskStyle: React.CSSProperties | undefined = mask

@@ -15,7 +15,7 @@ import {
 import { cn, focusRing } from "../../lib/cn";
 import { formatDuration } from "../../lib/duration";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
+import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
 import { CopyButton } from "../../primitives/copy-button";
 import { Popover, PopoverContent, PopoverTrigger } from "../../primitives/popover";
@@ -763,8 +763,7 @@ export const TransliterationCandidates = React.forwardRef<HTMLDivElement, Transl
     const [dismissed, setDismissed] = React.useState<string | null>(null);
     const seq = React.useRef(0);
     const uid = React.useId();
-    const getRef = React.useRef(getCandidates);
-    getRef.current = getCandidates;
+    const getRef = useLatestRef(getCandidates);
 
     const sig = word ? `${word.start}:${word.text}` : null;
     const open = enabled && !!word && items.length > 0 && sig !== dismissed;

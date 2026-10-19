@@ -1,8 +1,9 @@
 import * as React from "react";
-import { cn, focusRing, invalidRing } from "../lib/cn";
+import { cn } from "../lib/cn";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../hooks/use-resize-observer";
 import { useField } from "./field";
+import { inputShellVariants } from "./input";
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   invalid?: boolean;
@@ -107,13 +108,11 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         rows={rows ?? minRows}
         style={style}
         className={cn(
-          "flex w-full min-w-0 rounded-[min(var(--radius-control),var(--radius-box))] border border-input bg-background px-3 py-2 text-sm leading-6 text-foreground shadow-xs",
-          "transition-[color,box-shadow,border-color] duration-150 placeholder:text-muted-foreground scrollbar-thin",
-          "disabled:cursor-not-allowed disabled:opacity-50 read-only:bg-subtle",
+          "flex w-full min-w-0 px-3 py-2 text-sm leading-6",
+          inputShellVariants({ radius: "box" }),
+          "placeholder:text-muted-foreground scrollbar-thin read-only:bg-subtle",
           autoResize ? "resize-none" : "resize-y",
           showCount && "pb-7",
-          focusRing,
-          invalidRing,
           className
         )}
       />

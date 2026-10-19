@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
-import { assignRef } from "../lib/refs";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 /* ------------------------------------------------------------------ */
 /* FanMenu                                                             */
@@ -73,6 +73,7 @@ export const FanMenu = React.forwardRef<HTMLDivElement, FanMenuProps>(
     const [open, setOpen] = useControllableState<boolean>({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
     const reduced = usePrefersReducedMotion();
     const rootRef = React.useRef<HTMLDivElement | null>(null);
+    const setRefs = useMergedRefs(rootRef, ref);
     const hubRef = React.useRef<HTMLButtonElement>(null);
     const itemRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
     const [focusIndex, setFocusIndex] = React.useState(0);
@@ -129,10 +130,7 @@ export const FanMenu = React.forwardRef<HTMLDivElement, FanMenuProps>(
 
     return (
       <div
-        ref={(node) => {
-          rootRef.current = node;
-          assignRef(ref, node);
-        }}
+        ref={setRefs}
         data-state={open ? "open" : "closed"}
         className={cn("relative inline-flex shrink-0", className)}
         style={{ width: hubSize, height: hubSize, ...style }}

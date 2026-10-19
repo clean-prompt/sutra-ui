@@ -15,6 +15,7 @@ import { pluralize } from "../../lib/format";
 import { formatRelative } from "../../lib/time";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useResizeObserver } from "../../hooks/use-resize-observer";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 
@@ -239,10 +240,8 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>(
       onFullscreenChange?.(v);
     };
 
-    const callbacks = React.useRef({ onData, onResize, onReady });
-    callbacks.current = { onData, onResize, onReady };
-    const themeRef = React.useRef(themeOverrides);
-    themeRef.current = themeOverrides;
+    const callbacks = useLatestRef({ onData, onResize, onReady });
+    const themeRef = useLatestRef(themeOverrides);
 
     const fontFamilyResolved = React.useCallback(
       (ff: string) => {

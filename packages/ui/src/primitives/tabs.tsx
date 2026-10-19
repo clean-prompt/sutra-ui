@@ -3,6 +3,7 @@ import { Tabs as TabsPrimitive } from "radix-ui";
 import { cn, focusRing, type Size } from "../lib/cn";
 import { useActiveIndicator } from "../hooks/use-active-indicator";
 import { ACCENT_VAR, accentClasses, accentStyle, resolveAccent, type Accent } from "../lib/accent";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 export type TabsVariant = "pill" | "underline" | "solid" | "ghost";
 
@@ -154,14 +155,7 @@ export const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.L
   ({ className, fullWidth, children, ...props }, forwardedRef) => {
     const { variant, orientation, accented } = React.useContext(TabsContext);
     const listRef = React.useRef<HTMLDivElement | null>(null);
-    const setRefs = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        listRef.current = node;
-        if (typeof forwardedRef === "function") forwardedRef(node);
-        else if (forwardedRef) forwardedRef.current = node;
-      },
-      [forwardedRef]
-    );
+    const setRefs = useMergedRefs(listRef, forwardedRef);
     const hasIndicator = variant !== "ghost";
     /* The active trigger's own accent ("" when it has none), read while measuring so the indicator follows it. */
     const [activeAccent, setActiveAccent] = React.useState("");

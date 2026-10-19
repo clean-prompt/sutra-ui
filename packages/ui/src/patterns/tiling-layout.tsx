@@ -18,6 +18,7 @@ import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useSafeId } from "../hooks/use-safe-id";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 import { Button } from "../primitives/button";
 import { Input } from "../primitives/input";
 import {
@@ -231,11 +232,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
     forwardedRef
   ) => {
     const layerRef = React.useRef<HTMLDivElement | null>(null);
-    const setRefs = (node: HTMLDivElement | null) => {
-      layerRef.current = node;
-      if (typeof forwardedRef === "function") forwardedRef(node);
-      else if (forwardedRef) forwardedRef.current = node;
-    };
+    const setRefs = useMergedRefs(layerRef, forwardedRef);
     const panesRef = useLatestRef(panes);
     const dragRef = React.useRef<{
       id: string;
@@ -537,11 +534,7 @@ export const TilingLayout = React.forwardRef<HTMLDivElement, TilingLayoutProps>(
   ) => {
     const uid = useSafeId("tiling");
     const rootRef = React.useRef<HTMLDivElement | null>(null);
-    const setRefs = (node: HTMLDivElement | null) => {
-      rootRef.current = node;
-      if (typeof forwardedRef === "function") forwardedRef(node);
-      else if (forwardedRef) forwardedRef.current = node;
-    };
+    const setRefs = useMergedRefs(rootRef, forwardedRef);
 
     const [layout, setLayout] = useControllableState<LayoutNode>({
       value: layoutProp,

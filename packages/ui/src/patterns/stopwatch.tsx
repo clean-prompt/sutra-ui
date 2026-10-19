@@ -4,6 +4,7 @@ import { cn } from "../lib/cn";
 import { formatClock, type FormatClockOptions } from "../lib/duration";
 import { Button } from "../primitives/button";
 import { useStopwatch, type StopwatchLap } from "../hooks/use-stopwatch";
+import { useLatestRef } from "../hooks/use-iso-layout-effect";
 
 export * from "../hooks/use-stopwatch";
 
@@ -33,8 +34,7 @@ export interface StopwatchProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Stopwatch = React.forwardRef<HTMLDivElement, StopwatchProps>(
   ({ autoStart, showLaps = true, onLap, className, ...props }, ref) => {
     const sw = useStopwatch({ autoStart });
-    const onLapRef = React.useRef(onLap);
-    onLapRef.current = onLap;
+    const onLapRef = useLatestRef(onLap);
     const lapCount = React.useRef(0);
     React.useEffect(() => {
       if (sw.laps.length > lapCount.current) onLapRef.current?.(sw.laps[sw.laps.length - 1]!);

@@ -3,7 +3,8 @@ import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui";
 import { cva } from "class-variance-authority";
 import { cn, focusRing, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
+import { useActiveIndicator } from "../hooks/use-active-indicator";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 
 const SegmentedControlContext = React.createContext<{ size: Size; fullWidth: boolean }>({
   size: "md",
@@ -81,49 +82,14 @@ export const SegmentedControl = React.forwardRef<
       onChange: onValueChange,
     });
     const rootRef = React.useRef<HTMLDivElement | null>(null);
-    const [thumb, setThumb] = React.useState<{ left: number; width: number } | null>(null);
-    const [animate, setAnimate] = React.useState(false);
-
-    const setRefs = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        rootRef.current = node;
-        if (typeof forwardedRef === "function") forwardedRef(node);
-        else if (forwardedRef) forwardedRef.current = node;
-      },
-      [forwardedRef]
+    const setRefs = useMergedRefs(rootRef, forwardedRef);
+    // Re-measures on these changes and whenever the root or a segment resizes.
+    const { rect: thumb, animate } = useActiveIndicator(
+      rootRef,
+      '[data-segment][data-state="on"]',
+      [value, size, fullWidth, options, children],
+      { itemSelector: "[data-segment]" }
     );
-
-    const measure = React.useCallback(() => {
-      const root = rootRef.current;
-      if (!root) return;
-      const active = root.querySelector<HTMLElement>('[data-segment][data-state="on"]');
-      if (!active) {
-        setThumb(null);
-        return;
-      }
-      setThumb((prev) =>
-        prev && prev.left === active.offsetLeft && prev.width === active.offsetWidth
-          ? prev
-          : { left: active.offsetLeft, width: active.offsetWidth }
-      );
-    }, []);
-
-    useIsoLayoutEffect(() => {
-      measure();
-    }, [measure, value, size, fullWidth, options]);
-
-    React.useEffect(() => {
-      const root = rootRef.current;
-      if (!root || typeof ResizeObserver === "undefined") return;
-      const observer = new ResizeObserver(() => measure());
-      observer.observe(root);
-      root.querySelectorAll("[data-segment]").forEach((el) => observer.observe(el));
-      const id = requestAnimationFrame(() => setAnimate(true));
-      return () => {
-        observer.disconnect();
-        cancelAnimationFrame(id);
-      };
-    }, [measure, options, children]);
 
     const contextValue = React.useMemo(() => ({ size, fullWidth }), [size, fullWidth]);
 

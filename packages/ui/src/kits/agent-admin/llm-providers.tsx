@@ -393,8 +393,7 @@ function DeviceFlowPanel({
 }) {
   const [state, setState] = React.useState<DeviceState>({ phase: "idle" });
   const mounted = useMountedRef();
-  const onDoneRef = React.useRef(onDone);
-  onDoneRef.current = onDone;
+  const onDoneRef = useLatestRef(onDone);
   // Held in a ref so an inline `onPoll` (new identity every parent render) doesn't restart the interval.
   const onPollRef = useLatestRef(onPoll);
 

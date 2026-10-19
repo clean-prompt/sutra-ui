@@ -60,7 +60,7 @@ function formatValue(value: unknown) {
 
 /** "850ms", "2.0s", "12s", "1m 5s". */
 const formatToolDuration = (ms: number) =>
-  formatDuration(ms, { ms: true, decimals: 1, decimalsBelow: 10_000, trimZeros: false, maxUnit: "m" });
+  formatDuration(ms, { ms: true, decimals: 1, trimZeros: false, maxUnit: "m" });
 
 function JsonBlock({ label, value, tone }: { label: string; value: unknown; tone?: "error" }) {
   return (

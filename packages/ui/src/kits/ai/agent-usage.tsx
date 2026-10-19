@@ -3,7 +3,7 @@ import { cn, focusRing } from "../../lib/cn";
 import { chartColors } from "../../lib/tokens";
 import { formatDuration } from "../../lib/duration";
 import { formatCost } from "../../lib/format";
-import { roundTo } from "../../lib/math";
+import { clamp, roundTo } from "../../lib/math";
 import { MINUTE_MS, toMs, type TimeInput } from "../../lib/time";
 import { Button } from "../../primitives/button";
 import { Meter, meterLevel, StackedMeter, type MeterThresholds } from "../../primitives/meter";
@@ -300,7 +300,7 @@ export const UsageLimitBars = React.forwardRef<HTMLDivElement, UsageLimitBarsPro
                 key={w.id}
                 data-window={w.id}
                 label={w.label}
-                value={Math.max(0, Math.min(100, w.percent))}
+                value={clamp(w.percent, 0, 100)}
                 thresholds={thresholds}
                 valueText={`${Math.round(w.percent)}% used`}
                 caption={caption}
