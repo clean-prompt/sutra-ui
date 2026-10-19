@@ -411,7 +411,7 @@ export function CreateAgentDialog({
               <FieldError>{nameError}</FieldError>
             </Field>
             <AgentAvatarBuilder value={values.avatar} onValueChange={(avatar) => setValues({ ...values, avatar })} previewSize={80} />
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field>
                 <FieldLabel>Role</FieldLabel>
                 <Input value={values.role} placeholder="Finds and cites sources" onChange={(e) => setValues({ ...values, role: e.target.value })} />

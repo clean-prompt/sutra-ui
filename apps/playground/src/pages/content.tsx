@@ -143,7 +143,7 @@ export function ContentPage() {
         align="start"
         canvasClassName="gap-8"
       >
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {accordionVariants.map((variant) => (
             <div key={variant} className="space-y-2">
               <DemoLabel className="capitalize">{variant}</DemoLabel>
@@ -158,7 +158,7 @@ export function ContentPage() {
             </div>
           ))}
         </div>
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="space-y-2">
             <DemoLabel>Multiple · plus icon · leading icons</DemoLabel>
             <Accordion type="multiple" icon="plus" variant="bordered" defaultValue={["security"]}>
@@ -309,7 +309,7 @@ export function ContentPage() {
             showWrapToggle
           />
         </div>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="space-y-2">
             <DemoLabel>Bash · terminal</DemoLabel>
             <CodeBlock code={shellCode} language="bash" filename="Terminal" />
@@ -319,7 +319,7 @@ export function ContentPage() {
             <CodeBlock code={cssCode} language="css" filename="globals.css" theme="light" showLineNumbers />
           </div>
         </div>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="space-y-2">
             <DemoLabel>No header (copy on hover)</DemoLabel>
             <CodeBlock language="ts" hideHeader code={`const greeting = (name: string) => \`Hello, \${name}!\`;`} />

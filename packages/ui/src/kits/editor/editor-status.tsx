@@ -163,7 +163,7 @@ export const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
         data-slot="save-status"
         data-status={status}
         className={cn(
-          "inline-flex min-w-0 items-center gap-2 text-muted-foreground",
+          "inline-flex min-w-0 max-w-full flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground",
           size === "sm" ? "text-xs" : "text-sm",
           className
         )}
@@ -309,16 +309,16 @@ export const EditorStatusBar = React.forwardRef<HTMLDivElement, EditorStatusBarP
         aria-label="Editor status"
         data-slot="editor-status-bar"
         className={cn(
-          "flex min-h-8 items-center gap-3 border-t border-border bg-subtle px-3 py-1 text-xs text-muted-foreground",
+          "flex min-h-8 flex-wrap items-center gap-x-3 gap-y-1 border-t border-border bg-subtle px-3 py-1 text-xs text-muted-foreground",
           className
         )}
         {...props}
       >
-        <div className="flex min-w-0 items-center gap-3">
+        <div className="flex min-w-0 max-w-full flex-wrap items-center gap-x-3 gap-y-1">
           {status}
           {presence}
         </div>
-        <div className="ml-auto flex min-w-0 items-center gap-2 overflow-hidden">
+        <div className="ml-auto flex min-w-0 max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-0.5">
           {items.map((item, i) => (
             <React.Fragment key={i}>
               {i > 0 && (

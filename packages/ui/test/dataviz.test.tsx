@@ -75,7 +75,7 @@ describe("AreaChart", () => {
     expect(slots(container, "chart-area")).toHaveLength(2);
     expect(slots(container, "chart-line")).toHaveLength(2);
     expect(screen.getByRole("img", { name: /Area chart of Prompt, Completion by day/ })).toBeInTheDocument();
-    const table = container.querySelector("table.sr-only")!;
+    const table = container.querySelector(".sr-only table")!;
     expect(table.querySelectorAll("tbody tr")).toHaveLength(5);
     expect(table.textContent).toContain("Completion");
   });

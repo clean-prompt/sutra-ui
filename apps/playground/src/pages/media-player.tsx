@@ -271,6 +271,7 @@ function VideoPlayerDemo() {
   return (
     <div className="flex w-full flex-col gap-3">
       <VideoPlayer
+        className="aspect-[4/3] sm:aspect-video"
         key={ep.id}
         src={broken ? "data:video/mp4;base64,AAAA" : wavFor(ep.id, ep.seconds, ep.root, ep.pattern)}
         poster={art(ep.colors[0], ep.colors[1], `E${ep.n} · ${ep.title}`, 1280, 720)}
@@ -319,7 +320,7 @@ function MiniPlayerDemo({ player }: { player: DemoPlayer }) {
           { value: "compact", label: "Phone" },
           { value: "auto", label: "Auto (by breakpoint)" },
         ]}
-        className="self-start"
+        className="max-w-full self-start overflow-x-auto"
       />
       <div className={layout === "compact" ? "w-full max-w-sm overflow-hidden rounded-box border border-border" : "w-full overflow-hidden rounded-box border border-border"}>
         <MiniPlayer
@@ -541,33 +542,35 @@ export function MediaPlayerPage() {
       </Demo>
 
       <Demo id="episode-card" title="Episode card" description="Landscape thumbnail with runtime, episode number, two-line description and progress; stacked or side-by-side." align="start">
-        <div className="grid w-full gap-6 md:grid-cols-[1fr_1.4fr]">
-          <EpisodeCard
-            title="The Lighthouse"
-            season={1}
-            episode={1}
-            runtime={3120}
-            progress={72}
-            description="A storm cuts the island off from the mainland, and the keeper's logbook starts writing itself."
-            image={art(palette[0][0], palette[0][1], "E1", 640, 360)}
-            actions={posterActions("The Lighthouse").slice(0, 2)}
-            onPlay={() => {}}
-          />
-          <div className="flex flex-col gap-4">
-            {episodes.slice(1).map((e, i) => (
-              <EpisodeCard
-                key={e.id}
-                orientation="horizontal"
-                title={e.title}
-                season={1}
-                episode={e.n}
-                runtime={2700 + i * 300}
-                description="The crew follows a signal to the old pier, where the water is far too warm for October."
-                image={art(e.colors[0], e.colors[1], `E${e.n}`, 640, 360)}
-                status={i === 1 ? { label: "Queued", icon: <RiTimeLine /> } : undefined}
-                onPlay={() => {}}
-              />
-            ))}
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 w-full gap-6 @2xl:grid-cols-[1fr_1.4fr]">
+            <EpisodeCard
+              title="The Lighthouse"
+              season={1}
+              episode={1}
+              runtime={3120}
+              progress={72}
+              description="A storm cuts the island off from the mainland, and the keeper's logbook starts writing itself."
+              image={art(palette[0][0], palette[0][1], "E1", 640, 360)}
+              actions={posterActions("The Lighthouse").slice(0, 2)}
+              onPlay={() => {}}
+            />
+            <div className="flex flex-col gap-4">
+              {episodes.slice(1).map((e, i) => (
+                <EpisodeCard
+                  key={e.id}
+                  orientation="horizontal"
+                  title={e.title}
+                  season={1}
+                  episode={e.n}
+                  runtime={2700 + i * 300}
+                  description="The crew follows a signal to the old pier, where the water is far too warm for October."
+                  image={art(e.colors[0], e.colors[1], `E${e.n}`, 640, 360)}
+                  status={i === 1 ? { label: "Queued", icon: <RiTimeLine /> } : undefined}
+                  onPlay={() => {}}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </Demo>

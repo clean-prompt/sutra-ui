@@ -38,8 +38,9 @@ const navButton = cn(
 
 const baseClassNames: Partial<ClassNames> = {
   root: "w-fit p-3",
-  months: "relative flex flex-col gap-6 sm:flex-row",
-  month: "flex w-full flex-col gap-3",
+  // Months sit side by side when the calendar is wide enough and stack when it is not (a column width, not the viewport).
+  months: "relative flex flex-wrap gap-6",
+  month: "flex flex-[1_1_15.75rem] flex-col gap-3",
   month_caption: "flex h-8 items-center justify-center px-10",
   caption_label: "inline-flex items-center gap-1 text-sm font-medium text-foreground select-none",
   dropdowns: "flex items-center gap-1.5 text-sm font-medium",

@@ -32,6 +32,7 @@ import {
 } from "@sutra/ui/kits/billing/billing";
 import { RiArrowLeftLine } from "@sutra/ui/icons";
 import { Demo, PageIntro } from "../components/demo";
+import { ViewportFrame } from "../components/viewport-frame";
 
 /* ------------------------------------------------------------------ */
 /* Billing data (fictional "Sutra" product)                            */
@@ -177,20 +178,22 @@ function CreditsDemo() {
   const [balance, setBalance] = React.useState(1840);
   const [reload, setReload] = React.useState<AutoReloadSettings>({ enabled: true, threshold: 500, amount: 2000, monthlyCap: 10000 });
   return (
-    <div className="grid w-full gap-4 md:grid-cols-2">
-      <CreditBalanceCard
-        balance={balance}
-        dailyBurn={310}
-        onBuy={(p) =>
-          new Promise<void>((resolve) =>
-            setTimeout(() => {
-              setBalance((b) => b + p.credits);
-              resolve();
-            }, 700)
-          )
-        }
-      />
-      <CreditAutoReload value={reload} onValueChange={setReload} onSave={() => new Promise<void>((r) => setTimeout(r, 600))} />
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 w-full gap-4 @2xl:grid-cols-2">
+        <CreditBalanceCard
+          balance={balance}
+          dailyBurn={310}
+          onBuy={(p) =>
+            new Promise<void>((resolve) =>
+              setTimeout(() => {
+                setBalance((b) => b + p.credits);
+                resolve();
+              }, 700)
+            )
+          }
+        />
+        <CreditAutoReload value={reload} onValueChange={setReload} onSave={() => new Promise<void>((r) => setTimeout(r, 600))} />
+      </div>
     </div>
   );
 }
@@ -356,7 +359,9 @@ export function BillingMarketingPage() {
               Back to Deep Search
             </Button>
           )}
-          <DetailDemo extension={extension} onOpen={open} />
+          <ViewportFrame>
+            <DetailDemo extension={extension} onOpen={open} />
+          </ViewportFrame>
         </div>
       </Demo>
 

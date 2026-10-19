@@ -478,7 +478,7 @@ export function ApiKeyCreateDialog({
               </div>
               <fieldset className="grid gap-2">
                 <legend className="mb-2 text-sm font-medium text-foreground">Scopes</legend>
-                <div className="grid gap-2.5 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {scopes.map((s) => (
                     <CheckboxField
                       key={s.value}

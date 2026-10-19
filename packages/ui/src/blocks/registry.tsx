@@ -110,7 +110,7 @@ const demo = (name: string, render: () => React.ReactElement): React.ComponentTy
 };
 
 const centered = (child: React.ReactElement) =>
-  h("div", { className: "flex w-full items-center justify-center p-6" }, child);
+  h("div", { className: "flex w-full items-center justify-center sm:p-6" }, child);
 
 const withTrigger = (label: string, variant: "primary" | "secondary" | "destructive" = "secondary") =>
   h(Button, { variant }, label);
@@ -122,7 +122,7 @@ const getKunjiDemoClient = () => (kunjiDemoClient ??= createMockKunjiClient({ ap
 const getPairingDemoAdapter = () => (pairingDemoAdapter ??= createMockPairingAdapter());
 
 const mk = marketingDemoData;
-const mkPadded = (child: React.ReactElement) => h("div", { className: "w-full p-6" }, child);
+const mkPadded = (child: React.ReactElement) => h("div", { className: "w-full sm:p-6" }, child);
 const mkDetail = mk.extensions.find((e) => e.id === "deep-search") ?? mk.extensions[0]!;
 const mkByAuthor = (handle: string, exclude?: string) => mk.extensions.filter((e) => e.author.handle === handle && e.id !== exclude);
 
@@ -171,23 +171,23 @@ export const blockRegistry: BlockRegistryEntry[] = [
     component: demo("AppSidebar", () =>
       h(
         SidebarProvider,
-        { contained: true, className: "h-[720px]", shortcut: null },
+        { contained: true, className: "h-[900px]", shortcut: null },
         h(AppSidebar),
         h("div", { className: "flex-1 bg-background" })
       )
     ),
     description: "Workspace switcher, search, nav, apps, collapsible favorites, storage card and account. Collapses to icons.",
   },
-  { id: "settings-sidebar", name: "Settings sidebar", category: "sidebar", component: demo("SettingsSidebar", () => h("div", { className: "p-6" }, h(SettingsSidebar))), description: "Grouped settings navigation that becomes a select on mobile." },
-  { id: "docs-sidebar", name: "Docs sidebar", category: "sidebar", component: demo("DocsSidebar", () => h("div", { className: "p-6" }, h(DocsSidebar))), description: "Filterable collapsible doc sections (or a TreeView)." },
-  { id: "app-shell", name: "App shell", category: "sidebar", component: demo("AppShell", () => h(AppShell, { contained: true, insetAs: "div", className: "h-[720px]", shortcut: null })), description: "SidebarProvider + AppSidebar + SidebarInset + AppHeader + content." },
+  { id: "settings-sidebar", name: "Settings sidebar", category: "sidebar", component: demo("SettingsSidebar", () => h("div", { className: "sm:p-6" }, h(SettingsSidebar))), description: "Grouped settings navigation that becomes a select on mobile." },
+  { id: "docs-sidebar", name: "Docs sidebar", category: "sidebar", component: demo("DocsSidebar", () => h("div", { className: "sm:p-6" }, h(DocsSidebar))), description: "Filterable collapsible doc sections (or a TreeView)." },
+  { id: "app-shell", name: "App shell", category: "sidebar", component: demo("AppShell", () => h(AppShell, { contained: true, insetAs: "div", className: "h-[900px]", shortcut: null })), description: "SidebarProvider + AppSidebar + SidebarInset + AppHeader + content." },
 
   /* Section headers */
-  { id: "page-header-actions", name: "Page header with actions", category: "section-header", component: demo("PageHeaderWithActions", () => h("div", { className: "p-6" }, h(PageHeaderWithActions))), description: "Breadcrumbs, title, description and primary/secondary buttons." },
-  { id: "page-header-tabs", name: "Page header with tabs", category: "section-header", component: demo("PageHeaderWithTabs", () => h("div", { className: "p-6" }, h(PageHeaderWithTabs, null, ...["overview", "tasks", "notes", "files", "activity"].map((v) => h(TabsContent, { key: v, value: v, className: "pt-6 text-sm text-muted-foreground" }, `The ${v} panel renders here.`))))), description: "Title, collaborators, actions and an underline tab bar with counts." },
-  { id: "page-header-stats", name: "Page header with stats", category: "section-header", component: demo("PageHeaderWithStats", () => h("div", { className: "p-6" }, h(PageHeaderWithStats))), description: "Greeting, range select and stat cards with sparklines and trend badges." },
-  { id: "page-header-search", name: "Page header with search", category: "section-header", component: demo("PageHeaderWithSearch", () => h("div", { className: "p-6" }, h(PageHeaderWithSearch))), description: "Title with count, search, filter selects and a list/grid toggle." },
-  { id: "profile-header", name: "Profile header", category: "section-header", component: demo("ProfileHeader", () => h("div", { className: "p-6" }, h(ProfileHeader))), description: "Cover banner, overlapping avatar, bio, meta, stats and follow actions." },
+  { id: "page-header-actions", name: "Page header with actions", category: "section-header", component: demo("PageHeaderWithActions", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithActions))), description: "Breadcrumbs, title, description and primary/secondary buttons." },
+  { id: "page-header-tabs", name: "Page header with tabs", category: "section-header", component: demo("PageHeaderWithTabs", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithTabs, null, ...["overview", "tasks", "notes", "files", "activity"].map((v) => h(TabsContent, { key: v, value: v, className: "pt-6 text-sm text-muted-foreground" }, `The ${v} panel renders here.`))))), description: "Title, collaborators, actions and an underline tab bar with counts." },
+  { id: "page-header-stats", name: "Page header with stats", category: "section-header", component: demo("PageHeaderWithStats", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithStats))), description: "Greeting, range select and stat cards with sparklines and trend badges." },
+  { id: "page-header-search", name: "Page header with search", category: "section-header", component: demo("PageHeaderWithSearch", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithSearch))), description: "Title with count, search, filter selects and a list/grid toggle." },
+  { id: "profile-header", name: "Profile header", category: "section-header", component: demo("ProfileHeader", () => h("div", { className: "sm:p-6" }, h(ProfileHeader))), description: "Cover banner, overlapping avatar, bio, meta, stats and follow actions." },
   { id: "hero-header", name: "Hero header", category: "section-header", component: demo("HeroHeader", () => h(HeroHeader)), description: "Eyebrow pill, display heading, subtext and CTAs on a mesh gradient." },
 
   /* Dialogs */

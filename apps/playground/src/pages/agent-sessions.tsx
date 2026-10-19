@@ -325,7 +325,7 @@ function TodoListDemo() {
   }));
   return (
     <Demo id="agent-todo-list" title="Todo list" description="Progresses on a timer. The compact variant sits inline in a transcript." align="start">
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <AgentTodoList items={items} />
         <div className="space-y-1">
           <DemoLabel>Compact</DemoLabel>
@@ -565,7 +565,7 @@ function ConnectionStateDemo() {
   const [reconnecting, setReconnecting] = React.useState(false);
   return (
     <Demo id="connection-state" title="Connection states" description="Full-panel host states." align="start">
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="rounded-box border border-border">
           <ConnectionState
             state="unresponsive"

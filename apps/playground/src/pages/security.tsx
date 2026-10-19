@@ -224,7 +224,7 @@ const initialApps: ConnectedApp[] = [
 function AuthenticatorDemo() {
   const [pinned, setPinned] = React.useState<string[]>(["gh"]);
   return (
-    <div className="grid w-full gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-3 sm:grid-cols-2">
       {authenticatorAccounts.map((a) => (
         <TOTPCard
           key={a.id}
@@ -321,7 +321,7 @@ function RecoveryKeyInputDemo() {
   const [ok, setOk] = React.useState(false);
   const expected = RECOVERY.replace(/-/g, "");
   return (
-    <div className="grid w-full max-w-md gap-2">
+    <div className="grid w-full max-w-md grid-cols-1 gap-2">
       <label htmlFor="rk-input" className="text-sm font-medium">
         Enter your recovery key
       </label>
@@ -461,7 +461,7 @@ function ApiKeysDemo() {
         }}
       />
       {log && <DemoLabel>{log}</DemoLabel>}
-      <div className="grid gap-2">
+      <div className="grid grid-cols-1 gap-2">
         <p className="text-sm font-semibold">Usage · Production server (24h)</p>
         <ApiKeyUsage
           rows={[
@@ -479,7 +479,7 @@ function ApiKeysDemo() {
 function CredentialDetailDemo() {
   const [selected, setSelected] = React.useState<string[]>(["name"]);
   return (
-    <div className="grid w-full max-w-md gap-3">
+    <div className="grid w-full max-w-md grid-cols-1 gap-3">
       <CredentialDetail credential={credentials[1]} selectable value={selected} onValueChange={setSelected} />
       <DemoLabel>Sharing: {selected.join(", ")}</DemoLabel>
     </div>
@@ -490,18 +490,20 @@ function PaymentCardInputDemo() {
   const [value, setValue] = React.useState<PaymentCardValue>({ number: "", expiry: "", cvc: "" });
   const brand = validateCardNumber(value.number).brand;
   return (
-    <div className="grid w-full items-center gap-6 md:grid-cols-2">
-      <PaymentCardInput value={value} onValueChange={setValue} className="max-w-sm" />
-      <PaymentCard
-        number={value.number || "0000"}
-        brand={value.number ? undefined : "unknown"}
-        holder="Vyom Patel"
-        expiry={value.expiry || "MM/YY"}
-        cvv={value.cvc || undefined}
-        revealable={false}
-        defaultRevealed
-        issuer={brand === "unknown" ? "Live preview" : undefined}
-      />
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 items-center gap-6 @xl:grid-cols-2">
+        <PaymentCardInput value={value} onValueChange={setValue} className="max-w-sm" />
+        <PaymentCard
+          number={value.number || "0000"}
+          brand={value.number ? undefined : "unknown"}
+          holder="Vyom Patel"
+          expiry={value.expiry || "MM/YY"}
+          cvv={value.cvc || undefined}
+          revealable={false}
+          defaultRevealed
+          issuer={brand === "unknown" ? "Live preview" : undefined}
+        />
+      </div>
     </div>
   );
 }
@@ -568,7 +570,7 @@ export function SecurityPage() {
       </Demo>
 
       <Demo id="secret-field" title="Secret field" description="Masked with a fixed-length mask, timed reveal, copy with clipboard auto-clear, canvas rendering and a strength badge." align="start">
-        <div className="grid w-full max-w-md gap-4">
+        <div className="grid w-full max-w-md grid-cols-1 gap-4">
           <SecretField label="Wi-Fi password" value="correct-horse-battery" strength="auto" revealFor={5000} description="Reveals for 5 seconds." />
           <SecretField label="Database URL" value="postgres://app:Sx9!t2@db.internal:5432/main" renderAs="canvas" description="Revealed value is drawn on a canvas, out of reach of DOM scrapers." />
           <div className="flex items-center gap-2 text-sm">
@@ -595,24 +597,26 @@ export function SecurityPage() {
       </Demo>
 
       <Demo id="scope-list" title="Scope list & formatScope" description="Readable labels, icons and constraint prose from raw scope strings. The map is extensible." align="start">
-        <div className="grid w-full gap-6 md:grid-cols-2">
-          <ScopeList
-            scopes={["login", "profile", "read:contacts", "write:calendar", "delete:files", { id: "pay", max: "100EUR" }, "custom:export"]}
-            optional={["profile", "write:calendar"]}
-            held={["read:contacts"]}
-            labels={{ "custom:export": "Export your data (app-supplied label)" }}
-          />
-          <ul className="grid content-start gap-1 font-mono text-xs text-muted-foreground">
-            {["login", "read:orders", "write:notes", "admin:billing", "agent:summarise", "vc:age_over_18"].map((s) => {
-              const f = formatScope(s);
-              return (
-                <li key={s}>
-                  {s} → <span className="text-foreground">{f.label}</span> · {f.risk}
-                  {f.locked ? " · locked" : ""}
-                </li>
-              );
-            })}
-          </ul>
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 w-full gap-6 @2xl:grid-cols-2">
+            <ScopeList
+              scopes={["login", "profile", "read:contacts", "write:calendar", "delete:files", { id: "pay", max: "100EUR" }, "custom:export"]}
+              optional={["profile", "write:calendar"]}
+              held={["read:contacts"]}
+              labels={{ "custom:export": "Export your data (app-supplied label)" }}
+            />
+            <ul className="grid content-start gap-1 font-mono text-xs text-muted-foreground">
+              {["login", "read:orders", "write:notes", "admin:billing", "agent:summarise", "vc:age_over_18"].map((s) => {
+                const f = formatScope(s);
+                return (
+                  <li key={s}>
+                    {s} → <span className="text-foreground">{f.label}</span> · {f.risk}
+                    {f.locked ? " · locked" : ""}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </Demo>
 
@@ -625,7 +629,7 @@ export function SecurityPage() {
       </Demo>
 
       <Demo id="credential-card" title="Credential card" description="Verifiable credentials as wallet cards (gradient by kind) and compact rows with unlinkable and remaining-uses chips.">
-        <div className="grid w-full gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 w-full gap-4 sm:grid-cols-2">
           {credentials.slice(0, 2).map((c) => (
             <CredentialCard key={c.id} credential={c} onClick={() => undefined} />
           ))}

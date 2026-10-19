@@ -166,10 +166,14 @@ CardBrandMark.displayName = "CardBrandMark";
 /* PaymentCard                                                         */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Card faces are laid out at their design width and shrink with their container: every size below is a multiple of
+ * `--pc-u` (1px at the design width, less when the card is narrower), so a card never overflows a phone-width column.
+ */
 const cardSize = {
-  sm: { box: "w-64 p-4 gap-2", number: "text-base", meta: "text-2xs", brand: "text-sm" },
-  md: { box: "w-80 p-5 gap-3", number: "text-lg", meta: "text-xs", brand: "text-base" },
-  lg: { box: "w-96 p-6 gap-4", number: "text-xl", meta: "text-xs", brand: "text-lg" },
+  sm: { width: "w-64", unit: "min(1px,0.390625cqw)", box: "p-[calc(16*var(--pc-u))] gap-[calc(8*var(--pc-u))]", number: "text-[length:calc(16*var(--pc-u))]", meta: "text-[length:calc(11*var(--pc-u))]", brand: "text-[length:calc(14*var(--pc-u))]" },
+  md: { width: "w-80", unit: "min(1px,0.3125cqw)", box: "p-[calc(20*var(--pc-u))] gap-[calc(12*var(--pc-u))]", number: "text-[length:calc(18*var(--pc-u))]", meta: "text-[length:calc(12*var(--pc-u))]", brand: "text-[length:calc(16*var(--pc-u))]" },
+  lg: { width: "w-96", unit: "min(1px,0.260417cqw)", box: "p-[calc(24*var(--pc-u))] gap-[calc(16*var(--pc-u))]", number: "text-[length:calc(20*var(--pc-u))]", meta: "text-[length:calc(12*var(--pc-u))]", brand: "text-[length:calc(18*var(--pc-u))]" },
 } as const;
 
 export interface PaymentCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
@@ -267,8 +271,8 @@ export const PaymentCard = React.forwardRef<HTMLDivElement, PaymentCardProps>(
         data-slot="payment-card"
         data-brand={brand}
         data-flipped={flipped || undefined}
-        className={cn("relative aspect-[1.586] shrink-0", s.box.split(" ")[0], className)}
-        style={{ perspective: 1200, ...style }}
+        className={cn("@container relative aspect-[1.586] max-w-full shrink-0", s.width, className)}
+        style={{ perspective: 1200, "--pc-u": s.unit, ...style } as React.CSSProperties}
         {...props}
       >
         <div
@@ -287,8 +291,8 @@ export const PaymentCard = React.forwardRef<HTMLDivElement, PaymentCardProps>(
               <span className={cn("truncate font-medium text-white/85", s.meta)}>{issuer}</span>
               <CardBrandMark brand={brand} className={s.brand} />
             </div>
-            <div className="relative flex items-center gap-3">
-              <span aria-hidden className="h-7 w-9 rounded-md bg-gradient-to-br from-amber-200 to-amber-500 opacity-90 shadow-inner" />
+            <div className="relative flex items-center gap-[calc(12*var(--pc-u))]">
+              <span aria-hidden className="h-[calc(28*var(--pc-u))] w-[calc(36*var(--pc-u))] shrink-0 rounded-md bg-gradient-to-br from-amber-200 to-amber-500 opacity-90 shadow-inner" />
               <span className="sr-only">
                 {revealed && revealable ? `Card number ${digits}` : `Card ending in ${last4}`}
               </span>
@@ -297,7 +301,7 @@ export const PaymentCard = React.forwardRef<HTMLDivElement, PaymentCardProps>(
               </span>
             </div>
             <div className="relative flex items-end justify-between gap-3">
-              <div className={cn("flex min-w-0 gap-5", s.meta)}>
+              <div className={cn("flex min-w-0 gap-[calc(20*var(--pc-u))]", s.meta)}>
                 {holder && (
                   <span className="grid min-w-0">
                     <span className="text-[0.85em] uppercase tracking-wider text-white/60">Card holder</span>

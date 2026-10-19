@@ -139,7 +139,7 @@ export const LayoutPresetPicker = React.forwardRef<HTMLDivElement, LayoutPresetP
 
     return (
       <div ref={ref} data-slot="layout-preset-picker" className={cn("flex flex-col gap-4", className)} {...props}>
-        <div role="group" aria-label="Layout presets" className="grid grid-cols-3 gap-2">
+        <div role="group" aria-label="Layout presets" className="grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-2">
           {previews.map(({ preset, layout }) => (
             <button
               key={preset.id}
@@ -156,7 +156,7 @@ export const LayoutPresetPicker = React.forwardRef<HTMLDivElement, LayoutPresetP
         </div>
         {allowSave && (
           <form
-            className="flex items-end gap-2"
+            className="flex flex-wrap items-end gap-2"
             onSubmit={(event) => {
               event.preventDefault();
               const trimmed = name.trim();
@@ -177,7 +177,7 @@ export const LayoutPresetPicker = React.forwardRef<HTMLDivElement, LayoutPresetP
               placeholder="Name this arrangement"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="min-w-0 flex-1"
+              className="min-w-32 flex-1"
             />
             <Button type="submit" size="sm" variant="secondary" leadingIcon={<RiSave3Line aria-hidden />} disabled={!current || !name.trim()}>
               Save current arrangement
@@ -187,7 +187,7 @@ export const LayoutPresetPicker = React.forwardRef<HTMLDivElement, LayoutPresetP
         {saved.length > 0 && (
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">Saved arrangements</p>
-            <ul aria-label="Saved arrangements" className="grid grid-cols-3 gap-2">
+            <ul aria-label="Saved arrangements" className="grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-2">
               {saved.map((item) => (
                 <li key={item.id} className="relative">
                   <button

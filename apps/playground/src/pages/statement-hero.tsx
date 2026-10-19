@@ -114,7 +114,7 @@ function DropzoneDemo() {
         description="We will take it from there."
         action={
           <Dropzone
-            className="w-full sm:w-[30rem]"
+            className="w-full max-w-[30rem]"
             title={<span className="font-semibold text-foreground">Drop a file or click to choose</span>}
             accept="application/pdf,image/*"
             maxSize={10 * 1024 * 1024}

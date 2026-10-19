@@ -72,7 +72,7 @@ export const PromptInputModelPill = React.forwardRef<HTMLButtonElement, PromptIn
         size={size}
         data-fast={fastState}
         className={cn(
-          "min-w-0 gap-1 px-2.5 text-muted-foreground hover:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground",
+          "min-w-0 shrink gap-1 px-2.5 text-muted-foreground hover:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground",
           className
         )}
         {...props}

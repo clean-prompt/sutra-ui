@@ -292,10 +292,10 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
         ) : route ? (
           <div className="flex flex-col gap-1.5">
             <span className="text-sm font-medium">Signing secret</span>
-            <div className="flex items-center gap-2">
-              <code data-slot="webhook-secret-masked" className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-control border border-input bg-subtle px-2.5 font-mono text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-2">
+              <code data-slot="webhook-secret-masked" className="flex h-8 min-w-0 flex-1 basis-48 items-center gap-2 rounded-control border border-input bg-subtle px-2.5 font-mono text-xs text-muted-foreground">
                 <RiKey2Line aria-hidden className="size-3.5 shrink-0" />
-                <span aria-hidden>whsec_••••••••{route.secretHint ?? ""}</span>
+                <span aria-hidden className="min-w-0 truncate">whsec_••••••••{route.secretHint ?? ""}</span>
                 <span className="sr-only">Secret hidden{route.secretHint ? `, ending in ${route.secretHint}` : ""}</span>
               </code>
               {onRegenerateSecret ? (

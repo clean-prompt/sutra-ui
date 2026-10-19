@@ -127,7 +127,7 @@ export const AuthSplitPage = React.forwardRef<HTMLDivElement, AuthSplitPageProps
     },
     ref
   ) => (
-    <div ref={ref} className={cn("grid min-h-svh bg-background lg:grid-cols-2", className)} {...props}>
+    <div ref={ref} className={cn("grid grid-cols-1 min-h-svh bg-background lg:grid-cols-2", className)} {...props}>
       <div className={cn("flex flex-col px-6 py-6 sm:px-10 lg:py-8", reverse && "lg:order-last")}>
         <HomeLogo logo={logo} href={homeHref} renderLink={renderLink} />
         <main className="flex flex-1 items-center justify-center py-10">
@@ -306,7 +306,7 @@ export const AuthImagePage = React.forwardRef<HTMLDivElement, AuthImagePageProps
     },
     ref
   ) => (
-    <div ref={ref} className={cn("grid min-h-svh bg-background lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]", className)} {...props}>
+    <div ref={ref} className={cn("grid grid-cols-1 min-h-svh bg-background lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]", className)} {...props}>
       <div className="flex flex-col px-6 py-6 sm:px-10 lg:py-8">
         <HomeLogo logo={logo} href={homeHref} renderLink={renderLink} />
         <main className="flex flex-1 items-center justify-center py-10">

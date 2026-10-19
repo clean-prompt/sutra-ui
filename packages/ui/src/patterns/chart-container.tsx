@@ -54,33 +54,36 @@ export const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerPro
           {typeof children === "function" ? children({ width, height }) : children}
         </div>
         {table ? (
-          <table className="sr-only">
-            <caption>{label}</caption>
-            <thead>
-              <tr>
-                {table.columns.map((c, i) => (
-                  <th key={i} scope="col">
-                    {c}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {table.rows.map((row, i) => (
-                <tr key={i}>
-                  {row.map((cell, j) =>
-                    j === 0 ? (
-                      <th key={j} scope="row">
-                        {cell}
-                      </th>
-                    ) : (
-                      <td key={j}>{cell}</td>
-                    )
-                  )}
+          // The wrapper clips the table: a bare absolutely positioned `<table class="sr-only">` keeps its content width and widens the page.
+          <div className="sr-only">
+            <table>
+              <caption>{label}</caption>
+              <thead>
+                <tr>
+                  {table.columns.map((c, i) => (
+                    <th key={i} scope="col">
+                      {c}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {table.rows.map((row, i) => (
+                  <tr key={i}>
+                    {row.map((cell, j) =>
+                      j === 0 ? (
+                        <th key={j} scope="row">
+                          {cell}
+                        </th>
+                      ) : (
+                        <td key={j}>{cell}</td>
+                      )
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : null}
       </>
     );

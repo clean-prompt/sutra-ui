@@ -508,7 +508,7 @@ function ToolPageDemo() {
         </div>
 
         <div className="mx-auto mt-10 w-full max-w-3xl rounded-box border border-border bg-card p-2.5 sm:p-3 md:mt-14">
-          <div className="grid gap-3 @xl:grid-cols-[1fr_auto_1fr] @xl:items-stretch">
+          <div className="grid grid-cols-1 gap-3 @xl:grid-cols-[1fr_auto_1fr] @xl:items-stretch">
             <Dropzone
               inputRef={inputRef}
               accept="image/*,.heic,.heif"
@@ -699,7 +699,7 @@ function DetailsDemo() {
             <span key={i} className="size-5 rounded-full border border-border" style={{ backgroundColor: color }} />
           ))}
         </div>
-        <div className="grid gap-8 @container md:grid-cols-[1.4fr_1fr] md:items-center">
+        <div className="grid grid-cols-1 gap-8 @container lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <AreaChart
             data={week}
             index="day"
@@ -731,7 +731,7 @@ function DetailsDemo() {
             Replay
           </Button>
         </div>
-        <ul key={run} className="grid gap-2 sm:grid-cols-3">
+        <ul key={run} className="grid grid-cols-1 gap-2 lg:grid-cols-3">
           {recent.map((item, i) => (
             <li
               key={item.name}

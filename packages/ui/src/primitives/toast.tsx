@@ -129,7 +129,7 @@ export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(
       role={role ?? "status"}
       aria-live="polite"
       className={cn(
-        "pointer-events-auto flex w-full min-w-[18rem] max-w-[min(36rem,calc(100vw-2rem))] items-center gap-3",
+        "pointer-events-auto flex w-full min-w-[min(18rem,100%)] max-w-[min(36rem,calc(100vw-2rem))] items-center gap-3",
         "rounded-box bg-inverse py-2 pl-4 pr-2 font-sans text-sm text-inverse-foreground shadow-2xl",
         className
       )}

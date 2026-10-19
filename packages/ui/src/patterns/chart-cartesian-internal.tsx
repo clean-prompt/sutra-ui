@@ -429,23 +429,32 @@ export const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternal
               motion,
             };
 
-            const maxCatTicks =
-              xAxis.tickCount ?? Math.max(2, Math.floor(catLen / (horizontal ? 18 : xType === "time" ? 80 : 64)));
+            // `tickCount` is a maximum: labels never get closer than about 80 px (64 px, 18 px for rows), so a narrow chart
+            // drops ticks instead of printing them on top of each other.
+            const fitCatTicks = Math.max(2, Math.floor(catLen / (horizontal ? 18 : xType === "time" ? 80 : 64)));
+            const maxCatTicks = xAxis.tickCount == null ? fitCatTicks : Math.min(xAxis.tickCount, fitCatTicks);
             const every = Math.max(1, Math.ceil(n / maxCatTicks));
             type CatTick = { key: string; p: number; label: string; anchor: "start" | "middle" | "end" };
             let catTicks: CatTick[];
             if (continuous) {
-              let values: number[];
-              let fmt: (v: number) => string;
-              if (xType === "time") {
-                const tt = timeTicks(x0, x1, maxCatTicks);
-                values = tt.ticks;
-                fmt = xAxis.formatter ? (v) => xAxis.formatter!(new Date(v), -1) : (v) => formatTimeTick(v, tt.unit);
-              } else {
-                const e = (x1 - x0) * 1e-9;
-                values = niceTicks(x0, x1, maxCatTicks).filter((t) => t >= x0 - e && t <= x1 + e);
-                const base = tickFormatter(values);
-                fmt = xAxis.formatter ? (v) => xAxis.formatter!(v, -1) : base;
+              let values: number[] = [];
+              let fmt: (v: number) => string = String;
+              // Long labels ("09:04:48 PM") need more room than the default 80 px: ask for fewer ticks until they fit.
+              let count = maxCatTicks;
+              for (let attempt = 0; attempt < 4; attempt++) {
+                if (xType === "time") {
+                  const tt = timeTicks(x0, x1, count);
+                  values = tt.ticks;
+                  fmt = xAxis.formatter ? (v) => xAxis.formatter!(new Date(v), -1) : (v) => formatTimeTick(v, tt.unit);
+                } else {
+                  const e = (x1 - x0) * 1e-9;
+                  values = niceTicks(x0, x1, count).filter((t) => t >= x0 - e && t <= x1 + e);
+                  const base = tickFormatter(values);
+                  fmt = xAxis.formatter ? (v) => xAxis.formatter!(v, -1) : base;
+                }
+                const widest = values.reduce((m, v) => Math.max(m, fmt(v).length), 0) * 6.4 + 14;
+                if (values.length <= 2 || count <= 2 || catLen / values.length >= widest) break;
+                count = Math.max(2, Math.min(count - 1, Math.floor(catLen / widest)));
               }
               catTicks = values.map((v) => {
                 const p = xPos(v);

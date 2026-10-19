@@ -601,7 +601,7 @@ function ChainOfThoughtDemo() {
       description="Collapsible reasoning with a live “Thinking…” header that becomes “Thought for Ns” and auto-collapses."
       align="start"
     >
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <DemoLabel>Live (auto-measured)</DemoLabel>
@@ -795,7 +795,7 @@ function ChatLoaderDemo() {
   const variants = ["dots", "shimmer", "pulse", "spinner", "wave"] as const;
   return (
     <Demo id="chat-loader" title="Chat loader" description="Indicators for the reply slot while the assistant works." align="start">
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
         {variants.map((v) => (
           <div key={v} className="flex flex-col gap-3 rounded-box border border-border bg-card p-4">
             <DemoLabel className="capitalize">{v}</DemoLabel>
@@ -875,7 +875,7 @@ function PromptInputDemo() {
         </PromptInput>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <DemoLabel>Loading with stop</DemoLabel>
@@ -990,7 +990,7 @@ function PromptSuggestionDemo() {
           <PromptSuggestion disabled>Generate an image</PromptSuggestion>
         </PromptSuggestionGroup>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-2">
           <DemoLabel>List</DemoLabel>
           <PromptSuggestionGroup variant="list" className="rounded-box border border-border bg-card p-1">

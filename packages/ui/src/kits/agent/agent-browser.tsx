@@ -180,13 +180,13 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
         data-slot="agent-browser"
         data-controller={controller}
         className={cn(
-          "flex min-h-0 flex-col overflow-hidden rounded-box border border-border bg-card shadow-xs",
+          "@container flex min-h-0 flex-col overflow-hidden rounded-box border border-border bg-card shadow-xs",
           agentDriving && "border-primary/50",
           className
         )}
         {...props}
       >
-        <div className="relative flex items-center gap-1 border-b border-border bg-subtle px-2 py-1.5">
+        <div className="relative flex flex-wrap items-center gap-1 border-b border-border bg-subtle px-2 py-1.5 @lg:flex-nowrap">
           <Button
             type="button"
             variant="ghost"
@@ -234,7 +234,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
               <RiRefreshLine aria-hidden />
             </Button>
           )}
-          <form role="search" aria-label="Address bar" onSubmit={submit} className="min-w-0 flex-1">
+          <form role="search" aria-label="Address bar" onSubmit={submit} className="order-last min-w-0 basis-full @lg:order-none @lg:basis-0 @lg:flex-1">
             <div
               className={cn(
                 "flex h-8 items-center gap-1.5 rounded-control border border-input bg-background px-2 text-sm shadow-xs",
@@ -281,7 +281,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
           {agentDriving && (
             <span
               data-slot="agent-driving-pill"
-              className="inline-flex h-6 shrink-0 items-center gap-1.5 rounded-control bg-primary-soft px-2 text-xs font-medium text-primary-soft-foreground [&_svg]:size-3.5"
+              className="ml-auto inline-flex h-6 max-w-full shrink-0 items-center gap-1.5 rounded-control bg-primary-soft px-2 text-xs @lg:ml-0 font-medium text-primary-soft-foreground [&_svg]:size-3.5"
             >
               <span className="relative flex size-1.5" aria-hidden>
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-60 motion-reduce:animate-none" />
@@ -446,7 +446,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
 
     return (
       <div ref={ref} data-slot="browser-console" className={cn("border-t border-border bg-card text-xs", className)} {...props}>
-        <div className="flex items-center gap-2 px-2 py-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-2 py-1">
           <button
             type="button"
             aria-expanded={open}
@@ -474,7 +474,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
             </span>
           )}
           {open && (
-            <div className="ml-auto flex min-w-0 items-center gap-1">
+            <div className="ml-auto flex min-w-0 max-w-full flex-wrap items-center gap-1">
               <input
                 type="search"
                 aria-label="Filter console"
@@ -486,7 +486,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
                   focusRing
                 )}
               />
-              <div role="group" aria-label="Levels" className="flex items-center">
+              <div role="group" aria-label="Levels" className="flex flex-wrap items-center">
                 {BROWSER_CONSOLE_LEVELS.map((l) => (
                   <button
                     key={l}

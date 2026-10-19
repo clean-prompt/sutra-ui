@@ -54,7 +54,7 @@ function Swatch({ name, value, className }: { name: string; value: string; class
         className="block h-16 w-full rounded-box border border-border shadow-xs transition-transform group-hover:-translate-y-0.5"
         style={{ background: value }}
       />
-      <span className="min-w-0">
+      <span className="w-full min-w-0">
         <span className="block truncate text-sm font-medium">{name}</span>
         <span className="block truncate font-mono text-2xs text-muted-foreground">{copied ? "Copied!" : value}</span>
       </span>
@@ -70,7 +70,7 @@ function Scale({ label, scale }: { label: string; scale: Record<string, string> 
   return (
     <div className="space-y-2">
       <DemoLabel>{label}</DemoLabel>
-      <div className="grid grid-cols-4 gap-1 sm:grid-cols-6 md:grid-cols-12">
+      <div className="grid grid-cols-4 gap-1 sm:grid-cols-6 lg:grid-cols-12">
         {Object.entries(scale).map(([step, value]) => (
           <div key={step} className="space-y-1">
             <div className="h-12 rounded-sm border border-border/50" style={{ background: value }} />
@@ -90,7 +90,7 @@ export function ColorsPage() {
       description="Semantic tokens map onto a brand scale and a neutral scale. Switch brand, neutral and mode in the top bar — every swatch here follows. Click a swatch to copy its CSS variable."
     >
       <Demo title="Semantic tokens" description="Use these through Tailwind utilities such as bg-card, text-muted-foreground or border-border." align="start">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
           {semanticTokens.map(([name, value]) => (
             <Swatch key={name} name={toKebab(name)} value={value} />
           ))}
@@ -103,11 +103,11 @@ export function ColorsPage() {
         <Scale label="neutral" scale={colors.neutral} />
       </Demo>
       <Demo title="Status" align="start">
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {(["success", "warning", "destructive", "info"] as const).map((tone) => (
             <div key={tone} className="overflow-hidden rounded-box border border-border">
               <div className="h-14" style={{ background: colors[tone] }} />
-              <div className="flex items-center justify-between p-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 p-3">
                 <span className="text-sm font-medium capitalize">{tone}</span>
                 <Badge tone={tone}>{tone}</Badge>
               </div>
@@ -144,15 +144,15 @@ export function TypographyPage() {
     >
       <Demo title="Type scale" align="start" canvasClassName="gap-0 p-0 sm:p-0">
         {Object.entries(typography.scale).map(([name, t]) => (
-          <div key={name} className="flex flex-col gap-1 border-b border-border px-6 py-4 last:border-0 md:flex-row md:items-baseline md:gap-6">
-            <div className="w-36 shrink-0 space-y-0.5">
+          <div key={name} className="flex flex-col gap-1 border-b border-border px-6 py-4 last:border-0 lg:flex-row lg:items-baseline lg:gap-6">
+            <div className="shrink-0 space-y-0.5 lg:w-36">
               <p className="font-mono text-xs font-medium">{name}</p>
               <p className="font-mono text-2xs text-muted-foreground">
                 {t.size} / {t.lineHeight} / {t.tracking}
               </p>
             </div>
             <p
-              className="min-w-0 truncate font-semibold"
+              className="min-w-0 break-words font-semibold sm:truncate sm:py-[0.15em]"
               style={{ fontSize: t.size, lineHeight: t.lineHeight, letterSpacing: t.tracking }}
             >
               Thread every idea together
@@ -161,7 +161,7 @@ export function TypographyPage() {
         ))}
       </Demo>
       <Demo title="Weights & families" align="start">
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="space-y-2">
             {Object.entries(typography.weights).map(([name, w]) => (
               <p key={name} className="text-xl" style={{ fontWeight: w }}>
@@ -253,7 +253,7 @@ export function GridPage() {
         ))}
       </Demo>
       <Demo title="Grid tokens" align="start">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           {Object.entries(grid).map(([device, g]) => (
             <Card key={device} padded className="space-y-1 p-4">
               <p className="text-sm font-semibold capitalize">{device}</p>
@@ -287,7 +287,7 @@ export function ShadowsPage() {
       title="Shadows & Effects"
       description="Layered, low-contrast shadows that deepen in dark mode, plus glass, dotted and grid surfaces."
     >
-      <Demo title="Elevation" description="shadow-xs … shadow-3xl. Menus use shadow-lg, dialogs shadow-2xl." dots canvasClassName="grid grid-cols-2 gap-8 sm:grid-cols-4 md:grid-cols-7">
+      <Demo title="Elevation" description="shadow-xs … shadow-3xl. Menus use shadow-lg, dialogs shadow-2xl." dots canvasClassName="grid grid-cols-[repeat(auto-fill,minmax(6rem,1fr))] gap-8">
         {Object.entries(shadows).map(([name, value]) => (
           <div key={name} className="flex flex-col items-center gap-3">
             <div className="size-20 rounded-box border border-border/60 bg-card" style={{ boxShadow: value }} />
@@ -296,7 +296,7 @@ export function ShadowsPage() {
         ))}
       </Demo>
       <Demo title="Surfaces & effects" align="start">
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           <div className="relative h-36 overflow-hidden rounded-box bg-gradient-to-br from-brand-400 to-brand-700 p-4">
             <div className="glass absolute inset-4 grid place-items-center rounded-box text-sm font-medium">glass</div>
           </div>
@@ -326,7 +326,7 @@ export function RadiusPage() {
       title="Corner Radius"
       description="rounded-control (buttons, inputs, chips) and rounded-box (cards, popovers) follow the radius mode — try Rounded, Pill and Square in the top bar."
     >
-      <Demo title="Radius scale" canvasClassName="grid grid-cols-3 gap-6 sm:grid-cols-5 md:grid-cols-9">
+      <Demo title="Radius scale" canvasClassName="grid grid-cols-[repeat(auto-fill,minmax(4.5rem,1fr))] gap-6">
         {Object.entries(radii).map(([name, value]) => (
           <div key={name} className="flex flex-col items-center gap-2">
             <div className="size-16 border-2 border-primary bg-primary-soft" style={{ borderRadius: value }} />
@@ -497,7 +497,7 @@ function MotionSpeeds() {
           <SpeedRow key={t.name} {...t} on={on} />
         ))}
       </div>
-      <div className="grid gap-6 border-t border-border pt-6 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 border-t border-border pt-6 sm:grid-cols-2">
         <EaseRow name="--sutra-ease" label="the one ease: entrances, fills, chevrons, hover" />
         <EaseRow name="--sutra-ease-spring" label="springy: pops, switch and radio thumbs" />
       </div>
@@ -522,7 +522,7 @@ function MotionChevron() {
 
 function MotionUtilities() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
       <Replayable name="animate-pop" note="springy scale-in: icon swaps, ticks, badges">
         {(run) => (
           <span key={run} className="grid size-10 animate-pop place-items-center rounded-full bg-primary-soft text-primary-soft-foreground">
@@ -565,7 +565,7 @@ function MotionUtilities() {
           </Card>
         )}
       </Replayable>
-      <div className="flex flex-col gap-3 rounded-box border border-border bg-card p-4 sm:col-span-2 lg:col-span-1">
+      <div className="flex flex-col gap-3 rounded-box border border-border bg-card p-4 lg:col-span-2 xl:col-span-1">
         <div>
           <div className="font-mono text-sm font-medium">chevron-turn</div>
           <div className="text-xs text-muted-foreground">disclosure rotation; pair with rotate-180 or rotate-90</div>
@@ -592,7 +592,7 @@ function MotionOnChangeStage() {
   const countKey = useChangeKey(count);
   const [status, setStatus] = React.useState<(typeof statusCycle)[number]>("pending");
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
       <div className="space-y-3 rounded-box border border-border bg-card p-4">
         <DemoLabel>Number: key + animate-tick</DemoLabel>
         <div className="flex items-center gap-3">
@@ -657,7 +657,7 @@ function MotionEntrances() {
           Replay
         </Button>
       </div>
-      <div key={run} className="grid items-start gap-6 md:grid-cols-[auto_1fr]">
+      <div key={run} className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[auto_1fr]">
         <div className="space-y-2">
           <DemoLabel>Avatar image: fades in once loaded</DemoLabel>
           <Avatar src={image} name="Ada Lovelace" size="xl" />

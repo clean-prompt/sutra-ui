@@ -253,7 +253,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
       body = (
         <div className="flex w-full items-center justify-between gap-3">
           <PaginationPrev size={size} disabled={!canPrev} onClick={() => go(page - 1)} />
-          <ul className="hidden items-center gap-0.5 sm:flex">
+          <ul className="hidden items-center gap-0.5 @lg:flex">
             {items.map((item) =>
               typeof item === "number" ? (
                 <li key={item}>
@@ -272,7 +272,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
               )
             )}
           </ul>
-          <span className="sm:hidden">{pageLabel}</span>
+          <span className="@lg:hidden">{pageLabel}</span>
           <PaginationNext size={size} disabled={!canNext} onClick={() => go(page + 1)} />
         </div>
       );
@@ -284,15 +284,17 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
         role="navigation"
         aria-label="Pagination"
         className={cn(
-          "flex w-full flex-col items-center gap-3",
-          pageSizeSelect && "sm:flex-row sm:justify-between",
+          "flex w-full items-center gap-3",
+          // With a page-size select the row wraps (select, then the pager) when the width is short, instead of keying off the viewport.
+          pageSizeSelect ? "flex-wrap justify-center" : "flex-col",
           variant === "dots" && !pageSizeSelect && "justify-center",
           className
         )}
         {...props}
       >
         {pageSizeSelect}
-        <div className={cn("flex min-w-0", pageSizeSelect ? "sm:flex-1 sm:justify-end" : "w-full justify-center")}>
+        {/* A container, so the page list and the "Page x of y" label follow the width this row gets, not the viewport. */}
+        <div className={cn("@container flex min-w-0", pageSizeSelect ? "grow basis-72 justify-end" : "w-full justify-center")}>
           {body}
         </div>
       </nav>

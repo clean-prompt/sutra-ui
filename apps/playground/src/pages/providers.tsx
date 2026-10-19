@@ -255,7 +255,7 @@ function PickerDemo() {
       <ProviderModelPicker
         providers={routing.map((p) => ({ ...p, configured: false }))}
         emptyActions={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
             <Button size="sm" variant="secondary" leadingIcon={<RiKey2Line />}>
               Add API key
             </Button>
@@ -313,7 +313,7 @@ function ModelInfoDemo() {
   const [override, setOverride] = React.useState<number | null>(null);
   const provider = routing[0]!;
   return (
-    <div className="grid w-full gap-4 sm:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-4 lg:grid-cols-2">
       <ModelInfoCard model={provider.models[0]!} provider={provider} contextOverride={override} onContextOverrideChange={setOverride} />
       <ModelInfoCard model={routing[2]!.models[0]!} provider={routing[2]} />
     </div>
@@ -573,7 +573,7 @@ export function ProvidersPage() {
       </Demo>
 
       <Demo id="hardware-fit" title="Hardware fit hint" description="estimateModelFit() for a 12 GB GPU and 32 GB RAM: fits fully on GPU, partial offload, CPU only, or won't fit." align="start">
-        <div className="grid w-full gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 w-full gap-5 lg:grid-cols-2">
           <HardwareFitHint model={{ paramsB: 8, quant: "Q4_K_M" }} hardware={hardware} />
           <HardwareFitHint model={{ sizeGB: 19.8 }} hardware={hardware} />
           <HardwareFitHint model={{ sizeGB: 14 }} hardware={{ ramGB: 32 }} />

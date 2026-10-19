@@ -760,12 +760,12 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
 
     return (
       <SchemaFormContext.Provider value={ctx}>
-        <form ref={ref} noValidate onSubmit={submit} data-slot="schema-form" className={cn("space-y-5", className)} {...props}>
+        <form ref={ref} noValidate onSubmit={submit} data-slot="schema-form" className={cn("@container w-full space-y-5", className)} {...props}>
           {showNav ? (
-            <div className="flex flex-col gap-6 md:flex-row">
-              <nav aria-label="Sections" className="space-y-2 md:w-48 md:shrink-0">
+            <div className="flex flex-col gap-6 @xl:flex-row">
+              <nav aria-label="Sections" className="space-y-2 @xl:w-48 @xl:shrink-0">
                 <SearchInput size="sm" value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery("")} clearable placeholder="Search settings…" aria-label="Search settings" />
-                <ul className="flex gap-1 overflow-x-auto md:flex-col">
+                <ul className="flex gap-1 overflow-x-auto @xl:flex-col">
                   <li>
                     <button
                       type="button"

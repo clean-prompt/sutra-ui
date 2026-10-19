@@ -12,7 +12,8 @@ const SegmentedControlContext = React.createContext<{ size: Size; fullWidth: boo
 });
 
 const rootVariants = cva(
-  "relative isolate inline-flex items-center rounded-control bg-muted p-0.5 shadow-[inset_0_0_0_1px_var(--color-border)]",
+  // max-w-full + overflow-x-auto: with many options in a narrow column the control scrolls sideways instead of running out of it.
+  "relative isolate inline-flex max-w-full items-center overflow-x-auto rounded-control bg-muted p-0.5 shadow-[inset_0_0_0_1px_var(--color-border)] scrollbar-none",
   {
     variants: {
       size: { sm: "h-8", md: "h-9", lg: "h-10" },
@@ -28,6 +29,8 @@ const itemVariants = cva(
     "transition-colors duration-200 hover:text-foreground data-[state=on]:text-foreground",
     "disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
     focusRing,
+    // The root scrolls (overflow-x-auto), which would clip an outside ring: draw it inside the segment.
+    "focus-visible:ring-inset",
   ],
   {
     variants: {

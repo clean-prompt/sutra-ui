@@ -332,7 +332,7 @@ function CronManagerDemo() {
   };
 
   return (
-    <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+    <div className="grid grid-cols-1 w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
       <div className="flex min-w-0 flex-col gap-3">
         <div className="flex items-center justify-between">
           <DemoLabel>Scheduled jobs</DemoLabel>
@@ -419,7 +419,7 @@ function JobFormDialogDemo() {
 function ScheduleBuilderDemo() {
   const [value, setValue] = React.useState<CronScheduleValue | null>({ kind: "cron", expr: "0 9 * * 1-5" });
   return (
-    <div className="grid w-full gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 w-full gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
       <CronScheduleField defaultValue={value} onValueChange={(v) => setValue(v)} />
       <div className="flex flex-col gap-2">
         <DemoLabel>Emitted value</DemoLabel>
@@ -502,7 +502,7 @@ function WebhooksDemo() {
   const [newSecret, setNewSecret] = React.useState<string | null>(null);
   const selected = selectedId === "new" ? undefined : routes.find((r) => r.id === selectedId);
   return (
-    <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+    <div className="grid grid-cols-1 w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
       <WebhookRouteList
         routes={routes}
         selectedId={selectedId === "new" ? null : selectedId}

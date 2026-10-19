@@ -632,31 +632,33 @@ function TerminalDemo() {
   };
 
   return (
-    <div className="grid w-full gap-4 md:grid-cols-[220px_1fr]">
-      <TerminalSessionPicker
-        sessions={sessions}
-        value={active}
-        onValueChange={setActive}
-        onCreate={() => {
-          const id = `s${sessions.length + 1}`;
-          setSessions((s) => [...s, { id, name: `session-${s.length + 1}`, windows: 1, lastActivity: Date.now() }]);
-          setActive(id);
-        }}
-      />
-      <Terminal
-        ref={term}
-        title={`alice@dilab-01 · ${sessions.find((s) => s.id === active)?.name ?? active}`}
-        connection={connection}
-        connectionMessage={connection === "disconnected" ? "Session ended (type exit to try this)." : undefined}
-        onReconnect={connect}
-        onData={onData}
-        height={340}
-        toolbar={
-          <Button size="xs" variant="ghost" onClick={() => setConnection("disconnected")} disabled={connection !== "connected"}>
-            Disconnect
-          </Button>
-        }
-      />
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 w-full gap-4 @2xl:grid-cols-[220px_1fr]">
+        <TerminalSessionPicker
+          sessions={sessions}
+          value={active}
+          onValueChange={setActive}
+          onCreate={() => {
+            const id = `s${sessions.length + 1}`;
+            setSessions((s) => [...s, { id, name: `session-${s.length + 1}`, windows: 1, lastActivity: Date.now() }]);
+            setActive(id);
+          }}
+        />
+        <Terminal
+          ref={term}
+          title={`alice@dilab-01 · ${sessions.find((s) => s.id === active)?.name ?? active}`}
+          connection={connection}
+          connectionMessage={connection === "disconnected" ? "Session ended (type exit to try this)." : undefined}
+          onReconnect={connect}
+          onData={onData}
+          height={340}
+          toolbar={
+            <Button size="xs" variant="ghost" onClick={() => setConnection("disconnected")} disabled={connection !== "connected"}>
+              Disconnect
+            </Button>
+          }
+        />
+      </div>
     </div>
   );
 }

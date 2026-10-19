@@ -306,7 +306,7 @@ export const LoginCard = React.forwardRef<HTMLFormElement, LoginCardProps>(
               <FieldError>{errors.password}</FieldError>
             </Field>
             {showRemember && (
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
                 <CheckboxField
                   label="Remember for 30 days"
                   checked={remember}
@@ -759,6 +759,8 @@ export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProp
               onComplete={autoSubmit ? verify : undefined}
               disabled={action.busy}
               autoFocus={autoFocus}
+              containerClassName="w-full justify-center [&>[data-slot=input-otp-group]]:min-w-0 [&>[data-slot=input-otp-group]]:flex-1 [&>[data-slot=input-otp-group]]:justify-center"
+              slotClassName="size-auto aspect-square min-w-0 max-w-12 flex-1"
             />
             <FieldError className="justify-center">{shownError}</FieldError>
           </Field>
@@ -1278,7 +1280,8 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
                 onChange={setCode}
                 onComplete={(v) => void verify(v)}
                 disabled={action.busy}
-                containerClassName="justify-center"
+                containerClassName="w-full justify-center [&>[data-slot=input-otp-group]]:min-w-0 [&>[data-slot=input-otp-group]]:flex-1 [&>[data-slot=input-otp-group]]:justify-center"
+                slotClassName="size-auto aspect-square min-w-0 max-w-10 flex-1"
               />
             </Field>
           </section>

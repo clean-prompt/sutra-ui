@@ -309,7 +309,7 @@ function MarkdownDemo() {
   const [cited, setCited] = React.useState<number | null>(null);
   return (
     <div className="space-y-3">
-      <Markdown math sources={markdownSources} onCite={setCited}>
+      <Markdown math sources={markdownSources} onCite={setCited} className="[&_.katex-display]:overflow-x-auto [&_.katex-display]:overflow-y-hidden">
         {markdownSource}
       </Markdown>
       <p className="text-sm text-muted-foreground">

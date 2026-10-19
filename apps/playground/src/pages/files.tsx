@@ -56,7 +56,7 @@ function CropperDemo() {
   const [result, setResult] = React.useState<string | null>(null);
   React.useEffect(() => () => (result ? URL.revokeObjectURL(result) : undefined), [result]);
   return (
-    <div className="grid w-full gap-4 lg:grid-cols-[1fr_16rem]">
+    <div className="grid grid-cols-1 w-full gap-4 lg:grid-cols-[1fr_16rem]">
       <ImageCropper
         src={gradient("#615fff", "#00b8db", "Harbor at dawn")}
         aspectOptions={imageCropperAspectOptions}
@@ -130,7 +130,7 @@ function PdfDemo() {
   );
   const renderers = React.useMemo(() => [pdfRenderer({ workerSrc })], []);
   return (
-    <div className="grid w-full gap-4">
+    <div className="grid w-full grid-cols-1 gap-4">
       <PdfViewer blob={blob} fileName="Quarterly report.pdf" workerSrc={workerSrc} height={420} />
       <div className="flex flex-wrap items-start gap-4">
         <PdfThumbnail blob={blob} workerSrc={workerSrc} width={120} alt="Quarterly report, first page" />
@@ -160,9 +160,11 @@ export function FilesPage() {
         <CropperDemo />
       </Demo>
       <Demo id="camera-capture" title="Camera capture" description="Photo or video with review. Without a camera (or permission) it shows a clear state instead of a blank box." align="start">
-        <div className="grid w-full gap-4 md:grid-cols-2">
-          <CameraCapture mode="photo" onCapture={(blob) => setCaptured(URL.createObjectURL(blob))} />
-          <CameraCapture mode="video" maxDuration={10} countdown={3} prompts={["Look at the camera", "Turn your head left", "Turn your head right"]} onCapture={() => undefined} />
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 w-full gap-4 @2xl:grid-cols-2">
+            <CameraCapture mode="photo" onCapture={(blob) => setCaptured(URL.createObjectURL(blob))} />
+            <CameraCapture mode="video" maxDuration={10} countdown={3} prompts={["Look at the camera", "Turn your head left", "Turn your head right"]} onCapture={() => undefined} />
+          </div>
         </div>
         {captured ? (
           <div className="mt-3 flex items-center gap-3">

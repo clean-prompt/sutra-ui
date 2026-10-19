@@ -290,7 +290,7 @@ function AgentRoomDemo() {
   });
 
   return (
-    <div className="grid w-full gap-4 lg:grid-cols-[1fr_18rem]">
+    <div className="grid grid-cols-1 w-full gap-4 lg:grid-cols-[1fr_18rem]">
       <AgentRoom
         className="h-[560px]"
         title="Launch planning"

@@ -462,7 +462,7 @@ export const MarketplaceGrid = React.forwardRef<HTMLDivElement, MarketplaceGridP
       inCategory.filter((e) => tier === "all" || e.tier === tier),
       sort
     );
-    const grid = "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
+    const grid = "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3";
     const card = (e: MarketplaceExtension) => (
       <li key={e.id} className="flex">
         <MarketplaceCard extension={e} onOpen={onOpen} className="w-full" />
@@ -718,11 +718,11 @@ export const ExtensionDetailPage = React.forwardRef<HTMLElement, ExtensionDetail
           <p className="px-5 pb-5 text-sm text-muted-foreground">{ext.description}</p>
         </header>
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_16rem]">
           <div className="flex min-w-0 flex-col gap-8">
             {hasCaps && (
               <DetailSection title="Capabilities">
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <CapabilityList icon={<RiToolsLine aria-hidden />} label="Provides tools" items={provides.tools ?? []} />
                   <CapabilityList icon={<RiLinksLine aria-hidden />} label="Provides hooks" items={provides.hooks ?? []} />
                   <CapabilityList icon={<RiStackLine aria-hidden />} label="Provides middleware" items={provides.middleware ?? []} />

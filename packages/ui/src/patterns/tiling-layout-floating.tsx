@@ -9,6 +9,7 @@ import { cn, focusRing } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useElementSize } from "../hooks/use-resize-observer";
 import { Button } from "../primitives/button";
 import { textOf } from "./tiling-layout-internal";
 
@@ -62,6 +63,15 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
     const layerRef = React.useRef<HTMLDivElement | null>(null);
     const setRefs = useMergedRefs(layerRef, forwardedRef);
     const panesRef = useLatestRef(panes);
+    // Windows opened (or kept in state) for a wider stage must not hang out of a narrower one: the rect is fitted at render time.
+    const layerSize = useElementSize(layerRef);
+    const fit = (rect: FloatingPaneState): FloatingPaneState => {
+      const { width: bw, height: bh } = layerSize;
+      if (!bw || !bh) return rect;
+      const w = Math.min(Math.max(minWidth, rect.width), bw);
+      const h = Math.min(Math.max(minHeight, rect.height), bh);
+      return { ...rect, width: w, height: h, x: clamp(rect.x, 0, Math.max(0, bw - w)), y: clamp(rect.y, 0, Math.max(0, bh - h)) };
+    };
     const dragRef = React.useRef<{
       id: string;
       pointerId: number;
@@ -88,7 +98,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
     };
 
     const patch = (id: string, next: (p: FloatingPaneState) => FloatingPaneState) =>
-      onPanesChange(panesRef.current.map((p) => (p.id === id ? clampRect(next(p)) : p)));
+      onPanesChange(panesRef.current.map((p) => (p.id === id ? clampRect(next(fit(p))) : p)));
 
     const bringToFront = (id: string) => {
       const list = panesRef.current;
@@ -119,8 +129,9 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
 
     const begin = (id: string, mode: "move" | "resize") => (event: React.PointerEvent<HTMLElement>) => {
       if (event.pointerType === "mouse" && event.button !== 0) return;
-      const start = panesRef.current.find((p) => p.id === id);
-      if (!start) return;
+      const found = panesRef.current.find((p) => p.id === id);
+      if (!found) return;
+      const start = fit(found);
       dragRef.current = { id, pointerId: event.pointerId, x: event.clientX, y: event.clientY, start, mode };
       try {
         event.currentTarget.setPointerCapture?.(event.pointerId);
@@ -164,6 +175,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
       >
         {ordered.map((pane) => {
           const z = panes.indexOf(pane);
+          const rect = fit(pane);
           const front = z === panes.length - 1;
           const title = paneTitle?.(pane.id) ?? pane.id;
           const label = paneLabel?.(pane.id) ?? textOf(title, pane.id);
@@ -179,7 +191,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
                 "pointer-events-auto absolute flex flex-col overflow-hidden rounded-box border bg-card shadow-2xl",
                 front ? "border-border-strong" : "border-border"
               )}
-              style={{ left: pane.x, top: pane.y, width: pane.width, height: pane.height, zIndex: z + 1 }}
+              style={{ left: rect.x, top: rect.y, width: rect.width, height: rect.height, zIndex: z + 1 }}
             >
               <div className="flex h-8 shrink-0 items-center gap-0.5 border-b border-border bg-subtle pr-1">
                 <div

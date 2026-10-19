@@ -105,7 +105,7 @@ export function SignInSummaryRow({ summary, loading }: { summary?: SignInSummary
   return (
     <dl
       data-slot="sign-in-map-summary"
-      className="grid grid-cols-3 gap-px overflow-hidden rounded-box border border-border bg-border sm:grid-cols-5"
+      className="grid grid-cols-3 gap-px overflow-hidden rounded-box border border-border bg-border @lg:grid-cols-5"
     >
       {tiles.map((t, i) => {
         const value = summary?.[t.key] ?? 0;
@@ -114,7 +114,7 @@ export function SignInSummaryRow({ summary, loading }: { summary?: SignInSummary
             key={t.key}
             data-slot="sign-in-map-stat"
             data-key={t.key}
-            className={cn("flex min-w-0 flex-col gap-1 bg-card px-3 py-2.5", i === 4 && "max-sm:col-span-2")}
+            className={cn("flex min-w-0 flex-col gap-1 bg-card px-3 py-2.5", i === 4 && "@max-lg:col-span-2")}
           >
             <dt className="flex items-center gap-1.5 truncate text-xs text-muted-foreground">
               {t.tone ? <span aria-hidden className={cn("size-1.5 shrink-0 rounded-full", toneClasses.dot[t.tone])} /> : null}

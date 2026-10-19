@@ -24,6 +24,7 @@ import { ConfirmDialog } from "../../primitives/dialog";
 import { KeyValueList, type KeyValueItem } from "../../primitives/key-value";
 import { TimelineBar, formatTimelineDuration, type TimelineSpan } from "../../patterns/timeline-bar";
 import { formatTokenCount } from "../../lib/token-count";
+import { useElementWidth } from "../../hooks/use-resize-observer";
 import {
   describeSchedule,
   formatCountdownClock,
@@ -161,7 +162,7 @@ function JobActionButtons({ job, onPause, onResume, onRunNow, onEdit, onDelete, 
       </Button>
     );
   return (
-    <div className="flex shrink-0 items-center gap-1">
+    <div className="ml-auto flex max-w-full flex-wrap items-center gap-1">
       {paused && onResume ? btn(`Resume ${job.name}`, <RiPlayLine aria-hidden />, () => onResume(job), "Resume") : null}
       {!paused && onPause ? btn(`Pause ${job.name}`, <RiPauseLine aria-hidden />, () => onPause(job), "Pause") : null}
       {onRunNow ? btn(`Run ${job.name} now`, <RiSkipForwardLine aria-hidden />, () => onRunNow(job), "Run now") : null}
@@ -200,7 +201,7 @@ export const JobRow = React.forwardRef<HTMLLIElement, JobRowProps>(
         ref={ref}
         data-selected={selected || undefined}
         className={cn(
-          "group flex items-center gap-3 rounded-box border border-transparent px-3 py-2.5 transition-colors",
+          "group flex flex-wrap items-center gap-x-3 gap-y-1 rounded-box border border-transparent px-3 py-2.5 transition-colors",
           selected ? "border-border bg-accent" : "hover:bg-accent/60",
           className
         )}
@@ -210,10 +211,10 @@ export const JobRow = React.forwardRef<HTMLLIElement, JobRowProps>(
           type="button"
           aria-pressed={onSelect ? !!selected : undefined}
           onClick={() => onSelect?.(job)}
-          className={cn("flex min-w-0 flex-1 flex-col items-start gap-1 rounded-md text-left", focusRing)}
+          className={cn("flex min-w-0 flex-1 basis-48 flex-col items-start gap-1 rounded-md text-left", focusRing)}
         >
-          <span className="flex w-full min-w-0 items-center gap-2">
-            <span className="truncate text-sm font-medium text-foreground">{job.name}</span>
+          <span className="flex w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="max-w-full truncate text-sm font-medium text-foreground">{job.name}</span>
             <JobStatePill state={state} size="sm" />
             {job.mode === "script" ? (
               <Badge size="sm" color="gray">
@@ -430,6 +431,10 @@ export const JobDetail = React.forwardRef<HTMLDivElement, JobDetailProps>(
     const state = agentJobState(job);
     const headingId = React.useId();
     const ref0 = now ?? Date.now();
+    // The run timeline labels its axis with clock times (about 70px each): show fewer ticks in a narrow pane so they never overlap.
+    const timelineRef = React.useRef<HTMLDivElement>(null);
+    const timelineWidth = useElementWidth(timelineRef);
+    const timelineTicks = timelineWidth > 0 ? Math.min(6, Math.max(1, Math.floor(timelineWidth / 72) - 1)) : 6;
     const upcoming = state === "paused" || state === "disabled" || state === "completed" ? [] : nextScheduleRuns(job.schedule, ref0, 3, { timeZone });
     const fmt = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone });
 
@@ -463,7 +468,7 @@ export const JobDetail = React.forwardRef<HTMLDivElement, JobDetailProps>(
       <section ref={ref} aria-labelledby={headingId} className={cn("flex min-w-0 flex-col gap-6", className)} {...props}>
         <header className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex min-w-0 flex-col gap-1">
-            <div className="flex items-center gap-2">
+            <div className="flex min-w-0 items-center gap-2">
               <h2 id={headingId} className="truncate text-lg font-semibold text-foreground">
                 {job.name}
               </h2>
@@ -499,9 +504,9 @@ export const JobDetail = React.forwardRef<HTMLDivElement, JobDetailProps>(
         </div>
 
         {showTimeline && spans.length ? (
-          <div className="flex flex-col gap-2">
+          <div ref={timelineRef} className="flex min-w-0 flex-col gap-2">
             <h3 className="text-sm font-semibold">Recent runs</h3>
-            <TimelineBar from={windowStart} to={ref0} now={ref0} spans={spans} label={`Recent runs of ${job.name}`} />
+            <TimelineBar from={windowStart} to={ref0} now={ref0} spans={spans} ticks={timelineTicks} label={`Recent runs of ${job.name}`} />
           </div>
         ) : null}
 

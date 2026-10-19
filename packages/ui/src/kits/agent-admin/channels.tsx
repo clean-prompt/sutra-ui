@@ -503,14 +503,14 @@ export const PlatformConnectorCard = React.forwardRef<HTMLDivElement, PlatformCo
         data-state={state}
         role="group"
         aria-labelledby={titleId}
-        className={cn("flex flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs", className)}
+        className={cn("flex min-w-0 flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs", className)}
         {...props}
       >
         <div className="flex items-start gap-3">
           <PlatformIcon platform={platform} decorative />
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 id={titleId} className="text-sm font-semibold text-foreground">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <h3 id={titleId} className="min-w-0 max-w-full truncate text-sm font-semibold text-foreground">
                 {name}
               </h3>
               <StatusBadge status={meta.status} label={meta.label} size="sm" />
@@ -648,7 +648,7 @@ export const PlatformConnectorList = React.forwardRef<HTMLElement, PlatformConne
             {actions}
           </div>
         </header>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))] gap-3">
           {connectors.map((c) => (
             <PlatformConnectorCard
               key={c.id}

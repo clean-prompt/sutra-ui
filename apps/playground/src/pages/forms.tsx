@@ -144,7 +144,7 @@ function formatDate(date: Date | undefined) {
 function Value({ children }: { children: React.ReactNode }) {
   return (
     <p className="text-xs text-muted-foreground">
-      Value: <span className="font-mono text-foreground">{children}</span>
+      Value: <span className="break-all font-mono text-foreground">{children}</span>
     </p>
   );
 }
@@ -156,7 +156,7 @@ function Value({ children }: { children: React.ReactNode }) {
 function InputDemo() {
   const [email, setEmail] = React.useState("ada@lovelace.dev");
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>Sizes</DemoLabel>
         <Input size="sm" placeholder="Small" aria-label="Small input" />
@@ -204,7 +204,7 @@ function SearchInputDemo() {
 function InputOTPDemo() {
   const [code, setCode] = React.useState("");
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>OTPField, grouped 3 + 3 (controlled)</DemoLabel>
         <OTPField length={6} groupSize={3} value={code} onChange={setCode} aria-label="Verification code" />
@@ -240,7 +240,7 @@ function InputOTPDemo() {
 function TextareaDemo() {
   const [bio, setBio] = React.useState("Product designer in Seoul. I like type, maps and slow coffee.");
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-2">
         <DemoLabel>Default</DemoLabel>
         <Textarea placeholder="Leave a comment…" aria-label="Comment" />
@@ -266,7 +266,7 @@ function NumberInputDemo() {
   const [qty, setQty] = React.useState<number | null>(2);
   const [price, setPrice] = React.useState<number | null>(49.99);
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-2">
         <DemoLabel>Split layout, 1–10</DemoLabel>
         <NumberInput layout="split" min={1} max={10} value={qty} onValueChange={setQty} aria-label="Quantity" />
@@ -308,7 +308,7 @@ function TagInputDemo() {
   const [tags, setTags] = React.useState(["design", "react"]);
   const [rejected, setRejected] = React.useState<string | null>(null);
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-2">
         <DemoLabel>Controlled, max 5 tags</DemoLabel>
         <TagInput
@@ -357,7 +357,7 @@ function CheckboxDemo() {
   const [notify, setNotify] = React.useState<string[]>(["mentions"]);
   const [addons, setAddons] = React.useState<string[]>(["backups"]);
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>Bare checkbox: states and sizes</DemoLabel>
         <div className="flex flex-wrap items-center gap-4">
@@ -402,9 +402,9 @@ function CheckboxDemo() {
           ]}
         />
       </div>
-      <div className="space-y-3 md:col-span-2">
+      <div className="space-y-3 lg:col-span-2">
         <DemoLabel>CheckboxCard</DemoLabel>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
           {[
             { value: "backups", label: "Daily backups", description: "$4 / month", icon: <RiFileCopyLine className="size-5" /> },
             { value: "cdn", label: "Global CDN", description: "$9 / month", icon: <RiGlobalLine className="size-5" /> },
@@ -433,7 +433,7 @@ function RadioDemo() {
   const [plan, setPlan] = React.useState("pro");
   const [payment, setPayment] = React.useState("card");
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>RadioGroup + RadioField</DemoLabel>
         <RadioGroup value={plan} onValueChange={setPlan} aria-label="Plan">
@@ -458,16 +458,16 @@ function RadioDemo() {
           <RadioField value="no" label="No" />
         </RadioGroup>
       </div>
-      <div className="space-y-3 md:col-span-2">
+      <div className="space-y-3 lg:col-span-2">
         <DemoLabel>RadioCard</DemoLabel>
-        <RadioGroup value={payment} onValueChange={setPayment} className="grid gap-3 sm:grid-cols-3" aria-label="Payment method">
+        <RadioGroup value={payment} onValueChange={setPayment} className="grid grid-cols-1 gap-3 lg:grid-cols-3" aria-label="Payment method">
           <RadioCard value="card" label="Card" description="Visa, Mastercard, Amex" icon={<RiBankCardLine className="size-5" />} />
           <RadioCard value="paypal" label="PayPal" description="Pay with your account" icon={<RiPaypalLine className="size-5" />} />
           <RadioCard value="invoice" label="Invoice" description="Net 30 terms" icon={<RiBuildingLine className="size-5" />} indicatorPosition="start" />
         </RadioGroup>
         <Value>{payment}</Value>
       </div>
-      <div className="space-y-3 md:col-span-2">
+      <div className="space-y-3 lg:col-span-2">
         <DemoLabel>RadioGroupField (data-driven, card variant)</DemoLabel>
         <RadioGroupField
           label="Deployment region"
@@ -490,7 +490,7 @@ function SwitchDemo() {
   const [wifi, setWifi] = React.useState(true);
   const [prefs, setPrefs] = React.useState<Record<string, boolean>>({ push: true, email: false, sms: false });
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>Sizes, icons and states</DemoLabel>
         <div className="flex flex-wrap items-center gap-4">
@@ -534,7 +534,7 @@ function SelectDemo() {
   const [tz, setTz] = React.useState("kst");
   const [role, setRole] = React.useState<string>();
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-2">
         <DemoLabel>Compound, with groups</DemoLabel>
         <Select value={role} onValueChange={setRole}>
@@ -580,7 +580,7 @@ function SelectDemo() {
 function DatePickerDemo() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-2">
         <DemoLabel>Controlled, clearable</DemoLabel>
         <DatePicker value={date} onValueChange={setDate} clearable aria-label="Due date" />
@@ -611,7 +611,7 @@ function DateRangePickerDemo() {
     return { from, to };
   });
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-2">
         <DemoLabel>With presets (controlled)</DemoLabel>
         <DateRangePicker value={range} onValueChange={setRange} clearable aria-label="Report period" />
@@ -655,7 +655,7 @@ function CalendarDemo() {
 function SegmentedControlDemo() {
   const [view, setView] = React.useState("list");
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>Text (controlled)</DemoLabel>
         <SegmentedControl
@@ -728,7 +728,7 @@ function SliderDemo() {
   const [volume, setVolume] = React.useState([60]);
   const [price, setPrice] = React.useState([200, 800]);
   return (
-    <div className="grid w-full gap-10 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-10 lg:grid-cols-2">
       <div className="space-y-4">
         <DemoLabel>Slider with value bubble (controlled)</DemoLabel>
         <Slider value={volume} onValueChange={setVolume} showValue thumbLabels={["Volume"]} />
@@ -783,8 +783,8 @@ function SliderDemo() {
 function RatingDemo() {
   const [score, setScore] = React.useState(3.5);
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
-      <div className="space-y-3">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
+      <div className="flex flex-col items-start gap-3">
         <DemoLabel>Half stars (controlled)</DemoLabel>
         <Rating value={score} onValueChange={setScore} allowHalf aria-label="Your rating" />
         <Value>{score}</Value>
@@ -834,7 +834,7 @@ function FileUploadDemo() {
   };
 
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>Dropzone + list with simulated progress</DemoLabel>
         <FileUpload
@@ -868,7 +868,7 @@ function DropzoneDemo() {
   const [accepted, setAccepted] = React.useState<File[]>([]);
   const [rejections, setRejections] = React.useState<FileRejection[]>([]);
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>Images up to 2 MB</DemoLabel>
         <Dropzone
@@ -920,7 +920,7 @@ function ComboboxDemo() {
   ]);
   const [label, setLabel] = React.useState<string>();
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-2">
         <DemoLabel>Single, grouped (controlled)</DemoLabel>
         <Combobox options={frameworks} value={framework} onValueChange={setFramework} placeholder="Select framework" aria-label="Framework" />
@@ -986,7 +986,7 @@ function FieldDemo() {
   const [email, setEmail] = React.useState("ada@");
   const emailError = /^\S+@\S+\.\S+$/.test(email) ? undefined : "Enter a valid email address.";
   return (
-    <div className="grid w-full gap-10 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-10 lg:grid-cols-2">
       <FieldGroup>
         <Field required>
           <FieldLabel>Full name</FieldLabel>
@@ -1050,7 +1050,7 @@ function FieldDemo() {
 function InputGroupDemo() {
   const [message, setMessage] = React.useState("");
   return (
-    <div className="grid w-full gap-8 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
       <div className="space-y-3">
         <DemoLabel>Text addons</DemoLabel>
         <InputGroup>
@@ -1089,7 +1089,7 @@ function InputGroupDemo() {
           </InputGroupAddon>
         </InputGroup>
       </div>
-      <div className="space-y-3 md:col-span-2">
+      <div className="space-y-3 lg:col-span-2">
         <DemoLabel>Textarea with block addons</DemoLabel>
         <InputGroup>
           <InputGroupAddon align="block-start">

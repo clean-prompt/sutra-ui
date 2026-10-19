@@ -67,40 +67,42 @@ function TerminalIcon() {
 function LauncherDemo() {
   const [last, setLast] = React.useState<string | null>(null);
   return (
-    <div className="grid gap-8 md:grid-cols-[1fr_auto]">
-      <div className="space-y-2">
-        <DemoLabel>Grid · arrow keys move focus · right-click (long-press on touch) a tile for its menu</DemoLabel>
-        <AppLauncher
-          items={launcherItems}
-          columns={4}
-          searchable
-          onSelect={(item) => setLast(item.label)}
-          renderMenu={(item) => (
-            <>
-              <ContextMenuItem onSelect={() => setLast(`${item.label} (new window)`)}>Open in new window</ContextMenuItem>
-              <ContextMenuItem onSelect={() => setLast(`${item.label} pinned`)}>Pin to dock</ContextMenuItem>
-            </>
-          )}
-          className="max-w-md"
-        />
-        <p className="text-xs text-muted-foreground">Last opened: {last ?? "nothing yet"}</p>
-      </div>
-      <div className="space-y-6">
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-[1fr_auto]">
         <div className="space-y-2">
-          <DemoLabel>Waffle menu</DemoLabel>
-          <AppLauncherMenu
+          <DemoLabel>Grid · arrow keys move focus · right-click (long-press on touch) a tile for its menu</DemoLabel>
+          <AppLauncher
             items={launcherItems}
+            columns={4}
+            searchable
             onSelect={(item) => setLast(item.label)}
-            footer={
-              <Button variant="ghost" size="sm" fullWidth>
-                All apps
-              </Button>
-            }
+            renderMenu={(item) => (
+              <>
+                <ContextMenuItem onSelect={() => setLast(`${item.label} (new window)`)}>Open in new window</ContextMenuItem>
+                <ContextMenuItem onSelect={() => setLast(`${item.label} pinned`)}>Pin to dock</ContextMenuItem>
+              </>
+            )}
+            className="max-w-md"
           />
+          <p className="text-xs text-muted-foreground">Last opened: {last ?? "nothing yet"}</p>
         </div>
-        <div className="space-y-2">
-          <DemoLabel>Dock</DemoLabel>
-          <AppLauncher variant="dock" items={launcherItems.slice(0, 5)} onSelect={(item) => setLast(item.label)} label="Dock" />
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <DemoLabel>Waffle menu</DemoLabel>
+            <AppLauncherMenu
+              items={launcherItems}
+              onSelect={(item) => setLast(item.label)}
+              footer={
+                <Button variant="ghost" size="sm" fullWidth>
+                  All apps
+                </Button>
+              }
+            />
+          </div>
+          <div className="space-y-2">
+            <DemoLabel>Dock</DemoLabel>
+            <AppLauncher variant="dock" items={launcherItems.slice(0, 5)} onSelect={(item) => setLast(item.label)} label="Dock" />
+          </div>
         </div>
       </div>
     </div>
@@ -429,13 +431,15 @@ function RecurrenceDemo() {
   const [rule, setRule] = React.useState<RecurrenceRule>({ freq: "weekly", byWeekday: ["MO", "WE"] });
   const rrule = toRRule(rule, { prefix: true });
   return (
-    <div className="grid w-full gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,18rem)]">
-      <RecurrencePicker value={rule} onValueChange={setRule} />
-      <div className="space-y-3 rounded-box border border-border bg-subtle p-4">
-        <DemoLabel>describeRecurrence()</DemoLabel>
-        <p className="text-sm font-medium">{describeRecurrence(rule)}</p>
-        <DemoLabel>toRRule()</DemoLabel>
-        <code className="block break-all rounded-md bg-muted px-2 py-1.5 font-mono text-xs">{rrule || "(none)"}</code>
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 w-full gap-6 @2xl:grid-cols-[minmax(0,1fr)_minmax(0,18rem)]">
+        <RecurrencePicker value={rule} onValueChange={setRule} />
+        <div className="space-y-3 rounded-box border border-border bg-subtle p-4">
+          <DemoLabel>describeRecurrence()</DemoLabel>
+          <p className="text-sm font-medium">{describeRecurrence(rule)}</p>
+          <DemoLabel>toRRule()</DemoLabel>
+          <code className="block break-all rounded-md bg-muted px-2 py-1.5 font-mono text-xs">{rrule || "(none)"}</code>
+        </div>
       </div>
     </div>
   );
@@ -516,12 +520,14 @@ export function SocialPage() {
 
       <Demo id="countdown" title="Countdown" description="Segments or compact text, optional flip animation (skipped with reduced motion), role=timer and onComplete.">
         <div className="flex flex-col items-center gap-6">
-          <Countdown target={newYear} flip />
+          {/* The md segments need about 300px: phones get the sm size. */}
+          <Countdown target={newYear} flip size="sm" className="sm:hidden" />
+          <Countdown target={newYear} flip className="hidden sm:inline-flex" />
           <div className="flex items-center gap-3 text-sm">
             <span className="text-muted-foreground">Compact:</span>
             <Countdown target={newYear} format="compact" />
           </div>
-          <div className="flex items-center gap-3 text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
             <Countdown target={soon} size="sm" onComplete={() => setDone(true)} />
             <span className="text-muted-foreground">{done ? "Done!" : "until onComplete"}</span>
             <Button
@@ -543,9 +549,11 @@ export function SocialPage() {
       </Demo>
 
       <Demo id="tally-counter" title="Tally Counter" description="Press and hold + or − to repeat. Goal ring, step and an entry log with undo." align="start">
-        <div className="grid gap-8 sm:grid-cols-2">
-          <TallyCounter label="Glasses of water" goal={8} />
-          <TallyCounter label="Push-ups" step={5} goal={100} defaultValue={35} />
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 gap-8 @lg:grid-cols-2">
+            <TallyCounter label="Glasses of water" goal={8} />
+            <TallyCounter label="Push-ups" step={5} goal={100} defaultValue={35} />
+          </div>
         </div>
       </Demo>
 
@@ -558,7 +566,7 @@ export function SocialPage() {
       </Demo>
 
       <Demo id="pinned-note" title="Shared item previews" description="The cards used as MessageBubble attachments are plain slots: any node works.">
-        <div className="grid w-full max-w-md gap-2">
+        <div className="grid w-full max-w-md grid-cols-1 gap-2">
           <SharedCard icon={<RiStickyNoteLine />} title="Lisbon trip plan" meta="Shared note" tone="bg-amber-500" />
           <SharedCard icon={<RiKey2Line />} title="Wi-Fi password" meta="Shared password · view once" tone="bg-indigo-500" />
           <SharedCard icon={<RiPushpinLine />} title="Pinned: meet at gate 14" meta="Pinned message" tone="bg-emerald-600" />

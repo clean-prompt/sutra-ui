@@ -213,7 +213,7 @@ function AppIconsDemo() {
       {appShapes.map((shape) => (
         <div key={shape} className="space-y-3">
           <DemoLabel>{shape}</DemoLabel>
-          <div className="grid grid-cols-4 gap-6 sm:grid-cols-8">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(4.5rem,1fr))] gap-6">
             {sutraApps.map((app) => (
               <div key={app} className="flex flex-col items-center gap-2">
                 <SutraAppIcon app={app} shape={shape} size={52} title={sutraAppMeta[app].name} />
@@ -250,7 +250,7 @@ function PlaceholderLogosDemo() {
     >
       <div className="space-y-3">
         <DemoLabel>All logos</DemoLabel>
-        <div className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4 md:grid-cols-7">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-x-6 gap-y-6">
           {placeholderLogos.map(({ name, Logo }) => (
             <div key={name} className="flex items-center text-foreground">
               <Logo size="md" />
@@ -417,7 +417,7 @@ function IconsDemo() {
       align="start"
       canvasClassName="gap-6"
     >
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 md:grid-cols-8">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(5rem,1fr))] gap-2">
         {popularIcons.map(([name, Comp]) => (
           <button
             key={name}
@@ -464,7 +464,7 @@ function CountryFlagsDemo() {
       align="start"
       canvasClassName="gap-8"
     >
-      <div className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 md:grid-cols-4">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-x-6 gap-y-3">
         {countries.map((country) => (
           <div key={country.code} className="flex min-w-0 items-center gap-2.5">
             <CountryFlag code={country.code} size="md" />
@@ -578,7 +578,7 @@ function FileFormatIconsDemo() {
       align="start"
       canvasClassName="gap-8"
     >
-      <div className="grid grid-cols-4 gap-x-4 gap-y-5 sm:grid-cols-8 md:grid-cols-12">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(3.5rem,1fr))] gap-x-4 gap-y-5">
         {allFormats.map((ext) => (
           <div key={ext} className="flex flex-col items-center gap-1.5" title={getFileCategory(ext)}>
             <FileFormatIcon ext={ext} size="md" />
@@ -625,7 +625,7 @@ function EmptyStateDemo() {
       description="Theme-aware spot illustrations for empty, error and success states."
       align="start"
     >
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] gap-4">
         {emptyStates.map(({ variant, title, caption }) => (
           <div key={variant} className="flex flex-col items-center gap-3 rounded-box border border-border bg-card p-6 text-center">
             <EmptyStateIllustration variant={variant} size={140} />
@@ -731,7 +731,7 @@ function BackgroundPatternDemo() {
       align="start"
       canvasClassName="gap-6"
     >
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {patternVariants.map((variant) => (
           <div
             key={variant}
@@ -748,7 +748,7 @@ function BackgroundPatternDemo() {
         ))}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {(["top", "bottom", "edges"] as const).map((fade) => (
           <div
             key={fade}

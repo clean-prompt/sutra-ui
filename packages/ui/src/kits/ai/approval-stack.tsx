@@ -89,7 +89,7 @@ function ApprovalStackInner<T>(
       className={cn("flex flex-col gap-2 outline-none", className)}
       {...props}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span className="text-sm font-medium text-foreground" aria-live="polite" aria-atomic="true">
           Approval {index + 1} of {total}
         </span>
@@ -98,7 +98,7 @@ function ApprovalStackInner<T>(
             +{more} more
           </span>
         )}
-        <span className="ml-auto flex items-center gap-1">
+        <span className="ml-auto flex flex-wrap items-center gap-1">
           {onDenyAll && total > 1 && (
             <Button size="xs" variant="ghost" leadingIcon={<RiCloseLine aria-hidden />} onClick={onDenyAll}>
               Deny all

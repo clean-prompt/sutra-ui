@@ -609,7 +609,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
         <div className="ml-auto flex items-center gap-1 sm:gap-2">
           <SearchTrigger collapseBelow="sm" onClick={() => setOpen(true)} placeholder="Search docs…" className="w-56 lg:w-64" />
           <SimpleTooltip content="GitHub">
-            <Button asChild variant="ghost" size="icon">
+            <Button asChild variant="ghost" size="icon" className="max-[400px]:hidden">
               <a href={githubHref} target="_blank" rel="noreferrer noopener" aria-label="GitHub repository">
                 <RiGithubFill aria-hidden />
               </a>

@@ -153,7 +153,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                       move(index, 1);
                     }
                   }}
-                  className="group/queued flex min-w-0 items-start gap-2 rounded-box border border-dashed border-border bg-card px-2.5 py-1.5 text-sm shadow-xs outline-none"
+                  className="group/queued flex min-w-0 flex-wrap items-start gap-x-2 gap-y-1 rounded-box border border-dashed border-border bg-card px-2.5 py-1.5 text-sm shadow-xs outline-none"
                 >
                   <span className="mt-0.5 shrink-0 rounded-xs bg-muted px-1.5 py-px text-2xs font-medium uppercase tracking-wide text-muted-foreground">
                     Queued
@@ -189,7 +189,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                     </div>
                   ) : (
                     <>
-                      <span className="min-w-0 flex-1 truncate leading-5 text-foreground" title={item.text}>
+                      <span className="min-w-0 flex-1 basis-32 truncate leading-5 text-foreground" title={item.text}>
                         {item.text}
                         {item.attachments ? (
                           <span className="ml-1.5 text-xs text-muted-foreground">
@@ -197,7 +197,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                           </span>
                         ) : null}
                       </span>
-                      <span className="flex shrink-0 items-center gap-0.5">
+                      <span className="ml-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-0.5">
                         {onReorder && (
                           <>
                             <button type="button" aria-label="Move up" disabled={index === 0} onClick={() => move(index, -1)} className={iconAction}>
@@ -555,7 +555,7 @@ export const ComposerToolbar = React.forwardRef<HTMLDivElement, ComposerToolbarP
         className={cn("flex min-w-0 items-center justify-between gap-2 px-2.5 pb-2.5", className)}
         {...props}
       >
-        <div className="flex min-w-0 items-center gap-1">
+        <div className={cn("flex items-center gap-1", overflow ? "shrink-0" : "min-w-0")}>
           {addContext}
           {!overflow && (
             <>
@@ -594,7 +594,7 @@ export const ComposerToolbar = React.forwardRef<HTMLDivElement, ComposerToolbarP
           )}
           {children}
         </div>
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex min-w-0 shrink items-center gap-1">
           {!overflow && meta}
           {model}
           {voice}

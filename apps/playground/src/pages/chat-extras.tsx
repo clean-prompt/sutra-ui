@@ -121,13 +121,13 @@ function EmbedsDemo() {
             </Button>
           )}
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <RichEmbed url="https://www.youtube.com/watch?v=aqz-KE-bpKQ" title="Big Buck Bunny" />
           <RichEmbed url="https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC" title="A track" />
           <RichEmbed url="https://gist.github.com/octocat/6cad326836d38bd3a7ae" title="octocat / hello.js" />
           <RichEmbed url="https://www.figma.com/file/abc123/Design-System" title="Design System" />
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <LinkPreviewCard
             href="https://example.com/blog/local-first"
             title="Local-first software"
@@ -226,7 +226,7 @@ function LargePasteDemo() {
   };
   return (
     <Demo id="large-paste" title="Large paste → attachment" description="With largePasteThreshold={3000}, big pastes become a .txt attachment with an inline “Paste inline” undo." align="start" canvasClassName="flex-col items-stretch gap-3">
-      <Button size="sm" variant="secondary" className="w-fit" leadingIcon={<RiFileTextLine />} onClick={copyBig}>
+      <Button size="sm" variant="secondary" className="h-auto min-h-8 w-fit max-w-full whitespace-normal py-1.5 text-left" leadingIcon={<RiFileTextLine />} onClick={copyBig}>
         Copy ~8,000 characters, then paste below
       </Button>
       <PromptInput

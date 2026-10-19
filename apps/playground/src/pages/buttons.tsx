@@ -390,7 +390,7 @@ export function ButtonsPage() {
         align="start"
         canvasClassName="gap-6"
       >
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="space-y-2">
             <DemoLabel>Default</DemoLabel>
             <div className="flex max-w-xs flex-col gap-2">
@@ -438,7 +438,7 @@ export function ButtonsPage() {
         align="start"
         canvasClassName="gap-6"
       >
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div className="space-y-2">
             <DemoLabel>Default, bottom-right</DemoLabel>
             <FabCanvas>
@@ -480,7 +480,7 @@ export function ButtonsPage() {
               <FloatingActionButton strategy="absolute" position="top-right" size="lg" label="Share" icon={<RiShareLine />} />
             </FabCanvas>
           </div>
-          <div className="space-y-2 md:col-span-2">
+          <div className="space-y-2 lg:col-span-2">
             <DemoLabel>Static, inline in the flow</DemoLabel>
             <div className="flex flex-wrap items-center gap-4">
               <FloatingActionButton strategy="static" size="sm" variant="secondary" label="Add" />

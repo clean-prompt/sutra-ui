@@ -379,7 +379,7 @@ export const AdaptiveTabs = React.forwardRef<HTMLDivElement, AdaptiveTabsProps>(
     const showBar = mode !== "inline";
 
     return (
-      <div ref={ref} className={cn(query === "container" && "@container", className)} {...props}>
+      <div ref={ref} className={cn("min-w-0 max-w-full", query === "container" && "@container", className)} {...props}>
         {showInline && (
           <nav
             aria-label={label}

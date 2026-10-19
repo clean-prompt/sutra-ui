@@ -46,7 +46,7 @@ function MockPage({ path }: { path: string }) {
           <span className="rounded-control bg-primary px-3 py-1 text-primary-foreground">Sign in</span>
         </span>
       </div>
-      <div className="grid flex-1 gap-4 p-6 sm:grid-cols-[1.4fr_1fr]">
+      <div className="grid grid-cols-1 flex-1 gap-4 p-6 lg:grid-cols-[1.4fr_1fr]">
         <div className="space-y-3">
           <div className="text-2xl font-semibold">Write once, find anywhere.</div>
           <p className="text-sm text-muted-foreground">Mock page for {path}. This is a styled div, not a website.</p>
@@ -262,7 +262,7 @@ function ReviewDemo() {
   return (
     <div className="w-full space-y-3">
       <ReviewScopeTabs value={scope} onValueChange={setScope} baseBranch="main" counts={{ uncommitted: changed.length, branch: 12, turn: 3 }} />
-      <div className="grid gap-3 md:grid-cols-[260px_1fr]">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-[260px_1fr]">
         <div className="rounded-box border border-border p-1">
           <ReviewFileTree files={files} selected={selected} onSelectedChange={setSelected} showStats />
         </div>
@@ -389,7 +389,7 @@ export function BrowserReviewPage() {
         <ConsentDemo />
       </Demo>
       <Demo id="artifact-cards" title="Artifact cards" description="Code with versions, markdown, SVG via an img data URL and HTML that renders only on opt-in inside a sandboxed iframe." align="start">
-        <div className="grid w-full gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 w-full gap-3 lg:grid-cols-2">
           <ArtifactCard title="useCounter.ts" kind="code" language="ts" versions={hookVersions} onOpen={() => {}} onShare={() => {}} />
           <ArtifactCard title="Launch checklist" kind="markdown" content={markdownDoc} />
           <ArtifactCard title="Logo mark" kind="svg" content={svgLogo} />

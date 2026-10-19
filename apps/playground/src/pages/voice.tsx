@@ -168,7 +168,7 @@ function TranslatorDemo() {
           onSourceChange={onSource}
           onTargetChange={onTarget}
         />
-        <div className="grid md:grid-cols-2 md:divide-x divide-border">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:divide-x divide-border">
           <SourcePane
             value={text}
             onValueChange={setText}
@@ -291,7 +291,7 @@ function TransliterationDemo() {
 
 function DictionaryDemo() {
   return (
-    <Demo id="dictionary" title="Dictionary card" description="Word, phonetic, a three-bar “how common” meter and senses grouped by part of speech with examples." align="start" canvasClassName="grid gap-4 md:grid-cols-2">
+    <Demo id="dictionary" title="Dictionary card" description="Word, phonetic, a three-bar “how common” meter and senses grouped by part of speech with examples." align="start" canvasClassName="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <DictionaryCard
         word="bank"
         phonetic="/bæŋk/"

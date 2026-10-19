@@ -445,6 +445,7 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
             Transport
           </span>
           <SegmentedControl
+            className="max-w-full overflow-x-auto scrollbar-none"
             aria-labelledby={`${id}-transport`}
             size="sm"
             value={config.transport}
@@ -510,6 +511,7 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
                 Authentication
               </span>
               <SegmentedControl
+                className="max-w-full overflow-x-auto scrollbar-none"
                 aria-labelledby={`${id}-auth`}
                 size="sm"
                 value={config.auth ?? "none"}
@@ -827,7 +829,7 @@ export const ConnectionMethodChooser = React.forwardRef<React.ElementRef<typeof 
         aria-label="Connection method"
         value={value}
         onValueChange={(v) => setValue(v as ConnectorWay)}
-        className={cn("grid gap-3 sm:grid-cols-2", className)}
+        className={cn("grid grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))] gap-3", className)}
         {...props}
       >
         {ways.map((w) => {
@@ -918,7 +920,7 @@ function ConnectorDirectoryCard({
     <li
       aria-labelledby={titleId}
       data-connector={entry.id}
-      className="flex flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs transition-colors hover:border-border-strong"
+      className="flex min-w-0 flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs transition-colors hover:border-border-strong"
     >
       <div className="flex items-start gap-3">
         {entry.icon ? (
@@ -938,29 +940,30 @@ function ConnectorDirectoryCard({
         </div>
       </div>
       {entry.description && <p className="line-clamp-2 text-sm text-muted-foreground">{entry.description}</p>}
-      <div className="mt-auto flex items-center gap-1.5">
+      <div className="mt-auto flex flex-wrap items-center gap-1.5">
         {entry.ways.map((w) => (
           <Badge key={w} size="sm" variant="outline" color={w === "hosted" ? "info" : "neutral"} leadingIcon={w === "hosted" ? <RiCloudLine aria-hidden className="size-3" /> : <RiComputerLine aria-hidden className="size-3" />}>
             {w === "hosted" ? "Hosted" : "Local"}
           </Badge>
         ))}
-        <span className="flex-1" />
-        {entry.installed ? (
-          <>
-            <Badge size="sm" color="success" leadingIcon={<RiCheckLine aria-hidden className="size-3" />}>
-              Installed
-            </Badge>
-            {onManage && (
-              <Button size="xs" variant="ghost" onClick={() => onManage(entry)} aria-label={`Manage ${entry.name}`}>
-                Manage
-              </Button>
-            )}
-          </>
-        ) : (
-          <Button size="sm" variant="soft" leadingIcon={<RiPlugLine aria-hidden />} loading={busy} onClick={run} aria-label={`${action} ${entry.name}`}>
-            {action}
-          </Button>
-        )}
+        <div className="ml-auto flex shrink-0 items-center gap-1.5">
+          {entry.installed ? (
+            <>
+              <Badge size="sm" color="success" leadingIcon={<RiCheckLine aria-hidden className="size-3" />}>
+                Installed
+              </Badge>
+              {onManage && (
+                <Button size="xs" variant="ghost" onClick={() => onManage(entry)} aria-label={`Manage ${entry.name}`}>
+                  Manage
+                </Button>
+              )}
+            </>
+          ) : (
+            <Button size="sm" variant="soft" leadingIcon={<RiPlugLine aria-hidden />} loading={busy} onClick={run} aria-label={`${action} ${entry.name}`}>
+              {action}
+            </Button>
+          )}
+        </div>
       </div>
     </li>
   );
@@ -1007,7 +1010,7 @@ export const ConnectorDirectory = React.forwardRef<HTMLDivElement, ConnectorDire
         {shown.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">No connectors match</p>
         ) : (
-          <ul aria-label="Connectors" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <ul aria-label="Connectors" className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,16rem),1fr))] gap-3">
             {shown.map((e) => (
               <ConnectorDirectoryCard key={e.id} entry={e} onInstall={onInstall} onManage={onManage} />
             ))}

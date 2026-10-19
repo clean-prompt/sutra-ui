@@ -453,7 +453,7 @@ function LanguageSide({ side, value, onChange, recent, list, detected }: Languag
     </button>
   );
   return (
-    <div role="group" aria-label={isSource ? "Source language" : "Target language"} className={cn("flex min-w-0 flex-1 items-center gap-1 overflow-x-auto scrollbar-none", !isSource && "sm:justify-end")}>
+    <div role="group" aria-label={isSource ? "Source language" : "Target language"} className={cn("flex min-w-0 flex-[1_1_15rem] flex-wrap items-center gap-1", !isSource && "lg:justify-end")}>
       {isSource ? chip(DETECT_LANGUAGE, detectedName && value === DETECT_LANGUAGE ? `${detectedName} — detected` : "Detect language", "auto") : null}
       {chips.map((c) => chip(c, getLanguage(c, list)?.name ?? c, c))}
       <Popover open={open} onOpenChange={setOpen}>
@@ -511,7 +511,7 @@ export const LanguageBar = React.forwardRef<HTMLDivElement, LanguageBarProps>(
       setTarget(from);
     };
     return (
-      <div ref={ref} className={cn("flex items-center gap-2 border-b border-border px-2 py-1.5", className)} {...props}>
+      <div ref={ref} className={cn("flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-border px-2 py-1.5", className)} {...props}>
         <LanguageSide side="source" value={source} onChange={setSource} recent={recentSources} list={list} detected={detected} />
         <SwapButton onSwap={swap} disabled={!canSwap} title={canSwap ? undefined : "Waiting for the language to be detected"} />
         <LanguageSide side="target" value={target} onChange={setTarget} recent={recentTargets} list={list} />

@@ -145,8 +145,13 @@ export const HardwareFitHint = React.forwardRef<HTMLDivElement, HardwareFitHintP
   const compact = (density ?? (variant === "compact" ? "compact" : "normal")) === "compact";
   const est = estimateModelFit(model, hardware);
   const badge = (
-    <Badge size="sm" color={fitColor[est.fit]} data-fit={est.fit} tabIndex={compact ? 0 : undefined}>
-      {est.fit === "gpu" ? <RiCheckLine aria-hidden /> : est.fit === "none" ? <RiCloseLine aria-hidden /> : <RiCpuLine aria-hidden />}
+    <Badge
+      size="sm"
+      color={fitColor[est.fit]}
+      data-fit={est.fit}
+      tabIndex={compact ? 0 : undefined}
+      leadingIcon={est.fit === "gpu" ? <RiCheckLine aria-hidden /> : est.fit === "none" ? <RiCloseLine aria-hidden /> : <RiCpuLine aria-hidden />}
+    >
       {est.label}
     </Badge>
   );
@@ -159,7 +164,7 @@ export const HardwareFitHint = React.forwardRef<HTMLDivElement, HardwareFitHintP
     );
   }
   return (
-    <div ref={ref} data-slot="hardware-fit-hint" data-fit={est.fit} className={cn("grid gap-1.5", className)} {...props}>
+    <div ref={ref} data-slot="hardware-fit-hint" data-fit={est.fit} className={cn("grid grid-cols-1 gap-1.5", className)} {...props}>
       <div className="flex items-center gap-2">
         {badge}
         <span className="font-mono text-2xs tabular-nums text-muted-foreground">~{fmtGB(est.requiredGB)}</span>
@@ -297,7 +302,7 @@ export const StagedSetupHero = React.forwardRef<HTMLDivElement, StagedSetupHeroP
               </p>
             )
           ) : current ? (
-            <div className="grid gap-3 rounded-box border border-border bg-subtle p-4" data-slot="setup-current-stage">
+            <div className="grid grid-cols-1 gap-3 rounded-box border border-border bg-subtle p-4" data-slot="setup-current-stage">
               <div>
                 <p className="text-sm font-medium text-foreground">{current.label}</p>
                 {current.description && <p className="text-xs text-muted-foreground">{current.description}</p>}
@@ -310,7 +315,7 @@ export const StagedSetupHero = React.forwardRef<HTMLDivElement, StagedSetupHeroP
                   </Button>
                 </div>
               ) : current.id === downloadStageId && current.status === "active" && download ? (
-                <div className="grid gap-1.5" data-slot="setup-download">
+                <div className="grid grid-cols-1 gap-1.5" data-slot="setup-download">
                   <Progress value={pct} size="sm" aria-label={`Downloading ${download.label ?? "model"}`} />
                   <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-2xs tabular-nums text-muted-foreground">
                     <span>
@@ -417,9 +422,9 @@ function LocalModelItem({
   const pct = active ? toPercent(download.receivedBytes ?? 0, download.totalBytes ?? 0) : 0;
   const eta = active && download.bytesPerSecond && download.totalBytes ? (download.totalBytes - (download.receivedBytes ?? 0)) / download.bytesPerSecond : null;
   return (
-    <li data-slot="local-model-item" data-model={m.id} className="grid gap-2 px-4 py-3">
+    <li data-slot="local-model-item" data-model={m.id} className="grid grid-cols-1 gap-2 px-4 py-3">
       <div className="flex flex-wrap items-start gap-3">
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 basis-40">
           <p id={labelId} className="truncate text-sm font-medium text-foreground">
             {m.name}
           </p>
@@ -443,7 +448,7 @@ function LocalModelItem({
           </p>
           {m.description && <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{m.description}</p>}
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex max-w-full flex-wrap items-center gap-2">
           {m.variants.length > 1 ? (
             <SimpleSelect
               size="sm"
@@ -452,7 +457,7 @@ function LocalModelItem({
               onValueChange={setQuant}
               disabled={active}
               options={m.variants.map((v) => ({ value: v.quant, label: `${v.quant} · ${v.sizeGB} GB` }))}
-              className="w-40"
+              className="w-40 max-w-full"
             />
           ) : (
             variant && (
@@ -462,8 +467,8 @@ function LocalModelItem({
             )
           )}
           {download?.status === "done" ? (
-            <Badge color="success" size="md">
-              <RiCheckLine aria-hidden /> Downloaded
+            <Badge color="success" size="md" leadingIcon={<RiCheckLine aria-hidden />}>
+              Downloaded
             </Badge>
           ) : active ? (
             <Button size="sm" variant="ghost" aria-label={`Cancel ${m.name} download`} onClick={() => onCancel?.(m.id)}>
@@ -485,7 +490,7 @@ function LocalModelItem({
       </div>
       {hardware && variant && !active && <HardwareFitHint density="compact" model={{ sizeGB: variant.sizeGB }} hardware={hardware} />}
       {active && (
-        <div className="grid gap-1" data-slot="local-model-progress">
+        <div className="grid grid-cols-1 gap-1" data-slot="local-model-progress">
           <Progress value={pct} size="sm" aria-label={`Downloading ${m.name}`} />
           <div className="flex justify-between font-mono text-2xs tabular-nums text-muted-foreground">
             <span>

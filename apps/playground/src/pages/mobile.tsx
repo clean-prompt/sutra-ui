@@ -261,7 +261,7 @@ function ImageStatesDemo() {
   );
   const [key, setKey] = React.useState(0);
   return (
-    <div className="grid w-full gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-1 w-full gap-4 sm:grid-cols-3">
       <div className="space-y-2">
         <DemoLabel>Loaded</DemoLabel>
         <ImageWithFallback src={gallery[2]!.src} alt="Forest" width={1200} height={800} className="rounded-box" />
@@ -370,7 +370,8 @@ function PresenceDemo() {
     return () => clearInterval(t);
   }, []);
   const typing = [["Aiko"], ["Aiko", "Ben"], ["Aiko", "Ben", "Chen", "Dana"], []][tick % 4]!;
-  const aiko = { x: 40 + ((tick * 53) % 220), y: 30 + ((tick * 37) % 110) };
+  // px on a wide stage, never past 70% of a narrow one (a cursor outside the clipped stage would just vanish).
+  const aiko = { x: `min(${40 + ((tick * 53) % 220)}px, 70%)`, y: 30 + ((tick * 37) % 110) };
   return (
     <div className="flex w-full flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -392,7 +393,7 @@ function PresenceDemo() {
       </div>
       <div className="relative h-52 overflow-hidden rounded-box border border-border bg-dots">
         <RemoteCursor id="aiko" name="Aiko" x={aiko.x} y={aiko.y} />
-        <RemoteCursor id="ben" name="Ben" x={320} y={120} idleTimeout={2000} />
+        <RemoteCursor id="ben" name="Ben" x="min(320px, 78%)" y={120} idleTimeout={2000} />
         <div className="absolute bottom-4 left-4 rounded-md bg-background px-3 py-2 font-mono text-sm shadow-xs">
           The quick brown fox
           <span className="relative inline-block align-middle">

@@ -185,7 +185,7 @@ function JobBannerDemo() {
 
 function QuestionCardDemo() {
   return (
-    <Demo id="question-card" title="Question card" description="When the model needs a decision. Single choice answers on pick; multi-choice confirms; free text supports attachments. The card locks to show what was chosen." align="start" canvasClassName="grid gap-4 md:grid-cols-2">
+    <Demo id="question-card" title="Question card" description="When the model needs a decision. Single choice answers on pick; multi-choice confirms; free text supports attachments. The card locks to show what was chosen." align="start" canvasClassName="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <QuestionCard
         question="Which database should the prototype use?"
         description="I can scaffold either; this decides the migration tooling."

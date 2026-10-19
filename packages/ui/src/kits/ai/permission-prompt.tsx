@@ -461,7 +461,7 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
                             }
                           }}
                           className={cn(
-                            "flex min-w-0 flex-1 cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-sm",
+                            "flex min-w-0 flex-1 basis-48 cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-sm",
                             opt.disabled && "cursor-not-allowed opacity-50",
                             focusRing
                           )}

@@ -217,7 +217,7 @@ export const SignInMap = React.forwardRef<HTMLDivElement, SignInMapProps>(
         role="group"
         aria-labelledby={headingId}
         aria-busy={loading || undefined}
-        className={cn("flex min-w-0 flex-col gap-4 rounded-box border border-border bg-card p-4 shadow-xs sm:p-5", className)}
+        className={cn("@container flex min-w-0 flex-col gap-4 rounded-box border border-border bg-card p-4 shadow-xs sm:p-5", className)}
         {...props}
       >
         {loading ? <span className="sr-only">Loading…</span> : null}
@@ -264,7 +264,7 @@ export const SignInMap = React.forwardRef<HTMLDivElement, SignInMapProps>(
         ) : (
           <>
             <SignInSummaryRow summary={skeleton ? undefined : summary} loading={skeleton} />
-            <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
+            <div className="grid min-w-0 grid-cols-1 gap-4 @3xl:grid-cols-[minmax(0,1fr)_20rem]">
               <div className="flex min-w-0 flex-col gap-2">
                 <div ref={mapBoxRef} data-slot="sign-in-map-canvas" aria-hidden={skeleton || undefined} className="min-w-0">
                   {view === "globe" ? (
@@ -291,7 +291,7 @@ export const SignInMap = React.forwardRef<HTMLDivElement, SignInMapProps>(
                 role="group"
                 aria-labelledby={flaggedId}
                 data-slot="sign-in-map-flagged"
-                className="flex min-w-0 flex-col overflow-hidden rounded-box border border-border lg:self-start"
+                className="flex min-w-0 flex-col overflow-hidden rounded-box border border-border @3xl:self-start"
               >
                 <div className="flex items-center gap-2 border-b border-border px-3 py-2.5">
                   <h4 id={flaggedId} className="text-sm font-semibold text-foreground">
@@ -302,7 +302,7 @@ export const SignInMap = React.forwardRef<HTMLDivElement, SignInMapProps>(
                 {skeleton ? (
                   <SignInFlagListSkeleton />
                 ) : analysis.flagged.length ? (
-                  <ul className="scrollbar-thin divide-y divide-border lg:max-h-[28rem] lg:overflow-y-auto">
+                  <ul className="scrollbar-thin divide-y divide-border @3xl:max-h-[28rem] @3xl:overflow-y-auto">
                     {analysis.flagged.map((e) => (
                       <SignInFlagRow
                         key={e.id}

@@ -314,7 +314,7 @@ export const PageHeaderWithStats = React.forwardRef<HTMLDivElement, PageHeaderWi
           )
         }
       />
-      <dl className={cn("grid gap-4 @md:grid-cols-2", stats.length >= 4 ? "@4xl:grid-cols-4" : "@3xl:grid-cols-3")}>
+      <dl className={cn("grid grid-cols-1 gap-4 @md:grid-cols-2", stats.length >= 4 ? "@4xl:grid-cols-4" : "@3xl:grid-cols-3")}>
         {stats.map((s, i) => {
           const up = (s.change ?? 0) >= 0;
           const good = s.invert ? !up : up;
@@ -562,7 +562,7 @@ export const ProfileHeader = React.forwardRef<HTMLDivElement, ProfileHeaderProps
               verified={verified}
               frameClassName="size-24 text-2xl ring-4 ring-card sm:size-28 sm:text-3xl shadow-md"
             />
-            <div className="flex items-center gap-2">
+            <div className="flex max-w-full flex-wrap items-center gap-2">
               {actions ?? (
                 <>
                   <Button variant="secondary" leadingIcon={<RiMessage3Line aria-hidden />} onClick={onMessage}>

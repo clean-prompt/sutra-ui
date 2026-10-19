@@ -821,7 +821,7 @@ export const SearchToolBody = React.forwardRef<HTMLDivElement, SearchToolBodyPro
             {shown.map((m, i) => {
               const loc = (
                 <>
-                  <span className="shrink-0 font-mono text-foreground">
+                  <span className="max-w-[70%] shrink-0 truncate font-mono text-foreground">
                     {m.file}
                     {m.line != null && <span className="text-muted-foreground">:{m.line}</span>}
                   </span>
@@ -1078,7 +1078,7 @@ export const AgentStatusLine = React.forwardRef<HTMLDivElement, AgentStatusLineP
         data-layout={layout}
         className={cn(
           "min-w-0 items-center gap-2 text-sm",
-          inline ? "inline-flex" : "flex px-1 py-1 text-muted-foreground",
+          inline ? "inline-flex" : "flex flex-wrap gap-y-0.5 px-1 py-1 text-muted-foreground",
           className
         )}
         {...props}
@@ -1089,14 +1089,14 @@ export const AgentStatusLine = React.forwardRef<HTMLDivElement, AgentStatusLineP
         {rotating ? (
           <>
             <span className="sr-only">{text}</span>
-            <TextShimmer aria-hidden data-slot="spinner-verb" className="truncate font-medium">
+            <TextShimmer aria-hidden data-slot="spinner-verb" className="max-w-full truncate font-medium">
               {verb.endsWith("…") ? verb : `${verb}…`}
             </TextShimmer>
           </>
         ) : waiting ? (
-          <span className="truncate font-medium text-foreground">{text}</span>
+          <span className="max-w-full truncate font-medium text-foreground">{text}</span>
         ) : (
-          <TextShimmer className="truncate font-medium">{text}</TextShimmer>
+          <TextShimmer className="max-w-full truncate font-medium">{text}</TextShimmer>
         )}
         {inline ? (
           (stats.length > 0 || hint != null) && (

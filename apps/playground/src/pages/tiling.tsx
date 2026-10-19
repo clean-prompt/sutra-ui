@@ -277,7 +277,9 @@ export function TilingPage() {
             Reset
           </Button>
         </div>
-        <div className="h-[600px]">
+        {/* The workspace needs room for three groups: below that width it scrolls sideways instead of squeezing the panes. */}
+        <div className="overflow-x-auto">
+        <div className="h-[600px] min-w-[40rem]">
           <TilingLayout
             layout={layout}
             onLayoutChange={setLayout}
@@ -288,6 +290,7 @@ export function TilingPage() {
             onFloatingChange={setFloating}
             shortcuts
           />
+        </div>
         </div>
         <Dialog open={zonesOpen} onOpenChange={setZonesOpen}>
           <DialogContent className="max-w-2xl">
@@ -340,7 +343,7 @@ function ZoneEditorDemo() {
   const [output, setOutput] = React.useState<LayoutNode | null>(null);
   const [key, setKey] = React.useState(0);
   return (
-    <div className="grid w-full gap-6 md:grid-cols-[minmax(0,1fr)_16rem]">
+    <div className="grid grid-cols-1 w-full gap-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
       <ZoneEditor key={key} onApply={setOutput} onCancel={() => setKey((k) => k + 1)} />
       <div className="space-y-2">
         <p className="text-xs font-medium text-muted-foreground">Applied output</p>

@@ -38,7 +38,7 @@ export function UtilityPage() {
         align="start"
         canvasClassName="gap-6"
       >
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="space-y-2">
             <DemoLabel>16/9 · rounded image</DemoLabel>
             <AspectRatio ratio="16/9" rounded>
@@ -75,7 +75,7 @@ export function UtilityPage() {
         align="start"
         canvasClassName="gap-6"
       >
-        <div className="grid gap-6 md:grid-cols-[18rem_1fr]">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[18rem_1fr]">
           <div className="space-y-2">
             <DemoLabel>Vertical · fade edges</DemoLabel>
             <ScrollArea fadeEdges="vertical" className="h-72 rounded-box border border-border bg-card">

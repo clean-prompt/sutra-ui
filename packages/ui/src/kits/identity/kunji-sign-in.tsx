@@ -280,6 +280,7 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
           variant={mobileHero ? "primary" : "outline"}
           size={mobileHero ? "lg" : "md"}
           fullWidth
+          className="h-auto min-h-10 whitespace-normal py-2 text-center"
         >
           <a href={session.deepLink} data-slot="kunji-deep-link">
             <KunjiMark />
@@ -439,14 +440,20 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
       );
     } else {
       const qrArea = mobileHero && !qrOpen ? (
-        <Button variant="ghost" size="sm" leadingIcon={<RiQrCodeLine aria-hidden />} onClick={() => setQrOpen(true)}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-auto min-h-8 max-w-full whitespace-normal py-1 text-center"
+          leadingIcon={<RiQrCodeLine aria-hidden />}
+          onClick={() => setQrOpen(true)}
+        >
           Show QR for another device
         </Button>
       ) : (
         qrBlock
       );
       body = (
-        <div className={cn("flex flex-col items-center gap-4", compact && "sm:flex-row sm:items-start")}>
+        <div className={cn("flex flex-col items-center gap-4", compact && "@sm:flex-row @sm:items-start")}>
           {mobileHero && deepLinkButton}
           <div className="flex flex-col items-center gap-2">
             {qrArea}
@@ -465,7 +472,7 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
             )}
             {shown === "expired" && <p className="max-w-[16rem] text-center text-xs text-muted-foreground">Codes are short-lived for your security.</p>}
           </div>
-          <div className={cn("flex w-full flex-col items-center gap-3", compact && "sm:items-start")}>
+          <div className={cn("flex w-full min-w-0 flex-col items-center gap-3", compact && "@sm:items-start")}>
             {steps && shown !== "expired" && (
               <ol className="flex w-full flex-col gap-2 text-sm text-muted-foreground" aria-label="How to sign in">
                 {[
@@ -501,7 +508,7 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
         data-slot="kunji-sign-in"
         data-status={shown}
         data-variant={variant}
-        className={cn("flex flex-col gap-5 text-card-foreground", viewVariant[variant], className)}
+        className={cn("@container flex flex-col gap-5 text-card-foreground", viewVariant[variant], className)}
         {...props}
       >
         {title !== null && (

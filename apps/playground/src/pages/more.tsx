@@ -40,7 +40,7 @@ export function MorePage() {
         align="start"
         canvasClassName="gap-8"
       >
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {kpis.map((kpi) => (
             <Card key={kpi.label} className="space-y-3 p-4">
               <div className="flex items-start justify-between gap-2">
@@ -66,7 +66,7 @@ export function MorePage() {
           ))}
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="space-y-2">
             <DemoLabel>Line</DemoLabel>
             <Sparkline data={revenue} width={160} height={40} />
@@ -138,7 +138,7 @@ export function MorePage() {
           </div>
         </MeshGradient>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="space-y-2">
             <DemoLabel>Sunset · fast</DemoLabel>
             <MeshGradient

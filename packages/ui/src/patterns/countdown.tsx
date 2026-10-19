@@ -53,9 +53,10 @@ export interface CountdownProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const segSize = {
+  // Phone widths get slimmer tiles (and a tighter row) so four segments fit a 280-330 px column instead of running out of it.
   sm: { box: "min-w-10 px-1.5 py-1", text: "text-lg", label: "text-2xs" },
-  md: { box: "min-w-14 px-2 py-1.5", text: "text-display-xs", label: "text-2xs" },
-  lg: { box: "min-w-20 px-3 py-2", text: "text-display-md", label: "text-xs" },
+  md: { box: "min-w-11 px-1.5 py-1.5 sm:min-w-14 sm:px-2", text: "text-display-xs", label: "text-2xs" },
+  lg: { box: "min-w-12 px-2 py-2 sm:min-w-20 sm:px-3", text: "text-display-sm sm:text-display-md", label: "text-xs" },
 };
 
 /** Countdown to a date with d/h/m/s segments or a compact "2h 14m" form; fires `onComplete` once. */
@@ -110,7 +111,7 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
         role="timer"
         aria-label={label}
         data-complete={remaining <= 0 || undefined}
-        className={cn("inline-flex items-start gap-2", className)}
+        className={cn("inline-flex max-w-full items-start gap-1 sm:gap-2", className)}
         {...props}
       >
         {shown.map(([key, unit], i) => {

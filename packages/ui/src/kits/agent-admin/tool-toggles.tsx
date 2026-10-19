@@ -507,7 +507,7 @@ export const ToolsetCard = React.forwardRef<HTMLDivElement, ToolsetCardProps>(
         aria-labelledby={titleId}
         data-slot="toolset-card"
         className={cn(
-          "flex flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs transition-colors",
+          "flex min-w-0 flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs transition-colors",
           !enabled && "bg-subtle",
           className
         )}
@@ -533,7 +533,7 @@ export const ToolsetCard = React.forwardRef<HTMLDivElement, ToolsetCardProps>(
         {healthMessage != null && (
           <p className={cn("text-xs", health === "error" ? "text-destructive" : "text-muted-foreground")}>{healthMessage}</p>
         )}
-        <div className="mt-auto flex items-center justify-between gap-2">
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
           {health ? <ToolsetHealthPill health={health} /> : <span />}
           {onConfigure && (
             <Button size="sm" variant={health === "needs-keys" ? "soft" : "ghost"} leadingIcon={<RiSettings3Line aria-hidden />} onClick={onConfigure}>
@@ -682,7 +682,7 @@ export const ToolsetProviderDrawer = React.forwardRef<HTMLDivElement, ToolsetPro
           </label>
           <fieldset className={cn("space-y-2", !enabled && "opacity-60")} disabled={!enabled}>
             <legend className="mb-2 text-sm font-medium text-foreground">Provider</legend>
-            <RadioGroup value={provider} onValueChange={setProvider} aria-label="Provider" className="grid gap-2">
+            <RadioGroup value={provider} onValueChange={setProvider} aria-label="Provider" className="grid grid-cols-1 gap-2">
               {providers.map((p) => (
                 <RadioCard
                   key={p.id}

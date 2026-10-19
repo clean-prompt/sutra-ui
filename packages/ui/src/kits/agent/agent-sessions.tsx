@@ -597,7 +597,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
 
     return (
       <div ref={ref} className={cn("flex min-h-0 w-full flex-col gap-2 text-sm", className)} {...props}>
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1">
           <h2 id={titleId} className="mr-auto px-1 text-sm font-semibold text-foreground">
             {title}
           </h2>

@@ -325,7 +325,7 @@ export const BlueprintGallery = React.forwardRef<HTMLDivElement, BlueprintGaller
           ) : null}
         </div>
         {shown.length ? (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,16rem),1fr))] gap-3">
             {shown.map((b) => (
               <BlueprintCard
                 key={b.id}

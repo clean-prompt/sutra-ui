@@ -217,14 +217,16 @@ export const placeholderLogos: PlaceholderLogoEntry[] = [
 /* LogoCloud                                                           */
 /* ------------------------------------------------------------------ */
 
+// Container queries: the cloud sits in a hero, a card or a narrow column, so the column count follows the
+// width it is given, not the viewport (6 columns of logos overlapped in a 450 px column on a 768 px screen).
 const gridCols: Record<number, string> = {
   2: "grid-cols-2",
-  3: "grid-cols-2 sm:grid-cols-3",
-  4: "grid-cols-2 sm:grid-cols-4",
-  5: "grid-cols-2 sm:grid-cols-3 md:grid-cols-5",
-  6: "grid-cols-2 sm:grid-cols-3 md:grid-cols-6",
-  7: "grid-cols-3 md:grid-cols-7",
-  8: "grid-cols-2 sm:grid-cols-4 md:grid-cols-8",
+  3: "grid-cols-2 @sm:grid-cols-3",
+  4: "grid-cols-2 @lg:grid-cols-4",
+  5: "grid-cols-2 @sm:grid-cols-3 @2xl:grid-cols-5",
+  6: "grid-cols-2 @sm:grid-cols-3 @3xl:grid-cols-6",
+  7: "grid-cols-3 @[840px]:grid-cols-7",
+  8: "grid-cols-2 @lg:grid-cols-4 @[960px]:grid-cols-8",
 };
 
 export interface LogoCloudProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
@@ -273,7 +275,7 @@ export const LogoCloud = React.forwardRef<HTMLDivElement, LogoCloudProps>(
     );
 
     return (
-      <div ref={ref} className={cn("w-full", className)} {...props}>
+      <div ref={ref} className={cn("@container w-full", className)} {...props}>
         {title ? (
           <p className="mb-6 text-center text-sm font-medium text-muted-foreground">{title}</p>
         ) : null}

@@ -119,9 +119,9 @@ export const KunjiLink = React.forwardRef<HTMLDivElement, KunjiLinkProps>(
         className={cn("flex w-full flex-col gap-3 rounded-box border border-border bg-card p-4", className)}
         {...props}
       >
-        <div className="flex items-center gap-3">
-          <KunjiMark variant="tile" size={32} />
-          <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <KunjiMark variant="tile" size={32} className="shrink-0" />
+          <div className="flex min-w-0 flex-1 basis-40 flex-col">
             <span className="text-sm font-semibold text-foreground">{title}</span>
             <span className="text-xs text-muted-foreground">
               {description ?? (linked ? "Sign in by scanning with kunji." : "Optional. Lets you sign in by scanning, no password.")}

@@ -157,30 +157,32 @@ export const CatalogCard = React.forwardRef<HTMLElement, CatalogCardProps>(
             </div>
           ))}
         <div className="flex flex-1 flex-col gap-3 p-4">
-          <div className="flex items-start gap-3">
-            {icon ? (
-              <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-box border border-border bg-background [&_svg]:size-5">
-                {icon}
-              </span>
-            ) : (
-              <CapabilityMonogram name={name} className="size-10" />
-            )}
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <h3 id={titleId} className="truncate text-sm font-semibold text-foreground">
-                  {name}
-                </h3>
-                {tier && (
-                  <Badge size="sm" color={tier === "official" ? "brand" : "neutral"} variant={tier === "official" ? "soft" : "outline"} data-tier={tier}>
-                    {tier === "official" ? "Official" : "Community"}
-                  </Badge>
-                )}
+          <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
+            <div className="flex min-w-0 flex-1 basis-40 items-start gap-3">
+              {icon ? (
+                <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-box border border-border bg-background [&_svg]:size-5">
+                  {icon}
+                </span>
+              ) : (
+                <CapabilityMonogram name={name} className="size-10" />
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <h3 id={titleId} className="truncate text-sm font-semibold text-foreground">
+                    {name}
+                  </h3>
+                  {tier && (
+                    <Badge size="sm" color={tier === "official" ? "brand" : "neutral"} variant={tier === "official" ? "soft" : "outline"} data-tier={tier}>
+                      {tier === "official" ? "Official" : "Community"}
+                    </Badge>
+                  )}
+                </div>
+                <p className="truncate text-xs text-muted-foreground">
+                  {author && <>by {author}</>}
+                  {author && version && " · "}
+                  {version && <span className="font-mono">v{version}</span>}
+                </p>
               </div>
-              <p className="truncate text-xs text-muted-foreground">
-                {author && <>by {author}</>}
-                {author && version && " · "}
-                {version && <span className="font-mono">v{version}</span>}
-              </p>
             </div>
             {trust && <TrustBadge level={trust} />}
           </div>

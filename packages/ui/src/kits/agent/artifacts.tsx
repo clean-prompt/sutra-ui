@@ -541,7 +541,7 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
         data-slot="artifact-viewer"
         data-fullscreen={fullscreen || undefined}
         className={cn(
-          "flex min-h-0 flex-col overflow-hidden border border-border bg-card text-card-foreground",
+          "@container flex min-h-0 flex-col overflow-hidden border border-border bg-card text-card-foreground",
           fullscreen ? undefined : "rounded-box shadow-xs",
           className,
           // Fullscreen wins over any size the caller set for the inline panel (e.g. a fixed height).
@@ -550,9 +550,9 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
         {...props}
       >
         <Tabs value={tab} onValueChange={(v) => setTab(v as ArtifactViewerTab)} variant="underline" size="sm" className="flex min-h-0 flex-1 flex-col gap-0">
-          <header className="flex items-center gap-2 border-b border-border px-3 py-2">
+          <header className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-border px-3 py-2 @xl:flex-nowrap">
             <ArtifactKindIcon kind={kind} className="size-7" />
-            <h2 id={titleId} className="min-w-0 truncate text-sm font-semibold">
+            <h2 id={titleId} className="min-w-0 max-w-full flex-1 basis-24 truncate text-sm font-semibold @xl:flex-none @xl:basis-auto">
               {title}
             </h2>
             {streaming && <TextShimmer className="text-xs">Generating…</TextShimmer>}
@@ -808,6 +808,7 @@ export const ArtifactLibrary = React.forwardRef<HTMLDivElement, ArtifactLibraryP
             className="w-28"
           />
           <SegmentedControl
+            className="max-w-full overflow-x-auto scrollbar-none"
             aria-label="Layout"
             size="sm"
             value={layout}

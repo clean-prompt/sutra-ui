@@ -554,7 +554,7 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
               save();
             }}
           >
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <label htmlFor={fieldId("name")} className="text-sm font-medium">
                   Name
@@ -810,15 +810,15 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
             type="button"
             data-state-kind={state}
             className={cn(
-              "inline-flex h-6 items-center gap-1.5 rounded-sm px-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
+              "inline-flex h-6 max-w-full items-center gap-1.5 whitespace-nowrap rounded-sm px-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
               focusRing,
               className
             )}
             {...props}
           >
-            <span aria-hidden className={cn("size-2 rounded-full", meta.dot)} />
-            <span>{name}</span>
-            <span className="text-foreground">{meta.label}</span>
+            <span aria-hidden className={cn("size-2 shrink-0 rounded-full", meta.dot)} />
+            <span className="min-w-0 truncate">{name}</span>
+            <span className="shrink-0 text-foreground">{meta.label}</span>
           </button>
         </PopoverTrigger>
         <PopoverContent

@@ -69,7 +69,7 @@ function LiveVisitorsDemo() {
           ))}
         </div>
       </div>
-      <div className="grid lg:grid-cols-[1fr_16rem]">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_16rem]">
         <div className="relative p-2 sm:p-4">
           <Globe
             className="mx-auto w-full max-w-[600px]"
@@ -126,31 +126,33 @@ function LiveVisitorsDemo() {
 function AttacksDemo() {
   const total = attacks.reduce((s, a) => s + a.count, 0);
   return (
-    <div className="grid w-full items-center gap-4 md:grid-cols-[1fr_14rem]">
-      <Globe
-        className="mx-auto w-full max-w-[460px]"
-        arcs={attackArcs}
-        markers={attackMarkers}
-        markerSizeRange={[8, 18]}
-        graticule
-        focus={DATACENTER}
-        controls
-        label="Attack origins: 7 sources targeting the Frankfurt datacenter"
-      />
-      <div className="space-y-2 text-sm">
-        <Text size="sm" className="font-medium">
-          {formatCompact(total)} requests blocked
-        </Text>
-        <ul className="space-y-1 text-xs text-muted-foreground">
-          {[...attacks]
-            .sort((a, b) => b.count - a.count)
-            .map((a) => (
-              <li key={a.id} className="flex justify-between gap-2">
-                <span>{a.city}</span>
-                <span className="tabular-nums text-foreground">{a.count.toLocaleString()}</span>
-              </li>
-            ))}
-        </ul>
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 w-full items-center gap-4 @2xl:grid-cols-[1fr_14rem]">
+        <Globe
+          className="mx-auto w-full max-w-[460px]"
+          arcs={attackArcs}
+          markers={attackMarkers}
+          markerSizeRange={[8, 18]}
+          graticule
+          focus={DATACENTER}
+          controls
+          label="Attack origins: 7 sources targeting the Frankfurt datacenter"
+        />
+        <div className="space-y-2 text-sm">
+          <Text size="sm" className="font-medium">
+            {formatCompact(total)} requests blocked
+          </Text>
+          <ul className="space-y-1 text-xs text-muted-foreground">
+            {[...attacks]
+              .sort((a, b) => b.count - a.count)
+              .map((a) => (
+                <li key={a.id} className="flex justify-between gap-2">
+                  <span>{a.city}</span>
+                  <span className="tabular-nums text-foreground">{a.count.toLocaleString()}</span>
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
@@ -198,52 +200,54 @@ function ControlledDemo() {
   const api = React.useRef<GlobeApi>(null);
   const focus = cities.find((c) => c.value === city)?.point;
   return (
-    <div className="grid w-full items-start gap-6 md:grid-cols-[1fr_16rem]">
-      <Globe
-        className="mx-auto w-full max-w-[420px]"
-        apiRef={api}
-        rotation={rotation}
-        onRotationChange={(r) => {
-          setRotation(r);
-          setReportCount((n) => n + 1);
-        }}
-        zoom={zoom}
-        onZoomChange={setZoom}
-        focus={focus}
-        markers={cities.map((c) => ({ id: c.value, point: c.point, label: c.label, tone: c.value === city ? "primary" : "neutral" }))}
-        selectedMarkerId={city}
-        onMarkerSelect={(id) => id && setCity(id)}
-        label="Controlled globe"
-      />
-      <div className="space-y-4 text-sm">
-        <div className="space-y-1.5">
-          <Label htmlFor="globe-city">Fly to</Label>
-          <SimpleSelect id="globe-city" size="sm" value={city} onValueChange={setCity} options={cities.map(({ value, label }) => ({ value, label }))} />
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 w-full items-start gap-6 @2xl:grid-cols-[1fr_16rem]">
+        <Globe
+          className="mx-auto w-full max-w-[420px]"
+          apiRef={api}
+          rotation={rotation}
+          onRotationChange={(r) => {
+            setRotation(r);
+            setReportCount((n) => n + 1);
+          }}
+          zoom={zoom}
+          onZoomChange={setZoom}
+          focus={focus}
+          markers={cities.map((c) => ({ id: c.value, point: c.point, label: c.label, tone: c.value === city ? "primary" : "neutral" }))}
+          selectedMarkerId={city}
+          onMarkerSelect={(id) => id && setCity(id)}
+          label="Controlled globe"
+        />
+        <div className="space-y-4 text-sm">
+          <div className="space-y-1.5">
+            <Label htmlFor="globe-city">Fly to</Label>
+            <SimpleSelect id="globe-city" size="sm" value={city} onValueChange={setCity} options={cities.map(({ value, label }) => ({ value, label }))} />
+          </div>
+          <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-xs" aria-live="polite">
+            <dt className="text-muted-foreground">λ</dt>
+            <dd data-testid="readout-lambda">{fmt(rotation[0])}°</dd>
+            <dt className="text-muted-foreground">φ</dt>
+            <dd data-testid="readout-phi">{fmt(rotation[1])}°</dd>
+            <dt className="text-muted-foreground">zoom</dt>
+            <dd data-testid="readout-zoom">{fmt(zoom)}×</dd>
+            <dt className="text-muted-foreground">reports</dt>
+            <dd>{reportCount}</dd>
+          </dl>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" onClick={() => setRotation([0, 0, 0])}>
+              Set rotation to 0°
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => api.current?.flyTo({ lat: 35.68, lng: 139.69 }, { zoom: 3 })}>
+              Fly to Tokyo at 3×
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => api.current?.reset()}>
+              Reset
+            </Button>
+          </div>
+          <Text size="xs" tone="neutral">
+            The readouts update when the globe comes to rest, not on every frame.
+          </Text>
         </div>
-        <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 font-mono text-xs" aria-live="polite">
-          <dt className="text-muted-foreground">λ</dt>
-          <dd data-testid="readout-lambda">{fmt(rotation[0])}°</dd>
-          <dt className="text-muted-foreground">φ</dt>
-          <dd data-testid="readout-phi">{fmt(rotation[1])}°</dd>
-          <dt className="text-muted-foreground">zoom</dt>
-          <dd data-testid="readout-zoom">{fmt(zoom)}×</dd>
-          <dt className="text-muted-foreground">reports</dt>
-          <dd>{reportCount}</dd>
-        </dl>
-        <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" onClick={() => setRotation([0, 0, 0])}>
-            Set rotation to 0°
-          </Button>
-          <Button size="sm" variant="outline" onClick={() => api.current?.flyTo({ lat: 35.68, lng: 139.69 }, { zoom: 3 })}>
-            Fly to Tokyo at 3×
-          </Button>
-          <Button size="sm" variant="outline" onClick={() => api.current?.reset()}>
-            Reset
-          </Button>
-        </div>
-        <Text size="xs" tone="neutral">
-          The readouts update when the globe comes to rest, not on every frame.
-        </Text>
       </div>
     </div>
   );

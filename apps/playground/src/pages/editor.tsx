@@ -285,6 +285,7 @@ function CodeEditorDemo() {
     <div className="w-full space-y-2">
       <SegmentedControl
         size="sm"
+        className="max-w-full overflow-x-auto scrollbar-none"
         aria-label="Line numbers"
         value={lineNumbers}
         onValueChange={(v) => v && setLineNumbers(v)}
@@ -318,7 +319,7 @@ function ToolbarOverflowDemo() {
         <input type="range" min={160} max={720} value={width} onChange={(e) => setWidth(Number(e.target.value))} aria-label="Toolbar width" />
         <span className="tabular-nums">{width}px</span>
       </label>
-      <div style={{ width }} className="overflow-hidden rounded-box border border-border">
+      <div style={{ width }} className="max-w-full overflow-hidden rounded-box border border-border">
         <EditorToolbar aria-label="Overflow demo" className="border-b-0">
           <EditorToolbarButton label="Bold" shortcut="mod+b" icon={<RiBold />} pressed={pressed.bold} onClick={() => setPressed((p) => ({ ...p, bold: !p.bold }))} />
           <EditorToolbarButton label="Italic" shortcut="mod+i" icon={<RiItalic />} pressed={pressed.italic} onClick={() => setPressed((p) => ({ ...p, italic: !p.italic }))} />

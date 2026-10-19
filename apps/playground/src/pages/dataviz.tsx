@@ -313,7 +313,7 @@ export function DataVizPage() {
       </Demo>
 
       <Demo id="donut-chart" title="DonutChart" description="Requests by model this week." align="start">
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <DonutChart data={modelShare} index="model" valueFormatter={(v) => compact.format(v)} centerLabel="requests" legend="right" />
           <DonutChart
             data={[
@@ -331,7 +331,7 @@ export function DataVizPage() {
       </Demo>
 
       <Demo id="meter" title="Meter" description="Usage meters auto-color at 75% (warning) and 90% (danger). Values update live." align="start" canvasClassName="gap-8">
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <Card className="p-4">
             <p className="mb-3 text-sm font-semibold">dgx-02</p>
             <NodeMeters />

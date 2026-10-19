@@ -255,83 +255,89 @@ export function GeoDataTables({
   return (
     <>
       {countries.length ? (
-        <table className="sr-only" data-slot="geo-table-countries">
-          <caption>{`${valueLabel} by country`}</caption>
-          <thead>
-            <tr>
-              <th scope="col">Country</th>
-              <th scope="col">{valueLabel}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {countries.map((c) => (
-              <tr key={c.code}>
-                <th scope="row">{c.name}</th>
-                <td>{c.valueText}</td>
+        <div className="sr-only">
+          <table data-slot="geo-table-countries">
+            <caption>{`${valueLabel} by country`}</caption>
+            <thead>
+              <tr>
+                <th scope="col">Country</th>
+                <th scope="col">{valueLabel}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {countries.map((c) => (
+                <tr key={c.code}>
+                  <th scope="row">{c.name}</th>
+                  <td>{c.valueText}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : null}
       {markers.length ? (
-        <table className="sr-only" data-slot="geo-table-markers">
-          <caption>Markers</caption>
-          <thead>
-            <tr>
-              <th scope="col">Marker</th>
-              <th scope="col">Location</th>
-              {details ? <th scope="col">Details</th> : null}
-            </tr>
-          </thead>
-          <tbody>
-            {markers.map((m) => (
-              <tr key={m.id}>
-                <th scope="row">
-                  {onMarkerActivate ? (
-                    <button
-                      type="button"
-                      data-slot="geo-table-marker-button"
-                      aria-pressed={m.id === selectedMarkerId}
-                      className={focusRing}
-                      onClick={() => onMarkerActivate(m)}
-                      onFocus={() => onMarkerFocus?.(m)}
-                      onBlur={() => onMarkerFocus?.(null)}
-                    >
-                      {m.label}
-                    </button>
-                  ) : m.id === selectedMarkerId ? (
-                    `${m.label} (selected)`
-                  ) : (
-                    m.label
-                  )}
-                </th>
-                <td>{formatGeoPoint(m.point)}</td>
-                {details ? <td>{m.description}</td> : null}
+        <div className="sr-only">
+          <table data-slot="geo-table-markers">
+            <caption>Markers</caption>
+            <thead>
+              <tr>
+                <th scope="col">Marker</th>
+                <th scope="col">Location</th>
+                {details ? <th scope="col">Details</th> : null}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {markers.map((m) => (
+                <tr key={m.id}>
+                  <th scope="row">
+                    {onMarkerActivate ? (
+                      <button
+                        type="button"
+                        data-slot="geo-table-marker-button"
+                        aria-pressed={m.id === selectedMarkerId}
+                        className={focusRing}
+                        onClick={() => onMarkerActivate(m)}
+                        onFocus={() => onMarkerFocus?.(m)}
+                        onBlur={() => onMarkerFocus?.(null)}
+                      >
+                        {m.label}
+                      </button>
+                    ) : m.id === selectedMarkerId ? (
+                      `${m.label} (selected)`
+                    ) : (
+                      m.label
+                    )}
+                  </th>
+                  <td>{formatGeoPoint(m.point)}</td>
+                  {details ? <td>{m.description}</td> : null}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : null}
       {arcs.length ? (
-        <table className="sr-only" data-slot="geo-table-arcs">
-          <caption>Arcs</caption>
-          <thead>
-            <tr>
-              <th scope="col">Arc</th>
-              <th scope="col">From</th>
-              <th scope="col">To</th>
-            </tr>
-          </thead>
-          <tbody>
-            {arcs.map((a) => (
-              <tr key={a.id}>
-                <th scope="row">{a.label}</th>
-                <td>{formatGeoPoint(a.from)}</td>
-                <td>{formatGeoPoint(a.to)}</td>
+        <div className="sr-only">
+          <table data-slot="geo-table-arcs">
+            <caption>Arcs</caption>
+            <thead>
+              <tr>
+                <th scope="col">Arc</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {arcs.map((a) => (
+                <tr key={a.id}>
+                  <th scope="row">{a.label}</th>
+                  <td>{formatGeoPoint(a.from)}</td>
+                  <td>{formatGeoPoint(a.to)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : null}
     </>
   );

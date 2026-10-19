@@ -386,6 +386,8 @@ export const Markdown = React.forwardRef<HTMLDivElement, MarkdownProps>(
           ref={ref}
           className={cn(
             "min-w-0 break-words text-[15px] leading-7 text-foreground [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+            // Wide display equations scroll inside their own block instead of running past the column.
+            "[&_.katex-display]:overflow-x-auto [&_.katex-display]:overflow-y-hidden",
             className
           )}
           {...props}

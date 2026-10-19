@@ -259,7 +259,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
             aria-label="Job mode"
             value={draft.mode}
             onValueChange={(v) => v && patch({ mode: v as AgentJobMode })}
-            className="self-start"
+            className="self-start max-w-full overflow-x-auto scrollbar-none"
             options={[
               { value: "agent", label: "Agent" },
               { value: "script", label: "Script" },
@@ -311,7 +311,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
         </div>
 
         {draft.mode === "agent" ? (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {modelSlot ?? (modelOptions.length ? (
               <Field>
                 <FieldLabel>Model</FieldLabel>
@@ -328,7 +328,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
         ) : null}
 
         {draft.mode === "agent" && (skills?.length || toolsets?.length) ? (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {skills?.length ? <NameCheckboxPicker label="Skills" options={skills} value={draft.skills} onValueChange={(v) => patch({ skills: v })} /> : null}
             {toolsets?.length ? <NameCheckboxPicker label="Toolsets" options={toolsets} value={draft.toolsets} onValueChange={(v) => patch({ toolsets: v })} /> : null}
           </div>

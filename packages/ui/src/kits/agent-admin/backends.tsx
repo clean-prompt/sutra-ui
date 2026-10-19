@@ -176,8 +176,8 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
     const anyChecking = Object.values(health).some((h) => h.state === "checking");
 
     return (
-      <div ref={ref} data-slot="backend-picker" className={cn("grid w-full gap-3", className)} {...props}>
-        <div className="flex items-center justify-between gap-2">
+      <div ref={ref} data-slot="backend-picker" className={cn("grid w-full grid-cols-1 gap-3", className)} {...props}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <span id={`${id}-label`} className="text-sm font-medium text-foreground">
             {label}
           </span>
@@ -185,7 +185,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
             Re-check all
           </Button>
         </div>
-        <RadioGroupPrimitive.Root aria-labelledby={`${id}-label`} value={value} onValueChange={setValue} className="grid gap-2 sm:grid-cols-2">
+        <RadioGroupPrimitive.Root aria-labelledby={`${id}-label`} value={value} onValueChange={setValue} className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {backends.map((b) => {
             const Icon = kindIcon[b.kind ?? "custom"];
             const h: BackendHealth = health[b.id] ?? (b.configured === false ? { state: "not-configured" } : { state: "unknown" });
@@ -196,7 +196,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
                 data-slot="backend-card"
                 data-backend={b.id}
                 className={cn(
-                  "relative flex flex-col gap-3 rounded-box border border-border bg-card p-3.5 shadow-xs transition-colors",
+                  "relative flex min-w-0 flex-col gap-3 rounded-box border border-border bg-card p-3.5 shadow-xs transition-colors",
                   "has-[button[role=radio][data-state=checked]]:border-primary has-[button[role=radio][data-state=checked]]:ring-1 has-[button[role=radio][data-state=checked]]:ring-primary",
                   "has-[button[role=radio]:focus-visible]:ring-[3px] has-[button[role=radio]:focus-visible]:ring-ring/35"
                 )}
@@ -222,7 +222,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
                     <RadioGroupPrimitive.Indicator className="size-1.5 rounded-full bg-primary-foreground" />
                   </RadioGroupPrimitive.Item>
                 </div>
-                <div className="relative z-10 flex items-center justify-between gap-2">
+                <div className="relative z-10 flex flex-wrap items-center justify-between gap-2">
                   <BackendHealthPill health={h} title={h.state === "healthy" ? h.detail : h.state === "unreachable" ? h.reason : undefined} />
                   <div className="flex shrink-0 items-center gap-1">
                     {b.probe && b.configured !== false && (

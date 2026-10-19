@@ -236,7 +236,7 @@ function ModeSwitcherDemo() {
           placeholder="Ask the agent to change something…"
           className="block w-full resize-none bg-transparent px-4 py-3 text-sm outline-none placeholder:text-muted-foreground"
         />
-        <div className="flex items-center gap-2 border-t border-border px-2.5 py-2">
+        <div className="flex flex-wrap items-center gap-2 border-t border-border px-2.5 py-2">
           <Button size="icon-sm" variant="ghost" aria-label="Attach file">
             <RiAttachment2 />
           </Button>

@@ -163,7 +163,7 @@ export const PlanPicker = React.forwardRef<HTMLDivElement, PlanPickerProps>(
             )}
           </div>
         )}
-        <ul className={cn("grid gap-4", plans.length >= 4 ? "sm:grid-cols-2 xl:grid-cols-4" : plans.length === 3 ? "md:grid-cols-3" : "sm:grid-cols-2")}>
+        <ul className={cn("grid grid-cols-1 gap-4", plans.length >= 4 ? "sm:grid-cols-2 xl:grid-cols-4" : plans.length === 3 ? "md:grid-cols-3" : "sm:grid-cols-2")}>
           {plans.map((plan) => {
             const action = actionFor(plan);
             const yearly = plan.priceYearly ?? plan.priceMonthly * 12;

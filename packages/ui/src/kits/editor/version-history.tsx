@@ -219,199 +219,203 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
       <div
         ref={ref}
         data-slot="version-history"
-        className={cn("flex min-h-0 overflow-hidden rounded-box border border-border bg-background", className)}
+        className={cn("@container flex min-h-0 overflow-hidden rounded-box border border-border bg-background", className)}
         {...props}
       >
-        <section aria-label="Version preview" className="flex min-w-0 flex-1 flex-col">
-          <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-foreground">{heading}</p>
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col @2xl:flex-row">
+          <section aria-label="Version preview" className="flex min-h-48 min-w-0 flex-1 flex-col">
+            <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-foreground">{heading}</p>
+                {target && (
+                  <p className="truncate text-xs text-muted-foreground">
+                    {single
+                      ? base
+                        ? "Changes since the previous version"
+                        : "First version"
+                      : `Comparing ${hi - lo + 1} versions`}
+                  </p>
+                )}
+              </div>
               {target && (
-                <p className="truncate text-xs text-muted-foreground">
-                  {single
-                    ? base
-                      ? "Changes since the previous version"
-                      : "First version"
-                    : `Comparing ${hi - lo + 1} versions`}
-                </p>
+                <SegmentedControl
+                  className="max-w-full overflow-x-auto scrollbar-none"
+                  size="sm"
+                  aria-label="Preview mode"
+                  value={view}
+                  onValueChange={(v) => v && setView(v as "changes" | "preview")}
+                  options={[
+                    { value: "changes", label: "Changes" },
+                    { value: "preview", label: "Preview" },
+                  ]}
+                />
+              )}
+              {canRestore && (
+                <Button size="sm" variant="outline" leadingIcon={<RiResetLeftLine aria-hidden />} onClick={() => setConfirmRestore(true)}>
+                  Restore
+                </Button>
               )}
             </div>
-            {target && (
+            <div className="min-h-0 flex-1 overflow-auto p-3">
+              {!target ? (
+                <p className="p-6 text-center text-sm text-muted-foreground">Select a version to see what changed.</p>
+              ) : view === "preview" ? (
+                renderContent ? (
+                  renderContent(target)
+                ) : (
+                  <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-relaxed text-foreground">{target.content}</pre>
+                )
+              ) : (
+                <DiffViewer
+                  oldValue={base?.content ?? ""}
+                  newValue={target.content ?? ""}
+                  authors={authorMap}
+                  changeAuthors={changeAuthors}
+                  mode={diffMode}
+                  onModeChange={setDiffMode}
+                  font="sans"
+                  oldLabel={base ? formatDateTime(base.createdAt) : "Empty"}
+                  newLabel={formatDateTime(target.createdAt)}
+                  className="h-full"
+                />
+              )}
+            </div>
+          </section>
+
+          <aside aria-label="Versions" className="flex max-h-72 min-h-0 w-full shrink-0 flex-col border-t border-border bg-subtle/50 @2xl:max-h-none @2xl:w-72 @2xl:border-l @2xl:border-t-0">
+            <div className="space-y-2 border-b border-border p-3">
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <RiHistoryLine aria-hidden className="size-4 text-muted-foreground" />
+                {title}
+              </div>
               <SegmentedControl
+                className="max-w-full overflow-x-auto scrollbar-none"
                 size="sm"
-                aria-label="Preview mode"
-                value={view}
-                onValueChange={(v) => v && setView(v as "changes" | "preview")}
+                fullWidth
+                aria-label="Filter versions"
+                value={tab}
+                onValueChange={(v) => v && setTab(v as VersionHistoryTab)}
                 options={[
-                  { value: "changes", label: "Changes" },
-                  { value: "preview", label: "Preview" },
+                  { value: "all", label: "All" },
+                  { value: "named", label: "Named" },
                 ]}
               />
-            )}
-            {canRestore && (
-              <Button size="sm" variant="outline" leadingIcon={<RiResetLeftLine aria-hidden />} onClick={() => setConfirmRestore(true)}>
-                Restore
-              </Button>
-            )}
-          </div>
-          <div className="min-h-0 flex-1 overflow-auto p-3">
-            {!target ? (
-              <p className="p-6 text-center text-sm text-muted-foreground">Select a version to see what changed.</p>
-            ) : view === "preview" ? (
-              renderContent ? (
-                renderContent(target)
-              ) : (
-                <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-relaxed text-foreground">{target.content}</pre>
-              )
-            ) : (
-              <DiffViewer
-                oldValue={base?.content ?? ""}
-                newValue={target.content ?? ""}
-                authors={authorMap}
-                changeAuthors={changeAuthors}
-                mode={diffMode}
-                onModeChange={setDiffMode}
-                font="sans"
-                oldLabel={base ? formatDateTime(base.createdAt) : "Empty"}
-                newLabel={formatDateTime(target.createdAt)}
-                className="h-full"
-              />
-            )}
-          </div>
-        </section>
-
-        <aside aria-label="Versions" className="flex w-72 shrink-0 flex-col border-l border-border bg-subtle/50">
-          <div className="space-y-2 border-b border-border p-3">
-            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-              <RiHistoryLine aria-hidden className="size-4 text-muted-foreground" />
-              {title}
+              <p className="text-2xs text-muted-foreground">Shift-click a second version to compare a range.</p>
             </div>
-            <SegmentedControl
-              size="sm"
-              fullWidth
-              aria-label="Filter versions"
-              value={tab}
-              onValueChange={(v) => v && setTab(v as VersionHistoryTab)}
-              options={[
-                { value: "all", label: "All" },
-                { value: "named", label: "Named" },
-              ]}
-            />
-            <p className="text-2xs text-muted-foreground">Shift-click a second version to compare a range.</p>
-          </div>
-          <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin p-2">
-            {groups.length === 0 && (
-              <p className="px-2 py-6 text-center text-sm text-muted-foreground">
-                {tab === "named" ? "No named versions yet" : "No versions yet"}
-              </p>
-            )}
-            {groups.map((g) => (
-              <div key={g.key} role="group" aria-label={g.label} className="mb-2">
-                <div className="px-2 pb-1 pt-2 text-xs font-medium text-muted-foreground">{g.label}</div>
-                <ul className="space-y-0.5">
-                  {g.versions.map((v) => {
-                    const selected = isSelected(v.id);
-                    const isNaming = naming?.id === v.id;
-                    return (
-                      <li
-                        key={v.id}
-                        data-version={v.id}
-                        className={cn(
-                          "group/version relative rounded-sm transition-colors",
-                          selected ? "bg-primary-soft" : "hover:bg-accent"
-                        )}
-                      >
-                        <button
-                          type="button"
-                          aria-pressed={selected}
-                          onClick={(e) => select(v, e.shiftKey)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" && e.shiftKey) {
-                              e.preventDefault();
-                              select(v, true);
-                            }
-                          }}
-                          className={cn("flex w-full flex-col items-start gap-1 rounded-sm px-2 py-1.5 pr-9 text-left", focusRing)}
+            <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin p-2">
+              {groups.length === 0 && (
+                <p className="px-2 py-6 text-center text-sm text-muted-foreground">
+                  {tab === "named" ? "No named versions yet" : "No versions yet"}
+                </p>
+              )}
+              {groups.map((g) => (
+                <div key={g.key} role="group" aria-label={g.label} className="mb-2">
+                  <div className="px-2 pb-1 pt-2 text-xs font-medium text-muted-foreground">{g.label}</div>
+                  <ul className="space-y-0.5">
+                    {g.versions.map((v) => {
+                      const selected = isSelected(v.id);
+                      const isNaming = naming?.id === v.id;
+                      return (
+                        <li
+                          key={v.id}
+                          data-version={v.id}
+                          className={cn(
+                            "group/version relative rounded-sm transition-colors",
+                            selected ? "bg-primary-soft" : "hover:bg-accent"
+                          )}
                         >
-                          <span className="flex w-full items-center gap-2">
-                            <span className={cn("text-sm tabular-nums", selected ? "text-primary-soft-foreground" : "text-foreground")}>
-                              {formatClockTime(v.createdAt)}
-                            </span>
-                            {i0(versions, v) && (
-                              <span className="rounded-xs bg-muted px-1 text-2xs font-medium text-muted-foreground">Current</span>
-                            )}
-                          </span>
-                          {v.label && !isNaming && (
-                            <span className="inline-flex max-w-full items-center gap-1 text-xs font-medium text-primary">
-                              <RiPriceTag3Line aria-hidden className="size-3 shrink-0" />
-                              <span className="truncate">{v.label}</span>
-                            </span>
-                          )}
-                          {v.description && <span className="line-clamp-2 text-xs text-muted-foreground">{v.description}</span>}
-                          {v.contributors && v.contributors.length > 0 && (
-                            <span className="flex items-center gap-1.5">
-                              <span className="flex -space-x-1">
-                                {v.contributors.slice(0, 4).map((c) => (
-                                  <Avatar key={c.id} name={c.name} src={c.avatarSrc} size="xs" ring />
-                                ))}
-                              </span>
-                              <span className="truncate text-xs text-muted-foreground">
-                                {v.contributors.map((c) => c.name).join(", ")}
-                              </span>
-                            </span>
-                          )}
-                        </button>
-                        {onRename && !isNaming && (
-                          <SimpleTooltip content={v.label ? "Rename version" : "Name this version"}>
-                            <Button
-                              size="icon-xs"
-                              variant="ghost"
-                              aria-label={v.label ? `Rename version ${v.label}` : `Name version from ${formatDateTime(v.createdAt)}`}
-                              onClick={() => setNaming({ id: v.id, text: v.label ?? "" })}
-                              className="absolute right-1 top-1 opacity-0 focus-visible:opacity-100 group-hover/version:opacity-100"
-                            >
-                              <RiBookmarkLine aria-hidden />
-                            </Button>
-                          </SimpleTooltip>
-                        )}
-                        {isNaming && (
-                          <form
-                            className="flex items-center gap-1 px-2 pb-2"
-                            onSubmit={(e) => {
-                              e.preventDefault();
-                              onRename?.(v, naming.text.trim());
-                              setNaming(null);
+                          <button
+                            type="button"
+                            aria-pressed={selected}
+                            onClick={(e) => select(v, e.shiftKey)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && e.shiftKey) {
+                                e.preventDefault();
+                                select(v, true);
+                              }
                             }}
+                            className={cn("flex w-full flex-col items-start gap-1 rounded-sm px-2 py-1.5 pr-9 text-left", focusRing)}
                           >
-                            <input
-                              autoFocus
-                              value={naming.text}
-                              onChange={(e) => setNaming({ id: v.id, text: e.target.value })}
-                              onKeyDown={(e) => e.key === "Escape" && setNaming(null)}
-                              placeholder="Name this version"
-                              aria-label="Version name"
-                              maxLength={80}
-                              className={cn(
-                                "h-7 min-w-0 flex-1 rounded-control border border-input bg-background px-2 text-xs shadow-xs placeholder:text-muted-foreground",
-                                focusRing
+                            <span className="flex w-full items-center gap-2">
+                              <span className={cn("text-sm tabular-nums", selected ? "text-primary-soft-foreground" : "text-foreground")}>
+                                {formatClockTime(v.createdAt)}
+                              </span>
+                              {i0(versions, v) && (
+                                <span className="rounded-xs bg-muted px-1 text-2xs font-medium text-muted-foreground">Current</span>
                               )}
-                            />
-                            <Button type="submit" size="icon-xs" variant="primary" aria-label="Save name">
-                              <RiCheckLine aria-hidden />
-                            </Button>
-                            <Button type="button" size="icon-xs" variant="ghost" aria-label="Cancel naming" onClick={() => setNaming(null)}>
-                              <RiCloseLine aria-hidden />
-                            </Button>
-                          </form>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </aside>
+                            </span>
+                            {v.label && !isNaming && (
+                              <span className="inline-flex max-w-full items-center gap-1 text-xs font-medium text-primary">
+                                <RiPriceTag3Line aria-hidden className="size-3 shrink-0" />
+                                <span className="truncate">{v.label}</span>
+                              </span>
+                            )}
+                            {v.description && <span className="line-clamp-2 text-xs text-muted-foreground">{v.description}</span>}
+                            {v.contributors && v.contributors.length > 0 && (
+                              <span className="flex items-center gap-1.5">
+                                <span className="flex -space-x-1">
+                                  {v.contributors.slice(0, 4).map((c) => (
+                                    <Avatar key={c.id} name={c.name} src={c.avatarSrc} size="xs" ring />
+                                  ))}
+                                </span>
+                                <span className="truncate text-xs text-muted-foreground">
+                                  {v.contributors.map((c) => c.name).join(", ")}
+                                </span>
+                              </span>
+                            )}
+                          </button>
+                          {onRename && !isNaming && (
+                            <SimpleTooltip content={v.label ? "Rename version" : "Name this version"}>
+                              <Button
+                                size="icon-xs"
+                                variant="ghost"
+                                aria-label={v.label ? `Rename version ${v.label}` : `Name version from ${formatDateTime(v.createdAt)}`}
+                                onClick={() => setNaming({ id: v.id, text: v.label ?? "" })}
+                                className="absolute right-1 top-1 opacity-0 focus-visible:opacity-100 group-hover/version:opacity-100"
+                              >
+                                <RiBookmarkLine aria-hidden />
+                              </Button>
+                            </SimpleTooltip>
+                          )}
+                          {isNaming && (
+                            <form
+                              className="flex items-center gap-1 px-2 pb-2"
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                onRename?.(v, naming.text.trim());
+                                setNaming(null);
+                              }}
+                            >
+                              <input
+                                autoFocus
+                                value={naming.text}
+                                onChange={(e) => setNaming({ id: v.id, text: e.target.value })}
+                                onKeyDown={(e) => e.key === "Escape" && setNaming(null)}
+                                placeholder="Name this version"
+                                aria-label="Version name"
+                                maxLength={80}
+                                className={cn(
+                                  "h-7 min-w-0 flex-1 rounded-control border border-input bg-background px-2 text-xs shadow-xs placeholder:text-muted-foreground",
+                                  focusRing
+                                )}
+                              />
+                              <Button type="submit" size="icon-xs" variant="primary" aria-label="Save name">
+                                <RiCheckLine aria-hidden />
+                              </Button>
+                              <Button type="button" size="icon-xs" variant="ghost" aria-label="Cancel naming" onClick={() => setNaming(null)}>
+                                <RiCloseLine aria-hidden />
+                              </Button>
+                            </form>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
 
         {onRestore && target && (
           <ConfirmDialog

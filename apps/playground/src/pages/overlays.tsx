@@ -457,7 +457,7 @@ function DialogDemo() {
               <DialogDescription>Update how your name and bio appear to teammates.</DialogDescription>
             </DialogHeader>
             <DialogBody className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field>
                   <FieldLabel>First name</FieldLabel>
                   <Input defaultValue="Maya" />

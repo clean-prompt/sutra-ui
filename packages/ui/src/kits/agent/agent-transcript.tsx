@@ -235,7 +235,7 @@ export const TranscriptSystemRow = React.forwardRef<HTMLDivElement, TranscriptSy
                 aria-expanded={expanded}
                 aria-controls={expanded ? summaryId : undefined}
                 onClick={() => setExpanded(!expanded)}
-                className={cn("inline-flex items-center gap-0.5 rounded-xs text-primary hover:underline", focusRing)}
+                className={cn("inline-flex shrink-0 items-center gap-0.5 whitespace-nowrap rounded-xs text-primary hover:underline", focusRing)}
               >
                 {expanded ? "Hide summary" : "Show summary"}
                 <RiArrowDownSLine aria-hidden className={cn("chevron-turn", expanded && "rotate-180")} />

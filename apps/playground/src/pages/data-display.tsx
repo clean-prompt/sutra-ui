@@ -330,7 +330,7 @@ function DataTableDemo() {
 function DataTableStatesDemo() {
   const [loading, setLoading] = React.useState(true);
   return (
-    <div className="grid w-full gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-4 lg:grid-cols-2">
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <DemoLabel>Loading</DemoLabel>
@@ -386,7 +386,7 @@ export function DataDisplayPage() {
               <Avatar name="Broken Image" src="data:image/png;base64,broken" />
             </div>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="space-y-3">
               <DemoLabel>Status</DemoLabel>
               <div className="flex flex-wrap items-center gap-4">
@@ -512,9 +512,9 @@ export function DataDisplayPage() {
           <TableBody>
             {invoices.map((inv) => (
               <TableRow key={inv.id}>
-                <TableCell className="font-medium">{inv.id}</TableCell>
+                <TableCell className="whitespace-nowrap font-medium">{inv.id}</TableCell>
                 <TableCell>{inv.client}</TableCell>
-                <TableCell className="text-muted-foreground">{inv.date}</TableCell>
+                <TableCell className="whitespace-nowrap text-muted-foreground">{inv.date}</TableCell>
                 <TableCell>
                   <StatusBadge status={inv.status} label={inv.label} size="sm" />
                 </TableCell>
@@ -535,7 +535,7 @@ export function DataDisplayPage() {
           <TableCaption>Invoices issued in the last 30 days.</TableCaption>
         </Table>
 
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div className="space-y-2">
             <DemoLabel>density="compact" · striped</DemoLabel>
             <Table density="compact" striped>

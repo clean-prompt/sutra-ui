@@ -5,6 +5,8 @@ import { formatDuration } from "../lib/duration";
 import { clamp } from "../lib/math";
 import { toMs, type TimeInput } from "../lib/time";
 import { useNow } from "../hooks/use-now";
+import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useElementSize } from "../hooks/use-resize-observer";
 import { SimpleTooltip } from "../primitives/tooltip";
 
 /** Compact duration: "45s", "12m", "2h 30m", "3d 4h". */
@@ -101,7 +103,7 @@ export interface TimelineBarProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   spans?: TimelineSpan[];
   /** Reference "now" for live spans. Default Date.now(). */
   now?: TimeInput;
-  /** Number of tick intervals. Default 6. */
+  /** Number of tick intervals. Default 6; fewer are drawn when the axis is too narrow for their labels. */
   ticks?: number;
   tickFormatter?: (time: Date) => string;
   showAxis?: boolean;
@@ -144,6 +146,9 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
     },
     ref
   ) => {
+    const rootRef = React.useRef<HTMLDivElement | null>(null);
+    const setRefs = useMergedRefs(rootRef, ref);
+    const size = useElementSize(rootRef);
     const lanes: TimelineLane[] = lanesProp ?? [{ id: "default", label: null, spans: spans ?? [] }];
     const hasLabels = lanes.some((l) => l.label != null && l.label !== false);
     const f = toMs(from) ?? NaN;
@@ -165,11 +170,20 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
     );
     const fmtTime = formatTime ?? ((d: Date) => timeFmt.format(d));
     const fmtTick = tickFormatter ?? ((d: Date) => tickFmt.format(d));
-    const tickList = timelineTicks(f, t, ticks);
+    // Axis labels never get closer than their own width: a narrow bar draws fewer ticks instead of overlapping ones.
+    const axisWidth = size.width - (hasLabels ? labelWidth + 8 : 0);
+    let tickList = timelineTicks(f, t, ticks);
+    if (axisWidth > 0) {
+      for (let n = ticks; n > 1; n--) {
+        tickList = timelineTicks(f, t, n);
+        const widest = tickList.reduce((m, tk) => Math.max(m, fmtTick(new Date(tk)).length), 0) * 6.2 + 12;
+        if (widest * tickList.length <= axisWidth) break;
+      }
+    }
     const nowPct = range > 0 ? ((now - f) / range) * 100 : -1;
 
     return (
-      <div ref={ref} role="group" aria-label={label} className={cn("w-full text-xs", className)} {...props}>
+      <div ref={setRefs} role="group" aria-label={label} className={cn("w-full text-xs", className)} {...props}>
         <div className="flex flex-col gap-1.5">
           {lanes.map((lane) => {
             return (
@@ -229,7 +243,7 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
                               : { tabIndex: 0, role: "img" })}
                             aria-label={text}
                             className={cn(
-                              "relative flex size-full items-center overflow-hidden rounded-xs px-1 text-left text-2xs font-medium leading-none text-white/95 transition-opacity hover:opacity-90",
+                              "relative flex size-full items-center overflow-hidden rounded-xs text-left text-2xs font-medium leading-none text-white/95 transition-opacity hover:opacity-90",
                               toneClass[tone],
                               tone === "warning" && "text-warning-foreground",
                               isLive && "ring-2 ring-inset ring-white/30",
@@ -238,7 +252,7 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
                               focusRing
                             )}
                           >
-                            <span aria-hidden className="truncate">
+                            <span aria-hidden className="truncate px-1">
                               {span.label}
                             </span>
                             {isLive ? (
@@ -377,7 +391,7 @@ export const UptimeBar = React.forwardRef<HTMLDivElement, UptimeBarProps>(
           </div>
         ) : null}
         <div ref={containerRef} className="relative" onMouseLeave={() => setHover(null)}>
-          <div role="img" aria-label={summary} className="flex gap-[2px]" style={{ height }}>
+          <div role="img" aria-label={summary} className={cn("flex", items.length > 45 ? "gap-px" : "gap-[2px]")} style={{ height }}>
             {items.map((b, i) => (
               <span
                 key={i}
@@ -388,7 +402,7 @@ export const UptimeBar = React.forwardRef<HTMLDivElement, UptimeBarProps>(
                   setHover({ i, x: box ? r.left - box.left + r.width / 2 : 0 });
                 }}
                 className={cn(
-                  "min-w-[2px] flex-1 rounded-[2px] transition-[opacity,transform,translate,scale,rotate] hover:opacity-80",
+                  "min-w-0 flex-1 rounded-[2px] transition-[opacity,transform,translate,scale,rotate] hover:opacity-80",
                   uptimeClass[b.status],
                   hover?.i === i && "scale-y-110"
                 )}

@@ -304,9 +304,9 @@ export const PermissionPreflightCard = React.forwardRef<HTMLDivElement, Permissi
           {permissions.map((p) => {
             const m = permIcon[p.state];
             return (
-              <li key={p.id} data-permission={p.id} data-state={p.state} className="flex items-center gap-3 px-3 py-2">
+              <li key={p.id} data-permission={p.id} data-state={p.state} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2">
                 <m.Icon role="img" aria-label={m.label} className={cn("size-5 shrink-0", m.className)} />
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-40">
                   <p className="text-sm font-medium text-foreground">
                     {p.label}
                     {p.optional && <span className="ml-1.5 text-2xs font-normal text-muted-foreground">Optional</span>}
@@ -314,7 +314,7 @@ export const PermissionPreflightCard = React.forwardRef<HTMLDivElement, Permissi
                   {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
                 </div>
                 {p.state !== "granted" && onOpenSettings && (
-                  <Button size="xs" variant="ghost" trailingIcon={<RiExternalLinkLine aria-hidden />} onClick={() => onOpenSettings(p.id)}>
+                  <Button size="xs" variant="ghost" className="ml-auto" trailingIcon={<RiExternalLinkLine aria-hidden />} onClick={() => onOpenSettings(p.id)}>
                     Open settings
                   </Button>
                 )}

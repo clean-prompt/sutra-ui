@@ -104,7 +104,7 @@ export function FeedbackPage() {
       >
         <div className="space-y-3">
           <DemoLabel>Soft</DemoLabel>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             {alertTones.map(({ tone, title, description }) => (
               <InlineAlert key={tone} tone={tone}>
                 <InlineAlertTitle>{title}</InlineAlertTitle>
@@ -115,7 +115,7 @@ export function FeedbackPage() {
         </div>
         <div className="space-y-3">
           <DemoLabel>Outline</DemoLabel>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             {alertTones.map(({ tone, title }) => (
               <InlineAlert key={tone} tone={tone} appearance="outline">
                 <InlineAlertTitle>{title}</InlineAlertTitle>
@@ -125,7 +125,7 @@ export function FeedbackPage() {
         </div>
         <div className="space-y-3">
           <DemoLabel>Accent</DemoLabel>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             {alertTones.map(({ tone, description }) => (
               <InlineAlert key={tone} tone={tone} appearance="accent">
                 <InlineAlertDescription>{description}</InlineAlertDescription>

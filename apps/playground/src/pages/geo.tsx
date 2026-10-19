@@ -34,7 +34,7 @@ function VisitorsDemo() {
   const markers = React.useMemo(() => visitors.map(visitorMarker), []);
   const visitor = visitors.find((v) => v.id === selected);
   return (
-    <div className="grid w-full gap-4 lg:grid-cols-[1fr_15rem]">
+    <div className="grid grid-cols-1 w-full gap-4 lg:grid-cols-[1fr_15rem]">
       <WorldMap
         markers={markers}
         cluster
@@ -102,7 +102,7 @@ function ProjectionDemo() {
   return (
     <div className="w-full space-y-4">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <SegmentedControl size="sm" value={projection} onValueChange={(v) => setProjection(v as GeoProjectionKind)} options={projections} />
+        <SegmentedControl className="max-w-full overflow-x-auto" size="sm" value={projection} onValueChange={(v) => setProjection(v as GeoProjectionKind)} options={projections} />
         {(
           [
             ["graticule", "Graticule", graticule, setGraticule],

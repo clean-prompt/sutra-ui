@@ -68,7 +68,7 @@ export function SecretRow({
 
   if (layout === "inline") {
     return (
-      <li data-slot="env-key-row" data-set={isSet || undefined} className="grid gap-2 px-4 py-3 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
+      <li data-slot="env-key-row" data-set={isSet || undefined} className="grid grid-cols-1 gap-2 px-4 py-3 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
         <div className="min-w-0">
           <code className="block truncate font-mono text-xs font-medium text-foreground">{name}</code>
           {description && <p className="truncate text-xs text-muted-foreground">{description}</p>}

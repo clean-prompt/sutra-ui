@@ -97,8 +97,14 @@ function TilingGroupView({ group }: { group: LayoutTabsNode }) {
 
   React.useEffect(() => {
     if (!group.active) return;
+    // Scroll the tab strip only: `scrollIntoView` also scrolls every ancestor (the page, a scroller around the workspace).
+    const strip = stripRef.current;
     const tab = document.getElementById(ctx.tabId(group.active));
-    tab?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+    if (!strip || !tab) return;
+    const s = strip.getBoundingClientRect();
+    const t = tab.getBoundingClientRect();
+    if (t.left < s.left) strip.scrollLeft -= s.left - t.left;
+    else if (t.right > s.right) strip.scrollLeft += t.right - s.right;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [group.active]);
 

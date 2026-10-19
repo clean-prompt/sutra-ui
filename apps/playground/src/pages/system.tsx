@@ -244,7 +244,7 @@ function ThermalsDemo() {
   const [fans, setFans] = React.useState(initialFans);
   const update = (id: string, patch: Partial<FanControlFan>) => setFans((list) => list.map((f) => (f.id === id ? { ...f, ...patch } : f)));
   return (
-    <div className="grid w-full gap-4 lg:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-4 lg:grid-cols-2">
       <ThermalSensors sensors={sensors} showUnitToggle />
       <FanControl
         fans={fans}
@@ -388,7 +388,7 @@ export function SystemPage() {
         <AppsDemo />
       </Demo>
       <Demo id="loading" title="Loading states" description="Each screen before its first data: real headers and labels, skeleton rows, no empty messages and no controls to tab into." align="start">
-        <div className="grid w-full gap-4">
+        <div className="grid w-full grid-cols-1 gap-4">
           <MetricReadoutGroup label="Menu bar (loading)" className="w-fit rounded-control border border-border bg-card px-3 py-1.5">
             <MetricReadout label="CPU" value={null} unit="%" loading />
             <MetricReadout label="MEM" value={null} unit="%" loading />

@@ -157,7 +157,7 @@ export function NewItemDialog({
                 />
               </Field>
               {isTask && (
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Field>
                     <FieldLabel>Due date</FieldLabel>
                     <DatePicker value={values.due} onValueChange={(d) => set("due", d)} placeholder="No due date" clearable />

@@ -477,7 +477,7 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
   const compact = (
     <div
       data-layout="compact"
-      className={cn("relative touch-pan-x", layout === "auto" && "md:hidden")}
+      className={cn("relative touch-pan-x", layout === "auto" && "@3xl:hidden")}
       {...swipe}
     >
       <Progress
@@ -516,21 +516,22 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
     <div
       data-layout="full"
       className={cn(
-        "mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] items-center gap-4 px-4 py-2.5",
-        layout === "auto" && "max-md:hidden"
+        "mx-auto grid w-full max-w-[1600px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-4 py-2.5 @2xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] @2xl:gap-y-0",
+        layout === "auto" && "@max-3xl:hidden"
       )}
     >
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="order-1 flex min-w-0 items-center gap-3 @2xl:order-none">
         {identity}
         {onFavoriteChange && <FavoriteButton favorite={favorite} onFavoriteChange={onFavoriteChange} title={track.title} size="sm" />}
       </div>
-      <div className="flex min-w-0 flex-col items-stretch gap-0.5">
+      {/* Narrow bars: identity and window buttons on the first line, transport and seek bar underneath. */}
+      <div className="order-3 col-span-2 flex min-w-0 flex-col items-stretch gap-0.5 @2xl:order-none @2xl:col-span-1">
         <Transport p={transport} size="sm" />
         <SeekBar size="sm" value={currentTime} duration={duration} buffered={buffered} onSeek={onSeek} />
       </div>
-      <div className="flex min-w-0 items-center justify-end gap-1">
+      <div className="order-2 flex min-w-0 items-center justify-end gap-1 @2xl:order-none">
         {queuePosition && (
-          <span className="mr-1 whitespace-nowrap text-xs text-muted-foreground tabular-nums max-lg:hidden">
+          <span className="mr-1 whitespace-nowrap text-xs text-muted-foreground tabular-nums @max-5xl:hidden">
             {queuePosition.index + 1} of {queuePosition.total}
           </span>
         )}
@@ -542,7 +543,7 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
             muted={!!muted}
             onVolumeChange={onVolumeChange}
             onMutedChange={onMutedChange}
-            className="max-lg:hidden"
+            className="@max-5xl:hidden"
           />
         )}
         {onExpand && (
@@ -564,7 +565,7 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
       ref={ref}
       role="region"
       aria-label="Now playing"
-      className={cn("border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80", className)}
+      className={cn("@container border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80", className)}
       {...props}
     >
       {layout !== "full" && compact}
@@ -645,7 +646,7 @@ export function NowPlaying({
             <span aria-hidden className="size-9" />
           </header>
           <div ref={scrollRef} data-slot="now-playing-scroll" className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-            <div className="mx-auto grid w-full max-w-5xl gap-8 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-12 lg:pt-6">
+            <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-8 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-12 lg:pt-6">
               <div className="mx-auto flex w-full max-w-md flex-col">
                 <div className="overflow-hidden rounded-box bg-muted shadow-xl">
                   {media ?? <TrackArtwork src={track?.artwork} className="w-full rounded-none" iconClassName="max-h-20 max-w-20" />}

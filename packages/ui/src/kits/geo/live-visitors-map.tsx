@@ -252,7 +252,7 @@ export const LiveVisitorsMap = React.forwardRef<HTMLElement, LiveVisitorsMapProp
           />
         </header>
 
-        <div className="grid min-w-0 lg:min-h-96 lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="grid grid-cols-1 min-w-0 lg:min-h-96 lg:grid-cols-[minmax(0,1fr)_20rem]">
           <div data-slot="live-visitors-map-area" className={cn("relative flex min-w-0 flex-col justify-center p-3 sm:p-4", mapClassName)}>
             {view === "globe" ? (
               <Globe {...mapProps} className="mx-auto w-full max-w-[560px]" autoRotate={autoRotate} controls />

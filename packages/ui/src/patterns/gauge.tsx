@@ -182,7 +182,12 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
           )}
           {children ??
             (label ? (
-              <span id={labelId} className={cn("mt-1 max-w-[80%] truncate text-center text-muted-foreground", s.label)}>
+              <span
+                id={labelId}
+                className={cn("mt-1 truncate text-center text-muted-foreground", s.label)}
+                // 80% of the gauge box, in px: a percentage would resolve against this content-sized column and cut "GPU 0" to "GP…".
+                style={{ maxWidth: Math.round(s.box * 0.8) }}
+              >
                 {label}
               </span>
             ) : null)}

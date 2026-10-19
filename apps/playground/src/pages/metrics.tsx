@@ -71,6 +71,8 @@ const APPS: App[] = [
 ];
 
 const appIcon = (app: App) => <Monogram name={app.name} size="sm" />;
+/** Legend rows have a 16px icon slot, so the monogram is sized to fit instead of being clipped. */
+const legendIcon = (app: App) => <Monogram name={app.name} size="xs" className="size-4 text-[8px]" />;
 
 /* ------------------------------------------------------------------ */
 /* Sections                                                            */
@@ -143,135 +145,137 @@ function Overview({ live, onOpen }: { live: ReturnType<typeof useLiveReadings>; 
   });
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
-        <StatCard
-          valueFont="sans"
-          accent="blue"
-          icon={<RiCpuLine />}
-          label="CPU"
-          onClick={() => onOpen("cpu")}
-          caption="Now"
-          value={Math.round(cpu)}
-          unit="%"
-          stats={[
-            { label: "User", value: `${Math.round(cpu * 0.7)}%` },
-            { label: "System", value: `${Math.round(cpu * 0.3)}%` },
-            { label: "Average today", value: `${Math.round(avg(live.cpu))}%` },
-          ]}
-          trend={live.cpu}
-          trendType="bar"
-          trendPlacement="footer"
-          trendMin={0}
-          trendMax={100}
-        />
-        <StatCard
-          valueFont="sans"
-          accent="violet"
-          icon={<RiRam2Line />}
-          label="Memory"
-          onClick={() => onOpen("memory")}
-          caption="In use of 64 GB"
-          value={memory.toFixed(2)}
-          unit="GB"
-          status={
-            <StatusBadge status="success" size="sm">
-              Normal
-            </StatusBadge>
-          }
-          stats={[
-            { label: "App", value: "22.49 GB", color: "blue" },
-            { label: "Wired", value: "5.37 GB", color: "orange" },
-            { label: "Compressed", value: "22.10 GB", color: "green" },
-          ]}
-          trend={live.memory}
-          trendType="bar"
-          trendPlacement="footer"
-          trendMin={0}
-          trendMax={64}
-        />
-        <StatCard
-          valueFont="sans"
-          accent="pink"
-          icon={<RiStackLine />}
-          label="GPU"
-          onClick={() => onOpen("gpu")}
-          caption="Apple M2 Max"
-          value={Math.round(last(live.gpu))}
-          unit="%"
-          stats={[
-            { label: "Memory", value: "1.69 GB" },
-            { label: "Average", value: `${Math.round(avg(live.gpu))}%` },
-            { label: "Peak", value: `${Math.round(peak(live.gpu))}%` },
-          ]}
-          trend={live.gpu}
-          trendType="bar"
-          trendPlacement="footer"
-          trendMin={0}
-          trendMax={100}
-        />
-        <StatCard
-          valueFont="sans"
-          accent="amber"
-          icon={<RiHardDrive3Line />}
-          label="Disk"
-          onClick={() => onOpen("disk")}
-          caption="Free of 994.66 GB"
-          value="479.72"
-          unit="GB"
-          stats={[
-            { label: "Reading", value: "7.2 MB/s" },
-            { label: "Writing", value: `${last(live.disk).toFixed(1)} MB/s` },
-            { label: "Written today", value: "39.8 GB" },
-          ]}
-          trend={live.disk}
-          trendType="bar"
-          trendPlacement="footer"
-          trendMin={0}
-          trendMax={40}
-        />
-        <StatCard
-          valueFont="sans"
-          accent="emerald"
-          icon={<RiGlobalLine />}
-          label="Network"
-          href="#/components/metrics/dashboard"
-          caption="Downloading"
-          value={last(live.network).toFixed(1)}
-          unit="MB/s"
-          stats={[
-            { label: "Uploading", value: "698 kB/s" },
-            { label: "Today", value: "4.9 GB" },
-            { label: "Last 7 days", value: "48.3 GB" },
-          ]}
-          trend={live.network}
-          trendType="bar"
-          trendPlacement="footer"
-          trendMin={0}
-          trendMax={30}
-        />
-        <StatCard
-          valueFont="sans"
-          accent="lime"
-          icon={<RiBattery2ChargeLine />}
-          label="Battery"
-          href="#/components/metrics/dashboard"
-          caption="On battery"
-          value={63}
-          unit="%"
-          stats={[
-            { label: "Remaining", value: "3h 15m" },
-            { label: "Power draw", value: "13.5 W" },
-            { label: "Health", value: "76%" },
-          ]}
-          trend={Array.from({ length: 48 }, () => 63)}
-          trendType="bar"
-          trendPlacement="footer"
-          trendMin={0}
-          trendMax={100}
-        />
+      <div className="@container w-full">
+        <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2 2xl:grid-cols-3">
+          <StatCard
+            valueFont="sans"
+            accent="blue"
+            icon={<RiCpuLine />}
+            label="CPU"
+            onClick={() => onOpen("cpu")}
+            caption="Now"
+            value={Math.round(cpu)}
+            unit="%"
+            stats={[
+              { label: "User", value: `${Math.round(cpu * 0.7)}%` },
+              { label: "System", value: `${Math.round(cpu * 0.3)}%` },
+              { label: "Average today", value: `${Math.round(avg(live.cpu))}%` },
+            ]}
+            trend={live.cpu}
+            trendType="bar"
+            trendPlacement="footer"
+            trendMin={0}
+            trendMax={100}
+          />
+          <StatCard
+            valueFont="sans"
+            accent="violet"
+            icon={<RiRam2Line />}
+            label="Memory"
+            onClick={() => onOpen("memory")}
+            caption="In use of 64 GB"
+            value={memory.toFixed(2)}
+            unit="GB"
+            status={
+              <StatusBadge status="success" size="sm">
+                Normal
+              </StatusBadge>
+            }
+            stats={[
+              { label: "App", value: "22.49 GB", color: "blue" },
+              { label: "Wired", value: "5.37 GB", color: "orange" },
+              { label: "Compressed", value: "22.10 GB", color: "green" },
+            ]}
+            trend={live.memory}
+            trendType="bar"
+            trendPlacement="footer"
+            trendMin={0}
+            trendMax={64}
+          />
+          <StatCard
+            valueFont="sans"
+            accent="pink"
+            icon={<RiStackLine />}
+            label="GPU"
+            onClick={() => onOpen("gpu")}
+            caption="Apple M2 Max"
+            value={Math.round(last(live.gpu))}
+            unit="%"
+            stats={[
+              { label: "Memory", value: "1.69 GB" },
+              { label: "Average", value: `${Math.round(avg(live.gpu))}%` },
+              { label: "Peak", value: `${Math.round(peak(live.gpu))}%` },
+            ]}
+            trend={live.gpu}
+            trendType="bar"
+            trendPlacement="footer"
+            trendMin={0}
+            trendMax={100}
+          />
+          <StatCard
+            valueFont="sans"
+            accent="amber"
+            icon={<RiHardDrive3Line />}
+            label="Disk"
+            onClick={() => onOpen("disk")}
+            caption="Free of 994.66 GB"
+            value="479.72"
+            unit="GB"
+            stats={[
+              { label: "Reading", value: "7.2 MB/s" },
+              { label: "Writing", value: `${last(live.disk).toFixed(1)} MB/s` },
+              { label: "Written today", value: "39.8 GB" },
+            ]}
+            trend={live.disk}
+            trendType="bar"
+            trendPlacement="footer"
+            trendMin={0}
+            trendMax={40}
+          />
+          <StatCard
+            valueFont="sans"
+            accent="emerald"
+            icon={<RiGlobalLine />}
+            label="Network"
+            href="#/components/metrics/dashboard"
+            caption="Downloading"
+            value={last(live.network).toFixed(1)}
+            unit="MB/s"
+            stats={[
+              { label: "Uploading", value: "698 kB/s" },
+              { label: "Today", value: "4.9 GB" },
+              { label: "Last 7 days", value: "48.3 GB" },
+            ]}
+            trend={live.network}
+            trendType="bar"
+            trendPlacement="footer"
+            trendMin={0}
+            trendMax={30}
+          />
+          <StatCard
+            valueFont="sans"
+            accent="lime"
+            icon={<RiBattery2ChargeLine />}
+            label="Battery"
+            href="#/components/metrics/dashboard"
+            caption="On battery"
+            value={63}
+            unit="%"
+            stats={[
+              { label: "Remaining", value: "3h 15m" },
+              { label: "Power draw", value: "13.5 W" },
+              { label: "Health", value: "76%" },
+            ]}
+            trend={Array.from({ length: 48 }, () => 63)}
+            trendType="bar"
+            trendPlacement="footer"
+            trendMin={0}
+            trendMax={100}
+          />
+        </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <StatCard
           valueFont="sans"
           accent="blue"
@@ -314,7 +318,7 @@ function Overview({ live, onOpen }: { live: ReturnType<typeof useLiveReadings>; 
             legendValues
             iconFor={(datum) => {
               const app = APPS.find((a) => a.name === datum.name);
-              return app ? appIcon(app) : null;
+              return app ? legendIcon(app) : null;
             }}
             valueFormatter={(v) => `${v.toFixed(2)} GB`}
             label="Memory by app"
@@ -337,7 +341,7 @@ function Overview({ live, onOpen }: { live: ReturnType<typeof useLiveReadings>; 
             legendValues
             iconFor={(datum) => {
               const app = APPS.find((a) => a.name === datum.name);
-              return app ? appIcon(app) : null;
+              return app ? legendIcon(app) : null;
             }}
             valueFormatter={(v) => `${Math.round(v)} mW`}
             label="Power by app"
@@ -477,7 +481,7 @@ function Detail({ section, live }: { section: Section; live: ReturnType<typeof u
         chartHeight={180}
         chartLabel={`${section.label} over the last minute`}
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {config.cards.map((card) => (
           <StatCard
             valueFont="sans"
@@ -564,14 +568,16 @@ export function MetricsPage() {
         description="Before the first readings arrive: skeletons in each component's real layout, so nothing jumps when data lands."
         align="start"
       >
-        <div className="grid w-full gap-4 md:grid-cols-2">
-          <StatCard accent="blue" icon={<RiCpuLine />} label="CPU" caption="Now" value={0} unit="%" loading stats={[{ label: "User", value: "" }, { label: "System", value: "" }, { label: "Average today", value: "" }]} trend={[0]} trendType="bar" trendPlacement="footer" />
-          <TopItemCard accent="blue" icon={<RiApps2Line />} item="" loading />
-          <MetricHero className="md:col-span-2" accent="violet" caption="In use of 64 GB" value={undefined} unit="GB" details={[{ label: "Free", value: "" }, { label: "Swap", value: "" }]} chartHeight={160} loading />
-          <BarList className="md:col-span-2" accent="violet" items={[]} header={{ label: "App", value: "Memory" }} label="Apps by memory" loading loadingRows={3} />
-          <DonutChart data={[]} index="name" size={140} thickness={14} centerLabel="in use" legend="right" legendValues label="Memory by type" loading />
-          <AreaChart data={[]} index="t" series={[{ key: "cpu", label: "CPU" }]} height={160} label="CPU history" loading />
-          <Treemap className="md:col-span-2" data={{ id: "root", name: "Disk", children: [] }} label="Storage" height={200} legend loading />
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 w-full gap-4 @2xl:grid-cols-2">
+            <StatCard accent="blue" icon={<RiCpuLine />} label="CPU" caption="Now" value={0} unit="%" loading stats={[{ label: "User", value: "" }, { label: "System", value: "" }, { label: "Average today", value: "" }]} trend={[0]} trendType="bar" trendPlacement="footer" />
+            <TopItemCard accent="blue" icon={<RiApps2Line />} item="" loading />
+            <MetricHero className="md:col-span-2" accent="violet" caption="In use of 64 GB" value={undefined} unit="GB" details={[{ label: "Free", value: "" }, { label: "Swap", value: "" }]} chartHeight={160} loading />
+            <BarList className="md:col-span-2" accent="violet" items={[]} header={{ label: "App", value: "Memory" }} label="Apps by memory" loading loadingRows={3} />
+            <DonutChart data={[]} index="name" size={140} thickness={14} centerLabel="in use" legend="right" legendValues label="Memory by type" loading />
+            <AreaChart data={[]} index="t" series={[{ key: "cpu", label: "CPU" }]} height={160} label="CPU history" loading />
+            <Treemap className="md:col-span-2" data={{ id: "root", name: "Disk", children: [] }} label="Storage" height={200} legend loading />
+          </div>
         </div>
       </Demo>
       <Demo

@@ -840,7 +840,7 @@ export const PdfViewer = React.forwardRef<HTMLDivElement, PdfViewerProps>(
       >
         {skeleton && <span className="sr-only">Loading PDF…</span>}
         {toolbar && (
-          <div data-slot="pdf-toolbar" className="flex h-11 shrink-0 items-center gap-1 border-b border-border px-2">
+          <div data-slot="pdf-toolbar" className="flex min-h-11 shrink-0 flex-wrap items-center gap-x-1 gap-y-0.5 border-b border-border px-2 py-0.5">
             {ready ? (
               <>
                 <div role="group" aria-label="Page navigation" className="flex items-center gap-1">
@@ -883,7 +883,7 @@ export const PdfViewer = React.forwardRef<HTMLDivElement, PdfViewerProps>(
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" aria-label={`Zoom level: ${zoomName}`} className="min-w-16 gap-0.5 px-2 tabular-nums">
+                      <Button variant="ghost" size="sm" aria-label={`Zoom level: ${zoomName}`} className="min-w-12 gap-0.5 px-1.5 tabular-nums">
                         {zoomPercent}
                         <RiArrowDownSLine aria-hidden className="size-4 text-muted-foreground" />
                       </Button>

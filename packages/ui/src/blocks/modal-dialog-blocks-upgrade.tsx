@@ -135,7 +135,7 @@ export function UpgradeDialog({
           />
         </div>
         <DialogBody>
-          <div className="grid gap-4 pb-1 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 pb-1 md:grid-cols-3">
             {plans.map((plan) => {
               const price = cycle === "yearly" ? plan.yearly : plan.monthly;
               const isCurrent = plan.id === currentPlan;

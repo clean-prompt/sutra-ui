@@ -211,7 +211,7 @@ export const ConversationRow = React.forwardRef<HTMLLIElement, ConversationRowPr
               className={cn(
                 "flex h-8 min-w-0 flex-1 items-center gap-2 rounded-control px-2.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground",
                 active && "font-medium text-foreground",
-                hasActions && (menu && !actions ? "group-hover/row:pr-9 group-focus-within/row:pr-9" : "group-hover/row:pr-16 group-focus-within/row:pr-16"),
+                hasActions && (menu && !actions ? "group-hover/row:pr-9 group-focus-within/row:pr-9 [@media(hover:none)]:pr-9" : "group-hover/row:pr-16 group-focus-within/row:pr-16 [@media(hover:none)]:pr-16"),
                 hasActions && (menuOpen || (menu && active)) && (menu && !actions ? "pr-9" : "pr-16"),
                 focusRing
               )}

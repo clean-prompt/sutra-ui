@@ -164,7 +164,7 @@ function StepsDemo() {
         {controls}
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="space-y-3">
           <DemoLabel>Vertical (shares state)</DemoLabel>
           <Steps steps={checkoutSteps} current={current} orientation="vertical" onStepClick={setCurrent} />
@@ -207,7 +207,7 @@ function ProgressDemo() {
         ))}
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-5">
           <DemoLabel>Linear</DemoLabel>
           <Progress value={value} label="Uploading design-system.fig" showValue="top" />
@@ -248,7 +248,7 @@ function ProgressDemo() {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-3">
           <DemoLabel>ProgressSegments · password strength</DemoLabel>
           {[1, 2, 3, 4].map((v) => (
@@ -280,7 +280,7 @@ function SkeletonDemo() {
           {loading ? "Show content" : "Show skeleton"}
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {[0, 1].map((i) =>
           loading ? (
             <Card key={i} className="space-y-4 p-5" aria-busy="true">
@@ -390,7 +390,7 @@ export function IndicatorsPage() {
               ))}
             </div>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="space-y-2">
               <DemoLabel>Sizes</DemoLabel>
               <div className="flex flex-wrap items-center gap-2">
@@ -424,7 +424,7 @@ export function IndicatorsPage() {
               </div>
             </div>
           ))}
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="space-y-2">
               <DemoLabel>Sizes &amp; custom label</DemoLabel>
               <div className="flex flex-wrap items-center gap-2">
@@ -449,7 +449,7 @@ export function IndicatorsPage() {
 
       <Demo id="spinner" title="Spinner" description="Four variants in five sizes. Spinners use currentColor." align="start">
         <div className="overflow-x-auto">
-          <div className="grid min-w-[420px] grid-cols-[5rem_repeat(5,1fr)] items-center gap-y-6">
+          <div className="grid grid-cols-[3.5rem_repeat(5,minmax(2.25rem,1fr))] items-center gap-y-6">
             <span />
             {spinnerSizes.map((size) => (
               <DemoLabel key={size} className="text-center">{size}</DemoLabel>

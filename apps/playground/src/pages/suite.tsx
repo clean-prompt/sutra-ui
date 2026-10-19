@@ -49,46 +49,48 @@ function ShortcutsDemo() {
   const { groups } = useShortcutRegistry();
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
-      <div className="space-y-3">
-        <DemoLabel>Try: n · g then t · mod+enter (works in the field) · shift+? · mod+k</DemoLabel>
-        <input
-          aria-label="Shortcut playground field"
-          placeholder="Typing here does not trigger single-key shortcuts"
-          className="h-9 w-full rounded-control border border-input bg-background px-3 text-sm shadow-xs outline-none focus:border-ring"
-        />
-        <ul className="min-h-24 space-y-1 rounded-box border border-dashed border-border p-3 font-mono text-xs text-muted-foreground">
-          {log.length === 0 ? <li>Press a shortcut…</li> : log.map((l, i) => <li key={i}>{l}</li>)}
-        </ul>
-        <div className="flex flex-wrap items-center gap-3">
-          <SimpleTooltip content="Quick capture" shortcut="mod+shift+space">
-            <Button variant="secondary" leadingIcon={<RiAddLine />}>
-              Hover me
-            </Button>
-          </SimpleTooltip>
-          <ShortcutKeys keys="mod+shift+k" />
-          <ShortcutKeys keys="g t" />
-          <span className="text-xs text-muted-foreground">formatShortcut("mod+k") → {formatShortcut("mod+k")}</span>
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 gap-6 @2xl:grid-cols-2">
+        <div className="space-y-3">
+          <DemoLabel>Try: n · g then t · mod+enter (works in the field) · shift+? · mod+k</DemoLabel>
+          <input
+            aria-label="Shortcut playground field"
+            placeholder="Typing here does not trigger single-key shortcuts"
+            className="h-9 w-full rounded-control border border-input bg-background px-3 text-sm shadow-xs outline-none focus:border-ring"
+          />
+          <ul className="min-h-24 space-y-1 rounded-box border border-dashed border-border p-3 font-mono text-xs text-muted-foreground">
+            {log.length === 0 ? <li>Press a shortcut…</li> : log.map((l, i) => <li key={i}>{l}</li>)}
+          </ul>
+          <div className="flex flex-wrap items-center gap-3">
+            <SimpleTooltip content="Quick capture" shortcut="mod+shift+space">
+              <Button variant="secondary" leadingIcon={<RiAddLine />}>
+                Hover me
+              </Button>
+            </SimpleTooltip>
+            <ShortcutKeys keys="mod+shift+k" />
+            <ShortcutKeys keys="g t" />
+            <span className="text-xs text-muted-foreground">formatShortcut("mod+k") → {formatShortcut("mod+k")}</span>
+          </div>
         </div>
-      </div>
-      <div className="space-y-2">
-        <DemoLabel className="flex items-center gap-1.5">
-          <RiKeyboardBoxLine className="size-4" /> Live registry
-        </DemoLabel>
-        <div className="space-y-3 rounded-box border border-border p-3">
-          {groups.map((g) => (
-            <div key={g.group}>
-              <p className="mb-1 text-2xs font-semibold uppercase tracking-wider text-muted-foreground">{g.group}</p>
-              <ul className="space-y-1">
-                {g.shortcuts.map((s) => (
-                  <li key={s.id} className="flex items-center justify-between gap-2 text-sm">
-                    <span>{s.label}</span>
-                    <ShortcutKeys keys={s.keys} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="space-y-2">
+          <DemoLabel className="flex items-center gap-1.5">
+            <RiKeyboardBoxLine className="size-4" /> Live registry
+          </DemoLabel>
+          <div className="space-y-3 rounded-box border border-border p-3">
+            {groups.map((g) => (
+              <div key={g.group}>
+                <p className="mb-1 text-2xs font-semibold uppercase tracking-wider text-muted-foreground">{g.group}</p>
+                <ul className="space-y-1">
+                  {g.shortcuts.map((s) => (
+                    <li key={s.id} className="flex items-center justify-between gap-2 text-sm">
+                      <span>{s.label}</span>
+                      <ShortcutKeys keys={s.keys} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -150,19 +152,21 @@ function MentionDemo() {
     return pool.filter((s) => s.title.toLowerCase().includes(q));
   }, []);
   return (
-    <div className="grid gap-6 md:grid-cols-2">
-      <div className="space-y-2">
-        <Label htmlFor="mention-demo">Comment</Label>
-        <MentionInput id="mention-demo" value={value} onValueChange={setValue} onSearch={onSearch} rows={4} />
-        <p className="text-xs text-muted-foreground">@ people · # notes, tasks and events · / commands (async search)</p>
-      </div>
-      <div className="space-y-2">
-        <DemoLabel>Rendered with MentionText</DemoLabel>
-        <Card className="p-4 text-sm leading-7">
-          <MentionText value={value} getHref={(m) => `#${m.type}/${m.id}`} />
-        </Card>
-        <DemoLabel>Stored value</DemoLabel>
-        <pre className="whitespace-pre-wrap break-all rounded-box bg-muted p-3 font-mono text-xs">{value}</pre>
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 gap-6 @2xl:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="mention-demo">Comment</Label>
+          <MentionInput id="mention-demo" value={value} onValueChange={setValue} onSearch={onSearch} rows={4} />
+          <p className="text-xs text-muted-foreground">@ people · # notes, tasks and events · / commands (async search)</p>
+        </div>
+        <div className="space-y-2">
+          <DemoLabel>Rendered with MentionText</DemoLabel>
+          <Card className="p-4 text-sm leading-7">
+            <MentionText value={value} getHref={(m) => `#${m.type}/${m.id}`} />
+          </Card>
+          <DemoLabel>Stored value</DemoLabel>
+          <pre className="whitespace-pre-wrap break-all rounded-box bg-muted p-3 font-mono text-xs">{value}</pre>
+        </div>
       </div>
     </div>
   );
@@ -197,30 +201,32 @@ function QuickCaptureDemo() {
         </span>
       </div>
       <QuickCapture open={open} onOpenChange={setOpen} onCapture={add} />
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-1.5">
-          <DemoLabel>parseCapture()</DemoLabel>
-          {examples.map((ex) => (
-            <div key={ex} className="rounded-md border border-border p-2 text-xs">
-              <p className="font-medium">{ex}</p>
-              <code className="text-muted-foreground">{JSON.stringify(parseCapture(ex))}</code>
-            </div>
-          ))}
-        </div>
-        <div className="space-y-1.5">
-          <DemoLabel>Captured</DemoLabel>
-          {captured.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Nothing yet. Type above and press Enter.</p>
-          ) : (
-            captured.map((c, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm">
-                <EntityChip type={c.app} id={String(i)} title={c.title} />
-                <span className="text-xs text-muted-foreground">
-                  {[c.date, c.time, c.priority, ...c.tags.map((t) => `#${t}`)].filter(Boolean).join(" · ")}
-                </span>
+      <div className="@container w-full">
+        <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2">
+          <div className="space-y-1.5">
+            <DemoLabel>parseCapture()</DemoLabel>
+            {examples.map((ex) => (
+              <div key={ex} className="rounded-md border border-border p-2 text-xs">
+                <p className="font-medium">{ex}</p>
+                <code className="block break-all text-muted-foreground">{JSON.stringify(parseCapture(ex))}</code>
               </div>
-            ))
-          )}
+            ))}
+          </div>
+          <div className="space-y-1.5">
+            <DemoLabel>Captured</DemoLabel>
+            {captured.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Nothing yet. Type above and press Enter.</p>
+            ) : (
+              captured.map((c, i) => (
+                <div key={i} className="flex items-center gap-2 text-sm">
+                  <EntityChip type={c.app} id={String(i)} title={c.title} />
+                  <span className="text-xs text-muted-foreground">
+                    {[c.date, c.time, c.priority, ...c.tags.map((t) => `#${t}`)].filter(Boolean).join(" · ")}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -255,19 +261,21 @@ function TimelineDemo() {
   const toggle = (item: TimelineItem, done: boolean) =>
     setItems((list) => list.map((i) => (i.id === item.id ? { ...i, done } : i)));
   return (
-    <div className="grid gap-6 md:grid-cols-[1fr_16rem]">
-      <TodayTimeline
-        items={items}
-        onToggle={toggle}
-        density={dense ? "compact" : "comfortable"}
-        title={new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
-      />
-      <div className="space-y-3">
-        <Button variant="secondary" size="sm" onClick={() => setDense((d) => !d)}>
-          {dense ? "Comfortable" : "Compact"} density
-        </Button>
-        <DemoLabel>Empty state</DemoLabel>
-        <TodayTimeline items={[]} />
+    <div className="@container w-full">
+      <div className="grid grid-cols-1 gap-6 @2xl:grid-cols-[1fr_16rem]">
+        <TodayTimeline
+          items={items}
+          onToggle={toggle}
+          density={dense ? "compact" : "comfortable"}
+          title={new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
+        />
+        <div className="space-y-3">
+          <Button variant="secondary" size="sm" onClick={() => setDense((d) => !d)}>
+            {dense ? "Comfortable" : "Compact"} density
+          </Button>
+          <DemoLabel>Empty state</DemoLabel>
+          <TodayTimeline items={[]} />
+        </div>
       </div>
     </div>
   );
@@ -368,9 +376,11 @@ export function SuitePage() {
       </Demo>
 
       <Demo id="backlinks" title="Backlinks" description="Everything that links to the current item, grouped by app." align="start">
-        <div className="grid gap-4 md:grid-cols-2">
-          <Backlinks items={backlinks} highlight="Q4 launch plan" />
-          <Backlinks items={[]} />
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2">
+            <Backlinks items={backlinks} highlight="Q4 launch plan" />
+            <Backlinks items={[]} />
+          </div>
         </div>
       </Demo>
 
@@ -387,22 +397,24 @@ export function SuitePage() {
       </Demo>
 
       <Demo id="app-theming" title="App Theming" description='data-app="…" on any subtree retunes the brand tokens to that app’s accent.' align="start">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {sutraApps.map((app) => (
-            <div key={app} data-app={app} className="space-y-3 rounded-box border border-border bg-card p-4">
-              <div className="flex items-center gap-2">
-                <SutraAppIcon app={app} size={28} />
-                <span className="font-medium">{sutraAppMeta[app].name}</span>
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 gap-3 @lg:grid-cols-2 @4xl:grid-cols-4">
+            {sutraApps.map((app) => (
+              <div key={app} data-app={app} className="space-y-3 rounded-box border border-border bg-card p-4">
+                <div className="flex items-center gap-2">
+                  <SutraAppIcon app={app} size={28} />
+                  <span className="font-medium">{sutraAppMeta[app].name}</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-[linear-gradient(90deg,var(--app-from),var(--app-to))]" />
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm">Primary</Button>
+                  <Button size="sm" variant="soft">
+                    Soft
+                  </Button>
+                </div>
               </div>
-              <div className="h-1.5 rounded-full bg-[linear-gradient(90deg,var(--app-from),var(--app-to))]" />
-              <div className="flex flex-wrap gap-2">
-                <Button size="sm">Primary</Button>
-                <Button size="sm" variant="soft">
-                  Soft
-                </Button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </Demo>
     </PageIntro>

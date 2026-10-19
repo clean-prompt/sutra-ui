@@ -111,8 +111,7 @@ export const ModelCapabilityChips = React.forwardRef<HTMLSpanElement, ModelCapab
         {capabilities.map((c) => {
           const { label, icon: Icon } = capabilityMeta[c];
           return (
-            <Badge key={c} size={size} variant="outline" color="neutral" data-capability={c}>
-              <Icon aria-hidden className="text-muted-foreground" />
+            <Badge key={c} size={size} variant="outline" color="neutral" data-capability={c} leadingIcon={<Icon aria-hidden className="text-muted-foreground" />}>
               {label}
             </Badge>
           );
@@ -237,7 +236,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
     };
 
     return (
-      <div ref={ref} data-slot="provider-model-picker" className={cn("flex w-full flex-col overflow-hidden rounded-box border border-border bg-popover", className)} {...props}>
+      <div ref={ref} data-slot="provider-model-picker" className={cn("@container flex w-full flex-col overflow-hidden rounded-box border border-border bg-popover", className)} {...props}>
         <div className="border-b border-border p-2">
           <Input
             ref={searchRef}
@@ -259,7 +258,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
             className="border-transparent shadow-none"
           />
         </div>
-        <div className="grid min-h-64 grid-cols-[minmax(9rem,38%)_1fr]">
+        <div className="grid min-h-64 grid-cols-1 @md:grid-cols-[minmax(9rem,38%)_minmax(0,1fr)]">
           <div
             ref={providersRef}
             role="listbox"
@@ -267,7 +266,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
             aria-label="Providers"
             aria-activedescendant={activeProvider ? `${id}-p-${providerIndex}` : undefined}
             onKeyDown={onProvidersKey}
-            className={cn("max-h-80 overflow-y-auto border-r border-border p-1 scrollbar-thin", focusRing, "focus-visible:ring-inset")}
+            className={cn("max-h-40 overflow-y-auto border-b border-border p-1 scrollbar-thin @md:max-h-80 @md:border-b-0 @md:border-r", focusRing, "focus-visible:ring-inset")}
           >
             {providers.map((p, i) => {
               const count = q ? p.models.filter(matches).length : p.models.length;
@@ -545,7 +544,7 @@ export const ModelVisibilityManager = React.forwardRef<HTMLDivElement, ModelVisi
       });
 
     return (
-      <div ref={ref} data-slot="model-visibility-manager" className={cn("grid w-full gap-3", className)} {...props}>
+      <div ref={ref} data-slot="model-visibility-manager" className={cn("grid w-full grid-cols-1 gap-3", className)} {...props}>
         <div className="flex flex-wrap items-center gap-2">
           <span id={`${id}-prov`} className="sr-only">
             Provider
@@ -596,7 +595,7 @@ export const ModelVisibilityManager = React.forwardRef<HTMLDivElement, ModelVisi
             );
           })}
         </ul>
-        <form onSubmit={add} className="grid gap-1">
+        <form onSubmit={add} className="grid grid-cols-1 gap-1">
           <div className="flex gap-2">
             <Input
               size="sm"
@@ -664,7 +663,7 @@ export const FallbackChainEditor = React.forwardRef<HTMLDivElement, FallbackChai
       return `${x?.model?.name ?? r.modelId} (${x?.provider.name ?? r.providerId})`;
     };
     return (
-      <div ref={ref} data-slot="fallback-chain-editor" className={cn("grid w-full gap-3", className)} {...props}>
+      <div ref={ref} data-slot="fallback-chain-editor" className={cn("grid w-full grid-cols-1 gap-3", className)} {...props}>
         <p className="text-xs text-muted-foreground">{caption}</p>
         {value.length === 0 ? (
           <p className="rounded-box border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">No models yet. Add a primary model.</p>
@@ -773,7 +772,7 @@ export const TaskModelAssignment = React.forwardRef<HTMLDivElement, TaskModelAss
             const key = v === "auto" ? "auto" : modelRefKey(v);
             const labelId = `${uid}-task-${t.id}-label`;
             return (
-              <li key={t.id} data-task={t.id} data-auto={v === "auto" || undefined} className="grid items-center gap-2 px-4 py-3 sm:grid-cols-[1fr_minmax(12rem,18rem)_auto]">
+              <li key={t.id} data-task={t.id} data-auto={v === "auto" || undefined} className="grid grid-cols-1 items-center gap-2 px-4 py-3 sm:grid-cols-[1fr_minmax(12rem,18rem)_auto]">
                 <div className="min-w-0">
                   <p id={labelId} className="text-sm font-medium text-foreground">
                     {t.label}
@@ -882,8 +881,8 @@ export const EnsembleBuilder = React.forwardRef<HTMLDivElement, EnsembleBuilderP
     const calls = value.references.length * value.rounds + (value.aggregator ? 1 : 0);
 
     return (
-      <div ref={ref} data-slot="ensemble-builder" className={cn("grid w-full gap-4", className)} {...props}>
-        <section aria-labelledby={`${id}-refs`} className="grid gap-2">
+      <div ref={ref} data-slot="ensemble-builder" className={cn("grid w-full grid-cols-1 gap-4", className)} {...props}>
+        <section aria-labelledby={`${id}-refs`} className="grid grid-cols-1 gap-2">
           <div className="flex items-center justify-between gap-2">
             <h4 id={`${id}-refs`} className="text-sm font-medium text-foreground">
               Reference models
@@ -895,7 +894,7 @@ export const EnsembleBuilder = React.forwardRef<HTMLDivElement, EnsembleBuilderP
           {value.references.length === 0 ? (
             <p className="rounded-box border border-dashed border-border px-4 py-4 text-center text-xs text-muted-foreground">Add two or more models that answer in parallel.</p>
           ) : (
-            <ul className="grid gap-1.5">
+            <ul className="grid grid-cols-1 gap-1.5">
               {value.references.map((r) => (
                 <li key={modelRefKey(r)} className="flex items-center gap-2 rounded-control border border-border bg-card px-2 py-1.5">
                   <ModelRefLabel providers={providers} value={r} className="flex-1" />
@@ -912,7 +911,7 @@ export const EnsembleBuilder = React.forwardRef<HTMLDivElement, EnsembleBuilderP
             </ul>
           )}
         </section>
-        <section aria-labelledby={`${id}-agg`} className="grid gap-2">
+        <section aria-labelledby={`${id}-agg`} className="grid grid-cols-1 gap-2">
           <h4 id={`${id}-agg`} className="text-sm font-medium text-foreground">
             Aggregator
           </h4>
@@ -1157,7 +1156,7 @@ export const ReasoningPill = React.forwardRef<HTMLButtonElement, ReasoningPillPr
             <RiArrowDownSLine aria-hidden className="size-3.5 opacity-60" />
           </button>
         </PopoverPrimitive.Trigger>
-        <PopoverContent size="sm" align="start" className="grid gap-4" aria-label="Reasoning settings">
+        <PopoverContent size="sm" align="start" className="grid grid-cols-1 gap-4" aria-label="Reasoning settings">
           {supportsThinking && (
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -1181,7 +1180,7 @@ export const ReasoningPill = React.forwardRef<HTMLButtonElement, ReasoningPillPr
             </div>
           )}
           {supportsEffort && (
-            <div className="grid gap-2">
+            <div className="grid grid-cols-1 gap-2">
               <EffortSlider
                 levels={levels}
                 value={value.effort}

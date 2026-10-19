@@ -907,7 +907,17 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
             if (typed.length === 8) join(typed);
           }}
         >
-          <OTPField length={8} groupSize={4} value={typed} onChange={setTyped} onComplete={(v: string) => join(v)} invalid={!!error} aria-label="Pairing code" />
+          <OTPField
+            length={8}
+            groupSize={4}
+            value={typed}
+            onChange={setTyped}
+            onComplete={(v: string) => join(v)}
+            invalid={!!error}
+            aria-label="Pairing code"
+            containerClassName="w-full justify-center [&>[data-slot=input-otp-group]]:min-w-0 [&>[data-slot=input-otp-group]]:flex-1 [&>[data-slot=input-otp-group]]:justify-center"
+            slotClassName="size-auto min-w-0 max-w-10 flex-1 aspect-square"
+          />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <Button type="submit" fullWidth disabled={typed.length !== 8}>
             Continue

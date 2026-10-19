@@ -510,7 +510,8 @@ export const StatGroup = React.forwardRef<HTMLDivElement, StatGroupProps>(
         data-slot="stat-group"
         data-variant={variant}
         className={cn(
-          "grid grid-cols-2",
+          // Cards need about 9rem each (label, icon tile, delta): a narrow column gets fewer, wider tiles instead of squeezed ones.
+          variant === "divided" ? "grid grid-cols-2" : "grid grid-cols-[repeat(auto-fit,minmax(min(100%,9rem),1fr))]",
           statCols[columns],
           variant === "divided" ? "gap-px overflow-hidden rounded-box border border-border bg-border shadow-xs" : "gap-4",
           className

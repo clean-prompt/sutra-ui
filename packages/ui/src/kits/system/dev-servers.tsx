@@ -123,7 +123,7 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
         data-slot="dev-server-list"
         aria-busy={loading || undefined}
         style={accentStyle(accent, style)}
-        className={cn("flex flex-col gap-1 text-sm", className)}
+        className={cn("@container flex flex-col gap-1 text-sm", className)}
         {...props}
       >
         {!skeleton && showIdleBanner && idle.count > 0 ? (
@@ -176,7 +176,7 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
                     <Skeleton shape="text" className="w-32 max-w-full" />
                     <Skeleton shape="text" className="h-[0.7em] w-20 max-w-full" />
                   </div>
-                  <div className="flex shrink-0 items-center gap-1.5">
+                  <div className="hidden shrink-0 items-center gap-1.5 @xl:flex">
                     <Skeleton data-slot="dev-server-skeleton-port" className="h-6 w-12 rounded-control" />
                     <Skeleton data-slot="dev-server-skeleton-pill" className="h-6 w-20 rounded-full" />
                   </div>
@@ -200,12 +200,12 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
                   key={project.id}
                   data-slot="dev-server-row"
                   data-activity={activity.kind}
-                  className="group/row flex items-center gap-3 rounded-box px-3 py-3 transition-colors hover:bg-muted/50"
+                  className="group/row flex flex-wrap items-center gap-x-3 rounded-box px-3 py-3 transition-colors hover:bg-muted/50"
                 >
-                  <span aria-hidden className={cn("inline-flex size-8 shrink-0 items-center justify-center rounded-md [&_svg]:size-4", accentClasses.soft)}>
+                  <span aria-hidden className={cn("order-1 inline-flex size-8 shrink-0 items-center justify-center rounded-md [&_svg]:size-4", accentClasses.soft)}>
                     <RiFolder3Line />
                   </span>
-                  <span className="flex min-w-0 flex-1 flex-col">
+                  <span className="order-2 flex min-w-0 flex-1 flex-col">
                     {onOpen ? (
                       <button
                         type="button"
@@ -219,13 +219,15 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
                     )}
                     {sub ? <span className="truncate text-xs text-muted-foreground">{sub}</span> : null}
                   </span>
-                  <span className="flex shrink-0 flex-wrap items-center justify-end gap-1.5">
+                  {/* Narrow lists: name and memory on the first line, ports and activity wrapped underneath. */}
+                  <span aria-hidden className="order-5 h-0 basis-full @xl:hidden" />
+                  <span className="order-6 mt-1.5 ml-11 flex min-w-0 flex-wrap items-center gap-1.5 @xl:order-3 @xl:m-0 @xl:shrink-0 @xl:justify-end">
                     {project.ports && project.ports.length > 0 ? (
                       <PortBadgeList ports={project.ports} label={`${project.name} ports`} size="md" />
                     ) : null}
                     <ActivityPill activity={activity} />
                   </span>
-                  <span data-slot="dev-server-memory" className="w-20 shrink-0 text-right font-semibold tabular-nums text-foreground">
+                  <span data-slot="dev-server-memory" className="order-3 w-20 shrink-0 text-right font-semibold tabular-nums text-foreground @xl:order-4">
                     {formatBytes(project.memoryBytes)}
                   </span>
                   {onStop ? (
@@ -240,7 +242,7 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
                           variant="ghost"
                           size="icon-xs"
                           aria-label={`Stop ${project.name}`}
-                          className="shrink-0 text-muted-foreground opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 [@media(hover:none)]:opacity-100"
+                          className="order-4 shrink-0 text-muted-foreground opacity-0 group-hover/row:opacity-100 @xl:order-5 focus-visible:opacity-100 data-[state=open]:opacity-100 [@media(hover:none)]:opacity-100"
                         >
                           <RiStopCircleLine aria-hidden />
                         </Button>

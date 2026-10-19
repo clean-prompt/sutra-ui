@@ -318,7 +318,7 @@ export const ConflictResolver = React.forwardRef<HTMLDivElement, ConflictResolve
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <VersionPane label="Yours" version={yours} compareTo={theirs} tone="mine" now={now} />
           <VersionPane label="Theirs" version={theirs} compareTo={yours} tone="theirs" now={now} />
         </div>

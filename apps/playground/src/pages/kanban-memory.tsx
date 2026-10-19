@@ -251,7 +251,7 @@ function KanbanBoardDemo() {
 function KanbanCardsDemo() {
   const cards = initialBoard.cards.filter((c) => ["SUT-104", "SUT-107", "SUT-108", "SUT-116"].includes(c.id));
   return (
-    <div className="grid w-full gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-3 sm:grid-cols-2">
       {cards.map((c) => (
         <KanbanCard
           key={c.id}

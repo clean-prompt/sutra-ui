@@ -220,15 +220,14 @@ export const ProviderRow = React.forwardRef<HTMLDivElement, ProviderRowProps>(
         ref={ref}
         data-slot="provider-row"
         data-status={p.status}
-        className={cn("flex flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap", className)}
+        className={cn("flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3", className)}
         {...props}
       >
         <ProviderLogo name={p.name} monogram={p.monogram} color={p.color} />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 basis-48">
           <div className="flex flex-wrap items-center gap-2">
             <span className="truncate text-sm font-medium text-foreground">{p.name}</span>
-            <Badge size="sm" variant="outline" color="neutral" data-slot="provider-auth">
-              <AuthIcon aria-hidden className="text-muted-foreground" />
+            <Badge size="sm" variant="outline" color="neutral" data-slot="provider-auth" leadingIcon={<AuthIcon aria-hidden className="text-muted-foreground" />}>
               {providerAuthLabels[p.auth]}
             </Badge>
           </div>
@@ -252,7 +251,7 @@ export const ProviderRow = React.forwardRef<HTMLDivElement, ProviderRowProps>(
             )}
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-2">
           {p.quota && configured && (
             <ProviderQuotaChip used={p.quota.used} resetsAt={p.quota.resetsAt} label={p.quota.label ? `${p.name} ${p.quota.label}` : `${p.name} quota`} now={now} />
           )}
@@ -549,7 +548,7 @@ function PkcePanel({
         </li>
         <li>Copy the code it shows and paste it below.</li>
       </ol>
-      <div className="grid gap-1.5">
+      <div className="grid grid-cols-1 gap-1.5">
         <Label htmlFor={`${id}-code`}>Authorization code</Label>
         <Input
           id={`${id}-code`}
@@ -617,7 +616,7 @@ function ApiKeyPanel({
 
   return (
     <div className="space-y-3">
-      <div className="grid gap-1.5">
+      <div className="grid grid-cols-1 gap-1.5">
         <div className="flex items-center justify-between gap-2">
           <Label htmlFor={`${id}-key`}>{providerName} API key</Label>
           {getKeyUrl && isSafeHref(getKeyUrl) && (
@@ -830,7 +829,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
         ref={ref}
         noValidate
         data-slot="custom-endpoint-form"
-        className={cn("grid w-full gap-4", className)}
+        className={cn("grid w-full grid-cols-1 gap-4", className)}
         onSubmit={(e) => {
           e.preventDefault();
           setTouched(true);
@@ -838,8 +837,8 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
         }}
         {...props}
       >
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="grid gap-1.5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-1.5">
             <Label htmlFor={`${id}-name`} required>
               Name
             </Label>
@@ -851,7 +850,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
               invalid={touched && !values.name.trim()}
             />
           </div>
-          <div className="grid gap-1.5">
+          <div className="grid grid-cols-1 gap-1.5">
             <Label id={`${id}-mode-label`}>API mode</Label>
             <SimpleSelect
               aria-labelledby={`${id}-mode-label`}
@@ -861,7 +860,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
             />
           </div>
         </div>
-        <div className="grid gap-1.5">
+        <div className="grid grid-cols-1 gap-1.5">
           <Label htmlFor={`${id}-url`} required>
             Base URL
           </Label>
@@ -881,7 +880,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
             </p>
           )}
         </div>
-        <div className="grid gap-1.5">
+        <div className="grid grid-cols-1 gap-1.5">
           <Label htmlFor={`${id}-key`}>API key</Label>
           <PasswordInput
             id={`${id}-key`}
@@ -892,7 +891,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
             className="font-mono"
           />
         </div>
-        <fieldset className="grid gap-2">
+        <fieldset className="grid grid-cols-1 gap-2">
           <legend className="mb-1.5 text-sm font-medium text-foreground">Headers</legend>
           {values.headers.length === 0 && <p className="text-xs text-muted-foreground">No extra headers</p>}
           {values.headers.map((h, i) => (
@@ -1041,7 +1040,7 @@ export const ProviderKeysGroups = React.forwardRef<HTMLDivElement, ProviderKeysG
     );
     const nameInvalid = name !== "" && !ENV_NAME.test(name);
     return (
-      <div ref={ref} data-slot="provider-keys-groups" className={cn("grid w-full gap-4", className)} {...props}>
+      <div ref={ref} data-slot="provider-keys-groups" className={cn("grid w-full grid-cols-1 gap-4", className)} {...props}>
         {sorted.map((g) => {
           const setCount = g.keys.filter((k) => k.value).length;
           return (

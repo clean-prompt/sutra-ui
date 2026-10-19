@@ -385,7 +385,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
               )}
             >
               <span aria-hidden className="absolute inset-y-1.5 left-0 w-0.5 rounded-full" style={{ backgroundColor: color }} />
-              <div className="flex min-w-0 items-center gap-2">
+              <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
                 {hasKids ? (
                   <button
                     type="button"
@@ -405,9 +405,9 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                     [{n.batch.index}/{n.batch.total}]
                   </span>
                 )}
-                <span className="truncate text-sm font-medium text-foreground">{n.name}</span>
+                <span className="min-w-0 max-w-full truncate text-sm font-medium text-foreground">{n.name}</span>
                 {n.type && <span className="shrink-0 rounded-xs bg-muted px-1 text-2xs text-muted-foreground">{n.type}</span>}
-                <span className="ml-auto flex shrink-0 items-center gap-2 text-2xs tabular-nums text-muted-foreground">
+                <span className="ml-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-x-2 text-2xs tabular-nums text-muted-foreground">
                   <span title="Tools">{roll.tools} tools</span>
                   {roll.agents > 0 && <span title="Child agents">{roll.agents} agents</span>}
                   {roll.tokens > 0 && <span title="Tokens">{formatTokens(roll.tokens, { trimZeros: false })} tok</span>}

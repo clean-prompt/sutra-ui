@@ -718,8 +718,8 @@ describe("MiniPlayer", () => {
     );
     const compact = container.querySelector<HTMLElement>('[data-layout="compact"]')!;
     const full = container.querySelector<HTMLElement>('[data-layout="full"]')!;
-    expect(compact.className).toContain("md:hidden");
-    expect(full.className).toContain("max-md:hidden");
+    expect(compact.className).toContain("@3xl:hidden");
+    expect(full.className).toContain("@max-3xl:hidden");
 
     expect(within(compact).getByRole("progressbar", { name: "Playback progress" })).toHaveAttribute("aria-valuetext", "1:05 of 3:20");
     fireEvent.click(within(compact).getByRole("button", { name: "Open now playing: Alpha, Ana" }));
@@ -745,7 +745,7 @@ describe("MiniPlayer", () => {
   it("supports a single layout and renders nothing without a track", () => {
     const { container, rerender } = render(<MiniPlayer {...base} layout="compact" />);
     expect(container.querySelector('[data-layout="full"]')).toBeNull();
-    expect(container.querySelector('[data-layout="compact"]')!.className).not.toContain("md:hidden");
+    expect(container.querySelector('[data-layout="compact"]')!.className).not.toContain("@3xl:hidden");
     rerender(<MiniPlayer {...base} layout="full" />);
     expect(container.querySelector('[data-layout="compact"]')).toBeNull();
     rerender(<MiniPlayer {...base} track={null} />);

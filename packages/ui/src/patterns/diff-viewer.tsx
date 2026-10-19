@@ -621,7 +621,7 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
                 ))}
               </span>
             )}
-            <span className="ml-auto flex items-center gap-1">
+            <span className="ml-auto flex flex-wrap items-center justify-end gap-1">
               {headerExtra}
               {(onModeChange || defaultMode !== undefined) && (
                 <SegmentedControl
@@ -1074,7 +1074,7 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
         className={cn("flex flex-col overflow-hidden rounded-box border border-border bg-card shadow-xs", className)}
         {...props}
       >
-        <div className="flex min-h-9 items-center gap-2 border-b border-border bg-subtle/60 px-3 py-1.5">
+        <div className="flex min-h-9 flex-wrap items-center gap-x-2 gap-y-1 border-b border-border bg-subtle/60 px-3 py-1.5">
           <FileFormatIcon ext={fileName} size={18} />
           {pathNode}
           {status !== "modified" && (
@@ -1087,7 +1087,7 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
               {status === "added" ? "New file" : "Deleted"}
             </span>
           )}
-          <span className="ml-auto flex shrink-0 items-center gap-2">
+          <span className="ml-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-2">
             {headerExtra}
             <DiffStat additions={stat.additions} deletions={stat.deletions} />
           </span>
@@ -1095,7 +1095,7 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
         <div className="relative">
           <div
             id={bodyId}
-            className={cn("overflow-x-auto scrollbar-thin py-1 font-mono text-xs leading-5", capped && "overflow-hidden")}
+            className={cn("overflow-x-auto scrollbar-thin py-1 font-mono text-xs leading-5", capped && "overflow-y-hidden")}
             style={capped ? { maxHeight: collapsedLines * ROW_PX + 8 } : undefined}
           >
             {rows.length === 0 || (rows.length === 1 && rows[0]!.text === "" && rows[0]!.type === "equal") ? (
@@ -1172,13 +1172,13 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
           )}
         </div>
         {(overflow && expanded && !onOpen) || onAccept || onReject ? (
-          <div className="flex items-center gap-2 border-t border-border bg-subtle/60 px-3 py-1.5">
+          <div className="flex flex-wrap items-center gap-2 border-t border-border bg-subtle/60 px-3 py-1.5">
             {overflow && expanded && !onOpen && (
               <Button size="xs" variant="ghost" aria-expanded aria-controls={bodyId} onClick={() => setExpanded(false)}>
                 Collapse
               </Button>
             )}
-            <span className="ml-auto flex items-center gap-1.5">
+            <span className="ml-auto flex flex-wrap items-center justify-end gap-1.5">
               {onReject && (
                 <Button size="xs" variant="secondary" leadingIcon={<RiCloseLine aria-hidden />} onClick={onReject}>
                   {rejectLabel}

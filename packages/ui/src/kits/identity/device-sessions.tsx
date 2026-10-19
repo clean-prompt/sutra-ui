@@ -234,7 +234,7 @@ export const DeviceSessionList = React.forwardRef<HTMLDivElement, DeviceSessionL
         {...props}
       >
         <div className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-3">
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 basis-48">
             <h3 id={headingId} className="text-sm font-semibold text-foreground">
               {title}
               {!isLoading && <span className="ml-2 font-normal text-muted-foreground">{list.length}</span>}

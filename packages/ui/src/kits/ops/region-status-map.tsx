@@ -253,7 +253,7 @@ export const RegionStatusMap = React.forwardRef<HTMLDivElement, RegionStatusMapP
           </Card>
         ) : (
           <>
-            <div className="grid min-w-0 gap-4 @3xl:grid-cols-[minmax(0,1fr)_18rem]">
+            <div className="grid grid-cols-1 min-w-0 gap-4 @3xl:grid-cols-[minmax(0,1fr)_18rem]">
               <Card className="flex min-w-0 flex-col justify-center p-2 @md:p-3">
                 {/* While loading, the map's own placeholder is decorative; the root carries the loading text. */}
                 <div ref={mapBoxRef} aria-hidden={skeleton || undefined} data-slot="region-status-map-canvas">

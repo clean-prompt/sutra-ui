@@ -524,7 +524,7 @@ function HubDemo() {
             label: "Toolsets",
             count: toolsets.length,
             content: (
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
                 {toolsets
                   .filter((t) => match(`${t.name} ${t.description}`))
                   .map((t) => (
@@ -652,7 +652,7 @@ function McpServersDemo() {
   const [servers, setServers] = React.useState(MCP_SERVERS);
   const attempts = React.useRef(0);
   return (
-    <div className="grid w-full gap-3 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-3 lg:grid-cols-2">
       {servers.map((m) => (
         <McpServerCard
           key={m.name}
@@ -688,7 +688,7 @@ function McpServersDemo() {
 function McpFormDemo() {
   const [last, setLast] = React.useState<McpServerConfig | null>(null);
   return (
-    <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]">
+    <div className="grid grid-cols-1 w-full gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]">
       <McpServerForm existingNames={MCP_SERVERS.map((m) => m.name)} onSubmit={async (c) => { await wait(500); setLast(c); }} onCancel={() => setLast(null)} />
       <div className="space-y-2">
         <DemoLabel>Submitted config</DemoLabel>
@@ -746,7 +746,7 @@ function AccountsDemo() {
 function CatalogDemo() {
   const [plugins, setPlugins] = React.useState(CATALOG_PLUGINS);
   return (
-    <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 w-full gap-4 lg:grid-cols-2 xl:grid-cols-3">
       {plugins.map((p) => (
         <CatalogCard
           key={p.name}
@@ -820,7 +820,7 @@ function InstalledDemo() {
     },
   ].filter((i) => !hidden.includes(i.name));
   return (
-    <div className="grid w-full gap-3 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-3 lg:grid-cols-2">
       {items.map((i) => (
         <InstalledExtensionCard key={i.name} {...i} onUpdate={() => wait(900)} onOpen={() => {}} onHide={() => setHidden((h) => [...h, i.name])} onRemove={() => setHidden((h) => [...h, i.name])} />
       ))}
@@ -942,7 +942,7 @@ function SchemaFormDemo() {
   const [value, setValue] = React.useState<Record<string, unknown>>({});
   const [log, setLog] = React.useState<string[]>([]);
   return (
-    <div className="grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
+    <div className="grid grid-cols-1 w-full gap-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
       <SchemaForm
         schema={MEMORY_SCHEMA}
         onValueChange={setValue}
@@ -1026,7 +1026,7 @@ export function CapabilitiesPage() {
         <ToolListDemo />
       </Demo>
 
-      <Demo id="toolset-cards" title="Toolset cards" description="Enable switch, tool count and a configuration health pill: Configured, Needs keys or Error." align="start" canvasClassName="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Demo id="toolset-cards" title="Toolset cards" description="Enable switch, tool count and a configuration health pill: Configured, Needs keys or Error." align="start" canvasClassName="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-3">
         {TOOLSETS.map((t) => (
           <ToolsetCard key={t.id} name={t.name} icon={t.icon} description={t.description} toolCount={t.toolCount} defaultEnabled={t.enabled} health={t.health} healthMessage={t.healthMessage} onConfigure={() => {}} />
         ))}
@@ -1073,7 +1073,7 @@ export function CapabilitiesPage() {
         <InstallDialogDemo />
       </Demo>
 
-      <Demo id="security-scan" title="Security scan verdict" description="Verdict, policy badge, per-severity counts and findings with file:line." align="start" canvasClassName="grid gap-6 lg:grid-cols-2">
+      <Demo id="security-scan" title="Security scan verdict" description="Verdict, policy badge, per-severity counts and findings with file:line." align="start" canvasClassName="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <SecurityScanVerdict verdict="dangerous" policy="Blocked by policy" policyTone="block" findings={SCAN_FINDINGS} scanner="skill-guard 1.4" scannedAt="2 min ago" />
         <div className="space-y-6">
           <SecurityScanVerdict verdict="caution" policy="Allowed with warning" policyTone="warning" findings={SCAN_FINDINGS.slice(3)} scanner="skill-guard 1.4" />
@@ -1081,7 +1081,7 @@ export function CapabilitiesPage() {
         </div>
       </Demo>
 
-      <Demo id="skills" title="Skills" description="SkillCard list and SkillDetail with SKILL.md preview, frontmatter and the security scan. dotfiles-sync is flagged by the scan and stays disabled." align="start" canvasClassName="grid gap-6 lg:grid-cols-2">
+      <Demo id="skills" title="Skills" description="SkillCard list and SkillDetail with SKILL.md preview, frontmatter and the security scan. dotfiles-sync is flagged by the scan and stays disabled." align="start" canvasClassName="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="grid content-start gap-2">
           {SKILLS.map((s) => (
             <SkillCard key={s.id} skill={s} onEnabledChange={() => {}} />
@@ -1100,7 +1100,7 @@ export function CapabilitiesPage() {
         />
       </Demo>
 
-      <Demo id="sync-receipt" title="Sync receipt" description="Post-sync summary: updated, failed rebuilds, disabled by a dependency conflict and available updates." align="start" canvasClassName="grid gap-4 md:grid-cols-2">
+      <Demo id="sync-receipt" title="Sync receipt" description="Post-sync summary: updated, failed rebuilds, disabled by a dependency conflict and available updates." align="start" canvasClassName="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <SyncReceiptCard
           syncedAt="just now"
           updated={[

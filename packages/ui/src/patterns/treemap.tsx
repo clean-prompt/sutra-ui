@@ -436,25 +436,27 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
         </div>
 
         {tiles.length ? (
-          <table className="sr-only" data-slot="treemap-table">
-            <caption>{[label, ...trail.map((n) => n.name)].join(" › ")}</caption>
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">{valueLabel}</th>
-                <th scope="col">Share</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tiles.map((t) => (
-                <tr key={t.key}>
-                  <th scope="row">{pathNames(view, t.path).join(" › ")}</th>
-                  <td>{t.valueText}</td>
-                  <td>{formatShare(t.share)}</td>
+          <div className="sr-only">
+            <table data-slot="treemap-table">
+              <caption>{[label, ...trail.map((n) => n.name)].join(" › ")}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">{valueLabel}</th>
+                  <th scope="col">Share</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {tiles.map((t) => (
+                  <tr key={t.key}>
+                    <th scope="row">{pathNames(view, t.path).join(" › ")}</th>
+                    <td>{t.valueText}</td>
+                    <td>{formatShare(t.share)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : null}
 
         {legend && categories.length ? (

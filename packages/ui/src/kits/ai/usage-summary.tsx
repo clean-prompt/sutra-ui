@@ -71,6 +71,7 @@ export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm font-semibold text-foreground">Usage</p>
           <SegmentedControl
+            className="max-w-full overflow-x-auto scrollbar-none"
             aria-label="Time range"
             size="sm"
             value={range}
@@ -92,7 +93,7 @@ export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
           <p className="mb-2 text-xs font-medium text-muted-foreground">Requests per day</p>
           <BarChart data={chartData} index="day" series={[{ key: "requests", label: "Requests", color: "primary" }]} height={160} label="Requests per day" legend={false} />
         </section>
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <section aria-labelledby={`${uid}-models`} className="space-y-2">
             <p id={`${uid}-models`} className="text-xs font-medium text-muted-foreground">
               By model

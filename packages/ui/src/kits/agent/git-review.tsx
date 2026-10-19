@@ -343,7 +343,7 @@ export const ReviewScopeTabs = React.forwardRef<HTMLDivElement, ReviewScopeTabsP
         size={size}
         value={scope}
         onValueChange={(v) => v && setScope(v as ReviewScope)}
-        className={className}
+        className={cn("max-w-full overflow-x-auto scrollbar-none", className)}
         options={scopes.map((s) => ({
           value: s,
           label: (

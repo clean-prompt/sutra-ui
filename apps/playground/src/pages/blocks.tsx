@@ -3,6 +3,7 @@ import { cn, Badge, Button, Heading, Text } from "@sutra/ui";
 import { blockRegistry as registryEntries } from "@sutra/ui/blocks/registry";
 import { RiCollapseDiagonalLine, RiExpandDiagonalLine } from "@sutra/ui/icons";
 import { PageIntro } from "../components/demo";
+import { ViewportFrame } from "../components/viewport-frame";
 
 /** Shape of an entry in `blockRegistry` (packages/ui/src/blocks/registry.tsx). */
 interface BlockEntry {
@@ -59,6 +60,13 @@ function ScaledFrame({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Blocks whose breakpoints follow the browser window (headers, page headers, marketing sections, the app shell). */
+const VIEWPORT_CATEGORY = /^(header|section-header|marketing)$/;
+
+function followsViewport(block: BlockEntry) {
+  return !isFullPage(block) && (VIEWPORT_CATEGORY.test(block.category) || block.id === "app-shell");
+}
+
 function BlockPreview({ block }: { block: BlockEntry }) {
   const fullPage = isFullPage(block);
   const [expanded, setExpanded] = React.useState(false);
@@ -97,7 +105,11 @@ function BlockPreview({ block }: { block: BlockEntry }) {
         {fullPage && !expanded ? (
           <ScaledFrame>{content}</ScaledFrame>
         ) : (
-          <div className={cn(fullPage ? "overflow-x-auto" : "bg-dots p-6 sm:p-10")}>{content}</div>
+          (followsViewport(block) ? (
+            <ViewportFrame className="bg-dots p-6 sm:p-10">{content}</ViewportFrame>
+          ) : (
+            <div className={cn(fullPage ? "overflow-x-auto" : "bg-dots p-6 sm:p-10")}>{content}</div>
+          ))
         )}
       </div>
     </section>

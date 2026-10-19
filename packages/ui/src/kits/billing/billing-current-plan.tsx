@@ -128,7 +128,7 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
           </div>
         </div>
         {(seats || usage.length > 0) && (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {seats && <Meter label="Seats" value={seats.used} max={seats.total} valueText={`${seats.used} of ${seats.total}`} size="sm" />}
             {usage.map((q) => (
               <Meter
@@ -154,7 +154,7 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
                   size="sm"
                   revealable={false}
                   flippable={false}
-                  className="absolute left-0 top-0 origin-top-left scale-50"
+                  className="absolute left-0 top-0 max-w-none origin-top-left scale-50"
                 />
               </div>
               <div className="text-sm">

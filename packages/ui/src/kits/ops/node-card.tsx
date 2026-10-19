@@ -489,9 +489,9 @@ export const ResourceHero = React.forwardRef<HTMLDivElement, ResourceHeroProps>(
               {icon}
             </div>
           ) : null}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 basis-32">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-lg font-semibold tracking-tight text-foreground">{name}</h2>
+              <h2 className="min-w-0 break-words text-lg font-semibold tracking-tight text-foreground">{name}</h2>
               <span className="inline-flex items-center gap-1.5 rounded-control bg-muted px-2 py-0.5 text-xs font-medium">
                 <StatusDot status={nodeStatusDot[status]} pulse={status !== "offline"} label="" />
                 {statusLabel ?? nodeStatusLabel[status]}
@@ -500,12 +500,12 @@ export const ResourceHero = React.forwardRef<HTMLDivElement, ResourceHeroProps>(
             {description ? <p className="mt-0.5 text-sm text-muted-foreground">{description}</p> : null}
             {endpoint ? (
               <div className="mt-2 inline-flex max-w-full items-center gap-1 rounded-control border border-border bg-subtle py-0.5 pl-2.5 pr-0.5">
-                <code className="truncate font-mono text-xs text-foreground">{endpoint}</code>
+                <code className="min-w-0 truncate font-mono text-xs text-foreground">{endpoint}</code>
                 <CopyButton value={endpoint} size="xs" label="Copy endpoint" copiedLabel="Endpoint copied" className="rounded-control" />
               </div>
             ) : null}
           </div>
-          {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
+          {actions ? <div className="flex max-w-full shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
         </div>
         {uptime || ready || chips?.length ? (
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-4 text-sm">

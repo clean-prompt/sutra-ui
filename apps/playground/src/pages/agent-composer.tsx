@@ -315,7 +315,7 @@ function HighlightDemo() {
       title="Inline mention highlighting"
       description="A mirror layer behind a transparent-text textarea paints @file, #tag and leading /command tokens. Caret, selection, IME, undo and scrolling stay native. Custom rules take a regex or explicit ranges."
       align="start"
-      canvasClassName="grid gap-4 md:grid-cols-2"
+      canvasClassName="grid grid-cols-1 gap-4 lg:grid-cols-2"
     >
       <div className="flex flex-col gap-2">
         <DemoLabel>Built-in tokens</DemoLabel>
@@ -491,7 +491,7 @@ function ComposerToolbarDemo() {
     />
   );
   return (
-    <Demo id="composer-toolbar" title="Composer toolbar" description="Left: add context, mode, effort. Right: model, voice, send. Below 440px wide the mode / effort / extra tools collapse into a ⋯ popover." align="start" canvasClassName="grid gap-4 md:grid-cols-[1fr_320px]">
+    <Demo id="composer-toolbar" title="Composer toolbar" description="Left: add context, mode, effort. Right: model, voice, send. Below 440px wide the mode / effort / extra tools collapse into a ⋯ popover." align="start" canvasClassName="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
       <div className="flex flex-col gap-2">
         <DemoLabel>Wide</DemoLabel>
         <PromptInput>

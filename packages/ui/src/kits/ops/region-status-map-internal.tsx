@@ -162,7 +162,7 @@ export function RegionTable({
                     onSelect(r.id);
                   }}
                 >
-                  <TableCell className="max-w-[12rem] @lg:max-w-none">
+                  <TableCell className="max-w-28 @sm:max-w-[12rem] @lg:max-w-none">
                     <button
                       type="button"
                       aria-pressed={selected}

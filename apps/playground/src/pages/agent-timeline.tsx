@@ -156,9 +156,9 @@ function AgentTurnDemo() {
       align="start"
     >
       <ThinkingExpandAllProvider>
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <DemoLabel>Fix the counter overflow bug</DemoLabel>
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
             <ThinkingToggle />
             <Button size="xs" variant="secondary" leadingIcon={<RiRefreshLine />} onClick={replay} disabled={running}>
               Replay
@@ -353,7 +353,7 @@ function BashDemo() {
       description="A $ prompt with copy, ANSI-colored output on a code surface, separate error output, an exit-code chip and truncation with a fade."
       align="start"
     >
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-2">
           <DemoLabel>Success</DemoLabel>
           <BashToolBody command="pnpm test" output={testLines.join("\n")} exitCode={0} />
@@ -362,7 +362,7 @@ function BashDemo() {
           <DemoLabel>Failure with stderr</DemoLabel>
           <BashToolBody command="pnpm lint" output={lintStdout} stderr={lintStderr} exitCode={1} />
         </div>
-        <div className="space-y-2 md:col-span-2">
+        <div className="space-y-2 lg:col-span-2">
           <DemoLabel>Long output (truncated at 8 lines)</DemoLabel>
           <BashToolBody command="pnpm build --verbose" output={longLog} maxLines={8} exitCode={0} />
         </div>
@@ -380,7 +380,7 @@ function DiffCardDemo() {
       description="Compact diff preview: file header with stats, a capped unified diff with line numbers and a fade, “Click to expand”, optional accept / reject, and new / deleted file states."
       align="start"
     >
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-2">
           <DemoLabel>Edit with accept / reject{decision ? ` · ${decision}` : ""}</DemoLabel>
           <EditToolBody
@@ -429,7 +429,7 @@ function BodiesDemo() {
       description="Read (path, range, snippet), Search (pattern and file:line matches), Web (domain and title) and a generic key / value grid."
       align="start"
     >
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-2">
           <DemoLabel>Read</DemoLabel>
           <ReadToolBody path="src/hooks/use-counter.ts" startLine={3} endLine={6} totalLines={9} language="ts" snippet={counterBefore.split("\n").slice(2, 6).join("\n")} />
@@ -503,6 +503,7 @@ function StatusLineDemo() {
     >
       <SegmentedControl
         size="sm"
+        className="max-w-full overflow-x-auto scrollbar-none"
         aria-label="Agent state"
         value={state}
         onValueChange={(v) => v && setState(v as AgentStatusState)}
@@ -551,9 +552,9 @@ function ThinkingDemo() {
       align="start"
     >
       <ThinkingExpandAllProvider>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <DemoLabel>Transcript</DemoLabel>
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
             <ThinkingToggle />
             <Button
               size="xs"

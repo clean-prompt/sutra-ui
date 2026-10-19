@@ -127,7 +127,7 @@ function PaginationDemo() {
           onPageSizeChange={setPageSize}
         />
       </div>
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="space-y-3">
           <DemoLabel>simple</DemoLabel>
           <Pagination variant="simple" defaultPage={3} totalPages={8} />
@@ -171,7 +171,7 @@ function TabMenuDemo() {
         <DemoLabel>Icons, counts, disabled item · active: {tab}</DemoLabel>
         <TabMenu items={projectTabs} value={tab} onValueChange={setTab} />
       </div>
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="space-y-3">
           <DemoLabel>size="sm" · labels only</DemoLabel>
           <TabMenu
@@ -229,7 +229,7 @@ function SidebarPreview() {
   );
 
   return (
-    <div className="h-[520px] w-full overflow-hidden rounded-box border border-border">
+    <div className="h-[620px] w-full overflow-hidden rounded-box border border-border">
       <SidebarProvider shortcut={null} contained>
         <Sidebar mobileTitle="Workspace navigation">
           <SidebarHeader>
@@ -302,7 +302,7 @@ function SidebarPreview() {
               disabled here with <code className="font-mono text-xs">shortcut={"{null}"}</code> so it does not fight the
               playground's own sidebar.
             </p>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="h-24 rounded-box border border-dashed border-border bg-subtle" />
               ))}
@@ -362,7 +362,7 @@ function TreeViewDemo() {
   const [selected, setSelected] = React.useState<string[]>(["src/components/tabs.tsx"]);
   const [checked, setChecked] = React.useState<string[]>(["src/hooks", "src/hooks/use-copy.ts", "src/hooks/use-theme.ts"]);
   return (
-    <div className="grid w-full gap-6 md:grid-cols-2">
+    <div className="grid grid-cols-1 w-full gap-6 lg:grid-cols-2">
       <div className="space-y-2">
         <DemoLabel>Single selection · selected: {selected[0] ?? "none"}</DemoLabel>
         <div className="rounded-box border border-border bg-card p-2">
@@ -460,7 +460,7 @@ export function NavigationPage() {
       </Demo>
 
       <Demo id="tabs" title="Tabs" description="Radix tabs with four visual variants and a sliding active indicator." align="start">
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {tabsVariants.map((variant) => (
             <div key={variant} className="space-y-3">
               <DemoLabel>variant="{variant}"</DemoLabel>
@@ -481,7 +481,7 @@ export function NavigationPage() {
             </div>
           ))}
         </div>
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="space-y-3">
             <DemoLabel>Icons, badges · fullWidth · size="lg"</DemoLabel>
             <Tabs variant="underline" size="lg" defaultValue="inbox">
@@ -636,7 +636,7 @@ export function NavigationPage() {
               divider
             />
           </div>
-          <div className="grid gap-10 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
             <div className="space-y-3">
               <DemoLabel>size="sm" · leading icon</DemoLabel>
               <SectionHeader

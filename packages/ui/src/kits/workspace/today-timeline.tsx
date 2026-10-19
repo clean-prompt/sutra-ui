@@ -283,7 +283,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
                   >
                     <div className="flex min-w-0 items-center gap-1.5">
                       <ItemToggle item={item} onToggle={onToggle} />
-                      <span className="text-foreground">
+                      <span className="min-w-0 truncate text-foreground">
                         <ItemTitle item={item} onSelect={onSelect} />
                       </span>
                       {item.streak != null && <Streak days={item.streak} />}

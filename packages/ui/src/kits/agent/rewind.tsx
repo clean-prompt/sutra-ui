@@ -171,7 +171,7 @@ export function RewindDialog({
             <p id={groupLabelId} className="text-sm font-medium text-foreground">
               What to restore
             </p>
-            <RadioGroup aria-labelledby={groupLabelId} value={scope} onValueChange={setScope} className="grid gap-2">
+            <RadioGroup aria-labelledby={groupLabelId} value={scope} onValueChange={setScope} className="grid grid-cols-1 gap-2">
               {scopes.map((s) => (
                 <RadioCard
                   key={s.value}
@@ -304,7 +304,7 @@ export const CheckpointMarker = React.forwardRef<HTMLDivElement, CheckpointMarke
         onClick={onRewind}
         data-slot="checkpoint-rewind"
         className={cn(
-          "inline-flex h-6 items-center gap-1 rounded-control px-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-3.5",
+          "inline-flex h-6 shrink-0 items-center gap-1 rounded-control px-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-3.5",
           focusRing
         )}
       >
@@ -313,20 +313,20 @@ export const CheckpointMarker = React.forwardRef<HTMLDivElement, CheckpointMarke
       </button>
     );
     const text = (
-      <span className="inline-flex min-w-0 items-center gap-1.5 truncate">
+      <span className="inline-flex min-w-0 items-center gap-1.5">
         <RiFlagLine aria-hidden className="size-3.5 shrink-0" />
-        <span className="font-medium">{label}</span>
+        <span className="shrink-0 font-medium">{label}</span>
         {count > 0 && (
-          <span>
+          <span className="min-w-0 truncate">
             · {count} {pluralize(count, "file")} changed
           </span>
         )}
         {sum && (sum.add > 0 || sum.del > 0) && (
-          <span className="font-mono tabular-nums" aria-hidden>
+          <span className="shrink-0 font-mono tabular-nums" aria-hidden>
             <span className="text-success">+{sum.add}</span> <span className="text-destructive">−{sum.del}</span>
           </span>
         )}
-        {timestamp != null && <span className="hidden sm:inline">· {formatWhen(timestamp)}</span>}
+        {timestamp != null && <span className="hidden shrink-0 sm:inline">· {formatWhen(timestamp)}</span>}
       </span>
     );
     return (
@@ -339,7 +339,7 @@ export const CheckpointMarker = React.forwardRef<HTMLDivElement, CheckpointMarke
         <span aria-hidden className="h-px flex-1 bg-border" />
         {list && list.length > 0 ? (
           <SimpleTooltip content={list.map((f) => f.path).join("\n")} contentClassName="whitespace-pre-line font-mono">
-            <span tabIndex={0} className={cn("rounded-xs", focusRing)}>
+            <span tabIndex={0} className={cn("flex min-w-0 rounded-xs", focusRing)}>
               {text}
             </span>
           </SimpleTooltip>

@@ -103,6 +103,7 @@ function SutraSettingsBody({ section }: { section: string }) {
           </SettingsRow>
           <SettingsRow title="Density">
             <SegmentedControl
+              className="max-w-full overflow-x-auto"
               size="sm"
               aria-label="Density"
               value={density}
@@ -207,7 +208,7 @@ export function IdentityPage() {
             logo={<SutraMark size={48} />}
             qrProps={{ moduleStyle: "rounded" }}
           />
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))] gap-6">
             {(["square", "rounded", "dots"] as const).map((style) => (
               <div key={style} className="space-y-2">
                 <DemoLabel className="capitalize">{style}</DemoLabel>
@@ -266,7 +267,7 @@ export function IdentityPage() {
           </SettingsDialog>
         </div>
         <div className="h-[560px] overflow-hidden rounded-box border border-border">
-          <SettingsShell title="Sutra settings" sections={settingsSections} section={section} onSectionChange={setSection} layout="split">
+          <SettingsShell title="Sutra settings" sections={settingsSections} section={section} onSectionChange={setSection} layout="auto">
             {(id) => <SutraSettingsBody section={id} />}
           </SettingsShell>
         </div>
@@ -279,58 +280,62 @@ export function IdentityPage() {
       </Demo>
 
       <Demo id="key-value" title="Key–value" description="Facts the system knows, in a semantic <dl>, with copyable mono values." align="start">
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="space-y-2">
-            <DemoLabel>Rows · server config</DemoLabel>
-            <KeyValueList>
-              <KeyValue label="Host" value="id.sutra.app" copyable mono />
-              <KeyValue label="Region" value="ap-south-1" mono />
-              <KeyValue label="Version" value="2.14.0 (a3f9c21)" mono />
-              <KeyValue label="Client ID" value="sutra_web_8f2c1b7e9d4a6f03b5e1c2d7" copyable mono />
-              <KeyValue label="Webhook" value={null} />
-              <KeyValue label="Signed in as" value="vyom" />
-            </KeyValueList>
-          </div>
-          <div className="space-y-2">
-            <DemoLabel>Grid · stats</DemoLabel>
-            <KeyValueList
-              layout="grid"
-              columns={2}
-              items={[
-                { label: "Uptime", value: "41 days" },
-                { label: "CPU", value: "12%" },
-                { label: "Memory", value: "3.1 / 8 GB" },
-                { label: "Disk", value: "182 GB free" },
-                { label: "Public key", value: "ed25519:9QhT…kX2p", mono: true, copyable: "ed25519:9QhTmB4fJk2LrX2p" },
-              ]}
-            />
-            <DemoLabel className="pt-4">Stacked</DemoLabel>
-            <KeyValueList layout="stacked">
-              <KeyValue label="Redirect URI" value="https://notes.sutra.app/auth/callback" mono copyable />
-            </KeyValueList>
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">
+            <div className="space-y-2">
+              <DemoLabel>Rows · server config</DemoLabel>
+              <KeyValueList>
+                <KeyValue label="Host" value="id.sutra.app" copyable mono />
+                <KeyValue label="Region" value="ap-south-1" mono />
+                <KeyValue label="Version" value="2.14.0 (a3f9c21)" mono />
+                <KeyValue label="Client ID" value="sutra_web_8f2c1b7e9d4a6f03b5e1c2d7" copyable mono />
+                <KeyValue label="Webhook" value={null} />
+                <KeyValue label="Signed in as" value="vyom" />
+              </KeyValueList>
+            </div>
+            <div className="space-y-2">
+              <DemoLabel>Grid · stats</DemoLabel>
+              <KeyValueList
+                layout="grid"
+                columns={2}
+                items={[
+                  { label: "Uptime", value: "41 days" },
+                  { label: "CPU", value: "12%" },
+                  { label: "Memory", value: "3.1 / 8 GB" },
+                  { label: "Disk", value: "182 GB free" },
+                  { label: "Public key", value: "ed25519:9QhT…kX2p", mono: true, copyable: "ed25519:9QhTmB4fJk2LrX2p" },
+                ]}
+              />
+              <DemoLabel className="pt-4">Stacked</DemoLabel>
+              <KeyValueList layout="stacked">
+                <KeyValue label="Redirect URI" value="https://notes.sutra.app/auth/callback" mono copyable />
+              </KeyValueList>
+            </div>
           </div>
         </div>
       </Demo>
 
       <Demo id="empty-state" title="Empty state" description="First-run, no-results and error placeholders." align="start">
-        <div className="grid gap-4 md:grid-cols-3">
-          <EmptyState
-            title="No notes yet"
-            description="Notes you write appear here."
-            actions={<Button size="sm">New note</Button>}
-          />
-          <EmptyState
-            variant="dashed"
-            icon={<RiSearchLine />}
-            title="Nothing matched “quarterly”"
-            description="Try a shorter query or search all apps."
-            actions={
-              <Button size="sm" variant="secondary">
-                Clear search
-              </Button>
-            }
-          />
-          <EmptyState illustration="cloud" size="sm" title="You're offline" description="Changes will sync when you reconnect." />
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-3">
+            <EmptyState
+              title="No notes yet"
+              description="Notes you write appear here."
+              actions={<Button size="sm">New note</Button>}
+            />
+            <EmptyState
+              variant="dashed"
+              icon={<RiSearchLine />}
+              title="Nothing matched “quarterly”"
+              description="Try a shorter query or search all apps."
+              actions={
+                <Button size="sm" variant="secondary">
+                  Clear search
+                </Button>
+              }
+            />
+            <EmptyState illustration="cloud" size="sm" title="You're offline" description="Changes will sync when you reconnect." />
+          </div>
         </div>
       </Demo>
 
@@ -358,7 +363,7 @@ export function IdentityPage() {
       >
         <SegmentedControl
           aria-label="Unlock method"
-          className="self-start"
+          className="max-w-full self-start overflow-x-auto"
           value={lockMode}
           onValueChange={(v) => {
             setLockMode(v as LockScreenMode);

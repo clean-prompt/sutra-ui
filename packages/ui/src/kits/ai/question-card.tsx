@@ -244,7 +244,7 @@ const QuestionCardSingle = React.forwardRef<HTMLDivElement, QuestionCardProps>(
                 setSingle(v);
                 if (v !== OTHER) submit({ values: [v] });
               }}
-              className="grid gap-2"
+              className="grid grid-cols-1 gap-2"
             >
               {allOptions.map((o) => (
                 <RadioCard key={o.value} value={o.value} label={o.label} description={"description" in o ? o.description : undefined} className="p-3" />
@@ -264,7 +264,7 @@ const QuestionCardSingle = React.forwardRef<HTMLDivElement, QuestionCardProps>(
         const valid = multi.some((v) => v !== OTHER) || (otherChosen && text.trim().length > 0);
         body = (
           <div className="space-y-2">
-            <div role="group" aria-labelledby={headingId} className="grid gap-2">
+            <div role="group" aria-labelledby={headingId} className="grid grid-cols-1 gap-2">
               {allOptions.map((o) => (
                 <CheckboxCard
                   key={o.value}
@@ -436,7 +436,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
             <RiCheckLine aria-hidden className="size-4 text-success" />
             {heading}
           </p>
-          <dl className="grid gap-1.5 text-sm" data-slot="question-answers">
+          <dl className="grid grid-cols-1 gap-1.5 text-sm" data-slot="question-answers">
             {questions.map((q) => (
               <div key={q.id} className="flex flex-wrap gap-x-2">
                 <dt className="text-muted-foreground">{q.header}:</dt>
@@ -564,7 +564,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
                     {item.description ? <p className="text-sm text-muted-foreground">{item.description}</p> : null}
                     {item.multiSelect ? <p className="text-xs text-muted-foreground">Select all that apply.</p> : null}
                   </div>
-                  <div role={item.multiSelect ? "group" : "radiogroup"} aria-labelledby={`${uid}-q`} className="grid gap-1.5">
+                  <div role={item.multiSelect ? "group" : "radiogroup"} aria-labelledby={`${uid}-q`} className="grid grid-cols-1 gap-1.5">
                     {optionRows.map((o, i) => {
                       const checked = current.values.includes(o.value);
                       return (
@@ -616,7 +616,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
               ) : (
                 <div className="space-y-2" data-slot="question-review">
                   <p className="text-sm font-semibold text-foreground">Review your answers</p>
-                  <dl className="grid gap-1.5 text-sm">
+                  <dl className="grid grid-cols-1 gap-1.5 text-sm">
                     {questions.map((q, i) => (
                       <div key={q.id} className="flex flex-wrap items-baseline gap-x-2">
                         <dt className="text-muted-foreground">{q.header}:</dt>

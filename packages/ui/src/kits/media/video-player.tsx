@@ -505,7 +505,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
           data-chrome={chromeVisible ? "visible" : "hidden"}
           data-state={media.playing ? "playing" : "paused"}
           className={cn(
-            "group/player relative isolate aspect-video w-full overflow-hidden rounded-box bg-black text-white",
+            "group/player @container relative isolate aspect-video w-full overflow-hidden rounded-box bg-black text-white",
             "outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
             fullscreen && "rounded-none",
             !chromeVisible && "cursor-none",
@@ -568,7 +568,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
           />
 
           {showCenterPlay && (
-            <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center">
+            <div className={cn("pointer-events-none absolute inset-0 z-10 grid place-items-center", resumeOffer !== null && countdown === null && "pb-16")}>
               <PlayPauseButton
                 playing={false}
                 variant="overlay"
@@ -578,7 +578,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
                   void media.play();
                   poke();
                 }}
-                className="pointer-events-auto bg-black/55 text-white backdrop-blur-sm hover:bg-black/70"
+                className="pointer-events-auto bg-black/55 text-white backdrop-blur-sm hover:bg-black/70 @max-md:size-12 @max-md:[&_svg]:size-6"
               />
             </div>
           )}
@@ -645,9 +645,9 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
           </div>
 
           {resumeOffer !== null && countdown === null && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-24 z-30 flex justify-start px-4">
+            <div className="pointer-events-none absolute inset-x-0 bottom-[4.5rem] z-30 flex justify-start px-4 @lg:bottom-24">
               <div role="status" className={cn(pillClass, "py-1.5 pl-3.5 pr-1.5 animate-in fade-in-0 slide-in-from-bottom-2")}>
-                <span>Resume from {formatClock(resumeOffer)}?</span>
+                <span className="whitespace-nowrap @max-md:text-xs">Resume from {formatClock(resumeOffer)}?</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -753,7 +753,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
               <SkipButton tone="overlay" direction="back" seconds={skipSeconds} onSkip={(d) => media.skip(d)} />
               <SkipButton tone="overlay" direction="forward" seconds={skipSeconds} onSkip={(d) => media.skip(d)} />
               {onNext && (
-                <button type="button" aria-label={nextLabel} onClick={onNext} className={mediaButtonVariants({ tone: "overlay" })}>
+                <button type="button" aria-label={nextLabel} onClick={onNext} className={cn(mediaButtonVariants({ tone: "overlay" }), "@max-sm:hidden")}>
                   <RiSkipForwardFill aria-hidden />
                 </button>
               )}
@@ -763,7 +763,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
                 muted={media.muted}
                 onVolumeChange={media.setVolume}
                 onMutedChange={media.setMuted}
-                className="max-sm:hidden"
+                className="@max-md:hidden"
               />
               <div className="flex-1" />
               {subtitleOptions.length > 0 && (
@@ -776,16 +776,16 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
                   tracks={audioOptions}
                   value={audio ?? audioOptions[0]?.id ?? null}
                   onValueChange={(id) => id && setAudio(id)}
-                  className="max-sm:hidden"
+                  className="@max-md:hidden"
                 />
               )}
-              <PlaybackRateMenu tone="overlay" rate={media.rate} onRateChange={media.setRate} rates={rates} className="max-sm:hidden" />
+              <PlaybackRateMenu tone="overlay" rate={media.rate} onRateChange={media.setRate} rates={rates} className="@max-md:hidden" />
               {features.pip && (
                 <button
                   type="button"
                   aria-label={pip ? "Exit picture in picture" : "Picture in picture"}
                   onClick={togglePip}
-                  className={cn(mediaButtonVariants({ tone: "overlay" }), "max-sm:hidden")}
+                  className={cn(mediaButtonVariants({ tone: "overlay" }), "@max-md:hidden")}
                 >
                   {pip ? <RiPictureInPictureExitLine aria-hidden /> : <RiPictureInPicture2Line aria-hidden />}
                 </button>

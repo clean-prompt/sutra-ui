@@ -784,7 +784,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
                 className="w-40"
               />
             )}
-            <div className="ml-auto flex items-center gap-0.5">
+            <div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-0.5">
               {toolbarExtra}
               {chip && (
                 <span className="mr-1.5 inline-flex items-center gap-1.5 text-xs text-muted-foreground" role="status">

@@ -123,8 +123,8 @@ export function KunjiPage() {
         description="The full widget: QR with the kunji plate, countdown, 1-2-3 steps, short-code fallback, Open kunji deep link and a live status line. Pick how the simulated wallet responds."
         canvasClassName="flex-col"
       >
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <SegmentedControl size="sm" value={outcome} onValueChange={(v) => setOutcome(v as KunjiMockOutcome)} options={outcomes} />
+        <div className="flex max-w-full flex-wrap items-center justify-center gap-2">
+          <SegmentedControl className="max-w-full overflow-x-auto" size="sm" value={outcome} onValueChange={(v) => setOutcome(v as KunjiMockOutcome)} options={outcomes} />
           <Button size="sm" variant="ghost" leadingIcon={<RiRefreshLine />} onClick={() => setRun((n) => n + 1)}>
             Restart
           </Button>
@@ -141,7 +141,7 @@ export function KunjiPage() {
       </Demo>
 
       <Demo id="kunji-variants" title="Variants" description="card, inline and compact. Each runs its own mock session." align="start">
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div className="flex flex-col items-center gap-2">
             <DemoLabel>card</DemoLabel>
             <KunjiSignIn client={waitingClient} />
@@ -160,20 +160,22 @@ export function KunjiPage() {
       </Demo>
 
       <Demo id="kunji-states" title="States gallery" description="KunjiSignInView forced into every state (plus the slow flag), as screen readers hear them." align="start">
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {galleryStates.map((s) => (
-            <div key={s} className="flex flex-col items-center gap-2">
-              <DemoLabel>{s}</DemoLabel>
-              <KunjiSignInView state={stateFor(s)} variant="compact" onStart={() => {}} onRetry={() => {}} onRefresh={() => {}} onLink={() => {}} onRegister={() => {}} onRequestCode={() => {}} />
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 gap-6 @2xl:grid-cols-2 @6xl:grid-cols-3">
+            {galleryStates.map((s) => (
+              <div key={s} className="flex flex-col items-center gap-2">
+                <DemoLabel>{s}</DemoLabel>
+                <KunjiSignInView state={stateFor(s)} variant="compact" onStart={() => {}} onRetry={() => {}} onRefresh={() => {}} onLink={() => {}} onRegister={() => {}} onRequestCode={() => {}} />
+              </div>
+            ))}
+            <div className="flex flex-col items-center gap-2">
+              <DemoLabel>scanned + slow</DemoLabel>
+              <KunjiSignInView state={stateFor("scanned", true)} variant="compact" onRetry={() => {}} />
             </div>
-          ))}
-          <div className="flex flex-col items-center gap-2">
-            <DemoLabel>scanned + slow</DemoLabel>
-            <KunjiSignInView state={stateFor("scanned", true)} variant="compact" onRetry={() => {}} />
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <DemoLabel>short code shown</DemoLabel>
-            <KunjiSignInView state={{ ...stateFor("ready"), code: "482913", codeStatus: "ready" }} variant="compact" onRequestCode={() => {}} />
+            <div className="flex flex-col items-center gap-2">
+              <DemoLabel>short code shown</DemoLabel>
+              <KunjiSignInView state={{ ...stateFor("ready"), code: "482913", codeStatus: "ready" }} variant="compact" onRequestCode={() => {}} />
+            </div>
           </div>
         </div>
       </Demo>
@@ -192,9 +194,11 @@ export function KunjiPage() {
       </Demo>
 
       <Demo id="kunji-link" title="KunjiLink" description="Link a kunji wallet to an account that is already signed in, then show Linked ✓." align="start">
-        <div className="grid gap-4 md:grid-cols-2">
-          <KunjiLink client={client} onLink={() => new Promise((r) => setTimeout(r, 600))} onUnlink={() => {}} />
-          <KunjiLink client={client} defaultLinked sub="9f2c41d07be35a18c6e04f9d2b7a13c58e6f0d4a91b2c3d4" onUnlink={() => {}} />
+        <div className="@container w-full">
+          <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2">
+            <KunjiLink client={client} onLink={() => new Promise((r) => setTimeout(r, 600))} onUnlink={() => {}} />
+            <KunjiLink client={client} defaultLinked sub="9f2c41d07be35a18c6e04f9d2b7a13c58e6f0d4a91b2c3d4" onUnlink={() => {}} />
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <KunjiLinkedBadge sub="9f2c41d07be35a18c6e04f9d2b7a13c58e6f0d4a91b2c3d4" />
@@ -247,6 +251,7 @@ export function KunjiPage() {
 
       <Demo id="access-gate" title="AccessGate" description="Request access → pending (approves after ~6s here) → collect your key. Or jump to a state." canvasClassName="flex-col">
         <SegmentedControl
+          className="max-w-full overflow-x-auto"
           size="sm"
           value={gateRecord.status}
           onValueChange={(v) => {
@@ -281,7 +286,7 @@ export function KunjiPage() {
       </Demo>
 
       <Demo id="auth-problem" title="AuthProblem" description="Full-panel states that are neither signed in nor signed out, each with recovery actions." canvasClassName="flex-col">
-        <SegmentedControl size="sm" value={problem} onValueChange={(v) => setProblem(v as AuthProblemVariant)} options={problemVariants.map((v) => ({ value: v, label: v }))} />
+        <SegmentedControl className="max-w-full overflow-x-auto" size="sm" value={problem} onValueChange={(v) => setProblem(v as AuthProblemVariant)} options={problemVariants.map((v) => ({ value: v, label: v }))} />
         <AuthProblem
           variant={problem}
           appName="the gateway"
