@@ -354,7 +354,7 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
             <DrawerClose
               aria-label="Close"
               className={cn(
-                "absolute right-3 top-3 inline-flex size-8 items-center justify-center rounded-control text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-[18px]",
+                "absolute end-3 top-3 inline-flex size-8 items-center justify-center rounded-control text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-[18px]",
                 focusRing
               )}
             >
@@ -374,7 +374,7 @@ export const DrawerHeader = React.forwardRef<HTMLDivElement, React.HTMLAttribute
     <SheetHeader
       ref={ref}
       data-slot="drawer-header"
-      className={cn("shrink-0 touch-none gap-1 px-5 pb-3 pt-1 text-left", className)}
+      className={cn("shrink-0 touch-none gap-1 px-5 pb-3 pt-1 text-start", className)}
       {...props}
     />
   )

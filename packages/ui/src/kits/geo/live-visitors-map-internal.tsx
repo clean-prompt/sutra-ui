@@ -163,7 +163,7 @@ export function LiveVisitorList({ visitors, selectedId, onSelect, now, liveWithi
               <span className="truncate font-medium">{v.city}</span>
               {v.name ? <span className="truncate text-xs text-muted-foreground">{v.name}</span> : null}
             </span>
-            <span aria-hidden className={cn("text-right text-xs tabular-nums", isLive(v, now, liveWithinMs) ? "text-success" : "text-muted-foreground")}>
+            <span aria-hidden className={cn("text-end text-xs tabular-nums", isLive(v, now, liveWithinMs) ? "text-success" : "text-muted-foreground")}>
               {time}
             </span>
             <span aria-hidden className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">

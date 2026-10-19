@@ -191,7 +191,7 @@ export const MarketingHeader = React.forwardRef<HTMLElement, MarketingHeaderProp
                     href={signupHref}
                     className="group/cta mt-1 inline-flex items-center gap-1 text-xs font-semibold text-white hover:underline"
                   >
-                    Try it free <RiArrowRightLine aria-hidden className="size-3.5 transition-transform group-hover/cta:translate-x-0.5" />
+                    Try it free <RiArrowRightLine aria-hidden className="size-3.5 transition-transform group-hover/cta:translate-x-0.5 rtl:group-hover/cta:-translate-x-0.5 rtl:-scale-x-100" />
                   </NavigationMenuPrimitive.Link>
                 </MeshGradient>
               </div>
@@ -334,7 +334,7 @@ export const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>(
       >
         {showSidebarTrigger && (
           <>
-            <SidebarTrigger className="-ml-1" />
+            <SidebarTrigger className="-ms-1" />
             <Separator orientation="vertical" className="mx-1 h-4 min-h-4 self-center" />
           </>
         )}
@@ -452,9 +452,9 @@ export const CenteredHeader = React.forwardRef<HTMLElement, CenteredHeaderProps>
             {renderLinks(rightLinks)}
           </nav>
           {cta !== null && (
-            <div className="ml-2 hidden sm:block">
+            <div className="ms-2 hidden sm:block">
               {cta ?? (
-                <Button size="sm" variant="inverse" className="group/cta" trailingIcon={<RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5" />}>
+                <Button size="sm" variant="inverse" className="group/cta" trailingIcon={<RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5 rtl:group-hover/cta:-translate-x-0.5 rtl:-scale-x-100" />}>
                   Start free
                 </Button>
               )}
@@ -593,7 +593,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
               {versions.map((v, i) => (
                 <DropdownMenuRadioItem key={v} value={v}>
                   <span className="font-mono">{v}</span>
-                  {i === 0 ? <span className="ml-2 text-xs text-muted-foreground">latest</span> : null}
+                  {i === 0 ? <span className="ms-2 text-xs text-muted-foreground">latest</span> : null}
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -606,7 +606,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
             </BlockLink>
           ))}
         </nav>
-        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+        <div className="ms-auto flex items-center gap-1 sm:gap-2">
           <SearchTrigger collapseBelow="sm" onClick={() => setOpen(true)} placeholder="Search docs…" className="w-56 lg:w-64" />
           <SimpleTooltip content="GitHub">
             <Button asChild variant="ghost" size="icon" className="max-[400px]:hidden">
@@ -647,7 +647,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
                       }}
                     >
                       {item.label}
-                      {item.href ? <RiArrowRightUpLine aria-hidden className="ml-auto size-3.5 opacity-50" /> : null}
+                      {item.href ? <RiArrowRightUpLine aria-hidden className="ms-auto size-3.5 opacity-50" /> : null}
                     </CommandItem>
                   ))}
               </CommandGroup>

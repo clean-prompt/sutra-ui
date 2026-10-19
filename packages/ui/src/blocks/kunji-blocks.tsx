@@ -329,7 +329,7 @@ export const KunjiSignInPage = React.forwardRef<HTMLDivElement, KunjiSignInPageP
   ) => {
     const [method, setMethod] = React.useState<SignInMethodId>("kunji");
     const back = (
-      <Button variant="ghost" size="sm" leadingIcon={<RiArrowLeftLine aria-hidden />} onClick={() => setMethod("kunji")} className="mt-4 self-center">
+      <Button variant="ghost" size="sm" leadingIcon={<RiArrowLeftLine className="rtl:-scale-x-100" aria-hidden />} onClick={() => setMethod("kunji")} className="mt-4 self-center">
         Back to kunji
       </Button>
     );
@@ -485,7 +485,7 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
               </Button>
             )}
             {onSignOut && (
-              <Button variant="ghost" className="flex-1" leadingIcon={<RiLogoutBoxRLine aria-hidden />} onClick={onSignOut}>
+              <Button variant="ghost" className="flex-1" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} onClick={onSignOut}>
                 Sign out
               </Button>
             )}

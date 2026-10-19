@@ -101,7 +101,7 @@ export const CollapsibleTrigger = React.forwardRef<HTMLButtonElement, Collapsibl
         type="button"
         disabled={isDisabled}
         className={cn(
-          "group flex w-full min-w-0 cursor-pointer items-center gap-3 rounded-md py-2 text-left text-sm font-medium text-foreground transition-colors",
+          "group flex w-full min-w-0 cursor-pointer items-center gap-3 rounded-md py-2 text-start text-sm font-medium text-foreground transition-colors",
           "hover:text-foreground/80 disabled:cursor-not-allowed disabled:opacity-50",
           ctx.variant === "surface" && "rounded-box px-4 py-3 hover:bg-subtle",
           ctx.variant === "ghost" && "px-3 hover:bg-accent data-[state=open]:hover:bg-transparent",

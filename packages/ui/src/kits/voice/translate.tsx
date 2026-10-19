@@ -310,7 +310,7 @@ export const LanguagePicker = React.forwardRef<HTMLDivElement, LanguagePickerPro
     return (
       <div ref={ref} className={cn("flex w-full flex-col", className)} {...props}>
         <div className="relative border-b border-border p-2">
-          <RiSearchLine aria-hidden="true" className="pointer-events-none absolute left-4.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <RiSearchLine aria-hidden="true" className="pointer-events-none absolute start-4.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             role="combobox"
             aria-expanded="true"
@@ -323,7 +323,7 @@ export const LanguagePicker = React.forwardRef<HTMLDivElement, LanguagePickerPro
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Search languages"
-            className={cn("h-8 w-full rounded-control border border-input bg-background pl-8 pr-2 text-sm placeholder:text-muted-foreground", focusRing)}
+            className={cn("h-8 w-full rounded-control border border-input bg-background ps-8 pe-2 text-sm placeholder:text-muted-foreground", focusRing)}
           />
         </div>
         <div ref={listRef} id={`${uid}-list`} role="listbox" aria-label={label} className="max-h-72 overflow-y-auto p-1 scrollbar-thin">
@@ -353,7 +353,7 @@ export const LanguagePicker = React.forwardRef<HTMLDivElement, LanguagePickerPro
                   {r.code === DETECT_LANGUAGE ? <RiSparkling2Line aria-hidden="true" className="size-4 text-primary" /> : null}
                   <span className="min-w-0 flex-1 truncate">
                     {r.label}
-                    {r.sub && r.sub !== r.label ? <span className="ml-2 text-xs text-muted-foreground">{r.sub}</span> : null}
+                    {r.sub && r.sub !== r.label ? <span className="ms-2 text-xs text-muted-foreground">{r.sub}</span> : null}
                   </span>
                   {selected ? <RiCheckLine aria-hidden="true" className="size-4 text-primary" /> : null}
                 </div>
@@ -594,13 +594,13 @@ export const SourcePane = React.forwardRef<HTMLTextAreaElement, SourcePaneProps>
               }
             }}
             style={{ minHeight }}
-            className={cn("block w-full resize-none bg-transparent px-4 pb-2 pt-4 pr-11 text-lg leading-relaxed text-foreground outline-none placeholder:text-muted-foreground", textareaProps?.className)}
+            className={cn("block w-full resize-none bg-transparent px-4 pb-2 pt-4 pe-11 text-lg leading-relaxed text-foreground outline-none placeholder:text-muted-foreground", textareaProps?.className)}
           />
           {value ? (
             <Button type="button" variant="ghost" size="icon-sm" aria-label="Clear text" onClick={() => {
               onValueChange("");
               inner.current?.focus();
-            }} className="absolute right-2 top-3">
+            }} className="absolute end-2 top-3">
               <RiCloseLine aria-hidden />
             </Button>
           ) : null}
@@ -618,7 +618,7 @@ export const SourcePane = React.forwardRef<HTMLTextAreaElement, SourcePaneProps>
           {voice}
           {speak ?? <SpeakButton text={value} lang={lang && lang !== DETECT_LANGUAGE ? lang : undefined} />}
           {tools}
-          <span className={cn("ml-auto pr-2 text-xs tabular-nums", over ? "text-destructive" : "text-muted-foreground")}>
+          <span className={cn("ms-auto pe-2 text-xs tabular-nums", over ? "text-destructive" : "text-muted-foreground")}>
             {value.length.toLocaleString("en-US")} / {maxLength.toLocaleString("en-US")}
             <span className="sr-only"> characters</span>
           </span>
@@ -665,7 +665,7 @@ export const TargetPane = React.forwardRef<HTMLElement, TargetPaneProps>(
         <div className="min-h-32 px-4 pb-2 pt-4">
           <p lang={lang} dir={dir} data-slot="translation" className={cn("whitespace-pre-wrap text-lg leading-relaxed", empty ? "text-muted-foreground" : "text-foreground")}>
             {empty ? placeholder : text}
-            {streaming ? <span aria-hidden="true" data-slot="stream-caret" className="ml-0.5 inline-block h-[1.1em] w-0.5 translate-y-[0.15em] animate-caret-blink bg-primary" /> : null}
+            {streaming ? <span aria-hidden="true" data-slot="stream-caret" className="ms-0.5 inline-block h-[1.1em] w-0.5 translate-y-[0.15em] animate-caret-blink bg-primary" /> : null}
           </p>
           {romanization && !streaming ? <p className="mt-1.5 text-sm text-muted-foreground" data-slot="romanization">{romanization}</p> : null}
         </div>
@@ -714,7 +714,7 @@ export const TargetPane = React.forwardRef<HTMLElement, TargetPaneProps>(
             </>
           ) : null}
           {latencyMs != null && !streaming && text ? (
-            <span className="ml-auto pr-2 font-mono text-xs tabular-nums text-muted-foreground" data-slot="latency">
+            <span className="ms-auto pe-2 font-mono text-xs tabular-nums text-muted-foreground" data-slot="latency">
               {formatDuration(latencyMs, { ms: true, space: true, decimals: 1, decimalsBelow: 60_000, trimZeros: false })}
             </span>
           ) : null}
@@ -1036,7 +1036,7 @@ export const DictionaryCard = React.forwardRef<HTMLElement, DictionaryCardProps>
       {senses.map((s) => (
         <section key={s.partOfSpeech} aria-label={s.partOfSpeech}>
           <h4 className="mb-1.5 text-xs font-medium italic text-primary">{s.partOfSpeech}</h4>
-          <ol className="list-decimal space-y-2 pl-5 text-sm marker:text-muted-foreground">
+          <ol className="list-decimal space-y-2 ps-5 text-sm marker:text-muted-foreground">
             {s.definitions.map((d, i) => (
               <li key={i}>
                 <p className="text-foreground">{d.text}</p>
@@ -1102,6 +1102,7 @@ export const ConversationTurns = React.forwardRef<HTMLDivElement, ConversationTu
       const state: ConversationLiveState = live?.speaker === side ? live.state : "idle";
       const activeMic = state === "hearing";
       return (
+        // rtl-physical x1: speaker panels are named left and right (the conversation root is dir=ltr)
         <div data-side={side} data-state={state} className={cn("flex flex-1 items-center gap-3 rounded-box border border-border bg-card p-3", side === "right" && "flex-row-reverse text-right", state !== "idle" && "border-primary/50 ring-1 ring-primary/30")}>
           <Button
             type="button"
@@ -1130,7 +1131,7 @@ export const ConversationTurns = React.forwardRef<HTMLDivElement, ConversationTu
       );
     };
     return (
-      <div ref={ref} className={cn("flex flex-col gap-3", className)} {...props}>
+      <div ref={ref} dir="ltr" className={cn("flex flex-col gap-3", className)} {...props}>
         {turns.length === 0 ? (
           <div className="flex min-h-40 flex-col items-center justify-center gap-2 rounded-box border border-dashed border-border p-6 text-center">
             <RiMicLine aria-hidden="true" className="size-6 text-muted-foreground" />
@@ -1149,6 +1150,7 @@ export const ConversationTurns = React.forwardRef<HTMLDivElement, ConversationTu
               const to = speakers[t.speaker === "left" ? "right" : "left"];
               return (
                 <li key={t.id} data-speaker={t.speaker} className={cn("flex", t.speaker === "right" && "justify-end")}>
+                  {/* rtl-physical x1: speaker bubbles are named left and right (the conversation root is dir=ltr) */}
                   <div className={cn("max-w-[80%] rounded-box px-3 py-2", t.speaker === "left" ? "rounded-bl-sm bg-muted" : "rounded-br-sm bg-primary-soft text-primary-soft-foreground")}>
                     <p className="sr-only">{nameOf(from)}:</p>
                     <p lang={from.lang} dir={languageDir(from.lang)} className="text-xs opacity-70">

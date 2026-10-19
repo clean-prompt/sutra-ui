@@ -2,6 +2,7 @@ import * as React from "react";
 import { Accordion as AccordionPrimitive } from "radix-ui";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { useRootDirection } from "../hooks/use-direction";
 
 export type AccordionVariant = "default" | "bordered" | "ghost" | "surface" | "separated";
 export type AccordionIcon = "chevron" | "plus";
@@ -29,11 +30,13 @@ export const Accordion = React.forwardRef<
   React.ComponentRef<typeof AccordionPrimitive.Root>,
   AccordionProps
 >(({ className, variant = "default", icon = "chevron", keepMounted = false, ...props }, ref) => {
+  const { ref: rootRef, dir } = useRootDirection(ref);
   const ctx = React.useMemo(() => ({ variant, icon, keepMounted }), [variant, icon, keepMounted]);
   return (
     <AccordionContext.Provider value={ctx}>
       <AccordionPrimitive.Root
-        ref={ref}
+        ref={rootRef}
+        dir={dir}
         className={cn(
           "w-full",
           variant === "bordered" && "flex flex-col gap-3",
@@ -77,8 +80,8 @@ AccordionItem.displayName = "AccordionItem";
 function PlusMinus() {
   return (
     <span aria-hidden className="relative size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground">
-      <span className="absolute left-0.5 right-0.5 top-1/2 h-[1.5px] -translate-y-1/2 rounded-full bg-current" />
-      <span className="absolute bottom-0.5 left-1/2 top-0.5 w-[1.5px] -translate-x-1/2 rounded-full bg-current chevron-turn group-data-[state=open]:rotate-90 group-data-[state=open]:scale-y-0" />
+      <span className="absolute start-0.5 end-0.5 top-1/2 h-[1.5px] -translate-y-1/2 rounded-full bg-current" />
+      <span className="absolute bottom-0.5 start-1/2 top-0.5 w-[1.5px] -translate-x-1/2 rtl:translate-x-1/2 rounded-full bg-current chevron-turn group-data-[state=open]:rotate-90 group-data-[state=open]:scale-y-0" />
     </span>
   );
 }
@@ -103,7 +106,7 @@ export const AccordionTrigger = React.forwardRef<
       <AccordionPrimitive.Trigger
         ref={ref}
         className={cn(
-          "group flex flex-1 cursor-pointer items-center gap-3 rounded-md py-4 text-left text-sm font-medium text-foreground transition-colors",
+          "group flex flex-1 cursor-pointer items-center gap-3 rounded-md py-4 text-start text-sm font-medium text-foreground transition-colors",
           "disabled:cursor-not-allowed disabled:opacity-50",
           ctx.variant === "default" && "hover:text-foreground/80",
           ctx.variant === "bordered" && "rounded-none px-5 hover:bg-subtle",

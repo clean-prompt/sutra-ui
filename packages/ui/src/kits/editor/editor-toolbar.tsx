@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiMoreLine } from "@remixicon/react";
 import { cn } from "../../lib/cn";
+import { logicalArrow } from "../../lib/direction";
 import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../../hooks/use-resize-observer";
 import { Button } from "../../primitives/button";
@@ -196,8 +197,8 @@ export const EditorToolbar = React.forwardRef<HTMLDivElement, EditorToolbarProps
       if (current < 0) return;
       e.preventDefault();
       let next = current;
-      if (e.key === "ArrowRight") next = (current + 1) % list.length;
-      else if (e.key === "ArrowLeft") next = (current - 1 + list.length) % list.length;
+      if (logicalArrow(e) === "ArrowRight") next = (current + 1) % list.length;
+      else if (logicalArrow(e) === "ArrowLeft") next = (current - 1 + list.length) % list.length;
       else if (e.key === "Home") next = 0;
       else next = list.length - 1;
       const el = list[next]!;

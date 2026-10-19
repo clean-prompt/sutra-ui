@@ -618,7 +618,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
           >
             {onBack && (
               <button type="button" onClick={onBack} aria-label={backLabel} className={mediaButtonVariants({ tone: "overlay", size: "md" })}>
-                <RiArrowLeftLine aria-hidden />
+                <RiArrowLeftLine className="rtl:-scale-x-100" aria-hidden />
               </button>
             )}
             {(title || subtitle) && (
@@ -646,7 +646,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
 
           {resumeOffer !== null && countdown === null && (
             <div className="pointer-events-none absolute inset-x-0 bottom-[4.5rem] z-30 flex justify-start px-4 @lg:bottom-24">
-              <div role="status" className={cn(pillClass, "py-1.5 pl-3.5 pr-1.5 animate-in fade-in-0 slide-in-from-bottom-2")}>
+              <div role="status" className={cn(pillClass, "py-1.5 ps-3.5 pe-1.5 animate-in fade-in-0 slide-in-from-bottom-2")}>
                 <span className="whitespace-nowrap @max-md:text-xs">Resume from {formatClock(resumeOffer)}?</span>
                 <button
                   type="button"

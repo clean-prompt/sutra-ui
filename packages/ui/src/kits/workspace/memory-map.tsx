@@ -520,7 +520,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
               onToggleKind={(k) => setHiddenKinds(hiddenKinds.includes(k) ? hiddenKinds.filter((x) => x !== k) : [...hiddenKinds, k])}
             />
           )}
-          <div className="ml-auto flex items-center gap-1">
+          <div className="ms-auto flex items-center gap-1">
             {toolbarExtra}
             {!listView && (
               <>
@@ -558,12 +558,12 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
                   <caption className="sr-only">
                     {ariaLabel}: {visible.length} nodes
                   </caption>
-                  <thead className="sticky top-0 bg-subtle text-left text-xs text-muted-foreground">
+                  <thead className="sticky top-0 bg-subtle text-start text-xs text-muted-foreground">
                     <tr>
                       <th scope="col" className="px-3 py-2 font-medium">Label</th>
                       <th scope="col" className="px-3 py-2 font-medium">Kind</th>
                       <th scope="col" className="px-3 py-2 font-medium">Created</th>
-                      <th scope="col" className="px-3 py-2 text-right font-medium">Links</th>
+                      <th scope="col" className="px-3 py-2 text-end font-medium">Links</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -578,7 +578,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
                                 type="button"
                                 onClick={() => select(n.id)}
                                 aria-pressed={n.id === selectedId}
-                                className={cn("rounded-xs text-left font-medium hover:underline", focusRing)}
+                                className={cn("rounded-xs text-start font-medium hover:underline", focusRing)}
                               >
                                 {n.label}
                               </button>
@@ -590,7 +590,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
                               </span>
                             </td>
                             <td className="px-3 py-1.5 tabular-nums text-muted-foreground">{fmtDate(n.createdAt)}</td>
-                            <td className="px-3 py-1.5 text-right tabular-nums">{neighbours.get(n.id)?.size ?? 0}</td>
+                            <td className="px-3 py-1.5 text-end tabular-nums">{neighbours.get(n.id)?.size ?? 0}</td>
                           </tr>
                         );
                       })}

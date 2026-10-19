@@ -56,7 +56,7 @@ export function MemoryNodeDetail({
                 <button
                   type="button"
                   onClick={() => onSelect(l.id)}
-                  className={cn("w-full truncate rounded-xs px-1 py-0.5 text-left text-sm hover:bg-accent", focusRing)}
+                  className={cn("w-full truncate rounded-xs px-1 py-0.5 text-start text-sm hover:bg-accent", focusRing)}
                 >
                   {l.label}
                 </button>

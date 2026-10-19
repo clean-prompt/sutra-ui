@@ -192,12 +192,12 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                       <span className="min-w-0 flex-1 basis-32 truncate leading-5 text-foreground" title={item.text}>
                         {item.text}
                         {item.attachments ? (
-                          <span className="ml-1.5 text-xs text-muted-foreground">
+                          <span className="ms-1.5 text-xs text-muted-foreground">
                             +{item.attachments} {item.attachments === 1 ? "attachment" : "attachments"}
                           </span>
                         ) : null}
                       </span>
-                      <span className="ml-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-0.5">
+                      <span className="ms-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-0.5">
                         {onReorder && (
                           <>
                             <button type="button" aria-label="Move up" disabled={index === 0} onClick={() => move(index, -1)} className={iconAction}>
@@ -241,7 +241,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                               variant="ghost"
                               leadingIcon={<RiSteering2Line aria-hidden />}
                               onClick={() => onSteer(item.id)}
-                              className="ml-0.5 h-6"
+                              className="ms-0.5 h-6"
                             >
                               Steer
                             </Button>
@@ -254,7 +254,7 @@ export const QueuedMessages = React.forwardRef<HTMLElement, QueuedMessagesProps>
                             variant="soft"
                             leadingIcon={<RiCornerDownLeftLine aria-hidden />}
                             onClick={() => onSendNow(item.id)}
-                            className="ml-0.5 h-6"
+                            className="ms-0.5 h-6"
                             title="Interrupt the agent and send this now"
                           >
                             Send now

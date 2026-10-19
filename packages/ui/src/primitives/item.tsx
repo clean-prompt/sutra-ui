@@ -82,7 +82,7 @@ export const ItemSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttribut
 ));
 ItemSeparator.displayName = "ItemSeparator";
 
-const itemVariants = cva("group/item flex w-full min-w-0 text-left text-sm text-foreground", {
+const itemVariants = cva("group/item flex w-full min-w-0 text-start text-sm text-foreground", {
   variants: {
     variant: {
       plain: "",
@@ -135,7 +135,7 @@ export const Item = React.forwardRef<HTMLElement, ItemProps>(
         {chevron && interactive ? (
           <RiArrowRightSLine
             aria-hidden
-            className="size-4 shrink-0 self-center text-muted-foreground transition-transform group-hover/item:translate-x-0.5"
+            className="size-4 shrink-0 self-center text-muted-foreground transition-transform group-hover/item:translate-x-0.5 rtl:group-hover/item:-translate-x-0.5 rtl:-scale-x-100"
           />
         ) : null}
       </>

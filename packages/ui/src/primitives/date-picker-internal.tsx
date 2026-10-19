@@ -45,7 +45,7 @@ export function useOptionalControlled<T>(
 
 export const dateTriggerVariants = cva(
   [
-    "group/date-trigger flex w-full items-center gap-2 text-left text-sm",
+    "group/date-trigger flex w-full items-center gap-2 text-start text-sm",
     inputShellVariants({ hover: true }),
     "data-[state=open]:border-ring data-[state=open]:ring-[3px] data-[state=open]:ring-ring/20",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -83,7 +83,7 @@ export function ClearButton({ onClear, size }: ClearButtonProps) {
       onClick={onClear}
       className={cn(
         "absolute top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground",
-        size === "sm" ? "right-2" : size === "lg" ? "right-3" : "right-2.5",
+        size === "sm" ? "end-2" : size === "lg" ? "end-3" : "end-2.5",
         focusRing
       )}
     >

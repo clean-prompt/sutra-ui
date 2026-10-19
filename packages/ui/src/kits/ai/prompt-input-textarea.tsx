@@ -232,7 +232,7 @@ export const PromptInputTextarea = React.forwardRef<HTMLTextAreaElement, PromptI
           aria-hidden
           data-slot="prompt-input-mirror"
           className={cn(
-            "pointer-events-none absolute left-0 top-0 overflow-hidden whitespace-pre-wrap break-words border-0 px-4 pb-2 pt-3.5 text-[15px] leading-6 text-foreground [overflow-wrap:break-word]",
+            "pointer-events-none absolute start-0 top-0 overflow-hidden whitespace-pre-wrap break-words border-0 px-4 pb-2 pt-3.5 text-[15px] leading-6 text-foreground [overflow-wrap:break-word]",
             className,
             "m-0 bg-transparent",
             mirrorClassName

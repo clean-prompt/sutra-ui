@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiStarFill } from "@remixicon/react";
 import { cn, hitArea, type Size } from "../lib/cn";
+import { directionOf, endArrowKey, startArrowKey } from "../lib/direction";
 import { pluralize } from "../lib/format";
 import { clamp, toPercent } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
@@ -78,7 +79,7 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
     const valueFromPointer = (index: number, e: React.MouseEvent<HTMLElement>) => {
       if (!allowHalf) return index + 1;
       const rect = e.currentTarget.getBoundingClientRect();
-      const isRtl = getComputedStyle(e.currentTarget).direction === "rtl";
+      const isRtl = directionOf(e.currentTarget) === "rtl";
       const x = isRtl ? rect.right - e.clientX : e.clientX - rect.left;
       return x < rect.width / 2 ? index + 0.5 : index + 1;
     };
@@ -94,10 +95,12 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
       onKeyDown?.(e);
       if (e.defaultPrevented || !interactive) return;
       const down = () => (allowClear || value <= 0 ? value - step : Math.max(value - step, step));
+      const dir = directionOf(e.currentTarget);
+      // The stars run along the reading direction, so the key towards the inline end adds.
       const map: Record<string, () => number> = {
-        ArrowRight: () => value + step,
+        [endArrowKey(dir)]: () => value + step,
         ArrowUp: () => value + step,
-        ArrowLeft: () => down(),
+        [startArrowKey(dir)]: () => down(),
         ArrowDown: () => down(),
         Home: () => step,
         End: () => max,
@@ -292,11 +295,11 @@ export const RatingSummary = React.forwardRef<HTMLDivElement, RatingSummaryProps
                     className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted"
                   >
                     <span
-                      className="absolute inset-y-0 left-0 rounded-full bg-warning transition-[width] duration-500 ease-out-quart"
+                      className="absolute inset-y-0 start-0 rounded-full bg-warning transition-[width] duration-500 ease-out-quart"
                       style={{ width: `${pct}%` }}
                     />
                   </span>
-                  <span className="w-10 shrink-0 text-right text-muted-foreground tabular-nums">
+                  <span className="w-10 shrink-0 text-end text-muted-foreground tabular-nums">
                     {number.format(n)}
                   </span>
                 </li>

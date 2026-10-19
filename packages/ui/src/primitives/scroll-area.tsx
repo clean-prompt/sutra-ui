@@ -3,6 +3,7 @@ import { ScrollArea as ScrollAreaPrimitive } from "radix-ui";
 import { cn } from "../lib/cn";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useScrollEdges, type ScrollEdges as Edges } from "../hooks/use-scroll-edges";
+import { useRootDirection } from "../hooks/use-direction";
 
 type FadeEdges = boolean | "vertical" | "horizontal";
 
@@ -51,6 +52,7 @@ export const ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPri
     },
     ref
   ) => {
+    const { ref: rootRef, dir } = useRootDirection(ref);
     const localRef = React.useRef<HTMLDivElement | null>(null);
     const edges = useScrollEdges(localRef, { enabled: !!fadeEdges });
     const handleViewportRef = useMergedRefs(localRef, viewportRef);
@@ -62,7 +64,8 @@ export const ScrollArea = React.forwardRef<React.ElementRef<typeof ScrollAreaPri
 
     return (
       <ScrollAreaPrimitive.Root
-        ref={ref}
+        ref={rootRef}
+        dir={dir}
         type={type}
         className={cn("relative overflow-hidden", className)}
         {...props}
@@ -102,7 +105,7 @@ export const ScrollBar = React.forwardRef<
     className={cn(
       "group/scrollbar z-10 flex touch-none select-none p-0.5 transition-[background-color,opacity] duration-150",
       "data-[state=hidden]:animate-out data-[state=hidden]:fade-out-0 data-[state=visible]:animate-in data-[state=visible]:fade-in-0",
-      orientation === "vertical" && "h-full w-2.5 border-l border-l-transparent hover:w-3",
+      orientation === "vertical" && "h-full w-2.5 border-s border-s-transparent hover:w-3",
       orientation === "horizontal" && "h-2.5 flex-col border-t border-t-transparent hover:h-3",
       className
     )}
@@ -111,7 +114,7 @@ export const ScrollBar = React.forwardRef<
     <ScrollAreaPrimitive.ScrollAreaThumb
       className={cn(
         "relative flex-1 rounded-full bg-[var(--scrollbar)] transition-colors duration-150 hover:bg-[var(--scrollbar-hover)] active:bg-[var(--scrollbar-hover)]",
-        "before:absolute before:left-1/2 before:top-1/2 before:size-full before:min-h-11 before:min-w-11 before:-translate-x-1/2 before:-translate-y-1/2",
+        "before:absolute before:start-1/2 before:top-1/2 before:size-full before:min-h-11 before:min-w-11 before:-translate-x-1/2 rtl:before:translate-x-1/2 before:-translate-y-1/2",
         thumbClassName
       )}
     />

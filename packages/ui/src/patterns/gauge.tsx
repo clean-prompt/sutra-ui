@@ -177,7 +177,7 @@ export const Gauge = React.forwardRef<HTMLDivElement, GaugeProps>(
           ) : (
             <span data-slot="gauge-value" className={cn("font-mono font-semibold tabular-nums tracking-tight", s.value, empty ? "text-muted-foreground" : levelText[level])}>
               {text}
-              {unit && !empty ? <span className="ml-0.5 text-[0.6em] font-medium text-muted-foreground">{unit}</span> : null}
+              {unit && !empty ? <span className="ms-0.5 text-[0.6em] font-medium text-muted-foreground">{unit}</span> : null}
             </span>
           )}
           {children ??

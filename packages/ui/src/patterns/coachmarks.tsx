@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { RiArrowRightSLine, RiCloseLine, RiLightbulbFlashLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { logicalArrow } from "../lib/direction";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { clamp } from "../lib/math";
 import { useChangeKey } from "../hooks/use-change-key";
@@ -247,10 +248,10 @@ export function CoachmarkTour({
       if (e.key === "Escape") {
         e.preventDefault();
         skip();
-      } else if (e.key === "ArrowRight") {
+      } else if (logicalArrow(e) === "ArrowRight") {
         e.preventDefault();
         next();
-      } else if (e.key === "ArrowLeft") {
+      } else if (logicalArrow(e) === "ArrowLeft") {
         e.preventDefault();
         back();
       }
@@ -321,7 +322,7 @@ export function CoachmarkTour({
             type="button"
             aria-label={skipLabel}
             onClick={skip}
-            className={cn("-mr-1 -mt-1 rounded-sm p-1 text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
+            className={cn("-me-1 -mt-1 rounded-sm p-1 text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
           >
             <RiCloseLine aria-hidden className="size-4" />
           </button>
@@ -340,7 +341,7 @@ export function CoachmarkTour({
           <span className="text-xs tabular-nums text-muted-foreground" aria-live="polite">
             Step {index + 1} of {count}
           </span>
-          <div className="ml-auto flex items-center gap-1.5">
+          <div className="ms-auto flex items-center gap-1.5">
             {current.action && (
               <Button size="xs" variant="ghost" onClick={current.action.onClick}>
                 {current.action.label}
@@ -473,12 +474,12 @@ export function TipBubble({
           onInteractOutside={(e) => e.preventDefault()}
           data-tip={tip.id}
           className={cn(
-            "relative z-50 w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-box border border-border bg-popover p-3 pl-4 text-popover-foreground shadow-lg outline-none",
+            "relative z-50 w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-box border border-border bg-popover p-3 ps-4 text-popover-foreground shadow-lg outline-none",
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
             className
           )}
         >
-          <span aria-hidden className={cn("absolute inset-y-0 left-0 w-1", toneClasses.dot[accentTone])} />
+          <span aria-hidden className={cn("absolute inset-y-0 start-0 w-1", toneClasses.dot[accentTone])} />
           <div className="flex items-start gap-2.5">
             <span aria-hidden className={cn("flex size-7 shrink-0 items-center justify-center rounded-full [&_svg]:size-4", accentIcon[accentTone])}>
               {icon ?? <RiLightbulbFlashLine aria-hidden />}
@@ -493,13 +494,13 @@ export function TipBubble({
               type="button"
               aria-label="Dismiss tip"
               onClick={dismiss}
-              className={cn("-mr-1 -mt-1 rounded-sm p-1 text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
+              className={cn("-me-1 -mt-1 rounded-sm p-1 text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
             >
               <RiCloseLine aria-hidden className="size-4" />
             </button>
           </div>
           {(count > 1 || onDontShowAgain) && (
-            <div className="mt-3 flex items-center gap-2 pl-9">
+            <div className="mt-3 flex items-center gap-2 ps-9">
               {onDontShowAgain && (
                 <button
                   type="button"
@@ -514,10 +515,10 @@ export function TipBubble({
               )}
               {count > 1 && (
                 <>
-                  <span className="ml-auto text-xs tabular-nums text-muted-foreground">
+                  <span className="ms-auto text-xs tabular-nums text-muted-foreground">
                     {(((indexState % count) + count) % count) + 1}/{count}
                   </span>
-                  <Button size="xs" variant="soft" trailingIcon={<RiArrowRightSLine aria-hidden />} onClick={() => setIndex((indexState + 1) % count)}>
+                  <Button size="xs" variant="soft" trailingIcon={<RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />} onClick={() => setIndex((indexState + 1) % count)}>
                     Next tip
                   </Button>
                 </>

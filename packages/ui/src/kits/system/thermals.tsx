@@ -236,7 +236,7 @@ export const TemperatureReading = React.forwardRef<HTMLDivElement, TemperatureRe
           valueText={
             <span className={cn("transition-colors duration-300", levelTextClass[level])}>
               {text}
-              {status ? <span className="ml-1.5 font-sans text-xs font-medium capitalize">{status}</span> : null}
+              {status ? <span className="ms-1.5 font-sans text-xs font-medium capitalize">{status}</span> : null}
             </span>
           }
           ariaValueText={ariaText}

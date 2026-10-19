@@ -129,7 +129,7 @@ function ItemToggle({ item, onToggle }: { item: TimelineItem; onToggle?: TodayTi
 }
 
 function ItemTitle({ item, onSelect }: { item: TimelineItem; onSelect?: TodayTimelineProps["onSelect"] }) {
-  const cls = cn("min-w-0 truncate text-left font-medium", item.done && "text-muted-foreground line-through");
+  const cls = cn("min-w-0 truncate text-start font-medium", item.done && "text-muted-foreground line-through");
   if (item.href)
     return (
       <a href={item.href} className={cn(cls, "hover:underline")}>
@@ -229,7 +229,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
                   <SutraAppIcon app={item.app} size={14} shape="squircle" title={sutraAppMeta[item.app].name} />
                   <ItemTitle item={item} onSelect={onSelect} />
                   {item.meta && <span className="truncate text-xs text-muted-foreground">{item.meta}</span>}
-                  {item.streak != null && <span className="ml-auto"><Streak days={item.streak} /></span>}
+                  {item.streak != null && <span className="ms-auto"><Streak days={item.streak} /></span>}
                 </li>
               ))}
             </ul>
@@ -241,14 +241,14 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
             {hours.map((h) => (
               <span
                 key={h}
-                className="absolute right-2 -translate-y-1/2 text-2xs tabular-nums text-muted-foreground first:translate-y-0"
+                className="absolute end-2 -translate-y-1/2 text-2xs tabular-nums text-muted-foreground first:translate-y-0"
                 style={{ top: toY(h * 60) }}
               >
                 {fmtHour(h)}
               </span>
             ))}
           </div>
-          <div className="relative flex-1 border-l border-border">
+          <div className="relative flex-1 border-s border-border">
             {hours.map((h) => (
               <div
                 key={h}
@@ -270,7 +270,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
                     data-column={column}
                     data-columns={columns}
                     className={cn(
-                      "absolute overflow-hidden rounded-md border-l-[3px] border-primary bg-primary-soft px-2 text-primary-soft-foreground shadow-xs",
+                      "absolute overflow-hidden rounded-md border-s-[3px] border-primary bg-primary-soft px-2 text-primary-soft-foreground shadow-xs",
                       short ? "flex items-center gap-1.5 py-0" : "flex flex-col gap-0.5 py-1",
                       item.done && "opacity-70"
                     )}
@@ -304,7 +304,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
                 className="pointer-events-none absolute inset-x-0 z-10 flex items-center"
                 style={{ top: toY(nowMins) }}
               >
-                <span aria-hidden className="-ml-1 size-2 rounded-full bg-destructive" />
+                <span aria-hidden className="-ms-1 size-2 rounded-full bg-destructive" />
                 <span aria-hidden className="h-px flex-1 bg-destructive" />
                 <span className="sr-only">Now, {formatClockTime(now)}</span>
               </div>

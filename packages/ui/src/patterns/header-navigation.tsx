@@ -9,6 +9,7 @@ import { RiArrowDownSLine, RiCloseLine, RiMenuLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { breakpoints } from "../lib/tokens";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useDirection } from "../hooks/use-direction";
 import { useMediaQuery } from "../hooks/use-media-query";
 import { Button } from "../primitives/button";
 import { containerVariants } from "../primitives/layout";
@@ -91,6 +92,7 @@ export const HeaderNavMenu = React.forwardRef<
 >(({ className, listClassName, children, delayDuration = 120, ...props }, ref) => (
   <NavigationMenuPrimitive.Root
     ref={ref}
+    dir={useDirection()}
     delayDuration={delayDuration}
     className={cn("relative z-10 hidden max-w-max flex-1 items-center md:flex", className)}
     {...props}
@@ -98,7 +100,7 @@ export const HeaderNavMenu = React.forwardRef<
     <NavigationMenuPrimitive.List className={cn("flex flex-1 list-none items-center gap-0.5", listClassName)}>
       {children}
     </NavigationMenuPrimitive.List>
-    <div className="absolute left-0 top-full isolate z-50 flex justify-center perspective-[2000px]">
+    <div className="absolute start-0 top-full isolate z-50 flex justify-center perspective-[2000px]">
       <NavigationMenuPrimitive.Viewport
         className={cn(
           "relative mt-2 h-(--radix-navigation-menu-viewport-height) w-(--radix-navigation-menu-viewport-width) origin-[top_center] overflow-hidden",
@@ -152,10 +154,10 @@ export const HeaderNavContent = React.forwardRef<
   <NavigationMenuPrimitive.Content
     ref={ref}
     className={cn(
-      "left-0 top-0 w-full p-2 md:absolute md:w-auto",
+      "start-0 top-0 w-full p-2 md:absolute md:w-auto",
       "data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in-0 data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out-0",
-      "data-[motion=from-end]:slide-in-from-right-12 data-[motion=from-start]:slide-in-from-left-12",
-      "data-[motion=to-end]:slide-out-to-right-12 data-[motion=to-start]:slide-out-to-left-12",
+      "data-[motion=from-end]:slide-in-from-end-12 data-[motion=from-start]:slide-in-from-start-12",
+      "data-[motion=to-end]:slide-out-to-end-12 data-[motion=to-start]:slide-out-to-start-12",
       className
     )}
     {...props}
@@ -245,7 +247,7 @@ HeaderNavFeatureLink.displayName = "HeaderNavFeatureLink";
 /** Right-aligned actions (sign in, CTA, theme toggle). */
 export const HeaderNavActions = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("ml-auto flex shrink-0 items-center gap-2", className)} {...props} />
+    <div ref={ref} className={cn("ms-auto flex shrink-0 items-center gap-2", className)} {...props} />
   )
 );
 HeaderNavActions.displayName = "HeaderNavActions";
@@ -294,7 +296,7 @@ export const HeaderNavMobile = React.forwardRef<HTMLButtonElement, HeaderNavMobi
 
   const renderEntry = (item: HeaderNavMobileItem, key: React.Key, nested = false): React.ReactNode => {
     const rowClass = cn(
-      "flex w-full items-center gap-3 rounded-md text-left text-foreground transition-colors hover:bg-accent [&_svg]:size-[18px] [&_svg]:shrink-0 [&_svg]:text-muted-foreground",
+      "flex w-full items-center gap-3 rounded-md text-start text-foreground transition-colors hover:bg-accent [&_svg]:size-[18px] [&_svg]:shrink-0 [&_svg]:text-muted-foreground",
       nested ? "px-3 py-2 text-sm" : "px-3 py-2.5 text-base font-medium",
       focusRing
     );
@@ -320,7 +322,7 @@ export const HeaderNavMobile = React.forwardRef<HTMLButtonElement, HeaderNavMobi
             />
           </CollapsiblePrimitive.Trigger>
           <CollapsiblePrimitive.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-            <div className="ml-4 flex flex-col gap-0.5 border-l border-border py-1 pl-2">
+            <div className="ms-4 flex flex-col gap-0.5 border-s border-border py-1 ps-2">
               {item.children.map((child, i) => renderEntry(child, i, true))}
             </div>
           </CollapsiblePrimitive.Content>

@@ -211,7 +211,7 @@ export const FanMenu = React.forwardRef<HTMLDivElement, FanMenuProps>(
                     close();
                   }}
                   className={cn(
-                    "group/fan pointer-events-auto absolute left-1/2 top-1/2 inline-flex items-center justify-center rounded-full border border-border bg-popover text-foreground shadow-lg transition-colors hover:bg-accent disabled:opacity-50 [&_svg]:size-[18px]",
+                    "group/fan pointer-events-auto absolute start-1/2 top-1/2 inline-flex items-center justify-center rounded-full border border-border bg-popover text-foreground shadow-lg transition-colors hover:bg-accent disabled:opacity-50 [&_svg]:size-[18px]",
                     "data-[active]:border-primary data-[active]:bg-primary-soft data-[active]:text-primary-soft-foreground",
                     !reduced && "animate-in fade-in-0 zoom-in-50 duration-200 ease-out-quart",
                     focusRing
@@ -237,6 +237,7 @@ export const FanMenu = React.forwardRef<HTMLDivElement, FanMenuProps>(
                       aria-hidden
                       className={cn(
                         "pointer-events-none absolute whitespace-nowrap rounded-xs bg-inverse px-1.5 py-0.5 text-2xs font-medium text-inverse-foreground opacity-0 transition-opacity group-hover/fan:opacity-100 group-focus-visible/fan:opacity-100",
+                        // rtl-physical x1: the fan direction names a physical side
                         direction === "down" ? "top-full mt-1.5" : direction === "left" ? "right-full mr-1.5" : direction === "right" ? "left-full ml-1.5" : "bottom-full mb-1.5"
                       )}
                     >

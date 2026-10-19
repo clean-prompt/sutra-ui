@@ -144,7 +144,7 @@ export const Note = React.forwardRef<HTMLDivElement, NoteProps>(
         data-loading={loading || undefined}
         className={cn(
           "flex items-center gap-2 py-3 text-sm",
-          align === "center" ? "justify-center text-center" : "justify-start text-left",
+          align === "center" ? "justify-center text-center" : "justify-start text-start",
           destructive ? "text-destructive" : "text-muted-foreground",
           className
         )}

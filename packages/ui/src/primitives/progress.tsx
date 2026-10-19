@@ -4,6 +4,8 @@ import { cn } from "../lib/cn";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { clamp, roundTo, toPercent } from "../lib/math";
 import { useSafeId } from "../hooks/use-safe-id";
+import { useRootDirection } from "../hooks/use-direction";
+import { inlineSign } from "../lib/direction";
 
 /** @deprecated Use `Tone` (the `tone` prop). */
 export type ProgressColor = Tone;
@@ -67,6 +69,8 @@ export const Progress = React.forwardRef<
     ref
   ) => {
     const tone = normalizeTone(toneProp ?? color, "primary");
+    const { ref: rootRef, dir } = useRootDirection(ref);
+    const sign = inlineSign(dir);
     const isIndeterminate = indeterminate || value === null || value === undefined;
     const pct = isIndeterminate ? 0 : toPercent(value as number, max);
     // Radix rejects max <= 0 with a console error; an empty range simply reads as 0%.
@@ -81,7 +85,7 @@ export const Progress = React.forwardRef<
 
     const bar = (
       <ProgressPrimitive.Root
-        ref={ref}
+        ref={rootRef}
         value={isIndeterminate ? null : safeMax === max ? clamp(value as number, 0, max) : 0}
         max={safeMax}
         aria-labelledby={label ? labelId : undefined}
@@ -97,11 +101,11 @@ export const Progress = React.forwardRef<
             "h-full w-full rounded-full",
             barColor[tone],
             isIndeterminate
-              ? "origin-left animate-indeterminate"
+              ? "origin-left rtl:origin-right animate-indeterminate rtl:[animation-name:sutra-indeterminate-rtl]"
               : "transition-transform duration-500 ease-out-quart motion-reduce:transition-none",
             indicatorClassName
           )}
-          style={isIndeterminate ? undefined : { transform: `translateX(-${100 - pct}%)` }}
+          style={isIndeterminate ? undefined : { transform: `translateX(${sign > 0 ? "-" : ""}${100 - pct}%)` }}
         />
       </ProgressPrimitive.Root>
     );
@@ -127,7 +131,7 @@ export const Progress = React.forwardRef<
         <div className="flex items-center gap-3">
           {bar}
           {position === "right" && valueText !== null ? (
-            <span className="min-w-9 shrink-0 text-right text-sm font-medium tabular-nums text-foreground">
+            <span className="min-w-9 shrink-0 text-end text-sm font-medium tabular-nums text-foreground">
               {valueText}
             </span>
           ) : null}

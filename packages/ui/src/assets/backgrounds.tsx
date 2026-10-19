@@ -176,7 +176,7 @@ export const GridBeams = React.forwardRef<HTMLDivElement, GridBeamsProps>(
               <span
                 key={b.key}
                 data-sutra-beam=""
-                className="absolute left-0 h-px w-24"
+                className="absolute start-0 h-px w-24"
                 style={{
                   top: b.offset,
                   background: "linear-gradient(to right, transparent, var(--b-400), transparent)",

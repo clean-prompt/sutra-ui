@@ -3,6 +3,7 @@ import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn, focusRing, hitArea } from "../lib/cn";
 import { useField } from "./field";
+import { useRootDirection } from "../hooks/use-direction";
 
 function joinIds(...ids: Array<string | undefined>) {
   return ids.filter(Boolean).join(" ") || undefined;
@@ -15,6 +16,7 @@ export interface RadioGroupProps extends React.ComponentPropsWithoutRef<typeof R
 /** Single-choice group of radio items. Consumes `Field` context. */
 export const RadioGroup = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive.Root>, RadioGroupProps>(
   ({ className, orientation = "vertical", invalid, id, disabled, required, ...props }, ref) => {
+    const { ref: rootRef, dir } = useRootDirection(ref);
     const field = useField({
       id,
       disabled,
@@ -25,8 +27,9 @@ export const RadioGroup = React.forwardRef<React.ElementRef<typeof RadioGroupPri
     });
     return (
       <RadioGroupPrimitive.Root
-        ref={ref}
+        ref={rootRef}
         data-slot="radio-group"
+        dir={dir}
         orientation={orientation}
         {...props}
         id={field.id}

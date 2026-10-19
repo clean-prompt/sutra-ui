@@ -14,6 +14,7 @@ import { isEditableTarget, matchesShortcut } from "../lib/shortcuts";
 import { useHasShortcutProvider } from "../hooks/use-shortcut-manager";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useShortcut } from "./shortcuts";
+import { useDirection } from "../hooks/use-direction";
 
 /** Below the `md` breakpoint the sidebar becomes a sheet. */
 const MOBILE_QUERY = `(max-width: ${breakpoints.md - 1}px)`;
@@ -182,7 +183,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
       return (
         <Sheet open={openMobile} onOpenChange={setOpenMobile}>
           <SheetContent
-            side={side}
+            side={side === "left" ? "start" : "end"}
             showClose={false}
             data-sidebar="sidebar"
             data-mobile="true"
@@ -223,7 +224,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
           className={cn(
             "flex h-full w-full min-w-0 flex-col overflow-hidden",
             "group-data-[collapsible=offcanvas]/sidebar:w-(--sidebar-width) group-data-[collapsible=offcanvas]/sidebar:min-w-(--sidebar-width)",
-            variant === "default" && cn("bg-subtle", side === "left" ? "border-r border-border" : "border-l border-border"),
+            variant === "default" && cn("bg-subtle", side === "left" ? "border-e border-border" : "border-s border-border"),
             variant === "floating" && "m-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)] rounded-box border border-border bg-background shadow-sm",
             variant === "inset" && "bg-transparent"
           )}
@@ -318,7 +319,7 @@ SidebarMenuItem.displayName = "SidebarMenuItem";
 
 export const sidebarMenuButtonVariants = cva(
   [
-    "peer/menu-button relative flex w-full items-center gap-2.5 overflow-hidden rounded-control px-2 text-left text-sm text-foreground/80 outline-none",
+    "peer/menu-button relative flex w-full items-center gap-2.5 overflow-hidden rounded-control px-2 text-start text-sm text-foreground/80 outline-none",
     "transition-[width,height,padding,background-color,color,box-shadow] duration-150",
     "hover:bg-accent hover:text-foreground active:bg-accent",
     "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
@@ -366,12 +367,14 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
       badge != null && badge !== false ? (
         <span
           data-sidebar="menu-badge"
-          className="ml-auto inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-muted px-1.5 text-2xs font-semibold tabular-nums text-muted-foreground group-data-[collapsible=icon]/sidebar:hidden in-data-[active=true]:bg-primary-soft in-data-[active=true]:text-primary-soft-foreground"
+          className="ms-auto inline-flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-muted px-1.5 text-2xs font-semibold tabular-nums text-muted-foreground group-data-[collapsible=icon]/sidebar:hidden in-data-[active=true]:bg-primary-soft in-data-[active=true]:text-primary-soft-foreground"
         >
           {badge}
         </span>
       ) : null;
 
+    // The tooltip opens towards the content, the inline end of a sidebar that sits at the start.
+    const tipSide = useDirection() === "rtl" ? "left" : "right";
     const button = (
       <Comp
         ref={ref}
@@ -393,7 +396,7 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
     return (
       <Tooltip delayDuration={0}>
         <TooltipPrimitive.Trigger asChild>{button}</TooltipPrimitive.Trigger>
-        <TooltipContent side="right" align="center" hidden={!collapsed || isMobile}>
+        <TooltipContent side={tipSide} align="center" hidden={!collapsed || isMobile}>
           {tip}
         </TooltipContent>
       </Tooltip>
@@ -433,7 +436,7 @@ export const SidebarMenuSub = React.forwardRef<HTMLDivElement, SidebarMenuSubPro
               )}
               <RiArrowRightSLine
                 aria-hidden
-                className="chevron-turn size-4 shrink-0 text-muted-foreground group-data-[state=open]/menu-sub:rotate-90"
+                className="chevron-turn size-4 shrink-0 text-muted-foreground group-data-[state=open]/menu-sub:rotate-90 rtl:group-data-[state=open]/menu-sub:-rotate-90 rtl:-scale-x-100"
               />
             </span>
           </SidebarMenuButton>
@@ -442,7 +445,7 @@ export const SidebarMenuSub = React.forwardRef<HTMLDivElement, SidebarMenuSubPro
       <CollapsiblePrimitive.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down group-data-[collapsible=icon]/sidebar:hidden">
         <ul
           data-sidebar="menu-sub"
-          className="ml-4 mt-0.5 flex min-w-0 flex-col gap-0.5 border-l border-border py-0.5 pl-2.5"
+          className="ms-4 mt-0.5 flex min-w-0 flex-col gap-0.5 border-s border-border py-0.5 ps-2.5"
         >
           {children}
         </ul>
@@ -469,7 +472,7 @@ export const SidebarMenuSubButton = React.forwardRef<HTMLAnchorElement, SidebarM
     const Comp: React.ElementType = asChild ? Slot.Root : "a";
     return (
       <li className="relative">
-        {isActive && <span aria-hidden className="absolute -left-[11px] inset-y-1.5 w-px rounded-full bg-primary" />}
+        {isActive && <span aria-hidden className="absolute -start-[11px] inset-y-1.5 w-px rounded-full bg-primary" />}
         <Comp
           ref={ref}
           data-sidebar="menu-sub-button"
@@ -540,12 +543,12 @@ export const SidebarInset = React.forwardRef<HTMLElement, SidebarInsetProps>(
         className={cn(
           "relative flex min-w-0 flex-1 flex-col bg-background",
           contained ? "h-full min-h-0 overflow-auto" : "min-h-svh",
-          "md:peer-data-[variant=inset]:my-2 md:peer-data-[variant=inset]:mr-2",
+          "md:peer-data-[variant=inset]:my-2 md:peer-data-[variant=inset]:me-2",
           contained
             ? "md:peer-data-[variant=inset]:h-[calc(100%-1rem)]"
             : "md:peer-data-[variant=inset]:min-h-[calc(100svh-1rem)]",
           "md:peer-data-[variant=inset]:rounded-box md:peer-data-[variant=inset]:border md:peer-data-[variant=inset]:border-border md:peer-data-[variant=inset]:shadow-sm",
-          "md:peer-data-[variant=inset]:peer-data-[collapsible=offcanvas]:ml-2",
+          "md:peer-data-[variant=inset]:peer-data-[collapsible=offcanvas]:ms-2",
           className
         )}
         {...props}
@@ -588,7 +591,7 @@ export const SidebarUserCard = React.forwardRef<HTMLButtonElement, SidebarUserCa
       type="button"
       data-sidebar="user-card"
       className={cn(
-        "flex h-12 w-full min-w-0 items-center gap-2.5 overflow-hidden rounded-control p-2 text-left text-sm outline-none transition-[background-color,padding] duration-150",
+        "flex h-12 w-full min-w-0 items-center gap-2.5 overflow-hidden rounded-control p-2 text-start text-sm outline-none transition-[background-color,padding] duration-150",
         "hover:bg-accent data-[state=open]:bg-accent",
         "group-data-[collapsible=icon]/sidebar:size-8! group-data-[collapsible=icon]/sidebar:p-0!",
         focusRing,
@@ -611,7 +614,7 @@ export const SidebarUserCard = React.forwardRef<HTMLButtonElement, SidebarUserCa
         <span className="truncate font-medium text-foreground">{name}</span>
         {email && <span className="truncate text-xs text-muted-foreground">{email}</span>}
       </span>
-      {!hideChevron && <RiExpandUpDownLine aria-hidden className="ml-auto size-4 shrink-0 text-muted-foreground" />}
+      {!hideChevron && <RiExpandUpDownLine aria-hidden className="ms-auto size-4 shrink-0 text-muted-foreground" />}
     </button>
   )
 );

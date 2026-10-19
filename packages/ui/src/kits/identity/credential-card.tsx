@@ -135,7 +135,7 @@ export const CredentialCard = React.forwardRef<HTMLElement, CredentialCardProps>
         <Comp
           {...shared}
           className={cn(
-            "flex w-full items-center gap-3 rounded-box px-3 py-3 text-left",
+            "flex w-full items-center gap-3 rounded-box px-3 py-3 text-start",
             interactive && cn("group/credential transition-colors hover:bg-accent", focusRing),
             className
           )}
@@ -158,7 +158,7 @@ export const CredentialCard = React.forwardRef<HTMLElement, CredentialCardProps>
               </span>
             )}
           </span>
-          {interactive && <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/credential:translate-x-0.5" />}
+          {interactive && <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/credential:translate-x-0.5 rtl:group-hover/credential:-translate-x-0.5 rtl:-scale-x-100" />}
         </Comp>
       );
     }
@@ -167,15 +167,15 @@ export const CredentialCard = React.forwardRef<HTMLElement, CredentialCardProps>
       <Comp
         {...shared}
         className={cn(
-          "relative flex aspect-[1.586] w-full max-w-sm flex-col justify-between overflow-hidden rounded-2xl p-5 text-left text-white shadow-lg",
+          "relative flex aspect-[1.586] w-full max-w-sm flex-col justify-between overflow-hidden rounded-2xl p-5 text-start text-white shadow-lg",
           interactive && cn("transition-transform hover:-translate-y-0.5", focusRing),
           status !== "valid" && "saturate-[0.35]",
           className
         )}
         style={{ background: background ?? credentialGradients[c.kind ?? "custom"], ...props.style }}
       >
-        <span aria-hidden className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-white/10" />
-        <span aria-hidden className="pointer-events-none absolute -bottom-24 -left-10 size-56 rounded-full bg-black/10" />
+        <span aria-hidden className="pointer-events-none absolute -end-16 -top-16 size-48 rounded-full bg-white/10" />
+        <span aria-hidden className="pointer-events-none absolute -bottom-24 -start-10 size-56 rounded-full bg-black/10" />
         <span className="relative flex items-start justify-between gap-3">
           <span className="flex min-w-0 items-center gap-2 text-xs font-medium text-white/85">
             <Favicon domain={c.issuer.domain ?? c.issuer.name} src={c.issuer.iconUrl} shape="square" className="size-6 rounded-md ring-1 ring-white/30" />
@@ -299,7 +299,7 @@ export const CredentialDetail = React.forwardRef<HTMLDivElement, CredentialDetai
             />
             <label htmlFor={id} className="cursor-pointer">
               {cl.label}
-              {cl.required && <span className="ml-1 text-2xs text-muted-foreground">(required)</span>}
+              {cl.required && <span className="ms-1 text-2xs text-muted-foreground">(required)</span>}
             </label>
           </span>
         ) : (

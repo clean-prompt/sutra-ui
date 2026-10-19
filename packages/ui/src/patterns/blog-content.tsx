@@ -21,12 +21,12 @@ const proseBase = [
   "[&_a]:font-medium [&_a]:text-primary [&_a]:underline [&_a]:decoration-primary/35 [&_a]:decoration-1 [&_a]:underline-offset-[3px] [&_a]:transition-colors [&_a:hover]:decoration-primary",
   "[&_mark]:rounded-xs [&_mark]:bg-warning-soft [&_mark]:px-1 [&_mark]:text-warning-soft-foreground",
   // Lists
-  "[&_ul]:my-[1.15em] [&_ul]:list-disc [&_ul]:pl-[1.4em]",
-  "[&_ol]:my-[1.15em] [&_ol]:list-decimal [&_ol]:pl-[1.4em]",
-  "[&_li]:my-[0.4em] [&_li]:pl-[0.3em] [&_li::marker]:text-muted-foreground",
+  "[&_ul]:my-[1.15em] [&_ul]:list-disc [&_ul]:ps-[1.4em]",
+  "[&_ol]:my-[1.15em] [&_ol]:list-decimal [&_ol]:ps-[1.4em]",
+  "[&_li]:my-[0.4em] [&_li]:ps-[0.3em] [&_li::marker]:text-muted-foreground",
   "[&_li>ul]:my-[0.4em] [&_li>ol]:my-[0.4em]",
   // Blockquote
-  "[&_blockquote]:my-[1.6em] [&_blockquote]:border-l-[3px] [&_blockquote]:border-primary [&_blockquote]:pl-[1.1em] [&_blockquote]:text-[1.05em] [&_blockquote]:italic [&_blockquote]:text-foreground",
+  "[&_blockquote]:my-[1.6em] [&_blockquote]:border-s-[3px] [&_blockquote]:border-primary [&_blockquote]:ps-[1.1em] [&_blockquote]:text-[1.05em] [&_blockquote]:italic [&_blockquote]:text-foreground",
   "[&_blockquote_p]:my-[0.5em] [&_blockquote_cite]:mt-2 [&_blockquote_cite]:block [&_blockquote_cite]:text-[0.85em] [&_blockquote_cite]:not-italic [&_blockquote_cite]:text-muted-foreground",
   // Code
   "[&_:not(pre)>code]:rounded-xs [&_:not(pre)>code]:border [&_:not(pre)>code]:border-border [&_:not(pre)>code]:bg-muted [&_:not(pre)>code]:px-[0.35em] [&_:not(pre)>code]:py-[0.1em] [&_:not(pre)>code]:font-mono [&_:not(pre)>code]:text-[0.85em] [&_:not(pre)>code]:text-foreground",
@@ -41,9 +41,9 @@ const proseBase = [
   // Rules & tables
   "[&_hr]:my-[2.5em] [&_hr]:border-0 [&_hr]:border-t [&_hr]:border-border",
   "[&_table]:my-[1.6em] [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto [&_table]:border-collapse [&_table]:text-[0.9em]",
-  "[&_thead_th]:border-b [&_thead_th]:border-border-strong [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-foreground",
+  "[&_thead_th]:border-b [&_thead_th]:border-border-strong [&_th]:px-3 [&_th]:py-2 [&_th]:text-start [&_th]:font-semibold [&_th]:text-foreground",
   "[&_td]:border-b [&_td]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:align-top",
-  "[&_:is(th,td):first-child]:pl-0 [&_:is(th,td):last-child]:pr-0",
+  "[&_:is(th,td):first-child]:ps-0 [&_:is(th,td):last-child]:pe-0",
 ];
 
 const proseSize = {

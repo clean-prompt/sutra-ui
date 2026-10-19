@@ -221,7 +221,7 @@ export function SignInFlagRow({ event, flags, selected, onSelect, now, locale, .
         type="button"
         aria-pressed={selected}
         onClick={() => onSelect(event)}
-        className={cn("-m-1 flex min-w-0 items-start gap-3 rounded-md p-1 text-left", focusRing)}
+        className={cn("-m-1 flex min-w-0 items-start gap-3 rounded-md p-1 text-start", focusRing)}
       >
         <span
           aria-hidden
@@ -233,7 +233,7 @@ export function SignInFlagRow({ event, flags, selected, onSelect, now, locale, .
           <span className="flex min-w-0 items-center gap-2">
             {code ? <CountryFlag code={code} size="xs" label="" /> : null}
             <span className="truncate text-sm font-medium text-foreground">{place}</span>
-            <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">{signInWhen(event, now)}</span>
+            <span className="ms-auto shrink-0 text-xs text-muted-foreground tabular-nums">{signInWhen(event, now)}</span>
           </span>
           <span className={cn("text-xs font-medium", toneClasses.text.warning)}>
             {first.title}
@@ -244,7 +244,7 @@ export function SignInFlagRow({ event, flags, selected, onSelect, now, locale, .
           </span>
         </span>
       </button>
-      <SignInActions event={event} flags={flags} place={place} className="pl-11" {...actions} />
+      <SignInActions event={event} flags={flags} place={place} className="ps-11" {...actions} />
     </li>
   );
 }

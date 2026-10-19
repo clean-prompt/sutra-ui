@@ -173,7 +173,7 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
           <span
             className={cn(
               "absolute block rounded-full ring-background",
-              square ? "-bottom-0.5 -right-0.5" : "bottom-0 right-0",
+              square ? "-bottom-0.5 -end-0.5" : "bottom-0 end-0",
               statusDotSize[size],
               statusColor[status]
             )}
@@ -187,11 +187,11 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
               "absolute flex items-center justify-center rounded-full bg-background text-primary",
               status
                 ? square
-                  ? "-right-1 -top-1"
-                  : "-right-0.5 -top-0.5"
+                  ? "-end-1 -top-1"
+                  : "-end-0.5 -top-0.5"
                 : square
-                  ? "-bottom-1 -right-1"
-                  : "-bottom-0.5 -right-0.5"
+                  ? "-bottom-1 -end-1"
+                  : "-bottom-0.5 -end-0.5"
             )}
           >
             <RiVerifiedBadgeFill className={verifiedSize[size]} aria-hidden />

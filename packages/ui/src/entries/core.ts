@@ -28,6 +28,7 @@ export * from "../primitives/date-picker";
 export * from "../primitives/date-picker-datetime";
 export * from "../primitives/date-picker-range";
 export * from "../primitives/dialog";
+export * from "../primitives/direction-provider";
 export * from "../primitives/drawer";
 export * from "../primitives/dropdown-menu";
 export * from "../primitives/dropzone";

@@ -36,7 +36,7 @@ export const Typewriter = React.forwardRef<HTMLElement, TypewriterProps>(
           {showCaret ? (
             <span
               data-slot="typewriter-caret"
-              className={cn("ml-px inline-block h-[1.1em] w-[0.12em] translate-y-[0.18em] bg-current", cursor === "always" && state.done && "animate-caret-blink")}
+              className={cn("ms-px inline-block h-[1.1em] w-[0.12em] translate-y-[0.18em] bg-current", cursor === "always" && state.done && "animate-caret-blink")}
             />
           ) : null}
         </span>

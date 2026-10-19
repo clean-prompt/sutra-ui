@@ -198,14 +198,14 @@ const HANDLE_NAMES: Record<CropHandle, string> = {
 };
 
 const HANDLE_POSITION: Record<CropHandle, string> = {
-  nw: "left-0 top-0 cursor-nwse-resize",
-  n: "left-1/2 top-0 cursor-ns-resize",
-  ne: "left-full top-0 cursor-nesw-resize",
-  e: "left-full top-1/2 cursor-ew-resize",
-  se: "left-full top-full cursor-nwse-resize",
-  s: "left-1/2 top-full cursor-ns-resize",
-  sw: "left-0 top-full cursor-nesw-resize",
-  w: "left-0 top-1/2 cursor-ew-resize",
+  nw: "start-0 top-0 cursor-nwse-resize",
+  n: "start-1/2 top-0 cursor-ns-resize",
+  ne: "start-full top-0 cursor-nesw-resize",
+  e: "start-full top-1/2 cursor-ew-resize",
+  se: "start-full top-full cursor-nwse-resize",
+  s: "start-1/2 top-full cursor-ns-resize",
+  sw: "start-0 top-full cursor-nesw-resize",
+  w: "start-0 top-1/2 cursor-ew-resize",
 };
 
 /** Stage padding so handles on the image edge stay visible and grabbable. */
@@ -535,6 +535,7 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
         data-slot="image-cropper"
         aria-busy={busy || undefined}
         className={cn("flex w-full flex-col gap-3", className)}
+        dir="ltr"
         {...props}
       >
         <div
@@ -561,7 +562,7 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
                   setImageState({ src, natural: null, failed: true });
                   onImageError?.();
                 }}
-                className={cn("pointer-events-none absolute left-1/2 top-1/2 max-w-none select-none", !ready && "invisible")}
+                className={cn("pointer-events-none absolute start-1/2 top-1/2 max-w-none select-none", !ready && "invisible")}
                 style={
                   natural && bounds
                     ? {
@@ -628,7 +629,7 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
                           aria-label={`Resize from ${HANDLE_NAMES[handle]}`}
                           data-handle={handle}
                           className={cn(
-                            "absolute z-10 flex size-6 -translate-x-1/2 -translate-y-1/2 touch-none items-center justify-center rounded-xs",
+                            "absolute z-10 flex size-6 -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 touch-none items-center justify-center rounded-xs",
                             HANDLE_POSITION[handle],
                             focusRing
                           )}
@@ -732,7 +733,7 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
               <Button
                 type="button"
                 size="sm"
-                className="ml-auto"
+                className="ms-auto"
                 disabled={!ready || !shown}
                 loading={apply.busy}
                 onClick={() => void apply.run()}

@@ -191,10 +191,10 @@ export const PromptInputModelSelect = React.forwardRef<HTMLButtonElement, Prompt
                   key={model.id}
                   value={model.id}
                   disabled={!!model.blockedReason}
-                  className="relative flex cursor-default select-none items-start rounded-md py-2 pl-2 pr-8 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[disabled]:opacity-50"
+                  className="relative flex cursor-default select-none items-start rounded-md py-2 ps-2 pe-8 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[disabled]:opacity-50"
                 >
                   <ModelSelectOption model={model} wrapHint />
-                  <DropdownMenu.ItemIndicator className="absolute right-2 top-2.5 inline-flex text-primary">
+                  <DropdownMenu.ItemIndicator className="absolute end-2 top-2.5 inline-flex text-primary">
                     <RiCheckLine aria-hidden className="size-4" />
                   </DropdownMenu.ItemIndicator>
                 </DropdownMenu.RadioItem>

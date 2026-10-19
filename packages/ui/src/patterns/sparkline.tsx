@@ -175,7 +175,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
         {highlightLast && last && data.length > 0 ? (
           <span
             aria-hidden
-            className="pointer-events-none absolute size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-background"
+            className="pointer-events-none absolute size-1.5 -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 rounded-full ring-2 ring-background"
             style={{
               left: `${(last[0] / width) * 100}%`,
               top: `${(last[1] / height) * 100}%`,

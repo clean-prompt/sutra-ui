@@ -318,7 +318,7 @@ export const EditorStatusBar = React.forwardRef<HTMLDivElement, EditorStatusBarP
           {status}
           {presence}
         </div>
-        <div className="ml-auto flex min-w-0 max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-0.5">
+        <div className="ms-auto flex min-w-0 max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-0.5">
           {items.map((item, i) => (
             <React.Fragment key={i}>
               {i > 0 && (
@@ -334,7 +334,7 @@ export const EditorStatusBar = React.forwardRef<HTMLDivElement, EditorStatusBarP
             <span
               data-slot="editor-mode"
               data-tone={modeTone}
-              className="ml-1 inline-flex items-center gap-1.5 rounded-control border border-border bg-background px-2 py-0.5 font-medium text-foreground"
+              className="ms-1 inline-flex items-center gap-1.5 rounded-control border border-border bg-background px-2 py-0.5 font-medium text-foreground"
             >
               <span aria-hidden className={cn("size-1.5 rounded-full", modeDot[modeTone], modeTone === "live" && "animate-pulse")} />
               {mode}

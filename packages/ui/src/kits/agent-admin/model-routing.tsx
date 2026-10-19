@@ -15,6 +15,7 @@ import {
 } from "@remixicon/react";
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { cn, focusRing } from "../../lib/cn";
+import { logicalArrow } from "../../lib/direction";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { formatCost, pluralize } from "../../lib/format";
 import { clamp } from "../../lib/math";
@@ -216,7 +217,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
       else if (e.key === "ArrowUp") selectProvider(providerIndex - 1);
       else if (e.key === "Home") selectProvider(0);
       else if (e.key === "End") selectProvider(providers.length - 1);
-      else if (e.key === "ArrowRight" || e.key === "Enter") focusModels();
+      else if (logicalArrow(e) === "ArrowRight" || e.key === "Enter") focusModels();
       else return;
       e.preventDefault();
     };
@@ -227,7 +228,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
         else setActiveModelIndex(modelIdx - 1);
       } else if (e.key === "Home") setActiveModelIndex(0);
       else if (e.key === "End") setActiveModelIndex(Math.max(0, models.length - 1));
-      else if (e.key === "ArrowLeft") focusProviders();
+      else if (logicalArrow(e) === "ArrowLeft") focusProviders();
       else if (e.key === "Enter" || e.key === " ") {
         const m = models[modelIdx];
         if (m) choose(m);
@@ -266,7 +267,7 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
             aria-label="Providers"
             aria-activedescendant={activeProvider ? `${id}-p-${providerIndex}` : undefined}
             onKeyDown={onProvidersKey}
-            className={cn("max-h-40 overflow-y-auto border-b border-border p-1 scrollbar-thin @md:max-h-80 @md:border-b-0 @md:border-r", focusRing, "focus-visible:ring-inset")}
+            className={cn("max-h-40 overflow-y-auto border-b border-border p-1 scrollbar-thin @md:max-h-80 @md:border-b-0 @md:border-e", focusRing, "focus-visible:ring-inset")}
           >
             {providers.map((p, i) => {
               const count = q ? p.models.filter(matches).length : p.models.length;
@@ -560,7 +561,7 @@ export const ModelVisibilityManager = React.forwardRef<HTMLDivElement, ModelVisi
           <span className="text-xs text-muted-foreground" data-slot="visibility-count">
             {visibleCount} of {rows.length} visible
           </span>
-          <Button variant="ghost" size="sm" className="ml-auto" leadingIcon={<RiRestartLine aria-hidden />} disabled={!dirty} onClick={reset}>
+          <Button variant="ghost" size="sm" className="ms-auto" leadingIcon={<RiRestartLine aria-hidden />} disabled={!dirty} onClick={reset}>
             Reset
           </Button>
         </div>
@@ -677,7 +678,7 @@ export const FallbackChainEditor = React.forwardRef<HTMLDivElement, FallbackChai
             moveButtons
             itemClassName="border border-border bg-card px-1 py-1"
             renderItem={(item, { index }) => (
-              <div className="flex items-center gap-3 pr-1">
+              <div className="flex items-center gap-3 pe-1">
                 <span className="w-5 text-center font-mono text-xs tabular-nums text-muted-foreground">{index + 1}</span>
                 <ModelRefLabel providers={providers} value={item} className="flex-1" />
                 <Badge size="sm" color={index === 0 ? "brand" : "neutral"}>

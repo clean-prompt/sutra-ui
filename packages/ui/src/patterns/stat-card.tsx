@@ -43,7 +43,7 @@ const valueSizes = { sm: "text-xl", md: "text-display-xs", lg: "text-display-sm"
 const unitSizes = { sm: "text-sm", md: "text-sm", lg: "text-base", xl: "text-xl" } as const;
 /** The trailing chevron of an interactive card; it nudges right when the card (`group/stat`) is hovered. */
 const chevronClass = (extra?: string) =>
-  cn("size-4 shrink-0 text-muted-foreground transition-transform group-hover/stat:translate-x-0.5", extra);
+  cn("size-4 shrink-0 text-muted-foreground transition-transform group-hover/stat:translate-x-0.5 rtl:group-hover/stat:-translate-x-0.5", extra);
 
 export interface StatValueProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   value: React.ReactNode;
@@ -74,7 +74,7 @@ export const StatValue = React.forwardRef<HTMLSpanElement, StatValueProps>(
       {...props}
     >
       {animate && typeof value === "number" ? <AnimatedNumber value={value} format={format} locale={locale} /> : value}
-      {unit ? <span className={cn("ml-1 font-medium text-muted-foreground", unitSizes[size])}>{unit}</span> : null}
+      {unit ? <span className={cn("ms-1 font-medium text-muted-foreground", unitSizes[size])}>{unit}</span> : null}
     </span>
   )
 );
@@ -249,10 +249,10 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
       accentLabel ? cn("font-medium", accentClasses.text) : "text-muted-foreground"
     );
     const chevronEl = showChevron ? (
-      <RiArrowRightSLine aria-hidden data-slot="stat-chevron" className={chevronClass("ml-auto")} />
+      <RiArrowRightSLine aria-hidden data-slot="stat-chevron" className={chevronClass("ms-auto rtl:-scale-x-100")} />
     ) : null;
     const stretched = cn(
-      "flex min-w-0 flex-1 items-center gap-2 text-left outline-none",
+      "flex min-w-0 flex-1 items-center gap-2 text-start outline-none",
       "after:absolute after:inset-0 after:rounded-[inherit] after:content-['']",
       "focus-visible:after:ring-[3px] focus-visible:after:ring-ring/35"
     );
@@ -371,10 +371,10 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
                     <DeltaIcon aria-hidden className="size-3.5" />
                     <span className="sr-only">{direction === "up" ? "Increased" : direction === "down" ? "Decreased" : "Unchanged"}</span>
                     {deltaText}
-                    {deltaLabel ? <span className="ml-1 font-normal text-muted-foreground">{deltaLabel}</span> : null}
+                    {deltaLabel ? <span className="ms-1 font-normal text-muted-foreground">{deltaLabel}</span> : null}
                   </span>
                 ) : null}
-                {status ? <span data-slot="stat-status" className="ml-auto self-center">{status}</span> : null}
+                {status ? <span data-slot="stat-status" className="ms-auto self-center">{status}</span> : null}
               </div>
               ) : null}
             </div>

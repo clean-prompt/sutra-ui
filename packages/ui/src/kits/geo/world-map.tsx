@@ -244,6 +244,7 @@ export const WorldMap = React.forwardRef<HTMLDivElement, WorldMapProps>(
         aria-busy={loading || undefined}
         className={cn("flex min-w-0 flex-col gap-3", className)}
         style={style}
+        dir="ltr"
         {...props}
         aria-label={ariaLabel}
       >

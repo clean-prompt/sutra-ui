@@ -7,7 +7,7 @@
 // Serve:        pnpm --filter playground build && pnpm --filter playground exec vite preview --port 5195
 // Whole release audit (build, serve, three passes, ratchet against an earlier run): pnpm audit:all (scripts/audit-all.mjs)
 // Run:          node scripts/layout-audit.mjs <tag> <stock|paper> <dark 0|1> <widths, e.g. 360,768,1280> [routeSubstring]
-//               (AUDIT_BASE=http://localhost:<port>/ to audit another server, e.g. vite dev)
+//               (AUDIT_BASE=http://localhost:<port>/ to audit another server, e.g. vite dev; AUDIT_DIR=rtl sets <html dir="rtl">)
 // Output:       audit/<tag>.json and audit/<tag>/ (screenshots of flagged demos); summarise with
 //               node scripts/audit-report.mjs audit/<tag>.json [routeSubstring] [--all]
 import { chromium } from "playwright";
@@ -16,6 +16,7 @@ import path from "node:path";
 
 const [tag, style = "stock", darkArg = "0", widthsArg = "360,768,1280", filter = ""] = process.argv.slice(2);
 const dark = darkArg === "1";
+const dir = process.env.AUDIT_DIR === "rtl" ? "rtl" : "ltr";
 const widths = widthsArg.split(",").map(Number);
 const BASE = process.env.AUDIT_BASE ?? "http://localhost:5195/";
 const OUT = path.resolve("audit");
@@ -190,7 +191,7 @@ let routes = [...new Set(await first.$$eval("a[href^='#/']", (as) => as.map((a) 
 await first.close();
 if (filter) routes = routes.filter((r) => r.includes(filter));
 
-const result = { tag, style, dark, widths, routes: routes.length, issues: [] };
+const result = { tag, style, dark, dir, widths, routes: routes.length, issues: [] };
 for (const w of widths) {
   const ctx = await browser.newContext({ viewport: { width: w, height: 900 }, reducedMotion: "reduce" });
   const page = await ctx.newPage();
@@ -198,7 +199,7 @@ for (const w of widths) {
   page.on("pageerror", (e) => errs.push(String(e).slice(0, 120)));
   for (const route of routes) {
     await page.goto(`${BASE}#/${route}`, { waitUntil: "networkidle" });
-    await page.evaluate(([st, d]) => { if (st === "paper") document.documentElement.dataset.style = "paper"; else delete document.documentElement.dataset.style; document.documentElement.classList.toggle("dark", d); }, [style, dark]);
+    await page.evaluate(([st, d, dr]) => { if (st === "paper") document.documentElement.dataset.style = "paper"; else delete document.documentElement.dataset.style; document.documentElement.classList.toggle("dark", d); document.documentElement.dir = dr; }, [style, dark, dir]);
     await page.waitForTimeout(500);
     // scroll through to trigger lazy content
     const h = await page.evaluate(() => document.documentElement.scrollHeight);

@@ -246,7 +246,7 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
               role="status"
               data-slot="prompt-input-large-paste"
               data-prompt-input-ignore=""
-              className="mx-3 mt-2.5 flex cursor-default items-center gap-2 rounded-control border border-border bg-subtle py-1 pl-2.5 pr-1 text-xs text-muted-foreground animate-in fade-in-0 slide-in-from-top-1 motion-reduce:animate-none"
+              className="mx-3 mt-2.5 flex cursor-default items-center gap-2 rounded-control border border-border bg-subtle py-1 ps-2.5 pe-1 text-xs text-muted-foreground animate-in fade-in-0 slide-in-from-top-1 motion-reduce:animate-none"
             >
               <RiFileTextLine aria-hidden className="size-3.5 shrink-0" />
               <span className="min-w-0 flex-1 truncate">
@@ -335,7 +335,7 @@ export const PromptInputRestoredDraft = React.forwardRef<HTMLDivElement, PromptI
         data-slot="prompt-input-restored-draft"
         data-prompt-input-ignore=""
         className={cn(
-          "flex cursor-default items-center gap-2 rounded-control border border-info/30 bg-info-soft py-1 pl-2.5 pr-1 text-xs text-info-soft-foreground",
+          "flex cursor-default items-center gap-2 rounded-control border border-info/30 bg-info-soft py-1 ps-2.5 pe-1 text-xs text-info-soft-foreground",
           ctx && "mx-3 mt-2.5",
           className
         )}
@@ -344,7 +344,7 @@ export const PromptInputRestoredDraft = React.forwardRef<HTMLDivElement, PromptI
         <RiHistoryLine aria-hidden className="size-3.5 shrink-0" />
         <span className="min-w-0 flex-1 truncate">
           {message}
-          {savedAt && <span className="ml-1 opacity-70">· {savedAt}</span>}
+          {savedAt && <span className="ms-1 opacity-70">· {savedAt}</span>}
         </span>
         <Button
           type="button"

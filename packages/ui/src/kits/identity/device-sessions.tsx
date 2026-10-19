@@ -145,7 +145,7 @@ export const DeviceSessionRow = React.forwardRef<HTMLLIElement, DeviceSessionRow
           </span>
         </div>
         {onRevoke && !session.current && (
-          <div className="ml-13 flex shrink-0 items-center gap-2 sm:ml-0">
+          <div className="ms-13 flex shrink-0 items-center gap-2 sm:ms-0">
             {confirming ? (
               <>
                 <span className="text-xs text-muted-foreground">Sign out this device?</span>
@@ -237,7 +237,7 @@ export const DeviceSessionList = React.forwardRef<HTMLDivElement, DeviceSessionL
           <div className="min-w-0 flex-1 basis-48">
             <h3 id={headingId} className="text-sm font-semibold text-foreground">
               {title}
-              {!isLoading && <span className="ml-2 font-normal text-muted-foreground">{list.length}</span>}
+              {!isLoading && <span className="ms-2 font-normal text-muted-foreground">{list.length}</span>}
             </h3>
             {description != null && <p className="text-xs text-muted-foreground">{description}</p>}
           </div>
@@ -250,7 +250,7 @@ export const DeviceSessionList = React.forwardRef<HTMLDivElement, DeviceSessionL
               confirmLabel="Sign out others"
               onConfirm={onRevokeOthers}
               trigger={
-                <Button size="sm" variant="destructive-soft" leadingIcon={<RiLogoutBoxRLine aria-hidden />}>
+                <Button size="sm" variant="destructive-soft" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />}>
                   Sign out all other sessions
                 </Button>
               }
@@ -372,7 +372,7 @@ export const AccountPanel = React.forwardRef<HTMLDivElement, AccountPanelProps>(
         {(onSignOut || onSignOutEverywhere) && (
           <div className="flex flex-col gap-2 border-t border-border pt-4 sm:flex-row">
             {onSignOut && (
-              <Button variant="primary" className="flex-1" leadingIcon={<RiLogoutBoxRLine aria-hidden />} loading={signingOut} onClick={() => void signOut()}>
+              <Button variant="primary" className="flex-1" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} loading={signingOut} onClick={() => void signOut()}>
                 Sign out
               </Button>
             )}

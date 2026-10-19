@@ -88,7 +88,7 @@ export const AgentMessageNotice = React.forwardRef<HTMLDivElement, AgentMessageN
           aria-controls={expanded ? bodyId : undefined}
           onClick={() => setExpanded(!expanded)}
           className={cn(
-            "flex w-full min-w-0 items-center gap-2 rounded-control px-2 py-1 text-left text-muted-foreground hover:bg-accent hover:text-foreground",
+            "flex w-full min-w-0 items-center gap-2 rounded-control px-2 py-1 text-start text-muted-foreground hover:bg-accent hover:text-foreground",
             focusRing
           )}
         >
@@ -108,7 +108,7 @@ export const AgentMessageNotice = React.forwardRef<HTMLDivElement, AgentMessageN
           <RiArrowDownSLine aria-hidden className={cn("size-4 shrink-0 chevron-turn", expanded && "rotate-180")} />
         </button>
         {expanded && (
-          <div id={bodyId} className="ml-8 mt-1 whitespace-pre-wrap rounded-lg border border-border bg-subtle px-3 py-2 font-mono text-xs text-foreground">
+          <div id={bodyId} className="ms-8 mt-1 whitespace-pre-wrap rounded-lg border border-border bg-subtle px-3 py-2 font-mono text-xs text-foreground">
             {payload}
           </div>
         )}
@@ -300,13 +300,13 @@ export const AgentRoom = React.forwardRef<HTMLDivElement, AgentRoomProps>(
                       {!grouped && (
                         <span className="text-xs font-semibold" style={color ? { color } : undefined}>
                           {author?.name ?? "Unknown"}
-                          {author?.role && <span className="ml-1.5 font-normal text-muted-foreground">{author.role}</span>}
+                          {author?.role && <span className="ms-1.5 font-normal text-muted-foreground">{author.role}</span>}
                         </span>
                       )}
                       <div
                         className={cn(
                           "whitespace-pre-wrap break-words rounded-2xl px-3 py-2 text-sm",
-                          human ? "rounded-tr-md bg-primary text-primary-foreground" : "rounded-tl-md border border-border bg-background text-foreground"
+                          human ? "rounded-se-md bg-primary text-primary-foreground" : "rounded-ss-md border border-border bg-background text-foreground"
                         )}
                       >
                         {parseAgentMentions(msg.text ?? "", members).map((part, k) =>
@@ -347,7 +347,7 @@ export const AgentRoom = React.forwardRef<HTMLDivElement, AgentRoomProps>(
             {composer && <div className="border-t border-border p-3">{composer}</div>}
           </div>
           {!hideMembers && (
-            <aside aria-label="Members" className="border-t border-border p-3 md:w-56 md:shrink-0 md:border-l md:border-t-0">
+            <aside aria-label="Members" className="border-t border-border p-3 md:w-56 md:shrink-0 md:border-s md:border-t-0">
               <ul className="flex flex-col gap-2">
                 {members.map((m) => (
                   <li key={m.id} data-member={m.id} data-status={m.status ?? "idle"} className="flex items-start gap-2">

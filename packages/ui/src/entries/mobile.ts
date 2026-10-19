@@ -6,3 +6,5 @@ export * from "../patterns/file-viewer";
 export * from "../patterns/split-pane";
 export * from "../kits/social/presence";
 export * from "../patterns/swipe-row";
+export * from "../patterns/swipe-deck";
+export * from "../patterns/pan-surface";

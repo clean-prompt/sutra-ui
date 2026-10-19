@@ -210,7 +210,7 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
                       <button
                         type="button"
                         onClick={() => onOpen(project.id)}
-                        className={cn("self-start truncate rounded-xs text-left font-medium text-foreground hover:underline", focusRing)}
+                        className={cn("self-start truncate rounded-xs text-start font-medium text-foreground hover:underline", focusRing)}
                       >
                         {project.name}
                       </button>
@@ -221,13 +221,13 @@ export const DevServerList = React.forwardRef<HTMLDivElement, DevServerListProps
                   </span>
                   {/* Narrow lists: name and memory on the first line, ports and activity wrapped underneath. */}
                   <span aria-hidden className="order-5 h-0 basis-full @xl:hidden" />
-                  <span className="order-6 mt-1.5 ml-11 flex min-w-0 flex-wrap items-center gap-1.5 @xl:order-3 @xl:m-0 @xl:shrink-0 @xl:justify-end">
+                  <span className="order-6 mt-1.5 ms-11 flex min-w-0 flex-wrap items-center gap-1.5 @xl:order-3 @xl:m-0 @xl:shrink-0 @xl:justify-end">
                     {project.ports && project.ports.length > 0 ? (
                       <PortBadgeList ports={project.ports} label={`${project.name} ports`} size="md" />
                     ) : null}
                     <ActivityPill activity={activity} />
                   </span>
-                  <span data-slot="dev-server-memory" className="order-3 w-20 shrink-0 text-right font-semibold tabular-nums text-foreground @xl:order-4">
+                  <span data-slot="dev-server-memory" className="order-3 w-20 shrink-0 text-end font-semibold tabular-nums text-foreground @xl:order-4">
                     {formatBytes(project.memoryBytes)}
                   </span>
                   {onStop ? (

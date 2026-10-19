@@ -60,7 +60,7 @@ export const inputVariants = cva(
     "flex w-full min-w-0",
     inputShellVariants(),
     "placeholder:text-muted-foreground selection:bg-primary/25",
-    "file:mr-3 file:inline-flex file:h-full file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
+    "file:me-3 file:inline-flex file:h-full file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
     "read-only:bg-subtle",
   ],
   {
@@ -227,11 +227,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         }}
       >
         {prefix != null && (
-          <span className="flex shrink-0 select-none items-center border-r border-input bg-subtle px-3 text-sm text-muted-foreground">
+          <span className="flex shrink-0 select-none items-center border-e border-input bg-subtle px-3 text-sm text-muted-foreground">
             {prefix}
           </span>
         )}
-        {leadingIcon != null && <span className={cn(iconSlot, "pl-3", s === "sm" && "pl-2.5")}>{leadingIcon}</span>}
+        {leadingIcon != null && <span className={cn(iconSlot, "ps-3", s === "sm" && "ps-2.5")}>{leadingIcon}</span>}
         <input
           data-slot="input"
           {...inputProps}
@@ -239,13 +239,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             "h-full min-w-0 flex-1 bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed",
             "[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none",
             sidePadding[s],
-            leadingIcon != null && "pl-2",
-            (trailingIcon != null || showClear) && "pr-2",
+            leadingIcon != null && "ps-2",
+            (trailingIcon != null || showClear) && "pe-2",
             className
           )}
         />
         {showClear && (
-          <span className="flex shrink-0 items-center pr-1.5">
+          <span className="flex shrink-0 items-center pe-1.5">
             <button
               type="button"
               tabIndex={-1}
@@ -258,10 +258,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </span>
         )}
         {trailingIcon != null && (
-          <span className={cn(iconSlot, "pr-3", s === "sm" && "pr-2.5", showClear && "pl-0.5")}>{trailingIcon}</span>
+          <span className={cn(iconSlot, "pe-3", s === "sm" && "pe-2.5", showClear && "ps-0.5")}>{trailingIcon}</span>
         )}
         {suffix != null && (
-          <span className="flex shrink-0 select-none items-center border-l border-input bg-subtle px-3 text-sm text-muted-foreground">
+          <span className="flex shrink-0 select-none items-center border-s border-input bg-subtle px-3 text-sm text-muted-foreground">
             {suffix}
           </span>
         )}
@@ -294,7 +294,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
             disabled={props.disabled}
             onClick={() => setVisible((v) => !v)}
             className={cn(
-              "-mr-1 inline-flex size-6 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none",
+              "-me-1 inline-flex size-6 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none",
               focusRing
             )}
           >

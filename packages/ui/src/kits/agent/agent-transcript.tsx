@@ -72,7 +72,7 @@ export const TurnStickyHeader = React.forwardRef<HTMLDivElement, TurnStickyHeade
             onJump?.();
           }}
           className={cn(
-            "w-full rounded-control border border-border bg-card px-3 py-1.5 text-left text-sm text-foreground shadow-xs transition-colors hover:bg-accent",
+            "w-full rounded-control border border-border bg-card px-3 py-1.5 text-start text-sm text-foreground shadow-xs transition-colors hover:bg-accent",
             focusRing
           )}
         >
@@ -272,7 +272,7 @@ export const TranscriptSystemRow = React.forwardRef<HTMLDivElement, TranscriptSy
             {title && <span>{title}</span>}
           </div>
           {result != null && (
-            <div className="ml-2 border-l-2 border-border pl-3 text-sm text-muted-foreground">{result}</div>
+            <div className="ms-2 border-s-2 border-border ps-3 text-sm text-muted-foreground">{result}</div>
           )}
         </div>
       );
@@ -404,7 +404,7 @@ export const BookmarksPane = React.forwardRef<HTMLDivElement, BookmarksPaneProps
           </h3>
           <span className="text-xs tabular-nums text-muted-foreground">{bookmarks.length}</span>
           {onClose && (
-            <Button variant="ghost" size="icon-xs" aria-label="Close bookmarks" onClick={onClose} className="ml-auto">
+            <Button variant="ghost" size="icon-xs" aria-label="Close bookmarks" onClick={onClose} className="ms-auto">
               <RiCloseLine aria-hidden />
             </Button>
           )}
@@ -424,7 +424,7 @@ export const BookmarksPane = React.forwardRef<HTMLDivElement, BookmarksPaneProps
                     if (onJump) onJump(b.id);
                     else document.getElementById(b.id)?.scrollIntoView({ block: "center", behavior: "smooth" });
                   }}
-                  className={cn("min-w-0 flex-1 rounded-control px-2 py-1.5 text-left", focusRing)}
+                  className={cn("min-w-0 flex-1 rounded-control px-2 py-1.5 text-start", focusRing)}
                 >
                   <span className="line-clamp-2 text-sm text-foreground">{b.snippet}</span>
                   <span className="mt-0.5 block text-2xs text-muted-foreground">
@@ -437,7 +437,7 @@ export const BookmarksPane = React.forwardRef<HTMLDivElement, BookmarksPaneProps
                     size="icon-xs"
                     aria-label={`Remove bookmark: ${b.snippet.slice(0, 40)}`}
                     onClick={() => onRemove(b.id)}
-                    className="mr-1 mt-1"
+                    className="me-1 mt-1"
                   >
                     <RiCloseLine aria-hidden />
                   </Button>
@@ -598,7 +598,7 @@ export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps
             </span>
           )}
           {(output || action) && (
-            <InlineAlertActions className="ml-auto mt-0 gap-1">
+            <InlineAlertActions className="ms-auto mt-0 gap-1">
               {output && (
                 <button
                   type="button"
@@ -705,7 +705,7 @@ export const ResponseRating = React.forwardRef<HTMLDivElement, ResponseRatingPro
     return (
       <div ref={ref} className={cn("flex flex-col gap-2", className)} {...props}>
         <div role="group" aria-labelledby={groupId} className="flex items-center gap-1">
-          <span id={groupId} className="mr-1 text-xs text-muted-foreground">
+          <span id={groupId} className="me-1 text-xs text-muted-foreground">
             {prompt}
           </span>
           <Button variant="ghost" size="icon-xs" aria-label="Good response" aria-pressed={rating === "good"} onClick={() => rate("good")}>

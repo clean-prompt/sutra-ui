@@ -129,7 +129,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         {textarea}
         <span
           className={cn(
-            "pointer-events-none absolute bottom-2 right-3 select-none text-xs tabular-nums text-muted-foreground transition-colors",
+            "pointer-events-none absolute bottom-2 end-3 select-none text-xs tabular-nums text-muted-foreground transition-colors",
             over && "text-destructive",
             field.disabled && "opacity-50"
           )}

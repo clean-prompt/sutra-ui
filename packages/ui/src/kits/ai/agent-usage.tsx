@@ -144,7 +144,7 @@ export const ContextUsageBreakdown = React.forwardRef<HTMLDivElement, ContextUsa
               <span aria-hidden className="size-2.5 shrink-0 rounded-xs" style={{ background: c.color }} />
               <span className="min-w-0 flex-1 truncate text-foreground">{c.label}</span>
               <span className="font-mono tabular-nums text-muted-foreground">{fmt(c.tokens)}</span>
-              <span data-slot="context-usage-percent" className="w-12 text-right font-mono tabular-nums text-muted-foreground">
+              <span data-slot="context-usage-percent" className="w-12 text-end font-mono tabular-nums text-muted-foreground">
                 {share(c.tokens)}
               </span>
             </li>
@@ -154,7 +154,7 @@ export const ContextUsageBreakdown = React.forwardRef<HTMLDivElement, ContextUsa
               <span aria-hidden className="size-2.5 shrink-0 rounded-xs border border-border-strong bg-muted" />
               <span className="min-w-0 flex-1 truncate text-muted-foreground">{freeLabel}</span>
               <span className="font-mono tabular-nums text-muted-foreground">{fmt(free)}</span>
-              <span className="w-12 text-right font-mono tabular-nums text-muted-foreground">{share(free)}</span>
+              <span className="w-12 text-end font-mono tabular-nums text-muted-foreground">{share(free)}</span>
             </li>
           )}
         </ul>

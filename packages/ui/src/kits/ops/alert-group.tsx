@@ -148,10 +148,10 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
           )}
           {...props}
         >
-          <div className="flex items-center gap-2 pr-2">
+          <div className="flex items-center gap-2 pe-2">
             <CollapsiblePrimitive.Trigger
               aria-controls={listId}
-              className={cn("flex min-w-0 flex-1 items-center gap-2.5 px-4 py-3 text-left", focusRing, "focus-visible:ring-inset")}
+              className={cn("flex min-w-0 flex-1 items-center gap-2.5 px-4 py-3 text-start", focusRing, "focus-visible:ring-inset")}
             >
               <span className={cn("relative flex size-5 shrink-0 items-center justify-center [&_svg]:size-4", severityText[tone])}>
                 {critical ? <span aria-hidden className="absolute inset-0 rounded-full bg-destructive/30 motion-safe:animate-ping" /> : null}
@@ -162,7 +162,7 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
               </span>
               <RiArrowDownSLine
                 aria-hidden
-                className={cn("ml-auto size-4 shrink-0 text-muted-foreground chevron-turn", expanded && "rotate-180")}
+                className={cn("ms-auto size-4 shrink-0 text-muted-foreground chevron-turn", expanded && "rotate-180")}
               />
               <span className="sr-only">{expanded ? "Collapse alerts" : "Expand alerts"}</span>
             </CollapsiblePrimitive.Trigger>

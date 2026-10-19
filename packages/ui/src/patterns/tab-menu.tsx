@@ -3,6 +3,8 @@ import { cn, focusRing, type Size } from "../lib/cn";
 import { useActiveIndicator } from "../hooks/use-active-indicator";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useScrollEdges } from "../hooks/use-scroll-edges";
+import { useDirection } from "../hooks/use-direction";
+import { directionOf } from "../lib/direction";
 
 export interface TabMenuItem {
   value: string;
@@ -68,13 +70,25 @@ export const TabMenu = React.forwardRef<HTMLElement, TabMenuProps>(
     const itemRefs = React.useRef(new Map<string, HTMLElement>());
     const { rect: indicator, animate } = useActiveIndicator(scrollerRef, () => itemRefs.current.get(value), [value, items]);
     const edges = useScrollEdges(scrollerRef);
-    const fade = { start: edges.left, end: edges.right };
+    const dir = useDirection();
+    // The fades sit at the inline start and end; the edges are physical.
+    const fade = dir === "rtl" ? { start: edges.right, end: edges.left } : { start: edges.left, end: edges.right };
 
     React.useEffect(() => {
       // Scroll only the tab strip (scrollIntoView would also scroll the page).
       const el = itemRefs.current.get(value);
       const scroller = scrollerRef.current;
       if (!el || !scroller) return;
+      if (directionOf(scroller) === "rtl") {
+        // `scrollLeft` runs negative in right-to-left: scroll by the distance on screen instead.
+        const item = el.getBoundingClientRect();
+        const box = scroller.getBoundingClientRect();
+        let delta = 0;
+        if (item.left < box.left) delta = item.left - box.left - 16;
+        else if (item.right > box.right) delta = item.right - box.right + 16;
+        if (delta) scroller.scrollBy({ left: delta, behavior: animate ? "smooth" : "auto" });
+        return;
+      }
       const left = el.offsetLeft;
       const right = left + el.offsetWidth;
       let target: number | null = null;
@@ -184,29 +198,32 @@ export const TabMenu = React.forwardRef<HTMLElement, TabMenuProps>(
                 </li>
               );
             })}
+            {indicator && (
+              /* Inside the list so its `left` shares the items' coordinate system (offsetLeft) in either direction. */
+              <li aria-hidden role="presentation" className="contents">
+                <span
+                  className={cn(
+                    "pointer-events-none absolute bottom-0 h-0.5 rounded-full bg-foreground",
+                    animate && "transition-[left,width] duration-300 ease-out-quart motion-reduce:transition-none"
+                  )}
+                  // rtl-physical: measured with offsetLeft, so placed with the physical left
+                  style={{ left: indicator.left, width: indicator.width }}
+                />
+              </li>
+            )}
           </ul>
-          {indicator && (
-            <span
-              aria-hidden
-              className={cn(
-                "pointer-events-none absolute bottom-0 h-0.5 rounded-full bg-foreground",
-                animate && "transition-[left,width] duration-300 ease-out-quart motion-reduce:transition-none"
-              )}
-              style={{ left: indicator.left, width: indicator.width }}
-            />
-          )}
         </div>
         <span
           aria-hidden
           className={cn(
-            "pointer-events-none absolute inset-y-0 left-0 w-8 bg-linear-to-r from-background to-transparent transition-opacity duration-200",
+            "pointer-events-none absolute inset-y-0 start-0 w-8 bg-linear-to-r rtl:bg-linear-to-l from-background to-transparent transition-opacity duration-200",
             fade.start ? "opacity-100" : "opacity-0"
           )}
         />
         <span
           aria-hidden
           className={cn(
-            "pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-background to-transparent transition-opacity duration-200",
+            "pointer-events-none absolute inset-y-0 end-0 w-8 bg-linear-to-l rtl:bg-linear-to-r from-background to-transparent transition-opacity duration-200",
             fade.end ? "opacity-100" : "opacity-0"
           )}
         />

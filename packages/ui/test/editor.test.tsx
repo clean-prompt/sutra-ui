@@ -431,7 +431,7 @@ describe("DiffViewer", () => {
     fireEvent.click(screen.getByRole("button", { name: "Previous change" }));
     expect(screen.getByText("1 of 2")).toBeInTheDocument();
     expect(onActive).toHaveBeenLastCalledWith(0);
-    expect(document.querySelector('[data-change-start="0"]')).toHaveClass("border-l-primary");
+    expect(document.querySelector('[data-change-start="0"]')).toHaveClass("border-s-primary");
   });
 
   it("colors changes by author", () => {

@@ -153,15 +153,15 @@ export const ToolToggleRow = React.memo(
               disabled={!expandable}
               onClick={() => setExpanded(!expanded)}
               className={cn(
-                "flex min-w-0 flex-1 items-center gap-2 rounded-sm text-left disabled:cursor-default",
+                "flex min-w-0 flex-1 items-center gap-2 rounded-sm text-start disabled:cursor-default",
                 focusRing
               )}
             >
               <RiArrowRightSLine
                 aria-hidden
                 className={cn(
-                  "size-4 shrink-0 text-muted-foreground chevron-turn",
-                  expanded && "rotate-90",
+                  "size-4 shrink-0 text-muted-foreground chevron-turn rtl:-scale-x-100",
+                  expanded && "rotate-90 rtl:-rotate-90",
                   !expandable && "invisible"
                 )}
               />
@@ -202,7 +202,7 @@ export const ToolToggleRow = React.memo(
             />
           </div>
           {expandable && expanded && (
-            <div id={detailId} className="space-y-3 px-3 pb-3 pl-9">
+            <div id={detailId} className="space-y-3 px-3 pb-3 ps-9">
               <div className="flex flex-wrap gap-1 sm:hidden">
                 {(tool.hints ?? []).map((h) => (
                   <ToolHintTag key={h} hint={h} />
@@ -371,7 +371,7 @@ export const ToolToggleList = React.forwardRef<HTMLDivElement, ToolToggleListPro
                   ))}
                 </div>
               )}
-              <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+              <span className="ms-auto text-xs text-muted-foreground tabular-nums">
                 {enabledCount} of {tools.length} enabled
               </span>
               {deprecatedCount > 0 && (
@@ -420,7 +420,7 @@ export const ToolToggleList = React.forwardRef<HTMLDivElement, ToolToggleListPro
                 {error}
               </span>
             )}
-            <div className="ml-auto flex gap-2">
+            <div className="ms-auto flex gap-2">
               <Button size="sm" variant="ghost" onClick={discard} disabled={saving}>
                 Discard
               </Button>
@@ -667,8 +667,8 @@ export const ToolsetProviderDrawer = React.forwardRef<HTMLDivElement, ToolsetPro
   const st = installStatusMeta[installStatus];
   return (
     <Sheet open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-      <SheetContent ref={ref} side="right" className={cn("w-full max-w-lg gap-0 overflow-y-auto p-0 sm:max-w-lg", className)}>
-        <SheetHeader className="border-b border-border p-5 pr-12">
+      <SheetContent ref={ref} side="end" className={cn("w-full max-w-lg gap-0 overflow-y-auto p-0 sm:max-w-lg", className)}>
+        <SheetHeader className="border-b border-border p-5 pe-12">
           <SheetTitle>{title}</SheetTitle>
           {description != null ? <SheetDescription>{description}</SheetDescription> : <SheetDescription className="sr-only">Configure {title}</SheetDescription>}
         </SheetHeader>
@@ -728,7 +728,7 @@ export const ToolsetProviderDrawer = React.forwardRef<HTMLDivElement, ToolsetPro
                 <Badge size="sm" color={st.color} data-install-status={installStatus} leadingIcon={installStatus === "running" ? <Spinner size="xs" /> : undefined}>
                   {st.label}
                 </Badge>
-                <Button size="sm" variant="outline" className="ml-auto" onClick={onInstall} disabled={installStatus === "running"}>
+                <Button size="sm" variant="outline" className="ms-auto" onClick={onInstall} disabled={installStatus === "running"}>
                   {installStatus === "error" ? "Retry" : installLabel}
                 </Button>
               </div>

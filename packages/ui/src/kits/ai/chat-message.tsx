@@ -30,7 +30,7 @@ const caretClass =
 
 /** Appends a blinking caret to the last rendered markdown block. */
 const caretAfterLast =
-  "[&>:last-child]:after:ml-0.5 [&>:last-child]:after:inline-block [&>:last-child]:after:h-[1.1em] [&>:last-child]:after:w-[0.45em] [&>:last-child]:after:translate-y-[0.2em] [&>:last-child]:after:rounded-[1px] [&>:last-child]:after:bg-foreground [&>:last-child]:after:animate-caret-blink motion-reduce:[&>:last-child]:after:animate-none [&>:last-child]:after:content-['']";
+  "[&>:last-child]:after:ms-0.5 [&>:last-child]:after:inline-block [&>:last-child]:after:h-[1.1em] [&>:last-child]:after:w-[0.45em] [&>:last-child]:after:translate-y-[0.2em] [&>:last-child]:after:rounded-[1px] [&>:last-child]:after:bg-foreground [&>:last-child]:after:animate-caret-blink motion-reduce:[&>:last-child]:after:animate-none [&>:last-child]:after:content-['']";
 
 export interface ChatMessageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "role"> {
   role?: ChatMessageRole;
@@ -154,7 +154,7 @@ export const ChatMessageContent = React.forwardRef<HTMLDivElement, ChatMessageCo
         ref={ref}
         className={cn(
           "min-w-0 text-[15px] leading-7 text-foreground",
-          bubble && "rounded-2xl rounded-br-md bg-muted px-4 py-2.5",
+          bubble && "rounded-2xl rounded-ee-md bg-muted px-4 py-2.5",
           ctx.role === "system" && "rounded-control border border-border bg-subtle px-3 py-1 text-xs leading-5 text-muted-foreground",
           className
         )}
@@ -167,7 +167,7 @@ export const ChatMessageContent = React.forwardRef<HTMLDivElement, ChatMessageCo
         ) : (
           <div className="whitespace-pre-wrap break-words">
             {children}
-            {isStreaming && <span aria-hidden className={cn(caretClass, !empty && "ml-0.5")} />}
+            {isStreaming && <span aria-hidden className={cn(caretClass, !empty && "ms-0.5")} />}
           </div>
         )}
       </div>

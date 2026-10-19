@@ -162,16 +162,16 @@ export function messageGroupPosition(index: number, length: number): MessageGrou
 
 const radius: Record<MessageDirection, Record<MessageGroupPosition, string>> = {
   outgoing: {
-    single: "rounded-2xl rounded-br-md",
-    first: "rounded-2xl rounded-br-md",
-    middle: "rounded-2xl rounded-r-md",
-    last: "rounded-2xl rounded-tr-md",
+    single: "rounded-2xl rounded-ee-md",
+    first: "rounded-2xl rounded-ee-md",
+    middle: "rounded-2xl rounded-e-md",
+    last: "rounded-2xl rounded-se-md",
   },
   incoming: {
-    single: "rounded-2xl rounded-bl-md",
-    first: "rounded-2xl rounded-bl-md",
-    middle: "rounded-2xl rounded-l-md",
-    last: "rounded-2xl rounded-tl-md",
+    single: "rounded-2xl rounded-es-md",
+    first: "rounded-2xl rounded-es-md",
+    middle: "rounded-2xl rounded-s-md",
+    last: "rounded-2xl rounded-ss-md",
   },
 };
 
@@ -289,7 +289,7 @@ export const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps
                 onClick={onReplyClick}
                 disabled={!onReplyClick}
                 className={cn(
-                  "mb-1.5 block w-full rounded-md border-l-2 px-2 py-1 text-left text-xs disabled:cursor-default",
+                  "mb-1.5 block w-full rounded-md border-s-2 px-2 py-1 text-start text-xs disabled:cursor-default",
                   out ? "border-primary-foreground/60 bg-primary-foreground/15" : "border-primary bg-muted",
                   focusRing
                 )}
@@ -553,7 +553,7 @@ export const MessageComposer = React.forwardRef<HTMLTextAreaElement, MessageComp
         {...props}
       >
         {replyingTo ? (
-          <div className="flex items-start gap-2 rounded-md border-l-2 border-primary bg-muted px-2.5 py-1.5 text-xs">
+          <div className="flex items-start gap-2 rounded-md border-s-2 border-primary bg-muted px-2.5 py-1.5 text-xs">
             <div className="min-w-0 flex-1">
               <span className="block font-semibold text-foreground">Replying to {replyingTo.senderName}</span>
               <span className="line-clamp-1 text-muted-foreground">{replyingTo.text}</span>
@@ -662,7 +662,7 @@ export const MessengerHeader = React.forwardRef<HTMLElement, MessengerHeaderProp
       <header ref={ref} className={cn("flex items-center gap-2 border-b border-border bg-background px-2 py-2", className)} {...props}>
         {onBack ? (
           <Button variant="ghost" size="icon" aria-label="Back" onClick={onBack}>
-            <RiArrowLeftSLine aria-hidden />
+            <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
           </Button>
         ) : null}
         {members && members.length > 0 ? (
@@ -846,7 +846,7 @@ export const GroupInfoPanel = React.forwardRef<HTMLElement, GroupInfoPanelProps>
                     <button
                       type="button"
                       onClick={() => onMemberClick(m)}
-                      className={cn("flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left hover:bg-accent", focusRing)}
+                      className={cn("flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-start hover:bg-accent", focusRing)}
                     >
                       {body}
                     </button>
@@ -860,7 +860,7 @@ export const GroupInfoPanel = React.forwardRef<HTMLElement, GroupInfoPanelProps>
         </section>
 
         {onLeave ? (
-          <Button variant="destructive-soft" leadingIcon={<RiLogoutBoxRLine aria-hidden />} onClick={onLeave}>
+          <Button variant="destructive-soft" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} onClick={onLeave}>
             {leaveLabel}
           </Button>
         ) : null}

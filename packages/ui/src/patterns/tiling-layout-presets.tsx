@@ -132,7 +132,7 @@ export const LayoutPresetPicker = React.forwardRef<HTMLDivElement, LayoutPresetP
     };
 
     const tileClass = cn(
-      "flex flex-col items-stretch gap-1.5 rounded-box border border-border bg-card p-2 text-left text-xs font-medium text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground",
+      "flex flex-col items-stretch gap-1.5 rounded-box border border-border bg-card p-2 text-start text-xs font-medium text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground",
       "aria-pressed:border-primary aria-pressed:bg-primary-soft aria-pressed:text-primary-soft-foreground",
       focusRing
     );
@@ -197,13 +197,13 @@ export const LayoutPresetPicker = React.forwardRef<HTMLDivElement, LayoutPresetP
                     onClick={() => applySaved(item)}
                   >
                     <LayoutThumbnail layout={item.layout} />
-                    <span className="truncate pr-5">{item.name}</span>
+                    <span className="truncate pe-5">{item.name}</span>
                   </button>
                   <Button
                     variant="ghost"
                     size="icon-xs"
                     aria-label={`Delete ${item.name}`}
-                    className="absolute right-1 bottom-1"
+                    className="absolute end-1 bottom-1"
                     onClick={() => setSaved(saved.filter((s) => s.id !== item.id))}
                   >
                     <RiDeleteBinLine aria-hidden className="size-3.5" />

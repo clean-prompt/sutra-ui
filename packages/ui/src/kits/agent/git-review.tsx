@@ -181,7 +181,7 @@ export const BranchPill = React.forwardRef<HTMLSpanElement, BranchPillProps>(
             size="xs"
             label="Copy branch name"
             copiedLabel="Copied branch name"
-            className="-mr-1 size-auto rounded-xs p-0.5 hover:bg-transparent"
+            className="-me-1 size-auto rounded-xs p-0.5 hover:bg-transparent"
           />
         )}
       </span>
@@ -248,7 +248,7 @@ export const ChangedFilesCard = React.forwardRef<HTMLDivElement, ChangedFilesCar
           </span>
           <DiffStat additions={totals.additions} deletions={totals.deletions} />
           {onReview && (
-            <Button type="button" size="xs" variant="secondary" className="ml-auto" onClick={onReview}>
+            <Button type="button" size="xs" variant="secondary" className="ms-auto" onClick={onReview}>
               {reviewLabel}
             </Button>
           )}
@@ -271,7 +271,7 @@ export const ChangedFilesCard = React.forwardRef<HTMLDivElement, ChangedFilesCar
                       type="button"
                       onClick={() => onOpenFile(f)}
                       aria-label={`Open ${f.path}`}
-                      className={cn("flex w-full min-w-0 items-center gap-2 px-3 py-1 text-left hover:bg-accent", focusRing)}
+                      className={cn("flex w-full min-w-0 items-center gap-2 px-3 py-1 text-start hover:bg-accent", focusRing)}
                     >
                       {row}
                     </button>
@@ -450,9 +450,9 @@ export const ReviewFileTree = React.forwardRef<HTMLUListElement, ReviewFileTreeP
           <span className="flex min-w-0 flex-1 items-center gap-2">
             <span className={cn("truncate", f.status === "deleted" && "text-muted-foreground line-through")}>{splitFilePath(f.path).base}</span>
             {showStats && (f.additions != null || f.deletions != null) && (
-              <DiffStat additions={f.additions ?? 0} deletions={f.deletions ?? 0} showBar={false} className="ml-auto text-2xs" />
+              <DiffStat additions={f.additions ?? 0} deletions={f.deletions ?? 0} showBar={false} className="ms-auto text-2xs" />
             )}
-            <GitStatusLetter status={f.status} className={showStats ? undefined : "ml-auto"} />
+            <GitStatusLetter status={f.status} className={showStats ? undefined : "ms-auto"} />
           </span>
         )),
       [files, showStats]
@@ -631,7 +631,7 @@ export const ShipBar = React.forwardRef<HTMLDivElement, ShipBarProps>(
             <RiArrowDownLine className="size-3" aria-hidden />
             {behind}
           </span>
-          <span className="ml-auto tabular-nums">
+          <span className="ms-auto tabular-nums">
             {changedCount} {pluralize(changedCount, "file")}
           </span>
         </div>
@@ -681,7 +681,7 @@ export const ShipBar = React.forwardRef<HTMLDivElement, ShipBarProps>(
               disabled={disabled}
               aria-describedby={reason ? reasonId : undefined}
               onClick={() => run(action)}
-              className="rounded-r-none"
+              className="rounded-e-none"
             >
               {meta.label}
             </Button>
@@ -693,7 +693,7 @@ export const ShipBar = React.forwardRef<HTMLDivElement, ShipBarProps>(
                   variant="primary"
                   aria-label="More ship actions"
                   disabled={running}
-                  className="rounded-l-none border-l border-primary-foreground/20"
+                  className="rounded-s-none border-s border-primary-foreground/20"
                 >
                   <RiArrowDownSLine aria-hidden />
                 </Button>
@@ -724,7 +724,7 @@ export const ShipBar = React.forwardRef<HTMLDivElement, ShipBarProps>(
               {delegateLabel}
             </Button>
           )}
-          <div className="ml-auto min-w-0 text-xs" aria-live="polite">
+          <div className="ms-auto min-w-0 text-xs" aria-live="polite">
             {running ? (
               <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                 <Spinner size="xs" />

@@ -135,7 +135,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         ref={ref}
         className={cn(
           badgeVariants({ variant, color: c, size }),
-          onRemove && (size === "lg" ? "pr-1" : "pr-0.5"),
+          onRemove && (size === "lg" ? "pe-1" : "pe-0.5"),
           className
         )}
         {...props}

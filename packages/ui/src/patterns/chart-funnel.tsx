@@ -209,7 +209,7 @@ export const FunnelChart = React.forwardRef<HTMLDivElement, FunnelChartProps>(
                     <div
                       key={r.i}
                       data-slot="chart-stage-label"
-                      className="absolute flex min-w-0 flex-col justify-center overflow-hidden pr-2"
+                      className="absolute flex min-w-0 flex-col justify-center overflow-hidden pe-2"
                       style={{ left: 0, top: r.i * rh, width: gutter, height: rh }}
                       onMouseEnter={() => setActive(r.i)}
                     >

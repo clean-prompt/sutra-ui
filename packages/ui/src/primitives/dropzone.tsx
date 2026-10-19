@@ -388,7 +388,7 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
             "data-[drag=accept]:border-primary data-[drag=accept]:bg-primary-soft/60 data-[drag=accept]:ring-4 data-[drag=accept]:ring-primary/10",
             "data-[drag=reject]:border-destructive data-[drag=reject]:bg-destructive-soft/60",
             "aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:border-border-strong aria-disabled:hover:bg-background",
-            compact ? "flex-row items-center gap-3 px-4 py-3 text-left" : "flex-col items-center justify-center gap-3 px-6 py-8",
+            compact ? "flex-row items-center gap-3 px-4 py-3 text-start" : "flex-col items-center justify-center gap-3 px-6 py-8",
             focusRing,
             className
           )}

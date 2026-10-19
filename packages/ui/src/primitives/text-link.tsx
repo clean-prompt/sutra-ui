@@ -71,7 +71,7 @@ export const TextLink = React.forwardRef<HTMLAnchorElement, TextLinkProps>(
           type={(type as "button" | "submit" | "reset" | undefined) ?? "button"}
           disabled={disabled}
           className={cn(
-            "group/text-link cursor-pointer text-left disabled:pointer-events-none disabled:opacity-50",
+            "group/text-link cursor-pointer text-start disabled:pointer-events-none disabled:opacity-50",
             classes
           )}
           {...(buttonProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
@@ -86,7 +86,7 @@ export const TextLink = React.forwardRef<HTMLAnchorElement, TextLinkProps>(
     const icon = external ? (
       <RiArrowRightUpLine
         aria-hidden
-        className="transition-transform duration-150 group-hover/text-link:-translate-y-px group-hover/text-link:translate-x-px"
+        className="transition-transform duration-150 group-hover/text-link:-translate-y-px group-hover/text-link:translate-x-px rtl:group-hover/text-link:-translate-x-px"
       />
     ) : null;
 

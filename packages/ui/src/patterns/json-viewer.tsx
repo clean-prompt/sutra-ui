@@ -200,7 +200,7 @@ function CopyActions({ value, path }: { value: unknown; path: string }) {
     focusRing
   );
   return (
-    <span className="ml-1 inline-flex gap-0.5 opacity-0 transition-opacity group-hover/json-row:opacity-100 focus-within:opacity-100">
+    <span className="ms-1 inline-flex gap-0.5 opacity-0 transition-opacity group-hover/json-row:opacity-100 focus-within:opacity-100">
       <button type="button" className={btn} aria-label={`Copy value of ${path}`} onClick={() => ctx.copy(valueText, "value", path)}>
         {ctx.copiedKey === `value:${path}` ? <RiCheckLine aria-hidden className="text-success" /> : <RiFileCopyLine aria-hidden />}
       </button>
@@ -286,7 +286,7 @@ function JsonNode({ name, value, segs, depth, ancestors, last }: JsonNodeProps) 
             aria-controls={groupId}
             className={cn(hitArea, "inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground", focusRing)}
           >
-            <RiArrowRightSLine aria-hidden className={cn("chevron-turn size-3.5", expanded && "rotate-90")} />
+            <RiArrowRightSLine aria-hidden className={cn("chevron-turn size-3.5 rtl:-scale-x-100", expanded && "rotate-90 rtl:-rotate-90")} />
           </button>
         ) : (
           <span className="inline-block w-4 shrink-0" />
@@ -300,7 +300,7 @@ function JsonNode({ name, value, segs, depth, ancestors, last }: JsonNodeProps) 
             {comma}
           </>
         )}
-        <span className="ml-2 text-2xs text-muted-foreground" data-count="">
+        <span className="ms-2 text-2xs text-muted-foreground" data-count="">
           {countText}
         </span>
         <CopyActions value={value} path={path} />
@@ -464,31 +464,31 @@ export const JsonViewer = React.forwardRef<HTMLDivElement, JsonViewerProps>(
     );
 
     return (
-      <div ref={ref} className={cn("flex min-w-0 flex-col overflow-hidden rounded-box border border-border bg-card text-sm", className)} {...props}>
+      <div ref={ref} className={cn("flex min-w-0 flex-col overflow-hidden rounded-box border border-border bg-card text-sm", className)} dir="ltr" {...props}>
         {toolbar && parsed.ok ? (
           <div className="flex flex-wrap items-center gap-1 border-b border-border bg-subtle px-2 py-1.5">
             {searchable && mode === "tree" ? (
-              <label className="relative mr-auto flex min-w-40 flex-1 items-center">
+              <label className="relative me-auto flex min-w-40 flex-1 items-center">
                 <span className="sr-only">Search JSON</span>
-                <RiSearchLine aria-hidden className="pointer-events-none absolute left-2 size-3.5 text-muted-foreground" />
+                <RiSearchLine aria-hidden className="pointer-events-none absolute start-2 size-3.5 text-muted-foreground" />
                 <input
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search keys and values…"
                   className={cn(
-                    "h-7 w-full max-w-64 rounded-control border border-input bg-background pl-7 pr-2 text-xs placeholder:text-muted-foreground",
+                    "h-7 w-full max-w-64 rounded-control border border-input bg-background ps-7 pe-2 text-xs placeholder:text-muted-foreground",
                     focusRing
                   )}
                 />
                 {matches ? (
-                  <span className="ml-2 whitespace-nowrap text-2xs text-muted-foreground" aria-live="polite" data-match-count="">
+                  <span className="ms-2 whitespace-nowrap text-2xs text-muted-foreground" aria-live="polite" data-match-count="">
                     {matches.count} {pluralize(matches.count, "match", "matches")}
                   </span>
                 ) : null}
               </label>
             ) : (
-              <span className="mr-auto" />
+              <span className="me-auto" />
             )}
             {mode === "tree" ? (
               <>
@@ -516,7 +516,7 @@ export const JsonViewer = React.forwardRef<HTMLDivElement, JsonViewerProps>(
                 </button>
               </>
             ) : null}
-            <div role="group" aria-label="View" className="ml-1 inline-flex rounded-control border border-border bg-background p-0.5">
+            <div role="group" aria-label="View" className="ms-1 inline-flex rounded-control border border-border bg-background p-0.5">
               {(["tree", "raw"] as const).map((m) => (
                 <button
                   key={m}

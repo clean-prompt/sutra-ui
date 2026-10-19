@@ -54,13 +54,13 @@ const chevronSize: Record<SplitButtonSize, ButtonProps["size"]> = {
 };
 
 const dividerByVariant: Partial<Record<NonNullable<ButtonProps["variant"]>, string>> = {
-  primary: "border-l border-primary-foreground/25",
-  destructive: "border-l border-destructive-foreground/25",
-  inverse: "border-l border-inverse-foreground/20",
-  soft: "border-l border-primary-soft-foreground/20",
-  tertiary: "border-l border-border-strong",
-  ghost: "border-l border-border",
-  "destructive-soft": "border-l border-destructive-soft-foreground/20",
+  primary: "border-s border-primary-foreground/25",
+  destructive: "border-s border-destructive-foreground/25",
+  inverse: "border-s border-inverse-foreground/20",
+  soft: "border-s border-primary-soft-foreground/20",
+  tertiary: "border-s border-border-strong",
+  ghost: "border-s border-border",
+  "destructive-soft": "border-s border-destructive-soft-foreground/20",
 };
 
 /** A primary action fused with a chevron that opens a menu of secondary actions. */
@@ -92,7 +92,7 @@ export const SplitButton = React.forwardRef<HTMLButtonElement, SplitButtonProps>
           size={size}
           disabled={disabled}
           loading={loading}
-          className={cn(hasMenu && "rounded-r-none active:scale-100", className)}
+          className={cn(hasMenu && "rounded-e-none active:scale-100", className)}
           {...props}
         >
           {children}
@@ -107,8 +107,8 @@ export const SplitButton = React.forwardRef<HTMLButtonElement, SplitButtonProps>
                 aria-label={menuLabel}
                 title={menuLabel}
                 className={cn(
-                  "rounded-l-none active:scale-100 data-[state=open]:brightness-95",
-                  variant === "secondary" || variant === "outline" ? "-ml-px" : dividerByVariant[variant ?? "primary"],
+                  "rounded-s-none active:scale-100 data-[state=open]:brightness-95",
+                  variant === "secondary" || variant === "outline" ? "-ms-px" : dividerByVariant[variant ?? "primary"],
                   size === "xs" ? "w-6" : size === "sm" ? "w-7" : "w-8"
                 )}
               >

@@ -107,7 +107,7 @@ export const BatteryLevel = React.forwardRef<HTMLSpanElement, BatteryLevelProps>
           {variant === "icon" ? (
             <span aria-hidden className="inline-flex animate-pulse items-center motion-reduce:animate-none">
               <span className={cn("relative flex rounded-[3px] border border-muted-foreground/40 p-px", s.body)} />
-              <span className={cn("ml-px rounded-r-[1px] bg-muted-foreground/40", s.nub)} />
+              <span className={cn("ms-px rounded-e-[1px] bg-muted-foreground/40", s.nub)} />
             </span>
           ) : variant === "bar" ? (
             <span aria-hidden className={cn("relative block shrink-0 animate-pulse overflow-hidden rounded-full bg-muted motion-reduce:animate-none", barSize[size])} />
@@ -157,7 +157,7 @@ export const BatteryLevel = React.forwardRef<HTMLSpanElement, BatteryLevelProps>
                 style={{ width: `${pct}%` }}
               />
             </span>
-            <span className={cn("ml-px rounded-r-[1px] bg-muted-foreground/70", s.nub)} />
+            <span className={cn("ms-px rounded-e-[1px] bg-muted-foreground/70", s.nub)} />
           </span>
         ) : variant === "bar" ? (
           <span className={cn("relative block shrink-0 overflow-hidden rounded-full bg-muted", barSize[size])}>

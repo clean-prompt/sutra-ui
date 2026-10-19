@@ -65,9 +65,9 @@ describe("DividedGrid structure", () => {
     const root = container.firstElementChild!;
     expect(root).toHaveClass("overflow-hidden", "rounded-box", "border");
     const ul = root.querySelector("ul")!;
-    expect(ul).toHaveClass("-mr-px", "-mb-px", "grid");
+    expect(ul).toHaveClass("-me-px", "-mb-px", "grid");
     expect(ul.className).toContain("lg:grid-cols-4");
-    for (const li of ul.children) expect(li).toHaveClass("border-r", "border-b");
+    for (const li of ul.children) expect(li).toHaveClass("border-e", "border-b");
   });
 
   it("measures its own width with query=container", () => {

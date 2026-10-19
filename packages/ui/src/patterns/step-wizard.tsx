@@ -208,12 +208,12 @@ export const StepWizard = React.forwardRef<HTMLDivElement, StepWizardProps>(
         {footer === false ? null : (
           footer ?? (
             <div data-slot="step-wizard-footer" className="flex flex-wrap items-center justify-between gap-2">
-              <Button variant="ghost" leadingIcon={<RiArrowLeftLine />} disabled={index === 0 || busy} onClick={() => goto(index - 1)}>
+              <Button variant="ghost" leadingIcon={<RiArrowLeftLine className="rtl:-scale-x-100" />} disabled={index === 0 || busy} onClick={() => goto(index - 1)}>
                 {text.back}
               </Button>
               <Button
                 loading={busy}
-                trailingIcon={last ? <RiCheckLine /> : <RiArrowRightLine />}
+                trailingIcon={last ? <RiCheckLine /> : <RiArrowRightLine className="rtl:-scale-x-100" />}
                 onClick={() => (last ? finish() : goto(index + 1))}
               >
                 {last ? text.finish : text.next}

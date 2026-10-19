@@ -233,7 +233,7 @@ function VersionSwitcher({ index, total, onChange }: { index: number; total: num
           disabled={index <= 0}
           onClick={() => onChange(index - 1)}
         >
-          <RiArrowLeftSLine aria-hidden />
+          <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
         </Button>
       )}
       <Badge size="sm" variant="outline" title={`Version ${index + 1} of ${total}`} aria-label={`Version ${index + 1} of ${total}`}>
@@ -248,7 +248,7 @@ function VersionSwitcher({ index, total, onChange }: { index: number; total: num
           disabled={index >= total - 1}
           onClick={() => onChange(index + 1)}
         >
-          <RiArrowRightSLine aria-hidden />
+          <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
         </Button>
       )}
     </div>
@@ -369,7 +369,7 @@ export const ArtifactCard = React.forwardRef<HTMLDivElement, ArtifactCardProps>(
                 type="button"
                 id={titleId}
                 onClick={onOpen}
-                className={cn("block max-w-full truncate rounded-xs text-left text-sm font-medium hover:underline", focusRing)}
+                className={cn("block max-w-full truncate rounded-xs text-start text-sm font-medium hover:underline", focusRing)}
               >
                 {title}
               </button>
@@ -557,7 +557,7 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
             </h2>
             {streaming && <TextShimmer className="text-xs">Generating…</TextShimmer>}
             <VersionSwitcher index={index} total={versions.length} onChange={setIndex} />
-            <TabsList className="ml-auto">
+            <TabsList className="ms-auto">
               <TabsTrigger value="preview">Preview</TabsTrigger>
               <TabsTrigger value="code">Code</TabsTrigger>
             </TabsList>
@@ -613,7 +613,7 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
               </TabsContent>
             </div>
             {showHistory && versions.length > 0 && (
-              <aside aria-label="Version history" className="hidden w-52 shrink-0 border-l border-border bg-subtle sm:block">
+              <aside aria-label="Version history" className="hidden w-52 shrink-0 border-s border-border bg-subtle sm:block">
                 <div className="px-3 pt-3 pb-1 text-2xs font-medium uppercase tracking-wide text-muted-foreground">History</div>
                 <ol className="space-y-0.5 p-1.5">
                   {versions
@@ -626,7 +626,7 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
                           aria-current={i === index ? "true" : undefined}
                           onClick={() => setIndex(i)}
                           className={cn(
-                            "flex w-full flex-col items-start gap-0.5 rounded-control px-2 py-1.5 text-left text-xs hover:bg-accent",
+                            "flex w-full flex-col items-start gap-0.5 rounded-control px-2 py-1.5 text-start text-xs hover:bg-accent",
                             i === index && "bg-accent",
                             focusRing
                           )}
@@ -634,7 +634,7 @@ export const ArtifactViewer = React.forwardRef<HTMLDivElement, ArtifactViewerPro
                           <span className="flex w-full items-center gap-1.5">
                             <span className="font-medium">v{i + 1}</span>
                             {i === versions.length - 1 && <span className="text-2xs text-muted-foreground">latest</span>}
-                            <span className="ml-auto text-2xs text-muted-foreground">{formatArtifactTime(v.createdAt)}</span>
+                            <span className="ms-auto text-2xs text-muted-foreground">{formatArtifactTime(v.createdAt)}</span>
                           </span>
                           {v.note && <span className="line-clamp-2 text-muted-foreground">{v.note}</span>}
                         </button>
@@ -849,7 +849,7 @@ export const ArtifactLibrary = React.forwardRef<HTMLDivElement, ArtifactLibraryP
                   type="button"
                   onClick={() => onOpenArtifact?.(a)}
                   className={cn(
-                    "flex w-full items-center gap-3 text-left hover:bg-accent",
+                    "flex w-full items-center gap-3 text-start hover:bg-accent",
                     layout === "grid" ? "h-full flex-col items-start rounded-box border border-border bg-card p-3" : "px-3 py-2",
                     focusRing
                   )}

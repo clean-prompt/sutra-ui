@@ -8,6 +8,9 @@
     "playground": "pnpm --filter playground dev",
     "typecheck": "pnpm -r typecheck",
     "audit:all": "pnpm --filter playground audit:all",
+    "docs:gen": "node packages/ui/scripts/gen-docs.mjs",
+    "docs:check": "node packages/ui/scripts/gen-docs.mjs --check",
+    "docs:baseline": "node packages/ui/scripts/gen-docs.mjs --update-baseline",
     "verify": "pnpm --filter @sutra/ui verify && pnpm --filter playground typecheck && pnpm --filter playground build"
   }
 }

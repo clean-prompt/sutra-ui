@@ -439,7 +439,7 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
       data-slot="time-picker"
       data-invalid={field.invalid || undefined}
       data-disabled={disabled || undefined}
-      className={cn(wrapperClass, sizeClass[size], showClear && "pr-9", className)}
+      className={cn(wrapperClass, sizeClass[size], showClear && "pe-9", className)}
       onMouseDown={(e) => {
         onMouseDown?.(e);
         const target = e.target as HTMLElement;
@@ -510,7 +510,7 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
           onClick={clear}
           className={cn(
             "absolute top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground",
-            size === "sm" ? "right-2" : size === "lg" ? "right-3" : "right-2.5",
+            size === "sm" ? "end-2" : size === "lg" ? "end-3" : "end-2.5",
             focusRing
           )}
         >

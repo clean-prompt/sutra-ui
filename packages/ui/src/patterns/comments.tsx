@@ -144,7 +144,7 @@ export const CommentComposer = React.forwardRef<HTMLFormElement, CommentComposer
         {...props}
       >
         {quote && (
-          <blockquote className="line-clamp-3 border-l-2 border-warning pl-2 text-xs italic text-muted-foreground">{quote}</blockquote>
+          <blockquote className="line-clamp-3 border-s-2 border-warning ps-2 text-xs italic text-muted-foreground">{quote}</blockquote>
         )}
         <Textarea
           autoResize
@@ -243,7 +243,7 @@ function CommentItem({
                   size="icon-xs"
                   variant="ghost"
                   aria-label={`Actions for comment by ${comment.author.name}`}
-                  className="ml-auto opacity-0 focus-visible:opacity-100 group-hover/comment:opacity-100 data-[state=open]:opacity-100"
+                  className="ms-auto opacity-0 focus-visible:opacity-100 group-hover/comment:opacity-100 data-[state=open]:opacity-100"
                 >
                   <RiMoreLine aria-hidden />
                 </Button>
@@ -380,14 +380,14 @@ export const CommentThread = React.forwardRef<HTMLElement, CommentThreadProps>(
               onClick={() => onFocusAnchor(thread)}
               title="Find in the text"
               className={cn(
-                "line-clamp-2 rounded-xs border-l-2 border-warning bg-warning-soft/40 py-0.5 pl-2 pr-1 text-left text-xs italic text-muted-foreground transition-colors hover:bg-warning-soft hover:text-foreground",
+                "line-clamp-2 rounded-xs border-s-2 border-warning bg-warning-soft/40 py-0.5 ps-2 pe-1 text-start text-xs italic text-muted-foreground transition-colors hover:bg-warning-soft hover:text-foreground",
                 focusRing
               )}
             >
               {thread.quote}
             </button>
           ) : (
-            <blockquote className="line-clamp-2 border-l-2 border-warning pl-2 text-xs italic text-muted-foreground">{thread.quote}</blockquote>
+            <blockquote className="line-clamp-2 border-s-2 border-warning ps-2 text-xs italic text-muted-foreground">{thread.quote}</blockquote>
           ))}
         <ul className={cn("flex flex-col gap-3", thread.resolved && "opacity-75")}>
           {thread.comments.map((c) => (
@@ -427,7 +427,7 @@ export const CommentThread = React.forwardRef<HTMLElement, CommentThreadProps>(
           (canReply && onReply && !thread.resolved) || (canResolve && onResolve) ? (
             <div className="flex items-center gap-1">
               {canReply && onReply && !thread.resolved && (
-                <Button size="xs" variant="ghost" leadingIcon={<RiReplyLine aria-hidden />} onClick={() => setReplying(true)}>
+                <Button size="xs" variant="ghost" leadingIcon={<RiReplyLine className="rtl:-scale-x-100" aria-hidden />} onClick={() => setReplying(true)}>
                   Reply
                 </Button>
               )}
@@ -435,7 +435,7 @@ export const CommentThread = React.forwardRef<HTMLElement, CommentThreadProps>(
                 <Button
                   size="xs"
                   variant="ghost"
-                  className="ml-auto"
+                  className="ms-auto"
                   leadingIcon={thread.resolved ? <RiArrowGoBackLine aria-hidden /> : <RiCheckboxCircleLine aria-hidden />}
                   onClick={() => onResolve(thread.id, !thread.resolved)}
                 >
@@ -532,7 +532,7 @@ export const CommentsPanel = React.forwardRef<HTMLElement, CommentsPanelProps>(
                 {openCount}
               </span>
             )}
-            <span className="ml-auto flex items-center gap-1">{actions}</span>
+            <span className="ms-auto flex items-center gap-1">{actions}</span>
           </div>
           <SegmentedControl
             size="sm"

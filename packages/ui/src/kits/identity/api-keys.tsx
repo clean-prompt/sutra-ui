@@ -192,7 +192,7 @@ export const ApiKeyList = React.forwardRef<HTMLDivElement, ApiKeyListProps>(
                 <TableHead>Created</TableHead>
                 <TableHead>Expires</TableHead>
                 <TableHead>Last used</TableHead>
-                <TableHead className="text-right">Requests</TableHead>
+                <TableHead className="text-end">Requests</TableHead>
                 {hasMenu && (
                   <TableHead className="w-10">
                     <span className="sr-only">Actions</span>
@@ -226,7 +226,7 @@ export const ApiKeyList = React.forwardRef<HTMLDivElement, ApiKeyListProps>(
                   <TableCell className="whitespace-nowrap text-muted-foreground">
                     {k.lastUsedAt ? formatRelativeDate(k.lastUsedAt, now) : "Never"}
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">{(k.usageCount ?? 0).toLocaleString()}</TableCell>
+                  <TableCell className="text-end tabular-nums">{(k.usageCount ?? 0).toLocaleString()}</TableCell>
                   {hasMenu && (
                     <TableCell>
                       <DropdownMenu>
@@ -520,7 +520,7 @@ export function ApiKeyCreateDialog({
                           onCheckedChange={(v) => setPerms((cur) => toggleIn(cur, p.value, v === true))}
                         />
                         {on && p.warning && (
-                          <p role="note" className="ml-7 flex items-start gap-1.5 rounded-md bg-warning-soft px-2.5 py-1.5 text-xs text-warning-soft-foreground">
+                          <p role="note" className="ms-7 flex items-start gap-1.5 rounded-md bg-warning-soft px-2.5 py-1.5 text-xs text-warning-soft-foreground">
                             <RiAlertLine aria-hidden className="mt-px size-3.5 shrink-0" />
                             {p.warning}
                           </p>
@@ -587,9 +587,9 @@ export const ApiKeyUsage = React.forwardRef<HTMLDivElement, ApiKeyUsageProps>(
           <TableHeader>
             <TableRow>
               <TableHead>{labelHeader}</TableHead>
-              <TableHead className="text-right">Requests</TableHead>
-              <TableHead className="text-right">Errors</TableHead>
-              {hasLast && <TableHead className="text-right">Last</TableHead>}
+              <TableHead className="text-end">Requests</TableHead>
+              <TableHead className="text-end">Errors</TableHead>
+              {hasLast && <TableHead className="text-end">Last</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -605,12 +605,12 @@ export const ApiKeyUsage = React.forwardRef<HTMLDivElement, ApiKeyUsageProps>(
                       </span>
                     </span>
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">{r.requests.toLocaleString()}</TableCell>
-                  <TableCell className={cn("text-right tabular-nums", errRate > 0.05 ? "text-destructive" : "text-muted-foreground")}>
+                  <TableCell className="text-end tabular-nums">{r.requests.toLocaleString()}</TableCell>
+                  <TableCell className={cn("text-end tabular-nums", errRate > 0.05 ? "text-destructive" : "text-muted-foreground")}>
                     {(r.errors ?? 0).toLocaleString()}
                   </TableCell>
                   {hasLast && (
-                    <TableCell className="whitespace-nowrap text-right text-muted-foreground">
+                    <TableCell className="whitespace-nowrap text-end text-muted-foreground">
                       {r.lastUsedAt != null ? formatRelativeDate(r.lastUsedAt, now) : "—"}
                     </TableCell>
                   )}
@@ -620,8 +620,8 @@ export const ApiKeyUsage = React.forwardRef<HTMLDivElement, ApiKeyUsageProps>(
             {showTotal && rows.length > 1 && (
               <TableRow className="font-medium">
                 <TableCell>Total</TableCell>
-                <TableCell className="text-right tabular-nums">{total.toLocaleString()}</TableCell>
-                <TableCell className="text-right tabular-nums">{totalErrors.toLocaleString()}</TableCell>
+                <TableCell className="text-end tabular-nums">{total.toLocaleString()}</TableCell>
+                <TableCell className="text-end tabular-nums">{totalErrors.toLocaleString()}</TableCell>
                 {hasLast && <TableCell />}
               </TableRow>
             )}

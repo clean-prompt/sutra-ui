@@ -215,7 +215,7 @@ describe("layout: cross-group fixes from F3", () => {
     Element.prototype.scrollTo ??= function () {} as typeof Element.prototype.scrollTo;
     render(<LogViewer lines={["one", "two"]} status="live" />);
     const group = screen.getByRole("status").parentElement!;
-    expect(group).toHaveClass("flex-wrap", "max-w-full", "ml-auto");
+    expect(group).toHaveClass("flex-wrap", "max-w-full", "ms-auto");
   });
 
   it("UptimeBar buckets can shrink below 2px and the gap tightens for many buckets", async () => {

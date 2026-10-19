@@ -169,7 +169,7 @@ export const AuthProblem = React.forwardRef<HTMLDivElement, AuthProblemProps>(
         <h2 className="text-xl font-semibold tracking-tight text-foreground">{title ?? c.title}</h2>
         <div className="text-pretty text-sm leading-relaxed text-muted-foreground">{description ?? c.body}</div>
         {(actions ?? c.actions) && <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center [&>*]:sm:flex-1">{actions ?? c.actions}</div>}
-        {children && <div className="w-full border-t border-border pt-4 text-left">{children}</div>}
+        {children && <div className="w-full border-t border-border pt-4 text-start">{children}</div>}
       </div>
     );
 

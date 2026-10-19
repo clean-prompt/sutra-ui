@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowRightSLine, RiCloseCircleLine, RiSkullLine } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
+import { logicalArrow } from "../../lib/direction";
 import { toneClasses } from "../../lib/tone";
 import { formatDuration } from "../../lib/duration";
 import { formatBytes, pluralize, type FormatBytesOptions } from "../../lib/format";
@@ -248,9 +249,9 @@ const groupHeadPadding: Record<Density, string> = {
 
 /** Child rows indent their label past the group's disclosure chevron. */
 const childIndent: Record<Density, string> = {
-  compact: "pl-9",
-  normal: "pl-10",
-  relaxed: "pl-10",
+  compact: "ps-9",
+  normal: "ps-10",
+  relaxed: "ps-10",
 };
 
 /** Every tbody but the last keeps its bottom border when groups each get their own tbody. */
@@ -559,7 +560,7 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
           return p.vram ? (
             <span className="font-mono text-xs tabular-nums">
               {formatBytes(p.vram, PROCESS_BYTES)}
-              {p.gpuIndex != null ? <span className="ml-1 text-2xs text-muted-foreground">G{p.gpuIndex}</span> : null}
+              {p.gpuIndex != null ? <span className="ms-1 text-2xs text-muted-foreground">G{p.gpuIndex}</span> : null}
             </span>
           ) : (
             <span className="text-xs text-muted-foreground">—</span>
@@ -670,7 +671,7 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
               <th
                 key={col}
                 scope="rowgroup"
-                className={cn("border-b border-border text-left align-middle font-normal", groupHeadPadding[nDensity])}
+                className={cn("border-b border-border text-start align-middle font-normal", groupHeadPadding[nDensity])}
               >
                 <button
                   type="button"
@@ -680,19 +681,19 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
                   aria-controls={open && childIds.length ? childIds.join(" ") : undefined}
                   onClick={() => setGroupExpanded(group.key, !open)}
                   onKeyDown={(e) => {
-                    if (e.key === "ArrowRight" && !open) {
+                    if (logicalArrow(e) === "ArrowRight" && !open) {
                       e.preventDefault();
                       setGroupExpanded(group.key, true);
-                    } else if (e.key === "ArrowLeft" && open) {
+                    } else if (logicalArrow(e) === "ArrowLeft" && open) {
                       e.preventDefault();
                       setGroupExpanded(group.key, false);
                     }
                   }}
-                  className={cn("-mx-1 flex min-w-0 max-w-[22rem] items-center gap-2 rounded-xs px-1 text-left", focusRing)}
+                  className={cn("-mx-1 flex min-w-0 max-w-[22rem] items-center gap-2 rounded-xs px-1 text-start", focusRing)}
                 >
                   <RiArrowRightSLine
                     aria-hidden
-                    className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", open && "rotate-90")}
+                    className={cn("size-4 shrink-0 text-muted-foreground chevron-turn rtl:-scale-x-100", open && "rotate-90 rtl:-rotate-90")}
                   />
                   {group.icon != null ? (
                     <span aria-hidden className="inline-flex size-6 shrink-0 items-center justify-center [&>img]:size-full [&>svg]:size-5">

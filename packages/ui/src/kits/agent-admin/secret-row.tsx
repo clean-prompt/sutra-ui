@@ -129,7 +129,7 @@ export function SecretRow({
               Remove
             </Button>
           )}
-          <span className="ml-auto">{link}</span>
+          <span className="ms-auto">{link}</span>
         </div>
       </div>
     );
@@ -139,7 +139,7 @@ export function SecretRow({
       <div className="flex items-center justify-between gap-2">
         <label htmlFor={inputId} className="text-sm font-medium text-foreground">
           {label}
-          {optional && <span className="ml-1 font-normal text-muted-foreground">(optional)</span>}
+          {optional && <span className="ms-1 font-normal text-muted-foreground">(optional)</span>}
         </label>
         {link}
       </div>

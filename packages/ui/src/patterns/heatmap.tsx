@@ -218,7 +218,7 @@ function HeatmapMatrix({
             {rowHeaders ? (
               <div
                 role="rowheader"
-                className="shrink-0 truncate pr-1 text-2xs leading-none text-muted-foreground"
+                className="shrink-0 truncate pe-1 text-2xs leading-none text-muted-foreground"
                 style={{ width: rowHeaderWidth }}
               >
                 {rowHeaders[r]}
@@ -298,7 +298,7 @@ function HeatmapMatrix({
       {tooltip && hover ? (
         <div
           aria-hidden
-          className="pointer-events-none absolute z-50 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-inverse px-2 py-1 text-xs font-medium text-inverse-foreground shadow-md"
+          className="pointer-events-none absolute z-50 -translate-x-1/2 rtl:translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-inverse px-2 py-1 text-xs font-medium text-inverse-foreground shadow-md"
           style={{ left: hover.x, top: hover.y - 6 }}
           data-heatmap-tooltip=""
         >
@@ -446,7 +446,7 @@ export const HeatmapGrid = React.forwardRef<HTMLDivElement, HeatmapGridProps>(
     });
     const template = cellSize ? `repeat(${cols}, ${cellSize}px)` : `repeat(${cols}, minmax(0, 1fr))`;
     return (
-      <div ref={ref} className={cn("w-full", className)} {...props}>
+      <div ref={ref} className={cn("w-full", className)} dir="ltr" {...props}>
         <HeatmapMatrix
           matrix={matrix}
           label={label}
@@ -690,7 +690,7 @@ export const CalendarHeatmap = React.forwardRef<HTMLDivElement, CalendarHeatmapP
       ) : null;
 
     return (
-      <div ref={ref} className={cn("inline-flex max-w-full flex-col gap-2", className)} {...props}>
+      <div ref={ref} className={cn("inline-flex max-w-full flex-col gap-2", className)} dir="ltr" {...props}>
         {mode === "month" ? (
           <div className="flex items-center justify-between gap-2">
             <button
@@ -699,7 +699,7 @@ export const CalendarHeatmap = React.forwardRef<HTMLDivElement, CalendarHeatmapP
               onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))}
               className={cn("inline-flex size-7 items-center justify-center rounded-control text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
             >
-              <RiArrowLeftSLine aria-hidden className="size-4" />
+              <RiArrowLeftSLine aria-hidden className="size-4 rtl:-scale-x-100" />
             </button>
             <span className="text-sm font-medium" aria-live="polite">
               {monthTitle}
@@ -710,7 +710,7 @@ export const CalendarHeatmap = React.forwardRef<HTMLDivElement, CalendarHeatmapP
               onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))}
               className={cn("inline-flex size-7 items-center justify-center rounded-control text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
             >
-              <RiArrowRightSLine aria-hidden className="size-4" />
+              <RiArrowRightSLine aria-hidden className="size-4 rtl:-scale-x-100" />
             </button>
           </div>
         ) : null}

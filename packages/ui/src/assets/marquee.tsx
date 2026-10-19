@@ -105,7 +105,7 @@ export const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
           data-slot="marquee-track"
           style={{ animationDuration: `${loopSeconds}s`, animationDirection: reverse ? "reverse" : "normal" }}
           className={cn(
-            "flex w-max shrink-0 items-center animate-marquee motion-reduce:w-full motion-reduce:animate-none motion-reduce:justify-center",
+            "flex w-max shrink-0 items-center animate-marquee rtl:[animation-name:sutra-marquee-rtl] motion-reduce:w-full motion-reduce:animate-none motion-reduce:justify-center",
             paused && "[animation-play-state:paused]",
             pauseOnHover && "group-hover/marquee:[animation-play-state:paused] group-focus-within/marquee:[animation-play-state:paused]"
           )}
@@ -120,8 +120,8 @@ export const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
               inert={copy > 0 ? true : undefined}
               data-slot="marquee-list"
               className={cn(
-                "m-0 flex shrink-0 list-none items-center gap-(--sutra-marquee-gap) p-0 pr-(--sutra-marquee-gap)",
-                "motion-reduce:min-w-0 motion-reduce:shrink motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-6 motion-reduce:pr-0",
+                "m-0 flex shrink-0 list-none items-center gap-(--sutra-marquee-gap) p-0 pe-(--sutra-marquee-gap)",
+                "motion-reduce:min-w-0 motion-reduce:shrink motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-6 motion-reduce:pe-0",
                 copy > 0 && "motion-reduce:hidden"
               )}
             >

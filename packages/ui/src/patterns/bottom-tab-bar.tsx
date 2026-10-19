@@ -68,7 +68,7 @@ function TabBadge({ badge }: { badge: number | boolean | undefined }) {
         key={changes}
         aria-hidden
         data-slot="badge-dot"
-        className={cn("absolute right-2 top-0.5 size-2 rounded-full bg-destructive ring-2 ring-background", pop)}
+        className={cn("absolute end-2 top-0.5 size-2 rounded-full bg-destructive ring-2 ring-background", pop)}
       />
     );
   }
@@ -78,7 +78,7 @@ function TabBadge({ badge }: { badge: number | boolean | undefined }) {
       aria-hidden
       data-slot="badge-count"
       className={cn(
-        "absolute -top-1 left-[calc(50%+4px)] flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none tabular-nums text-destructive-foreground ring-2 ring-background",
+        "absolute -top-1 start-[calc(50%+4px)] flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none tabular-nums text-destructive-foreground ring-2 ring-background",
         pop
       )}
     >

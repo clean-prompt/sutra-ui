@@ -352,7 +352,7 @@ export const PlatformConfigForm = React.forwardRef<HTMLFormElement, PlatformConf
           return (
             <Field key={f.name} invalid={Boolean(err)} required={f.required}>
               <FieldLabel>
-                {f.label} <code className="ml-1 font-mono text-2xs font-normal text-muted-foreground">{f.name}</code>
+                {f.label} <code className="ms-1 font-mono text-2xs font-normal text-muted-foreground">{f.name}</code>
               </FieldLabel>
               {type === "allowlist" ? (
                 <TagInput
@@ -403,7 +403,7 @@ export const PlatformConfigForm = React.forwardRef<HTMLFormElement, PlatformConf
         })}
         <div className="flex justify-end gap-2 pt-1">
           {save.error && (
-            <p role="alert" className="mr-auto self-center text-sm text-destructive">
+            <p role="alert" className="me-auto self-center text-sm text-destructive">
               {save.error}
             </p>
           )}
@@ -534,7 +534,7 @@ export const PlatformConnectorCard = React.forwardRef<HTMLDivElement, PlatformCo
         )}
 
         {connector.ingressUrl && (
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-subtle py-1 pl-3 pr-1">
+          <div className="flex items-center gap-2 rounded-lg border border-border bg-subtle py-1 ps-3 pe-1">
             <span className="shrink-0 text-2xs font-medium uppercase tracking-wide text-muted-foreground">Ingress</span>
             <code className="min-w-0 flex-1 truncate font-mono text-xs text-foreground">{connector.ingressUrl}</code>
             <CopyButton value={connector.ingressUrl} label="Copy ingress URL" />
@@ -553,7 +553,7 @@ export const PlatformConnectorCard = React.forwardRef<HTMLDivElement, PlatformCo
                 {state === "not_configured" ? "Set up" : "Configure"}
               </Button>
             )}
-            <span role="status" className="ml-auto min-w-0 text-xs">
+            <span role="status" className="ms-auto min-w-0 text-xs">
               {result && (
                 <span
                   data-result={result.ok ? "ok" : "fail"}
@@ -909,7 +909,7 @@ export interface GuidedSetupStepsProps extends Omit<React.HTMLAttributes<HTMLOLi
 
 function StepCopy({ value, label }: { value: string; label?: string }) {
   return (
-    <div className="flex max-w-full items-center gap-1 rounded-lg border border-border bg-subtle py-1 pl-2.5 pr-1">
+    <div className="flex max-w-full items-center gap-1 rounded-lg border border-border bg-subtle py-1 ps-2.5 pe-1">
       <code className="min-w-0 truncate font-mono text-xs text-foreground">{value}</code>
       <CopyButton value={value} label={label ?? `Copy ${value}`} />
     </div>
@@ -1056,7 +1056,7 @@ export const AccessRequestQueue = React.forwardRef<HTMLDivElement, AccessRequest
                 <li key={r.id} className="flex flex-wrap items-center gap-3 px-3 py-2.5" aria-label={`${r.name ?? r.handle} on ${channelPlatforms[r.platform].label}`}>
                   <span className="relative">
                     <Avatar size="sm" src={r.avatarUrl} name={r.name ?? r.handle} />
-                    <PlatformIcon platform={r.platform} size="sm" className="absolute -bottom-1 -right-1 size-4 rounded-sm bg-background [&_svg]:size-3" />
+                    <PlatformIcon platform={r.platform} size="sm" className="absolute -bottom-1 -end-1 size-4 rounded-sm bg-background [&_svg]:size-3" />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-foreground">{r.name ?? r.handle}</p>

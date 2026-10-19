@@ -196,14 +196,14 @@ function MessageBlock({ message }: { message: RequestLogMessage }) {
         </span>
         {message.name ? <span className="font-mono text-2xs text-muted-foreground">{message.name}</span> : null}
         {message.tool_call_id ? <span className="font-mono text-2xs text-muted-foreground">↳ {message.tool_call_id}</span> : null}
-        <span className="ml-auto text-2xs text-muted-foreground tabular-nums">{text.length.toLocaleString()} chars</span>
+        <span className="ms-auto text-2xs text-muted-foreground tabular-nums">{text.length.toLocaleString()} chars</span>
         <CopyIconButton text={text} label={`Copy ${message.role} message`} />
       </div>
       <div className="flex flex-col gap-2 px-3 py-2">
         {reasoning ? (
           <details className="group/reason rounded-md bg-subtle text-xs">
             <summary className={cn("flex cursor-pointer list-none items-center gap-1 rounded-md px-2 py-1 font-medium text-muted-foreground [&::-webkit-details-marker]:hidden", focusRing)}>
-              <RiArrowRightSLine aria-hidden className="size-3.5 chevron-turn group-open/reason:rotate-90" />
+              <RiArrowRightSLine aria-hidden className="size-3.5 chevron-turn group-open/reason:rotate-90 rtl:group-open/reason:-rotate-90 rtl:-scale-x-100" />
               Reasoning <span className="font-normal tabular-nums">({reasoning.length.toLocaleString()} chars)</span>
             </summary>
             <div className="whitespace-pre-wrap break-words px-2 pb-2 text-muted-foreground">{reasoning}</div>
@@ -269,7 +269,7 @@ export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspecto
             <time dateTime={safeISO(time)} className="text-xs text-muted-foreground">
               {time ? time.toLocaleString(locale) : "—"}
             </time>
-            <RequestIdCopy id={record.id} className="ml-auto" />
+            <RequestIdCopy id={record.id} className="ms-auto" />
           </div>
         ) : null}
         {chips.length ? (
@@ -463,7 +463,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
           <span className="text-xs text-muted-foreground" aria-live="polite" data-record-count="">
             {filtered.length.toLocaleString(locale)} {pluralize(filtered.length, "record")}
           </span>
-          {toolbar ? <div className="ml-auto flex items-center gap-2">{toolbar}</div> : null}
+          {toolbar ? <div className="ms-auto flex items-center gap-2">{toolbar}</div> : null}
         </div>
         <Table density="compact">
           <caption className="sr-only">Request logs</caption>
@@ -512,7 +512,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
                           }}
                           className={cn("inline-flex size-6 items-center justify-center rounded-control text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
                         >
-                          <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn", open && "rotate-90")} />
+                          <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn rtl:-scale-x-100", open && "rotate-90 rtl:-rotate-90")} />
                         </button>
                       </TableCell>
                       <TableCell className="whitespace-nowrap font-mono text-xs tabular-nums text-muted-foreground">
@@ -539,7 +539,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
                       </TableCell>
                       <TableCell align="right" className="whitespace-nowrap font-mono text-xs tabular-nums">
                         {formatRequestLatency(r.latencyMs)}
-                        {r.stream ? <span className="ml-1 text-muted-foreground">· stream</span> : null}
+                        {r.stream ? <span className="ms-1 text-muted-foreground">· stream</span> : null}
                       </TableCell>
                     </TableRow>
                     {open ? (

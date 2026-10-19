@@ -2,11 +2,12 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
+import { demoSourcePlugin } from "./plugins/demo-source";
 
 const ui = path.resolve(__dirname, "../../packages/ui/src");
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), demoSourcePlugin()],
   resolve: {
     // Point straight at the package source so edits hot-reload without a build.
     alias: [

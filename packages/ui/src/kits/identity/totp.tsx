@@ -309,7 +309,7 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
               label={label ? `Copy ${label} code` : "Copy code"}
               disabled={!current}
               onCopied={onCopy}
-              className="ml-auto"
+              className="ms-auto"
             />
           )}
         </div>
@@ -324,7 +324,7 @@ export const TOTPCode = React.forwardRef<HTMLDivElement, TOTPCodeProps>(
           >
             <span
               className={cn(
-                "absolute inset-y-0 left-0 rounded-full transition-[width] duration-500 ease-linear motion-reduce:transition-none",
+                "absolute inset-y-0 start-0 rounded-full transition-[width] duration-500 ease-linear motion-reduce:transition-none",
                 nearEnd ? "bg-destructive" : "bg-primary"
               )}
               style={{ width: `${pct}%` }}

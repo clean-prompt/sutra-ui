@@ -523,7 +523,7 @@ export const LinkPreviewCard = React.forwardRef<HTMLAnchorElement, LinkPreviewCa
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
             {icon ?? <Favicon domain={domain} className="size-4" />}
             <span className="truncate">{domain}</span>
-            <RiExternalLinkLine aria-hidden className="ml-auto size-3.5 shrink-0 opacity-0 transition-opacity group-hover/link:opacity-100" />
+            <RiExternalLinkLine aria-hidden className="ms-auto size-3.5 shrink-0 opacity-0 transition-opacity group-hover/link:opacity-100" />
           </span>
           {title && <span className="line-clamp-2 font-medium text-foreground">{title}</span>}
           {description && <span className="line-clamp-2 text-xs leading-5 text-muted-foreground">{description}</span>}

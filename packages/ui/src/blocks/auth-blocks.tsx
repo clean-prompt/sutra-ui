@@ -166,7 +166,7 @@ function BackLink({ href, label, renderLink }: { href: string; label: React.Reac
       renderLink={renderLink}
       className={cn(textLinkVariants({ variant: "muted", underline: "none" }), "gap-1.5 text-sm")}
     >
-      <RiArrowLeftLine className="size-4" aria-hidden />
+      <RiArrowLeftLine className="size-4 rtl:-scale-x-100" aria-hidden />
       {label}
     </BlockLink>
   );
@@ -1264,7 +1264,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
           </section>
           <section className="flex flex-col gap-3">
             {step(2, "Or enter this setup key manually")}
-            <div className="flex h-10 items-center gap-2 rounded-control border border-border bg-subtle pl-3 pr-1">
+            <div className="flex h-10 items-center gap-2 rounded-control border border-border bg-subtle ps-3 pe-1">
               <code className="min-w-0 flex-1 truncate font-mono text-sm tracking-wider text-foreground">{secret}</code>
               <CopyButton size="md" value={secret.replace(/\s+/g, "")} label="Copy setup key" />
             </div>

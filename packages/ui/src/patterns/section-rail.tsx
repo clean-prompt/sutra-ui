@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { clamp } from "../lib/math";
+import { directionOf } from "../lib/direction";
 import { prefersReducedMotion } from "../hooks/use-media-query";
 import { useScrollSections } from "../hooks/use-scroll-sections";
 import { Skeleton } from "../primitives/progress";
@@ -93,6 +94,15 @@ export const SectionRail = React.forwardRef<HTMLElement, SectionRailProps>(
       const list = listRef.current;
       const link = list?.querySelector<HTMLElement>('[aria-current="location"]');
       if (!list || !link || list.scrollWidth <= list.clientWidth) return;
+      if (directionOf(list) === "rtl") {
+        // `scrollLeft` runs negative in right-to-left: centre the link by its distance on screen instead.
+        const l = link.getBoundingClientRect();
+        const b = list.getBoundingClientRect();
+        const delta = l.left + l.width / 2 - (b.left + b.width / 2);
+        if (typeof list.scrollBy === "function") list.scrollBy({ left: delta, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+        else list.scrollLeft += delta;
+        return;
+      }
       const left = clamp(link.offsetLeft - (list.clientWidth - link.offsetWidth) / 2, 0, list.scrollWidth - list.clientWidth);
       if (typeof list.scrollTo === "function") list.scrollTo({ left, behavior: prefersReducedMotion() ? "auto" : "smooth" });
       else list.scrollLeft = left;
@@ -129,7 +139,7 @@ export const SectionRail = React.forwardRef<HTMLElement, SectionRailProps>(
         {loading ? (
           <>
             <span className="sr-only">Loading…</span>
-            <ul aria-hidden="true" className={cn(vertical ? "flex flex-col gap-3 border-l border-border py-1 pl-3" : "flex gap-3 overflow-hidden border-b border-border py-2")}>
+            <ul aria-hidden="true" className={cn(vertical ? "flex flex-col gap-3 border-s border-border py-1 ps-3" : "flex gap-3 overflow-hidden border-b border-border py-2")}>
               {[0, 1, 2, 3].map((i) => (
                 <li key={i}>
                   <Skeleton shape="text" className={cn("h-3.5", vertical ? (i % 2 ? "w-24" : "w-32") : "w-16")} />
@@ -142,7 +152,7 @@ export const SectionRail = React.forwardRef<HTMLElement, SectionRailProps>(
             ref={listRef}
             className={cn(
               vertical
-                ? "flex flex-col border-l border-border"
+                ? "flex flex-col border-s border-border"
                 : "scrollbar-none relative flex gap-1 overflow-x-auto border-b border-border"
             )}
           >
@@ -157,7 +167,7 @@ export const SectionRail = React.forwardRef<HTMLElement, SectionRailProps>(
                     onClick={(e) => onLinkClick(e, s.id)}
                     className={cn(
                       vertical
-                        ? "-ml-px block border-l py-1.5 pr-2 leading-snug outline-none transition-colors focus-visible:text-foreground focus-visible:underline"
+                        ? "-ms-px block border-s py-1.5 pe-2 leading-snug outline-none transition-colors focus-visible:text-foreground focus-visible:underline"
                         : "-mb-px block whitespace-nowrap border-b-2 px-3 py-2 leading-snug outline-none transition-colors focus-visible:text-foreground focus-visible:underline",
                       isActive
                         ? "border-primary font-medium text-foreground"

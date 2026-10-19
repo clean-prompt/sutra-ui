@@ -353,7 +353,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
           wrapperClassName
         )}
       >
-        {layout === "split" && stepButton(-1, cn("border-r border-input", splitButton[size]))}
+        {layout === "split" && stepButton(-1, cn("border-e border-input", splitButton[size]))}
         <input
           ref={ref}
           data-slot="number-input-field"
@@ -385,14 +385,14 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
           onKeyDown={handleKeyDown}
           className={cn(
             "min-w-0 flex-1 bg-transparent px-3 text-sm tabular-nums outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed",
-            layout === "split" ? "text-center" : "text-left",
+            layout === "split" ? "text-center" : "text-start",
             className
           )}
         />
         {layout === "split" ? (
-          stepButton(1, cn("border-l border-input", splitButton[size]))
+          stepButton(1, cn("border-s border-input", splitButton[size]))
         ) : (
-          <div className="flex w-7 shrink-0 flex-col border-l border-input">
+          <div className="flex w-7 shrink-0 flex-col border-s border-input">
             {stepButton(1, "flex-1 border-b border-input")}
             {stepButton(-1, "flex-1")}
           </div>

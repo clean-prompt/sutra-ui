@@ -375,7 +375,7 @@ export const BreakdownList = React.forwardRef<HTMLUListElement, BreakdownListPro
               ) : null}
               <span
                 data-slot="breakdown-list-label"
-                className={cn("min-w-0 flex-1 truncate text-left", off ? "text-muted-foreground line-through decoration-muted-foreground/50" : "text-foreground")}
+                className={cn("min-w-0 flex-1 truncate text-start", off ? "text-muted-foreground line-through decoration-muted-foreground/50" : "text-foreground")}
               >
                 {row.label}
               </span>
@@ -383,7 +383,7 @@ export const BreakdownList = React.forwardRef<HTMLUListElement, BreakdownListPro
                 <span
                   data-slot="breakdown-list-value"
                   className={cn(
-                    "shrink-0 text-right tabular-nums",
+                    "shrink-0 text-end tabular-nums",
                     showPercent && !off ? "font-medium text-foreground" : "text-muted-foreground"
                   )}
                 >
@@ -391,7 +391,7 @@ export const BreakdownList = React.forwardRef<HTMLUListElement, BreakdownListPro
                 </span>
               ) : null}
               {showPercent ? (
-                <span data-slot="breakdown-list-percent" className="w-10 shrink-0 text-right tabular-nums text-muted-foreground">
+                <span data-slot="breakdown-list-percent" className="w-10 shrink-0 text-end tabular-nums text-muted-foreground">
                   {off && row.share === undefined ? "—" : percentFormatter(share)}
                 </span>
               ) : null}
@@ -578,7 +578,7 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
                 key={p.key}
                 data-slot={partSlot}
                 title={`${p.label}: ${valueFormatter(p.value)}`}
-                className="block h-full transition-[width] duration-500 ease-out-quart first:rounded-l-full last:rounded-r-full motion-reduce:transition-none"
+                className="block h-full transition-[width] duration-500 ease-out-quart first:rounded-s-full last:rounded-e-full motion-reduce:transition-none"
                 style={{ width: `${p.pct}%`, backgroundColor: p.color }}
               />
             ) : null

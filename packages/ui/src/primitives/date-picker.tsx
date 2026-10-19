@@ -115,7 +115,7 @@ export const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>((
             aria-describedby={field["aria-describedby"]}
             aria-invalid={field["aria-invalid"]}
             aria-required={field.required}
-            className={cn(dateTriggerVariants({ size, variant }), showClear && "pr-9")}
+            className={cn(dateTriggerVariants({ size, variant }), showClear && "pe-9")}
           >
             <RiCalendarLine aria-hidden className="text-muted-foreground" />
             <span className={cn("flex-1 truncate", !label && "text-muted-foreground")}>

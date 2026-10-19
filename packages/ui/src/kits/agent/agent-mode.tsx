@@ -8,6 +8,7 @@ import {
   RiAlarmWarningLine,
 } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
+import { logicalArrow } from "../../lib/direction";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { clamp } from "../../lib/math";
@@ -388,8 +389,8 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
         }}
         onKeyDown={(e) => {
           let next: number | null = null;
-          if (e.key === "ArrowRight" || e.key === "ArrowUp") next = index + 1;
-          else if (e.key === "ArrowLeft" || e.key === "ArrowDown") next = index - 1;
+          if (logicalArrow(e) === "ArrowRight" || e.key === "ArrowUp") next = index + 1;
+          else if (logicalArrow(e) === "ArrowLeft" || e.key === "ArrowDown") next = index - 1;
           else if (e.key === "Home") next = 0;
           else if (e.key === "End") next = levels.length - 1;
           if (next != null) {

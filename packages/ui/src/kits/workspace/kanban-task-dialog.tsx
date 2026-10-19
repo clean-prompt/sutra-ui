@@ -251,7 +251,7 @@ function TaskDetailBody({
   return (
     <div className="grid max-h-[inherit] min-h-0 grid-cols-1 overflow-y-auto sm:max-h-[calc(100dvh-2rem)] md:grid-cols-[1fr_17rem] md:overflow-hidden">
       <div className="flex min-w-0 flex-col gap-4 p-6 md:overflow-y-auto">
-        <div className="flex flex-col gap-1 pr-8">
+        <div className="flex flex-col gap-1 pe-8">
           <span className="font-mono text-xs text-muted-foreground">{taskKey ?? task.id}</span>
           {editingTitle ? (
             <Input
@@ -281,7 +281,7 @@ function TaskDetailBody({
                   type="button"
                   onClick={() => setEditingTitle(true)}
                   aria-label={`${task.title}, edit title`}
-                  className={cn("-mx-1 rounded-control px-1 text-left text-lg font-semibold hover:bg-accent", focusRing)}
+                  className={cn("-mx-1 rounded-control px-1 text-start text-lg font-semibold hover:bg-accent", focusRing)}
                 >
                   {task.title}
                 </button>
@@ -358,12 +358,12 @@ function TaskDetailBody({
             {activity.length === 0 ? (
               <p className="text-sm text-muted-foreground">No activity yet</p>
             ) : (
-              <ol aria-label="Activity" className="relative flex flex-col gap-3 border-l border-border pl-4">
+              <ol aria-label="Activity" className="relative flex flex-col gap-3 border-s border-border ps-4">
                 {activity.map((a) => (
                   <li key={a.id} className="relative text-sm">
-                    <span aria-hidden className={cn("absolute -left-[21px] top-1.5 size-2 rounded-full ring-2 ring-background", a.actorKind === "agent" ? "bg-primary" : "bg-muted-foreground")} />
+                    <span aria-hidden className={cn("absolute -start-[21px] top-1.5 size-2 rounded-full ring-2 ring-background", a.actorKind === "agent" ? "bg-primary" : "bg-muted-foreground")} />
                     <span className="font-medium">{a.actor}</span> <span className="text-muted-foreground">{a.action}</span>
-                    <time dateTime={safeISO(a.at)} className="ml-1.5 text-xs text-muted-foreground">
+                    <time dateTime={safeISO(a.at)} className="ms-1.5 text-xs text-muted-foreground">
                       {relTime(a.at, nowMs, locale)}
                     </time>
                   </li>
@@ -395,7 +395,7 @@ function TaskDetailBody({
                           <Button
                             size="xs"
                             variant="ghost"
-                            className="ml-auto"
+                            className="ms-auto"
                             aria-expanded={isOpen}
                             onClick={() => setOpenLog(isOpen ? null : r.id)}
                           >
@@ -423,7 +423,7 @@ function TaskDetailBody({
         </Tabs>
       </div>
 
-      <aside aria-label="Properties" className="flex flex-col gap-3 border-t border-border bg-subtle p-5 md:overflow-y-auto md:border-l md:border-t-0 md:pt-12">
+      <aside aria-label="Properties" className="flex flex-col gap-3 border-t border-border bg-subtle p-5 md:overflow-y-auto md:border-s md:border-t-0 md:pt-12">
         <PropertyRow label="Status">
           <SimpleSelect
             size="sm"

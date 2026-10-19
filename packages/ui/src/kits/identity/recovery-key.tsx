@@ -247,7 +247,7 @@ export const RecoveryKey = React.forwardRef<HTMLDivElement, RecoveryKeyProps>(
                 </Button>
               )}
               {visible && (
-                <Button variant="ghost" size="sm" leadingIcon={<RiEyeOffLine aria-hidden />} onClick={hide} className="sm:ml-auto">
+                <Button variant="ghost" size="sm" leadingIcon={<RiEyeOffLine aria-hidden />} onClick={hide} className="sm:ms-auto">
                   Hide now
                 </Button>
               )}

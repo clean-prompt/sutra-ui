@@ -32,9 +32,9 @@ export const switchVariants = cva(
 );
 
 const thumbSize = {
-  sm: "size-3 data-[state=checked]:translate-x-3 [&_svg]:size-2",
-  md: "size-4 data-[state=checked]:translate-x-4 [&_svg]:size-2.5",
-  lg: "size-5 data-[state=checked]:translate-x-5 [&_svg]:size-3",
+  sm: "size-3 data-[state=checked]:translate-x-3 rtl:data-[state=checked]:-translate-x-3 [&_svg]:size-2",
+  md: "size-4 data-[state=checked]:translate-x-4 rtl:data-[state=checked]:-translate-x-4 [&_svg]:size-2.5",
+  lg: "size-5 data-[state=checked]:translate-x-5 rtl:data-[state=checked]:-translate-x-5 [&_svg]:size-3",
 } as const;
 
 export interface SwitchProps

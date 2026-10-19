@@ -100,7 +100,7 @@ function CpuCell({ cpu, max }: { cpu: number; max: number }) {
   return (
     <span
       data-slot="container-cpu"
-      className="order-7 mt-1.5 ml-auto flex items-center gap-2 tabular-nums text-muted-foreground @xl:order-4 @xl:m-0 @xl:w-32 @xl:shrink-0 @xl:justify-end"
+      className="order-7 mt-1.5 ms-auto flex items-center gap-2 tabular-nums text-muted-foreground @xl:order-4 @xl:m-0 @xl:w-32 @xl:shrink-0 @xl:justify-end"
     >
       <span className="@xl:sr-only">CPU</span>
       <span>{formatCpu(cpu)}</span>
@@ -120,7 +120,7 @@ function ContainerListSkeleton({ rows }: { rows: number }) {
           <Skeleton shape="text" className="w-36 max-w-full" />
           <Skeleton shape="text" className="h-[0.7em] w-56 max-w-full" />
         </div>
-        <div className="hidden w-32 shrink-0 justify-end pr-14 @xl:flex">
+        <div className="hidden w-32 shrink-0 justify-end pe-14 @xl:flex">
           <Skeleton shape="text" className="w-10" />
         </div>
         <div className="flex w-20 shrink-0 justify-end">
@@ -128,7 +128,7 @@ function ContainerListSkeleton({ rows }: { rows: number }) {
         </div>
       </li>
       {Array.from({ length: Math.max(0, rows) }, (_, i) => (
-        <li key={i} data-slot="container-skeleton-row" className="flex items-center gap-3 rounded-box px-3 py-3 pl-6 @xl:pl-9">
+        <li key={i} data-slot="container-skeleton-row" className="flex items-center gap-3 rounded-box px-3 py-3 ps-6 @xl:ps-9">
           <Skeleton className="size-4 shrink-0 rounded-xs" />
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <Skeleton shape="text" className="w-40 max-w-full" />
@@ -157,7 +157,7 @@ function ContainerRow({ container, ctx, nested }: { container: ContainerInfo; ct
       data-state={container.state}
       className={cn(
         "group/row flex flex-wrap items-center gap-x-3 rounded-box px-3 py-3 transition-colors hover:bg-muted/50",
-        nested && "pl-6 @xl:pl-9",
+        nested && "ps-6 @xl:ps-9",
         container.state === "exited" && "opacity-60"
       )}
     >
@@ -165,13 +165,13 @@ function ContainerRow({ container, ctx, nested }: { container: ContainerInfo; ct
       <span className="order-2 flex min-w-0 flex-1 flex-col">
         <span className="truncate">
           <span className="font-medium text-foreground">{container.name}</span>
-          {container.image ? <span className="ml-1.5 text-muted-foreground">{container.image}</span> : null}
+          {container.image ? <span className="ms-1.5 text-muted-foreground">{container.image}</span> : null}
         </span>
         <span className="truncate text-xs text-muted-foreground">{describeContainerState(container, ctx.now)}</span>
       </span>
       {/* Narrow lists: name and memory on the first line, ports and CPU wrapped underneath. */}
       <span aria-hidden className="order-5 h-0 basis-full @xl:hidden" />
-      <span className="order-6 mt-1.5 ml-7 flex min-w-0 flex-wrap items-center gap-1.5 empty:hidden @xl:order-3 @xl:m-0 @xl:shrink-0 @xl:justify-end">
+      <span className="order-6 mt-1.5 ms-7 flex min-w-0 flex-wrap items-center gap-1.5 empty:hidden @xl:order-3 @xl:m-0 @xl:shrink-0 @xl:justify-end">
         {container.ports && container.ports.length > 0 ? (
           <PortBadgeList ports={container.ports} label={`${container.name} ports`} size="md" />
         ) : null}
@@ -189,7 +189,7 @@ function ContainerRow({ container, ctx, nested }: { container: ContainerInfo; ct
         ) : null}
       </span>
       <CpuCell cpu={container.cpu} max={ctx.cpuMax} />
-      <span data-slot="container-memory" className="order-3 w-20 shrink-0 text-right font-semibold tabular-nums text-foreground @xl:order-5">
+      <span data-slot="container-memory" className="order-3 w-20 shrink-0 text-end font-semibold tabular-nums text-foreground @xl:order-5">
         {ctx.formatBytes(container.memoryBytes)}
       </span>
       {ctx.onStop ? (
@@ -306,17 +306,17 @@ export const ContainerList = React.forwardRef<HTMLDivElement, ContainerListProps
                         aria-expanded={open}
                         aria-controls={listId}
                         onClick={() => toggle(entry.name)}
-                        className={cn("group/toggle inline-flex min-w-0 max-w-full items-center gap-1 self-start rounded-xs text-left", focusRing)}
+                        className={cn("group/toggle inline-flex min-w-0 max-w-full items-center gap-1 self-start rounded-xs text-start", focusRing)}
                       >
                         <span className="truncate">
                           <span className="font-medium text-foreground">{entry.name}</span>
-                          <span className="ml-1.5 text-muted-foreground">
+                          <span className="ms-1.5 text-muted-foreground">
                             {totals.count} {pluralize(totals.count, "container")}
                           </span>
                         </span>
                         <RiArrowDownSLine
                           aria-hidden
-                          className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", !open && "-rotate-90")}
+                          className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", !open && "-rotate-90 rtl:rotate-90")}
                         />
                       </button>
                       <span data-slot="container-group-description" className="truncate text-xs text-muted-foreground">
@@ -324,11 +324,11 @@ export const ContainerList = React.forwardRef<HTMLDivElement, ContainerListProps
                       </span>
                     </span>
                     <span aria-hidden className="order-5 h-0 basis-full @xl:hidden" />
-                    <span className="order-6 mt-1.5 ml-11 tabular-nums text-muted-foreground @xl:order-4 @xl:m-0 @xl:w-32 @xl:shrink-0 @xl:pr-14 @xl:text-right">
+                    <span className="order-6 mt-1.5 ms-11 tabular-nums text-muted-foreground @xl:order-4 @xl:m-0 @xl:w-32 @xl:shrink-0 @xl:pe-14 @xl:text-end">
                       <span className="@xl:sr-only">CPU </span>
                       {formatCpu(totals.cpu)}
                     </span>
-                    <span className="order-3 w-20 shrink-0 text-right font-semibold tabular-nums text-foreground @xl:order-5">{formatBytes(totals.memoryBytes)}</span>
+                    <span className="order-3 w-20 shrink-0 text-end font-semibold tabular-nums text-foreground @xl:order-5">{formatBytes(totals.memoryBytes)}</span>
                     {onStop ? <span aria-hidden className="order-4 size-7 shrink-0 @xl:order-6" /> : null}
                   </div>
                   <ul id={listId} role="list" aria-label={`${entry.name} containers`} hidden={!open} className="m-0 flex list-none flex-col p-0">
@@ -436,7 +436,7 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
                   <div key={i} className="flex items-center gap-2">
                     <Skeleton className="size-2 shrink-0 rounded-[2px]" />
                     <Skeleton shape="text" className="w-28" />
-                    <Skeleton shape="text" className="ml-auto w-12" />
+                    <Skeleton shape="text" className="ms-auto w-12" />
                   </div>
                 ))}
               </div>
@@ -455,9 +455,9 @@ export const ContainerSummary = React.forwardRef<HTMLDivElement, ContainerSummar
             {lowest !== undefined && peak !== undefined ? (
               <dl className="mt-auto grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 pt-4 text-sm">
                 <dt className="text-muted-foreground">Lowest</dt>
-                <dd className="text-right font-medium tabular-nums">{formatBytes(lowest)}</dd>
+                <dd className="text-end font-medium tabular-nums">{formatBytes(lowest)}</dd>
                 <dt className="text-muted-foreground">Peak</dt>
-                <dd className="text-right font-medium tabular-nums">{formatBytes(peak)}</dd>
+                <dd className="text-end font-medium tabular-nums">{formatBytes(peak)}</dd>
               </dl>
             ) : null}
           </div>

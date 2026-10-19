@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine, RiCheckDoubleLine, RiCloseLine } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { logicalArrow } from "../../lib/direction";
 import { clamp } from "../../lib/math";
 import { Button } from "../../primitives/button";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -78,10 +79,10 @@ function ApprovalStackInner<T>(
         const t = e.target as HTMLElement;
         const typing = t.closest("input, textarea, select, [contenteditable=true], [role=radiogroup], [role=listbox], [role=menu]");
         if (typing && !e.altKey) return;
-        if (e.key === "ArrowLeft" || (e.key === "[" && !typing)) {
+        if (logicalArrow(e) === "ArrowLeft" || (e.key === "[" && !typing)) {
           e.preventDefault();
           go(index - 1);
-        } else if (e.key === "ArrowRight" || (e.key === "]" && !typing)) {
+        } else if (logicalArrow(e) === "ArrowRight" || (e.key === "]" && !typing)) {
           e.preventDefault();
           go(index + 1);
         }
@@ -98,7 +99,7 @@ function ApprovalStackInner<T>(
             +{more} more
           </span>
         )}
-        <span className="ml-auto flex flex-wrap items-center gap-1">
+        <span className="ms-auto flex flex-wrap items-center gap-1">
           {onDenyAll && total > 1 && (
             <Button size="xs" variant="ghost" leadingIcon={<RiCloseLine aria-hidden />} onClick={onDenyAll}>
               Deny all
@@ -122,7 +123,7 @@ function ApprovalStackInner<T>(
                   focusRing
                 )}
               >
-                <RiArrowLeftSLine aria-hidden />
+                <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
               </button>
               <button
                 type="button"
@@ -135,7 +136,7 @@ function ApprovalStackInner<T>(
                   focusRing
                 )}
               >
-                <RiArrowRightSLine aria-hidden />
+                <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
               </button>
             </span>
           )}

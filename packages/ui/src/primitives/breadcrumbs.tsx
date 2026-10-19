@@ -126,7 +126,7 @@ export const BreadcrumbSeparator = React.forwardRef<HTMLLIElement, BreadcrumbSep
           ) : v === "dot" ? (
             <span className="mx-0.5 size-1 rounded-full bg-current" />
           ) : (
-            <RiArrowRightSLine aria-hidden className="size-4" />
+            <RiArrowRightSLine aria-hidden className="size-4 rtl:-scale-x-100" />
           ))}
       </li>
     );

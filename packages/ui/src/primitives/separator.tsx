@@ -45,7 +45,7 @@ export const Separator = React.forwardRef<
             lineStyle,
             vertical
               ? cn(
-                  "min-h-4 border-l",
+                  "min-h-4 border-s",
                   // A fixed height (e.g. h-5) is centered; otherwise the rule stretches to the row.
                   /(^|\s)(h|size)-/.test(className ?? "") ? "self-center" : "h-full self-stretch"
                 )
@@ -57,7 +57,7 @@ export const Separator = React.forwardRef<
       );
     }
 
-    const line = cn(lineStyle, vertical ? "w-0 flex-1 border-l" : "h-0 flex-1 border-t");
+    const line = cn(lineStyle, vertical ? "w-0 flex-1 border-s" : "h-0 flex-1 border-t");
     return (
       <SeparatorPrimitive.Root
         ref={ref}

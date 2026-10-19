@@ -342,7 +342,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                         >
                           <RiAlertLine aria-hidden className="size-4 shrink-0" />
                           <span className="min-w-0 flex-1">
-                            <ShortcutKeys keys={pending.keys} platform={platform} className="mr-1 align-middle" /> is already used by{" "}
+                            <ShortcutKeys keys={pending.keys} platform={platform} className="me-1 align-middle" /> is already used by{" "}
                             <strong className="font-semibold">{conflictItem?.label ?? pending.conflictId}</strong>.
                           </span>
                           <Button

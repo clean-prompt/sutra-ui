@@ -254,7 +254,7 @@ export const VolumeMixer = React.forwardRef<HTMLDivElement, VolumeMixerProps>(
                       </div>
                     </TableCell>
                     <TableCell align="right" className="hidden border-b-0 @lg:table-cell">
-                      <Skeleton shape="text" className="ml-auto w-10" />
+                      <Skeleton shape="text" className="ms-auto w-10" />
                     </TableCell>
                   </TableRow>
                 ))

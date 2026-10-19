@@ -286,7 +286,7 @@ export const PaymentCard = React.forwardRef<HTMLDivElement, PaymentCardProps>(
             aria-hidden={flipped || undefined}
             inert={flipped || undefined}
           >
-            <span aria-hidden className="pointer-events-none absolute -right-20 -top-24 size-60 rounded-full bg-white/10" />
+            <span aria-hidden className="pointer-events-none absolute -end-20 -top-24 size-60 rounded-full bg-white/10" />
             <div className="relative flex items-start justify-between gap-2">
               <span className={cn("truncate font-medium text-white/85", s.meta)}>{issuer}</span>
               <CardBrandMark brand={brand} className={s.brand} />

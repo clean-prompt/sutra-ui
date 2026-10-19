@@ -213,7 +213,7 @@ export const CatalogCard = React.forwardRef<HTMLElement, CatalogCardProps>(
                 </span>
               ))}
               {stars != null && (
-                <span className="ml-auto inline-flex items-center gap-0.5 text-xs text-muted-foreground tabular-nums">
+                <span className="ms-auto inline-flex items-center gap-0.5 text-xs text-muted-foreground tabular-nums">
                   <RiStarLine aria-hidden className="size-3.5" />
                   <span className="sr-only">Stars:</span>
                   {formatStars(stars)}
@@ -431,7 +431,7 @@ export const InstalledExtensionCard = React.forwardRef<HTMLDivElement, Installed
                   <InlineAlert variant="warning">
                     <InlineAlertTitle>New permissions requested</InlineAlertTitle>
                     <InlineAlertDescription>
-                      <ul className="list-disc pl-4 font-mono text-xs">
+                      <ul className="list-disc ps-4 font-mono text-xs">
                         {updatePermissions.map((p) => (
                           <li key={p}>{p}</li>
                         ))}
@@ -595,9 +595,9 @@ export function ExtensionInstallDialog({
                 aria-expanded={advanced}
                 aria-controls={advanced ? advId : undefined}
                 onClick={() => setAdvanced((a) => !a)}
-                className={cn("flex w-full items-center gap-1.5 px-3 py-2 text-left text-sm font-medium text-foreground", focusRing)}
+                className={cn("flex w-full items-center gap-1.5 px-3 py-2 text-start text-sm font-medium text-foreground", focusRing)}
               >
-                <RiArrowDownSLine aria-hidden className={cn("size-4 text-muted-foreground chevron-turn", !advanced && "-rotate-90")} />
+                <RiArrowDownSLine aria-hidden className={cn("size-4 text-muted-foreground chevron-turn", !advanced && "-rotate-90 rtl:rotate-90")} />
                 Advanced details
               </button>
               {advanced && (
@@ -862,7 +862,7 @@ export const SkillCard = React.forwardRef<HTMLDivElement, SkillCardProps>(({ ski
       <div className="min-w-0 flex-1 space-y-1.5">
         <div className="flex flex-wrap items-center gap-1.5">
           {onSelect ? (
-            <button type="button" onClick={onSelect} aria-pressed={selected} className={cn("truncate rounded-sm text-left font-mono text-sm font-semibold text-foreground hover:underline", focusRing)}>
+            <button type="button" onClick={onSelect} aria-pressed={selected} className={cn("truncate rounded-sm text-start font-mono text-sm font-semibold text-foreground hover:underline", focusRing)}>
               <span id={titleId}>{skill.name}</span>
             </button>
           ) : (
@@ -1066,7 +1066,7 @@ function ReceiptSection({
         {label}
         <span className="tabular-nums">({count})</span>
       </h4>
-      <ul className="space-y-1 pl-5 text-sm">{children}</ul>
+      <ul className="space-y-1 ps-5 text-sm">{children}</ul>
     </section>
   );
 }

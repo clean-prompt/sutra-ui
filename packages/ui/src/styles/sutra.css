@@ -18,6 +18,11 @@
 
 @custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
 
+/* Reading direction. Tailwind's own `rtl:` also matches `[dir="rtl"] *`, so it would still fire inside a `dir="ltr"` island
+   (a chart or code block pinned to LTR on an RTL page). `:dir()` asks the element itself, so the nearest `dir` wins. */
+@custom-variant rtl (&:where(:dir(rtl)));
+@custom-variant ltr (&:where(:dir(ltr)));
+
 /* ------------------------------------------------------------------ */
 /* Primitive scales                                                    */
 /* ------------------------------------------------------------------ */
@@ -480,6 +485,11 @@
     from { transform: translate3d(0, 0, 0); }
     to { transform: translate3d(calc(-100% / var(--sutra-marquee-copies, 2)), 0, 0); }
   }
+  /* Right to left: the row starts at the right edge, so the track travels the other way (`rtl:[animation-name:sutra-marquee-rtl]`). */
+  @keyframes sutra-marquee-rtl {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(calc(100% / var(--sutra-marquee-copies, 2)), 0, 0); }
+  }
   @keyframes sutra-shimmer {
     from { background-position: 200% 0; }
     to { background-position: -200% 0; }
@@ -512,6 +522,11 @@
     0% { transform: translateX(-100%) scaleX(0.4); }
     50% { transform: translateX(30%) scaleX(0.6); }
     100% { transform: translateX(100%) scaleX(0.4); }
+  }
+  @keyframes sutra-indeterminate-rtl {
+    0% { transform: translateX(100%) scaleX(0.4); }
+    50% { transform: translateX(-30%) scaleX(0.6); }
+    100% { transform: translateX(-100%) scaleX(0.4); }
   }
   @keyframes sutra-mesh {
     0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }

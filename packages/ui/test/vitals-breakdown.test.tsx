@@ -134,7 +134,7 @@ describe("BreakdownList", () => {
     expect(rows[0]).toHaveTextContent("postgres312 MB46%");
     expect(rows[3]).toHaveTextContent("redis14 MB2%");
     const value = rows[0]!.querySelector('[data-slot="breakdown-list-value"]')!;
-    expect(value).toHaveClass("tabular-nums", "text-right");
+    expect(value).toHaveClass("tabular-nums", "text-end");
     // The icon is decorative.
     expect(screen.getByTestId("pg-icon").parentElement).toHaveAttribute("aria-hidden", "true");
     expect(container.querySelectorAll('[data-slot="breakdown-list-icon"]')).toHaveLength(1);

@@ -184,7 +184,7 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
 
     const actionClass = cn(
       "group/banner-action inline-flex shrink-0 items-center gap-1 rounded-xs font-semibold underline-offset-4 hover:underline",
-      "[&_svg]:size-4 [&_svg]:transition-transform [&_svg]:duration-150 hover:[&_svg]:translate-x-0.5",
+      "[&_svg]:size-4 [&_svg]:transition-transform [&_svg]:duration-150 hover:[&_svg]:translate-x-0.5 rtl:hover:[&_svg]:-translate-x-0.5",
       focusRing,
       isNeutral ? "text-primary" : "text-current focus-visible:ring-current/40"
     );
@@ -194,7 +194,7 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
       const inner = (
         <>
           {action.label}
-          <RiArrowRightLine aria-hidden />
+          <RiArrowRightLine className="rtl:-scale-x-100" aria-hidden />
         </>
       );
       actionNode = action.href ? (
@@ -220,7 +220,7 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
         data-state={closing ? "closed" : "open"}
         className={cn(
           alertBannerVariants({ variant: v, appearance, sticky, align }),
-          dismissible && "pr-12 sm:pr-14",
+          dismissible && "pe-12 sm:pe-14",
           closing && "pointer-events-none animate-out fade-out-0 slide-out-to-top-2 duration-200 [animation-fill-mode:forwards]",
           className
         )}
@@ -255,7 +255,7 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
             onClick={dismiss}
             variant={isNeutral ? "ghost" : undefined}
             className={cn(
-              "absolute right-2 top-1/2 -translate-y-1/2 sm:right-3 active:scale-100",
+              "absolute end-2 top-1/2 -translate-y-1/2 sm:end-3 active:scale-100",
               !isNeutral && "text-current/75 hover:bg-current/15 hover:text-current focus-visible:ring-current/40"
             )}
           />

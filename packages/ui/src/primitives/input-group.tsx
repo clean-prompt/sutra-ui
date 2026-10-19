@@ -58,8 +58,8 @@ export const inputGroupAddonVariants = cva(
   {
     variants: {
       align: {
-        "inline-start": "order-first pl-3 has-[>button]:-ml-1.5 has-[>kbd]:-ml-1",
-        "inline-end": "order-last pr-3 has-[>button]:-mr-1.5 has-[>kbd]:-mr-1",
+        "inline-start": "order-first ps-3 has-[>button]:-ms-1.5 has-[>kbd]:-ms-1",
+        "inline-end": "order-last pe-3 has-[>button]:-me-1.5 has-[>kbd]:-me-1",
         "block-start": "order-first w-full justify-start px-3 pt-2.5",
         "block-end": "order-last w-full justify-start px-3 pb-2.5",
       },
@@ -172,7 +172,7 @@ export const InputGroupInput = React.forwardRef<HTMLInputElement, InputGroupInpu
           "h-full w-full self-stretch px-3 text-sm",
           size === "sm" && "px-2.5",
           size === "lg" && "px-3.5",
-          "group-has-[>[data-align=inline-start]]/input-group:pl-2 group-has-[>[data-align=inline-end]]/input-group:pr-2",
+          "group-has-[>[data-align=inline-start]]/input-group:ps-2 group-has-[>[data-align=inline-end]]/input-group:pe-2",
           "group-has-[>[data-align=block-start]]/input-group:h-9 group-has-[>[data-align=block-end]]/input-group:h-9",
           className
         )}

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { logicalArrow } from "../lib/direction";
 import { normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { useControllableState } from "../hooks/use-controllable-state";
 import {
@@ -105,10 +106,10 @@ export const StatusCycle = React.forwardRef<HTMLDivElement, StatusCycleProps>(
           aria-keyshortcuts="Shift+Enter ArrowLeft ArrowRight"
           onClick={(e) => step(e.shiftKey ? -1 : 1)}
           onKeyDown={(e) => {
-            if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+            if (logicalArrow(e) === "ArrowRight" || e.key === "ArrowDown") {
               e.preventDefault();
               step(1);
-            } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+            } else if (logicalArrow(e) === "ArrowLeft" || e.key === "ArrowUp") {
               e.preventDefault();
               step(-1);
             }
@@ -116,7 +117,7 @@ export const StatusCycle = React.forwardRef<HTMLDivElement, StatusCycleProps>(
           className={cn(
             "inline-flex select-none items-center gap-1.5 px-3 font-medium transition-[background-color,transform,translate,scale,rotate] active:scale-[0.97]",
             "disabled:pointer-events-none disabled:opacity-50",
-            showMenu ? "rounded-l-control pr-2" : "rounded-control",
+            showMenu ? "rounded-s-control pe-2" : "rounded-control",
             height,
             color,
             focusRing
@@ -133,7 +134,7 @@ export const StatusCycle = React.forwardRef<HTMLDivElement, StatusCycleProps>(
               disabled={disabled}
               aria-label={`Choose ${label.toLowerCase()}`}
               className={cn(
-                "inline-flex items-center rounded-r-control border-l border-current/15 px-1.5 transition-colors disabled:opacity-50",
+                "inline-flex items-center rounded-e-control border-s border-current/15 px-1.5 transition-colors disabled:opacity-50",
                 height,
                 color,
                 focusRing

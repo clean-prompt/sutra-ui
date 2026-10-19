@@ -171,7 +171,7 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                 <Comp
                   {...interactiveProps}
                   className={cn(
-                    "group flex w-full min-w-0 gap-3 text-left",
+                    "group flex w-full min-w-0 gap-3 text-start",
                     vertical ? "flex-row" : "flex-col",
                     clickable && cn("cursor-pointer rounded-xs", focusRing)
                   )}
@@ -184,7 +184,7 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                   >
                     <span
                       className={cn(
-                        "absolute inset-0 origin-left rounded-full bg-primary transition-transform duration-500 ease-out-quart",
+                        "absolute inset-0 origin-left rtl:origin-right rounded-full bg-primary transition-transform duration-500 ease-out-quart",
                         vertical && "origin-top",
                         status === "upcoming" && (vertical ? "scale-y-0" : "scale-x-0")
                       )}
@@ -207,7 +207,7 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
               <Comp
                 {...interactiveProps}
                 className={cn(
-                  "group flex min-w-0 items-start gap-3 text-left",
+                  "group flex min-w-0 items-start gap-3 text-start",
                   step.action != null && "flex-1",
                   clickable && cn("cursor-pointer rounded-md", focusRing)
                 )}
@@ -236,7 +236,7 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
                 {connector && !last ? (
                   <span
                     aria-hidden
-                    className={cn("absolute w-0.5 -translate-x-1/2 rounded-full transition-colors duration-300", connectorColor)}
+                    className={cn("absolute w-0.5 -translate-x-1/2 rtl:translate-x-1/2 rounded-full transition-colors duration-300", connectorColor)}
                     style={{ left: markerSize / 2, top: markerSize + 6, bottom: 6 }}
                   />
                 ) : null}

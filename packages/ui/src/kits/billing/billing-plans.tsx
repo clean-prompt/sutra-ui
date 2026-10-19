@@ -342,7 +342,7 @@ export const PlanComparisonTable = React.forwardRef<HTMLTableElement, PlanCompar
       <caption className="sr-only">{caption}</caption>
       <TableHeader>
         <TableRow>
-          <TableHead className="min-w-48 pl-4">Features</TableHead>
+          <TableHead className="min-w-48 ps-4">Features</TableHead>
           {plans.map((p) => (
             <TableHead key={p.id} align="center" className={cn("min-w-28", p.recommended && "text-primary")}>
               {p.name}
@@ -358,7 +358,7 @@ export const PlanComparisonTable = React.forwardRef<HTMLTableElement, PlanCompar
                 <th
                   scope="colgroup"
                   colSpan={plans.length + 1}
-                  className="border-b border-border bg-muted/50 px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+                  className="border-b border-border bg-muted/50 px-4 py-2 text-start text-xs font-semibold uppercase tracking-wide text-muted-foreground"
                 >
                   {section.title}
                 </th>
@@ -366,7 +366,7 @@ export const PlanComparisonTable = React.forwardRef<HTMLTableElement, PlanCompar
             )}
             {section.rows.map((row) => (
               <TableRow key={row.label}>
-                <th scope="row" className="border-b border-border px-4 py-3 text-left align-middle font-normal">
+                <th scope="row" className="border-b border-border px-4 py-3 text-start align-middle font-normal">
                   <span className="block text-sm font-medium text-foreground">{row.label}</span>
                   {row.description && <span className="block text-xs text-muted-foreground">{row.description}</span>}
                 </th>

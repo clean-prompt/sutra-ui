@@ -209,10 +209,10 @@ export const ConversationRow = React.forwardRef<HTMLLIElement, ConversationRowPr
               onDoubleClick={onRename ? startEditing : undefined}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex h-8 min-w-0 flex-1 items-center gap-2 rounded-control px-2.5 text-left text-sm text-muted-foreground transition-colors hover:text-foreground",
+                "flex h-8 min-w-0 flex-1 items-center gap-2 rounded-control px-2.5 text-start text-sm text-muted-foreground transition-colors hover:text-foreground",
                 active && "font-medium text-foreground",
-                hasActions && (menu && !actions ? "group-hover/row:pr-9 group-focus-within/row:pr-9 [@media(hover:none)]:pr-9" : "group-hover/row:pr-16 group-focus-within/row:pr-16 [@media(hover:none)]:pr-16"),
-                hasActions && (menuOpen || (menu && active)) && (menu && !actions ? "pr-9" : "pr-16"),
+                hasActions && (menu && !actions ? "group-hover/row:pe-9 group-focus-within/row:pe-9 [@media(hover:none)]:pe-9" : "group-hover/row:pe-16 group-focus-within/row:pe-16 [@media(hover:none)]:pe-16"),
+                hasActions && (menuOpen || (menu && active)) && (menu && !actions ? "pe-9" : "pe-16"),
                 focusRing
               )}
             >
@@ -222,7 +222,7 @@ export const ConversationRow = React.forwardRef<HTMLLIElement, ConversationRowPr
             {hasActions && (
               <div
                 className={cn(
-                  "absolute inset-y-0 right-1 flex items-center gap-0.5 opacity-0 transition-opacity",
+                  "absolute inset-y-0 end-1 flex items-center gap-0.5 opacity-0 transition-opacity",
                   "group-focus-within/row:opacity-100 group-hover/row:opacity-100 [@media(hover:none)]:opacity-100",
                   (menuOpen || (menu && active)) && "opacity-100"
                 )}
@@ -420,15 +420,15 @@ export const ConversationGroupHeader = React.forwardRef<HTMLDivElement, Conversa
               aria-controls={expanded ? controlsId : undefined}
               onClick={() => onExpandedChange?.(!expanded)}
               onDoubleClick={onRename ? () => setEditing(true) : undefined}
-              className={cn("flex min-w-0 flex-1 items-center gap-1.5 rounded-control px-2 py-1.5 text-left text-sm", focusRing, triggerClassName)}
+              className={cn("flex min-w-0 flex-1 items-center gap-1.5 rounded-control px-2 py-1.5 text-start text-sm", focusRing, triggerClassName)}
             >
               <RiArrowRightSLine
                 aria-hidden
-                className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", expanded && "rotate-90")}
+                className={cn("size-4 shrink-0 text-muted-foreground chevron-turn rtl:-scale-x-100", expanded && "rotate-90 rtl:-rotate-90")}
               />
               {icon}
               <span className="truncate font-medium">{name}</span>
-              {count != null && <span className="ml-auto text-xs tabular-nums text-muted-foreground">{count}</span>}
+              {count != null && <span className="ms-auto text-xs tabular-nums text-muted-foreground">{count}</span>}
             </button>
             {onRename && showRenameButton ? (
               <button
@@ -632,7 +632,7 @@ export const ConversationList = React.forwardRef<HTMLDivElement, ConversationLis
                           renameButtonLabel={`Rename folder ${f.name}`}
                         />
                         {isOpen ? (
-                          <ul id={contentId} className="ml-4 flex flex-col gap-px border-l border-border pl-1.5">
+                          <ul id={contentId} className="ms-4 flex flex-col gap-px border-s border-border ps-1.5">
                             {folderItems.map((c) => row(c))}
                             {folderItems.length === 0 ? <li className="px-2.5 py-1 text-xs text-muted-foreground">Empty</li> : null}
                           </ul>
@@ -655,7 +655,7 @@ export const ConversationList = React.forwardRef<HTMLDivElement, ConversationLis
       <div ref={ref} className={cn("flex min-h-0 flex-col gap-2 text-sm", className)} {...props}>
         {searchable && (
           <div className="relative px-2">
-            <RiSearchLine aria-hidden className="pointer-events-none absolute left-4.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <RiSearchLine aria-hidden className="pointer-events-none absolute start-4.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="search"
               value={query}
@@ -663,7 +663,7 @@ export const ConversationList = React.forwardRef<HTMLDivElement, ConversationLis
               placeholder={searchPlaceholder}
               aria-label="Search conversations"
               className={cn(
-                "h-8 w-full rounded-control border border-input bg-background pl-8 pr-2.5 text-sm shadow-xs placeholder:text-muted-foreground [&::-webkit-search-cancel-button]:hidden",
+                "h-8 w-full rounded-control border border-input bg-background ps-8 pe-2.5 text-sm shadow-xs placeholder:text-muted-foreground [&::-webkit-search-cancel-button]:hidden",
                 focusRing
               )}
             />
@@ -692,10 +692,10 @@ export const ConversationList = React.forwardRef<HTMLDivElement, ConversationLis
                       focusRing
                     )}
                   >
-                    <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn", archivedOpen && "rotate-90")} />
+                    <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn rtl:-scale-x-100", archivedOpen && "rotate-90 rtl:-rotate-90")} />
                     <RiArchiveLine aria-hidden className="size-4" />
                     Archived
-                    <span className="ml-auto tabular-nums">{archived.length}</span>
+                    <span className="ms-auto tabular-nums">{archived.length}</span>
                   </button>
                   {archivedOpen ? list(archived.map((c) => row(c)), "mt-0.5 opacity-80") : null}
                 </section>

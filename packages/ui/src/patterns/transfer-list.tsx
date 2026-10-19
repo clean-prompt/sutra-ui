@@ -331,7 +331,7 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
               role="img"
               aria-label={dir.label}
               title={dir.label}
-              className="absolute -bottom-1 -right-1.5 flex size-4 items-center justify-center rounded-full border border-background bg-foreground text-background [&_svg]:size-2.5"
+              className="absolute -bottom-1 -end-1.5 flex size-4 items-center justify-center rounded-full border border-background bg-foreground text-background [&_svg]:size-2.5"
             >
               <dir.Icon aria-hidden />
             </span>
@@ -374,7 +374,7 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
             </p>
           )}
         </div>
-        {actions.length > 0 && <div className="-mr-1 flex shrink-0 items-center gap-0.5">{actions}</div>}
+        {actions.length > 0 && <div className="-me-1 flex shrink-0 items-center gap-0.5">{actions}</div>}
       </li>
     );
   }
@@ -565,11 +565,12 @@ export const TransferTray = React.forwardRef<HTMLDivElement, TransferTrayProps>(
         className={cn(
           "z-50 flex w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-box border border-border bg-popover text-foreground shadow-2xl",
           !inline && "fixed bottom-4",
+          // rtl-physical x1: corner position names are physical
           !inline && (position === "bottom-right" ? "right-4" : "left-4"),
           className
         )}
       >
-        <div className="flex items-center gap-2 bg-subtle py-2 pl-4 pr-2">
+        <div className="flex items-center gap-2 bg-subtle py-2 ps-4 pe-2">
           <div className="min-w-0 flex-1">
             <p id={headingId} className="truncate text-sm font-semibold">
               {heading}

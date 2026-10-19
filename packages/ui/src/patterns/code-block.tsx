@@ -308,7 +308,7 @@ function CodeBody({
                 <span
                   aria-hidden
                   className={cn(
-                    "mr-4 shrink-0 select-none text-right tabular-nums",
+                    "me-4 shrink-0 select-none text-end tabular-nums",
                     isHighlighted ? "opacity-80" : "opacity-40"
                   )}
                   style={{ minWidth: `${digits}ch` }}
@@ -406,10 +406,11 @@ export const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
       <div
         ref={ref}
         className={cn("group/code relative overflow-hidden rounded-box border shadow-xs", s.root, className)}
+        dir="ltr"
         {...props}
       >
         {hasHeader ? (
-          <div className={cn("flex h-10 items-center gap-2 border-b pl-4 pr-1.5 text-xs", s.header)}>
+          <div className={cn("flex h-10 items-center gap-2 border-b ps-4 pe-1.5 text-xs", s.header)}>
             {filename ? (
               <>
                 {isShell(language) ? (
@@ -451,7 +452,7 @@ export const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
             text={code}
             theme={theme}
             className={cn(
-              "absolute right-2 top-2 z-[1] opacity-0 backdrop-blur-sm group-hover/code:opacity-100 focus-visible:opacity-100",
+              "absolute end-2 top-2 z-[1] opacity-0 backdrop-blur-sm group-hover/code:opacity-100 focus-visible:opacity-100",
               theme === "dark" ? "bg-code-border/60" : "bg-background/80"
             )}
           />
@@ -465,7 +466,7 @@ export const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
           highlightLines={highlightLines}
           wrap={wrap}
           maxHeight={maxHeight}
-          className={!hasHeader && copyable ? "pr-10" : undefined}
+          className={!hasHeader && copyable ? "pe-10" : undefined}
         />
       </div>
     );
@@ -537,9 +538,10 @@ export const CodeBlockTabs = React.forwardRef<HTMLDivElement, CodeBlockTabsProps
         value={value}
         onValueChange={setValue}
         className={cn("overflow-hidden rounded-box border shadow-xs", s.root, className)}
+        dir="ltr"
         {...props}
       >
-        <div className={cn("flex h-10 items-center gap-2 border-b pl-2 pr-1.5", s.header)}>
+        <div className={cn("flex h-10 items-center gap-2 border-b ps-2 pe-1.5", s.header)}>
           <TabsPrimitive.List className="flex h-full min-w-0 flex-1 items-stretch gap-1 overflow-x-auto scrollbar-none">
             {tabs.map((tab, i) => (
               <TabsPrimitive.Trigger
@@ -606,9 +608,10 @@ export const InlineCopy = React.forwardRef<HTMLDivElement, InlineCopyProps>(
           "w-auto",
           s.root,
           theme === "light" && "bg-background",
-          size === "sm" ? "h-8 text-xs" : size === "md" ? "h-9 text-[13px]" : "h-11 pl-4 text-sm",
+          size === "sm" ? "h-8 text-xs" : size === "md" ? "h-9 text-[13px]" : "h-11 ps-4 text-sm",
           className
         )}
+        dir="ltr"
         {...props}
       />
     );

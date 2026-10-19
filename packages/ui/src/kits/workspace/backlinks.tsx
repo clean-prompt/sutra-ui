@@ -113,7 +113,7 @@ export const Backlinks = React.forwardRef<HTMLElement, BacklinksProps>(
           <h2 id={headingId} className="m-0">
             <CollapsiblePrimitive.Trigger
               className={cn(
-                "group/backlinks flex w-full items-center gap-2 rounded-box px-4 py-3 text-left text-sm font-medium text-foreground hover:bg-accent/60",
+                "group/backlinks flex w-full items-center gap-2 rounded-box px-4 py-3 text-start text-sm font-medium text-foreground hover:bg-accent/60",
                 focusRing
               )}
             >
@@ -121,7 +121,7 @@ export const Backlinks = React.forwardRef<HTMLElement, BacklinksProps>(
               <span className="flex-1">{heading}</span>
               <RiArrowRightSLine
                 aria-hidden
-                className="size-4 text-muted-foreground chevron-turn group-data-[state=open]/backlinks:rotate-90"
+                className="size-4 text-muted-foreground chevron-turn group-data-[state=open]/backlinks:rotate-90 rtl:group-data-[state=open]/backlinks:-rotate-90 rtl:-scale-x-100"
               />
             </CollapsiblePrimitive.Trigger>
           </h2>

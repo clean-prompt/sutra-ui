@@ -332,7 +332,7 @@ export const DeviceBatteryList = React.forwardRef<HTMLDivElement, DeviceBatteryL
                       <Skeleton className="h-1.5 w-16 rounded-full" />
                     </TableCell>
                     <TableCell align="right" className="border-b-0">
-                      <Skeleton shape="text" className="ml-auto w-12" />
+                      <Skeleton shape="text" className="ms-auto w-12" />
                     </TableCell>
                   </TableRow>
                 ))
@@ -369,7 +369,7 @@ export const DeviceBatteryList = React.forwardRef<HTMLDivElement, DeviceBatteryL
                         ? null
                         : parts.map((part) => (
                             <TableRow key={part.id} data-slot="device-battery-part" className="text-muted-foreground">
-                              <TableCell className="border-b-0 py-1.5 pl-14">
+                              <TableCell className="border-b-0 py-1.5 ps-14">
                                 <span className="sr-only">{device.name}, </span>
                                 {part.label}
                               </TableCell>

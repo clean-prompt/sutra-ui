@@ -192,7 +192,7 @@ export const PaginationPrev = React.forwardRef<HTMLButtonElement, PaginationNavB
       aria-label="Previous page"
       {...props}
     >
-      <RiArrowLeftLine aria-hidden />
+      <RiArrowLeftLine className="rtl:-scale-x-100" aria-hidden />
       {!iconOnly && <span className={cn(children == null && "max-sm:sr-only")}>{children ?? "Previous"}</span>}
     </Button>
   )
@@ -210,7 +210,7 @@ export const PaginationNext = React.forwardRef<HTMLButtonElement, PaginationNavB
       {...props}
     >
       {!iconOnly && <span className={cn(children == null && "max-sm:sr-only")}>{children ?? "Next"}</span>}
-      <RiArrowRightLine aria-hidden />
+      <RiArrowRightLine className="rtl:-scale-x-100" aria-hidden />
     </Button>
   )
 );
@@ -295,7 +295,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
               disabled={disabled}
               onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
               className={cn(
-                "appearance-none rounded-control border border-input bg-background pl-2.5 pr-7 font-medium tabular-nums text-foreground shadow-xs transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-50",
+                "appearance-none rounded-control border border-input bg-background ps-2.5 pe-7 font-medium tabular-nums text-foreground shadow-xs transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-50",
                 size === "sm" ? "h-8 text-xs" : size === "lg" ? "h-10 text-sm" : "h-9 text-sm",
                 focusRing
               )}
@@ -306,7 +306,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
                 </option>
               ))}
             </select>
-            <RiArrowDownSLine aria-hidden className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <RiArrowDownSLine aria-hidden className="pointer-events-none absolute end-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           </span>
         </label>
       ) : null;

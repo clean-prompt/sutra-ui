@@ -3,12 +3,15 @@ import { Select as SelectPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { RiArrowDownSLine, RiArrowUpSLine, RiCheckLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useDirection } from "../hooks/use-direction";
 import { useField } from "./field";
 import { inputShellVariants } from "./input";
 import { filledTrigger } from "./input-internal";
 
-/** Root of a select. Re-export of Radix `Select.Root`. */
-export const Select = SelectPrimitive.Root;
+/** Root of a select: Radix `Select.Root` with the reading direction filled in. */
+export function Select(props: React.ComponentProps<typeof SelectPrimitive.Root>) {
+  return <SelectPrimitive.Root dir={useDirection()} {...props} />;
+}
 /** Groups related items under a `SelectLabel`. */
 export const SelectGroup = SelectPrimitive.Group;
 /** Renders the selected item text or the placeholder. */
@@ -16,7 +19,7 @@ export const SelectValue = SelectPrimitive.Value;
 
 export const selectTriggerVariants = cva(
   [
-    "group/select-trigger flex w-full items-center gap-2 text-left",
+    "group/select-trigger flex w-full items-center gap-2 text-start",
     inputShellVariants({ hover: true }),
     "data-[placeholder]:text-muted-foreground data-[state=open]:border-ring data-[state=open]:ring-[3px] data-[state=open]:ring-ring/20",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -153,7 +156,7 @@ export const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center gap-2 rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none",
+      "relative flex w-full cursor-default select-none items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-sm outline-none",
       "data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground",
       "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       "[&_svg]:pointer-events-none [&_svg]:shrink-0",
@@ -178,7 +181,7 @@ export const SelectItem = React.forwardRef<
         </span>
       </SelectPrimitive.ItemText>
     )}
-    <span className={cn("absolute right-2 flex size-4 items-center justify-center", description ? "top-2" : "")}>
+    <span className={cn("absolute end-2 flex size-4 items-center justify-center", description ? "top-2" : "")}>
       <SelectPrimitive.ItemIndicator>
         <RiCheckLine aria-hidden className="size-4 text-primary" />
       </SelectPrimitive.ItemIndicator>

@@ -89,7 +89,7 @@ export const ZoneEditor = React.forwardRef<HTMLDivElement, ZoneEditorProps>(
                 variant="ghost"
                 size="icon-xs"
                 aria-label={`Delete zone ${n}`}
-                className="absolute top-2 right-2 opacity-70 hover:opacity-100"
+                className="absolute top-2 end-2 opacity-70 hover:opacity-100"
                 onClick={() => setZones((z) => removeGroup(z, node.id))}
               >
                 <RiDeleteBinLine aria-hidden className="size-3.5" />
@@ -146,7 +146,7 @@ export const ZoneEditor = React.forwardRef<HTMLDivElement, ZoneEditorProps>(
           {renderNode(zones, 1)}
         </div>
         <div className="flex items-center gap-2">
-          <span className="mr-auto text-xs text-muted-foreground" aria-live="polite">
+          <span className="me-auto text-xs text-muted-foreground" aria-live="polite">
             {zoneList.length} {zoneList.length === 1 ? "zone" : "zones"}
           </span>
           <Button variant="ghost" size="sm" onClick={() => setZones(() => initial)}>

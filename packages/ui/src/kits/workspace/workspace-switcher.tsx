@@ -154,7 +154,7 @@ export const WorkspaceProfileSwitcher = React.forwardRef<HTMLButtonElement, Work
             disabled={disabled}
             aria-label={current ? `Switch profile (current: ${current.profile.name} on ${current.gateway.name})` : "Switch profile"}
             className={cn(
-              "inline-flex h-11 w-full min-w-56 items-center gap-2.5 rounded-control border border-border bg-background px-2.5 text-left shadow-xs transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50",
+              "inline-flex h-11 w-full min-w-56 items-center gap-2.5 rounded-control border border-border bg-background px-2.5 text-start shadow-xs transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50",
               focusRing,
               className
             )}
@@ -238,7 +238,7 @@ export const WorkspaceProfileSwitcher = React.forwardRef<HTMLButtonElement, Work
                               Default
                             </Badge>
                           )}
-                          {selected && <RiCheckLine aria-label="Selected" className="ml-auto text-primary!" />}
+                          {selected && <RiCheckLine aria-label="Selected" className="ms-auto text-primary!" />}
                         </CommandItem>
                       );
                     })}
@@ -687,7 +687,7 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
 
             <div className="flex flex-wrap items-center justify-end gap-2">
               {onTest && (
-                <Button size="sm" variant="outline" onClick={test} loading={testing} disabled={!draft.value.url.trim()} className="mr-auto">
+                <Button size="sm" variant="outline" onClick={test} loading={testing} disabled={!draft.value.url.trim()} className="me-auto">
                   Test connection
                 </Button>
               )}
@@ -834,7 +834,7 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
             <span id={`${uid}-title`} className="text-sm font-semibold text-foreground">
               {name}
             </span>
-            <span className="ml-auto text-xs text-muted-foreground" role="status">
+            <span className="ms-auto text-xs text-muted-foreground" role="status">
               {meta.label}
             </span>
           </div>
@@ -847,7 +847,7 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
                 {rows.map(([k, v]) => (
                   <React.Fragment key={k}>
                     <dt className="text-muted-foreground">{k}</dt>
-                    <dd className="truncate text-right font-mono text-foreground">{v}</dd>
+                    <dd className="truncate text-end font-mono text-foreground">{v}</dd>
                   </React.Fragment>
                 ))}
               </dl>

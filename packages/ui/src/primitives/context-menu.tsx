@@ -2,6 +2,7 @@ import * as React from "react";
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui";
 import { RiArrowRightSLine, RiCheckLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useDirection } from "../hooks/use-direction";
 import {
   menuContentClass,
   menuItemClass,
@@ -15,8 +16,10 @@ import {
   renderMenuItemBody,
 } from "./dropdown-menu";
 
-/** Context (right-click) menu root. */
-export const ContextMenu = ContextMenuPrimitive.Root;
+/** Context (right-click) menu root: Radix `ContextMenu.Root` with the reading direction filled in. */
+export function ContextMenu(props: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
+  return <ContextMenuPrimitive.Root dir={useDirection()} {...props} />;
+}
 /** Area that opens the menu on right-click / long-press. */
 export const ContextMenuTrigger = ContextMenuPrimitive.Trigger;
 /** Groups related items. */
@@ -162,7 +165,7 @@ export const ContextMenuSubTrigger = React.forwardRef<
   >
     {icon}
     <span className="min-w-0 flex-1 truncate">{children}</span>
-    <RiArrowRightSLine aria-hidden className="ml-auto" />
+    <RiArrowRightSLine aria-hidden className="ms-auto rtl:-scale-x-100" />
   </ContextMenuPrimitive.SubTrigger>
 ));
 ContextMenuSubTrigger.displayName = "ContextMenuSubTrigger";

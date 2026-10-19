@@ -375,6 +375,7 @@ function resolveZoom(zoom: PdfZoom, first: PageSize | null, avail: PageSize) {
 
 /** pdf.js text-layer rules (from its `pdf_viewer.css`) as utilities, so no stylesheet or inline `<style>` is needed. */
 const textLayerClass = [
+  // rtl-physical x2: pdf.js text layer: absolute spans placed from the page's physical top-left
   "absolute inset-0 z-0 origin-top-left overflow-clip leading-none [text-align:initial] [text-size-adjust:none] [forced-color-adjust:none] [caret-color:CanvasText] selection:bg-primary/25",
   "[&_:is(span,br)]:absolute [&_:is(span,br)]:origin-top-left [&_:is(span,br)]:cursor-text [&_:is(span,br)]:whitespace-pre [&_:is(span,br)]:text-transparent",
   "[&_.markedContent]:contents [&_br::selection]:bg-transparent",
@@ -845,7 +846,7 @@ export const PdfViewer = React.forwardRef<HTMLDivElement, PdfViewerProps>(
               <>
                 <div role="group" aria-label="Page navigation" className="flex items-center gap-1">
                   <Button variant="ghost" size="icon-sm" className={iconButton} aria-label="Previous page" disabled={page <= 1} onClick={() => goTo(page - 1)}>
-                    <RiArrowLeftSLine aria-hidden />
+                    <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
                   </Button>
                   <input
                     type="text"
@@ -873,7 +874,7 @@ export const PdfViewer = React.forwardRef<HTMLDivElement, PdfViewerProps>(
                     / {numPages}
                   </span>
                   <Button variant="ghost" size="icon-sm" className={iconButton} aria-label="Next page" disabled={page >= numPages} onClick={() => goTo(page + 1)}>
-                    <RiArrowRightSLine aria-hidden />
+                    <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
                   </Button>
                 </div>
                 <div className="flex-1" />
@@ -914,7 +915,7 @@ export const PdfViewer = React.forwardRef<HTMLDivElement, PdfViewerProps>(
                 {skeleton && <Skeleton aria-hidden className="h-5 w-28 rounded-xs" />}
               </div>
             )}
-            {actions != null && actions !== false && <div className="ml-1 flex shrink-0 items-center gap-1">{actions}</div>}
+            {actions != null && actions !== false && <div className="ms-1 flex shrink-0 items-center gap-1">{actions}</div>}
           </div>
         )}
         <div

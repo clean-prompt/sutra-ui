@@ -183,7 +183,7 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
     const nowPct = range > 0 ? ((now - f) / range) * 100 : -1;
 
     return (
-      <div ref={setRefs} role="group" aria-label={label} className={cn("w-full text-xs", className)} {...props}>
+      <div ref={setRefs} role="group" aria-label={label} className={cn("w-full text-xs", className)} dir="ltr" {...props}>
         <div className="flex flex-col gap-1.5">
           {lanes.map((lane) => {
             return (
@@ -243,12 +243,12 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
                               : { tabIndex: 0, role: "img" })}
                             aria-label={text}
                             className={cn(
-                              "relative flex size-full items-center overflow-hidden rounded-xs text-left text-2xs font-medium leading-none text-white/95 transition-opacity hover:opacity-90",
+                              "relative flex size-full items-center overflow-hidden rounded-xs text-start text-2xs font-medium leading-none text-white/95 transition-opacity hover:opacity-90",
                               toneClass[tone],
                               tone === "warning" && "text-warning-foreground",
                               isLive && "ring-2 ring-inset ring-white/30",
-                              pos.clippedStart && "rounded-l-none",
-                              pos.clippedEnd && "rounded-r-none",
+                              pos.clippedStart && "rounded-s-none",
+                              pos.clippedEnd && "rounded-e-none",
                               focusRing
                             )}
                           >
@@ -256,7 +256,7 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
                               {span.label}
                             </span>
                             {isLive ? (
-                              <span aria-hidden className="absolute inset-y-0 right-0 flex w-2 items-center justify-center">
+                              <span aria-hidden className="absolute inset-y-0 end-0 flex w-2 items-center justify-center">
                                 <span className="absolute size-2 rounded-full bg-white/70 motion-safe:animate-ping" />
                                 <span className="relative size-1.5 rounded-full bg-white" />
                               </span>
@@ -283,7 +283,7 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
                   key={tk}
                   className={cn(
                     "absolute top-0 whitespace-nowrap",
-                    i === 0 ? "translate-x-0" : i === tickList.length - 1 ? "-translate-x-full" : "-translate-x-1/2"
+                    i === 0 ? "translate-x-0" : i === tickList.length - 1 ? "-translate-x-full rtl:translate-x-full" : "-translate-x-1/2 rtl:translate-x-1/2"
                   )}
                   style={{ left: `${((tk - f) / range) * 100}%` }}
                 >
@@ -379,7 +379,7 @@ export const UptimeBar = React.forwardRef<HTMLDivElement, UptimeBarProps>(
     const pctText = pct == null ? "No data" : `${formatPercent(pct)} uptime`;
     const summary = `${typeof label === "string" ? `${label}: ` : ""}${pctText} over ${items.length} periods, ${incidents} down, ${degraded} degraded`;
     return (
-      <div ref={ref} className={cn("w-full text-xs", className)} {...props}>
+      <div ref={ref} className={cn("w-full text-xs", className)} dir="ltr" {...props}>
         {label || showPercent ? (
           <div className="mb-1.5 flex items-center justify-between gap-2">
             <span className="font-medium text-foreground">{label}</span>
@@ -412,10 +412,10 @@ export const UptimeBar = React.forwardRef<HTMLDivElement, UptimeBarProps>(
           {hover && items[hover.i] ? (
             <div
               aria-hidden
-              className="pointer-events-none absolute bottom-full z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-inverse px-2 py-1 text-xs font-medium text-inverse-foreground shadow-md"
+              className="pointer-events-none absolute bottom-full z-50 mb-1.5 -translate-x-1/2 rtl:translate-x-1/2 whitespace-nowrap rounded-md bg-inverse px-2 py-1 text-xs font-medium text-inverse-foreground shadow-md"
               style={{ left: hover.x }}
             >
-              {items[hover.i].label ? <span className="mr-1.5 opacity-75">{items[hover.i].label}</span> : null}
+              {items[hover.i].label ? <span className="me-1.5 opacity-75">{items[hover.i].label}</span> : null}
               {uptimeLabel[items[hover.i].status]}
               {items[hover.i].detail ? <div className="font-normal opacity-80">{items[hover.i].detail}</div> : null}
             </div>

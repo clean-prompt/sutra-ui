@@ -1,4 +1,5 @@
 import * as React from "react";
+import { logicalArrow } from "../../lib/direction";
 import { RiAppsLine } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
 import { formatBadgeCount } from "../../lib/format";
@@ -103,7 +104,7 @@ const AppLauncherTile = ({ item, iconSize, tabIndex, hideLabel, compact, onActiv
             key={badgeKey}
             aria-hidden
             className={cn(
-              "absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-2xs font-semibold text-destructive-foreground tabular-nums ring-2 ring-background",
+              "absolute -top-1.5 -end-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-2xs font-semibold text-destructive-foreground tabular-nums ring-2 ring-background",
               badgeKey > 0 && "animate-pop"
             )}
           >
@@ -198,9 +199,10 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
         Home: 0,
         End: visible.length - 1,
       };
-      if (!(event.key in keys)) return;
+      const pressed = logicalArrow(event);
+      if (!(pressed in keys)) return;
       event.preventDefault();
-      const target = keys[event.key]!;
+      const target = keys[pressed]!;
       if (target < 0 || target >= visible.length) return;
       focusAt(target);
     };

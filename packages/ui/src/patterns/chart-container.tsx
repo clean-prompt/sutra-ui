@@ -47,6 +47,7 @@ export const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerPro
           role="img"
           aria-label={label}
           data-slot="chart"
+          dir="ltr"
           className={cn("relative w-full select-none", className)}
           style={{ height, ...style }}
           {...props}
@@ -128,7 +129,7 @@ export const ChartTooltip = React.forwardRef<HTMLDivElement, ChartTooltipProps>(
           <div key={item.key} className="flex items-center gap-2">
             <span aria-hidden className="h-0.5 w-3 shrink-0 rounded-full" style={{ backgroundColor: item.color }} />
             <span className="font-mono font-semibold tabular-nums text-foreground">{item.value}</span>
-            <span className="ml-auto pl-3 text-muted-foreground">{item.label}</span>
+            <span className="ms-auto ps-3 text-muted-foreground">{item.label}</span>
           </div>
         ))}
       </div>

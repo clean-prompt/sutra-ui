@@ -562,7 +562,7 @@ export const CameraCapture = React.forwardRef<HTMLDivElement, CameraCaptureProps
               <div
                 aria-hidden
                 data-slot="camera-capture-timer"
-                className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-xs tabular-nums backdrop-blur"
+                className="absolute start-3 top-3 flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-xs tabular-nums backdrop-blur"
               >
                 <span className="size-2 rounded-full bg-destructive motion-safe:animate-pulse" />
                 {formatClock(elapsed)}
@@ -592,7 +592,7 @@ export const CameraCapture = React.forwardRef<HTMLDivElement, CameraCaptureProps
                 variant="ghost"
                 aria-label="Switch camera"
                 onClick={() => camera.switchCamera()}
-                className={cn("absolute right-3 top-3", overlayButton)}
+                className={cn("absolute end-3 top-3", overlayButton)}
               >
                 <RiCameraSwitchLine aria-hidden />
               </Button>

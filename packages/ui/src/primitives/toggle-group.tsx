@@ -3,6 +3,7 @@ import { Toggle as TogglePrimitive, ToggleGroup as ToggleGroupPrimitive } from "
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useRootDirection } from "../hooks/use-direction";
 
 export const toggleVariants = cva(
   [
@@ -82,6 +83,7 @@ export type ToggleGroupProps = ToggleGroupSingleProps | ToggleGroupMultipleProps
  * switch, `SegmentedControl` is the better fit.
  */
 export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>((props, ref) => {
+  const { ref: rootRef, dir } = useRootDirection(ref);
   const { type = "single", variant, size, className, value, defaultValue, onValueChange, ...rest } = props as ToggleGroupProps & {
     value?: string | string[];
     defaultValue?: string | string[];
@@ -98,7 +100,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>((p
     [current]
   );
   const ctx = React.useMemo(() => ({ values, variant, size }), [values, variant, size]);
-  const root = { ref, role: "group", "data-slot": "toggle-group", className: cn("inline-flex min-w-0 max-w-full flex-wrap items-center gap-1", className), ...rest };
+  const root = { ref: rootRef, dir, role: "group", "data-slot": "toggle-group", className: cn("inline-flex min-w-0 max-w-full flex-wrap items-center gap-1", className), ...rest };
   return (
     <ToggleGroupContext.Provider value={ctx}>
       {multiple ? (

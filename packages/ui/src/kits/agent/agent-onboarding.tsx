@@ -65,7 +65,7 @@ export const OnboardingChecklist = React.forwardRef<HTMLDivElement, OnboardingCh
             {done} of {items.length}
           </span>
           {onDismiss && (
-            <Button variant="ghost" size="icon-xs" aria-label="Dismiss checklist" onClick={onDismiss} className="-mr-1 -mt-1">
+            <Button variant="ghost" size="icon-xs" aria-label="Dismiss checklist" onClick={onDismiss} className="-me-1 -mt-1">
               <RiCloseLine aria-hidden />
             </Button>
           )}
@@ -178,7 +178,7 @@ export const ConnectionState = React.forwardRef<HTMLDivElement, ConnectionStateP
           <p className="text-xs text-muted-foreground">{description ?? d.description}</p>
         </div>
         {details && (
-          <pre className="max-w-sm overflow-x-auto whitespace-pre-wrap rounded-xs bg-muted px-2 py-1 text-left font-mono text-2xs text-muted-foreground">
+          <pre className="max-w-sm overflow-x-auto whitespace-pre-wrap rounded-xs bg-muted px-2 py-1 text-start font-mono text-2xs text-muted-foreground">
             {details}
           </pre>
         )}

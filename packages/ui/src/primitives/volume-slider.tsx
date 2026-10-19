@@ -168,7 +168,7 @@ export const VolumeSlider = React.forwardRef<HTMLDivElement, VolumeSliderProps>(
             aria-hidden
             data-slot="volume-slider-level"
             className={cn(
-              "w-12 shrink-0 text-right text-sm font-medium tabular-nums",
+              "w-12 shrink-0 text-end text-sm font-medium tabular-nums",
               vertical && "text-center",
               muted ? "text-muted-foreground" : "text-foreground",
               levelClassName

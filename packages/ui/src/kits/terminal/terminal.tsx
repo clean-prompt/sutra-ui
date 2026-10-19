@@ -423,6 +423,7 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>(
           className
         )}
         style={style}
+        dir="ltr"
         {...props}
       >
         {!hideHeader ? (
@@ -433,7 +434,7 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>(
               <span aria-hidden className={cn("size-1.5 rounded-full", meta.dot)} />
               {meta.label}
             </span>
-            <div className="ml-auto flex items-center gap-1">
+            <div className="ms-auto flex items-center gap-1">
               {toolbar}
               {fullscreenable ? (
                 <button

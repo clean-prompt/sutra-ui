@@ -1,11 +1,11 @@
 // Runs the whole layout audit the way it is run before a release: builds the library and the playground, serves the build,
-// audits every page in the stock style (360, 768, 1280 px), the paper style (360, 1280) and dark mode (360), prints the counts
+// audits every page in the stock style (360, 768, 1280 px), the paper style (360, 1280), dark mode (360) and right-to-left (360, 1280), prints the counts
 // per kind, and compares with an earlier run as a ratchet: any new non-tap finding fails the command.
 //
 // Setup once:   pnpm install && pnpm --filter playground exec playwright install chromium
 // Run:          pnpm audit:all                       (from the repo root or from apps/playground)
-//               pnpm audit:all --tag release         (names the run: audit/release-stock.json, -paper.json, -dark.json)
-//               pnpm audit:all --baseline w5         (compare with audit/w5-stock.json, -paper.json, -dark.json)
+//               pnpm audit:all --tag release         (names the run: audit/release-stock.json, -paper.json, -dark.json, -rtl.json)
+//               pnpm audit:all --baseline w5         (compare with audit/w5-stock.json, -paper.json, -dark.json, -rtl.json)
 //               pnpm audit:all --no-build            (the playground is already built)
 //               pnpm audit:all --port 5195 --route components/forms   (serve on another port, audit one route)
 // Output:       audit/<tag>-<pass>.json and audit/<tag>-<pass>/ (screenshots of flagged demos); inspect with
@@ -39,6 +39,8 @@ const passes = [
   { name: "stock", style: "stock", dark: "0", widths: "360,768,1280" },
   { name: "paper", style: "paper", dark: "0", widths: "360,1280" },
   { name: "dark", style: "stock", dark: "1", widths: "360" },
+  // Right-to-left: the same pages with <html dir="rtl"> (layout-audit reads AUDIT_DIR).
+  { name: "rtl", style: "stock", dark: "0", widths: "360,1280", dir: "rtl" },
 ];
 
 // A finding's identity: where it is and what it says, without times of day (some demos print the clock).
@@ -85,7 +87,7 @@ try {
     const t = `${tag}-${p.name}`;
     run("node", ["scripts/layout-audit.mjs", t, p.style, p.dark, p.widths, ...(route ? [route] : [])], {
       cwd: PLAYGROUND,
-      env: { ...process.env, AUDIT_BASE: base },
+      env: { ...process.env, AUDIT_BASE: base, AUDIT_DIR: p.dir ?? "ltr" },
     });
   }
   console.log("\n== Summary ==");

@@ -287,6 +287,7 @@ function useStreamVideo(stream: MediaStream | null | undefined) {
 }
 
 const pipCornerClass: Record<CallPipCorner, string> = {
+  // rtl-physical x4: PiP corners are named and snapped by physical position
   "top-left": "top-4 left-4",
   "top-right": "top-4 right-4",
   "bottom-left": "bottom-24 left-4",

@@ -4,6 +4,7 @@ import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useElementWidth } from "../hooks/use-resize-observer";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { logicalArrow } from "../lib/direction";
 
 type Orientation = "horizontal" | "vertical";
 
@@ -282,7 +283,7 @@ export const SplitPaneHandle = React.forwardRef<HTMLDivElement, SplitPaneHandleP
       const delta = ctx.step * (event.shiftKey ? 2 : 1);
       const dec = horizontal ? "ArrowLeft" : "ArrowUp";
       const inc = horizontal ? "ArrowRight" : "ArrowDown";
-      switch (event.key) {
+      switch (logicalArrow(event)) {
         case dec:
           ctx.setSize((ctx.collapsed ? ctx.min : ctx.size) - delta);
           break;
@@ -321,7 +322,7 @@ export const SplitPaneHandle = React.forwardRef<HTMLDivElement, SplitPaneHandleP
           "group/handle relative z-10 flex shrink-0 touch-none items-center justify-center bg-border transition-colors hover:bg-primary/60 data-[collapsed]:bg-border-strong",
           horizontal ? "w-px cursor-col-resize" : "h-px cursor-row-resize",
           "before:absolute before:content-['']",
-          horizontal ? "before:inset-y-0 before:-left-1.5 before:-right-1.5" : "before:inset-x-0 before:-top-1.5 before:-bottom-1.5",
+          horizontal ? "before:inset-y-0 before:-start-1.5 before:-end-1.5" : "before:inset-x-0 before:-top-1.5 before:-bottom-1.5",
           focusRing,
           "focus-visible:bg-ring",
           className

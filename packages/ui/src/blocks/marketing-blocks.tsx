@@ -343,7 +343,7 @@ export const MarketplaceCard = React.forwardRef<HTMLElement, MarketplaceCardProp
           <div className="flex flex-col gap-0.5">
             <h3 id={titleId} className="text-sm font-semibold text-foreground">
               {onOpen ? (
-                <button type="button" onClick={() => onOpen(ext)} className={cn("rounded-xs text-left after:absolute after:inset-0 hover:underline", focusRing)}>
+                <button type="button" onClick={() => onOpen(ext)} className={cn("rounded-xs text-start after:absolute after:inset-0 hover:underline", focusRing)}>
                   {ext.name}
                 </button>
               ) : (
@@ -545,7 +545,7 @@ export const MarketplaceGrid = React.forwardRef<HTMLDivElement, MarketplaceGridP
                     {c} <span className="text-sm font-normal text-muted-foreground">{list.length}</span>
                   </h3>
                   {list.length > sectionLimit && (
-                    <Button variant="ghost" size="sm" trailingIcon={<RiArrowRightSLine aria-hidden />} onClick={() => setCategory(c)} aria-label={`View all ${c}`}>
+                    <Button variant="ghost" size="sm" trailingIcon={<RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />} onClick={() => setCategory(c)} aria-label={`View all ${c}`}>
                       View all
                     </Button>
                   )}
@@ -603,7 +603,7 @@ export const AuthorShelf = React.forwardRef<HTMLElement, AuthorShelfProps>(
             </div>
           </div>
           {onViewAll && (
-            <Button variant="ghost" size="sm" trailingIcon={<RiArrowRightSLine aria-hidden />} onClick={onViewAll} aria-label={`View all by ${author.name}`}>
+            <Button variant="ghost" size="sm" trailingIcon={<RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />} onClick={onViewAll} aria-label={`View all by ${author.name}`}>
               View all
             </Button>
           )}
@@ -750,7 +750,7 @@ export const ExtensionDetailPage = React.forwardRef<HTMLElement, ExtensionDetail
                         data-lightbox-index={i}
                         onClick={() => onOpenScreenshot?.(i)}
                         aria-label={`Open screenshot ${i + 1}: ${s.caption}`}
-                        className={cn("group block w-full overflow-hidden rounded-box border border-border text-left", focusRing)}
+                        className={cn("group block w-full overflow-hidden rounded-box border border-border text-start", focusRing)}
                       >
                         {s.src ? (
                           <img src={s.src} alt="" className="aspect-video w-full object-cover transition-transform group-hover:scale-[1.03]" />
@@ -807,7 +807,7 @@ export const ExtensionDetailPage = React.forwardRef<HTMLElement, ExtensionDetail
                       <span aria-hidden>{f.icon}</span>
                       {f.label}
                     </dt>
-                    <dd className="truncate text-right font-medium text-foreground">{f.value}</dd>
+                    <dd className="truncate text-end font-medium text-foreground">{f.value}</dd>
                   </div>
                 ))}
             </dl>
@@ -1093,7 +1093,7 @@ export const ComparisonTable = React.forwardRef<HTMLDivElement, ComparisonTableP
           <caption className="sr-only">{caption}</caption>
           <TableHeader>
             <TableRow>
-              <TableHead className="min-w-48 pl-4">Feature</TableHead>
+              <TableHead className="min-w-48 ps-4">Feature</TableHead>
               {products.map((p) => (
                 <TableHead key={p.id} align="center" className={cn("min-w-28", p.highlight && "bg-primary-soft text-primary-soft-foreground")}>
                   {p.name}
@@ -1106,10 +1106,10 @@ export const ComparisonTable = React.forwardRef<HTMLDivElement, ComparisonTableP
               const n = r.footnote ? fnNumber(r.footnote) : 0;
               return (
                 <TableRow key={r.feature}>
-                  <th scope="row" className="border-b border-border px-4 py-3 text-left align-middle font-normal">
+                  <th scope="row" className="border-b border-border px-4 py-3 text-start align-middle font-normal">
                     <span className="text-sm font-medium text-foreground">{r.feature}</span>
                     {n > 0 && (
-                      <sup className="ml-0.5">
+                      <sup className="ms-0.5">
                         <a id={`${uid}-ref-${r.footnote}`} href={`#${uid}-fn-${r.footnote}`} aria-label={`Footnote ${n}`} className={cn("rounded-xs text-primary hover:underline", focusRing)}>
                           {n}
                         </a>
@@ -1128,7 +1128,7 @@ export const ComparisonTable = React.forwardRef<HTMLDivElement, ComparisonTableP
           </TableBody>
         </Table>
         {footnotes.length > 0 && (
-          <ol aria-label="Footnotes" className="flex list-decimal flex-col gap-1 pl-5 text-xs text-muted-foreground">
+          <ol aria-label="Footnotes" className="flex list-decimal flex-col gap-1 ps-5 text-xs text-muted-foreground">
             {footnotes.map((f) => (
               <li key={f.id} id={`${uid}-fn-${f.id}`}>
                 {f.text}

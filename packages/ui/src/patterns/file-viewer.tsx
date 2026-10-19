@@ -10,6 +10,7 @@ import {
   RiZoomInLine,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { logicalArrow } from "../lib/direction";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useObjectUrlState } from "../hooks/use-object-url";
@@ -336,7 +337,7 @@ function ViewerBody({
             className={cn("group relative max-h-full max-w-full cursor-zoom-in overflow-hidden rounded-box", focusRing)}
           >
             <ImageWithFallback src={file.url} alt={file.name} fit="contain" className="max-h-[70dvh] min-w-48 bg-transparent" imgClassName="max-h-[70dvh] w-auto" />
-            <span aria-hidden className="absolute bottom-2 right-2 inline-flex size-8 items-center justify-center rounded-full bg-black/55 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+            <span aria-hidden className="absolute bottom-2 end-2 inline-flex size-8 items-center justify-center rounded-full bg-black/55 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
               <RiZoomInLine aria-hidden className="size-4" />
             </span>
           </button>
@@ -701,14 +702,14 @@ export const FileViewer = React.forwardRef<HTMLDivElement, FileViewerProps>(
 
     const onKeyDown = (event: React.KeyboardEvent) => {
       if (!gallery || count < 2 || event.defaultPrevented) return;
-      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      if (logicalArrow(event) !== "ArrowLeft" && logicalArrow(event) !== "ArrowRight") return;
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       const target = event.target as HTMLElement;
       // Keys from portaled children (e.g. the zoom lightbox) bubble through React but belong to them.
       if (!(event.currentTarget as HTMLElement).contains(target) || ownsArrowKeys(target)) return;
-      if (event.key === "ArrowLeft" ? !canPrev : !canNext) return;
+      if (logicalArrow(event) === "ArrowLeft" ? !canPrev : !canNext) return;
       event.preventDefault();
-      go(event.key === "ArrowLeft" ? -1 : 1);
+      go(logicalArrow(event) === "ArrowLeft" ? -1 : 1);
     };
 
     const neighbour = (delta: number) => {
@@ -780,13 +781,13 @@ export const FileViewer = React.forwardRef<HTMLDivElement, FileViewerProps>(
       gallery && count > 1 ? (
         <div role="group" aria-label="Browse files" data-slot="file-viewer-nav" className="flex shrink-0 items-center gap-0.5">
           <button type="button" className={navAction} aria-label="Previous file" aria-disabled={!canPrev || undefined} onClick={() => go(-1)}>
-            <RiArrowLeftSLine aria-hidden />
+            <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
           </button>
           <span aria-hidden data-slot="file-viewer-position" className="whitespace-nowrap px-1 text-xs tabular-nums text-muted-foreground">
             {`${index + 1} of ${count}`}
           </span>
           <button type="button" className={navAction} aria-label="Next file" aria-disabled={!canNext || undefined} onClick={() => go(1)}>
-            <RiArrowRightSLine aria-hidden />
+            <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
           </button>
           <span className="sr-only" aria-live="polite" aria-atomic="true">
             {current ? `${current.name}, ${index + 1} of ${count}` : ""}
@@ -866,7 +867,7 @@ export const FileViewer = React.forwardRef<HTMLDivElement, FileViewerProps>(
               aria-label={panelLabel}
               hidden={!panelOpen}
               data-slot="file-viewer-panel"
-              className="flex-none border-t border-border bg-card p-4 @2xl:w-80 @2xl:overflow-auto @2xl:border-l @2xl:border-t-0 scrollbar-thin"
+              className="flex-none border-t border-border bg-card p-4 @2xl:w-80 @2xl:overflow-auto @2xl:border-s @2xl:border-t-0 scrollbar-thin"
             >
               {panelNode}
             </aside>
@@ -945,7 +946,7 @@ export const FilePreviewCard = React.forwardRef<HTMLButtonElement, FilePreviewCa
         data-kind={kind}
         aria-label={props["aria-label"] ?? `Preview ${file.name}`}
         className={cn(
-          "group flex w-44 flex-col overflow-hidden rounded-box border border-border bg-card text-left shadow-xs transition-[border-color,box-shadow] hover:border-border-strong hover:shadow-sm",
+          "group flex w-44 flex-col overflow-hidden rounded-box border border-border bg-card text-start shadow-xs transition-[border-color,box-shadow] hover:border-border-strong hover:shadow-sm",
           focusRing,
           className
         )}

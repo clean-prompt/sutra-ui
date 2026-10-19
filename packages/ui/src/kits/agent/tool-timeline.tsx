@@ -125,7 +125,7 @@ export const ToolTimelineDot = React.forwardRef<HTMLSpanElement, ToolTimelineDot
         pulse={status === "progress"}
         label={text ?? ""}
         className={cn(
-          "absolute left-[7px] top-[10px] z-[1] size-[9px] bg-background ring-[3px] ring-background",
+          "absolute start-[7px] top-[10px] z-[1] size-[9px] bg-background ring-[3px] ring-background",
           (!status || status === "canceled") && "[&>span]:bg-muted-foreground/50",
           className
         )}
@@ -141,7 +141,7 @@ function Rail() {
     <span
       aria-hidden
       data-slot="tool-timeline-rail"
-      className="absolute bottom-0 left-[11px] top-0 w-px bg-border group-first/tl:top-[15px] group-last/tl:bottom-auto group-last/tl:h-[15px] group-only/tl:hidden"
+      className="absolute bottom-0 start-[11px] top-0 w-px bg-border group-first/tl:top-[15px] group-last/tl:bottom-auto group-last/tl:h-[15px] group-only/tl:hidden"
     />
   );
 }
@@ -183,7 +183,7 @@ export const ToolTimelineText = React.forwardRef<HTMLLIElement, ToolTimelineText
     <li
       ref={ref}
       data-slot="tool-timeline-text"
-      className={cn("group/tl relative py-1.5 pl-7 leading-6 text-foreground", className)}
+      className={cn("group/tl relative py-1.5 ps-7 leading-6 text-foreground", className)}
       {...props}
     >
       <Rail />
@@ -286,7 +286,7 @@ export const ToolTimelineItem = React.forwardRef<HTMLLIElement, ToolTimelineItem
         )}
         {arg == null && <span className="flex-1" />}
         {nested && status !== "success" && <span className="sr-only">{statusLabel[status]}</span>}
-        <span className="ml-2 flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+        <span className="ms-2 flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
           {meta}
           {diffStat && <DiffStat additions={diffStat.additions} deletions={diffStat.deletions} showBar={false} />}
           {exitCode != null && (
@@ -306,14 +306,14 @@ export const ToolTimelineItem = React.forwardRef<HTMLLIElement, ToolTimelineItem
     );
 
     const rowClass =
-      "flex w-full min-w-0 items-center gap-2 rounded-control px-1.5 py-1 text-left text-sm leading-5";
+      "flex w-full min-w-0 items-center gap-2 rounded-control px-1.5 py-1 text-start text-sm leading-5";
 
     return (
       <li
         ref={ref}
         data-slot="tool-timeline-item"
         data-status={status}
-        className={cn("group/tl relative", nested ? "" : "pl-7", className)}
+        className={cn("group/tl relative", nested ? "" : "ps-7", className)}
         {...props}
       >
         {!nested && (
@@ -330,15 +330,15 @@ export const ToolTimelineItem = React.forwardRef<HTMLLIElement, ToolTimelineItem
               {row}
               <RiArrowRightSLine
                 aria-hidden
-                className="size-4 shrink-0 text-muted-foreground chevron-turn group-data-[state=open]/tli:rotate-90"
+                className="size-4 shrink-0 text-muted-foreground chevron-turn group-data-[state=open]/tli:rotate-90 rtl:group-data-[state=open]/tli:-rotate-90 rtl:-scale-x-100"
               />
             </Collapsible.Trigger>
             <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-              <div className="mb-2 mt-1 pl-1.5">{children}</div>
+              <div className="mb-2 mt-1 ps-1.5">{children}</div>
             </Collapsible.Content>
           </Collapsible.Root>
         ) : (
-          <div className={cn(rowClass, "pr-7")}>{row}</div>
+          <div className={cn(rowClass, "pe-7")}>{row}</div>
         )}
       </li>
     );
@@ -443,7 +443,7 @@ export const ToolGroup = React.forwardRef<HTMLLIElement, ToolGroupProps>(
         ref={ref}
         data-slot="tool-group"
         data-status={status}
-        className={cn("group/tl relative pl-7", className)}
+        className={cn("group/tl relative ps-7", className)}
         {...props}
       >
         <Rail />
@@ -452,7 +452,7 @@ export const ToolGroup = React.forwardRef<HTMLLIElement, ToolGroupProps>(
           <Collapsible.Trigger
             aria-controls={listId}
             className={cn(
-              "group/tg flex w-full min-w-0 items-center gap-2 rounded-control px-1.5 py-1 text-left text-sm leading-5 transition-colors hover:bg-accent/70",
+              "group/tg flex w-full min-w-0 items-center gap-2 rounded-control px-1.5 py-1 text-start text-sm leading-5 transition-colors hover:bg-accent/70",
               focusRing
             )}
           >
@@ -467,14 +467,14 @@ export const ToolGroup = React.forwardRef<HTMLLIElement, ToolGroupProps>(
             <span className="flex-1" />
             <RiArrowRightSLine
               aria-hidden
-              className="size-4 shrink-0 text-muted-foreground chevron-turn group-data-[state=open]/tg:rotate-90"
+              className="size-4 shrink-0 text-muted-foreground chevron-turn group-data-[state=open]/tg:rotate-90 rtl:group-data-[state=open]/tg:-rotate-90 rtl:-scale-x-100"
             />
           </Collapsible.Trigger>
           <Collapsible.Content
             id={listId}
             className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down"
           >
-            <ol className="mb-1 ml-3 flex flex-col border-l border-border pl-2">
+            <ol className="mb-1 ms-3 flex flex-col border-s border-border ps-2">
               <NestedContext.Provider value>{children}</NestedContext.Provider>
             </ol>
           </Collapsible.Content>
@@ -679,7 +679,7 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
         )}
         {...props}
       >
-        <div className="flex items-start gap-2 border-b border-white/10 bg-white/[0.03] py-1.5 pl-3 pr-1.5">
+        <div className="flex items-start gap-2 border-b border-white/10 bg-white/[0.03] py-1.5 ps-3 pe-1.5">
           <code className="min-w-0 flex-1 whitespace-pre-wrap break-all py-0.5 font-mono text-xs leading-5">
             <span aria-hidden className="select-none text-emerald-400">
               ${" "}
@@ -812,7 +812,7 @@ export const SearchToolBody = React.forwardRef<HTMLDivElement, SearchToolBodyPro
         <div className="flex flex-wrap items-center gap-1.5">
           <code className="rounded-control border border-border bg-subtle px-1.5 py-0.5 font-mono text-foreground">{pattern}</code>
           {scope && <span className="text-muted-foreground">in <span className="font-mono">{scope}</span></span>}
-          <span className="ml-auto text-muted-foreground">
+          <span className="ms-auto text-muted-foreground">
             {matches.length} {matches.length === 1 ? "match" : "matches"}
           </span>
         </div>
@@ -834,7 +834,7 @@ export const SearchToolBody = React.forwardRef<HTMLDivElement, SearchToolBodyPro
                     <button
                       type="button"
                       onClick={() => onOpenMatch(m)}
-                      className={cn("flex w-full min-w-0 items-center gap-3 px-2.5 py-1 text-left hover:bg-accent", focusRing)}
+                      className={cn("flex w-full min-w-0 items-center gap-3 px-2.5 py-1 text-start hover:bg-accent", focusRing)}
                     >
                       {loc}
                     </button>
@@ -1116,7 +1116,7 @@ export const AgentStatusLine = React.forwardRef<HTMLDivElement, AgentStatusLineP
                 {statsText}
               </span>
             )}
-            {hint != null && <span className="ml-auto shrink-0 text-xs">{hint}</span>}
+            {hint != null && <span className="ms-auto shrink-0 text-xs">{hint}</span>}
           </>
         )}
       </div>

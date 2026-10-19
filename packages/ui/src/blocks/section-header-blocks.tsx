@@ -95,7 +95,7 @@ export const PageHeaderWithActions = React.forwardRef<HTMLDivElement, PageHeader
       breadcrumbs = [{ label: "Workspace", href: "#" }, { label: "Projects" }],
       primaryAction = { label: "New project", icon: <RiAddLine aria-hidden /> },
       secondaryActions = [
-        { label: "Share", icon: <RiShareForwardLine aria-hidden /> },
+        { label: "Share", icon: <RiShareForwardLine className="rtl:-scale-x-100" aria-hidden /> },
         { label: "Export", icon: <RiDownload2Line aria-hidden /> },
       ],
       actions,
@@ -203,7 +203,7 @@ export const PageHeaderWithTabs = React.forwardRef<HTMLDivElement, PageHeaderWit
           actions={
             actions ?? (
               <>
-                <AvatarGroup size="sm" max={4} className="mr-1 hidden sm:flex">
+                <AvatarGroup size="sm" max={4} className="me-1 hidden sm:flex">
                   {["Aiko Tanaka", "Diego Alvarez", "Priya Shah", "Noah Kim", "Lena Okafor"].map((n) => (
                     <Avatar key={n} name={n} />
                   ))}
@@ -462,7 +462,7 @@ export const PageHeaderWithSearch = React.forwardRef<HTMLDivElement, PageHeaderW
           wrapperClassName="sm:max-w-80"
           aria-label="Search"
         />
-        <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
+        <div className="flex flex-wrap items-center gap-2 sm:ms-auto">
           {filters.map((f) => (
             <SimpleSelect
               key={f.id}
@@ -586,7 +586,7 @@ export const ProfileHeader = React.forwardRef<HTMLDivElement, ProfileHeaderProps
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem icon={<RiShareForwardLine aria-hidden />}>Share profile</DropdownMenuItem>
+                      <DropdownMenuItem icon={<RiShareForwardLine className="rtl:-scale-x-100" aria-hidden />}>Share profile</DropdownMenuItem>
                       <DropdownMenuItem icon={<RiLinkM aria-hidden />}>Copy link</DropdownMenuItem>
                       <DropdownMenuItem icon={<RiGlobalLine aria-hidden />}>View public page</DropdownMenuItem>
                     </DropdownMenuContent>
@@ -687,13 +687,13 @@ export const HeroHeader = React.forwardRef<HTMLElement, HeroHeaderProps>(
             {eyebrow ? (
               <a
                 href={eyebrowHref}
-                className="group inline-flex items-center gap-2 rounded-full border border-border bg-background/70 py-1 pl-1 pr-3 text-sm shadow-xs backdrop-blur transition-colors hover:border-border-strong"
+                className="group inline-flex items-center gap-2 rounded-full border border-border bg-background/70 py-1 ps-1 pe-3 text-sm shadow-xs backdrop-blur transition-colors hover:border-border-strong"
               >
                 <Badge color="brand" variant="solid" size="sm" className="rounded-full">
                   New
                 </Badge>
                 <span className="font-medium text-foreground">{eyebrow}</span>
-                <RiArrowRightSLine aria-hidden className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                <RiArrowRightSLine aria-hidden className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:-scale-x-100" />
               </a>
             ) : null}
             <div className={cn("flex max-w-3xl flex-col gap-5", centered && "items-center")}>
@@ -711,11 +711,11 @@ export const HeroHeader = React.forwardRef<HTMLElement, HeroHeaderProps>(
                     <Button asChild size="xl" className="group/cta">
                       <a href={primaryAction.href} onClick={primaryAction.onClick}>
                         {primaryAction.label}
-                        <RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5" />
+                        <RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5 rtl:group-hover/cta:-translate-x-0.5 rtl:-scale-x-100" />
                       </a>
                     </Button>
                   ) : (
-                    <Button size="xl" className="group/cta" trailingIcon={<RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5" />} onClick={primaryAction.onClick}>
+                    <Button size="xl" className="group/cta" trailingIcon={<RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5 rtl:group-hover/cta:-translate-x-0.5 rtl:-scale-x-100" />} onClick={primaryAction.onClick}>
                       {primaryAction.label}
                     </Button>
                   )

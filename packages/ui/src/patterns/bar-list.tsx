@@ -136,7 +136,7 @@ export const BarList = React.forwardRef<HTMLDivElement, BarListProps>(
             {visible.map((item, i) => {
               const pct = max > 0 && Number.isFinite(item.value) ? clamp((item.value / max) * 100, 0, 100) : 0;
               const rowClass = cn(
-                "flex w-full items-center gap-3 rounded-box px-3 py-2.5 text-left",
+                "flex w-full items-center gap-3 rounded-box px-3 py-2.5 text-start",
                 highlightFirst && i === 0 && "bg-muted/60",
                 (item.href !== undefined || item.onClick) && cn("transition-colors hover:bg-muted", focusRing)
               );

@@ -99,7 +99,7 @@ export const JobBanner = React.forwardRef<HTMLDivElement, JobBannerProps>(
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex items-center gap-2 text-sm">
             <span className="min-w-0 truncate font-medium text-foreground">{title}</span>
-            <span className="ml-auto shrink-0 font-mono text-xs tabular-nums text-muted-foreground" aria-label={`Elapsed ${formatClock(elapsed)}`}>
+            <span className="ms-auto shrink-0 font-mono text-xs tabular-nums text-muted-foreground" aria-label={`Elapsed ${formatClock(elapsed)}`}>
               {formatClock(elapsed)}
             </span>
           </div>

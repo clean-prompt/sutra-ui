@@ -10,6 +10,7 @@ import {
   RiPictureInPicture2Line,
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { logicalArrow } from "../lib/direction";
 import { Button } from "../primitives/button";
 import {
   ContextMenu,
@@ -68,6 +69,7 @@ export function TilingNodeView({ node }: { node: LayoutNode }) {
 }
 
 const dropZoneClass: Record<TilingDropEdge, string> = {
+  // rtl-physical x2: drop zones sit on the physical edge nearest the pointer
   left: "inset-y-0 left-0 w-1/4",
   right: "inset-y-0 right-0 w-1/4",
   top: "inset-x-1/4 top-0 h-1/4",
@@ -76,10 +78,11 @@ const dropZoneClass: Record<TilingDropEdge, string> = {
 };
 
 const dropPreviewClass: Record<TilingDropEdge, string> = {
+  // rtl-physical x3: drop zones sit on the physical edge nearest the pointer
   left: "top-1 bottom-1 left-1 right-1/2",
   right: "top-1 bottom-1 left-1/2 right-1",
   top: "top-1 left-1 right-1 bottom-1/2",
-  bottom: "top-1/2 left-1 right-1 bottom-1",
+  bottom: "top-1/2 start-1 end-1 bottom-1",
   center: "inset-1",
 };
 
@@ -112,8 +115,8 @@ function TilingGroupView({ group }: { group: LayoutTabsNode }) {
     const panes = group.panes;
     const i = panes.indexOf(group.active);
     let next: string | undefined;
-    if (event.key === "ArrowRight") next = panes[(i + 1) % panes.length];
-    else if (event.key === "ArrowLeft") next = panes[(i - 1 + panes.length) % panes.length];
+    if (logicalArrow(event) === "ArrowRight") next = panes[(i + 1) % panes.length];
+    else if (logicalArrow(event) === "ArrowLeft") next = panes[(i - 1 + panes.length) % panes.length];
     else if (event.key === "Home") next = panes[0];
     else if (event.key === "End") next = panes[panes.length - 1];
     else if (event.key === "Delete" && group.active && ctx.closable(group.active)) {
@@ -182,7 +185,7 @@ function TilingGroupView({ group }: { group: LayoutTabsNode }) {
             Empty
           </div>
         )}
-        <div className="flex shrink-0 items-center gap-0.5 border-l border-border px-1">
+        <div className="flex shrink-0 items-center gap-0.5 border-s border-border px-1">
           <Button
             variant="ghost"
             size="icon-xs"
@@ -282,7 +285,7 @@ function TilingTab({ group, paneId, focused }: { group: LayoutTabsNode; paneId: 
           data-active={active || undefined}
           data-dragging={dragging || undefined}
           className={cn(
-            "group/tab relative flex max-w-52 shrink-0 items-center border-r border-border text-xs transition-colors",
+            "group/tab relative flex max-w-52 shrink-0 items-center border-e border-border text-xs transition-colors",
             active ? "bg-background text-foreground" : "text-muted-foreground hover:bg-accent hover:text-foreground",
             active &&
               "after:absolute after:inset-x-0 after:top-0 after:h-0.5 after:content-['']",
@@ -299,7 +302,7 @@ function TilingTab({ group, paneId, focused }: { group: LayoutTabsNode; paneId: 
             tabIndex={active ? 0 : -1}
             aria-keyshortcuts={closable ? "Delete" : undefined}
             draggable={false}
-            className={cn("flex h-full min-w-0 items-center gap-1.5 pl-3", closable ? "pr-1" : "pr-3", focusRing, "focus-visible:ring-inset")}
+            className={cn("flex h-full min-w-0 items-center gap-1.5 ps-3", closable ? "pe-1" : "pe-3", focusRing, "focus-visible:ring-inset")}
             onClick={() => ctx.activate(paneId)}
             onPointerDown={(event) => ctx.startTabDrag(event, paneId)}
             onMouseDown={(event) => {
@@ -322,7 +325,7 @@ function TilingTab({ group, paneId, focused }: { group: LayoutTabsNode; paneId: 
               title={`Close ${name}`}
               data-slot="tiling-tab-close"
               className={cn(
-                "mr-1 flex size-5 shrink-0 cursor-default items-center justify-center rounded-xs text-muted-foreground transition-opacity hover:bg-muted hover:text-foreground",
+                "me-1 flex size-5 shrink-0 cursor-default items-center justify-center rounded-xs text-muted-foreground transition-opacity hover:bg-muted hover:text-foreground",
                 active ? "opacity-100" : "opacity-0 group-hover/tab:opacity-100"
               )}
               onPointerDown={(event) => event.stopPropagation()}

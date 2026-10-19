@@ -148,7 +148,7 @@ export function UpgradeDialog({
                   )}
                 >
                   {plan.popular ? (
-                    <Badge color="brand" variant="solid" size="sm" className="absolute -top-2.5 left-5">
+                    <Badge color="brand" variant="solid" size="sm" className="absolute -top-2.5 start-5">
                       Most popular
                     </Badge>
                   ) : null}

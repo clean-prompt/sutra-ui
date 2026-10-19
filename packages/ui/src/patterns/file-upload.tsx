@@ -369,11 +369,11 @@ function FileTypeIcon({ name }: { name: string }) {
   return (
     <span
       aria-hidden
-      className="relative ml-1.5 flex h-10 w-8 shrink-0 rounded-[5px] border border-border bg-background shadow-xs"
+      className="relative ms-1.5 flex h-10 w-8 shrink-0 rounded-[5px] border border-border bg-background shadow-xs"
     >
       <span
         className={cn(
-          "absolute bottom-1.5 -left-1.5 rounded-[3px] shadow-xs px-1 py-px text-[8px] font-bold uppercase leading-none tracking-wide",
+          "absolute bottom-1.5 -start-1.5 rounded-[3px] shadow-xs px-1 py-px text-[8px] font-bold uppercase leading-none tracking-wide",
           color
         )}
       >

@@ -215,7 +215,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
           />
         </Collapsible.Trigger>
         {summary != null && !open && (
-          <p data-slot="thinking-summary" className="truncate pl-6 text-xs text-muted-foreground/70">
+          <p data-slot="thinking-summary" className="truncate ps-6 text-xs text-muted-foreground/70">
             {summary}
           </p>
         )}
@@ -278,7 +278,7 @@ export const ChainOfThoughtStep = React.forwardRef<HTMLDivElement, ChainOfThough
       >
         <span
           aria-hidden
-          className="absolute bottom-0 left-[9.5px] top-6 w-px bg-border group-last/step:hidden"
+          className="absolute bottom-0 start-[9.5px] top-6 w-px bg-border group-last/step:hidden"
         />
         <span
           aria-hidden

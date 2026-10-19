@@ -10,6 +10,7 @@ import {
 } from "@remixicon/react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import { cn, focusRing } from "../../lib/cn";
+import { useDirection } from "../../hooks/use-direction";
 import type { Tone } from "../../lib/tone";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { errorMessage, useMountedRef } from "../../hooks/use-async-action";
@@ -174,6 +175,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
     }, [autoProbe, checkAll]);
 
     const anyChecking = Object.values(health).some((h) => h.state === "checking");
+    const dir = useDirection();
 
     return (
       <div ref={ref} data-slot="backend-picker" className={cn("grid w-full grid-cols-1 gap-3", className)} {...props}>
@@ -185,7 +187,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
             Re-check all
           </Button>
         </div>
-        <RadioGroupPrimitive.Root aria-labelledby={`${id}-label`} value={value} onValueChange={setValue} className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <RadioGroupPrimitive.Root dir={dir} aria-labelledby={`${id}-label`} value={value} onValueChange={setValue} className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {backends.map((b) => {
             const Icon = kindIcon[b.kind ?? "custom"];
             const h: BackendHealth = health[b.id] ?? (b.configured === false ? { state: "not-configured" } : { state: "unknown" });

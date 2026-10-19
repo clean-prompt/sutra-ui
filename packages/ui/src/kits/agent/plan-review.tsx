@@ -215,7 +215,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
             aria-label={expanded ? "Collapse plan" : "Expand plan"}
             onClick={() => setExpanded(!expanded)}
           >
-            <RiArrowDownSLine aria-hidden className={cn("chevron-turn", !expanded && "-rotate-90")} />
+            <RiArrowDownSLine aria-hidden className={cn("chevron-turn", !expanded && "-rotate-90 rtl:rotate-90")} />
           </Button>
         </div>
 
@@ -249,6 +249,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
             onMouseDown={(e) => e.preventDefault()}
             onClick={startComment}
             style={{ top: selection.top, left: selection.left }}
+            // rtl-physical x1: the toolbar sits at the pixel position of the selection (inline style left)
             className="absolute z-50 -translate-x-1/2 shadow-lg"
           >
             Comment
@@ -277,7 +278,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
               {comments.map((c) => (
                 <li key={c.id} className="group flex items-start gap-2 rounded-md border border-border bg-background px-3 py-2" data-slot="plan-comment">
                   <div className="min-w-0 flex-1 space-y-1">
-                    <blockquote className="truncate border-l-2 border-warning pl-2 text-xs italic text-muted-foreground">
+                    <blockquote className="truncate border-s-2 border-warning ps-2 text-xs italic text-muted-foreground">
                       {truncatePlanQuote(c.quote, quoteLength)}
                     </blockquote>
                     <p className="whitespace-pre-wrap text-sm text-foreground">{c.body}</p>
@@ -339,12 +340,12 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
                 )}
               />
               <div className="flex flex-wrap items-center justify-end gap-2">
-                <span className="mr-auto text-xs text-muted-foreground">Select text in the plan to comment on it.</span>
+                <span className="me-auto text-xs text-muted-foreground">Select text in the plan to comment on it.</span>
                 <Button type="button" size="sm" variant="secondary" onClick={keepPlanning}>
                   Keep planning
                 </Button>
                 <div className="inline-flex items-center">
-                  <Button type="button" size="sm" variant="primary" onClick={approve} className={cn(nextModes.length > 0 && "rounded-r-none")}>
+                  <Button type="button" size="sm" variant="primary" onClick={approve} className={cn(nextModes.length > 0 && "rounded-e-none")}>
                     Approve plan
                   </Button>
                   {nextModes.length > 0 && (
@@ -354,7 +355,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
                         data-slot="plan-next-mode"
                         data-value={nextMode}
                         className={cn(
-                          "inline-flex h-8 items-center gap-1 rounded-r-control border-l border-primary-foreground/20 bg-primary px-2 text-xs font-medium text-primary-foreground hover:bg-primary-hover",
+                          "inline-flex h-8 items-center gap-1 rounded-e-control border-s border-primary-foreground/20 bg-primary px-2 text-xs font-medium text-primary-foreground hover:bg-primary-hover",
                           focusRing
                         )}
                       >

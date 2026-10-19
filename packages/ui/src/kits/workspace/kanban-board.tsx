@@ -626,7 +626,7 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
               {lanes.map((lane, li) => (
                 <div key={lane.key} className={cn(hasLanes && "mt-3")} role="group" aria-label={hasLanes ? `Swimlane ${lane.title}` : undefined}>
                   {hasLanes && (
-                    <div className="sticky left-0 mb-2 flex w-fit items-center gap-2 px-1 text-xs font-medium text-muted-foreground">
+                    <div className="sticky start-0 mb-2 flex w-fit items-center gap-2 px-1 text-xs font-medium text-muted-foreground">
                       {lane.assignee && <KanbanAssigneeAvatar assignee={lane.assignee} size={18} />}
                       {lane.priority && <KanbanPriorityIcon priority={lane.priority} aria-hidden />}
                       <span className="text-foreground">{lane.title}</span>
@@ -802,7 +802,7 @@ function KanbanColumnHeader({ column, wip, visibleCount, collapsed, onToggleColl
           <span className="sr-only">Over WIP limit</span>
         </span>
       )}
-      <div className={cn("flex items-center gap-0.5", collapsed ? "flex-col" : "ml-auto")}>
+      <div className={cn("flex items-center gap-0.5", collapsed ? "flex-col" : "ms-auto")}>
         {onAdd && !collapsed && (
           <Button size="icon-xs" variant="ghost" aria-label={`Add card to ${column.title}`} onClick={onAdd}>
             <RiAddLine aria-hidden />
@@ -815,7 +815,7 @@ function KanbanColumnHeader({ column, wip, visibleCount, collapsed, onToggleColl
           aria-expanded={!collapsed}
           onClick={onToggleCollapsed}
         >
-          {collapsed ? <RiArrowRightSLine aria-hidden /> : <RiArrowDownSLine aria-hidden />}
+          {collapsed ? <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden /> : <RiArrowDownSLine aria-hidden />}
         </Button>
       </div>
     </div>

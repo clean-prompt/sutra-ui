@@ -662,7 +662,7 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
               <RiUser3Line aria-hidden className="size-3.5" />
             )}
             {active ? `Insert ${triggerTypes[active.trigger]}` : null}
-            {loading && <Spinner size="xs" className="ml-auto" />}
+            {loading && <Spinner size="xs" className="ms-auto" />}
           </div>
           <ul id={listId} role="listbox" aria-label={active ? `Suggested ${triggerTypes[active.trigger]}` : "Suggestions"}>
             {items.map((s, i) => (

@@ -265,7 +265,7 @@ export const StagedSetupHero = React.forwardRef<HTMLDivElement, StagedSetupHeroP
               className="relative flex min-w-0 flex-1 flex-col items-center gap-1.5 text-center"
             >
               {i > 0 && (
-                <span aria-hidden className={cn("absolute right-1/2 top-3.5 h-0.5 w-full -translate-x-3.5", stages[i - 1]!.status === "done" ? "bg-primary" : "bg-border")} />
+                <span aria-hidden className={cn("absolute end-1/2 top-3.5 h-0.5 w-full -translate-x-3.5 rtl:translate-x-3.5", stages[i - 1]!.status === "done" ? "bg-primary" : "bg-border")} />
               )}
               <span
                 className={cn(
@@ -601,7 +601,7 @@ export const SystemResourcesBar = React.forwardRef<HTMLDivElement, SystemResourc
             >
               <span className="font-medium text-muted-foreground">{r.label}</span>
               <span aria-hidden className="relative h-1.5 w-12 overflow-hidden rounded-full bg-muted">
-                <span className={cn("absolute inset-y-0 left-0 rounded-full transition-[width] duration-500 ease-out-quart motion-reduce:transition-none", levelBar[level])} style={{ width: `${pct}%` }} />
+                <span className={cn("absolute inset-y-0 start-0 rounded-full transition-[width] duration-500 ease-out-quart motion-reduce:transition-none", levelBar[level])} style={{ width: `${pct}%` }} />
               </span>
               <span className={cn("font-mono tabular-nums", level === "ok" ? "text-foreground" : toneClasses.text[meterLevelTone(level)!])}>{text}</span>
             </div>

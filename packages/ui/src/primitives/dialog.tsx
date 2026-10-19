@@ -22,7 +22,7 @@ export const dialogContentVariants = cva(
     // Mobile: bottom sheet
     "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-2xl pb-[max(1.5rem,env(safe-area-inset-bottom))]",
     // Desktop: centered modal
-    "sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:max-h-[calc(100dvh-2rem)] sm:w-full sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:pb-6",
+    "sm:inset-x-auto sm:bottom-auto sm:start-1/2 sm:top-1/2 sm:max-h-[calc(100dvh-2rem)] sm:w-full sm:-translate-x-1/2 rtl:sm:translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl sm:pb-6",
     "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
     "max-sm:data-[state=open]:slide-in-from-bottom max-sm:data-[state=closed]:slide-out-to-bottom",
     "sm:data-[state=open]:zoom-in-95 sm:data-[state=closed]:zoom-out-95",
@@ -41,7 +41,7 @@ export const dialogContentVariants = cva(
   }
 );
 
-const closeButtonClass = "absolute right-3 top-3 text-muted-foreground hover:text-foreground";
+const closeButtonClass = "absolute end-3 top-3 text-muted-foreground hover:text-foreground";
 
 const MobileHandle = () => (
   <span aria-hidden className="mx-auto -mt-3 mb-1 block h-1 w-10 shrink-0 rounded-full bg-border-strong sm:hidden" />
@@ -89,8 +89,8 @@ function renderHeader(
     <div
       ref={ref}
       className={cn(
-        "flex flex-col gap-1.5 pr-6",
-        align === "center" ? "items-center pr-0 text-center" : "items-start text-left",
+        "flex flex-col gap-1.5 pe-6",
+        align === "center" ? "items-center pe-0 text-center" : "items-start text-start",
         className
       )}
       {...props}
@@ -247,7 +247,7 @@ AlertDialogContent.displayName = "AlertDialogContent";
 
 /** Title block with optional featured icon. */
 export const AlertDialogHeader = React.forwardRef<HTMLDivElement, DialogHeaderProps>((props, ref) =>
-  renderHeader({ ...props, className: cn("pr-0", props.className) }, ref)
+  renderHeader({ ...props, className: cn("pe-0", props.className) }, ref)
 );
 AlertDialogHeader.displayName = "AlertDialogHeader";
 
@@ -397,6 +397,7 @@ export const sheetContentVariants = cva(
   {
     variants: {
       side: {
+        // rtl-physical x3: side=left and side=right name a physical edge (side=start and side=end are the logical ones)
         left: "inset-y-0 left-0 h-full w-[85vw] max-w-sm origin-left border-r border-border data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
         right:
           "inset-y-0 right-0 h-full w-[85vw] max-w-sm origin-right border-l border-border data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
@@ -433,6 +434,7 @@ const sheetHeight: Record<SheetSize, string> = {
 };
 /** Detached panels float 0.5rem off the edges with every corner rounded. */
 const sheetDetached: Record<SheetSide, string> = {
+  // rtl-physical x2: side=left and side=right name a physical edge (side=start and side=end are the logical ones)
   left: "inset-y-2 left-2 h-auto max-h-[calc(100dvh-1rem)] rounded-2xl border",
   right: "inset-y-2 right-2 h-auto max-h-[calc(100dvh-1rem)] rounded-2xl border",
   start: "inset-y-2 start-2 h-auto max-h-[calc(100dvh-1rem)] rounded-2xl border",
@@ -570,7 +572,7 @@ SheetContent.displayName = "SheetContent";
 
 /** Sheet title block. */
 export const SheetHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <div ref={ref} className={cn("flex flex-col gap-1.5 pr-8", className)} {...props} />
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("flex flex-col gap-1.5 pe-8", className)} {...props} />
 );
 SheetHeader.displayName = "SheetHeader";
 

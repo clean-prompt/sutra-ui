@@ -2,6 +2,7 @@ import * as React from "react";
 import { Slot, ToggleGroup as ToggleGroupPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn, focusRing, type Size } from "../lib/cn";
+import { useRootDirection } from "../hooks/use-direction";
 
 type ButtonGroupOrientation = "horizontal" | "vertical";
 
@@ -29,8 +30,8 @@ export const buttonGroupVariants = cva("isolate inline-flex w-fit", {
       orientation: "horizontal",
       attached: true,
       className: [
-        "[&>*:not(:first-child)]:rounded-l-none [&>*:not(:last-child)]:rounded-r-none",
-        "[&>*:not(:first-child)]:-ml-px [&>[data-slot=button-group-separator]]:ml-0! [&>[data-slot=button-group-separator]+*]:ml-0!",
+        "[&>*:not(:first-child)]:rounded-s-none [&>*:not(:last-child)]:rounded-e-none",
+        "[&>*:not(:first-child)]:-ms-px [&>[data-slot=button-group-separator]]:ms-0! [&>[data-slot=button-group-separator]+*]:ms-0!",
       ],
     },
     {
@@ -70,6 +71,7 @@ function omitOwn<T extends ButtonGroupOwnProps>(props: T): Omit<T, keyof ButtonG
  */
 export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>((props, ref) => {
   const { orientation = "horizontal", size = "md", attached = true, className } = props;
+  const { ref: rootRef, dir } = useRootDirection(ref);
   const toggle = props.type === "single" || props.type === "multiple";
   const ctx = React.useMemo<ButtonGroupContextValue>(
     () => ({ size, orientation, attached, toggle }),
@@ -81,8 +83,9 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>((p
   if (props.type === "single") {
     content = (
       <ToggleGroupPrimitive.Root
-        ref={ref}
+        ref={rootRef}
         data-slot="button-group"
+        dir={dir}
         {...omitOwn(props)}
         orientation={orientation}
         className={classes}
@@ -91,8 +94,9 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>((p
   } else if (props.type === "multiple") {
     content = (
       <ToggleGroupPrimitive.Root
-        ref={ref}
+        ref={rootRef}
         data-slot="button-group"
+        dir={dir}
         {...omitOwn(props)}
         orientation={orientation}
         className={classes}

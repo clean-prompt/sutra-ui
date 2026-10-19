@@ -156,7 +156,7 @@ export const PromptInputContextChip = React.forwardRef<HTMLDivElement, PromptInp
         data-included={included ? "" : undefined}
         data-prompt-input-ignore=""
         className={cn(
-          "inline-flex h-7 max-w-64 shrink-0 cursor-default items-center gap-1 rounded-control border border-border bg-subtle pl-1.5 pr-0.5 text-xs font-medium text-foreground",
+          "inline-flex h-7 max-w-64 shrink-0 cursor-default items-center gap-1 rounded-control border border-border bg-subtle ps-1.5 pe-0.5 text-xs font-medium text-foreground",
           !included && "border-dashed bg-transparent text-muted-foreground",
           className
         )}

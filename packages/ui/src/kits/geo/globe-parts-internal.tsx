@@ -117,7 +117,7 @@ export function GlobeControls({
       aria-label="Globe controls"
       data-slot="globe-controls"
       className={cn(
-        "absolute right-3 bottom-3 flex items-center gap-0.5 rounded-control border border-border bg-popover/90 p-0.5 text-popover-foreground shadow-md",
+        "absolute end-3 bottom-3 flex items-center gap-0.5 rounded-control border border-border bg-popover/90 p-0.5 text-popover-foreground shadow-md",
         className
       )}
     >

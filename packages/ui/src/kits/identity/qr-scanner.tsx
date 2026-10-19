@@ -338,12 +338,12 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
                 className="absolute inset-[16%] motion-reduce:[animation:none]"
                 style={{ animation: "sutra-qr-corners 2.4s ease-in-out infinite" }}
               >
-                <span className="absolute left-0 top-0 size-9 rounded-tl-3xl border-l-4 border-t-4 border-white" />
-                <span className="absolute right-0 top-0 size-9 rounded-tr-3xl border-r-4 border-t-4 border-white" />
-                <span className="absolute bottom-0 left-0 size-9 rounded-bl-3xl border-b-4 border-l-4 border-white" />
-                <span className="absolute bottom-0 right-0 size-9 rounded-br-3xl border-b-4 border-r-4 border-white" />
+                <span className="absolute start-0 top-0 size-9 rounded-ss-3xl border-s-4 border-t-4 border-white" />
+                <span className="absolute end-0 top-0 size-9 rounded-se-3xl border-e-4 border-t-4 border-white" />
+                <span className="absolute bottom-0 start-0 size-9 rounded-es-3xl border-b-4 border-s-4 border-white" />
+                <span className="absolute bottom-0 end-0 size-9 rounded-ee-3xl border-b-4 border-e-4 border-white" />
                 <span
-                  className="absolute inset-x-[8%] h-0.5 rounded-full bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_12px_2px] shadow-primary/60 motion-reduce:hidden"
+                  className="absolute inset-x-[8%] h-0.5 rounded-full bg-gradient-to-r rtl:bg-gradient-to-l from-transparent via-primary to-transparent shadow-[0_0_12px_2px] shadow-primary/60 motion-reduce:hidden"
                   style={{ animation: "sutra-qr-scanline 2.2s ease-in-out infinite alternate" }}
                 />
               </div>

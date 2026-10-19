@@ -8,3 +8,5 @@ export * from "../patterns/shared-element";
 export * from "../patterns/scroll-reveal";
 export * from "../patterns/scroll-stage";
 export * from "../patterns/pointer-fx";
+export * from "../patterns/check-burst";
+export * from "../patterns/morph-dialog";

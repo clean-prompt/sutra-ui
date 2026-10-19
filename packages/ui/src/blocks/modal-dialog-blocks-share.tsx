@@ -199,7 +199,7 @@ function SharePersonRole({
     return (
       <span className="flex items-center gap-1">
         <span className="px-2 text-sm text-muted-foreground">{label}</span>
-        <Button variant="ghost" size="sm" leadingIcon={<RiLogoutBoxRLine aria-hidden />} onClick={onLeave}>
+        <Button variant="ghost" size="sm" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} onClick={onLeave}>
           Leave
         </Button>
       </span>

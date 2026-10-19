@@ -422,6 +422,7 @@ export const Globe = React.forwardRef<HTMLDivElement, GlobeProps>(
         aria-describedby={hintId}
         className={cn("group/globe flex min-w-0 flex-col gap-3 outline-none", className)}
         onKeyDown={gestures.onKeyDown}
+        dir="ltr"
         {...props}
         aria-label={ariaLabel}
       >

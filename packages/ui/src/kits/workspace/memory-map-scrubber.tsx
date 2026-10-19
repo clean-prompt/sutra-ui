@@ -202,7 +202,7 @@ export const TimeScrubber = React.forwardRef<HTMLDivElement, TimeScrubberProps>(
           <span className="tabular-nums">
             {fmt(value[0])} – {fmt(value[1])}
           </span>
-          <span className="ml-auto tabular-nums" aria-live="polite" aria-atomic>
+          <span className="ms-auto tabular-nums" aria-live="polite" aria-atomic>
             {playing ? "" : `${inRange} of ${nodes.length} in range`}
           </span>
         </div>

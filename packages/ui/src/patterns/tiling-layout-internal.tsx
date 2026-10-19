@@ -67,7 +67,7 @@ export function TilingHandle({ direction, sizes, index, min, step, controls, lab
         "relative z-10 shrink-0 touch-none bg-border transition-colors hover:bg-primary/60 data-[dragging]:bg-primary",
         row ? "w-px cursor-col-resize" : "h-px cursor-row-resize",
         "before:absolute before:content-['']",
-        row ? "before:inset-y-0 before:-left-1.5 before:-right-1.5" : "before:inset-x-0 before:-top-1.5 before:-bottom-1.5",
+        row ? "before:inset-y-0 before:-start-1.5 before:-end-1.5" : "before:inset-x-0 before:-top-1.5 before:-bottom-1.5",
         focusRing,
         "focus-visible:bg-ring"
       )}

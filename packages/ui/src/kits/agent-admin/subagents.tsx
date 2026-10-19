@@ -19,6 +19,7 @@ import { heatmapColor, heatmapLevel } from "../../patterns/heatmap";
 import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { StatusDot, type StatusDotProps } from "../../primitives/status-badge";
+import { logicalArrow } from "../../lib/direction";
 
 /* ------------------------------------------------------------------ */
 /* Types + helpers                                                     */
@@ -291,7 +292,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
       const hasKids = row.visibleChildren.length > 0;
       const open = expanded.includes(row.node.id);
       let handled = true;
-      switch (e.key) {
+      switch (logicalArrow(e)) {
         case "ArrowDown":
           if (rows[idx + 1]) focus(rows[idx + 1]!.node.id);
           break;
@@ -368,9 +369,9 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
             onKeyDown={(e) => onKeyDown(e, row)}
             className={cn(
               "relative outline-none",
-              row.level > 1 && "pl-5",
+              row.level > 1 && "ps-5",
               row.level > 1 &&
-                "before:absolute before:left-0 before:top-0 before:border-l before:border-border-strong after:absolute after:left-0 after:top-[1.125rem] after:w-3.5 after:border-t after:border-border-strong",
+                "before:absolute before:start-0 before:top-0 before:border-s before:border-border-strong after:absolute after:start-0 after:top-[1.125rem] after:w-3.5 after:border-t after:border-border-strong",
               row.level > 1 && (row.last ? "before:h-[1.125rem]" : "before:h-full"),
               "focus-visible:[&>[data-row]]:ring-[3px] focus-visible:[&>[data-row]]:ring-ring/35"
             )}
@@ -380,11 +381,11 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
               data-heat={level}
               className={cn(
                 `subagent-heat-${level}`,
-                "group relative flex flex-col gap-1 rounded-lg border border-transparent py-1.5 pl-2 pr-2 hover:bg-accent",
+                "group relative flex flex-col gap-1 rounded-lg border border-transparent py-1.5 ps-2 pe-2 hover:bg-accent",
                 activeId === n.id && "bg-accent/60"
               )}
             >
-              <span aria-hidden className="absolute inset-y-1.5 left-0 w-0.5 rounded-full" style={{ backgroundColor: color }} />
+              <span aria-hidden className="absolute inset-y-1.5 start-0 w-0.5 rounded-full" style={{ backgroundColor: color }} />
               <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
                 {hasKids ? (
                   <button
@@ -392,9 +393,9 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                     tabIndex={-1}
                     aria-hidden
                     onClick={() => toggle(n.id)}
-                    className="-ml-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground"
+                    className="-ms-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground"
                   >
-                    <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn", open && "rotate-90")} />
+                    <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn rtl:-scale-x-100", open && "rotate-90 rtl:-rotate-90")} />
                   </button>
                 ) : (
                   <span className="size-4 shrink-0" aria-hidden />
@@ -407,27 +408,27 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                 )}
                 <span className="min-w-0 max-w-full truncate text-sm font-medium text-foreground">{n.name}</span>
                 {n.type && <span className="shrink-0 rounded-xs bg-muted px-1 text-2xs text-muted-foreground">{n.type}</span>}
-                <span className="ml-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-x-2 text-2xs tabular-nums text-muted-foreground">
+                <span className="ms-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-x-2 text-2xs tabular-nums text-muted-foreground">
                   <span title="Tools">{roll.tools} tools</span>
                   {roll.agents > 0 && <span title="Child agents">{roll.agents} agents</span>}
                   {roll.tokens > 0 && <span title="Tokens">{formatTokens(roll.tokens, { trimZeros: false })} tok</span>}
                   {roll.cost > 0 && <span title="Cost">{fmtCost(roll.cost)}</span>}
-                  <span title="Elapsed" className="min-w-10 text-right">
+                  <span title="Elapsed" className="min-w-10 text-end">
                     {formatDuration(elapsed, ELAPSED)}
                   </span>
                 </span>
               </div>
-              {n.task && <p className="truncate pl-6 text-xs text-muted-foreground">{n.task}</p>}
+              {n.task && <p className="truncate ps-6 text-xs text-muted-foreground">{n.task}</p>}
               {n.activity && (
                 <p
                   data-slot="subagent-activity"
-                  className={cn("truncate pl-6 font-mono text-2xs", running ? "text-shimmer" : "text-muted-foreground")}
+                  className={cn("truncate ps-6 font-mono text-2xs", running ? "text-shimmer" : "text-muted-foreground")}
                 >
                   {n.activity}
                 </p>
               )}
               {running && (onSteer || onStop) && (
-                <div className="flex flex-wrap items-center gap-1.5 pl-6">
+                <div className="flex flex-wrap items-center gap-1.5 ps-6">
                   {onSteer && steering !== n.id && (
                     <Button size="xs" variant="ghost" onClick={() => setSteering(n.id)} aria-label={`Steer ${n.name}`}>
                       Steer
@@ -442,7 +443,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
               )}
               {steering === n.id && (
                 <form
-                  className="flex items-center gap-1.5 pl-6"
+                  className="flex items-center gap-1.5 ps-6"
                   onSubmit={(e) => {
                     e.preventDefault();
                     submitSteer(n.id);
@@ -473,7 +474,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
               )}
             </div>
             {open && (
-              <ul role="group" className="ml-2">
+              <ul role="group" className="ms-2">
                 {renderLevel(n.id)}
               </ul>
             )}
@@ -510,7 +511,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                 </button>
               ))}
             </div>
-            <label className="ml-auto inline-flex cursor-pointer items-center gap-1.5 text-muted-foreground">
+            <label className="ms-auto inline-flex cursor-pointer items-center gap-1.5 text-muted-foreground">
               <input
                 type="checkbox"
                 checked={runningOnly}
@@ -581,7 +582,7 @@ export const RunTicker = React.forwardRef<HTMLDivElement, RunTickerProps>(
           aria-expanded={expanded}
           aria-controls={expanded ? listId : undefined}
           onClick={() => setExpanded(!expanded)}
-          className={cn("flex h-9 w-full min-w-0 items-center gap-2 rounded-box px-3 text-left hover:bg-accent/50", focusRing)}
+          className={cn("flex h-9 w-full min-w-0 items-center gap-2 rounded-box px-3 text-start hover:bg-accent/50", focusRing)}
         >
           {running ? <Spinner size="xs" label="" className="shrink-0 text-primary" /> : <RiCheckLine aria-hidden className="size-4 shrink-0 text-success" />}
           {label != null && <span className="shrink-0 font-medium text-foreground">{label}</span>}
@@ -614,13 +615,13 @@ export const RunTicker = React.forwardRef<HTMLDivElement, RunTickerProps>(
           <span className="shrink-0 rounded-full bg-muted px-1.5 text-2xs font-medium tabular-nums text-muted-foreground">
             {activities.length} {activities.length === 1 ? "activity" : "activities"}
           </span>
-          <RiArrowRightSLine aria-hidden className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", expanded && "rotate-90")} />
+          <RiArrowRightSLine aria-hidden className={cn("size-4 shrink-0 text-muted-foreground chevron-turn rtl:-scale-x-100", expanded && "rotate-90 rtl:-rotate-90")} />
         </button>
         {expanded && (
           <ol id={listId} aria-label="All activity" className="scrollbar-thin max-h-60 overflow-y-auto border-t border-border px-3 py-2">
             {activities.map((a, i) => (
               <li key={a.id} className="flex items-center gap-2 py-0.5 text-xs text-muted-foreground">
-                <span className="w-6 shrink-0 text-right font-mono text-2xs tabular-nums opacity-60">{i + 1}</span>
+                <span className="w-6 shrink-0 text-end font-mono text-2xs tabular-nums opacity-60">{i + 1}</span>
                 {a.icon}
                 <span className="min-w-0 truncate">{a.text}</span>
               </li>

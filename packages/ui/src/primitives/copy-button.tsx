@@ -152,7 +152,7 @@ export const CopyField = React.forwardRef<HTMLDivElement, CopyFieldProps>(
         aria-label={label}
         className={cn(
           "inline-flex max-w-full items-center gap-2 rounded-control border border-border text-foreground",
-          chip ? "h-7 bg-muted pl-2 pr-0.5 text-xs" : "h-9 w-full bg-background pl-3 pr-1 text-[13px] shadow-xs",
+          chip ? "h-7 bg-muted ps-2 pe-0.5 text-xs" : "h-9 w-full bg-background ps-3 pe-1 text-[13px] shadow-xs",
           mono && "font-mono",
           className
         )}

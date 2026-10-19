@@ -144,7 +144,7 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
                   aria-pressed={selected === i}
                   onClick={() => setSelected(i)}
                   className={cn(
-                    "flex items-center justify-between gap-3 rounded-box border px-4 py-3 text-left text-sm transition-colors",
+                    "flex items-center justify-between gap-3 rounded-box border px-4 py-3 text-start text-sm transition-colors",
                     selected === i ? "border-primary bg-primary-soft/40 ring-1 ring-primary" : "border-border hover:bg-accent",
                     focusRing
                   )}

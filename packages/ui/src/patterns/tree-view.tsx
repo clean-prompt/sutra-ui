@@ -10,6 +10,7 @@ import {
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { logicalArrow } from "../lib/direction";
 
 export interface TreeNode {
   id: string;
@@ -263,7 +264,7 @@ export const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       const isOpen = expandedSet.has(node.id);
       const multi = selectionMode === "multiple";
 
-      switch (event.key) {
+      switch (logicalArrow(event)) {
         case "ArrowDown": {
           event.preventDefault();
           const next = visible[index + 1];
@@ -482,7 +483,7 @@ function TreeViewItem({
           onClick={(e) => ctx.onRowClick(e, node)}
           style={{ paddingLeft: padLeft }}
           className={cn(
-            "relative flex cursor-pointer items-center gap-1.5 rounded-sm pr-2 text-foreground transition-colors duration-150",
+            "relative flex cursor-pointer items-center gap-1.5 rounded-sm pe-2 text-foreground transition-colors duration-150",
             rowHeight,
             "hover:bg-accent",
             "data-[selected]:bg-primary-soft data-[selected]:text-primary-soft-foreground data-[selected]:hover:bg-primary-soft",
@@ -502,7 +503,7 @@ function TreeViewItem({
               style={{ width: CHEVRON, height: CHEVRON }}
             >
               <RiArrowRightSLine aria-hidden
-                className={cn("chevron-turn size-4", isOpen && "rotate-90")}
+                className={cn("chevron-turn size-4 rtl:-scale-x-100", isOpen && "rotate-90 rtl:-rotate-90")}
               />
             </span>
           ) : (
@@ -532,7 +533,7 @@ function TreeViewItem({
               className={cn(
                 "relative overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down",
                 ctx.indentGuides &&
-                  "before:pointer-events-none before:absolute before:inset-y-1 before:left-(--tree-guide) before:z-10 before:w-px before:bg-border"
+                  "before:pointer-events-none before:absolute before:inset-y-1 before:start-(--tree-guide) before:z-10 before:w-px before:bg-border"
               )}
             >
               {node.children!.map((child, i) => (

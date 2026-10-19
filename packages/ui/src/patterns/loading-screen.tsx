@@ -293,7 +293,7 @@ export const LockScreen = React.forwardRef<HTMLDivElement, LockScreenProps>(
           <div className="flex flex-col items-center gap-3">
             <span className="relative">
               {icon ?? <SutraMark size={52} />}
-              <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-background text-muted-foreground shadow-sm ring-1 ring-border">
+              <span className="absolute -bottom-1 -end-1 flex size-5 items-center justify-center rounded-full bg-background text-muted-foreground shadow-sm ring-1 ring-border">
                 <RiLockLine aria-hidden className="size-3" />
               </span>
             </span>

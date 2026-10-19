@@ -166,7 +166,7 @@ export const ProviderQuotaChip = React.forwardRef<HTMLSpanElement, ProviderQuota
         {...props}
       >
         <span aria-hidden className="relative h-1.5 w-10 overflow-hidden rounded-full bg-muted">
-          <span className={cn("absolute inset-y-0 left-0 rounded-full", quotaFill(level))} style={{ width: `${remaining}%` }} />
+          <span className={cn("absolute inset-y-0 start-0 rounded-full", quotaFill(level))} style={{ width: `${remaining}%` }} />
         </span>
         <span className={cn("font-mono tabular-nums", quotaText(level))}>{remaining}%</span>
       </span>
@@ -251,7 +251,7 @@ export const ProviderRow = React.forwardRef<HTMLDivElement, ProviderRowProps>(
             )}
           </div>
         </div>
-        <div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-2">
+        <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-2">
           {p.quota && configured && (
             <ProviderQuotaChip used={p.quota.used} resetsAt={p.quota.resetsAt} label={p.quota.label ? `${p.name} ${p.quota.label}` : `${p.name} quota`} now={now} />
           )}
@@ -534,7 +534,7 @@ function PkcePanel({
   if (done) return <InlineAlert variant="success">Signed in.</InlineAlert>;
   return (
     <form className="space-y-3" onSubmit={submit}>
-      <ol className="list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
+      <ol className="list-decimal space-y-1 ps-5 text-sm text-muted-foreground">
         <li>
           Open the{" "}
           {authorizeUrl && isSafeHref(authorizeUrl) ? (

@@ -216,7 +216,7 @@ export const AuthCenteredPage = React.forwardRef<HTMLDivElement, AuthCenteredPag
       {pattern !== "none" && <BackgroundPattern variant={pattern} fade="radial" className="-z-10" />}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 -z-10 h-80 w-[48rem] max-w-full -translate-x-1/2 rounded-full bg-brand-400/15 blur-3xl"
+        className="pointer-events-none absolute start-1/2 top-0 -z-10 h-80 w-[48rem] max-w-full -translate-x-1/2 rtl:translate-x-1/2 rounded-full bg-brand-400/15 blur-3xl"
       />
       <HomeLogo logo={logo ?? <SutraLogo size="lg" />} href={homeHref} renderLink={renderLink} />
       <main className="flex w-full flex-1 items-center justify-center py-8">
@@ -245,8 +245,8 @@ export interface AuthImagePageProps extends AuthPageBaseProps {
 function AuthAppPreview() {
   return (
     <DeviceFrame url="app.sutra.so/home" className="w-full max-w-xl shadow-2xl" screenClassName="bg-background">
-      <div className="grid grid-cols-[120px_1fr] text-left">
-        <div className="flex flex-col gap-1.5 border-r border-border bg-subtle p-3">
+      <div className="grid grid-cols-[120px_1fr] text-start">
+        <div className="flex flex-col gap-1.5 border-e border-border bg-subtle p-3">
           <div className="mb-2 flex items-center gap-1.5">
             <SutraMark size={16} />
             <span className="text-xs font-semibold">Personal</span>
@@ -314,7 +314,7 @@ export const AuthImagePage = React.forwardRef<HTMLDivElement, AuthImagePageProps
         </main>
         <AuthPageFooter links={footerLinks} copyright={copyright} renderLink={renderLink} />
       </div>
-      <aside className="relative hidden overflow-hidden border-l border-border bg-muted lg:block">
+      <aside className="relative hidden overflow-hidden border-s border-border bg-muted lg:block">
         {media ??
           (imageSrc ? (
             <img src={imageSrc} alt={imageAlt} className="absolute inset-0 size-full object-cover" />

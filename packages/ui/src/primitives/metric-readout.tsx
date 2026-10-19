@@ -181,7 +181,7 @@ export const MetricReadout = React.forwardRef<HTMLSpanElement, MetricReadoutProp
           <span data-slot="metric-readout-value" className={cn("font-semibold tabular-nums", empty && "text-muted-foreground")}>
             {shown}
             {unit && !empty ? (
-              <span className={cn(s.unit, unit === "%" || unit === "°" ? "" : "ml-0.5", tone === "neutral" && "text-muted-foreground")}>{unit}</span>
+              <span className={cn(s.unit, unit === "%" || unit === "°" ? "" : "ms-0.5", tone === "neutral" && "text-muted-foreground")}>{unit}</span>
             ) : null}
           </span>
           )}

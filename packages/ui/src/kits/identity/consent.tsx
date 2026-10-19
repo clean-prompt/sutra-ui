@@ -267,7 +267,7 @@ export const ScopeList = React.forwardRef<HTMLUListElement, ScopeListProps>(
                   <p className="truncate text-xs text-muted-foreground">
                     {[f.description, f.constraints].filter(Boolean).join(" · ")}
                     {showId && (
-                      <span className={cn("font-mono", (f.description || f.constraints) && "ml-1.5 opacity-70")}>{f.id}</span>
+                      <span className={cn("font-mono", (f.description || f.constraints) && "ms-1.5 opacity-70")}>{f.id}</span>
                     )}
                   </p>
                 )}
@@ -698,7 +698,7 @@ export const ScopeMatrix = React.forwardRef<HTMLDivElement, ScopeMatrixProps>(
                             aria-label={`${app.name}: ${f.label}${isHeld ? " (already granted)" : ""}`}
                             onCheckedChange={(v) => toggle(app.id, f.id, v === true)}
                           />
-                          {isHeld && <span aria-hidden className="absolute -right-1.5 -top-1 size-1.5 rounded-full bg-success" />}
+                          {isHeld && <span aria-hidden className="absolute -end-1.5 -top-1 size-1.5 rounded-full bg-success" />}
                         </span>
                       ) : (
                         <span className="text-muted-foreground">

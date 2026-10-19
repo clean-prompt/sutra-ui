@@ -322,10 +322,10 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                 data-slot="tag-input-tag"
                 data-pending-remove={pending ? "true" : undefined}
                 className={cn(
-                  "inline-flex max-w-full items-center gap-1 rounded-control border border-border bg-secondary pl-2 font-medium text-secondary-foreground",
+                  "inline-flex max-w-full items-center gap-1 rounded-control border border-border bg-secondary ps-2 font-medium text-secondary-foreground",
                   "animate-in fade-in-0 zoom-in-95 duration-150",
                   "data-[pending-remove=true]:border-destructive data-[pending-remove=true]:bg-destructive-soft data-[pending-remove=true]:text-destructive-soft-foreground",
-                  interactive ? "pr-0.5" : "pr-2",
+                  interactive ? "pe-0.5" : "pe-2",
                   tagHeights[size],
                   tagClassName
                 )}
@@ -386,7 +386,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
               )}
             />
             {showCount && (
-              <span id={countId} data-slot="tag-input-count" className="ml-auto shrink-0 pl-1 text-xs tabular-nums text-muted-foreground">
+              <span id={countId} data-slot="tag-input-count" className="ms-auto shrink-0 ps-1 text-xs tabular-nums text-muted-foreground">
                 {tags.length}
                 {max != null ? ` / ${max}` : ""}
                 <span className="sr-only">{max != null ? " tags" : tags.length === 1 ? " tag" : " tags"}</span>

@@ -282,7 +282,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
             </div>
           </section>
 
-          <aside aria-label="Versions" className="flex max-h-72 min-h-0 w-full shrink-0 flex-col border-t border-border bg-subtle/50 @2xl:max-h-none @2xl:w-72 @2xl:border-l @2xl:border-t-0">
+          <aside aria-label="Versions" className="flex max-h-72 min-h-0 w-full shrink-0 flex-col border-t border-border bg-subtle/50 @2xl:max-h-none @2xl:w-72 @2xl:border-s @2xl:border-t-0">
             <div className="space-y-2 border-b border-border p-3">
               <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <RiHistoryLine aria-hidden className="size-4 text-muted-foreground" />
@@ -334,7 +334,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
                                 select(v, true);
                               }
                             }}
-                            className={cn("flex w-full flex-col items-start gap-1 rounded-sm px-2 py-1.5 pr-9 text-left", focusRing)}
+                            className={cn("flex w-full flex-col items-start gap-1 rounded-sm px-2 py-1.5 pe-9 text-start", focusRing)}
                           >
                             <span className="flex w-full items-center gap-2">
                               <span className={cn("text-sm tabular-nums", selected ? "text-primary-soft-foreground" : "text-foreground")}>
@@ -371,7 +371,7 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
                                 variant="ghost"
                                 aria-label={v.label ? `Rename version ${v.label}` : `Name version from ${formatDateTime(v.createdAt)}`}
                                 onClick={() => setNaming({ id: v.id, text: v.label ?? "" })}
-                                className="absolute right-1 top-1 opacity-0 focus-visible:opacity-100 group-hover/version:opacity-100"
+                                className="absolute end-1 top-1 opacity-0 focus-visible:opacity-100 group-hover/version:opacity-100"
                               >
                                 <RiBookmarkLine aria-hidden />
                               </Button>

@@ -193,7 +193,7 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
               <span className="font-medium">You’re offline.</span> Changes are saved on this device and will sync when you
               reconnect.
               {pendingChanges > 0 && (
-                <span className="ml-1 opacity-80">
+                <span className="ms-1 opacity-80">
                   ({pendingChanges} pending {pendingChanges === 1 ? "change" : "changes"})
                 </span>
               )}

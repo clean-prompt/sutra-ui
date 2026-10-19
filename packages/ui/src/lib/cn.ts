@@ -30,7 +30,7 @@ export const focusRing =
  * later `absolute`/`fixed`/`sticky` replaces its `relative`; do not put it on an element that clips its overflow.
  */
 export const hitArea =
-  "relative after:absolute after:left-1/2 after:top-1/2 after:h-[max(100%,1.5rem)] after:w-[max(100%,1.5rem)] after:-translate-x-1/2 after:-translate-y-1/2 after:content-['']";
+  "relative after:absolute after:start-1/2 after:top-1/2 after:h-[max(100%,1.5rem)] after:w-[max(100%,1.5rem)] after:-translate-x-1/2 rtl:after:translate-x-1/2 after:-translate-y-1/2 after:content-['']";
 
 /** `hitArea`, and 44px under a coarse pointer (touch) for primary icon buttons. */
 export const hitAreaTouch = `${hitArea} pointer-coarse:after:h-[max(100%,2.75rem)] pointer-coarse:after:w-[max(100%,2.75rem)]`;

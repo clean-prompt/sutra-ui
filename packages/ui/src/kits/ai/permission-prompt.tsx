@@ -380,7 +380,7 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
             onClick={() => setFolded(!folded)}
             data-slot="permission-fold"
           >
-            {folded ? <RiArrowRightSLine aria-hidden /> : <RiArrowDownSLine aria-hidden />}
+            {folded ? <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden /> : <RiArrowDownSLine aria-hidden />}
           </Button>
         )}
       </div>
@@ -438,7 +438,7 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
                     <React.Fragment key={opt.value}>
                       <div
                         className={cn(
-                          "flex flex-wrap items-center gap-x-2 gap-y-1 rounded-md pr-2 transition-colors",
+                          "flex flex-wrap items-center gap-x-2 gap-y-1 rounded-md pe-2 transition-colors",
                           selected ? "bg-accent" : "hover:bg-subtle"
                         )}
                       >
@@ -461,7 +461,7 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
                             }
                           }}
                           className={cn(
-                            "flex min-w-0 flex-1 basis-48 cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-sm",
+                            "flex min-w-0 flex-1 basis-48 cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-start text-sm",
                             opt.disabled && "cursor-not-allowed opacity-50",
                             focusRing
                           )}
@@ -480,10 +480,10 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
                             {opt.description != null && <span className="text-xs text-muted-foreground">{opt.description}</span>}
                           </span>
                         </div>
-                        {opt.scoped && <RuleScopePicker scopes={scopes} value={scope} onValueChange={setScope} className="pl-9 sm:pl-0" />}
+                        {opt.scoped && <RuleScopePicker scopes={scopes} value={scope} onValueChange={setScope} className="ps-9 sm:ps-0" />}
                       </div>
                       {feedbackFor === opt.value && (
-                        <div className="flex flex-col gap-1.5 px-2 pb-1.5 pl-9" data-slot="permission-feedback">
+                        <div className="flex flex-col gap-1.5 px-2 pb-1.5 ps-9" data-slot="permission-feedback">
                           <textarea
                             autoFocus
                             rows={2}
@@ -508,7 +508,7 @@ export const PermissionPrompt = React.forwardRef<HTMLDivElement, PermissionPromp
                             )}
                           />
                           <div className="flex items-center justify-end gap-2">
-                            <span className="mr-auto text-xs text-muted-foreground">
+                            <span className="me-auto text-xs text-muted-foreground">
                               <Kbd>Enter</Kbd> to send · <Kbd>Esc</Kbd> to cancel
                             </span>
                             <Button type="button" size="xs" variant="ghost" onClick={() => setFeedbackFor(null)}>

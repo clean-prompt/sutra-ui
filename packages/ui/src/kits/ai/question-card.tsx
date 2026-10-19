@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiArrowRightSLine, RiAttachment2, RiCheckLine } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { logicalArrow } from "../../lib/direction";
 import { clamp } from "../../lib/math";
 import { Button } from "../../primitives/button";
 import { Badge } from "../../primitives/badge";
@@ -504,7 +505,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
             aria-label={isFolded ? "Expand questions" : "Collapse questions"}
             onClick={() => setFolded(!isFolded)}
           >
-            {isFolded ? <RiArrowRightSLine aria-hidden /> : <RiArrowDownSLine aria-hidden />}
+            {isFolded ? <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden /> : <RiArrowDownSLine aria-hidden />}
           </Button>
         </div>
         {!isFolded && (
@@ -529,10 +530,10 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
                     data-answered={answered ? "" : undefined}
                     onClick={() => go(i)}
                     onKeyDown={(e) => {
-                      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+                      if (logicalArrow(e) === "ArrowRight" || logicalArrow(e) === "ArrowLeft") {
                         e.preventDefault();
                         const n = reviewIndex + 1;
-                        const next = (i + (e.key === "ArrowRight" ? 1 : -1) + n) % n;
+                        const next = (i + (logicalArrow(e) === "ArrowRight" ? 1 : -1) + n) % n;
                         go(next);
                         tabRefs.current[next]?.focus();
                       }
@@ -577,7 +578,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
                           data-option-index={i}
                           onClick={() => choose(item, o.value)}
                           className={cn(
-                            "flex w-full items-start gap-2.5 rounded-box border px-3 py-2 text-left text-sm transition-colors",
+                            "flex w-full items-start gap-2.5 rounded-box border px-3 py-2 text-start text-sm transition-colors",
                             checked ? "border-primary bg-primary-soft/40" : "border-border bg-background hover:bg-subtle",
                             focusRing
                           )}
@@ -637,7 +638,7 @@ const QuestionCardMulti = React.forwardRef<HTMLDivElement, QuestionCardProps & {
               )}
             </div>
             <div className="flex items-center gap-2 border-t border-border bg-subtle px-4 py-2">
-              <span className="mr-auto text-xs text-muted-foreground">
+              <span className="me-auto text-xs text-muted-foreground">
                 {onReview ? (
                   allAnswered ? "Ready to submit" : "Answer every question to submit"
                 ) : (

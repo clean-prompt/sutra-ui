@@ -244,7 +244,7 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
               key={p.key}
               data-slot="geo-marker-item"
               className={cn(
-                "absolute top-0 left-0 flex items-center justify-center",
+                "absolute top-0 start-0 flex items-center justify-center",
                 p.key === shownKey ? "z-20" : p.marker && p.marker.id === selectedId ? "z-10" : undefined
               )}
               style={{
@@ -317,7 +317,7 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
               >
                 {custom ?? (m.icon ? <span className="flex items-center justify-center [&_svg]:size-[70%]">{m.icon}</span> : null)}
                 {m.badge ? (
-                  <span data-slot="geo-marker-badge" className="absolute -right-1 -bottom-1 flex items-center justify-center">
+                  <span data-slot="geo-marker-badge" className="absolute -end-1 -bottom-1 flex items-center justify-center">
                     {m.badge}
                   </span>
                 ) : null}

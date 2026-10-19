@@ -115,7 +115,7 @@ export type ComboboxProps = ComboboxSingleProps | ComboboxMultipleProps;
 
 const triggerVariants = cva(
   [
-    "group/combobox flex w-full cursor-pointer items-center gap-2 text-left text-sm",
+    "group/combobox flex w-full cursor-pointer items-center gap-2 text-start text-sm",
     inputShellVariants({ hover: true }),
     "data-[state=open]:border-ring data-[state=open]:ring-[3px] data-[state=open]:ring-ring/20",
     // The trigger is a div, so it is disabled through aria-disabled (the shell's :disabled styles never match).
@@ -346,7 +346,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
                   data-pending-remove={removal.pending && option === lastOption ? "true" : undefined}
                   className={cn(
                     "data-[pending-remove=true]:border-destructive data-[pending-remove=true]:bg-destructive-soft data-[pending-remove=true]:text-destructive-soft-foreground",
-                    "inline-flex h-6 max-w-40 items-center gap-1 rounded-control border border-border bg-muted pl-2 pr-0.5 text-xs font-medium text-foreground",
+                    "inline-flex h-6 max-w-40 items-center gap-1 rounded-control border border-border bg-muted ps-2 pe-0.5 text-xs font-medium text-foreground",
                     // A chip the user just added eases in (not at all under reduced motion); chips there on mount do not.
                     addedValues.has(option.value) && "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-150"
                   )}

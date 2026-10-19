@@ -274,7 +274,7 @@ export const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
         messages.length === 0 ? null : messages.length === 1 ? (
           messages[0]
         ) : (
-          <ul className="ml-4 list-disc space-y-0.5">
+          <ul className="ms-4 list-disc space-y-0.5">
             {messages.map((m) => (
               <li key={m}>{m}</li>
             ))}

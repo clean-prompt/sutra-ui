@@ -170,7 +170,7 @@ export const TranscriptTimelineRail = React.forwardRef<HTMLDivElement, Transcrip
         className={cn("relative flex h-full w-6 shrink-0 justify-center py-2", className)}
         {...props}
       >
-        <span aria-hidden className="absolute inset-y-2 left-1/2 w-px -translate-x-1/2 bg-border" />
+        <span aria-hidden className="absolute inset-y-2 start-1/2 w-px -translate-x-1/2 rtl:translate-x-1/2 bg-border" />
         <div className="relative h-full w-full">
           {turns.map((t, i) => {
             const isActive = i === activeIndex;
@@ -199,7 +199,7 @@ export const TranscriptTimelineRail = React.forwardRef<HTMLDivElement, Transcrip
                     style={{ top: `${positionOf(t, i) * 100}%` }}
                     className={cn(
                       hitArea,
-                      "group/tick absolute left-1/2 flex h-3 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm",
+                      "group/tick absolute start-1/2 flex h-3 w-6 -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-sm",
                       focusRing
                     )}
                   >
@@ -218,7 +218,7 @@ export const TranscriptTimelineRail = React.forwardRef<HTMLDivElement, Transcrip
                     />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="left" variant="light" className="max-w-64 text-left">
+                <TooltipContent side="left" variant="light" className="max-w-64 text-start">
                   <span className="line-clamp-3 block font-normal">{t.preview}</span>
                   {(time || marked) && (
                     <span className="mt-1 flex items-center gap-2 text-2xs text-muted-foreground">

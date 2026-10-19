@@ -7,6 +7,8 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { useDrag } from "../hooks/use-drag";
 import { useElementWidth } from "../hooks/use-resize-observer";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useDirection } from "../hooks/use-direction";
+import { inlineKeyStep, inlineSign } from "../lib/direction";
 import { Spinner } from "./spinner";
 
 export interface SlideToConfirmProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "children" | "defaultValue"> {
@@ -75,7 +77,7 @@ export const SlideToConfirm = React.forwardRef<HTMLDivElement, SlideToConfirmPro
 ) {
   const [confirmed, setConfirmed] = useControllableState({ value: confirmedProp, defaultValue: defaultConfirmed, onChange: onConfirmedChange });
   const [busy, setBusy] = React.useState(false);
-  const placed = React.useRef<{ pct: number; travel: number } | null>(null);
+  const placed = React.useRef<{ pct: number; travel: number; sign?: number } | null>(null);
   const [pct, setPct] = React.useState(confirmed ? 100 : 0);
   const labelId = React.useId();
   const rootRef = React.useRef<HTMLDivElement | null>(null);
@@ -87,6 +89,8 @@ export const SlideToConfirm = React.forwardRef<HTMLDivElement, SlideToConfirmPro
   const locked = disabled || confirmed || busy || loading;
   const atEnd = confirmed || busy || loading;
   const toneName = normalizeTone(tone);
+  // The thumb travels from the inline start to the inline end: towards the right in LTR, the left in RTL (offsets are physical).
+  const sign = inlineSign(useDirection(rootRef));
 
   React.useEffect(() => {
     alive.current = true;
@@ -127,20 +131,20 @@ export const SlideToConfirm = React.forwardRef<HTMLDivElement, SlideToConfirmPro
   const drag = useDrag({
     axis: "x",
     enabled: !locked,
-    bounds: { left: 0, right: travel },
+    bounds: sign > 0 ? { left: 0, right: travel } : { left: -travel, right: 0 },
     allow: (event) => Boolean(thumbRef.current?.contains(event.target as Node)),
     onPosition: (x) => {
-      const p = slideProgress(x, travel);
+      const p = slideProgress(x * sign, travel);
       rootRef.current?.style.setProperty("--sutra-slide-progress", p.toFixed(3));
       thumbRef.current?.setAttribute("aria-valuenow", String(Math.round(p * 100)));
     },
     onEnd(info, cancelled) {
-      if (!cancelled && slideConfirms(info.x, travel)) {
-        drag.settle({ x: travel }, "snappy", { x: info.vx });
-        placed.current = { pct: 100, travel };
+      if (!cancelled && slideConfirms(info.x * sign, travel)) {
+        drag.settle({ x: travel * sign }, "snappy", { x: info.vx });
+        placed.current = { pct: 100, travel, sign };
         confirm();
       } else {
-        drag.settle({ x: atEnd ? travel : (pct / 100) * travel }, "snappy", { x: info.vx });
+        drag.settle({ x: (atEnd ? travel : (pct / 100) * travel) * sign }, "snappy", { x: info.vx });
       }
     },
   });
@@ -151,13 +155,13 @@ export const SlideToConfirm = React.forwardRef<HTMLDivElement, SlideToConfirmPro
   React.useEffect(() => {
     if (drag.dragging) return;
     const rest = atEnd ? 100 : pct;
-    const x = (rest / 100) * travel;
+    const x = (rest / 100) * travel * sign;
     const last = placed.current;
-    placed.current = { pct: rest, travel };
-    if (!last || last.travel !== travel) setPosition(x, 0);
+    placed.current = { pct: rest, travel, sign };
+    if (!last || last.travel !== travel || last.sign !== sign) setPosition(x, 0);
     else if (last.pct !== rest) settle({ x }, "snappy");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pct, atEnd, travel, drag.dragging]);
+  }, [pct, atEnd, travel, sign, drag.dragging]);
   // A parent resetting `confirmed` slides the thumb home.
   React.useEffect(() => {
     if (!confirmed && pct === 100) setPct(0);
@@ -171,8 +175,9 @@ export const SlideToConfirm = React.forwardRef<HTMLDivElement, SlideToConfirmPro
       if (to >= 100) confirm();
       else setPct(Math.max(0, to));
     };
-    if (event.key === "ArrowRight" || event.key === "ArrowUp") move(pct + step);
-    else if (event.key === "ArrowLeft" || event.key === "ArrowDown") move(pct - step);
+    const along = inlineKeyStep(event.key, sign > 0 ? "ltr" : "rtl");
+    if (along > 0 || event.key === "ArrowUp") move(pct + step);
+    else if (along < 0 || event.key === "ArrowDown") move(pct - step);
     else if (event.key === "Home") move(0);
     else if (event.key === "End" || event.key === "Enter" || event.key === " ") move(100);
   };
@@ -222,7 +227,7 @@ export const SlideToConfirm = React.forwardRef<HTMLDivElement, SlideToConfirmPro
         aria-hidden
         data-slot="slide-to-confirm-fill"
         className={cn("absolute inset-y-0 start-0 rounded-[inherit]", toneClasses.soft[toneName])}
-        style={{ width: `calc(var(--sutra-drag-x, 0px) + ${INSET * 2}px + var(--sutra-thumb))` }}
+        style={{ width: `calc(var(--sutra-drag-x, 0px) * ${sign} + ${INSET * 2}px + var(--sutra-thumb))` }}
       />
       <span
         id={labelId}
@@ -253,7 +258,7 @@ export const SlideToConfirm = React.forwardRef<HTMLDivElement, SlideToConfirmPro
         )}
         style={{ translate: "var(--sutra-drag-x, 0px) 0" }}
       >
-        {state === "loading" ? <Spinner size="xs" label="" className="text-current" /> : confirmed ? <RiCheckLine aria-hidden /> : (icon ?? <RiArrowRightSLine aria-hidden />)}
+        {state === "loading" ? <Spinner size="xs" label="" className="text-current" /> : confirmed ? <RiCheckLine aria-hidden /> : (icon ?? <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />)}
       </div>
       <span role="status" className="sr-only">
         {confirmed && !busy && !loading ? confirmedLabel : ""}

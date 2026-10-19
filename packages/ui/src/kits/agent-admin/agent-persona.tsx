@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiDeleteBinLine, RiImageAddLine, RiShuffleLine } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
+import { logicalArrow } from "../../lib/direction";
 import { capitalize } from "../../lib/text";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useAsyncAction } from "../../hooks/use-async-action";
@@ -38,7 +39,7 @@ function OptionGroup<T extends string>({
   const refs = React.useRef<(HTMLButtonElement | null)[]>([]);
   const idx = Math.max(0, options.indexOf(value));
   const onKeyDown = (e: React.KeyboardEvent) => {
-    const d = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+    const d = logicalArrow(e) === "ArrowRight" || e.key === "ArrowDown" ? 1 : logicalArrow(e) === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
     if (!d) return;
     e.preventDefault();
     const next = (idx + d + options.length) % options.length;

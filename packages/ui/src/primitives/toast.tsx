@@ -48,7 +48,7 @@ const baseClassNames: ToastClassNames = {
   description: "leading-5 text-muted-foreground!",
   icon: "mt-0.5 text-muted-foreground",
   actionButton:
-    "ml-auto! h-7! shrink-0 rounded-control! bg-primary! px-2.5! text-xs! font-medium! text-primary-foreground! transition-colors hover:bg-primary-hover!",
+    "ms-auto! h-7! shrink-0 rounded-control! bg-primary! px-2.5! text-xs! font-medium! text-primary-foreground! transition-colors hover:bg-primary-hover!",
   cancelButton:
     "h-7! shrink-0 rounded-control! bg-muted! px-2.5! text-xs! font-medium! text-foreground! transition-colors hover:bg-accent!",
   closeButton:
@@ -130,7 +130,7 @@ export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(
       aria-live="polite"
       className={cn(
         "pointer-events-auto flex w-full min-w-[min(18rem,100%)] max-w-[min(36rem,calc(100vw-2rem))] items-center gap-3",
-        "rounded-box bg-inverse py-2 pl-4 pr-2 font-sans text-sm text-inverse-foreground shadow-2xl",
+        "rounded-box bg-inverse py-2 ps-4 pe-2 font-sans text-sm text-inverse-foreground shadow-2xl",
         className
       )}
       {...props}

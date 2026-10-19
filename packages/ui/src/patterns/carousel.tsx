@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine, RiPauseLine, RiPlayLine } from "@remixicon/react";
 import { cn, hitArea } from "../lib/cn";
+import { directionOf, inlineKeyStep } from "../lib/direction";
 import { activeSlide, autoplayInterval, stepSlide } from "../lib/carousel";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
@@ -81,7 +82,7 @@ function ProgressFill({ ms, runKey }: { ms: number; runKey: number }) {
       cancelAnimationFrame(inner);
     };
   }, [runKey]);
-  return <span aria-hidden className={cn("block h-full origin-left bg-primary ease-linear", full ? "scale-x-100 transition-transform" : "scale-x-0")} style={{ transitionDuration: `${ms}ms` }} />;
+  return <span aria-hidden className={cn("block h-full origin-left rtl:origin-right bg-primary ease-linear", full ? "scale-x-100 transition-transform" : "scale-x-0")} style={{ transitionDuration: `${ms}ms` }} />;
 }
 
 /**
@@ -219,8 +220,9 @@ export const Carousel = React.forwardRef<HTMLElement, CarouselProps>(
       if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
       const target = event.target as HTMLElement;
       if (target !== trackRef.current && !target.closest("[data-slot=carousel-controls]")) return;
-      if (event.key === "ArrowRight") step(1);
-      else if (event.key === "ArrowLeft") step(-1);
+      // Slides run along the reading direction: the key towards the inline end is "next".
+      const along = inlineKeyStep(event.key, directionOf(trackRef.current));
+      if (along) step(along);
       else if (event.key === "Home") go(0);
       else if (event.key === "End") go(count - 1);
       else return;
@@ -304,7 +306,7 @@ export const Carousel = React.forwardRef<HTMLElement, CarouselProps>(
                 ) : null}
                 {arrows ? (
                   <Button variant="outline" size="icon-sm" aria-label={text.previous} disabled={atStart} onClick={() => step(-1)}>
-                    <RiArrowLeftSLine aria-hidden />
+                    <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
                   </Button>
                 ) : null}
                 {dots ? (
@@ -327,7 +329,7 @@ export const Carousel = React.forwardRef<HTMLElement, CarouselProps>(
                 ) : null}
                 {arrows ? (
                   <Button variant="outline" size="icon-sm" aria-label={text.next} disabled={atEnd} onClick={() => step(1)}>
-                    <RiArrowRightSLine aria-hidden />
+                    <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
                   </Button>
                 ) : null}
               </div>

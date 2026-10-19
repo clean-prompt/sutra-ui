@@ -1,6 +1,9 @@
 import * as React from "react";
 import { cn, Eyebrow, Heading, prefersReducedMotion, Text } from "@sutra/ui";
+import { findPage } from "../nav";
 import { href, useHashRoute } from "../router";
+import { NavBadge } from "./nav-badge";
+import { DemoPanels, PageInstall, type DemoPanelsProps } from "./demo-panels";
 
 export interface DemoProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
   /** Anchor id, matches the nav item id so `#/components/<page>/<id>` scrolls here. */
@@ -13,6 +16,10 @@ export interface DemoProps extends Omit<React.HTMLAttributes<HTMLElement>, "titl
   canvasClassName?: string;
   /** Start-aligned, full-width canvas instead of centered content. */
   align?: "center" | "start";
+  /** Components or hooks for the generated Props panel; `false` hides it. Default: found from the id, title and code. */
+  props?: DemoPanelsProps["props"];
+  /** Replaces the source shown in the Code panel (default: the JSX extracted from the page file); `false` hides it. */
+  code?: DemoPanelsProps["code"];
 }
 
 /** Titled preview card that renders an example on a bg-background canvas. */
@@ -23,11 +30,15 @@ export function Demo({
   dots,
   align = "center",
   canvasClassName,
+  props: propsFor,
+  code,
   className,
   children,
   ...props
 }: DemoProps) {
   const route = useHashRoute();
+  // New, beta or deprecated per nav.ts, so the badge on the demo matches the one in the sidebar.
+  const navItem = id ? findPage(route.section, route.page).page?.items?.find((item) => item.id === id) : undefined;
   return (
     <section id={id} className={cn("scroll-mt-20 space-y-3", className)} {...props}>
       <div className="space-y-1">
@@ -48,6 +59,7 @@ export function Demo({
           ) : (
             title
           )}
+          <NavBadge status={navItem?.status} since={navItem?.since} className="ms-2 align-middle" />
         </Heading>
         {description && (
           <Text size="sm" tone="neutral">
@@ -57,6 +69,7 @@ export function Demo({
       </div>
       <div className="overflow-hidden rounded-box border border-border bg-background shadow-xs">
         <div
+          data-slot="demo-canvas"
           className={cn(
             "relative flex min-h-40 gap-4 p-6 sm:p-8",
             align === "center" ? "flex-wrap items-center justify-center" : "flex-col items-stretch",
@@ -67,6 +80,7 @@ export function Demo({
           {children}
         </div>
       </div>
+      <DemoPanels demoKey={id ?? (typeof title === "string" ? title : undefined)} props={propsFor} code={code} />
     </section>
   );
 }
@@ -97,6 +111,7 @@ export function PageIntro({ eyebrow, title, description, children }: PageIntroPr
             {description}
           </Text>
         )}
+        <PageInstall className="pt-1" />
       </header>
       <div className="space-y-14">{children}</div>
     </div>

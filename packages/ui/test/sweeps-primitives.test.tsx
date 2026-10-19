@@ -163,7 +163,7 @@ describe("inputShellVariants", () => {
     expect([...tokens(inputVariants({ size: "sm" }))].sort()).toEqual(
       [
         ...tokens(
-          "flex w-full min-w-0 rounded-control border border-input bg-background text-foreground shadow-xs transition-[color,box-shadow,border-color] duration-150 placeholder:text-muted-foreground selection:bg-primary/25 file:mr-3 file:inline-flex file:h-full file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground disabled:cursor-not-allowed disabled:opacity-50 read-only:bg-subtle outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35 focus-visible:border-ring aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 h-8 px-2.5 text-sm"
+          "flex w-full min-w-0 rounded-control border border-input bg-background text-foreground shadow-xs transition-[color,box-shadow,border-color] duration-150 placeholder:text-muted-foreground selection:bg-primary/25 file:me-3 file:inline-flex file:h-full file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground disabled:cursor-not-allowed disabled:opacity-50 read-only:bg-subtle outline-none focus-visible:ring-[3px] focus-visible:ring-ring/35 focus-visible:border-ring aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20 h-8 px-2.5 text-sm"
         ),
       ].sort()
     );
@@ -203,7 +203,7 @@ describe("remove buttons on CloseButton shape=pill", () => {
     expect(onBadge).toHaveBeenCalledTimes(1);
 
     const chipX = screen.getByRole("button", { name: "Remove" });
-    expect(chipX).toHaveClass("size-4", "-mr-0.5", "hover:bg-current/10");
+    expect(chipX).toHaveClass("size-4", "-me-0.5", "hover:bg-current/10");
     expect(chipX).toHaveAttribute("tabindex", "-1");
     fireEvent.click(chipX);
     expect(onChip).toHaveBeenCalledTimes(1);

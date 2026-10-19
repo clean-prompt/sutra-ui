@@ -271,7 +271,7 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
     const inset = Math.max(0, gap) / 2;
 
     return (
-      <div ref={ref} data-slot="treemap" aria-busy={loading || undefined} className={cn("flex min-w-0 flex-col gap-3", className)} {...props} onKeyDown={onKeyDown}>
+      <div ref={ref} data-slot="treemap" dir="ltr" aria-busy={loading || undefined} className={cn("flex min-w-0 flex-col gap-3", className)} {...props} onKeyDown={onKeyDown}>
         {showBreadcrumb ? (
           <Breadcrumb size="sm" aria-label={`${label} location`} data-slot="treemap-breadcrumb">
             <BreadcrumbList>
@@ -374,7 +374,7 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
                   data-label={showName ? (showValue ? "full" : "name") : "hidden"}
                   data-highlighted={hoverKey === t.key || undefined}
                   className={cn(
-                    "absolute flex flex-col overflow-hidden rounded-md border text-left transition-[opacity,background-color] duration-150",
+                    "absolute flex flex-col overflow-hidden rounded-md border text-start transition-[opacity,background-color] duration-150",
                     t.expanded ? "items-stretch justify-start px-1.5 py-0.5" : "items-start justify-start gap-0.5 p-2",
                     focusRing,
                     "focus-visible:z-10",
@@ -403,7 +403,7 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
                         {t.node.name}
                       </span>
                       {t.expanded && w >= minW + 60 ? (
-                        <span className="ml-auto shrink-0 text-xs tabular-nums text-muted-foreground">{t.valueText}</span>
+                        <span className="ms-auto shrink-0 text-xs tabular-nums text-muted-foreground">{t.valueText}</span>
                       ) : null}
                     </span>
                   ) : null}

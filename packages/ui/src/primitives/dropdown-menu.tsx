@@ -2,6 +2,7 @@ import * as React from "react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import { RiArrowRightSLine, RiCheckLine } from "@remixicon/react";
 import { cn } from "../lib/cn";
+import { useDirection } from "../hooks/use-direction";
 
 /* Shared menu styling (also used by context-menu.tsx). */
 
@@ -26,11 +27,11 @@ export const menuItemDestructiveClass =
   "text-destructive data-[highlighted]:bg-destructive-soft data-[highlighted]:text-destructive-soft-foreground [&_svg]:text-current!";
 
 /** Left padding used by inset items and checkbox/radio items. */
-export const menuItemInsetClass = "pl-8";
+export const menuItemInsetClass = "ps-8";
 
 /** Absolute slot holding the checkbox/radio indicator. */
 export const menuItemIndicatorClass =
-  "pointer-events-none absolute left-2 flex size-4 items-center justify-center";
+  "pointer-events-none absolute start-2 flex size-4 items-center justify-center";
 
 /** Sub-menu trigger (gets an open state highlight). */
 export const menuSubTriggerClass = cn(menuItemClass, "data-[state=open]:bg-accent data-[state=open]:text-accent-foreground");
@@ -43,7 +44,7 @@ export const menuSeparatorClass = "-mx-1 my-1 h-px bg-border";
 
 /** Right-aligned shortcut hint. */
 export const menuShortcutClass =
-  "ml-auto pl-4 text-xs tracking-widest text-muted-foreground font-sans group-data-[highlighted]/menu-item:text-accent-foreground/70";
+  "ms-auto ps-4 text-xs tracking-widest text-muted-foreground font-sans group-data-[highlighted]/menu-item:text-accent-foreground/70";
 
 /** Shared inner layout: icon, label + description, and shortcut. */
 export function renderMenuItemBody({
@@ -73,8 +74,10 @@ export function renderMenuItemBody({
   );
 }
 
-/** Dropdown menu root. */
-export const DropdownMenu = DropdownMenuPrimitive.Root;
+/** Dropdown menu root: Radix `DropdownMenu.Root` with the reading direction filled in. */
+export function DropdownMenu(props: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  return <DropdownMenuPrimitive.Root dir={useDirection()} {...props} />;
+}
 /** Element that opens the menu. */
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 /** Groups related items. */
@@ -231,7 +234,7 @@ export const DropdownMenuSubTrigger = React.forwardRef<
   >
     {icon}
     <span className="min-w-0 flex-1 truncate">{children}</span>
-    <RiArrowRightSLine aria-hidden className="ml-auto" />
+    <RiArrowRightSLine aria-hidden className="ms-auto rtl:-scale-x-100" />
   </DropdownMenuPrimitive.SubTrigger>
 ));
 DropdownMenuSubTrigger.displayName = "DropdownMenuSubTrigger";

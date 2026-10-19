@@ -218,7 +218,7 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
         leading={
           count > 1 ? (
             <button type="button" className={ctrl} aria-label="Previous notice" onClick={() => go(safeIndex - 1)}>
-              <RiArrowLeftSLine aria-hidden />
+              <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
             </button>
           ) : null
         }
@@ -246,7 +246,7 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
                 ))}
               </div>
               <button type="button" className={ctrl} aria-label="Next notice" onClick={() => go(safeIndex + 1)}>
-                <RiArrowRightSLine aria-hidden />
+                <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
               </button>
             </>
           ) : null

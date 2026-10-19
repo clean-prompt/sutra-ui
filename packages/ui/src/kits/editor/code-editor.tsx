@@ -599,6 +599,7 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
         data-readonly={readOnly || undefined}
         className={cn("relative h-full min-h-0 w-full overflow-hidden bg-background text-foreground", className)}
         style={{ ...(fontSize ? ({ "--code-editor-font-size": `${fontSize}px` } as React.CSSProperties) : null), ...style }}
+        dir="ltr"
         {...props}
       />
     );

@@ -450,7 +450,7 @@ export function QuickCapture({
             </button>
           ))}
         </div>
-        <span className="ml-auto hidden items-center gap-3 pr-1 text-xs text-muted-foreground sm:flex">
+        <span className="ms-auto hidden items-center gap-3 pe-1 text-xs text-muted-foreground sm:flex">
           <span className="inline-flex items-center gap-1">
             <ShortcutKeys keys="alt+up" />/<ShortcutKeys keys="alt+down" /> switch
           </span>

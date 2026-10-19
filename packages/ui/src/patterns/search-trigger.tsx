@@ -93,7 +93,7 @@ export const SearchTrigger = React.forwardRef<HTMLButtonElement, SearchTriggerPr
           aria-keyshortcuts={ariaKeyShortcuts(shortcut)}
           onClick={handleClick}
           className={cn(
-            "w-full max-w-72 items-center gap-2 rounded-control border border-input bg-background pl-3 pr-1.5 text-sm text-muted-foreground shadow-xs transition-colors hover:border-border-strong hover:text-foreground",
+            "w-full max-w-72 items-center gap-2 rounded-control border border-input bg-background ps-3 pe-1.5 text-sm text-muted-foreground shadow-xs transition-colors hover:border-border-strong hover:text-foreground",
             collapseBelow ? fieldDisplay[collapseBelow] : "flex",
             heights[size],
             focusRing,
@@ -102,7 +102,7 @@ export const SearchTrigger = React.forwardRef<HTMLButtonElement, SearchTriggerPr
           {...props}
         >
           <RiSearchLine aria-hidden className="size-4 shrink-0" />
-          <span className="flex-1 truncate text-left">{placeholder}</span>
+          <span className="flex-1 truncate text-start">{placeholder}</span>
           <span aria-hidden className="flex items-center">
             <ShortcutKeys keys={shortcut} platform={platform} />
           </span>

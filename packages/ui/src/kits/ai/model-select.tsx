@@ -278,14 +278,14 @@ export const ModelSelect = React.forwardRef<HTMLButtonElement, ModelSelectProps>
         {searchable ? (
           <div className="border-b border-border p-2">
             <div className="relative">
-              <RiSearchLine aria-hidden="true" className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <RiSearchLine aria-hidden="true" className="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="search"
                 aria-label="Search models"
                 value={query}
                 placeholder={searchPlaceholder}
                 onChange={(e) => setQuery(e.target.value)}
-                className={cn("h-8 w-full rounded-control border border-input bg-background pl-8 pr-2 text-sm placeholder:text-muted-foreground", focusRing)}
+                className={cn("h-8 w-full rounded-control border border-input bg-background ps-8 pe-2 text-sm placeholder:text-muted-foreground", focusRing)}
               />
             </div>
           </div>
@@ -320,7 +320,7 @@ export const ModelSelect = React.forwardRef<HTMLButtonElement, ModelSelectProps>
                             setOpen(false);
                           }}
                           className={cn(
-                            "flex min-w-0 flex-1 items-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm outline-none focus-visible:bg-accent focus-visible:ring-2 focus-visible:ring-ring/35",
+                            "flex min-w-0 flex-1 items-start gap-2 rounded-sm px-2 py-1.5 text-start text-sm outline-none focus-visible:bg-accent focus-visible:ring-2 focus-visible:ring-ring/35",
                             "disabled:cursor-not-allowed disabled:opacity-60"
                           )}
                         >
@@ -331,7 +331,7 @@ export const ModelSelect = React.forwardRef<HTMLButtonElement, ModelSelectProps>
                           <Button
                             size="xs"
                             variant="ghost"
-                            className="my-auto mr-1 shrink-0"
+                            className="my-auto me-1 shrink-0"
                             loading={warming}
                             disabled={warming}
                             aria-label={`Warm up ${m.name}`}
@@ -355,7 +355,7 @@ export const ModelSelect = React.forwardRef<HTMLButtonElement, ModelSelectProps>
               onClick={() => setShowUntagged((s) => !s)}
               className={cn("mt-1 flex w-full items-center gap-1 rounded-sm px-2 py-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
             >
-              <RiArrowRightSLine aria-hidden="true" className={cn("size-4 chevron-turn", showUntagged && "rotate-90")} />
+              <RiArrowRightSLine aria-hidden="true" className={cn("size-4 chevron-turn rtl:-scale-x-100", showUntagged && "rotate-90 rtl:-rotate-90")} />
               {showUntagged ? `Hide ${untagged.length} untagged` : `Show ${untagged.length} untagged`}
             </button>
           ) : null}

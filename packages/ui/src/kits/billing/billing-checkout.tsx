@@ -150,13 +150,13 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
                 <p className="font-medium text-foreground">{plan.name}</p>
                 {plan.description && <p className="text-sm text-muted-foreground">{plan.description}</p>}
               </div>
-              <p className="text-right text-sm">
+              <p className="text-end text-sm">
                 <span className="block font-semibold text-foreground tabular-nums">{price}</span>
                 <span className="text-muted-foreground">per {per}</span>
               </p>
             </div>
             <div className="flex justify-end">
-              <Button onClick={() => setStep("payment")} trailingIcon={<RiArrowRightLine aria-hidden />}>
+              <Button onClick={() => setStep("payment")} trailingIcon={<RiArrowRightLine className="rtl:-scale-x-100" aria-hidden />}>
                 Continue
               </Button>
             </div>
@@ -190,7 +190,7 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
               <Button variant="ghost" onClick={() => setStep("plan")}>
                 Back
               </Button>
-              <Button disabled={!canPay} onClick={() => setStep("confirm")} trailingIcon={<RiArrowRightLine aria-hidden />}>
+              <Button disabled={!canPay} onClick={() => setStep("confirm")} trailingIcon={<RiArrowRightLine className="rtl:-scale-x-100" aria-hidden />}>
                 Continue
               </Button>
             </div>

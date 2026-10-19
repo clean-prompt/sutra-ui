@@ -398,11 +398,11 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
               type="button"
               aria-expanded={pasteOpen}
               onClick={() => setPasteOpen((o) => !o)}
-              className={cn("flex w-full items-center gap-2 rounded-sm text-left text-sm font-medium text-foreground", focusRing)}
+              className={cn("flex w-full items-center gap-2 rounded-sm text-start text-sm font-medium text-foreground", focusRing)}
             >
               <RiFileList3Line aria-hidden className="size-4 text-muted-foreground" />
               Paste JSON config
-              <RiArrowDownSLine aria-hidden className={cn("ml-auto size-4 text-muted-foreground chevron-turn", pasteOpen && "rotate-180")} />
+              <RiArrowDownSLine aria-hidden className={cn("ms-auto size-4 text-muted-foreground chevron-turn", pasteOpen && "rotate-180")} />
             </button>
             {pasteOpen && (
               <div className="mt-3 space-y-2">
@@ -740,7 +740,7 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
             </Button>
           )}
           {onConnect && (status === "needs-auth" || status === "failed") && oauth === "idle" && (
-            <Button size="sm" variant="soft" leadingIcon={<RiLoginBoxLine aria-hidden />} onClick={connect}>
+            <Button size="sm" variant="soft" leadingIcon={<RiLoginBoxLine className="rtl:-scale-x-100" aria-hidden />} onClick={connect}>
               Connect
             </Button>
           )}
@@ -946,7 +946,7 @@ function ConnectorDirectoryCard({
             {w === "hosted" ? "Hosted" : "Local"}
           </Badge>
         ))}
-        <div className="ml-auto flex shrink-0 items-center gap-1.5">
+        <div className="ms-auto flex shrink-0 items-center gap-1.5">
           {entry.installed ? (
             <>
               <Badge size="sm" color="success" leadingIcon={<RiCheckLine aria-hidden className="size-3" />}>
@@ -998,12 +998,12 @@ export const ConnectorDirectory = React.forwardRef<HTMLDivElement, ConnectorDire
         >
           <Chip value="__all__" showCheck={false}>
             All
-            <span className="ml-1 text-muted-foreground tabular-nums">{entries.length}</span>
+            <span className="ms-1 text-muted-foreground tabular-nums">{entries.length}</span>
           </Chip>
           {categories.map((c) => (
             <Chip key={c} value={c} showCheck={false}>
               {c}
-              <span className="ml-1 text-muted-foreground tabular-nums">{entries.filter((e) => e.category === c).length}</span>
+              <span className="ms-1 text-muted-foreground tabular-nums">{entries.filter((e) => e.category === c).length}</span>
             </Chip>
           ))}
         </ChipGroup>
@@ -1188,7 +1188,7 @@ export const ConnectorAccounts = React.forwardRef<HTMLDivElement, ConnectorAccou
           </h3>
           <span className="text-xs text-muted-foreground tabular-nums">{active.length}</span>
           {onAdd && (
-            <Button size="xs" variant="ghost" className="ml-auto" leadingIcon={<RiAddLine aria-hidden />} onClick={onAdd}>
+            <Button size="xs" variant="ghost" className="ms-auto" leadingIcon={<RiAddLine aria-hidden />} onClick={onAdd}>
               Add account
             </Button>
           )}
@@ -1207,9 +1207,9 @@ export const ConnectorAccounts = React.forwardRef<HTMLDivElement, ConnectorAccou
               aria-expanded={showRetired}
               aria-controls={showRetired ? retiredId : undefined}
               onClick={() => setShowRetired((s) => !s)}
-              className={cn("flex w-full items-center gap-1.5 px-3 py-2 text-left text-xs font-medium text-muted-foreground hover:text-foreground", focusRing)}
+              className={cn("flex w-full items-center gap-1.5 px-3 py-2 text-start text-xs font-medium text-muted-foreground hover:text-foreground", focusRing)}
             >
-              <RiArrowDownSLine aria-hidden className={cn("size-4 chevron-turn", !showRetired && "-rotate-90")} />
+              <RiArrowDownSLine aria-hidden className={cn("size-4 chevron-turn", !showRetired && "-rotate-90 rtl:rotate-90")} />
               Retired accounts ({retired.length})
             </button>
             {showRetired && (

@@ -77,7 +77,7 @@ function PresenceFace({
     >
       <Avatar name={user.name} src={user.avatarSrc} size={size} ring={false} frameClassName="ring-2 ring-background" />
       {showStatus && user.status ? (
-        <StatusDot tone={statusTone[user.status]} size="lg" label="" className="absolute bottom-0 right-0 ring-2 ring-background" />
+        <StatusDot tone={statusTone[user.status]} size="lg" label="" className="absolute bottom-0 end-0 ring-2 ring-background" />
       ) : null}
     </span>
   );
@@ -268,7 +268,7 @@ export const RemoteCursor = React.forwardRef<HTMLDivElement, RemoteCursorProps>(
         aria-hidden
         data-slot="remote-cursor"
         data-idle={!awake || undefined}
-        className={cn("pointer-events-none absolute left-0 top-0 z-20 transition-[left,top] duration-100 ease-linear", className)}
+        className={cn("pointer-events-none absolute start-0 top-0 z-20 transition-[left,top] duration-100 ease-linear", className)}
         style={{ left: toCss(x), top: toCss(y), ...style }}
         {...props}
       >
@@ -282,7 +282,7 @@ export const RemoteCursor = React.forwardRef<HTMLDivElement, RemoteCursorProps>(
         <span
           className={cn(
             "absolute whitespace-nowrap rounded-md px-1.5 py-0.5 text-[11px] font-semibold leading-tight text-white shadow-sm transition-opacity duration-500",
-            variant === "arrow" ? "left-3.5 top-4" : "-top-5 left-0 rounded-bl-none",
+            variant === "arrow" ? "start-3.5 top-4" : "-top-5 start-0 rounded-es-none",
             awake ? "opacity-100" : "opacity-0"
           )}
           style={{ backgroundColor: color }}

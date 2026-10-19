@@ -499,7 +499,7 @@ export const ResourceHero = React.forwardRef<HTMLDivElement, ResourceHeroProps>(
             </div>
             {description ? <p className="mt-0.5 text-sm text-muted-foreground">{description}</p> : null}
             {endpoint ? (
-              <div className="mt-2 inline-flex max-w-full items-center gap-1 rounded-control border border-border bg-subtle py-0.5 pl-2.5 pr-0.5">
+              <div className="mt-2 inline-flex max-w-full items-center gap-1 rounded-control border border-border bg-subtle py-0.5 ps-2.5 pe-0.5">
                 <code className="min-w-0 truncate font-mono text-xs text-foreground">{endpoint}</code>
                 <CopyButton value={endpoint} size="xs" label="Copy endpoint" copiedLabel="Endpoint copied" className="rounded-control" />
               </div>

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
+import { logicalArrow } from "../lib/direction";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../hooks/use-resize-observer";
@@ -132,7 +133,7 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
         className={cn("relative flex min-w-0 items-center", className)}
         {...props}
       >
-        <div ref={measureRef} aria-hidden className="pointer-events-none invisible absolute left-0 top-0 flex gap-1 whitespace-nowrap" data-slot="tab-dropdown-measure">
+        <div ref={measureRef} aria-hidden className="pointer-events-none invisible absolute start-0 top-0 flex gap-1 whitespace-nowrap" data-slot="tab-dropdown-measure">
           {items.map((it) => (
             <span key={it.value} data-tab-measure="" className={tabClass}>
               {renderInner(it)}
@@ -160,8 +161,8 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
                 data-state={active ? "active" : "inactive"}
                 onClick={() => setSelected(it.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "ArrowRight") focusTab(i, 1);
-                  else if (e.key === "ArrowLeft") focusTab(i, -1);
+                  if (logicalArrow(e) === "ArrowRight") focusTab(i, 1);
+                  else if (logicalArrow(e) === "ArrowLeft") focusTab(i, -1);
                   else if (e.key === "Home") focusTab(-1, 1);
                   else if (e.key === "End") focusTab(visible.length, -1);
                   else return;
@@ -181,7 +182,7 @@ export const TabDropdown = React.forwardRef<HTMLDivElement, TabDropdownProps>(
                 type="button"
                 data-state={activeOverflow ? "active" : "inactive"}
                 aria-label={activeOverflow ? `${moreLabel} tabs, current: ${text(activeOverflow)}` : `${moreLabel} tabs`}
-                className={cn(tabClass, "ml-1")}
+                className={cn(tabClass, "ms-1")}
               >
                 {activeOverflow ? text(activeOverflow) : moreLabel}
                 <span className="rounded-full bg-background px-1 text-2xs tabular-nums text-muted-foreground">{overflow.length}</span>

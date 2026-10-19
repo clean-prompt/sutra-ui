@@ -302,7 +302,7 @@ export const ModelRow = React.forwardRef<HTMLTableRowElement, ModelRowProps>(
                 {testResult.reply ? <q className="min-w-0 flex-1 truncate italic text-foreground">{testResult.reply}</q> : null}
                 {testResult.error ? <span className="min-w-0 flex-1 truncate font-mono text-destructive">{testResult.error}</span> : null}
                 {onDismissTest ? (
-                  <button type="button" onClick={onDismissTest} className="ml-auto text-muted-foreground hover:text-foreground" aria-label={`Dismiss test result for ${model.name}`}>
+                  <button type="button" onClick={onDismissTest} className="ms-auto text-muted-foreground hover:text-foreground" aria-label={`Dismiss test result for ${model.name}`}>
                     <RiCloseLine aria-hidden className="size-3.5" />
                   </button>
                 ) : null}
@@ -410,7 +410,7 @@ export const ModelTable = React.forwardRef<HTMLDivElement, ModelTableProps>(
             {(Object.keys(filterLabel) as ModelFilter[]).map((f) => (
               <Button key={f} size="xs" variant={filter === f ? "secondary" : "ghost"} aria-pressed={filter === f} onClick={() => setFilter(f)}>
                 {filterLabel[f]}
-                <span className="ml-1 tabular-nums text-muted-foreground">{counts[f]}</span>
+                <span className="ms-1 tabular-nums text-muted-foreground">{counts[f]}</span>
               </Button>
             ))}
           </div>

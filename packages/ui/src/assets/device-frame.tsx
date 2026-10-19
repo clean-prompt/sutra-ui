@@ -107,9 +107,9 @@ export const DeviceFrame = React.forwardRef<HTMLDivElement, DeviceFrameProps>(
       >
         {isPhone ? (
           <>
-            <span aria-hidden className="absolute top-24 -left-[3px] h-8 w-[3px] rounded-l-sm bg-[#27272a]" />
-            <span aria-hidden className="absolute top-36 -left-[3px] h-12 w-[3px] rounded-l-sm bg-[#27272a]" />
-            <span aria-hidden className="absolute top-32 -right-[3px] h-16 w-[3px] rounded-r-sm bg-[#27272a]" />
+            <span aria-hidden className="absolute top-24 -start-[3px] h-8 w-[3px] rounded-s-sm bg-[#27272a]" />
+            <span aria-hidden className="absolute top-36 -start-[3px] h-12 w-[3px] rounded-s-sm bg-[#27272a]" />
+            <span aria-hidden className="absolute top-32 -end-[3px] h-16 w-[3px] rounded-e-sm bg-[#27272a]" />
           </>
         ) : null}
         <div
@@ -123,13 +123,13 @@ export const DeviceFrame = React.forwardRef<HTMLDivElement, DeviceFrameProps>(
           {isPhone ? (
             <span
               aria-hidden
-              className="absolute top-2.5 left-1/2 z-20 h-6 w-20 -translate-x-1/2 rounded-full"
+              className="absolute top-2.5 start-1/2 z-20 h-6 w-20 -translate-x-1/2 rtl:translate-x-1/2 rounded-full"
               style={{ backgroundColor: "#0b0b0d" }}
             />
           ) : (
             <span
               aria-hidden
-              className="absolute top-1.5 left-1/2 z-20 size-1.5 -translate-x-1/2 rounded-full"
+              className="absolute top-1.5 start-1/2 z-20 size-1.5 -translate-x-1/2 rtl:translate-x-1/2 rounded-full"
               style={{ backgroundColor: "#27272a" }}
             />
           )}
@@ -139,7 +139,7 @@ export const DeviceFrame = React.forwardRef<HTMLDivElement, DeviceFrameProps>(
           </div>
         </div>
         {isPhone ? (
-          <span aria-hidden className="absolute bottom-4 left-1/2 h-1 w-24 -translate-x-1/2 rounded-full bg-foreground/30" />
+          <span aria-hidden className="absolute bottom-4 start-1/2 h-1 w-24 -translate-x-1/2 rtl:translate-x-1/2 rounded-full bg-foreground/30" />
         ) : null}
       </div>
     );

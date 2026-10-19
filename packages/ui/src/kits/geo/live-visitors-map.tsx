@@ -242,7 +242,7 @@ export const LiveVisitorsMap = React.forwardRef<HTMLElement, LiveVisitorsMapProp
           <SegmentedControl
             size="sm"
             aria-label="Map view"
-            className="ml-auto"
+            className="ms-auto"
             value={view}
             onValueChange={(v) => setView(v as LiveVisitorsMapView)}
             options={[
@@ -270,13 +270,13 @@ export const LiveVisitorsMap = React.forwardRef<HTMLElement, LiveVisitorsMapProp
                 className={cn(
                   "mt-3 w-full",
                   // The globe leaves its corners free; the flat map has no room to spare, so the card goes under it.
-                  view === "globe" ? "sm:absolute sm:top-4 sm:left-4 sm:mt-0 sm:w-72" : "sm:max-w-sm"
+                  view === "globe" ? "sm:absolute sm:top-4 sm:start-4 sm:mt-0 sm:w-72" : "sm:max-w-sm"
                 )}
               />
             ) : null}
           </div>
 
-          <div data-slot="live-visitors-list" className="flex min-h-0 min-w-0 flex-col border-t border-border lg:border-t-0 lg:border-l lg:[contain:size]">
+          <div data-slot="live-visitors-list" className="flex min-h-0 min-w-0 flex-col border-t border-border lg:border-t-0 lg:border-s lg:[contain:size]">
             <div className="flex items-center justify-between px-4 pt-3 pb-1.5">
               <span id={listTitleId} className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Visitors

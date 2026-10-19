@@ -168,7 +168,7 @@ export function RegionTable({
                       aria-pressed={selected}
                       data-slot="region-status-row-button"
                       onClick={() => onSelect(r.id)}
-                      className={cn("-mx-1 flex min-w-0 max-w-full items-center gap-2 rounded-xs px-1 py-0.5 text-left", focusRing)}
+                      className={cn("-mx-1 flex min-w-0 max-w-full items-center gap-2 rounded-xs px-1 py-0.5 text-start", focusRing)}
                     >
                       {r.country ? <CountryFlag code={r.country} size="sm" label="" className="shrink-0" /> : null}
                       <span className="min-w-0">
@@ -241,7 +241,7 @@ export function RegionDetail({ region: r, regions, links, onClose, onSelect, lat
           </h3>
           {r.code ? <div className="truncate font-mono text-xs text-muted-foreground">{r.code}</div> : null}
         </div>
-        <CloseButton size="sm" aria-label="Close region details" onClick={onClose} className="-mt-1 -mr-1 shrink-0" />
+        <CloseButton size="sm" aria-label="Close region details" onClick={onClose} className="-mt-1 -me-1 shrink-0" />
       </div>
       <div>
         <StatusBadge tone={regionStatusTone[status]} label={regionStatusLabel[status]} pulse={status === "down"} />
@@ -276,7 +276,7 @@ export function RegionDetail({ region: r, regions, links, onClose, onSelect, lat
                   <button
                     type="button"
                     onClick={() => onSelect(peer.id)}
-                    className={cn("-mx-1.5 flex w-[calc(100%+0.75rem)] items-center gap-2 rounded-xs px-1.5 py-1 text-left text-xs hover:bg-accent", focusRing)}
+                    className={cn("-mx-1.5 flex w-[calc(100%+0.75rem)] items-center gap-2 rounded-xs px-1.5 py-1 text-start text-xs hover:bg-accent", focusRing)}
                   >
                     <StatusDot tone={regionStatusTone[shown]} size="sm" label="" />
                     <span className="min-w-0 flex-1 truncate text-foreground">{peer.name}</span>
@@ -338,7 +338,7 @@ export function RegionOverview({ regions, onSelect, latencyThresholds, locale }:
                   <button
                     type="button"
                     onClick={() => onSelect(r.id)}
-                    className={cn("-mx-1.5 flex w-[calc(100%+0.75rem)] items-start gap-2 rounded-xs px-1.5 py-1 text-left hover:bg-accent", focusRing)}
+                    className={cn("-mx-1.5 flex w-[calc(100%+0.75rem)] items-start gap-2 rounded-xs px-1.5 py-1 text-start hover:bg-accent", focusRing)}
                   >
                     <StatusDot tone={regionStatusTone[status]} size="sm" label="" className="mt-1.5" />
                     <span className="min-w-0 flex-1">

@@ -4,6 +4,7 @@ import { cn, focusRing, hitArea, type Size } from "../lib/cn";
 import { toPercent } from "../lib/math";
 import { accentClasses, accentStyle, type Accent } from "../lib/accent";
 import { normalizeTone, type ToneInput } from "../lib/tone";
+import { useRootDirection } from "../hooks/use-direction";
 
 const sizes: Record<Size, { track: string; thumb: string; thumbPx: number }> = {
   sm: { track: "h-1", thumb: "size-3.5", thumbPx: 14 },
@@ -61,6 +62,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     },
     ref
   ) => {
+    const { ref: rootRef, dir } = useRootDirection<HTMLSpanElement>();
     const [internal, setInternal] = React.useState<number[]>(value ?? defaultValue ?? [min]);
     const current = value ?? internal;
     const [dragging, setDragging] = React.useState(false);
@@ -88,6 +90,8 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
     return (
       <div ref={ref} className={cn("relative w-full", className)} style={accentStyle(accent)}>
         <SliderPrimitive.Root
+          ref={rootRef}
+          dir={dir}
           min={min}
           max={max}
           value={value}
@@ -146,8 +150,8 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
                 <span
                   aria-hidden
                   className={cn(
-                    "pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-inverse px-1.5 py-0.5 text-xs font-medium text-inverse-foreground tabular-nums shadow-md",
-                    "after:absolute after:left-1/2 after:top-full after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-inverse after:content-['']",
+                    "pointer-events-none absolute bottom-full start-1/2 mb-2 -translate-x-1/2 rtl:translate-x-1/2 whitespace-nowrap rounded-md bg-inverse px-1.5 py-0.5 text-xs font-medium text-inverse-foreground tabular-nums shadow-md",
+                    "after:absolute after:start-1/2 after:top-full after:-translate-x-1/2 rtl:after:translate-x-1/2 after:border-4 after:border-transparent after:border-t-inverse after:content-['']",
                     "transition-[opacity,transform,translate,scale,rotate] duration-150",
                     showValue === "always"
                       ? "opacity-100"
@@ -176,8 +180,8 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
               return (
                 <div
                   key={mark.value}
-                  className="absolute top-0 flex -translate-x-1/2 flex-col items-center gap-1"
-                  style={{ left: inBounds(p) }}
+                  className="absolute top-0 flex -translate-x-1/2 rtl:translate-x-1/2 flex-col items-center gap-1"
+                  style={{ insetInlineStart: inBounds(p) }}
                 >
                   <span
                     className={cn(

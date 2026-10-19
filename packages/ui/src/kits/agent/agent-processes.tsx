@@ -330,7 +330,7 @@ export const AgentProcessCard = React.forwardRef<HTMLElement, AgentProcessCardPr
                   id={titleId}
                   onClick={() => onOpen(session.id)}
                   className={cn(
-                    "min-w-0 truncate rounded-xs text-left text-sm font-semibold text-foreground hover:underline",
+                    "min-w-0 truncate rounded-xs text-start text-sm font-semibold text-foreground hover:underline",
                     focusRing
                   )}
                 >
@@ -380,7 +380,7 @@ export const AgentProcessCard = React.forwardRef<HTMLElement, AgentProcessCardPr
                   )}
                 >
                   {startedLabel}
-                  <RiArrowDownSLine aria-hidden className={cn("size-4 chevron-turn", !expanded && "-rotate-90")} />
+                  <RiArrowDownSLine aria-hidden className={cn("size-4 chevron-turn", !expanded && "-rotate-90 rtl:rotate-90")} />
                 </button>
               ) : (
                 <span className="text-sm font-medium text-muted-foreground">{startedLabel}</span>

@@ -50,7 +50,7 @@ describe("layout F2: grids need a base column", () => {
     expect(card).toHaveClass("min-w-0");
     const footer = card.querySelector(".mt-auto")!;
     expect(footer).toHaveClass("flex-wrap");
-    expect(footer.querySelector(".ml-auto")).not.toBeNull();
+    expect(footer.querySelector(".ms-auto")).not.toBeNull();
   });
 });
 
@@ -64,7 +64,7 @@ describe("layout F2: rows wrap instead of overflowing", () => {
     expect(row).toHaveClass("flex-wrap");
     expect(row.className).not.toContain("sm:flex-nowrap");
     const actions = row.lastElementChild!;
-    expect(actions).toHaveClass("flex-wrap", "ml-auto", "max-w-full");
+    expect(actions).toHaveClass("flex-wrap", "ms-auto", "max-w-full");
     expect(actions).not.toHaveClass("shrink-0");
   });
 
@@ -90,7 +90,7 @@ describe("layout F2: rows wrap instead of overflowing", () => {
     const main = row.querySelector("button")!;
     expect(main).toHaveClass("min-w-0", "basis-48");
     const buttons = screen.getByRole("button", { name: /Edit Inbox triage/ }).parentElement!;
-    expect(buttons).toHaveClass("flex-wrap", "ml-auto", "max-w-full");
+    expect(buttons).toHaveClass("flex-wrap", "ms-auto", "max-w-full");
     // the name row wraps its badges and the name truncates rather than being squeezed to a letter
     expect(screen.getByText("Inbox triage")).toHaveClass("max-w-full", "truncate");
     expect(screen.getByText("Inbox triage").parentElement).toHaveClass("flex-wrap");
@@ -118,7 +118,7 @@ describe("layout F2: rows wrap instead of overflowing", () => {
     const li = container.querySelector("li[data-queued-id]")!;
     expect(li).toHaveClass("flex-wrap");
     expect(screen.getByTitle("Use pnpm instead")).toHaveClass("basis-32", "truncate");
-    expect(screen.getByRole("button", { name: "Edit" }).parentElement).toHaveClass("ml-auto", "flex-wrap");
+    expect(screen.getByRole("button", { name: "Edit" }).parentElement).toHaveClass("ms-auto", "flex-wrap");
   });
 
   it("CheckpointMarker truncates its text and never shrinks the rewind action", () => {
@@ -153,7 +153,7 @@ describe("layout F2: narrow containers", () => {
     const root = container.querySelector("[data-slot='version-history']")!;
     expect(root).toHaveClass("@container");
     const aside = screen.getByLabelText("Versions");
-    expect(aside).toHaveClass("w-full", "@2xl:w-72", "@2xl:border-l");
+    expect(aside).toHaveClass("w-full", "@2xl:w-72", "@2xl:border-s");
     expect(aside.parentElement).toHaveClass("flex-col", "@2xl:flex-row");
     expect(aside.className).not.toMatch(/(^|\s)(sm|md|lg):/);
   });

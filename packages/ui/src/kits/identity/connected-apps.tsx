@@ -187,7 +187,7 @@ export const SecurityActivityFeed = React.forwardRef<HTMLDivElement, SecurityAct
                         aria-expanded={onEventClick ? undefined : expanded}
                         onClick={() => (onEventClick ? onEventClick(e) : setOpen(expanded ? null : e.id))}
                         className={cn(
-                          "-mx-2 flex w-[calc(100%+1rem)] items-start gap-3 rounded-md px-2 text-left transition-colors hover:bg-accent",
+                          "-mx-2 flex w-[calc(100%+1rem)] items-start gap-3 rounded-md px-2 text-start transition-colors hover:bg-accent",
                           compact ? "py-1.5" : "py-2.5",
                           risk === "destructive" && "bg-destructive-soft/40",
                           risk === "warning" && "bg-warning-soft/40",
@@ -209,7 +209,7 @@ export const SecurityActivityFeed = React.forwardRef<HTMLDivElement, SecurityAct
                         )}
                       </button>
                       {expanded && !onEventClick && (
-                        <div className="mb-2 ml-11 rounded-md border border-border bg-subtle px-3 animate-in fade-in-0 slide-in-from-top-1">
+                        <div className="mb-2 ms-11 rounded-md border border-border bg-subtle px-3 animate-in fade-in-0 slide-in-from-top-1">
                           <KeyValueList items={detailItems} />
                         </div>
                       )}
@@ -287,7 +287,7 @@ export const ConnectedAppRow = React.forwardRef<HTMLButtonElement, ConnectedAppR
         data-slot="connected-app-row"
         data-app={app.id}
         onClick={() => onOpen?.(app)}
-        className={cn("group/app-row flex w-full items-center gap-3 rounded-box px-3 py-3 text-left transition-colors hover:bg-accent", focusRing, className)}
+        className={cn("group/app-row flex w-full items-center gap-3 rounded-box px-3 py-3 text-start transition-colors hover:bg-accent", focusRing, className)}
         {...props}
       >
         {app.icon ?? <Favicon domain={app.domain ?? app.name} shape="square" className="size-9 rounded-md" />}
@@ -307,7 +307,7 @@ export const ConnectedAppRow = React.forwardRef<HTMLButtonElement, ConnectedAppR
           </span>
           <span className="block truncate text-xs text-muted-foreground">{meta.join(" · ")}</span>
         </span>
-        <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/app-row:translate-x-0.5" />
+        <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/app-row:translate-x-0.5 rtl:group-hover/app-row:-translate-x-0.5 rtl:-scale-x-100" />
       </button>
     );
   }
@@ -379,7 +379,7 @@ export const ConnectedAppList = React.forwardRef<HTMLDivElement, ConnectedAppLis
         <Drawer open={!!app} onOpenChange={(o) => !o && setOpenId(null)}>
           {shown && (
             <DrawerContent aria-describedby={undefined}>
-              <DrawerHeader className="flex flex-row items-center gap-3 text-left">
+              <DrawerHeader className="flex flex-row items-center gap-3 text-start">
                 {shown.icon ?? <Favicon domain={shown.domain ?? shown.name} shape="square" className="size-10 rounded-lg" />}
                 <div className="min-w-0">
                   <DrawerTitle className="truncate">{shown.name}</DrawerTitle>

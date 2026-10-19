@@ -60,7 +60,7 @@ export const FilterBarSearch = React.forwardRef<HTMLInputElement, FilterBarSearc
       >
         <RiSearchLine
           aria-hidden
-          className="pointer-events-none absolute left-2.5 size-4 text-muted-foreground transition-colors group-focus-within:text-foreground"
+          className="pointer-events-none absolute start-2.5 size-4 text-muted-foreground transition-colors group-focus-within:text-foreground"
         />
         <input
           ref={innerRef}
@@ -81,7 +81,7 @@ export const FilterBarSearch = React.forwardRef<HTMLInputElement, FilterBarSearc
             }
           }}
           className={cn(
-            "size-full rounded-control border border-input bg-background pl-8 pr-8 text-sm text-foreground shadow-xs transition-[border-color,box-shadow]",
+            "size-full rounded-control border border-input bg-background ps-8 pe-8 text-sm text-foreground shadow-xs transition-[border-color,box-shadow]",
             "placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
             "[&::-webkit-search-cancel-button]:appearance-none",
             focusRing
@@ -97,7 +97,7 @@ export const FilterBarSearch = React.forwardRef<HTMLInputElement, FilterBarSearc
               innerRef.current?.focus();
             }}
             className={cn(
-              "absolute right-1.5 flex size-5 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
+              "absolute end-1.5 flex size-5 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
               focusRing
             )}
           >
@@ -400,8 +400,8 @@ export const FilterBarToken = React.forwardRef<HTMLSpanElement, FilterBarTokenPr
     <span
       ref={ref}
       className={cn(
-        "inline-flex h-7 items-center gap-1 rounded-control border border-border bg-background pl-2.5 text-xs text-foreground shadow-xs animate-in fade-in-0 zoom-in-95",
-        onRemove ? "pr-1" : "pr-2.5",
+        "inline-flex h-7 items-center gap-1 rounded-control border border-border bg-background ps-2.5 text-xs text-foreground shadow-xs animate-in fade-in-0 zoom-in-95",
+        onRemove ? "pe-1" : "pe-2.5",
         className
       )}
       {...props}
@@ -414,7 +414,7 @@ export const FilterBarToken = React.forwardRef<HTMLSpanElement, FilterBarTokenPr
           onClick={onRemove}
           aria-label={removeLabel ?? "Remove filter"}
           className={cn(
-            "ml-0.5 flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
+            "ms-0.5 flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
             focusRing
           )}
         >

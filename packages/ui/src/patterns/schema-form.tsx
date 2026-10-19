@@ -297,7 +297,7 @@ export function NestedValueEditor({ schema, value, onValueChange, onChange: onCh
         <div className="flex items-center gap-2">
           <span id={`${id}-label`} className="text-sm font-medium text-foreground">
             {label}
-            {required && <span aria-hidden className="ml-0.5 text-destructive">*</span>}
+            {required && <span aria-hidden className="ms-0.5 text-destructive">*</span>}
           </span>
           <span className="text-xs text-muted-foreground tabular-nums">{list.length}</span>
           <SaveStatus status={status} />
@@ -499,7 +499,7 @@ export function NestedValueEditor({ schema, value, onValueChange, onChange: onCh
         <span className="flex items-center gap-2">
           <label id={`${id}-label`} htmlFor={id} className="text-sm font-medium text-foreground">
             {label}
-            {required && <span aria-hidden className="ml-0.5 text-destructive">*</span>}
+            {required && <span aria-hidden className="ms-0.5 text-destructive">*</span>}
           </label>
           <SaveStatus status={status} />
         </span>
@@ -771,7 +771,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
                       type="button"
                       aria-current={!activeSection ? "true" : undefined}
                       onClick={() => setActiveSection(null)}
-                      className={cn("w-full rounded-control px-2.5 py-1.5 text-left text-sm", !activeSection ? "bg-accent font-medium text-foreground" : "text-muted-foreground hover:bg-accent", focusRing)}
+                      className={cn("w-full rounded-control px-2.5 py-1.5 text-start text-sm", !activeSection ? "bg-accent font-medium text-foreground" : "text-muted-foreground hover:bg-accent", focusRing)}
                     >
                       All
                     </button>
@@ -785,14 +785,14 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
                           aria-current={activeSection === s.id ? "true" : undefined}
                           onClick={() => setActiveSection(s.id)}
                           className={cn(
-                            "flex w-full items-center gap-2 whitespace-nowrap rounded-control px-2.5 py-1.5 text-left text-sm",
+                            "flex w-full items-center gap-2 whitespace-nowrap rounded-control px-2.5 py-1.5 text-start text-sm",
                             activeSection === s.id ? "bg-accent font-medium text-foreground" : "text-muted-foreground hover:bg-accent",
                             focusRing
                           )}
                         >
                           {s.label}
                           {submitted && secErrors > 0 && (
-                            <span className="ml-auto rounded-full bg-destructive-soft px-1.5 text-2xs font-semibold text-destructive-soft-foreground">
+                            <span className="ms-auto rounded-full bg-destructive-soft px-1.5 text-2xs font-semibold text-destructive-soft-foreground">
                               {secErrors}
                               <span className="sr-only"> errors</span>
                             </span>

@@ -191,7 +191,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
         <span
           aria-hidden
           className={cn(
-            "-ml-0.5 inline-flex overflow-hidden transition-[width,opacity] duration-200 ease-out-quart",
+            "-ms-0.5 inline-flex overflow-hidden transition-[width,opacity] duration-200 ease-out-quart",
             selected ? "opacity-100" : "w-0 opacity-0",
             selected && (size === "sm" ? "w-3.5" : "w-4")
           )}
@@ -205,7 +205,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
         data-state={selectable ? (selected ? "on" : "off") : undefined}
         className={cn(
           chipVariants({ variant, color, size, idle }),
-          onRemove && (size === "sm" ? "pr-1" : "pr-1.5"),
+          onRemove && (size === "sm" ? "pe-1" : "pe-1.5"),
           wrapperClassName,
           className
         )}
@@ -233,7 +233,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
           {avatar ? (
             <span
               className={cn(
-                "relative -ml-1 inline-flex shrink-0 overflow-hidden rounded-full [&_img]:size-full [&_img]:object-cover",
+                "relative -ms-1 inline-flex shrink-0 overflow-hidden rounded-full [&_img]:size-full [&_img]:object-cover",
                 size === "sm" ? "size-4" : size === "md" ? "size-5" : "size-6"
               )}
             >
@@ -255,7 +255,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
               e.stopPropagation();
               onRemove();
             }}
-            className="relative z-[1] -mr-0.5 hover:bg-current/10"
+            className="relative z-[1] -me-0.5 hover:bg-current/10"
           />
         ) : null}
       </span>

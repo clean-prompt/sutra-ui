@@ -41,9 +41,9 @@ const headHeight: Record<Density, string> = {
 };
 
 const alignClass: Record<TableAlign, string> = {
-  left: "text-left",
+  left: "text-start",
   center: "text-center",
-  right: "text-right",
+  right: "text-end",
 };
 
 export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
@@ -205,7 +205,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
           "whitespace-nowrap border-b border-border bg-subtle align-middle text-xs font-medium text-muted-foreground",
           headHeight[density],
           alignClass[align],
-          "[&:has([role=checkbox])]:w-px [&:has([role=checkbox])]:pr-0",
+          "[&:has([role=checkbox])]:w-px [&:has([role=checkbox])]:pe-0",
           className
         )}
         {...props}
@@ -255,7 +255,7 @@ export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
           "border-b border-border align-middle",
           cellPadding[density],
           alignClass[align],
-          "[&:has([role=checkbox])]:w-px [&:has([role=checkbox])]:pr-0",
+          "[&:has([role=checkbox])]:w-px [&:has([role=checkbox])]:pe-0",
           className
         )}
         {...props}
@@ -272,7 +272,7 @@ export const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={cn("border-t border-border px-4 py-3 text-left text-sm text-muted-foreground", className)}
+    className={cn("border-t border-border px-4 py-3 text-start text-sm text-muted-foreground", className)}
     {...props}
   />
 ));

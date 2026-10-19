@@ -154,7 +154,7 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
                   size="sm"
                   revealable={false}
                   flippable={false}
-                  className="absolute left-0 top-0 max-w-none origin-top-left scale-50"
+                  className="absolute start-0 top-0 max-w-none origin-top-left rtl:origin-top-right scale-50"
                 />
               </div>
               <div className="text-sm">

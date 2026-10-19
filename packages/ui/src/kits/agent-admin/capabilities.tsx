@@ -143,7 +143,7 @@ export const TrustBadge = React.forwardRef<HTMLSpanElement, TrustBadgeProps>(
           <Badge color={meta.color} size={size} leadingIcon={<span aria-hidden className="[&_svg]:size-3">{meta.icon}</span>}>
             {meta.label}
             {showScale && (
-              <span aria-hidden className="ml-1 inline-flex gap-px">
+              <span aria-hidden className="ms-1 inline-flex gap-px">
                 {TRUST_LEVELS.map((_, i) => (
                   <span key={i} className={cn("h-2 w-1 rounded-full", i < step ? "bg-current" : "bg-current/25")} />
                 ))}
@@ -452,7 +452,7 @@ export const CapabilitiesShell = React.forwardRef<HTMLDivElement, CapabilitiesSh
                 className="min-w-0 rounded-box border border-border bg-card p-4 shadow-xs lg:sticky lg:top-4 lg:self-start"
               >
                 {onDetailClose && (
-                  <Button variant="ghost" size="sm" leadingIcon={<RiArrowLeftLine aria-hidden />} onClick={onDetailClose} className="mb-3 lg:hidden">
+                  <Button variant="ghost" size="sm" leadingIcon={<RiArrowLeftLine className="rtl:-scale-x-100" aria-hidden />} onClick={onDetailClose} className="mb-3 lg:hidden">
                     Back
                   </Button>
                 )}

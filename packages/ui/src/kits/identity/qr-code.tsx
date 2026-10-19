@@ -199,6 +199,7 @@ export const QRCode = React.forwardRef<HTMLSpanElement, QRCodeProps>(
         data-slot="qr-code"
         className={cn("relative inline-block shrink-0 align-middle leading-none text-[#09090b]", className)}
         style={{ width: size, height: size, ...style }}
+        dir="ltr"
         {...props}
       >
         <svg
@@ -238,7 +239,7 @@ export const QRCode = React.forwardRef<HTMLSpanElement, QRCodeProps>(
         {hasLogo && (
           <span
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden [&>*]:size-full"
+            className="pointer-events-none absolute start-1/2 top-1/2 flex -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden [&>*]:size-full"
             style={{
               width: `${((plate - 1.2) / total) * 100}%`,
               height: `${((plate - 1.2) / total) * 100}%`,
@@ -386,8 +387,8 @@ export const QRCodeCard = React.forwardRef<HTMLDivElement, QRCodeCardProps>(
           </p>
         )}
         {shownUrl && (
-          <div className="flex w-full items-center gap-1 rounded-control border border-border bg-subtle py-1 pl-3 pr-1">
-            <span className="min-w-0 flex-1 truncate text-left font-mono text-xs text-muted-foreground" title={shownUrl}>
+          <div className="flex w-full items-center gap-1 rounded-control border border-border bg-subtle py-1 ps-3 pe-1">
+            <span className="min-w-0 flex-1 truncate text-start font-mono text-xs text-muted-foreground" title={shownUrl}>
               {shownUrl}
             </span>
             <CopyButton value={shownUrl} size="xs" label="Copy link" copiedLabel="Copied" />

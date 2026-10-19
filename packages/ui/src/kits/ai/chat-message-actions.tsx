@@ -65,7 +65,7 @@ export const ChatMessageActions = React.forwardRef<HTMLDivElement, ChatMessageAc
         role="toolbar"
         aria-label="Message actions"
         className={cn(
-          "-ml-1.5 flex items-center gap-0.5 transition-opacity duration-150",
+          "-ms-1.5 flex items-center gap-0.5 transition-opacity duration-150",
           !alwaysVisible &&
             "opacity-0 focus-within:opacity-100 group-hover/message:opacity-100 group-focus-within/message:opacity-100 [@media(hover:none)]:opacity-100",
           className
@@ -248,13 +248,13 @@ export const ChatBranchSwitcher = React.forwardRef<HTMLDivElement, ChatBranchSwi
         {...props}
       >
         <ChatMessageAction label="Previous version" disabled={current <= 0} onClick={() => setIndex(current - 1)}>
-          <RiArrowLeftSLine aria-hidden />
+          <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
         </ChatMessageAction>
         <span className="min-w-8 text-center font-medium tabular-nums" aria-live="polite">
           {current + 1}/{count}
         </span>
         <ChatMessageAction label="Next version" disabled={current >= count - 1} onClick={() => setIndex(current + 1)}>
-          <RiArrowRightSLine aria-hidden />
+          <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
         </ChatMessageAction>
       </div>
     );

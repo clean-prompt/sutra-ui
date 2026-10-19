@@ -182,7 +182,7 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
         data-kanban-card={card.id}
         data-overdue={overdue || undefined}
         className={cn(
-          "group/card relative rounded-box border border-border bg-card p-3 text-left shadow-xs transition-[box-shadow,border-color,opacity]",
+          "group/card relative rounded-box border border-border bg-card p-3 text-start shadow-xs transition-[box-shadow,border-color,opacity]",
           "hover:border-border-strong hover:shadow-sm",
           placeholder && "opacity-40",
           overlay && "rotate-1 cursor-grabbing shadow-xl ring-2 ring-primary/30 animate-in fade-in-0 zoom-in-95 duration-150",
@@ -222,7 +222,7 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
               ))}
             </div>
           )}
-          <p className={cn("line-clamp-3 text-sm font-medium text-foreground", actions && "pr-6")}>{card.title}</p>
+          <p className={cn("line-clamp-3 text-sm font-medium text-foreground", actions && "pe-6")}>{card.title}</p>
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs text-muted-foreground">
             {card.priority && card.priority !== "none" && (
               <span className="inline-flex items-center">
@@ -262,14 +262,14 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
             )}
             {card.runStatus && <KanbanRunBadge status={card.runStatus} />}
             {assignee && (
-              <span className="ml-auto inline-flex items-center gap-1">
+              <span className="ms-auto inline-flex items-center gap-1">
                 <span className="sr-only">Assigned to {assignee.name}</span>
                 <KanbanAssigneeAvatar assignee={assignee} size={20} />
               </span>
             )}
           </div>
         </div>
-        {actions && <div className="absolute right-1.5 top-1.5">{actions}</div>}
+        {actions && <div className="absolute end-1.5 top-1.5">{actions}</div>}
       </div>
     );
   }

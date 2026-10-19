@@ -118,7 +118,7 @@ export interface BlueprintCardProps extends React.HTMLAttributes<HTMLElement> {
 
 function CliCommandRow({ command }: { command: string }) {
   return (
-    <div className="flex min-w-0 items-center gap-2 rounded-md border border-border bg-muted/60 py-1 pl-2.5 pr-1">
+    <div className="flex min-w-0 items-center gap-2 rounded-md border border-border bg-muted/60 py-1 ps-2.5 pe-1">
       <code data-slot="blueprint-cli" className="min-w-0 flex-1 truncate font-mono text-xs" title={command}>
         <span aria-hidden className="select-none text-muted-foreground">$ </span>
         {command}

@@ -464,7 +464,7 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
   const identity = (
     <>
       <TrackArtwork src={track.artwork} className="size-10" />
-      <span className="flex min-w-0 flex-col text-left">
+      <span className="flex min-w-0 flex-col text-start">
         <span className="truncate text-sm font-medium text-foreground">{track.title}</span>
         <span className="truncate text-xs text-muted-foreground">
           {trackByline(track)}
@@ -531,7 +531,7 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
       </div>
       <div className="order-2 flex min-w-0 items-center justify-end gap-1 @2xl:order-none">
         {queuePosition && (
-          <span className="mr-1 whitespace-nowrap text-xs text-muted-foreground tabular-nums @max-5xl:hidden">
+          <span className="me-1 whitespace-nowrap text-xs text-muted-foreground tabular-nums @max-5xl:hidden">
             {queuePosition.index + 1} of {queuePosition.total}
           </span>
         )}
@@ -810,7 +810,7 @@ export const QueueList = React.forwardRef<HTMLDivElement, QueueListProps>(
                     announceMove(item, to);
                   }}
                   className={cn(
-                    "group/queue relative flex items-center gap-1 rounded-control pr-1 transition-colors",
+                    "group/queue relative flex items-center gap-1 rounded-control pe-1 transition-colors",
                     current ? "bg-primary-soft/60" : "hover:bg-accent",
                     dragging && "z-10 bg-background opacity-70 shadow-lg ring-1 ring-border"
                   )}
@@ -869,8 +869,8 @@ export const QueueList = React.forwardRef<HTMLDivElement, QueueListProps>(
                     disabled={item.unavailable}
                     onClick={() => onSelect?.(item, index)}
                     className={cn(
-                      "flex min-w-0 flex-1 items-center gap-3 rounded-control py-1.5 text-left disabled:opacity-50",
-                      !onReorder && "pl-2",
+                      "flex min-w-0 flex-1 items-center gap-3 rounded-control py-1.5 text-start disabled:opacity-50",
+                      !onReorder && "ps-2",
                       focusRing
                     )}
                   >
@@ -1058,7 +1058,7 @@ export const TrackRow = React.forwardRef<HTMLDivElement, TrackRowProps>(
             )}
           </div>
         )}
-        <span className="w-12 shrink-0 text-right font-mono text-xs text-muted-foreground tabular-nums">
+        <span className="w-12 shrink-0 text-end font-mono text-xs text-muted-foreground tabular-nums">
           {track.duration !== undefined ? formatClock(track.duration) : "—"}
         </span>
         {menu && <div className="shrink-0">{menu}</div>}

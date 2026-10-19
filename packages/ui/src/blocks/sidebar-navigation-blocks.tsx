@@ -387,7 +387,7 @@ export const SettingsSidebar = React.forwardRef<HTMLElement, SettingsSidebarProp
                         aria-current={isActive ? "page" : undefined}
                         onClick={() => setCurrent(item.value)}
                         className={cn(
-                          "flex h-9 w-full items-center gap-2.5 rounded-control px-2.5 text-left text-sm transition-colors",
+                          "flex h-9 w-full items-center gap-2.5 rounded-control px-2.5 text-start text-sm transition-colors",
                           "[&>svg]:size-4 [&>svg]:shrink-0",
                           isActive
                             ? "bg-accent font-medium text-foreground [&>svg]:text-primary"
@@ -568,11 +568,11 @@ export const DocsSidebar = React.forwardRef<HTMLElement, DocsSidebarProps>(
                   {section.label}
                   <RiArrowRightSLine
                     aria-hidden
-                    className="size-4 chevron-turn group-data-[state=open]/docs-section:rotate-90"
+                    className="size-4 chevron-turn group-data-[state=open]/docs-section:rotate-90 rtl:group-data-[state=open]/docs-section:-rotate-90 rtl:-scale-x-100"
                   />
                 </CollapsiblePrimitive.Trigger>
                 <CollapsiblePrimitive.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                  <ul className="ml-2 mt-1 flex flex-col border-l border-border">
+                  <ul className="ms-2 mt-1 flex flex-col border-s border-border">
                     {section.links.map((link) => {
                       const isActive = current === link.id;
                       return (
@@ -585,7 +585,7 @@ export const DocsSidebar = React.forwardRef<HTMLElement, DocsSidebarProps>(
                               setCurrent(link.id);
                             }}
                             className={cn(
-                              "-ml-px flex items-center gap-2 border-l py-1.5 pl-3.5 pr-2 text-sm transition-colors",
+                              "-ms-px flex items-center gap-2 border-s py-1.5 ps-3.5 pe-2 text-sm transition-colors",
                               isActive
                                 ? "border-primary font-medium text-primary"
                                 : "border-transparent text-muted-foreground hover:border-border-strong hover:text-foreground",

@@ -4,6 +4,7 @@ import { cn, focusRing, type Size } from "../lib/cn";
 import { useActiveIndicator } from "../hooks/use-active-indicator";
 import { ACCENT_VAR, accentClasses, accentStyle, resolveAccent, type Accent } from "../lib/accent";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useRootDirection } from "../hooks/use-direction";
 
 export type TabsVariant = "pill" | "underline" | "solid" | "ghost";
 
@@ -35,6 +36,7 @@ export interface TabsProps extends React.ComponentPropsWithoutRef<typeof TabsPri
 /** Tabs root. `variant`, `size` and `accent` flow to every list and trigger inside. */
 export const Tabs = React.forwardRef<React.ElementRef<typeof TabsPrimitive.Root>, TabsProps>(
   ({ variant = "pill", size = "md", orientation = "horizontal", accent, className, style, ...props }, ref) => {
+    const { ref: rootRef, dir } = useRootDirection(ref);
     const accented = Boolean(accent);
     const ctx = React.useMemo(
       () => ({ variant, size, orientation, accented }),
@@ -43,7 +45,8 @@ export const Tabs = React.forwardRef<React.ElementRef<typeof TabsPrimitive.Root>
     return (
       <TabsContext.Provider value={ctx}>
         <TabsPrimitive.Root
-          ref={ref}
+          ref={rootRef}
+          dir={dir}
           orientation={orientation}
           className={cn("flex gap-4", orientation === "vertical" ? "flex-row" : "flex-col", className)}
           style={accentStyle(accent, style)}
@@ -89,7 +92,7 @@ const triggerVariant: Record<TabsVariant, string> = {
     "text-muted-foreground hover:text-foreground data-[state=active]:text-foreground",
     "after:absolute after:bg-transparent data-[state=active]:after:bg-foreground group-data-[indicator=ready]/tabs-list:data-[state=active]:after:bg-transparent",
     "data-[orientation=horizontal]:after:inset-x-0 data-[orientation=horizontal]:after:bottom-0 data-[orientation=horizontal]:after:h-0.5",
-    "data-[orientation=vertical]:after:inset-y-0 data-[orientation=vertical]:after:left-0 data-[orientation=vertical]:after:w-0.5"
+    "data-[orientation=vertical]:after:inset-y-0 data-[orientation=vertical]:after:start-0 data-[orientation=vertical]:after:w-0.5"
   ),
 };
 
@@ -114,7 +117,7 @@ const accentTriggerVariant: Record<TabsVariant, string> = {
     "data-[state=active]:text-[var(--sutra-accent,var(--primary))] data-[state=active]:hover:text-[var(--sutra-accent,var(--primary))]",
     "after:absolute after:bg-transparent data-[state=active]:after:bg-[var(--sutra-accent,var(--primary))]",
     "data-[orientation=horizontal]:after:inset-x-0 data-[orientation=horizontal]:after:bottom-0 data-[orientation=horizontal]:after:h-0.5",
-    "data-[orientation=vertical]:after:inset-y-0 data-[orientation=vertical]:after:left-0 data-[orientation=vertical]:after:w-0.5"
+    "data-[orientation=vertical]:after:inset-y-0 data-[orientation=vertical]:after:start-0 data-[orientation=vertical]:after:w-0.5"
   ),
 };
 
@@ -176,7 +179,7 @@ export const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.L
     if (rect) {
       if (variant === "underline") {
         indicatorStyle = vertical
-          ? { top: rect.top, height: rect.height, left: 0, width: 2 }
+          ? { top: rect.top, height: rect.height, insetInlineStart: 0, width: 2 }
           : { left: rect.left, width: rect.width, bottom: 0, height: 2 };
       } else {
         indicatorStyle = { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
@@ -191,7 +194,7 @@ export const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.L
         className={cn(
           "group/tabs-list relative isolate inline-flex shrink-0 items-center",
           vertical ? "flex-col items-stretch" : "max-w-full overflow-x-auto scrollbar-none",
-          variant === "underline" && (vertical ? "gap-1 border-l" : "gap-5 border-b"),
+          variant === "underline" && (vertical ? "gap-1 border-s" : "gap-5 border-b"),
           listBase[variant],
           fullWidth && "flex w-full [&>[role=tab]]:flex-1",
           className

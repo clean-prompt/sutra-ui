@@ -119,7 +119,7 @@ export const KeyValue = React.forwardRef<HTMLDivElement, KeyValueProps>(
         <dd
           className={cn(
             "m-0 flex min-w-0 items-center gap-1.5 text-foreground",
-            rows && "justify-end text-right",
+            rows && "justify-end text-end",
             isMono && "font-mono text-[0.8125rem] tracking-tight"
           )}
         >

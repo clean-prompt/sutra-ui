@@ -5,6 +5,7 @@ import { cn, focusRing, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useActiveIndicator } from "../hooks/use-active-indicator";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useRootDirection } from "../hooks/use-direction";
 
 const SegmentedControlContext = React.createContext<{ size: Size; fullWidth: boolean }>({
   size: "md",
@@ -86,6 +87,7 @@ export const SegmentedControl = React.forwardRef<
     });
     const rootRef = React.useRef<HTMLDivElement | null>(null);
     const setRefs = useMergedRefs(rootRef, forwardedRef);
+    const { ref: dirRef, dir } = useRootDirection(setRefs);
     // Re-measures on these changes and whenever the root or a segment resizes.
     const { rect: thumb, animate } = useActiveIndicator(
       rootRef,
@@ -99,7 +101,8 @@ export const SegmentedControl = React.forwardRef<
     return (
       <SegmentedControlContext.Provider value={contextValue}>
         <ToggleGroupPrimitive.Root
-          ref={setRefs}
+          ref={dirRef}
+          dir={dir}
           type="single"
           value={value}
           onValueChange={(next: string) => {
@@ -111,6 +114,7 @@ export const SegmentedControl = React.forwardRef<
           {thumb && (
             <span
               aria-hidden
+              // rtl-physical x2: the thumb is placed with translateX(offsetLeft), so it starts at the physical left
               className={cn(
                 "pointer-events-none absolute inset-y-0.5 left-0 -z-10 rounded-control bg-background shadow-sm ring-1 ring-border/60",
                 animate && "transition-[transform,translate,scale,rotate,width] duration-300 ease-out-quart"

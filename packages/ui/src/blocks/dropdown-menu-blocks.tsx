@@ -191,7 +191,7 @@ export function UserAccountMenu({
           </>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" icon={<RiLogoutBoxRLine aria-hidden />} shortcut="⇧⌘Q" onSelect={() => onSignOut?.()}>
+        <DropdownMenuItem variant="destructive" icon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} shortcut="⇧⌘Q" onSelect={() => onSignOut?.()}>
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -281,7 +281,7 @@ export function WorkspaceSwitcher({
           type="button"
           aria-label={`Switch workspace (current: ${active.name})`}
           className={cn(
-            "group/ws flex min-w-0 items-center gap-2.5 text-left outline-none transition-[background-color,padding] duration-150 hover:bg-accent data-[state=open]:bg-accent",
+            "group/ws flex min-w-0 items-center gap-2.5 text-start outline-none transition-[background-color,padding] duration-150 hover:bg-accent data-[state=open]:bg-accent",
             sidebar
               ? "h-12 w-full rounded-control p-2 group-data-[collapsible=icon]/sidebar:size-8! group-data-[collapsible=icon]/sidebar:p-0!"
               : "h-9 rounded-control px-2",
@@ -408,7 +408,7 @@ export function NotificationsMenu({
         >
           <RiNotification3Line aria-hidden />
           {unread > 0 && (
-            <span className="absolute right-1 top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none text-destructive-foreground ring-2 ring-background tabular-nums">
+            <span className="absolute end-1 top-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none text-destructive-foreground ring-2 ring-background tabular-nums">
               {unread > 9 ? "9+" : unread}
             </span>
           )}
@@ -465,14 +465,14 @@ export function NotificationsMenu({
                             onNotificationClick?.(n);
                           }}
                           className={cn(
-                            "relative flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-accent focus-visible:bg-accent focus-visible:outline-none",
+                            "relative flex w-full items-start gap-3 px-4 py-3 text-start transition-colors hover:bg-accent focus-visible:bg-accent focus-visible:outline-none",
                             n.unread && "bg-primary-soft/30"
                           )}
                         >
                           <span className="relative shrink-0">
                             <Avatar name={n.actor.name} src={n.actor.avatarSrc} size="sm" />
                             {n.app ? (
-                              <SutraAppIcon app={n.app} size={16} className="absolute -bottom-1 -right-1 rounded-[5px] ring-2 ring-popover" />
+                              <SutraAppIcon app={n.app} size={16} className="absolute -bottom-1 -end-1 rounded-[5px] ring-2 ring-popover" />
                             ) : null}
                           </span>
                           <span className="min-w-0 flex-1">
@@ -554,7 +554,7 @@ export function QuickCreateMenu({
           variant={variant}
           size={size}
           leadingIcon={<RiAddLine aria-hidden />}
-          trailingIcon={<RiArrowDownSLine aria-hidden className="-mr-1 opacity-70" />}
+          trailingIcon={<RiArrowDownSLine aria-hidden className="-me-1 opacity-70" />}
           className={className}
         >
           {label}
@@ -668,7 +668,7 @@ export function SortFilterMenu({
         <Button variant="secondary" size="sm" leadingIcon={<RiFilter3Line aria-hidden />} className={className}>
           {label}
           {active.length > 0 && (
-            <Badge color="brand" size="sm" className="-mr-1 tabular-nums">
+            <Badge color="brand" size="sm" className="-me-1 tabular-nums">
               {active.length}
             </Badge>
           )}

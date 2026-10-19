@@ -44,7 +44,7 @@ export const PromptSuggestion = React.forwardRef<HTMLButtonElement, PromptSugges
           ref={ref}
           type={type ?? "button"}
           className={cn(
-            "flex h-9 w-full items-center gap-2.5 rounded-control px-3 text-left text-sm text-muted-foreground transition-colors hover:bg-accent [&_svg]:size-4 [&_svg]:shrink-0",
+            "flex h-9 w-full items-center gap-2.5 rounded-control px-3 text-start text-sm text-muted-foreground transition-colors hover:bg-accent [&_svg]:size-4 [&_svg]:shrink-0",
             focusRing,
             className
           )}
@@ -62,7 +62,7 @@ export const PromptSuggestion = React.forwardRef<HTMLButtonElement, PromptSugges
           ref={ref}
           type={type ?? "button"}
           className={cn(
-            "group/suggestion flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-4 [&_svg]:shrink-0",
+            "group/suggestion flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-start text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-4 [&_svg]:shrink-0",
             focusRing,
             className
           )}
@@ -72,7 +72,7 @@ export const PromptSuggestion = React.forwardRef<HTMLButtonElement, PromptSugges
           <span className="min-w-0 flex-1 truncate">{content}</span>
           <RiArrowRightUpLine
             aria-hidden
-            className="text-muted-foreground opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-150 group-hover/suggestion:translate-x-0.5 group-hover/suggestion:-translate-y-0.5 group-hover/suggestion:opacity-100 group-focus-visible/suggestion:opacity-100"
+            className="text-muted-foreground opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-150 group-hover/suggestion:translate-x-0.5 rtl:group-hover/suggestion:-translate-x-0.5 group-hover/suggestion:-translate-y-0.5 group-hover/suggestion:opacity-100 group-focus-visible/suggestion:opacity-100"
           />
         </button>
       );

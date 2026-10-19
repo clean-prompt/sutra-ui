@@ -193,7 +193,7 @@ export const DocumentOutline = React.forwardRef<HTMLElement, DocumentOutlineProp
         )}
         {showFilter && headings.length > 0 && (
           <div className="relative px-1">
-            <RiSearchLine aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <RiSearchLine aria-hidden className="pointer-events-none absolute start-3.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
             <input
               type="search"
               value={query}
@@ -201,7 +201,7 @@ export const DocumentOutline = React.forwardRef<HTMLElement, DocumentOutlineProp
               placeholder="Filter headings"
               aria-label="Filter headings"
               className={cn(
-                "h-8 w-full rounded-control border border-input bg-background pl-8 pr-2 text-sm shadow-xs placeholder:text-muted-foreground",
+                "h-8 w-full rounded-control border border-input bg-background ps-8 pe-2 text-sm shadow-xs placeholder:text-muted-foreground",
                 focusRing
               )}
             />
@@ -225,10 +225,10 @@ export const DocumentOutline = React.forwardRef<HTMLElement, DocumentOutlineProp
                     onClick={() => onNavigate?.(h)}
                     style={{ paddingLeft: `${0.5 + (h.level - minLevel) * 0.875}rem` }}
                     className={cn(
-                      "relative flex w-full items-center rounded-sm py-1 pr-2 text-left text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
+                      "relative flex w-full items-center rounded-sm py-1 pe-2 text-start text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
                       h.level === minLevel && "font-medium text-foreground/85",
                       active &&
-                        "bg-primary-soft text-primary-soft-foreground before:absolute before:inset-y-1 before:left-0 before:w-0.5 before:rounded-full before:bg-primary hover:bg-primary-soft hover:text-primary-soft-foreground",
+                        "bg-primary-soft text-primary-soft-foreground before:absolute before:inset-y-1 before:start-0 before:w-0.5 before:rounded-full before:bg-primary hover:bg-primary-soft hover:text-primary-soft-foreground",
                       focusRing
                     )}
                   >

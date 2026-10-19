@@ -20,6 +20,7 @@ export interface ZoomPanProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
 }
 
 const controlsPos = {
+  // rtl-physical x4: corner position names are physical
   "top-right": "right-2 top-2",
   "bottom-right": "bottom-2 right-2",
   "bottom-left": "bottom-2 left-2",

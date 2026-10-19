@@ -162,7 +162,7 @@ function JobActionButtons({ job, onPause, onResume, onRunNow, onEdit, onDelete, 
       </Button>
     );
   return (
-    <div className="ml-auto flex max-w-full flex-wrap items-center gap-1">
+    <div className="ms-auto flex max-w-full flex-wrap items-center gap-1">
       {paused && onResume ? btn(`Resume ${job.name}`, <RiPlayLine aria-hidden />, () => onResume(job), "Resume") : null}
       {!paused && onPause ? btn(`Pause ${job.name}`, <RiPauseLine aria-hidden />, () => onPause(job), "Pause") : null}
       {onRunNow ? btn(`Run ${job.name} now`, <RiSkipForwardLine aria-hidden />, () => onRunNow(job), "Run now") : null}
@@ -211,7 +211,7 @@ export const JobRow = React.forwardRef<HTMLLIElement, JobRowProps>(
           type="button"
           aria-pressed={onSelect ? !!selected : undefined}
           onClick={() => onSelect?.(job)}
-          className={cn("flex min-w-0 flex-1 basis-48 flex-col items-start gap-1 rounded-md text-left", focusRing)}
+          className={cn("flex min-w-0 flex-1 basis-48 flex-col items-start gap-1 rounded-md text-start", focusRing)}
         >
           <span className="flex w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <span className="max-w-full truncate text-sm font-medium text-foreground">{job.name}</span>
@@ -356,7 +356,7 @@ export const RunHistory = React.forwardRef<HTMLDivElement, RunHistoryProps>(
                         type="button"
                         size="xs"
                         variant="ghost"
-                        className="ml-auto"
+                        className="ms-auto"
                         leadingIcon={<RiFileTextLine aria-hidden />}
                         aria-label={`Open transcript for run at ${formatStart(started)}`}
                         onClick={() => onOpenTranscript(run)}

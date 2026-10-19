@@ -1,6 +1,7 @@
 import * as React from "react";
+import { directionOf, physicalScrollX } from "../lib/direction";
 
-/** Which edges of a scroll container still have content beyond them. */
+/** Which edges of a scroll container still have content beyond them (`left` and `right` are physical screen edges). */
 export interface ScrollEdges {
   top: boolean;
   bottom: boolean;
@@ -28,11 +29,14 @@ export function useScrollEdges<T extends HTMLElement>(
   const update = React.useCallback(() => {
     const el = ref.current;
     if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    // `scrollLeft` runs negative in right-to-left; the edges stay physical (left is the screen's left).
+    const x = physicalScrollX(el.scrollLeft, max, directionOf(el));
     const next: ScrollEdges = {
       top: el.scrollTop > threshold,
       bottom: el.scrollTop + el.clientHeight < el.scrollHeight - threshold,
-      left: el.scrollLeft > threshold,
-      right: el.scrollLeft + el.clientWidth < el.scrollWidth - threshold,
+      left: x > threshold,
+      right: max - x > threshold,
     };
     setEdges((prev) =>
       prev.top === next.top && prev.bottom === next.bottom && prev.left === next.left && prev.right === next.right ? prev : next

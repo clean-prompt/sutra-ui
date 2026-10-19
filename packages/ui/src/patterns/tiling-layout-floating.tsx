@@ -193,7 +193,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
               )}
               style={{ left: rect.x, top: rect.y, width: rect.width, height: rect.height, zIndex: z + 1 }}
             >
-              <div className="flex h-8 shrink-0 items-center gap-0.5 border-b border-border bg-subtle pr-1">
+              <div className="flex h-8 shrink-0 items-center gap-0.5 border-b border-border bg-subtle pe-1">
                 <div
                   role="button"
                   tabIndex={0}
@@ -201,7 +201,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
                   aria-roledescription="draggable window"
                   data-slot="floating-pane-handle"
                   className={cn(
-                    "flex min-w-0 flex-1 cursor-grab touch-none select-none items-center gap-1.5 self-stretch pl-2 text-xs font-medium text-foreground active:cursor-grabbing",
+                    "flex min-w-0 flex-1 cursor-grab touch-none select-none items-center gap-1.5 self-stretch ps-2 text-xs font-medium text-foreground active:cursor-grabbing",
                     focusRing
                   )}
                   onPointerDown={begin(pane.id, "move")}
@@ -232,7 +232,7 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
                 aria-label={`Resize ${label}`}
                 data-slot="floating-pane-resize"
                 className={cn(
-                  "absolute right-0 bottom-0 size-4 cursor-nwse-resize touch-none rounded-tl-xs",
+                  "absolute end-0 bottom-0 size-4 cursor-nwse-resize touch-none rounded-ss-xs",
                   "bg-[linear-gradient(135deg,transparent_55%,var(--color-border-strong)_55%,var(--color-border-strong)_65%,transparent_65%,transparent_75%,var(--color-border-strong)_75%,var(--color-border-strong)_85%,transparent_85%)]",
                   focusRing
                 )}

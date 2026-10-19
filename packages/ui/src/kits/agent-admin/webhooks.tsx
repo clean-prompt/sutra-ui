@@ -78,7 +78,7 @@ export interface WebhookUrlCopyProps extends React.HTMLAttributes<HTMLDivElement
 /** Read-only monospace value with a copy button (endpoint URLs). */
 export const WebhookUrlCopy = React.forwardRef<HTMLDivElement, WebhookUrlCopyProps>(({ url, copyLabel = "Copy URL", className, ...props }, ref) => {
   return (
-    <div ref={ref} className={cn("flex min-w-0 items-center gap-1 rounded-control border border-input bg-subtle py-0.5 pl-2.5 pr-0.5", className)} {...props}>
+    <div ref={ref} className={cn("flex min-w-0 items-center gap-1 rounded-control border border-input bg-subtle py-0.5 ps-2.5 pe-0.5", className)} {...props}>
       <code className="min-w-0 flex-1 truncate font-mono text-xs text-foreground" title={url}>
         {url}
       </code>
@@ -131,7 +131,7 @@ export const WebhookRouteList = React.forwardRef<HTMLDivElement, WebhookRouteLis
                     type="button"
                     aria-pressed={onSelect ? selected : undefined}
                     onClick={() => onSelect?.(r)}
-                    className={cn("min-w-0 flex-1 truncate rounded-md text-left text-sm font-medium", focusRing)}
+                    className={cn("min-w-0 flex-1 truncate rounded-md text-start text-sm font-medium", focusRing)}
                   >
                     {r.name}
                   </button>
@@ -382,8 +382,8 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
                           type="button"
                           size="xs"
                           variant="ghost"
-                          className="ml-auto"
-                          leadingIcon={<RiReplyLine aria-hidden />}
+                          className="ms-auto"
+                          leadingIcon={<RiReplyLine className="rtl:-scale-x-100" aria-hidden />}
                           aria-label={`Redeliver ${d.event ?? "delivery"} from ${when}`}
                           onClick={() => onRedeliver(d)}
                         >
@@ -402,7 +402,7 @@ export const WebhookRouteEditor = React.forwardRef<HTMLFormElement, WebhookRoute
 
         <div className="flex justify-end gap-2">
           {saveAction.error ? (
-            <p role="alert" className="mr-auto self-center text-sm text-destructive">
+            <p role="alert" className="me-auto self-center text-sm text-destructive">
               {saveAction.error}
             </p>
           ) : null}

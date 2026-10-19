@@ -428,7 +428,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
               onClick={() => setEditing({ id: item.id, text: item.text })}
               aria-label={`Edit ${item.text}`}
               className={cn(
-                "min-w-0 flex-1 truncate rounded-xs text-left text-sm",
+                "min-w-0 flex-1 truncate rounded-xs text-start text-sm",
                 item.done ? "text-muted-foreground line-through" : "text-foreground",
                 focusRing
               )}
@@ -491,7 +491,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
               moveButtons={moveButtons}
               label={label}
               renderItem={renderRow}
-              itemClassName="pr-1"
+              itemClassName="pe-1"
             />
           ) : (
             <ul aria-label={label} className="flex flex-col gap-1">
@@ -506,7 +506,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
           <p className="py-2 text-sm text-muted-foreground">All done.</p>
         ) : null}
         {editable ? (
-          <div className="flex items-center gap-2 pl-1.5">
+          <div className="flex items-center gap-2 ps-1.5">
             <RiAddLine aria-hidden className="size-4 shrink-0 text-muted-foreground" />
             <input
               aria-label={addPlaceholder}

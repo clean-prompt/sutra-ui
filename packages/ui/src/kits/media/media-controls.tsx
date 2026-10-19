@@ -485,7 +485,7 @@ export const PlayPauseButton = React.forwardRef<HTMLButtonElement, PlayPauseButt
       <RiPlayFill
         aria-hidden
         className={cn(
-          "absolute translate-x-[6%] transition-[opacity,scale,rotate] duration-200 ease-out-quart motion-reduce:transition-none",
+          "absolute translate-x-[6%] rtl:-translate-x-[6%] transition-[opacity,scale,rotate] duration-200 ease-out-quart motion-reduce:transition-none",
           playing ? "rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100"
         )}
       />
@@ -723,14 +723,14 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
       "shrink-0 font-mono text-xs tabular-nums",
       overlay ? "text-white/80" : "text-muted-foreground"
     );
-    const elapsed = <span className={cn(timeClass, showTimes !== "below" && "min-w-10 text-right")}>{formatClock(shown, { forceHours })}</span>;
+    const elapsed = <span className={cn(timeClass, showTimes !== "below" && "min-w-10 text-end")}>{formatClock(shown, { forceHours })}</span>;
     const remaining = mode === "remaining";
     const totalLabel = (
       <button
         type="button"
         onClick={() => setMode(remaining ? "total" : "remaining")}
         aria-label={remaining ? "Show total time" : "Show remaining time"}
-        className={cn(timeClass, "min-w-10 rounded-xs text-left hover:underline", showTimes === "below" && "text-right", focusRing)}
+        className={cn(timeClass, "min-w-10 rounded-xs text-start hover:underline", showTimes === "below" && "text-end", focusRing)}
       >
         {remaining ? formatClock(total - shown, { forceHours, minus: true }) : formatClock(total, { forceHours })}
       </button>
@@ -778,7 +778,7 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
           ))}
           <div
             data-slot="seek-played"
-            className={cn("absolute inset-y-0 left-0", overlay ? "bg-primary" : "bg-primary")}
+            className={cn("absolute inset-y-0 start-0", overlay ? "bg-primary" : "bg-primary")}
             style={{ width: `${pct(shown)}%` }}
           />
           {chapters
@@ -787,7 +787,7 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
               <span
                 key={c.start}
                 data-slot="seek-chapter"
-                className={cn("absolute inset-y-0 w-0.5 -translate-x-1/2", overlay ? "bg-black/60" : "bg-background")}
+                className={cn("absolute inset-y-0 w-0.5 -translate-x-1/2 rtl:translate-x-1/2", overlay ? "bg-black/60" : "bg-background")}
                 style={{ left: `${pct(c.start)}%` }}
               />
             ))}
@@ -802,7 +802,7 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
         <span
           aria-hidden
           className={cn(
-            "pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-sm ring-0 transition-transform duration-150",
+            "pointer-events-none absolute top-1/2 -translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-sm ring-0 transition-transform duration-150",
             size === "sm" ? "size-3" : "size-3.5",
             "scale-0 group-hover/seek:scale-100 group-focus-visible/seek:scale-100 group-focus-visible/seek:ring-4 group-focus-visible/seek:ring-ring/35 group-data-[dragging]/seek:scale-110",
             overlay && "bg-white"
@@ -813,14 +813,14 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
           <div
             aria-hidden
             data-slot="seek-preview"
-            className="pointer-events-none absolute bottom-full z-10 mb-2 flex -translate-x-1/2 flex-col items-center gap-1"
+            className="pointer-events-none absolute bottom-full z-10 mb-2 flex -translate-x-1/2 rtl:translate-x-1/2 flex-col items-center gap-1"
             style={{ left: `clamp(2.5rem, ${pct(bubbleTime)}%, calc(100% - 2.5rem))` }}
           >
             {thumb && (
               <img src={thumb} alt="" className="aspect-video w-40 rounded-md border border-white/20 bg-black object-cover shadow-lg" />
             )}
             <span className="whitespace-nowrap rounded-md bg-inverse px-1.5 py-0.5 text-xs font-medium text-inverse-foreground tabular-nums shadow-md">
-              {bubbleChapter?.title && <span className="mr-1.5 opacity-75">{bubbleChapter.title}</span>}
+              {bubbleChapter?.title && <span className="me-1.5 opacity-75">{bubbleChapter.title}</span>}
               {formatClock(bubbleTime, { forceHours })}
             </span>
           </div>
@@ -831,6 +831,8 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
     return (
       <div
         ref={ref}
+        // Media time runs left to right whatever the page direction: the bar, its times and its hover bubble stay together.
+        dir="ltr"
         className={cn(
           "w-full min-w-0",
           showTimes === "below" ? "flex flex-col gap-1" : "flex items-center gap-3",
@@ -944,7 +946,7 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
             <div
               data-slot="volume-popover"
               className={cn(
-                "absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 transition-[opacity,translate] duration-150",
+                "absolute bottom-full start-1/2 z-20 -translate-x-1/2 rtl:translate-x-1/2 pb-2 transition-[opacity,translate] duration-150",
                 "pointer-events-none translate-y-1 opacity-0",
                 "group-hover/volume:pointer-events-auto group-hover/volume:translate-y-0 group-hover/volume:opacity-100",
                 "group-focus-within/volume:pointer-events-auto group-focus-within/volume:translate-y-0 group-focus-within/volume:opacity-100"
@@ -965,8 +967,8 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
               className={cn(
                 "flex items-center overflow-hidden transition-[width,opacity] duration-200 ease-out-quart",
                 expand === "always"
-                  ? "w-24 pl-1 pr-1.5 opacity-100"
-                  : "w-0 opacity-0 group-hover/volume:w-24 group-hover/volume:pl-1 group-hover/volume:pr-1.5 group-hover/volume:opacity-100 group-focus-within/volume:w-24 group-focus-within/volume:pl-1 group-focus-within/volume:pr-1.5 group-focus-within/volume:opacity-100"
+                  ? "w-24 ps-1 pe-1.5 opacity-100"
+                  : "w-0 opacity-0 group-hover/volume:w-24 group-hover/volume:ps-1 group-hover/volume:pe-1.5 group-hover/volume:opacity-100 group-focus-within/volume:w-24 group-focus-within/volume:ps-1 group-focus-within/volume:pe-1.5 group-focus-within/volume:opacity-100"
               )}
             >
               {slider}
@@ -1220,7 +1222,7 @@ export const RepeatButton = React.forwardRef<HTMLButtonElement, RepeatButtonProp
         {...props}
       >
         <Icon aria-hidden />
-        {mode !== "off" && <span aria-hidden className="absolute bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-current" />}
+        {mode !== "off" && <span aria-hidden className="absolute bottom-1 start-1/2 size-1 -translate-x-1/2 rtl:translate-x-1/2 rounded-full bg-current" />}
       </button>
     );
   }
@@ -1252,7 +1254,7 @@ export const ShuffleButton = React.forwardRef<HTMLButtonElement, ShuffleButtonPr
         {...props}
       >
         <RiShuffleLine aria-hidden />
-        {on && <span aria-hidden className="absolute bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-current" />}
+        {on && <span aria-hidden className="absolute bottom-1 start-1/2 size-1 -translate-x-1/2 rtl:translate-x-1/2 rounded-full bg-current" />}
       </button>
     );
   }

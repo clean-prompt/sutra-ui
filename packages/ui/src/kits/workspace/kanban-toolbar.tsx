@@ -104,7 +104,7 @@ export const KanbanToolbar = React.forwardRef<HTMLDivElement, KanbanToolbarProps
           Clear filters
         </Button>
       )}
-      {extra && <div className="ml-auto flex items-center gap-2">{extra}</div>}
+      {extra && <div className="ms-auto flex items-center gap-2">{extra}</div>}
     </div>
   );
 });

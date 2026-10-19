@@ -112,7 +112,7 @@ export const ChatTool = React.forwardRef<HTMLDivElement, ChatToolProps>(
         <Collapsible.Trigger
           disabled={!hasBody}
           className={cn(
-            "group/tool flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm transition-colors enabled:hover:bg-subtle",
+            "group/tool flex w-full items-center gap-2.5 px-3 py-2.5 text-start text-sm transition-colors enabled:hover:bg-subtle",
             focusRing
           )}
         >
@@ -293,7 +293,7 @@ export const ChatToolApproval = React.forwardRef<HTMLDivElement, ChatToolApprova
           <span
             role="status"
             className={cn(
-              "mr-auto inline-flex items-center gap-1.5 text-sm font-medium [&_svg]:size-4",
+              "me-auto inline-flex items-center gap-1.5 text-sm font-medium [&_svg]:size-4",
               status === "approved" ? "text-success" : "text-destructive"
             )}
           >

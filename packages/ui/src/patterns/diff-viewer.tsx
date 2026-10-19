@@ -494,13 +494,13 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
                 data-changed={line.changed || undefined}
                 data-change-start={start}
                 className={cn(
-                  "flex border-l-2 border-transparent",
-                  line.changed && "border-l-primary/50 bg-primary-soft/25",
-                  isActive && "border-l-primary bg-primary-soft/50"
+                  "flex border-s-2 border-transparent",
+                  line.changed && "border-s-primary/50 bg-primary-soft/25",
+                  isActive && "border-s-primary bg-primary-soft/50"
                 )}
               >
                 {lineNumbers && (
-                  <span aria-hidden className="w-10 shrink-0 select-none pr-2 text-right text-muted-foreground/70 tabular-nums">
+                  <span aria-hidden className="w-10 shrink-0 select-none pe-2 text-end text-muted-foreground/70 tabular-nums">
                     {line.newNo}
                   </span>
                 )}
@@ -512,7 +512,7 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
       );
     } else {
       const cellBase = "min-w-0 whitespace-pre-wrap break-words px-3 align-top";
-      const noBase = "w-10 select-none border-r border-border pr-2 text-right align-top text-muted-foreground/70 tabular-nums";
+      const noBase = "w-10 select-none border-e border-border pe-2 text-end align-top text-muted-foreground/70 tabular-nums";
       body = (
         <table className="w-full table-fixed border-collapse">
           <colgroup>
@@ -526,13 +526,13 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
               <th scope="col" className="py-1.5 font-medium">
                 <span className="sr-only">Old line number</span>
               </th>
-              <th scope="col" className="px-3 py-1.5 text-left font-medium">
+              <th scope="col" className="px-3 py-1.5 text-start font-medium">
                 {oldLabel}
               </th>
-              <th scope="col" className="border-l border-border py-1.5 font-medium">
+              <th scope="col" className="border-s border-border py-1.5 font-medium">
                 <span className="sr-only">New line number</span>
               </th>
-              <th scope="col" className="px-3 py-1.5 text-left font-medium">
+              <th scope="col" className="px-3 py-1.5 text-start font-medium">
                 {newLabel}
               </th>
             </tr>
@@ -572,7 +572,7 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
                   >
                     {row.left ? renderPieces(row.left.parts) : null}
                   </td>
-                  <td aria-hidden className={cn(noBase, "border-l")}>
+                  <td aria-hidden className={cn(noBase, "border-s")}>
                     {row.right?.no}
                   </td>
                   <td
@@ -600,6 +600,7 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
         aria-keyshortcuts="n p"
         tabIndex={0}
         data-slot="diff-viewer"
+        dir="ltr"
         data-mode={mode}
         onKeyDown={handleKey}
         className={cn("flex min-h-0 flex-col overflow-hidden rounded-box border border-border bg-background", focusRing, className)}
@@ -621,7 +622,7 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
                 ))}
               </span>
             )}
-            <span className="ml-auto flex flex-wrap items-center justify-end gap-1">
+            <span className="ms-auto flex flex-wrap items-center justify-end gap-1">
               {headerExtra}
               {(onModeChange || defaultMode !== undefined) && (
                 <SegmentedControl
@@ -761,6 +762,7 @@ export const SuggestionDiff = React.forwardRef<HTMLDivElement, SuggestionDiffPro
         role="group"
         aria-label={typeof title === "string" ? title : "Suggested edit"}
         data-slot="suggestion-diff"
+        dir="ltr"
         className={cn("flex flex-col overflow-hidden rounded-box border border-border bg-card shadow-xs", className)}
         {...props}
       >
@@ -768,7 +770,7 @@ export const SuggestionDiff = React.forwardRef<HTMLDivElement, SuggestionDiffPro
           <RiSparkling2Line aria-hidden className="size-4 text-primary" />
           <span className="font-medium text-foreground">{title}</span>
           {meta != null && <span className="text-xs text-muted-foreground">{meta}</span>}
-          <span className="ml-auto text-xs text-muted-foreground" aria-live="polite">
+          <span className="ms-auto text-xs text-muted-foreground" aria-live="polite">
             {hunkCount === 0
               ? "No changes"
               : `${hunkCount} ${pluralize(hunkCount, "change")}${accepted ? ` · ${accepted} accepted` : ""}${rejected ? ` · ${rejected} rejected` : ""}`}
@@ -796,7 +798,7 @@ export const SuggestionDiff = React.forwardRef<HTMLDivElement, SuggestionDiffPro
                       onClick={() => decide(t.index, null)}
                       aria-label={`Undo change ${t.index + 1}`}
                       className={cn(
-                        "ml-0.5 inline-flex h-4 items-center rounded-xs px-1 align-[1px] font-sans text-[10px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground",
+                        "ms-0.5 inline-flex h-4 items-center rounded-xs px-1 align-[1px] font-sans text-[10px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground",
                         focusRing
                       )}
                     >
@@ -816,7 +818,7 @@ export const SuggestionDiff = React.forwardRef<HTMLDivElement, SuggestionDiffPro
                   <ins className="rounded-xs bg-success-soft text-success-soft-foreground no-underline">{t.added}</ins>
                 )}
                 {perHunk && (
-                  <span className="ml-0.5 inline-flex translate-y-[-1px] items-center gap-px rounded-xs border border-border bg-background align-middle shadow-xs">
+                  <span className="ms-0.5 inline-flex translate-y-[-1px] items-center gap-px rounded-xs border border-border bg-background align-middle shadow-xs">
                     <button
                       type="button"
                       onClick={() => decide(t.index, "accepted")}
@@ -841,7 +843,7 @@ export const SuggestionDiff = React.forwardRef<HTMLDivElement, SuggestionDiffPro
         </div>
         <div className="flex items-center justify-end gap-2 border-t border-border bg-subtle/60 px-3 py-2">
           {decided > 0 && (
-            <Button size="sm" variant="ghost" className="mr-auto" onClick={() => setDecisions({})}>
+            <Button size="sm" variant="ghost" className="me-auto" onClick={() => setDecisions({})}>
               Reset
             </Button>
           )}
@@ -1057,7 +1059,7 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
         {path}
       </a>
     ) : onPathClick ? (
-      <button type="button" onClick={onPathClick} className={cn(pathClass, "text-left hover:underline", focusRing)}>
+      <button type="button" onClick={onPathClick} className={cn(pathClass, "text-start hover:underline", focusRing)}>
         {path}
       </button>
     ) : (
@@ -1087,7 +1089,7 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
               {status === "added" ? "New file" : "Deleted"}
             </span>
           )}
-          <span className="ml-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-2">
+          <span className="ms-auto flex max-w-full shrink-0 flex-wrap items-center justify-end gap-2">
             {headerExtra}
             <DiffStat additions={stat.additions} deletions={stat.deletions} />
           </span>
@@ -1122,10 +1124,10 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
                       r.type === "delete" && "bg-destructive-soft/60"
                     )}
                   >
-                    <span aria-hidden className="w-9 shrink-0 select-none pr-1 text-right text-muted-foreground/60 tabular-nums">
+                    <span aria-hidden className="w-9 shrink-0 select-none pe-1 text-end text-muted-foreground/60 tabular-nums">
                       {r.oldNo}
                     </span>
-                    <span aria-hidden className="w-9 shrink-0 select-none pr-1 text-right text-muted-foreground/60 tabular-nums">
+                    <span aria-hidden className="w-9 shrink-0 select-none pe-1 text-end text-muted-foreground/60 tabular-nums">
                       {r.newNo}
                     </span>
                     <span
@@ -1147,7 +1149,7 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
                         </>
                       ) : null}
                     </span>
-                    <span className="whitespace-pre pr-4 text-foreground">{r.text || " "}</span>
+                    <span className="whitespace-pre pe-4 text-foreground">{r.text || " "}</span>
                   </div>
                 );
               })
@@ -1178,7 +1180,7 @@ export const DiffCard = React.forwardRef<HTMLDivElement, DiffCardProps>(
                 Collapse
               </Button>
             )}
-            <span className="ml-auto flex flex-wrap items-center justify-end gap-1.5">
+            <span className="ms-auto flex flex-wrap items-center justify-end gap-1.5">
               {onReject && (
                 <Button size="xs" variant="secondary" leadingIcon={<RiCloseLine aria-hidden />} onClick={onReject}>
                   {rejectLabel}

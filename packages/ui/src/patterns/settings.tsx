@@ -49,7 +49,7 @@ function useContainerNarrow(ref: React.RefObject<HTMLElement | null>, breakpoint
 }
 
 const navItemClass = cn(
-  "flex w-full items-center gap-2.5 rounded-control px-2.5 py-2 text-left text-sm font-medium text-muted-foreground transition-colors",
+  "flex w-full items-center gap-2.5 rounded-control px-2.5 py-2 text-start text-sm font-medium text-muted-foreground transition-colors",
   "hover:bg-accent hover:text-foreground aria-[current=page]:bg-accent aria-[current=page]:text-foreground",
   "[&_svg]:size-4 [&_svg]:shrink-0",
   focusRing
@@ -123,7 +123,7 @@ export const SettingsShell = React.forwardRef<HTMLDivElement, SettingsShellProps
         {!stacked && (
           <nav
             aria-label="Settings sections"
-            className="flex w-56 shrink-0 flex-col gap-0.5 border-r border-border bg-subtle p-3"
+            className="flex w-56 shrink-0 flex-col gap-0.5 border-e border-border bg-subtle p-3"
           >
             <div className="px-2.5 pb-3 pt-1 text-sm font-semibold text-foreground">{title}</div>
             {sections.map((s) => (
@@ -144,8 +144,8 @@ export const SettingsShell = React.forwardRef<HTMLDivElement, SettingsShellProps
         <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
             {stacked && current && (
-              <Button variant="ghost" size="icon-sm" aria-label="Back to settings" onClick={() => setSection(null)} className="-ml-1.5">
-                <RiArrowLeftLine aria-hidden />
+              <Button variant="ghost" size="icon-sm" aria-label="Back to settings" onClick={() => setSection(null)} className="-ms-1.5">
+                <RiArrowLeftLine className="rtl:-scale-x-100" aria-hidden />
               </Button>
             )}
             <h2 id={headingId} className="min-w-0 flex-1 truncate text-base font-semibold tracking-tight">
@@ -162,7 +162,7 @@ export const SettingsShell = React.forwardRef<HTMLDivElement, SettingsShellProps
                       type="button"
                       onClick={() => setSection(s.id)}
                       className={cn(
-                        "group/row flex w-full items-center gap-3 rounded-box px-3 py-3 text-left transition-colors hover:bg-accent",
+                        "group/row flex w-full items-center gap-3 rounded-box px-3 py-3 text-start transition-colors hover:bg-accent",
                         focusRing
                       )}
                     >
@@ -179,7 +179,7 @@ export const SettingsShell = React.forwardRef<HTMLDivElement, SettingsShellProps
                       </span>
                       <RiArrowRightSLine
                         aria-hidden
-                        className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/row:translate-x-0.5"
+                        className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/row:translate-x-0.5 rtl:group-hover/row:-translate-x-0.5 rtl:-scale-x-100"
                       />
                     </button>
                   </li>
@@ -237,7 +237,7 @@ export function SettingsDialog({
           className={cn(
             "fixed z-50 flex overflow-hidden border border-border bg-background shadow-2xl outline-none",
             "inset-x-0 bottom-0 h-[92dvh] rounded-t-2xl",
-            "sm:inset-auto sm:left-1/2 sm:top-1/2 sm:h-[min(640px,calc(100dvh-2rem))] sm:w-[min(880px,calc(100vw-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl",
+            "sm:inset-auto sm:start-1/2 sm:top-1/2 sm:h-[min(640px,calc(100dvh-2rem))] sm:w-[min(880px,calc(100vw-2rem))] sm:-translate-x-1/2 rtl:sm:translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
             "max-sm:data-[state=open]:slide-in-from-bottom sm:data-[state=open]:zoom-in-95",
             contentClassName
@@ -362,7 +362,7 @@ export type SettingsRowProps =
   | ({ type: "nav" } & SettingsNavRowProps)
   | ({ type?: "static" } & SettingsStaticRowProps);
 
-const rowBase = "flex w-full items-center gap-3 px-4 py-3 text-left";
+const rowBase = "flex w-full items-center gap-3 px-4 py-3 text-start";
 
 function RowText({
   icon,
@@ -442,7 +442,7 @@ export const SettingsRow = React.forwardRef<HTMLElement, SettingsRowProps>(funct
         {value != null && <span className="max-w-[40%] shrink-0 truncate text-sm text-muted-foreground">{value}</span>}
         <RiArrowRightSLine
           aria-hidden
-          className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/row:translate-x-0.5"
+          className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/row:translate-x-0.5 rtl:group-hover/row:-translate-x-0.5 rtl:-scale-x-100"
         />
       </>
     );

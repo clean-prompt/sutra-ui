@@ -173,7 +173,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
             ? "size-5 text-muted-foreground hover:bg-accent hover:text-foreground"
             : cn(
                 roundButton,
-                "absolute -right-1.5 -top-1.5 z-10 size-5 text-muted-foreground opacity-0 hover:text-foreground focus-visible:opacity-100 group-hover/attachment:opacity-100 [@media(hover:none)]:opacity-100"
+                "absolute -end-1.5 -top-1.5 z-10 size-5 text-muted-foreground opacity-0 hover:text-foreground focus-visible:opacity-100 group-hover/attachment:opacity-100 [@media(hover:none)]:opacity-100"
               ),
           focusRing
         )}
@@ -192,7 +192,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
         className={cn(
           small
             ? "flex size-5 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground"
-            : cn(roundButton, "absolute -bottom-1.5 -right-1.5 z-10 size-5 text-foreground"),
+            : cn(roundButton, "absolute -bottom-1.5 -end-1.5 z-10 size-5 text-foreground"),
           focusRing
         )}
       >
@@ -281,8 +281,8 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
         <div
           {...common}
           className={cn(
-            "group/attachment inline-flex h-8 max-w-56 shrink-0 items-center gap-1.5 rounded-control border border-border bg-background pl-1 pr-1.5 text-sm shadow-xs",
-            !onRemove && !retryIcon && "pr-2.5",
+            "group/attachment inline-flex h-8 max-w-56 shrink-0 items-center gap-1.5 rounded-control border border-border bg-background ps-1 pe-1.5 text-sm shadow-xs",
+            !onRemove && !retryIcon && "pe-2.5",
             hasError && "border-destructive/60",
             className
           )}
@@ -301,7 +301,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
       <div
         {...common}
         className={cn(
-          "group/attachment relative flex h-14 w-60 shrink-0 items-center gap-2.5 rounded-box border border-border bg-card p-2 pr-3 shadow-xs",
+          "group/attachment relative flex h-14 w-60 shrink-0 items-center gap-2.5 rounded-box border border-border bg-card p-2 pe-3 shadow-xs",
           hasError && "border-destructive/60",
           className
         )}

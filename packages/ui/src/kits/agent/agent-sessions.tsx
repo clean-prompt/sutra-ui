@@ -446,7 +446,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
                   onCheckedChange={() => toggleSelect(s.id)}
                   aria-label={`Select ${s.title}`}
                   className={cn(
-                    "ml-2 flex size-4 shrink-0 items-center justify-center rounded-xs border border-border-strong bg-background text-primary-foreground data-[state=checked]:border-primary data-[state=checked]:bg-primary",
+                    "ms-2 flex size-4 shrink-0 items-center justify-center rounded-xs border border-border-strong bg-background text-primary-foreground data-[state=checked]:border-primary data-[state=checked]:bg-primary",
                     focusRing
                   )}
                 >
@@ -487,7 +487,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
                   onDoubleClick={() => onRenameSession && setRenaming({ kind: "session", id: s.id })}
                   onKeyDown={(e) => onRowKeyDown(e, s.id)}
                   onFocus={() => setFocusId(s.id)}
-                  className={cn("flex min-w-0 flex-1 items-start gap-2 rounded-control px-2 py-1.5 text-left", focusRing)}
+                  className={cn("flex min-w-0 flex-1 items-start gap-2 rounded-control px-2 py-1.5 text-start", focusRing)}
                 >
                   <span className="flex h-5 items-center">
                     <AgentStatusDot status={s.status} />
@@ -598,7 +598,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
     return (
       <div ref={ref} className={cn("flex min-h-0 w-full flex-col gap-2 text-sm", className)} {...props}>
         <div className="flex flex-wrap items-center gap-1">
-          <h2 id={titleId} className="mr-auto px-1 text-sm font-semibold text-foreground">
+          <h2 id={titleId} className="me-auto px-1 text-sm font-semibold text-foreground">
             {title}
           </h2>
           <Button
@@ -625,7 +625,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
               >
                 <RiFilter3Line aria-hidden />
                 {filter.length > 0 && (
-                  <span aria-hidden className="absolute right-0.5 top-0.5 size-1.5 rounded-full bg-primary" />
+                  <span aria-hidden className="absolute end-0.5 top-0.5 size-1.5 rounded-full bg-primary" />
                 )}
               </Button>
             </DropdownMenuTrigger>
@@ -677,7 +677,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
 
         {searchOpen && (
           <div className="relative">
-            <RiSearchLine aria-hidden className="pointer-events-none absolute left-2 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <RiSearchLine aria-hidden className="pointer-events-none absolute start-2 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
             <input
               ref={searchRef}
               type="search"
@@ -695,7 +695,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
               placeholder="Search sessions"
               aria-label="Search sessions"
               className={cn(
-                "h-8 w-full rounded-control border border-input bg-background pl-7 pr-2 text-sm shadow-xs placeholder:text-muted-foreground",
+                "h-8 w-full rounded-control border border-input bg-background ps-7 pe-2 text-sm shadow-xs placeholder:text-muted-foreground",
                 focusRing
               )}
             />
@@ -729,7 +729,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
             aria-label="Bulk actions"
             className="flex flex-wrap items-center gap-1 rounded-control border border-border bg-card px-1.5 py-1 shadow-xs"
           >
-            <span className="mr-auto px-1 text-xs font-medium tabular-nums text-foreground" aria-live="polite">
+            <span className="me-auto px-1 text-xs font-medium tabular-nums text-foreground" aria-live="polite">
               {selected.length} selected
             </span>
             {onArchive && (

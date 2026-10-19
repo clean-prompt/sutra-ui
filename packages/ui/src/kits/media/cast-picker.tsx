@@ -164,7 +164,7 @@ export const CastDeviceList = React.forwardRef<HTMLDivElement, CastDeviceListPro
                   data-status={status}
                   onClick={() => !connected && onSelect?.(d)}
                   className={cn(
-                    "flex min-w-0 flex-1 items-center gap-3 rounded-control px-3 py-2.5 text-left transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-55 aria-busy:opacity-100",
+                    "flex min-w-0 flex-1 items-center gap-3 rounded-control px-3 py-2.5 text-start transition-colors hover:bg-accent disabled:cursor-not-allowed disabled:opacity-55 aria-busy:opacity-100",
                     connected && "bg-primary-soft hover:bg-primary-soft",
                     focusRing
                   )}

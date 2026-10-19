@@ -8,6 +8,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { assignRef } from "../lib/refs";
+import { useDirection } from "../hooks/use-direction";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -27,7 +28,9 @@ function CalendarChevron({ className, orientation = "left" }: CalendarChevronPro
         : orientation === "up"
           ? RiArrowUpSLine
           : RiArrowDownSLine;
-  return <Icon aria-hidden className={cn("size-4", className)} />;
+  // Previous and next point along the reading direction.
+  const mirrored = orientation === "left" || orientation === "right";
+  return <Icon aria-hidden className={cn("size-4", mirrored && "rtl:-scale-x-100", className)} />;
 }
 
 const navButton = cn(
@@ -72,13 +75,13 @@ const baseClassNames: Partial<ClassNames> = {
   ),
   today: cn(
     "[&>button]:font-semibold",
-    "[&>button]:after:pointer-events-none [&>button]:after:absolute [&>button]:after:bottom-1 [&>button]:after:left-1/2",
-    "[&>button]:after:size-1 [&>button]:after:-translate-x-1/2 [&>button]:after:rounded-full [&>button]:after:bg-primary [&>button]:after:content-['']"
+    "[&>button]:after:pointer-events-none [&>button]:after:absolute [&>button]:after:bottom-1 [&>button]:after:start-1/2",
+    "[&>button]:after:size-1 [&>button]:after:-translate-x-1/2 rtl:[&>button]:after:translate-x-1/2 [&>button]:after:rounded-full [&>button]:after:bg-primary [&>button]:after:content-['']"
   ),
   outside: "[&>button]:text-muted-foreground/60",
   disabled: "[&>button]:text-muted-foreground/50 [&>button]:line-through [&>button]:decoration-muted-foreground/40",
-  range_start: "rounded-l-control bg-primary-soft",
-  range_end: "rounded-r-control bg-primary-soft",
+  range_start: "rounded-s-control bg-primary-soft",
+  range_end: "rounded-e-control bg-primary-soft",
   range_middle: cn(
     "rounded-none bg-primary-soft",
     "[&>button]:rounded-none! [&>button]:bg-transparent! [&>button]:font-normal! [&>button]:text-primary-soft-foreground! [&>button]:shadow-none!",
@@ -95,6 +98,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
   { className, classNames, showOutsideDays = true, components, ...props },
   ref
 ) {
+  const dir = useDirection();
   const forwardedRef = React.useRef(ref);
   forwardedRef.current = ref;
   // A stable Root that hands the element to both DayPicker's own ref (used for animation) and ours.
@@ -127,6 +131,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
 
   return (
     <DayPicker
+      dir={dir}
       showOutsideDays={showOutsideDays}
       className={cn("rdp-sutra", className)}
       {...props}

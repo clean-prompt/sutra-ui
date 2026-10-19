@@ -66,7 +66,7 @@ export const InfoTooltip = React.forwardRef<HTMLButtonElement, InfoTooltipProps>
           side={side}
           align={align}
           variant={variant}
-          className={cn("max-w-64 px-3 py-2 text-left", contentClassName)}
+          className={cn("max-w-64 px-3 py-2 text-start", contentClassName)}
         >
           {title && <p className="text-xs font-semibold">{title}</p>}
           {description && (

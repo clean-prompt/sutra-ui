@@ -13,6 +13,7 @@ import { Badge } from "../../primitives/badge";
 import { Spinner } from "../../primitives/spinner";
 import { ImageWithFallback } from "../../patterns/lightbox";
 import { NowPlayingBars } from "./media-controls";
+import { directionOf, inlineKeyStep, inlineScrollOffset, inlineSign } from "../../lib/direction";
 
 /* ------------------------------------------------------------------ */
 /* Shared                                                              */
@@ -62,7 +63,7 @@ function StatusBadge({ status }: { status: MediaStatus }) {
     <span
       data-slot="media-status"
       className={cn(
-        "pointer-events-none absolute left-2 top-2 z-20 inline-flex max-w-[calc(100%-1rem)] items-center gap-1 rounded-sm border border-white/10 bg-black/65 px-1.5 py-0.5 text-[10px] font-medium leading-4 backdrop-blur-sm [&_svg]:size-3 [&_svg]:shrink-0",
+        "pointer-events-none absolute start-2 top-2 z-20 inline-flex max-w-[calc(100%-1rem)] items-center gap-1 rounded-sm border border-white/10 bg-black/65 px-1.5 py-0.5 text-[10px] font-medium leading-4 backdrop-blur-sm [&_svg]:size-3 [&_svg]:shrink-0",
         statusTone[normalizeTone(status.tone)],
         status.pulse && "animate-pulse motion-reduce:animate-none"
       )}
@@ -77,7 +78,7 @@ function ActionsRow({ actions }: { actions: MediaCardAction[] }) {
   return (
     <div
       data-slot="media-actions"
-      className="absolute right-2 top-2 z-20 flex gap-1 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/media:opacity-100 [@media(hover:hover)]:group-focus-within/media:opacity-100"
+      className="absolute end-2 top-2 z-20 flex gap-1 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/media:opacity-100 [@media(hover:hover)]:group-focus-within/media:opacity-100"
     >
       {actions.map((a) => (
         <button
@@ -205,7 +206,7 @@ function MediaFrame({
           className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-black/0 opacity-0 transition-[opacity,background-color] duration-200 group-hover/media:bg-black/35 group-hover/media:opacity-100"
         >
           <span className="grid size-12 place-items-center rounded-full bg-white/90 text-black shadow-xl">
-            <RiPlayLargeFill aria-hidden className="size-6 translate-x-px" />
+            <RiPlayLargeFill aria-hidden className="size-6 translate-x-px rtl:-translate-x-px" />
           </span>
         </div>
       )}
@@ -414,7 +415,7 @@ export const EpisodeCard = React.forwardRef<HTMLDivElement, EpisodeCardProps>(
           className={horizontal ? "w-36 shrink-0 sm:w-52" : "w-full"}
           overlay={
             runtime !== undefined ? (
-              <span className="pointer-events-none absolute bottom-2 right-2 z-[6] rounded-sm bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white tabular-nums">
+              <span className="pointer-events-none absolute bottom-2 end-2 z-[6] rounded-sm bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white tabular-nums">
                 {formatRuntime(runtime)}
               </span>
             ) : undefined
@@ -515,14 +516,14 @@ function CollectionCard({
             aria-label={playing ? `Pause ${title}` : `Play ${title}`}
             onClick={onPlay}
             className={cn(
-              "absolute bottom-2 right-2 z-20 grid size-11 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg transition-[opacity,scale,background-color] duration-200 hover:scale-105 hover:bg-primary-hover",
+              "absolute bottom-2 end-2 z-20 grid size-11 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg transition-[opacity,scale,background-color] duration-200 hover:scale-105 hover:bg-primary-hover",
               focusRing,
               playing
                 ? "translate-y-0 opacity-100"
                 : "[@media(hover:hover)]:translate-y-2 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/album:translate-y-0 [@media(hover:hover)]:group-hover/album:opacity-100 focus-visible:translate-y-0 focus-visible:opacity-100"
             )}
           >
-            {playing ? <RiPauseFill aria-hidden className="size-5" /> : <RiPlayFill aria-hidden className="size-5 translate-x-px" />}
+            {playing ? <RiPauseFill aria-hidden className="size-5" /> : <RiPlayFill aria-hidden className="size-5 translate-x-px rtl:-translate-x-px" />}
           </button>
         )}
       </div>
@@ -631,7 +632,10 @@ export const MediaShelf = React.forwardRef<HTMLElement, MediaShelfProps>(
     const update = React.useCallback(() => {
       const el = listRef.current;
       if (!el) return;
-      const next = { start: el.scrollLeft > 1, end: el.scrollLeft + el.clientWidth < el.scrollWidth - 1 };
+      // `scrollLeft` is negative in right-to-left: measure the distance from the inline start.
+      const max = el.scrollWidth - el.clientWidth;
+      const at = inlineScrollOffset(el.scrollLeft, directionOf(el));
+      const next = { start: at > 1, end: max - at > 1 };
       setEdges((prev) => (prev.start === next.start && prev.end === next.end ? prev : next));
     }, []);
 
@@ -647,7 +651,7 @@ export const MediaShelf = React.forwardRef<HTMLElement, MediaShelfProps>(
     const scrollByPage = (dir: 1 | -1) => {
       const el = listRef.current;
       if (!el) return;
-      el.scrollBy({ left: dir * Math.max(160, el.clientWidth * 0.9), behavior: prefersReducedMotion() ? "auto" : "smooth" });
+      el.scrollBy({ left: dir * inlineSign(directionOf(el)) * Math.max(160, el.clientWidth * 0.9), behavior: prefersReducedMotion() ? "auto" : "smooth" });
     };
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {
@@ -658,7 +662,7 @@ export const MediaShelf = React.forwardRef<HTMLElement, MediaShelfProps>(
       const at = items.findIndex((li) => li.contains(target));
       if (at < 0) return;
       const to =
-        e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 : clamp(at + (e.key === "ArrowRight" ? 1 : -1), 0, items.length - 1);
+        e.key === "Home" ? 0 : e.key === "End" ? items.length - 1 : clamp(at + inlineKeyStep(e.key, directionOf(listRef.current)), 0, items.length - 1);
       if (to === at) return;
       const focusable = items[to].querySelector<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
       if (!focusable) return;
@@ -668,7 +672,7 @@ export const MediaShelf = React.forwardRef<HTMLElement, MediaShelfProps>(
     };
 
     const fade = 32;
-    const mask = `linear-gradient(to right, ${edges.start ? "transparent" : "#000"}, #000 ${fade}px, #000 calc(100% - ${fade}px), ${
+    const mask = `linear-gradient(to ${directionOf(listRef.current) === "rtl" ? "left" : "right"}, ${edges.start ? "transparent" : "#000"}, #000 ${fade}px, #000 calc(100% - ${fade}px), ${
       edges.end ? "transparent" : "#000"
     })`;
     const grid = gridAbove ? shelfGrid[gridAbove] : null;
@@ -697,10 +701,10 @@ export const MediaShelf = React.forwardRef<HTMLElement, MediaShelfProps>(
             ))}
           <div className={cn("hidden shrink-0 gap-1 [@media(hover:hover)]:md:flex", grid?.hide)}>
             <Button variant="secondary" size="icon-sm" aria-label="Scroll back" disabled={!edges.start} onClick={() => scrollByPage(-1)}>
-              <RiArrowLeftSLine aria-hidden />
+              <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
             </Button>
             <Button variant="secondary" size="icon-sm" aria-label="Scroll forward" disabled={!edges.end} onClick={() => scrollByPage(1)}>
-              <RiArrowRightSLine aria-hidden />
+              <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
             </Button>
           </div>
         </div>
@@ -785,7 +789,7 @@ export const MediaHero = React.forwardRef<HTMLElement, MediaHeroProps>(
       >
         {backdrop && <img src={backdrop} alt="" className="absolute inset-0 -z-10 size-full object-cover" />}
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-black/5" />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/25 to-transparent" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r rtl:bg-gradient-to-l from-black/80 via-black/25 to-transparent" />
         <div className="flex w-full max-w-2xl flex-col gap-3 p-5 sm:p-8 lg:p-10">
           {eyebrow && <div className="text-xs font-semibold uppercase tracking-widest text-white/75">{eyebrow}</div>}
           <h2 id={headingId} className={cn(logo ? "sr-only" : "text-display-xs font-semibold tracking-tight text-balance sm:text-display-sm lg:text-display-md")}>

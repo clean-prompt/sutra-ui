@@ -16,6 +16,9 @@ import { useSwipe } from "../hooks/use-swipe";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useObjectUrl } from "../hooks/use-object-url";
+import { logicalArrow } from "../lib/direction";
+import { useDirection } from "../hooks/use-direction";
+import { inlineSign } from "../lib/direction";
 
 /* ------------------------------------------------------------------ */
 /* ImageWithFallback                                                   */
@@ -308,12 +311,14 @@ export function Lightbox({
     return () => stage.removeEventListener("wheel", onWheel);
   }, [stage, maxZoom]);
 
+  // A swipe towards the inline start brings the next item (towards the left in LTR, the right in RTL).
+  const along = inlineSign(useDirection());
   const swipe = useSwipe({
     axis: "x",
     mouse: true,
     allow: () => zoom === 1,
-    onSwipeLeft: () => go(1),
-    onSwipeRight: () => go(-1),
+    onSwipeLeft: () => go(along),
+    onSwipeRight: () => go(-along),
   });
 
   const ctx = React.useMemo<LightboxContextValue>(
@@ -331,7 +336,7 @@ export function Lightbox({
     if (event.defaultPrevented) return;
     const target = event.target as HTMLElement;
     if (target.tagName === "VIDEO" && (event.key === "ArrowLeft" || event.key === "ArrowRight")) return;
-    switch (event.key) {
+    switch (logicalArrow(event)) {
       case "ArrowLeft":
         go(-1);
         break;
@@ -467,18 +472,18 @@ export function Lightbox({
                     aria-label="Previous"
                     onClick={() => go(-1)}
                     disabled={!canPrev}
-                    className={cn(chromeButton, "absolute left-2 top-1/2 -translate-y-1/2 bg-black/35 max-sm:hidden sm:left-4")}
+                    className={cn(chromeButton, "absolute start-2 top-1/2 -translate-y-1/2 bg-black/35 max-sm:hidden sm:start-4")}
                   >
-                    <RiArrowLeftSLine aria-hidden />
+                    <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
                   </button>
                   <button
                     type="button"
                     aria-label="Next"
                     onClick={() => go(1)}
                     disabled={!canNext}
-                    className={cn(chromeButton, "absolute right-2 top-1/2 -translate-y-1/2 bg-black/35 max-sm:hidden sm:right-4")}
+                    className={cn(chromeButton, "absolute end-2 top-1/2 -translate-y-1/2 bg-black/35 max-sm:hidden sm:end-4")}
                   >
-                    <RiArrowRightSLine aria-hidden />
+                    <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
                   </button>
                 </>
               )}

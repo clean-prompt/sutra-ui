@@ -231,7 +231,7 @@ export const DateTimePicker = React.forwardRef<HTMLButtonElement, DateTimePicker
             aria-describedby={field["aria-describedby"]}
             aria-invalid={field["aria-invalid"]}
             aria-required={field.required}
-            className={cn(dateTriggerVariants({ size, variant }), showClear && "pr-9")}
+            className={cn(dateTriggerVariants({ size, variant }), showClear && "pe-9")}
           >
             <RiCalendarLine aria-hidden className="text-muted-foreground" />
             <span className={cn("flex-1 truncate", !label && "text-muted-foreground")}>{label ?? placeholder}</span>
@@ -257,7 +257,7 @@ export const DateTimePicker = React.forwardRef<HTMLButtonElement, DateTimePicker
               <div
                 role="group"
                 aria-label="Presets"
-                className="scrollbar-none flex gap-1 overflow-x-auto border-b border-border bg-subtle p-2 sm:w-40 sm:flex-col sm:overflow-visible sm:border-b-0 sm:border-r"
+                className="scrollbar-none flex gap-1 overflow-x-auto border-b border-border bg-subtle p-2 sm:w-40 sm:flex-col sm:overflow-visible sm:border-b-0 sm:border-e"
               >
                 {presets.map((preset) => (
                   <button
@@ -268,7 +268,7 @@ export const DateTimePicker = React.forwardRef<HTMLButtonElement, DateTimePicker
                       setOpen(false);
                     }}
                     className={cn(
-                      "shrink-0 whitespace-nowrap rounded-control px-2.5 py-1.5 text-left text-sm text-foreground transition-colors hover:bg-accent",
+                      "shrink-0 whitespace-nowrap rounded-control px-2.5 py-1.5 text-start text-sm text-foreground transition-colors hover:bg-accent",
                       focusRing
                     )}
                   >

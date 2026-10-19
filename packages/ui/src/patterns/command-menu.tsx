@@ -162,7 +162,7 @@ export const CommandShortcut = React.forwardRef<HTMLSpanElement, React.HTMLAttri
   ({ className, ...props }, ref) => (
     <span
       ref={ref}
-      className={cn("ml-auto pl-3 text-xs tracking-widest text-muted-foreground", className)}
+      className={cn("ms-auto ps-3 text-xs tracking-widest text-muted-foreground", className)}
       {...props}
     />
   )
@@ -203,9 +203,9 @@ export const CommandItem = React.forwardRef<React.ElementRef<typeof CommandPrimi
         <span className="flex min-w-0 flex-1 items-center gap-2 truncate">{children}</span>
       )}
       {isShortcutKeys(shortcut) ? (
-        <ShortcutKeys keys={shortcut} className="ml-auto pl-3" />
+        <ShortcutKeys keys={shortcut} className="ms-auto ps-3" />
       ) : Array.isArray(shortcut) ? (
-        <span className="ml-auto flex items-center gap-0.5 pl-3">
+        <span className="ms-auto flex items-center gap-0.5 ps-3">
           {shortcut.map((k, i) => (
             <Kbd key={i}>{k}</Kbd>
           ))}
@@ -265,7 +265,7 @@ export const CommandFooter = React.forwardRef<HTMLDivElement, React.HTMLAttribut
         <Kbd>esc</Kbd>
         Close
       </span>
-      {children && <span className="ml-auto flex items-center gap-2">{children}</span>}
+      {children && <span className="ms-auto flex items-center gap-2">{children}</span>}
     </div>
   )
 );
@@ -300,7 +300,7 @@ export function CommandDialog({
         <DialogOverlay />
         <DialogPrimitive.Content
           className={cn(
-            "fixed left-1/2 top-[12dvh] z-50 w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-box border border-border bg-popover shadow-2xl outline-none",
+            "fixed start-1/2 top-[12dvh] z-50 w-[calc(100vw-2rem)] max-w-xl -translate-x-1/2 rtl:translate-x-1/2 overflow-hidden rounded-box border border-border bg-popover shadow-2xl outline-none",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
             "data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 data-[state=open]:slide-in-from-top-2 duration-150",
             className

@@ -78,7 +78,7 @@ export const inlineAlertVariants = cva(
       appearance: {
         soft: "border border-transparent",
         outline: "border bg-background text-foreground shadow-xs",
-        accent: "rounded-l-xs border-l-[3px]",
+        accent: "rounded-s-xs border-s-[3px]",
       },
       layout: {
         box: "",
@@ -150,7 +150,7 @@ export const InlineAlert = React.forwardRef<HTMLDivElement, InlineAlertProps>(
             size="xs"
             aria-label={dismissLabel}
             onClick={onDismiss}
-            className="-mr-1.5 -mt-0.5 text-current/60 hover:bg-current/10 hover:text-current"
+            className="-me-1.5 -mt-0.5 text-current/60 hover:bg-current/10 hover:text-current"
           />
         ) : null}
       </div>

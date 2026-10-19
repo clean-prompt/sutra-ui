@@ -196,7 +196,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
             disabled={!canGoBack || agentDriving}
             onClick={onBack}
           >
-            <RiArrowLeftLine aria-hidden />
+            <RiArrowLeftLine className="rtl:-scale-x-100" aria-hidden />
           </Button>
           <Button
             type="button"
@@ -207,7 +207,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
             disabled={!canGoForward || agentDriving}
             onClick={onForward}
           >
-            <RiArrowRightLine aria-hidden />
+            <RiArrowRightLine className="rtl:-scale-x-100" aria-hidden />
           </Button>
           {loading ? (
             <Button
@@ -281,7 +281,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
           {agentDriving && (
             <span
               data-slot="agent-driving-pill"
-              className="ml-auto inline-flex h-6 max-w-full shrink-0 items-center gap-1.5 rounded-control bg-primary-soft px-2 text-xs @lg:ml-0 font-medium text-primary-soft-foreground [&_svg]:size-3.5"
+              className="ms-auto inline-flex h-6 max-w-full shrink-0 items-center gap-1.5 rounded-control bg-primary-soft px-2 text-xs @lg:ms-0 font-medium text-primary-soft-foreground [&_svg]:size-3.5"
             >
               <span className="relative flex size-1.5" aria-hidden>
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-60 motion-reduce:animate-none" />
@@ -457,7 +457,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
               focusRing
             )}
           >
-            <RiArrowDownSLine aria-hidden className={cn("chevron-turn", !open && "-rotate-90")} />
+            <RiArrowDownSLine aria-hidden className={cn("chevron-turn", !open && "-rotate-90 rtl:rotate-90")} />
             <RiTerminalBoxLine aria-hidden />
             Console
           </button>
@@ -474,7 +474,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
             </span>
           )}
           {open && (
-            <div className="ml-auto flex min-w-0 max-w-full flex-wrap items-center gap-1">
+            <div className="ms-auto flex min-w-0 max-w-full flex-wrap items-center gap-1">
               <input
                 type="search"
                 aria-label="Filter console"
@@ -696,7 +696,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
           >
             Add note
           </Button>
-          <span className="ml-auto text-xs text-muted-foreground" aria-live="polite">
+          <span className="ms-auto text-xs text-muted-foreground" aria-live="polite">
             {annotations.length === 1 ? "1 note" : `${annotations.length} notes`}
           </span>
           <Button
@@ -731,7 +731,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
                   data-slot="annotation-pin"
                   onClick={(e) => e.stopPropagation()}
                   className={cn(
-                    "absolute z-10 flex size-6 -translate-x-1/2 -translate-y-full items-center justify-center rounded-full rounded-bl-none border-2 border-background bg-warning text-2xs font-semibold text-warning-foreground shadow-md",
+                    "absolute z-10 flex size-6 -translate-x-1/2 rtl:translate-x-1/2 -translate-y-full items-center justify-center rounded-full rounded-es-none border-2 border-background bg-warning text-2xs font-semibold text-warning-foreground shadow-md",
                     focusRing
                   )}
                   style={{ left: `${a.x}%`, top: `${a.y}%` }}
@@ -798,7 +798,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
                 <button
                   type="button"
                   onClick={() => openEditor(a)}
-                  className={cn("min-w-0 flex-1 truncate rounded-xs text-left hover:underline", !a.comment && "italic text-muted-foreground", focusRing)}
+                  className={cn("min-w-0 flex-1 truncate rounded-xs text-start hover:underline", !a.comment && "italic text-muted-foreground", focusRing)}
                 >
                   {a.comment || "Empty note"}
                 </button>

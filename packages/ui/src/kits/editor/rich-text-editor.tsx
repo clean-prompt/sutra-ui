@@ -298,7 +298,7 @@ function RichTextBubble({
   return (
     <div
       data-slot="rich-text-bubble"
-      className={cn("absolute z-50 -translate-x-1/2", pos.below ? "pt-2" : "-translate-y-full pb-2")}
+      className={cn("absolute z-50 -translate-x-1/2 rtl:translate-x-1/2", pos.below ? "pt-2" : "-translate-y-full pb-2")}
       style={{ top: pos.top, left: Math.max(pos.left, 0) }}
       onMouseDown={(e) => {
         if ((e.target as HTMLElement).closest("button")) e.preventDefault();
@@ -501,7 +501,7 @@ export const RichTextEditor = React.forwardRef<HTMLDivElement, RichTextEditorPro
           className={cn(
             "min-h-0 flex-1 overflow-y-auto scrollbar-thin px-1 py-2",
             "[&_.ProseMirror]:min-h-32 [&_.ProseMirror]:outline-none [&_.ProseMirror]:whitespace-pre-wrap",
-            "[&_.ProseMirror_.is-editor-empty:first-child]:before:pointer-events-none [&_.ProseMirror_.is-editor-empty:first-child]:before:float-left [&_.ProseMirror_.is-editor-empty:first-child]:before:h-0 [&_.ProseMirror_.is-editor-empty:first-child]:before:text-muted-foreground [&_.ProseMirror_.is-editor-empty:first-child]:before:content-[attr(data-placeholder)]",
+            "[&_.ProseMirror_.is-editor-empty:first-child]:before:pointer-events-none [&_.ProseMirror_.is-editor-empty:first-child]:before:float-start [&_.ProseMirror_.is-editor-empty:first-child]:before:h-0 [&_.ProseMirror_.is-editor-empty:first-child]:before:text-muted-foreground [&_.ProseMirror_.is-editor-empty:first-child]:before:content-[attr(data-placeholder)]",
             "[&_.ProseMirror-selectednode]:outline-2 [&_.ProseMirror-selectednode]:outline-ring/50"
           )}
         >

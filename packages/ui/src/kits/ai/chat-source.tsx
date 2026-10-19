@@ -30,7 +30,7 @@ export const ChatSource = React.forwardRef<HTMLAnchorElement, ChatSourceProps>(
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "inline-flex h-7 max-w-60 items-center gap-1.5 rounded-control border border-border bg-background pl-1.5 pr-2.5 text-xs text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground",
+            "inline-flex h-7 max-w-60 items-center gap-1.5 rounded-control border border-border bg-background ps-1.5 pe-2.5 text-xs text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground",
             focusRing,
             className
           )}
@@ -70,7 +70,7 @@ export const ChatSourceList = React.forwardRef<HTMLDivElement, ChatSourceListPro
       <Collapsible.Root ref={ref} className={cn("w-full", className)} {...props}>
         <Collapsible.Trigger
           className={cn(
-            "group/sources inline-flex h-8 items-center gap-2 rounded-control border border-border bg-background pl-1.5 pr-2.5 text-xs font-medium text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground",
+            "group/sources inline-flex h-8 items-center gap-2 rounded-control border border-border bg-background ps-1.5 pe-2.5 text-xs font-medium text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground",
             focusRing
           )}
         >

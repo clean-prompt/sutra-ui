@@ -19,7 +19,6 @@ import {
   SutraLogo,
   Text,
   Badge,
-  CommandPaletteFromRegistry,
   ShortcutsDialog,
   useShortcuts,
   prefersReducedMotion,
@@ -40,7 +39,10 @@ import {
 import { nav, findPage, routeOf } from "./nav";
 import { href, useHashRoute } from "./router";
 import { ThemeControls, usePersistedTheme } from "./components/theme-controls";
+import { DirectionToggle, usePersistedDirection } from "./components/direction-toggle";
 import { PageRail } from "./components/page-rail";
+import { NavBadge, PageMark } from "./components/nav-badge";
+import { NavPalette } from "./components/nav-palette";
 /** Lazy-load a named page export so each page ships as its own chunk. */
 function lazyPage<M extends Record<string, unknown>>(load: () => Promise<M>, name: keyof M) {
   return React.lazy(async () => ({ default: (await load())[name] as React.ComponentType }));
@@ -83,6 +85,7 @@ const pages: Record<string, React.ComponentType> = {
   "components/geo": lazyPage(() => import("./pages/geo"), "GeoPage"),
   "components/layout-patterns": lazyPage(() => import("./pages/layout-patterns"), "LayoutPatternsPage"),
   "components/statement-hero": lazyPage(() => import("./pages/statement-hero"), "StatementHeroPage"),
+  "components/showpieces": lazyPage(() => import("./pages/showpieces"), "ShowpiecesPage"),
   "foundations/paper": lazyPage(() => import("./pages/paper"), "PaperPage"),
   "components/globe": lazyPage(() => import("./pages/globe"), "GlobePage"),
   "components/live-visitors": lazyPage(() => import("./pages/live-visitors"), "LiveVisitorsPage"),
@@ -144,7 +147,10 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                   return (
                     <SidebarMenuItem key={p.id}>
                       <SidebarMenuButton asChild active={active} icon={icon}>
-                        <a href={href(route, p.id)}>{p.label}</a>
+                        <a href={href(route, p.id)}>
+                          <span className="min-w-0 flex-1 truncate">{p.label}</span>
+                          <PageMark page={p} />
+                        </a>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
@@ -157,9 +163,10 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                         <SidebarMenuButton asChild active={active && !anchor} icon={<RiCodeBoxLine />}>
                           <a href={href(route, p.id)}>
                             <span className="min-w-0 flex-1 truncate">{p.label}</span>
+                            <PageMark page={p} />
                             <RiArrowRightSLine
                               aria-hidden
-                              className="ml-auto transition-transform duration-200 group-data-[state=open]/menu-sub:rotate-90"
+                              className="ms-auto transition-transform duration-200 group-data-[state=open]/menu-sub:rotate-90 rtl:-scale-x-100 rtl:group-data-[state=open]/menu-sub:-rotate-90"
                             />
                           </a>
                         </SidebarMenuButton>
@@ -173,6 +180,7 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                           active={active && anchor === item.id}
                         >
                           {item.label}
+                          <NavBadge status={item.status} since={item.since} className="ms-1.5 align-middle" />
                         </SidebarMenuSubButton>
                       ))}
                     </SidebarMenuSub>
@@ -213,13 +221,14 @@ function PlaygroundShortcuts() {
   return (
     <>
       <ShortcutsDialog />
-      <CommandPaletteFromRegistry />
+      <NavPalette />
     </>
   );
 }
 
 export function App() {
   const themeApi = usePersistedTheme();
+  const directionApi = usePersistedDirection();
   const { section, page, anchor } = useHashRoute();
   const Page = pages[`${section}/${page}`];
   const meta = findPage(section, page);
@@ -251,10 +260,11 @@ export function App() {
           <Separator orientation="vertical" className="h-5" />
           <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1.5 text-sm">
             <span className="text-muted-foreground">{meta.section?.label ?? "Sutra"}</span>
-            <RiArrowRightSLine className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+            <RiArrowRightSLine className="size-4 shrink-0 text-muted-foreground rtl:-scale-x-100" aria-hidden />
             <span className="truncate font-medium">{meta.page?.label ?? "Not found"}</span>
           </nav>
-          <div className="ml-auto">
+          <div className="ms-auto flex items-center gap-1">
+            <DirectionToggle {...directionApi} />
             <ThemeControls {...themeApi} />
           </div>
         </header>

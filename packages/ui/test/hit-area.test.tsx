@@ -18,7 +18,7 @@ import { cn, hitArea, hitAreaTouch } from "../src/lib/cn";
 
 /** Touch targets (A3, WCAG 2.5.8): a control smaller than 24px keeps its look and gains an invisible 24px hit area. */
 
-const MIN = ["relative", "after:absolute", "after:left-1/2", "after:top-1/2", "after:-translate-x-1/2", "after:-translate-y-1/2", "after:content-['']", "after:h-[max(100%,1.5rem)]", "after:w-[max(100%,1.5rem)]"];
+const MIN = ["relative", "after:absolute", "after:start-1/2", "after:top-1/2", "after:-translate-x-1/2", "rtl:after:translate-x-1/2", "after:-translate-y-1/2", "after:content-['']", "after:h-[max(100%,1.5rem)]", "after:w-[max(100%,1.5rem)]"];
 const classes = (el: Element) => (el.getAttribute("class") ?? "").split(/\s+/);
 
 describe("hitArea", () => {

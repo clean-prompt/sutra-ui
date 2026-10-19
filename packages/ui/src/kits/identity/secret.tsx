@@ -219,7 +219,7 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
         <div
           className={cn(
             "flex min-w-0 items-center gap-1",
-            field && "h-9 rounded-control border border-input bg-subtle pl-3 pr-1 shadow-xs"
+            field && "h-9 rounded-control border border-input bg-subtle ps-3 pe-1 shadow-xs"
           )}
         >
           <span className={cn("min-w-0 flex-1 truncate text-sm text-foreground", mono && "font-mono tracking-tight")}>

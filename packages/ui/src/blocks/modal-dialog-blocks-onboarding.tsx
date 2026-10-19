@@ -64,7 +64,7 @@ function AppPicker({ value, onChange }: { value: SutraApp[]; onChange: (v: Sutra
             <SutraAppIcon app={app} size={36} shape="squircle" />
             {sutraAppMeta[app].name}
             {on ? (
-              <span className="absolute right-2 top-2 inline-flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <span className="absolute end-2 top-2 inline-flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <RiCheckLine aria-hidden className="size-3" />
               </span>
             ) : null}
@@ -168,12 +168,12 @@ export function OnboardingDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
       <DialogContent size="lg" className={cn("gap-6", className)}>
-        <Steps steps={steps.map((s) => ({ title: s.title }))} current={index} variant="bars" onStepClick={setIndex} className="pr-8" />
+        <Steps steps={steps.map((s) => ({ title: s.title }))} current={index} variant="bars" onStepClick={setIndex} className="pe-8" />
         <DialogHeader>
           <DialogTitle>{current?.title}</DialogTitle>
           {current?.description ? <DialogDescription>{current.description}</DialogDescription> : null}
         </DialogHeader>
-        <DialogBody key={index} className="animate-in fade-in-0 slide-in-from-right-2 duration-200">
+        <DialogBody key={index} className="animate-in fade-in-0 slide-in-from-end-2 duration-200">
           {current?.content}
         </DialogBody>
         <DialogFooter bordered className="sm:justify-between">
@@ -182,7 +182,7 @@ export function OnboardingDialog({
           </span>
           <div className="flex flex-col-reverse gap-2 sm:flex-row">
             {index > 0 ? (
-              <Button variant="secondary" leadingIcon={<RiArrowLeftLine aria-hidden />} onClick={() => setIndex(index - 1)}>
+              <Button variant="secondary" leadingIcon={<RiArrowLeftLine className="rtl:-scale-x-100" aria-hidden />} onClick={() => setIndex(index - 1)}>
                 Back
               </Button>
             ) : (
@@ -192,7 +192,7 @@ export function OnboardingDialog({
             )}
             <Button
               loading={action.busy}
-              trailingIcon={last ? undefined : <RiArrowRightLine aria-hidden />}
+              trailingIcon={last ? undefined : <RiArrowRightLine className="rtl:-scale-x-100" aria-hidden />}
               onClick={() => void next()}
             >
               {last ? finishLabel : "Continue"}

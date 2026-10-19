@@ -1,7 +1,14 @@
+/** Stability of a nav entry, shown as a badge in the sidebar, the search palette and the demo header. */
+export type NavStatus = "new" | "beta" | "deprecated";
+
 export interface NavItem {
   /** Anchor id of the Demo on the page. */
   id: string;
   label: string;
+  /** Version or date the item first shipped in (the badge tooltip says when it arrived). */
+  since?: string;
+  /** "new" for what the latest releases added, "beta" while the API may still change, "deprecated" for what is on its way out. */
+  status?: NavStatus;
 }
 
 export interface NavPage {
@@ -11,6 +18,9 @@ export interface NavPage {
   route?: string;
   /** Components documented on the page; each maps to a `<Demo id>`. */
   items?: NavItem[];
+  /** Same as on NavItem, for a whole page. A page whose items are new shows a dot on its own. */
+  since?: string;
+  status?: NavStatus;
 }
 
 /**
@@ -26,8 +36,15 @@ export interface NavSection {
   pages: NavPage[];
 }
 
-const items = (...labels: string[]): NavItem[] =>
-  labels.map((label) => ({ id: label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""), label }));
+/** The marker for what the latest waves added: spread it into an item, or pass [label, fresh] to items(). */
+const fresh = { since: "2026-10-20", status: "new" } as const satisfies Pick<NavItem, "since" | "status">;
+
+/** Items from labels (the id is the slug of the label); [label, fresh] adds since and status. */
+const items = (...labels: (string | [label: string, meta: Pick<NavItem, "since" | "status">])[]): NavItem[] =>
+  labels.map((entry) => {
+    const [label, meta] = typeof entry === "string" ? [entry, undefined] : entry;
+    return { id: label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""), label, ...meta };
+  });
 
 export const nav: NavSection[] = [
   {
@@ -44,18 +61,18 @@ export const nav: NavSection[] = [
         id: "motion",
         label: "Motion",
         items: [
-          { id: "tokens", label: "Tokens" },
-          { id: "utilities", label: "Utilities" },
-          { id: "change", label: "Animate on Change" },
-          { id: "entrances", label: "Entrances" },
-          { id: "springs", label: "Springs" },
-          { id: "presence", label: "Presence" },
-          { id: "animated-list", label: "Animated List" },
-          { id: "text", label: "Stagger and Text" },
-          { id: "view-transitions", label: "View Transitions" },
-          { id: "scroll", label: "Scroll-driven" },
-          { id: "pointer", label: "Pointer Effects" },
-          { id: "reduced", label: "Reduced Motion" },
+          { id: "tokens", label: "Tokens", ...fresh },
+          { id: "utilities", label: "Utilities", ...fresh },
+          { id: "change", label: "Animate on Change", ...fresh },
+          { id: "entrances", label: "Entrances", ...fresh },
+          { id: "springs", label: "Springs", ...fresh },
+          { id: "presence", label: "Presence", ...fresh },
+          { id: "animated-list", label: "Animated List", ...fresh },
+          { id: "text", label: "Stagger and Text", ...fresh },
+          { id: "view-transitions", label: "View Transitions", ...fresh },
+          { id: "scroll", label: "Scroll-driven", ...fresh },
+          { id: "pointer", label: "Pointer Effects", ...fresh },
+          { id: "reduced", label: "Reduced Motion", ...fresh },
         ],
       },
       { id: "paper", label: "Paper Showcase" },
@@ -78,15 +95,15 @@ export const nav: NavSection[] = [
       {
         id: "buttons",
         label: "Buttons & Actions",
-        items: items("Button", "Button Group", "Toggle Group", "App Store Badge", "Close Button", "Text Link", "Social Button", "Floating Action Button", "Slide To Confirm", "Undo Action"),
+        items: items("Button", "Button Group", ["Toggle Group", fresh], "App Store Badge", "Close Button", "Text Link", "Social Button", "Floating Action Button", ["Slide To Confirm", fresh], ["Undo Action", fresh]),
       },
       {
         id: "forms",
         label: "Form Controls",
         items: items(
-          "Input", "Password Input", "Search Input", "Input OTP", "Textarea", "Filled Inputs", "Number Input", "Tag Input", "Tag Input Options",
-          "Checkbox", "Radio", "Switch", "Select", "Date Picker", "Date Range Picker", "Date Time Picker", "Time Picker", "Wheel Picker", "Calendar",
-          "Segmented Control", "Slider", "Rating", "File Upload", "Dropzone", "Combobox", "Combobox Async",
+          "Input", "Password Input", "Search Input", "Input OTP", "Textarea", ["Filled Inputs", fresh], "Number Input", "Tag Input", ["Tag Input Options", fresh],
+          "Checkbox", "Radio", "Switch", "Select", "Date Picker", "Date Range Picker", "Date Time Picker", "Time Picker", ["Wheel Picker", fresh], "Calendar",
+          "Segmented Control", "Slider", "Rating", "File Upload", "Dropzone", "Combobox", ["Combobox Async", fresh],
           "Password Strength", "Field", "Input Group", "Label"
         ),
       },
@@ -94,29 +111,29 @@ export const nav: NavSection[] = [
       {
         id: "indicators",
         label: "Indicators",
-        items: items("Chip", "Badge", "Status Badge", "Spinner", "Progress", "Countdown Urgency", "Skeleton", "Steps"),
+        items: items("Chip", "Badge", "Status Badge", "Spinner", "Progress", ["Countdown Urgency", fresh], "Skeleton", "Steps"),
       },
       {
         id: "overlays",
         label: "Overlays",
         items: items(
-          "Tooltip", "Info Tooltip", "Popover", "Hover Card", "Dialog", "Alert Dialog", "Sheet", "Sheet Options",
+          "Tooltip", "Info Tooltip", "Popover", "Hover Card", "Dialog", "Alert Dialog", "Sheet", ["Sheet Options", fresh],
           "Dropdown Menu", "Context Menu", "Command Dialog", "Promise Dialogs"
         ),
       },
       {
         id: "data-display",
         label: "Data Display",
-        items: items("Avatar", "Avatar Group", "Separator", "Filter Bar", "Table", "Data Table", "Card"),
+        items: items("Avatar", "Avatar Group", "Separator", "Filter Bar", "Table", "Data Table", ["Card", fresh]),
       },
       {
         id: "utility",
         label: "Utility",
         items: [
           ...items("Aspect Ratio", "Scroll Area"),
-          { id: "use-disclosure", label: "useDisclosure" },
-          { id: "use-debounced-value", label: "useDebouncedValue" },
-          { id: "use-previous", label: "usePrevious" },
+          { id: "use-disclosure", label: "useDisclosure", ...fresh },
+          { id: "use-debounced-value", label: "useDebouncedValue", ...fresh },
+          { id: "use-previous", label: "usePrevious", ...fresh },
         ],
       },
     ],
@@ -139,13 +156,31 @@ export const nav: NavSection[] = [
           { id: "marquee-chips", label: "Marquee Chips" },
           { id: "marquee-logos", label: "Marquee Logos" },
           { id: "marquee-reverse", label: "Marquee Reverse" },
-          { id: "marquee-pause", label: "Marquee Pause Control" },
-          { id: "item", label: "Item" },
-          { id: "frame", label: "Frame" },
+          { id: "marquee-pause", label: "Marquee Pause Control", ...fresh },
+          { id: "item", label: "Item", ...fresh },
+          { id: "frame", label: "Frame", ...fresh },
           { id: "search-trigger", label: "Search Trigger" },
           { id: "idle-motion", label: "Idle Motion" },
-          { id: "flip-list", label: "Flip List" },
-          { id: "morph-pill", label: "Morph Pill" },
+          { id: "flip-list", label: "Flip List", ...fresh },
+          { id: "morph-pill", label: "Morph Pill", ...fresh },
+        ],
+      },
+      {
+        id: "showpieces",
+        label: "Showpieces",
+        since: "2026-10-20",
+        status: "new",
+        items: [
+          { id: "check-burst", label: "Check Burst", ...fresh },
+          { id: "check-burst-streak", label: "Check Burst Streak", ...fresh },
+          { id: "check-burst-variants", label: "Check Burst Variants", ...fresh },
+          { id: "swipe-deck", label: "Swipe Deck", ...fresh },
+          { id: "swipe-deck-states", label: "Swipe Deck States", ...fresh },
+          { id: "pan-surface", label: "Pan Surface", ...fresh },
+          { id: "pan-surface-zoom", label: "Pan Surface Zoom", ...fresh },
+          { id: "expand-card-calendar", label: "Expand Card Calendar", ...fresh },
+          { id: "expand-card-files", label: "Expand Card Files", ...fresh },
+          { id: "morph-dialog", label: "Morph Dialog", ...fresh },
         ],
       },
       {
@@ -162,9 +197,9 @@ export const nav: NavSection[] = [
       {
         id: "navigation",
         label: "Navigation",
-        items: items("Breadcrumbs", "Pagination", "Pagination Status", "Tab Menu", "Tabs", "Header Nav", "Sidebar", "Section Header", "Section Rail", "Tree View", "Carousel", "Step Wizard"),
+        items: items("Breadcrumbs", "Pagination", ["Pagination Status", fresh], "Tab Menu", "Tabs", "Header Nav", "Sidebar", "Section Header", ["Section Rail", fresh], "Tree View", ["Carousel", fresh], ["Step Wizard", fresh]),
       },
-      { id: "content", label: "Content", items: items("Accordion", "Collapse", "Collapsible", "FAQ", "Blog Content", "Code Block", "Code Block Tabs") },
+      { id: "content", label: "Content", items: items("Accordion", ["Collapse", fresh], ["Collapsible", fresh], "FAQ", "Blog Content", "Code Block", "Code Block Tabs") },
       {
         id: "dataviz",
         label: "Data Viz",
@@ -178,10 +213,10 @@ export const nav: NavSection[] = [
           { id: "stacked-bar", label: "Stacked Bar" },
           { id: "line-chart", label: "Line Chart" },
           { id: "donut-chart", label: "Donut Chart" },
-          { id: "funnel-chart", label: "Funnel Chart" },
-          { id: "waterfall-chart", label: "Waterfall Chart" },
-          { id: "scatter-chart", label: "Scatter Chart" },
-          { id: "radar-chart", label: "Radar Chart" },
+          { id: "funnel-chart", label: "Funnel Chart", ...fresh },
+          { id: "waterfall-chart", label: "Waterfall Chart", ...fresh },
+          { id: "scatter-chart", label: "Scatter Chart", ...fresh },
+          { id: "radar-chart", label: "Radar Chart", ...fresh },
           { id: "meter", label: "Meter" },
           { id: "stacked-meter", label: "Stacked Meter" },
           { id: "gauge", label: "Gauge" },
@@ -193,7 +228,7 @@ export const nav: NavSection[] = [
         label: "Metrics Dashboard",
         items: [
           { id: "dashboard", label: "Live Dashboard" },
-          { id: "animated-number", label: "Animated Number" },
+          { id: "animated-number", label: "Animated Number", ...fresh },
           { id: "bar-list", label: "Bar List" },
           { id: "loading", label: "Loading States" },
           { id: "breakdown", label: "Breakdown Legends" },
@@ -217,7 +252,7 @@ export const nav: NavSection[] = [
           { id: "bottom-tab-bar", label: "Bottom Tab Bar" },
           { id: "adaptive-tabs", label: "Adaptive Tabs" },
           { id: "drawer", label: "Drawer" },
-          { id: "swipe-row", label: "Swipe Row" },
+          { id: "swipe-row", label: "Swipe Row", ...fresh },
           { id: "lightbox", label: "Lightbox" },
           { id: "image-with-fallback", label: "Image With Fallback" },
           { id: "file-viewer", label: "File Viewer" },

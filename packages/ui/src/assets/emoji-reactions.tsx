@@ -1,4 +1,5 @@
 import * as React from "react";
+import { logicalArrow } from "../lib/direction";
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { RiEmotionLine, RiSearchLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
@@ -338,7 +339,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
 
     const onGridKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
       const keys: Record<string, number> = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns, ArrowUp: -columns };
-      const delta = keys[event.key];
+      const delta = keys[logicalArrow(event)];
       if (delta === undefined) return;
       const cells = Array.from(
         event.currentTarget.querySelectorAll<HTMLButtonElement>("[data-emoji-cell]")
@@ -387,7 +388,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
             {searchPlaceholder}
           </label>
           <div className="relative">
-            <RiSearchLine aria-hidden className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+            <RiSearchLine aria-hidden className="pointer-events-none absolute top-1/2 start-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               id={searchId}
               type="search"
@@ -397,7 +398,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
               placeholder={searchPlaceholder}
               autoComplete="off"
               className={cn(
-                "h-8 w-full rounded-control border border-input bg-background pr-2.5 pl-8 text-sm shadow-xs placeholder:text-muted-foreground",
+                "h-8 w-full rounded-control border border-input bg-background pe-2.5 ps-8 text-sm shadow-xs placeholder:text-muted-foreground",
                 focusRing
               )}
             />
@@ -586,7 +587,7 @@ export const EmojiReactionBar = React.forwardRef<HTMLDivElement, EmojiReactionBa
                 )}
               >
                 <RiEmotionLine aria-hidden className="size-4" />
-                <span aria-hidden className="-ml-0.5 text-xs leading-none font-semibold">+</span>
+                <span aria-hidden className="-ms-0.5 text-xs leading-none font-semibold">+</span>
               </button>
             </PopoverPrimitive.Trigger>
             <PopoverPrimitive.Portal>

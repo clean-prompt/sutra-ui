@@ -135,7 +135,7 @@ function MarkdownCodeBlock({ code, language }: MarkdownCodeBlockProps) {
   const { copied, copy } = useCopy();
   return (
     <div className="group/code my-4 overflow-hidden rounded-box border border-code-border bg-code text-code-foreground shadow-xs [color-scheme:dark]">
-      <div className="flex h-9 items-center justify-between border-b border-code-foreground/10 bg-code-foreground/[0.03] pl-3.5 pr-1.5">
+      <div className="flex h-9 items-center justify-between border-b border-code-foreground/10 bg-code-foreground/[0.03] ps-3.5 pe-1.5">
         <span className="font-mono text-xs lowercase text-code-muted">{language || "text"}</span>
         <button
           type="button"
@@ -200,17 +200,17 @@ const defaultComponents: Components = {
     <strong className={cn("font-semibold text-foreground", className)} {...props} />
   ),
   ul: ({ node, className, ...props }) => (
-    <ul className={cn("my-3 list-disc space-y-1.5 pl-6 marker:text-muted-foreground", className)} {...props} />
+    <ul className={cn("my-3 list-disc space-y-1.5 ps-6 marker:text-muted-foreground", className)} {...props} />
   ),
   ol: ({ node, className, ...props }) => (
-    <ol className={cn("my-3 list-decimal space-y-1.5 pl-6 marker:text-muted-foreground", className)} {...props} />
+    <ol className={cn("my-3 list-decimal space-y-1.5 ps-6 marker:text-muted-foreground", className)} {...props} />
   ),
   li: ({ node, className, ...props }) => (
-    <li className={cn("pl-1 leading-7 [&>ol]:my-1.5 [&>p]:my-1 [&>ul]:my-1.5", className)} {...props} />
+    <li className={cn("ps-1 leading-7 [&>ol]:my-1.5 [&>p]:my-1 [&>ul]:my-1.5", className)} {...props} />
   ),
   blockquote: ({ node, className, ...props }) => (
     <blockquote
-      className={cn("my-4 border-l-2 border-border-strong pl-4 text-muted-foreground [&>p]:my-1.5", className)}
+      className={cn("my-4 border-s-2 border-border-strong ps-4 text-muted-foreground [&>p]:my-1.5", className)}
       {...props}
     />
   ),
@@ -226,7 +226,7 @@ const defaultComponents: Components = {
   ),
   th: ({ node, className, ...props }) => (
     <th
-      className={cn("whitespace-nowrap px-3 py-2 text-left font-semibold text-foreground [&[align=center]]:text-center [&[align=right]]:text-right", className)}
+      className={cn("whitespace-nowrap px-3 py-2 text-start font-semibold text-foreground [&[align=center]]:text-center [&[align=right]]:text-right", className)}
       {...props}
     />
   ),
@@ -237,7 +237,7 @@ const defaultComponents: Components = {
     <img alt={alt ?? ""} className={cn("my-4 max-w-full rounded-box border border-border", className)} {...props} />
   ),
   input: ({ node, className, ...props }) => (
-    <input className={cn("mr-1.5 translate-y-px accent-primary", className)} {...props} />
+    <input className={cn("me-1.5 translate-y-px accent-primary", className)} {...props} />
   ),
   sup: ({ node, className, ...props }) => {
     const cite = (props as Record<string, unknown>)["data-sutra-cite"];

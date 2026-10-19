@@ -78,7 +78,7 @@ export const BillingBanner = React.forwardRef<HTMLDivElement, BillingBannerProps
         onDismiss={onDismiss}
         action={
           onAction && (
-            <Button size="sm" variant={kind === "payment-failed" ? "destructive" : kind === "info" ? "secondary" : "primary"} onClick={onAction} trailingIcon={<RiArrowRightLine aria-hidden />}>
+            <Button size="sm" variant={kind === "payment-failed" ? "destructive" : kind === "info" ? "secondary" : "primary"} onClick={onAction} trailingIcon={<RiArrowRightLine className="rtl:-scale-x-100" aria-hidden />}>
               {actionLabel ?? t.action}
             </Button>
           )

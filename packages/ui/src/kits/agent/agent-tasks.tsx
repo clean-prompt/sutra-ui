@@ -147,13 +147,13 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
         <span id={titleId} className={cn("font-medium text-foreground", compact ? "text-xs" : "text-sm")}>
           {title}
         </span>
-        <span data-slot="todo-progress-text" className={cn("ml-auto tabular-nums text-muted-foreground", compact ? "text-2xs" : "text-xs")}>
+        <span data-slot="todo-progress-text" className={cn("ms-auto tabular-nums text-muted-foreground", compact ? "text-2xs" : "text-xs")}>
           {done} of {total} done
         </span>
         {collapsible && (
           <RiArrowDownSLine
             aria-hidden
-            className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", !open && "-rotate-90")}
+            className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", !open && "-rotate-90 rtl:rotate-90")}
           />
         )}
       </>
@@ -174,7 +174,7 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
             aria-controls={expanded ? listId : undefined}
             onClick={() => setOpen(!open)}
             className={cn(
-              "flex w-full items-center gap-2 text-left rounded-control",
+              "flex w-full items-center gap-2 text-start rounded-control",
               compact ? "py-1" : "px-3 py-2.5",
               focusRing
             )}
@@ -414,7 +414,7 @@ export const AgentRosterPanel = React.forwardRef<HTMLDivElement, AgentRosterPane
           <span id={titleId} className="text-xs font-medium text-muted-foreground">
             {title}
           </span>
-          <span className="ml-auto text-2xs tabular-nums text-muted-foreground">
+          <span className="ms-auto text-2xs tabular-nums text-muted-foreground">
             {running} active · {agents.length} total
           </span>
         </div>

@@ -5,8 +5,9 @@ import { rubberBand, swipeRowRelease, type SwipeSide } from "../lib/gesture";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useDrag } from "../hooks/use-drag";
 import { useElementWidth } from "../hooks/use-resize-observer";
-import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useDirection } from "../hooks/use-direction";
+import { inlineSign } from "../lib/direction";
 import { ItemListContext } from "../primitives/item-internal";
 
 export type SwipeRowSide = SwipeSide;
@@ -98,7 +99,7 @@ export const SwipeRow = React.forwardRef<HTMLDivElement, SwipeRowProps>(function
   const startGroup = React.useRef<HTMLDivElement | null>(null);
   const endGroup = React.useRef<HTMLDivElement | null>(null);
   const lastFocus = React.useRef<HTMLElement | null>(null);
-  const [dir, setDir] = React.useState<1 | -1>(1);
+  const dir = inlineSign(useDirection(rootRef));
   const startWidth = startActions.length * actionWidth;
   const endWidth = endActions.length * actionWidth;
   const rowWidth = useElementWidth(rootRef);
@@ -155,10 +156,6 @@ export const SwipeRow = React.forwardRef<HTMLDivElement, SwipeRowProps>(function
   });
   const { set: setPosition, settle } = drag;
   const ref = useMergedRefs(rootRef, forwardedRef, drag.ref);
-
-  useIsoLayoutEffect(() => {
-    if (rootRef.current) setDir(getComputedStyle(rootRef.current).direction === "rtl" ? -1 : 1);
-  }, []);
 
   // Follow `value` from outside (controlled, keys, focus): jump on the first sync, spring afterwards.
   const widthsReady = value === null || (value === "start" ? startWidth : endWidth) > 0;

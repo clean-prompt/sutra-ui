@@ -41,11 +41,11 @@ export const ClarifySettled = React.forwardRef<HTMLDivElement, ClarifySettledPro
           aria-expanded={open}
           aria-controls={open ? listId : undefined}
           onClick={() => setOpen(!open)}
-          className={cn("flex w-full items-center gap-2 rounded-box px-3 py-2 text-left text-muted-foreground transition-colors hover:text-foreground", focusRing)}
+          className={cn("flex w-full items-center gap-2 rounded-box px-3 py-2 text-start text-muted-foreground transition-colors hover:text-foreground", focusRing)}
         >
           <RiCheckboxCircleFill aria-hidden className="size-4 shrink-0 text-success" />
           <span className="min-w-0 flex-1 truncate font-medium text-foreground">{summary}</span>
-          <RiArrowRightSLine aria-hidden className={cn("size-4 shrink-0 chevron-turn", open && "rotate-90")} />
+          <RiArrowRightSLine aria-hidden className={cn("size-4 shrink-0 chevron-turn rtl:-scale-x-100", open && "rotate-90 rtl:-rotate-90")} />
         </button>
         {open && (
           <ol id={listId} className="flex flex-col gap-2 border-t border-border px-3 py-2.5">

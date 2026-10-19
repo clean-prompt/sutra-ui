@@ -43,7 +43,7 @@ export interface DividedGridItemProps extends Omit<React.HTMLAttributes<HTMLElem
   disabled?: boolean;
 }
 
-const cellBase = "relative flex h-full w-full flex-col items-stretch gap-3 p-5 text-left";
+const cellBase = "relative flex h-full w-full flex-col items-stretch gap-3 p-5 text-start";
 const cellInteractive =
   "cursor-pointer no-underline transition-colors hover:bg-accent focus-visible:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring";
 const cellDisabled = "cursor-not-allowed opacity-50";
@@ -76,7 +76,7 @@ export const DividedGridItem = React.forwardRef<HTMLElement, DividedGridItemProp
               </span>
             ) : null}
             {ctx?.numbered ? (
-              <span aria-hidden data-slot="divided-grid-number" className={cn("font-mono text-xs tabular-nums text-muted-foreground", icon && "ml-auto")}>
+              <span aria-hidden data-slot="divided-grid-number" className={cn("font-mono text-xs tabular-nums text-muted-foreground", icon && "ms-auto")}>
                 {cellNumber(ctx.index)}
               </span>
             ) : null}
@@ -228,7 +228,7 @@ const columnClasses: Record<"viewport" | "container", Record<DividedGridColumns,
   },
 };
 
-const cellClass = "border-b border-r border-border";
+const cellClass = "border-b border-e border-border";
 
 function SkeletonCell() {
   return (
@@ -260,7 +260,7 @@ export const DividedGrid = React.forwardRef<HTMLDivElement, DividedGridProps>(
     ];
     const skeleton = !!loading && cells.length === 0;
     const placeholderCount = Math.max(1, Math.floor(loadingCells ?? columns * 2));
-    const listClass = cn("-mr-px -mb-px grid list-none p-0", columnClasses[query][columns]);
+    const listClass = cn("-me-px -mb-px grid list-none p-0", columnClasses[query][columns]);
 
     return (
       <div

@@ -512,7 +512,7 @@ export const KunjiSignInView = React.forwardRef<HTMLDivElement, KunjiSignInViewP
         {...props}
       >
         {title !== null && (
-          <div className={cn("flex flex-col gap-1.5", compact ? "items-start text-left" : "items-center text-center")}>
+          <div className={cn("flex flex-col gap-1.5", compact ? "items-start text-start" : "items-center text-center")}>
             <div className="flex items-center gap-2">
               <KunjiMark variant="tile" size={compact ? 22 : 26} />
               <h2 className={cn("font-semibold tracking-tight text-foreground", compact ? "text-base" : "text-lg")}>{title}</h2>

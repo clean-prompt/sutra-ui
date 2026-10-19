@@ -732,6 +732,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
       <div
         ref={ref}
         className={cn("flex min-w-0 flex-col overflow-hidden rounded-box border border-border bg-card shadow-xs", className)}
+        dir="ltr"
         {...props}
       >
         {!hideToolbar && (
@@ -784,10 +785,10 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
                 className="w-40"
               />
             )}
-            <div className="ml-auto flex max-w-full flex-wrap items-center justify-end gap-0.5">
+            <div className="ms-auto flex max-w-full flex-wrap items-center justify-end gap-0.5">
               {toolbarExtra}
               {chip && (
-                <span className="mr-1.5 inline-flex items-center gap-1.5 text-xs text-muted-foreground" role="status">
+                <span className="me-1.5 inline-flex items-center gap-1.5 text-xs text-muted-foreground" role="status">
                   <span aria-hidden className={cn("size-1.5 rounded-full", chip.dot)} />
                   {chip.label}
                 </span>
@@ -864,7 +865,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
                         {showNums && (
                           <span
                             aria-hidden
-                            className="shrink-0 select-none text-right tabular-nums text-code-muted/70"
+                            className="shrink-0 select-none text-end tabular-nums text-code-muted/70"
                             style={{ width: `${gutter}ch` }}
                           >
                             {e.seq}

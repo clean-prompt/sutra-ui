@@ -140,7 +140,7 @@ export const RemoteScreenViewer = React.forwardRef<HTMLDivElement, RemoteScreenV
               {latencyMs} ms
             </span>
           )}
-          <div className="ml-auto flex items-center gap-0.5">
+          <div className="ms-auto flex items-center gap-0.5">
             {onScreenshot && (
               <Button variant="ghost" size="icon-xs" aria-label="Take screenshot" onClick={onScreenshot} disabled={state === "disconnected"}>
                 <RiCameraLine aria-hidden />
@@ -309,12 +309,12 @@ export const PermissionPreflightCard = React.forwardRef<HTMLDivElement, Permissi
                 <div className="min-w-0 flex-1 basis-40">
                   <p className="text-sm font-medium text-foreground">
                     {p.label}
-                    {p.optional && <span className="ml-1.5 text-2xs font-normal text-muted-foreground">Optional</span>}
+                    {p.optional && <span className="ms-1.5 text-2xs font-normal text-muted-foreground">Optional</span>}
                   </p>
                   {p.description && <p className="text-xs text-muted-foreground">{p.description}</p>}
                 </div>
                 {p.state !== "granted" && onOpenSettings && (
-                  <Button size="xs" variant="ghost" className="ml-auto" trailingIcon={<RiExternalLinkLine aria-hidden />} onClick={() => onOpenSettings(p.id)}>
+                  <Button size="xs" variant="ghost" className="ms-auto" trailingIcon={<RiExternalLinkLine aria-hidden />} onClick={() => onOpenSettings(p.id)}>
                     Open settings
                   </Button>
                 )}

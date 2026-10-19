@@ -93,7 +93,7 @@ export const ChatScrollButton = React.forwardRef<HTMLButtonElement, ChatScrollBu
           if (!e.defaultPrevented) scrollToBottom("smooth");
         }}
         className={cn(
-          "absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-background/90 shadow-md backdrop-blur-sm transition-[opacity,transform,translate,scale,rotate,background-color] duration-200",
+          "absolute bottom-4 start-1/2 z-10 -translate-x-1/2 rtl:translate-x-1/2 rounded-full bg-background/90 shadow-md backdrop-blur-sm transition-[opacity,transform,translate,scale,rotate,background-color] duration-200",
           "data-[state=hidden]:pointer-events-none data-[state=hidden]:translate-y-2 data-[state=hidden]:opacity-0",
           className
         )}

@@ -25,6 +25,7 @@ const fabLayout: Record<FabPosition, string> = {
 };
 
 const fabOffsets: Record<FabPosition, string> = {
+  // rtl-physical x6: corner position names are physical
   "bottom-right": "bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-6",
   "bottom-left": "bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-6",
   "bottom-center": "bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2",
@@ -222,7 +223,7 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
         >
           {iconNode}
         </span>
-        {extended && <span className="pr-0.5">{label}</span>}
+        {extended && <span className="pe-0.5">{label}</span>}
       </button>
     );
 

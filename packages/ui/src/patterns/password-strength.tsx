@@ -102,7 +102,7 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
           {showLabel && (
             <span
               aria-live="polite"
-              className={cn("min-w-12 text-right text-xs font-medium transition-colors", level.text)}
+              className={cn("min-w-12 text-end text-xs font-medium transition-colors", level.text)}
             >
               {label}
             </span>
