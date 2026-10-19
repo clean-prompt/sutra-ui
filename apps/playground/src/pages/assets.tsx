@@ -92,7 +92,7 @@ import { Demo, DemoLabel, PageIntro } from "../components/demo";
 /* ------------------------------------------------------------------ */
 
 const logoSizes: SutraLogoSize[] = ["xs", "sm", "md", "lg", "xl"];
-const markVariants: SutraMarkVariant[] = ["tile", "glyph", "outline", "solid", "badge"];
+const markVariants: SutraMarkVariant[] = ["glyph", "tile", "reversed", "solid", "outline", "badge"];
 const markSizes = [16, 32, 96, 160];
 
 /** Every mark variant at 16, 32, 96 and 160 px, on the page theme or on a panel pinned to dark. */
@@ -117,7 +117,7 @@ function LogoDemo() {
     <Demo
       id="logo"
       title="Logo"
-      description="SutraLogo pairs the thread mark with the wordmark. SutraMark and SutraWordmark are also available on their own."
+      description="SutraLogo pairs the bead mark with the drawn wordmark, ink on paper: both follow the text colour. SutraMark and SutraWordmark are also available on their own."
       align="start"
       canvasClassName="gap-8"
     >
@@ -147,7 +147,7 @@ function LogoDemo() {
         <div className="flex flex-wrap items-center gap-8">
           <SutraLogo size="md" product="notes" />
           <SutraLogo size="md" product="tasks" markVariant="outline" />
-          <SutraLogo size="md" product="calendar" markVariant="glyph" />
+          <SutraLogo size="md" product="calendar" markVariant="tile" />
           <SutraLogo size="md" product="files" markVariant="solid" />
           <SutraLogo size="md" product="vault" markVariant="badge" />
         </div>
@@ -172,8 +172,9 @@ function LogoDemo() {
           </div>
         </div>
         <p className="max-w-2xl text-xs text-muted-foreground">
-          solid reads --primary and --primary-foreground (brand colour in the stock theme, ink on paper in paper light, white in
-          paper dark). badge is a heavy frame in currentColor, so it takes any text colour.
+          glyph, outline and badge are drawn in currentColor, so they take any text colour. tile (ink on paper) and reversed (paper
+          on ink) use the two brand inks literally. solid reads --primary and --primary-foreground (brand colour in the stock
+          theme, ink on paper in paper light, white in paper dark).
         </p>
       </div>
 
@@ -190,6 +191,7 @@ function LogoDemo() {
         <div className="flex flex-wrap items-baseline gap-8">
           <SutraWordmark size="lg" />
           <SutraWordmark size="xl" gradient />
+          <SutraWordmark size="lg">sutra notes</SutraWordmark>
           <span className="rounded-box bg-inverse px-4 py-3 text-inverse-foreground">
             <SutraWordmark size="lg" />
           </span>
@@ -200,33 +202,52 @@ function LogoDemo() {
 }
 
 const appShapes = ["rounded", "squircle", "circle"] as const;
+const appTones = ["mono", "reversed", "dyed"] as const;
+
+function AppIconGrid({ label, shape, tone }: { label: string; shape: (typeof appShapes)[number]; tone: (typeof appTones)[number] }) {
+  return (
+    <div className="space-y-3">
+      <DemoLabel>{label}</DemoLabel>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(4.5rem,1fr))] gap-6">
+        {sutraApps.map((app) => (
+          <div key={app} className="flex flex-col items-center gap-2">
+            <SutraAppIcon app={app} shape={shape} tone={tone} size={52} title={sutraAppMeta[app].name} />
+            <span className="text-xs text-muted-foreground">{sutraAppMeta[app].name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function AppIconsDemo() {
   return (
     <Demo
       id="app-icons"
       title="App icons"
-      description="A gradient tile per suite app, from sutraApps and sutraAppMeta, in three corner shapes."
+      description="One tile per suite app, from sutraApps and sutraAppMeta: a thread across the tile, a bead on it, one pictogram in the bead. Ink on paper by default; tone picks reversed or dyed, shape the corners."
       align="start"
       canvasClassName="gap-8"
     >
-      {appShapes.map((shape) => (
-        <div key={shape} className="space-y-3">
-          <DemoLabel>{shape}</DemoLabel>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(4.5rem,1fr))] gap-6">
+      <AppIconGrid label="mono (default, ink on paper)" shape="rounded" tone="mono" />
+      <AppIconGrid label="reversed (paper on ink)" shape="rounded" tone="reversed" />
+      <AppIconGrid label="dyed (bead in the app's own dye)" shape="rounded" tone="dyed" />
+      <AppIconGrid label="squircle" shape="squircle" tone="mono" />
+      <AppIconGrid label="circle" shape="circle" tone="mono" />
+      <div className="space-y-3">
+        <DemoLabel>A row reads as one string</DemoLabel>
+        <div className="max-w-full overflow-x-auto pb-1">
+          <div className="flex min-w-max">
             {sutraApps.map((app) => (
-              <div key={app} className="flex flex-col items-center gap-2">
-                <SutraAppIcon app={app} shape={shape} size={52} title={sutraAppMeta[app].name} />
-                <span className="text-xs text-muted-foreground">{sutraAppMeta[app].name}</span>
-              </div>
+              <SutraAppIcon key={app} app={app} size={56} />
             ))}
           </div>
         </div>
-      ))}
+      </div>
       <div className="space-y-3">
         <DemoLabel>Sizes</DemoLabel>
         <div className="flex flex-wrap items-end gap-4">
-          {[24, 32, 40, 56, 72].map((size) => (
+          {[16, 24, 32, 40, 56, 72].map((size) => (
             <SutraAppIcon key={size} app="tasks" shape="squircle" size={size} />
           ))}
         </div>

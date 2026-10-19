@@ -1,5 +1,7 @@
 # Sutra brand options
 
+> **Decision (2026-10-20): option 01 "Bead", ink on paper, was chosen and is rolled out.** The final files are in `../brand/`; this folder is kept as the record of the other five directions.
+
 Six directions for a new Sutra mark and eight app icons, replacing the knot-S on gradient tiles. Open `index.html` (one self-contained page: works offline, on a phone, light and dark) to compare them; it starts with a comparison table and the current logo for reference, and ends with a ranked recommendation and a roll-out plan.
 
 | Folder | Idea | Mark | App tiles |

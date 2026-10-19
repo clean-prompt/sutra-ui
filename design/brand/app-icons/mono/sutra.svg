@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Sutra">
+<title>Sutra</title>
+<g transform="scale(16)">
+<rect width="64" height="64" rx="14.3" fill="#f7f5f0"/><rect x="0.5" y="0.5" width="63" height="63" rx="13.8" fill="none" stroke="#1c1915" stroke-opacity="0.14"/><path d="M12.27 27.8A19 19 0 1 1 12.27 36.2L20.63 36.2A11 11 0 1 0 20.63 27.8Z" fill="#1c1915"/><path d="M2 30H39.37A8.8 8.8 0 0 1 39.37 34H2A2 2 0 0 1 2 30Z" fill="#1c1915"/><path d="M51.91 30H62A2 2 0 0 1 62 34H51.91A21.2 21.2 0 0 0 51.91 30Z" fill="#1c1915"/>
+</g>
+</svg>

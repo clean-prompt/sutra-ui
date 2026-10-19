@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Sutra Calendar">
+<title>Sutra Calendar</title>
+<g transform="scale(16)">
+<rect width="64" height="64" rx="14.3" fill="#f7f5f0"/><rect x="0.5" y="0.5" width="63" height="63" rx="13.8" fill="none" stroke="#1c1915" stroke-opacity="0.14"/><rect y="30.7" width="64" height="2.6" fill="#1c1915"/><circle cx="32" cy="32" r="21" fill="#1c1915"/><g transform="translate(19 19) scale(1.08)"><path d="M6.6 5.2h10.8a2.2 2.2 0 0 1 2.2 2.2v10.4a2.2 2.2 0 0 1-2.2 2.2H6.6a2.2 2.2 0 0 1-2.2-2.2V7.4a2.2 2.2 0 0 1 2.2-2.2Z" fill="none" stroke="#f7f5f0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.4 10.2h15.2" fill="none" stroke="#f7f5f0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.4 3v3.6M15.6 3v3.6" fill="none" stroke="#f7f5f0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.6" cy="14.4" r="1.49" fill="#f7f5f0"/><circle cx="12" cy="14.4" r="1.49" fill="#f7f5f0"/><circle cx="15.4" cy="14.4" r="1.49" fill="#f7f5f0"/></g>
+</g>
+</svg>

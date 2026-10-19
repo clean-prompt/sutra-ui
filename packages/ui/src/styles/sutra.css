@@ -662,8 +662,8 @@
 /* data-app="notes|tasks|calendar|mail|files|journal|finance|habits"   */
 /* on any element retunes the brand scale (and the semantic tokens     */
 /* derived from it) so the subtree adopts that app's accent. Colors    */
-/* follow the SutraAppIcon gradients; --app-from / --app-to expose the */
-/* gradient pair itself.                                               */
+/* follow the gradient pair in sutraAppMeta (from, to), which the      */
+/* icons no longer draw; --app-from / --app-to expose the pair itself. */
 /* ================================================================== */
 
 [data-app="notes"] {

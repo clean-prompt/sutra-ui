@@ -1,91 +1,130 @@
 import { render, screen } from "@testing-library/react";
-import { SutraLogo, SutraMark, SutraWordmark, type SutraMarkVariant } from "../src/assets/brand";
+import {
+  SutraAppIcon,
+  SutraLogo,
+  SutraMark,
+  SutraWordmark,
+  sutraAppMeta,
+  sutraApps,
+  type SutraMarkVariant,
+} from "../src/assets/brand";
 import { axeViolations } from "./a11y";
 
-const all: SutraMarkVariant[] = ["tile", "glyph", "outline", "solid", "badge"];
+const all: SutraMarkVariant[] = ["glyph", "tile", "reversed", "solid", "outline", "badge"];
 
 const svgOf = (container: HTMLElement) => container.querySelector("svg")!;
+const beadOf = (svg: SVGSVGElement) => svg.querySelector("g")!;
+const shapesOf = (svg: SVGSVGElement) => Array.from(beadOf(svg).querySelectorAll("path")).map((p) => p.getAttribute("d"));
 
-describe("SutraMark solid", () => {
-  it("is a flat tile in --primary with a --primary-foreground thread, with no gradient or shine", () => {
+/* The Bead logo (design/brand-options/01-bead) replaced the thread-S: these tests pin the new drawing and keep the intents of the
+   old ones (flat theme-following tile, heavy frame inside the box, one accessible name, unique ids, axe). */
+
+describe("SutraMark glyph (default, ink on paper)", () => {
+  it("is the bead alone in currentColor: no tile, no gradient, no defs", () => {
+    const svg = svgOf(render(<SutraMark />).container);
+    expect(svg).toHaveAttribute("viewBox", "0 0 64 64");
+    expect(svg).toHaveAttribute("width", "32");
+    expect(svg.querySelector("rect")).toBeNull();
+    expect(svg.querySelector("defs")).toBeNull();
+    expect(svg.querySelector("linearGradient")).toBeNull();
+    expect(beadOf(svg).getAttribute("fill")).toBe("currentColor");
+    expect(shapesOf(svg)).toHaveLength(3);
+  });
+
+  it("is drawn larger inside its box than the tile variants, still within the box", () => {
+    const g = beadOf(svgOf(render(<SutraMark />).container));
+    expect(g.getAttribute("transform")).toBe("translate(32 32) scale(1.18) translate(-32 -32)");
+    // The fine bead spans x 6.2 to 57.8 about the centre: 1.18 keeps it inside 0 to 64.
+    expect(32 - (32 - 6.2) * 1.18).toBeGreaterThanOrEqual(0);
+    expect(32 + (57.8 - 32) * 1.18).toBeLessThanOrEqual(64);
+  });
+
+  it("follows the text colour", () => {
+    const { container } = render(<SutraMark className="text-destructive" />);
+    expect(container.innerHTML).toContain("currentColor");
+  });
+});
+
+describe("SutraMark tiles", () => {
+  it("tile is ink on a paper tile with a hairline edge, in literal colours", () => {
+    const { container } = render(<SutraMark variant="tile" />);
+    const svg = svgOf(container);
+    const rects = svg.querySelectorAll("rect");
+    expect(rects).toHaveLength(2);
+    expect(rects[0].getAttribute("fill")).toBe("#f7f5f0");
+    expect(rects[1].getAttribute("stroke")).toBe("#1c1915");
+    expect(beadOf(svg).getAttribute("fill")).toBe("#1c1915");
+    expect(beadOf(svg).getAttribute("transform")).toBeNull();
+    expect(container.innerHTML).not.toContain("currentColor");
+  });
+
+  it("reversed is a paper bead on an ink tile", () => {
+    const { container } = render(<SutraMark variant="reversed" />);
+    const svg = svgOf(container);
+    expect(svg.querySelectorAll("rect")).toHaveLength(1);
+    expect(svg.querySelector("rect")!.getAttribute("fill")).toBe("#1c1915");
+    expect(beadOf(svg).getAttribute("fill")).toBe("#f7f5f0");
+  });
+
+  it("solid is a flat tile in --primary with a --primary-foreground bead, with no gradient or shine", () => {
     const { container } = render(<SutraMark variant="solid" />);
     const svg = svgOf(container);
     expect(svg.querySelector("linearGradient")).toBeNull();
     expect(svg.querySelector("defs")).toBeNull();
-    const tile = svg.querySelector("rect")!;
-    expect(tile.getAttribute("fill")).toMatch(/^var\(--primary,/);
     expect(svg.querySelectorAll("rect")).toHaveLength(1);
-    expect(svg.querySelector("g")!.getAttribute("stroke")).toMatch(/^var\(--primary-foreground,/);
-    expect(svg.querySelector("circle")!.getAttribute("fill")).toMatch(/^var\(--primary-foreground,/);
+    expect(svg.querySelector("rect")!.getAttribute("fill")).toMatch(/^var\(--primary,/);
+    expect(beadOf(svg).getAttribute("fill")).toMatch(/^var\(--primary-foreground,/);
   });
 
-  it("does not depend on the text colour", () => {
+  it("solid does not depend on the text colour", () => {
     const { container } = render(<SutraMark variant="solid" className="text-destructive" />);
     expect(container.innerHTML).not.toContain("currentColor");
   });
+
+  it("the tile variants share one bold drawing, the glyph and outline one fine drawing", () => {
+    const shapes = (variant: SutraMarkVariant) => shapesOf(svgOf(render(<SutraMark variant={variant} />).container));
+    expect(shapes("tile")).toEqual(shapes("reversed"));
+    expect(shapes("tile")).toEqual(shapes("solid"));
+    expect(shapes("tile")).toEqual(shapes("badge"));
+    expect(shapes("glyph")).toEqual(shapes("outline"));
+    expect(shapes("glyph")).not.toEqual(shapes("tile"));
+  });
 });
 
-describe("SutraMark badge", () => {
-  it("is a heavy rounded-square outline in currentColor around the thread", () => {
-    const { container } = render(<SutraMark variant="badge" />);
-    const svg = svgOf(container);
+describe("SutraMark frames", () => {
+  it("outline is a thin rounded-square frame in currentColor around the bead", () => {
+    const svg = svgOf(render(<SutraMark variant="outline" />).container);
     const frame = svg.querySelector("rect")!;
     expect(svg.querySelectorAll("rect")).toHaveLength(1);
     expect(frame.getAttribute("stroke")).toBe("currentColor");
-    expect(Number(frame.getAttribute("stroke-width"))).toBeGreaterThanOrEqual(3);
+    expect(frame.getAttribute("stroke-width")).toBe("3.5");
     expect(frame.getAttribute("fill")).toBeNull();
-    expect(svg.querySelector("g")!.getAttribute("stroke")).toBe("currentColor");
+    expect(beadOf(svg).getAttribute("fill")).toBe("currentColor");
+  });
+
+  it("badge is a heavy rounded-square outline in currentColor around a bold bead", () => {
+    const svg = svgOf(render(<SutraMark variant="badge" />).container);
+    const frame = svg.querySelector("rect")!;
+    expect(svg.querySelectorAll("rect")).toHaveLength(1);
+    expect(frame.getAttribute("stroke")).toBe("currentColor");
+    expect(Number(frame.getAttribute("stroke-width"))).toBeGreaterThanOrEqual(5);
+    expect(frame.getAttribute("fill")).toBeNull();
+    expect(beadOf(svg).getAttribute("fill")).toBe("currentColor");
     expect(svg.querySelector("linearGradient")).toBeNull();
   });
 
-  it("is bolder than outline, in the frame and in the thread", () => {
+  it("badge is bolder than outline in the frame", () => {
     const outline = svgOf(render(<SutraMark variant="outline" />).container);
     const badge = svgOf(render(<SutraMark variant="badge" />).container);
-    const stroke = (svg: SVGSVGElement, selector: string) => Number(svg.querySelector(selector)!.getAttribute("stroke-width"));
-    expect(stroke(badge, "rect")).toBeGreaterThan(stroke(outline, "rect"));
-    expect(stroke(badge, "g")).toBeGreaterThan(stroke(outline, "g"));
+    const width = (svg: SVGSVGElement) => Number(svg.querySelector("rect")!.getAttribute("stroke-width"));
+    expect(width(badge)).toBeGreaterThan(width(outline));
   });
 
-  it("keeps the frame inside the 32 box", () => {
-    const frame = svgOf(render(<SutraMark variant="badge" />).container).querySelector("rect")!;
+  it.each(["outline", "badge"] as const)("%s keeps its frame inside the 64 box", (variant) => {
+    const frame = svgOf(render(<SutraMark variant={variant} />).container).querySelector("rect")!;
     const half = Number(frame.getAttribute("stroke-width")) / 2;
     expect(Number(frame.getAttribute("x")) - half).toBeGreaterThanOrEqual(0);
-    expect(Number(frame.getAttribute("x")) + Number(frame.getAttribute("width")) + half).toBeLessThanOrEqual(32);
-  });
-});
-
-describe("SutraMark existing variants", () => {
-  it("tile keeps its gradient, shine and white thread", () => {
-    const svg = svgOf(render(<SutraMark />).container);
-    expect(svg.querySelectorAll("linearGradient")).toHaveLength(2);
-    expect(svg.querySelectorAll("rect")).toHaveLength(3);
-    const thread = svg.querySelector("g")!;
-    expect(thread.getAttribute("stroke")).toBe("#ffffff");
-    expect(thread.getAttribute("stroke-width")).toBe("2.2");
-    expect(thread.getAttribute("transform")).toBeNull();
-  });
-
-  it("glyph keeps its scaled, heavier thread and no tile", () => {
-    const svg = svgOf(render(<SutraMark variant="glyph" />).container);
-    expect(svg.querySelector("rect")).toBeNull();
-    const thread = svg.querySelector("g")!;
-    expect(thread.getAttribute("stroke")).toBe("currentColor");
-    expect(thread.getAttribute("stroke-width")).toBe("2.6");
-    expect(thread.getAttribute("transform")).toBe("translate(16 16) scale(1.22) translate(-16 -16)");
-    expect(svg.querySelector("circle")!.getAttribute("transform")).toBe(thread.getAttribute("transform"));
-  });
-
-  it("outline keeps its thin frame", () => {
-    const svg = svgOf(render(<SutraMark variant="outline" />).container);
-    const frame = svg.querySelector("rect")!;
-    expect(frame.getAttribute("stroke-width")).toBe("1.75");
-    expect(svg.querySelector("g")!.getAttribute("stroke-width")).toBe("2.2");
-  });
-
-  it("defaults to the tile at 32 px", () => {
-    const svg = svgOf(render(<SutraMark />).container);
-    expect(svg).toHaveAttribute("width", "32");
-    expect(svg.querySelector("linearGradient")).not.toBeNull();
+    expect(Number(frame.getAttribute("x")) + Number(frame.getAttribute("width")) + half).toBeLessThanOrEqual(64);
   });
 });
 
@@ -106,7 +145,15 @@ describe("SutraMark and SutraLogo, every variant", () => {
     // Same drawing as the standalone mark (the logo scales it, so compare the shapes only).
     const strip = (html: string) => html.replace(/ (width|height|class)="[^"]*"/g, "").replace(/sutra-mark-[\w-]+/g, "ID");
     expect(strip(mark.outerHTML)).toBe(strip(direct));
-    expect(container.querySelectorAll("svg")).toHaveLength(1);
+    // One mark; the only other graphic is the drawn wordmark.
+    expect(container.querySelectorAll("svg:not([data-slot='sutra-wordmark'])")).toHaveLength(1);
+  });
+
+  it("the logo leads with the glyph by default", () => {
+    render(<SutraLogo />);
+    const mark = screen.getByRole("img", { name: "Sutra" }).querySelector("svg")!;
+    expect(mark.querySelector("rect")).toBeNull();
+    expect(beadOf(mark).getAttribute("fill")).toBe("currentColor");
   });
 
   it("ids stay unique when several marks render", () => {
@@ -116,6 +163,8 @@ describe("SutraMark and SutraLogo, every variant", () => {
           <SutraMark key={variant} variant={variant} title={variant} />
         ))}
         <SutraMark />
+        <SutraWordmark gradient />
+        <SutraWordmark gradient />
       </div>
     );
     const ids = Array.from(container.querySelectorAll("[id]")).map((el) => el.id);
@@ -131,6 +180,105 @@ describe("SutraMark and SutraLogo, every variant", () => {
         <SutraLogo markVariant="solid" product="files" />
         <SutraLogo markVariant="badge" layout="stacked" />
         <SutraWordmark />
+        <SutraAppIcon app="notes" title="Notes" />
+      </div>
+    );
+    expect(await axeViolations(container)).toEqual([]);
+  });
+});
+
+describe("SutraWordmark", () => {
+  it("is the drawn word by default: a monoline path in currentColor with real text for screen readers", () => {
+    const { container } = render(<SutraWordmark />);
+    const svg = container.querySelector("svg[data-slot='sutra-wordmark']")!;
+    expect(svg).toHaveAttribute("aria-hidden", "true");
+    expect(svg.querySelector("path")!.getAttribute("stroke")).toBe("currentColor");
+    expect(screen.getByText("sutra")).toHaveClass("sr-only");
+  });
+
+  it("sets custom text in the brand sans when given children", () => {
+    const { container } = render(<SutraWordmark>sutra notes</SutraWordmark>);
+    expect(container.querySelector("svg")).toBeNull();
+    expect(screen.getByText("sutra notes")).toBeInTheDocument();
+  });
+
+  it("paints the stroke with a brand gradient when asked", () => {
+    const { container } = render(<SutraWordmark gradient />);
+    const gradient = container.querySelector("linearGradient")!;
+    expect(container.querySelector("path")!.getAttribute("stroke")).toBe(`url(#${gradient.id})`);
+  });
+
+  it("scales with the size class through em units", () => {
+    const { container } = render(<SutraWordmark size="xl" />);
+    expect(container.firstElementChild).toHaveClass("text-display-xs");
+    expect(container.querySelector("svg")!.style.height).toBe("0.7em");
+  });
+});
+
+describe("SutraAppIcon tones", () => {
+  it("is mono by default: ink bead and thread on a paper tile, a paper pictogram", () => {
+    const { container } = render(<SutraAppIcon app="mail" />);
+    const svg = svgOf(container);
+    expect(svg).toHaveAttribute("viewBox", "0 0 64 64");
+    expect(svg.querySelector("rect")!.getAttribute("fill")).toBe("#f7f5f0");
+    expect(svg.querySelector("circle")!.getAttribute("fill")).toBe("#1c1915");
+    expect(svg.querySelectorAll("rect")[2].getAttribute("fill")).toBe("#1c1915");
+    expect(svg.querySelector("g")!.getAttribute("stroke")).toBe("#f7f5f0");
+    expect(container.innerHTML).not.toContain("linearGradient");
+  });
+
+  it("reversed is paper on an ink tile", () => {
+    const svg = svgOf(render(<SutraAppIcon app="mail" tone="reversed" />).container);
+    expect(svg.querySelector("rect")!.getAttribute("fill")).toBe("#1c1915");
+    expect(svg.querySelector("circle")!.getAttribute("fill")).toBe("#f7f5f0");
+    expect(svg.querySelector("g")!.getAttribute("stroke")).toBe("#1c1915");
+    expect(svg.querySelectorAll("rect")).toHaveLength(2);
+  });
+
+  it("dyed keeps the paper tile and ink thread but dyes the bead in the app's own colour", () => {
+    for (const app of sutraApps) {
+      const svg = svgOf(render(<SutraAppIcon app={app} tone="dyed" />).container);
+      expect(svg.querySelector("circle")!.getAttribute("fill")).toBe(sutraAppMeta[app].dye);
+      expect(svg.querySelector("rect")!.getAttribute("fill")).toBe("#f7f5f0");
+    }
+  });
+
+  it("gives every app a hex dye, and the dyes are all different", () => {
+    const dyes = sutraApps.map((app) => sutraAppMeta[app].dye);
+    for (const dye of dyes) expect(dye).toMatch(/^#[0-9a-f]{6}$/);
+    expect(new Set(dyes).size).toBe(sutraApps.length);
+  });
+
+  it("draws a different pictogram for every app", () => {
+    const drawings = sutraApps.map((app) => svgOf(render(<SutraAppIcon app={app} />).container).querySelector("g")!.innerHTML);
+    expect(new Set(drawings).size).toBe(sutraApps.length);
+  });
+
+  it("the thread runs the full width of the tile so a row of icons reads as one string", () => {
+    const svg = svgOf(render(<SutraAppIcon app="files" />).container);
+    const thread = svg.querySelectorAll("rect")[2];
+    expect(thread.getAttribute("width")).toBe("64");
+  });
+
+  it.each(["rounded", "squircle", "circle"] as const)("%s shape rounds the tile and its hairline together", (shape) => {
+    const svg = svgOf(render(<SutraAppIcon app="tasks" shape={shape} />).container);
+    const [tile, edge] = Array.from(svg.querySelectorAll("rect"));
+    expect(Number(edge.getAttribute("rx"))).toBeCloseTo(Number(tile.getAttribute("rx")) - 0.5);
+    expect(Number(tile.getAttribute("rx"))).toBe({ rounded: 14.3, squircle: 19, circle: 32 }[shape]);
+  });
+
+  it("keeps the older gradient pair that the data-app accents follow", () => {
+    expect(sutraAppMeta.tasks).toMatchObject({ name: "Tasks", from: "#7c86ff", to: "#4f39f6" });
+  });
+
+  it("has no axe violations in any tone", async () => {
+    const { container } = render(
+      <div>
+        {sutraApps.map((app) => (
+          <SutraAppIcon key={app} app={app} title={sutraAppMeta[app].name} />
+        ))}
+        <SutraAppIcon app="notes" tone="dyed" title="Notes dyed" />
+        <SutraAppIcon app="notes" tone="reversed" title="Notes reversed" />
       </div>
     );
     expect(await axeViolations(container)).toEqual([]);

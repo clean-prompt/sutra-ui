@@ -15,55 +15,75 @@ function a11y(title: string | undefined, titleId: string) {
     : ({ "aria-hidden": true, focusable: "false" } as const);
 }
 
-/** The Sutra thread: one continuous stroke forming a flowing "S" knot (32×32 space). */
-const THREAD_PATH =
-  "M21.5 10.2c-1.3-1.5-3.2-2.4-5.5-2.4-3.2 0-5.4 1.8-5.4 4.2 0 2.5 2.3 3.4 5.4 4.1 3.2.7 5.6 1.7 5.6 4.3 0 2.5-2.3 4.3-5.6 4.3-2.4 0-4.4-.9-5.7-2.5";
-/** Small loop that closes the thread end into a knot. */
-const THREAD_LOOP = "M10.3 22.2c-1.2-1.4-1.1-3 .1-3.6 1.2-.6 2.6.3 2.5 1.8";
-const THREAD_BEAD = { cx: 21.6, cy: 10.2, r: 1.6 };
+/** The two inks of the brand: warm near-black on warm paper. Tiles and app icons use them literally so the artwork never shifts with a theme. */
+const INK = "#1c1915";
+const PAPER = "#f7f5f0";
+
+/**
+ * The Sutra bead (64×64 space): a ring bead strung on a thread. The thread passes over the left rim and under the right rim, so it is
+ * plainly strung. Three filled shapes: the ring (cut where the thread runs under it) and the two thread pieces.
+ * `fine` is the full mark; `bold` is the same drawing with a heavier thread and ring for tiles and small sizes (the favicon).
+ */
+const BEAD = {
+  fine: {
+    ring: "M12.37 27.4A19 19 0 1 1 12.37 36.6L24.25 36.6A8 8 0 1 0 24.25 27.4Z",
+    left: "M6.2 29.8H35.95A5.6 5.6 0 0 1 35.95 34.2H6.2A2.2 2.2 0 0 1 6.2 29.8Z",
+    right: "M52.09 29.8H57.8A2.2 2.2 0 0 1 57.8 34.2H52.09A21.4 21.4 0 0 0 52.09 29.8Z",
+  },
+  bold: {
+    ring: "M12.41 26.2A19 19 0 1 1 12.41 37.8L23.62 37.8A9 9 0 1 0 23.62 26.2Z",
+    left: "M7.8 29.2H35.81A6 6 0 0 1 35.81 34.8H7.8A2.8 2.8 0 0 1 7.8 29.2Z",
+    right: "M52.32 29.2H56.2A2.8 2.8 0 0 1 56.2 34.8H52.32A22 22 0 0 0 52.32 29.2Z",
+  },
+} as const;
 
 /* ------------------------------------------------------------------ */
 /* SutraMark                                                           */
 /* ------------------------------------------------------------------ */
 
-export type SutraMarkVariant = "tile" | "glyph" | "outline" | "solid" | "badge";
+export type SutraMarkVariant = "glyph" | "tile" | "reversed" | "solid" | "outline" | "badge";
 
 export interface SutraMarkProps extends SvgBaseProps {
   /**
-   * `tile` gradient tile with a white thread, `glyph` thread only, `outline` stroked tile,
-   * `solid` flat `--primary` tile with a `--primary-foreground` thread (follows the theme and the paper style),
-   * `badge` heavy monochrome frame in `currentColor` around a bold thread.
+   * `glyph` the bead alone in `currentColor`, ink on paper (default),
+   * `tile` the bead in ink on a paper tile with a hairline edge,
+   * `reversed` paper bead on an ink tile (for dark surfaces),
+   * `solid` flat `--primary` tile with a `--primary-foreground` bead (follows the theme and the paper style),
+   * `outline` thin frame in `currentColor` around the bead,
+   * `badge` heavy frame in `currentColor` around a bold bead.
    */
   variant?: SutraMarkVariant;
 }
 
-/** Thread stroke width and scale about the centre of the 32 box, per variant. */
-const THREAD_LOOK: Record<SutraMarkVariant, { width: number; scale?: number }> = {
-  tile: { width: 2.2 },
-  outline: { width: 2.2 },
-  glyph: { width: 2.6, scale: 1.22 },
-  solid: { width: 2.4, scale: 1.06 },
-  badge: { width: 2.7, scale: 1.1 },
+type MarkLook = {
+  geometry: keyof typeof BEAD;
+  /** Scale about the centre of the 64 box. */
+  scale: number;
+  /** Bead colour. */
+  paint: string;
 };
 
-/** Thread colour per variant; `solid` reads the theme's `--primary-foreground`. */
-const THREAD_PAINT: Partial<Record<SutraMarkVariant, string>> = {
-  tile: "#ffffff",
-  solid: "var(--primary-foreground, #ffffff)",
+const MARK_LOOK: Record<SutraMarkVariant, MarkLook> = {
+  glyph: { geometry: "fine", scale: 1.18, paint: "currentColor" },
+  tile: { geometry: "bold", scale: 1, paint: INK },
+  reversed: { geometry: "bold", scale: 1, paint: PAPER },
+  solid: { geometry: "bold", scale: 1, paint: "var(--primary-foreground, #ffffff)" },
+  outline: { geometry: "fine", scale: 0.9, paint: "currentColor" },
+  badge: { geometry: "bold", scale: 0.9, paint: "currentColor" },
 };
 
-/** The Sutra logomark: a single thread tied into a flowing "S". */
+/** The Sutra logomark: a bead strung on a thread. Ink on paper by default, so it follows the text colour. */
 export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
-  ({ variant = "tile", size = 32, title, className, ...props }, ref) => {
+  ({ variant = "glyph", size = 32, title, className, ...props }, ref) => {
     const id = useSafeId("sutra-mark");
     const titleId = `${id}-title`;
-    const threadColor = THREAD_PAINT[variant] ?? "currentColor";
-    const { width, scale } = THREAD_LOOK[variant] ?? THREAD_LOOK.tile;
-    const threadTransform = scale ? `translate(16 16) scale(${scale}) translate(-16 -16)` : undefined;
+    const { geometry, scale, paint } = MARK_LOOK[variant] ?? MARK_LOOK.glyph;
+    const shapes = BEAD[geometry];
+    const beadTransform = scale === 1 ? undefined : `translate(32 32) scale(${scale}) translate(-32 -32)`;
     return (
       <svg
         ref={ref}
-        viewBox="0 0 32 32"
+        viewBox="0 0 64 64"
         width={size}
         height={size}
         fill="none"
@@ -75,39 +95,23 @@ export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
         {title ? <title id={titleId}>{title}</title> : null}
         {variant === "tile" ? (
           <>
-            <defs>
-              <linearGradient id={`${id}-bg`} x1="4" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
-                <stop offset="0" style={{ stopColor: "var(--b-400, #7c86ff)" }} />
-                <stop offset="1" style={{ stopColor: "var(--b-600, #4f39f6)" }} />
-              </linearGradient>
-              <linearGradient id={`${id}-shine`} x1="16" y1="0" x2="16" y2="16" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stopColor="#ffffff" stopOpacity="0.28" />
-                <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <rect width="32" height="32" rx="8" fill={`url(#${id}-bg)`} />
-            <rect width="32" height="32" rx="8" fill={`url(#${id}-shine)`} />
-            <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="#ffffff" strokeOpacity="0.18" />
+            <rect width="64" height="64" rx="14.3" fill={PAPER} />
+            <rect x="0.5" y="0.5" width="63" height="63" rx="13.8" stroke={INK} strokeOpacity="0.14" />
           </>
         ) : null}
-        {variant === "solid" ? <rect width="32" height="32" rx="8" fill="var(--primary, #4f39f6)" /> : null}
+        {variant === "reversed" ? <rect width="64" height="64" rx="14.3" fill={INK} /> : null}
+        {variant === "solid" ? <rect width="64" height="64" rx="14.3" fill="var(--primary, #4f39f6)" /> : null}
         {variant === "outline" ? (
-          <rect x="1" y="1" width="30" height="30" rx="7.5" stroke="currentColor" strokeWidth="1.75" />
+          <rect x="2" y="2" width="60" height="60" rx="15" stroke="currentColor" strokeWidth="3.5" />
         ) : null}
         {variant === "badge" ? (
-          <rect x="1.5" y="1.5" width="29" height="29" rx="7.5" stroke="currentColor" strokeWidth="3" />
+          <rect x="3" y="3" width="58" height="58" rx="15" stroke="currentColor" strokeWidth="6" />
         ) : null}
-        <g
-          stroke={threadColor}
-          strokeWidth={width}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          transform={threadTransform}
-        >
-          <path d={THREAD_PATH} />
-          <path d={THREAD_LOOP} />
+        <g fill={paint} transform={beadTransform}>
+          <path d={shapes.ring} />
+          <path d={shapes.left} />
+          <path d={shapes.right} />
         </g>
-        <circle {...THREAD_BEAD} fill={threadColor} transform={threadTransform} />
       </svg>
     );
   }
@@ -130,28 +134,71 @@ const wordmarkText: Record<SutraLogoSize, string> = {
 
 const markPx: Record<SutraLogoSize, number> = { xs: 18, sm: 22, md: 26, lg: 32, xl: 40 };
 
+/** The lowercase word "sutra" drawn as round-capped monoline strokes: the baseline sits at y = 0, the box is 96.78 × 30.8. */
+const WORDMARK_PATH =
+  "M10.22 -17.77A4.3 4.3 0 1 0 6.7 -11A4.3 4.3 0 1 1 3.18 -4.23M20.2 -19.6V-7.56A5.16 5.16 0 0 0 30.52 -7.56M30.52 -19.6V-2.4M44.12 -28.4V-6.18A3.78 3.78 0 0 0 47.9 -2.4M39.72 -19.6H49.84M59.04 -19.6V-2.4M59.04 -14.44A5.16 5.16 0 0 1 64.2 -19.6h1.38M74.78 -11a8.6 8.6 0 1 0 17.2 0a8.6 8.6 0 1 0 -17.2 0M91.98 -19.6V-2.4";
+
 export interface SutraWordmarkProps extends React.HTMLAttributes<HTMLSpanElement> {
   size?: SutraLogoSize;
   /** Show the brand name in a gradient instead of `currentColor`. */
   gradient?: boolean;
 }
 
-/** The lowercase "sutra" wordmark set in the brand sans. */
+/**
+ * The lowercase "sutra" wordmark. Without `children` it is the drawn brand word (monoline, scales with the font size, real text for
+ * screen readers); with `children` it sets your text in the brand sans.
+ */
 export const SutraWordmark = React.forwardRef<HTMLSpanElement, SutraWordmarkProps>(
-  ({ size = "md", gradient = false, className, children, ...props }, ref) => (
-    <span
-      ref={ref}
-      className={cn(
-        "inline-block select-none font-sans font-semibold leading-none tracking-[-0.04em]",
-        wordmarkText[size],
-        gradient && "bg-gradient-to-br from-brand-400 to-brand-600 bg-clip-text text-transparent",
-        className
-      )}
-      {...props}
-    >
-      {children ?? "sutra"}
-    </span>
-  )
+  ({ size = "md", gradient = false, className, children, ...props }, ref) => {
+    const gradientId = useSafeId("sutra-word");
+    const drawn = children === undefined || children === null;
+    return (
+      <span
+        ref={ref}
+        className={cn(
+          "inline-block select-none font-sans font-semibold leading-none tracking-[-0.04em]",
+          wordmarkText[size],
+          !drawn && gradient && "bg-gradient-to-br from-brand-400 to-brand-600 bg-clip-text text-transparent",
+          className
+        )}
+        {...props}
+      >
+        {drawn ? (
+          <>
+            <span className="sr-only">sutra</span>
+            <svg
+              data-slot="sutra-wordmark"
+              viewBox="0 -30.8 96.78 30.8"
+              aria-hidden
+              focusable="false"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="inline-block shrink-0 align-baseline"
+              style={{ height: "0.7em", width: "2.2em" }}
+            >
+              {gradient ? (
+                <defs>
+                  <linearGradient id={gradientId} x1="0" y1="-30" x2="97" y2="0" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" style={{ stopColor: "var(--b-400, #7c86ff)" }} />
+                    <stop offset="1" style={{ stopColor: "var(--b-600, #4f39f6)" }} />
+                  </linearGradient>
+                </defs>
+              ) : null}
+              <path
+                d={WORDMARK_PATH}
+                stroke={gradient ? `url(#${gradientId})` : "currentColor"}
+                strokeWidth="4.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </>
+        ) : (
+          children
+        )}
+      </span>
+    );
+  }
 );
 SutraWordmark.displayName = "SutraWordmark";
 
@@ -162,7 +209,7 @@ SutraWordmark.displayName = "SutraWordmark";
 export interface SutraLogoProps extends React.HTMLAttributes<HTMLSpanElement> {
   layout?: "horizontal" | "stacked";
   size?: SutraLogoSize;
-  /** Which `SutraMark` variant leads the lockup. Default `tile`. */
+  /** Which `SutraMark` variant leads the lockup. Default `glyph` (ink on paper). */
   markVariant?: SutraMarkVariant;
   /** Hide the wordmark and show only the mark. */
   markOnly?: boolean;
@@ -173,7 +220,7 @@ export interface SutraLogoProps extends React.HTMLAttributes<HTMLSpanElement> {
 /** Mark + wordmark lockup. */
 export const SutraLogo = React.forwardRef<HTMLSpanElement, SutraLogoProps>(
   (
-    { layout = "horizontal", size = "md", markVariant = "tile", markOnly = false, product, className, ...props },
+    { layout = "horizontal", size = "md", markVariant = "glyph", markOnly = false, product, className, ...props },
     ref
   ) => (
     <span
@@ -187,7 +234,11 @@ export const SutraLogo = React.forwardRef<HTMLSpanElement, SutraLogoProps>(
       )}
       {...props}
     >
-      <SutraMark variant={markVariant} size={layout === "stacked" ? markPx[size] * 1.5 : markPx[size]} />
+      {/* The bare glyph is drawn larger inside its box, so the box is trimmed to keep the lockup's proportions. */}
+      <SutraMark
+        variant={markVariant}
+        size={markPx[size] * (layout === "stacked" ? 1.5 : 1) * (markVariant === "glyph" ? 0.85 : 1)}
+      />
       {markOnly ? null : (
         <span className="inline-flex items-baseline gap-1.5" aria-hidden>
           <SutraWordmark size={size} />
@@ -210,92 +261,97 @@ SutraLogo.displayName = "SutraLogo";
 export const sutraApps = ["notes", "tasks", "calendar", "mail", "files", "journal", "finance", "habits"] as const;
 export type SutraApp = (typeof sutraApps)[number];
 
-/** Gradient pair (top-left → bottom-right) and display name for each suite app. */
-export const sutraAppMeta: Record<SutraApp, { name: string; from: string; to: string }> = {
-  notes: { name: "Notes", from: "#fdc700", to: "#f54900" },
-  tasks: { name: "Tasks", from: "#7c86ff", to: "#4f39f6" },
-  calendar: { name: "Calendar", from: "#ff637e", to: "#e7000b" },
-  mail: { name: "Mail", from: "#51a2ff", to: "#155dfc" },
-  files: { name: "Files", from: "#00d3f2", to: "#0084d1" },
-  journal: { name: "Journal", from: "#a684ff", to: "#7008e7" },
-  finance: { name: "Finance", from: "#05df72", to: "#008236" },
-  habits: { name: "Habits", from: "#ff8904", to: "#ec003f" },
+/**
+ * Display name, the textile dye of the app (the bead colour of the `dyed` icon tone) and the older gradient pair (`from`, `to`)
+ * that the `data-app` accents in `sutra.css` still follow.
+ */
+export const sutraAppMeta: Record<SutraApp, { name: string; dye: string; from: string; to: string }> = {
+  notes: { name: "Notes", dye: "#a87f1d", from: "#fdc700", to: "#f54900" },
+  tasks: { name: "Tasks", dye: "#46773b", from: "#7c86ff", to: "#4f39f6" },
+  calendar: { name: "Calendar", dye: "#b63042", from: "#ff637e", to: "#e7000b" },
+  mail: { name: "Mail", dye: "#2d4498", from: "#51a2ff", to: "#155dfc" },
+  files: { name: "Files", dye: "#c26300", from: "#00d3f2", to: "#0084d1" },
+  journal: { name: "Journal", dye: "#7f3471", from: "#a684ff", to: "#7008e7" },
+  finance: { name: "Finance", dye: "#2a2520", from: "#05df72", to: "#008236" },
+  habits: { name: "Habits", dye: "#9d4529", from: "#ff8904", to: "#ec003f" },
 };
 
-const appGlyphs: Record<SutraApp, React.ReactNode> = {
-  notes: (
-    <>
-      <path d="M11 8.5h7.5l3.5 3.5v10a1.5 1.5 0 0 1-1.5 1.5H11A1.5 1.5 0 0 1 9.5 22V10A1.5 1.5 0 0 1 11 8.5Z" />
-      <path d="M18.5 8.5V12H22" />
-      <path d="M12.5 15.5h6M12.5 18.5h4" />
-    </>
-  ),
-  tasks: (
-    <>
-      <rect x="9" y="9" width="14" height="14" rx="3.5" />
-      <path d="m12.6 16.2 2.4 2.4 4.6-5" />
-    </>
-  ),
-  calendar: (
-    <>
-      <rect x="8.5" y="10" width="15" height="13.5" rx="2.5" />
-      <path d="M8.5 14.5h15M12.5 8v3.5M19.5 8v3.5" />
-      <path d="M12.5 18.2h.01M16 18.2h.01M19.5 18.2h.01" strokeWidth="2.6" />
-    </>
-  ),
-  mail: (
-    <>
-      <rect x="8" y="10" width="16" height="12" rx="2.5" />
-      <path d="m8.8 11.2 6.2 4.8a1.6 1.6 0 0 0 2 0l6.2-4.8" />
-    </>
-  ),
-  files: (
-    <>
-      <path d="M8.5 12A1.5 1.5 0 0 1 10 10.5h3.6l1.8 2H22a1.5 1.5 0 0 1 1.5 1.5v7.5A1.5 1.5 0 0 1 22 23H10a1.5 1.5 0 0 1-1.5-1.5V12Z" />
-      <path d="M8.5 15.5h15" />
-    </>
-  ),
-  journal: (
-    <>
-      <path d="M10 9.5A1.5 1.5 0 0 1 11.5 8H22v14H11.5a1.5 1.5 0 0 0-1.5 1.5V9.5Z" />
-      <path d="M10 23.5A1.5 1.5 0 0 0 11.5 25H22v-3" />
-      <path d="M15 8v6l1.75-1.3L18.5 14V8" />
-    </>
-  ),
-  finance: (
-    <>
-      <path d="M9 22.5h14" />
-      <path d="M11 19.5v-3M15 19.5v-5.5M19 19.5v-8" />
-      <path d="m10.5 13 3.5-3 2.5 2 5-4.5" />
-      <path d="M19 7.5h2.5V10" />
-    </>
-  ),
-  habits: (
-    <>
-      <path d="M22.4 18.6A7 7 0 1 1 18.6 9.6" />
-      <path d="m12.8 16 2.3 2.3 4.4-4.6" />
-      <circle cx="21.6" cy="11.2" r="1.3" fill="#ffffff" stroke="none" />
-    </>
-  ),
+/** One pictogram per app: stroked paths in a 24 box (2.4 monoline), plus optional filled dots. */
+const appPictograms: Record<SutraApp, { d: string[]; dots?: [number, number][] }> = {
+  notes: {
+    d: [
+      "M6.8 3.8h6.9l4.5 4.5v10.9a1.6 1.6 0 0 1-1.6 1.6H6.8a1.6 1.6 0 0 1-1.6-1.6V5.4a1.6 1.6 0 0 1 1.6-1.6Z",
+      "M13.7 3.8v4.5h4.5",
+      "M8.9 13.2h6.2M8.9 16.5h3.8",
+    ],
+  },
+  tasks: { d: ["M4.4 7.4l1.5 1.5 2.7-3", "M4.4 15.6l1.5 1.5 2.7-3", "M12 7.6h7.6M12 15.8h7.6"] },
+  calendar: {
+    d: [
+      "M6.6 5.2h10.8a2.2 2.2 0 0 1 2.2 2.2v10.4a2.2 2.2 0 0 1-2.2 2.2H6.6a2.2 2.2 0 0 1-2.2-2.2V7.4a2.2 2.2 0 0 1 2.2-2.2Z",
+      "M4.4 10.2h15.2",
+      "M8.4 3v3.6M15.6 3v3.6",
+    ],
+    dots: [
+      [8.6, 14.4],
+      [12, 14.4],
+      [15.4, 14.4],
+    ],
+  },
+  mail: {
+    d: [
+      "M6.2 5.8h11.6a2.2 2.2 0 0 1 2.2 2.2v8a2.2 2.2 0 0 1-2.2 2.2H6.2A2.2 2.2 0 0 1 4 16V8a2.2 2.2 0 0 1 2.2-2.2Z",
+      "M4.6 8.2l7.4 5.1 7.4-5.1",
+    ],
+  },
+  files: {
+    d: ["M4 7.4a2.2 2.2 0 0 1 2.2-2.2h3.5l2.1 2.5h6a2.2 2.2 0 0 1 2.2 2.2v7.9a2.2 2.2 0 0 1-2.2 2.2H6.2A2.2 2.2 0 0 1 4 17.8V7.4Z"],
+  },
+  journal: {
+    d: [
+      "M7.4 3.8h9.8a1.6 1.6 0 0 1 1.6 1.6v13.2a1.6 1.6 0 0 1-1.6 1.6H7.4a1.6 1.6 0 0 1-1.6-1.6V5.4a1.6 1.6 0 0 1 1.6-1.6Z",
+      "M10 3.8v16.4",
+      "M13.2 8.2h2.6",
+    ],
+  },
+  finance: { d: ["M5 19.6h14", "M7.8 16v-3.2M12 16V9.6M16.2 16V6.4"] },
+  habits: { d: ["M19.4 12a7.4 7.4 0 1 1-2.6-5.6", "M8.9 12.2l2.2 2.3 4.2-4.6"], dots: [[18.4, 6.2]] },
 };
+
+/**
+ * Colour of an app icon: `mono` ink on paper (default, the app is told apart by its pictogram), `reversed` paper on ink,
+ * `dyed` the paper tile with a bead in the app's own dye.
+ */
+export type SutraAppTone = "mono" | "reversed" | "dyed";
 
 export interface SutraAppIconProps extends SvgBaseProps {
   app: SutraApp;
   /** Corner style of the tile. */
   shape?: "rounded" | "squircle" | "circle";
+  /** Colour of the icon. Default `mono`. */
+  tone?: SutraAppTone;
 }
 
-/** App icon for a Sutra suite app: a gradient tile with a glyph and the shared thread motif. */
+const TILE_RX = { rounded: 14.3, squircle: 19, circle: 32 } as const;
+
+/**
+ * App icon for a Sutra suite app: a tile with a thread running across it, a bead on the thread and one pictogram in the bead.
+ * The thread leaves the tile on both sides, so a row of icons reads as beads on one string.
+ */
 export const SutraAppIcon = React.forwardRef<SVGSVGElement, SutraAppIconProps>(
-  ({ app, shape = "rounded", size = 40, title, className, ...props }, ref) => {
+  ({ app, shape = "rounded", tone = "mono", size = 40, title, className, ...props }, ref) => {
     const id = useSafeId(`sutra-app-${app}`);
     const titleId = `${id}-title`;
-    const meta = sutraAppMeta[app];
-    const rx = shape === "circle" ? 16 : shape === "squircle" ? 9.5 : 7.5;
+    const rx = TILE_RX[shape];
+    const picto = appPictograms[app];
+    const tile = tone === "reversed" ? INK : PAPER;
+    const thread = tone === "reversed" ? PAPER : INK;
+    const bead = tone === "dyed" ? sutraAppMeta[app].dye : thread;
+    const glyph = tone === "reversed" ? INK : PAPER;
     return (
       <svg
         ref={ref}
-        viewBox="0 0 32 32"
+        viewBox="0 0 64 64"
         width={size}
         height={size}
         fill="none"
@@ -305,33 +361,19 @@ export const SutraAppIcon = React.forwardRef<SVGSVGElement, SutraAppIconProps>(
         {...props}
       >
         {title ? <title id={titleId}>{title}</title> : null}
-        <defs>
-          <linearGradient id={`${id}-bg`} x1="2" y1="1" x2="30" y2="31" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor={meta.from} />
-            <stop offset="1" stopColor={meta.to} />
-          </linearGradient>
-          <linearGradient id={`${id}-shine`} x1="16" y1="0" x2="16" y2="18" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#ffffff" stopOpacity="0.3" />
-            <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-          </linearGradient>
-          <clipPath id={`${id}-clip`}>
-            <rect width="32" height="32" rx={rx} />
-          </clipPath>
-        </defs>
-        <g clipPath={`url(#${id}-clip)`}>
-          <rect width="32" height="32" fill={`url(#${id}-bg)`} />
-          <rect width="32" height="32" fill={`url(#${id}-shine)`} />
-          <path
-            d="M-2 27.5c5.5-3.6 10.4-3.6 15.2-.6 4.8 3 10.6 3.2 18.8-1.6"
-            stroke="#ffffff"
-            strokeOpacity="0.22"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-          />
-        </g>
-        <rect x="0.5" y="0.5" width="31" height="31" rx={Math.max(rx - 0.5, 0)} stroke="#ffffff" strokeOpacity="0.16" />
-        <g stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          {appGlyphs[app]}
+        <rect width="64" height="64" rx={rx} fill={tile} />
+        {tone === "reversed" ? null : (
+          <rect x="0.5" y="0.5" width="63" height="63" rx={rx - 0.5} stroke={INK} strokeOpacity="0.14" />
+        )}
+        <rect y="30.7" width="64" height="2.6" fill={thread} />
+        <circle cx="32" cy="32" r="21" fill={bead} />
+        <g transform="translate(19 19) scale(1.0833)" stroke={glyph} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          {picto.d.map((d) => (
+            <path key={d} d={d} />
+          ))}
+          {picto.dots?.map(([cx, cy]) => (
+            <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.49" fill={glyph} stroke="none" />
+          ))}
         </g>
       </svg>
     );
