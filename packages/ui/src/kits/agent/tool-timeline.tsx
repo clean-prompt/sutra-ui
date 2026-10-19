@@ -206,18 +206,23 @@ export interface ToolTimelineItemProps
   arg?: React.ReactNode;
   /** Default `success`. Accepts canonical `TaskStatus` values (`succeeded`, `failed`, `running`, `canceled`). */
   status?: ToolTimelineStatusInput;
+  /** Replaces the default icon chosen from the tool name. */
   icon?: React.ReactNode;
   /** Duration in milliseconds. */
   duration?: number;
   /** Line counts shown as "+12 −3". */
   diffStat?: { additions: number; deletions: number };
+  /** Exit code of a command tool, shown as an "exit N" badge; non-zero turns it red. */
   exitCode?: number;
   /** Extra right-side meta. */
   meta?: React.ReactNode;
   /** Label while running (default "Running {name}…"). */
   runningLabel?: React.ReactNode;
+  /** Controlled expanded state of the body (`children`). */
   open?: boolean;
+  /** Initial expanded state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called with the new state when the user expands or collapses the row. */
   onOpenChange?: (open: boolean) => void;
 }
 
@@ -369,9 +374,13 @@ export interface ToolGroupProps extends Omit<React.LiHTMLAttributes<HTMLLIElemen
   label?: (info: ToolGroupLabelInfo) => React.ReactNode;
   /** Group status; derived from the children's `status` when omitted. Accepts `TaskStatus` values too. */
   status?: ToolTimelineStatusInput;
+  /** Replaces the default group icon. */
   icon?: React.ReactNode;
+  /** Controlled expanded state of the group. */
   open?: boolean;
+  /** Initial expanded state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called with the new state when the user expands or collapses the group. */
   onOpenChange?: (open: boolean) => void;
   /** Collapse when the group finishes running (uncontrolled only). Default true. */
   autoCollapse?: boolean;
@@ -496,10 +505,15 @@ itemTypes.add(ToolGroup);
 export interface ExpandableContentProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Height (px) of the collapsed view. Default 160. */
   collapsedHeight?: number;
+  /** Controlled expanded state. */
   expanded?: boolean;
+  /** Initial expanded state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user expands or collapses the content. */
   onExpandedChange?: (expanded: boolean) => void;
+  /** Label of the button that expands the content. */
   moreLabel?: React.ReactNode;
+  /** Label of the button that collapses the content. */
   lessLabel?: React.ReactNode;
   /** Classes for the gradient (match the surface, e.g. "from-card"). Default "from-background". */
   fadeClassName?: string;
@@ -654,11 +668,13 @@ function TruncatedOutput({
 }
 
 export interface BashToolBodyProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** The command that ran, shown in mono with a prompt. */
   command: string;
   /** stdout (ANSI colors supported). */
   output?: string;
   /** stderr, shown separately as "Error output". */
   stderr?: string;
+  /** Exit code, shown as an "exit N" badge; non-zero turns it red. */
   exitCode?: number;
   /** Visible lines before "Show N more lines". Default 12. */
   maxLines?: number;
@@ -726,6 +742,7 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
 BashToolBody.displayName = "BashToolBody";
 
 export interface EditToolBodyProps extends Omit<DiffCardProps, "path"> {
+  /** Path of the edited file, shown in the diff header. */
   path: string;
 }
 
@@ -736,13 +753,19 @@ export const EditToolBody = React.forwardRef<HTMLDivElement, EditToolBodyProps>(
 EditToolBody.displayName = "EditToolBody";
 
 export interface ReadToolBodyProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Path of the file that was read. */
   path: string;
+  /** First line that was read (1-based); shown in the range label and used as the snippet's first line number. */
   startLine?: number;
+  /** Last line that was read (1-based); completes the "Lines 10–40" label. */
   endLine?: number;
+  /** Total lines in the file; shown as "of N" after the range, or alone as "N lines" without a range. */
   totalLines?: number;
   /** Excerpt of what was read. */
   snippet?: string;
+  /** Code language for highlighting the `snippet`; guessed from `path` when unset. */
   language?: string;
+  /** Called when the user presses the path; the path is plain text when unset. */
   onOpenFile?: () => void;
 }
 
@@ -793,12 +816,15 @@ export interface SearchToolMatch {
 }
 
 export interface SearchToolBodyProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** The search pattern or query that ran, shown in mono. */
   pattern: string;
   /** Directory / glob the search ran in. */
   scope?: string;
+  /** Matches found, each with a path, line and excerpt. */
   matches?: SearchToolMatch[];
   /** Matches listed before "+N more". Default 20. */
   maxMatches?: number;
+  /** Called with the match when the user opens one; rows are not interactive when unset. */
   onOpenMatch?: (match: SearchToolMatch) => void;
 }
 
@@ -854,10 +880,13 @@ export const SearchToolBody = React.forwardRef<HTMLDivElement, SearchToolBodyPro
 SearchToolBody.displayName = "SearchToolBody";
 
 export interface WebToolBodyProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+  /** Address that was fetched or searched. */
   url: string;
+  /** Page title shown as the link text; the URL is used when unset. */
   title?: React.ReactNode;
   /** Short excerpt or result summary. */
   snippet?: React.ReactNode;
+  /** Favicon image URL; a letter tile is used when unset. */
   favicon?: string;
 }
 
@@ -899,6 +928,7 @@ export interface ToolKeyValueRow {
 }
 
 export interface ToolKeyValueBodyProps extends Omit<React.HTMLAttributes<HTMLDListElement>, "children"> {
+  /** Label and value pairs shown as a definition list. */
   rows: ToolKeyValueRow[];
   /** Height cap for each value before "Show more". Default 72. */
   valueHeight?: number;
@@ -938,6 +968,10 @@ ToolKeyValueBody.displayName = "ToolKeyValueBody";
 export type AgentStatusState = "idle" | "thinking" | "running" | "permission" | "question";
 
 export interface AgentStatusLineProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /**
+   * What the agent is doing: `idle`, `thinking`, `running`, `permission` or `question`; sets the icon, tone and
+   * default label.
+   */
   state: AgentStatusState;
   /** Tool name for the "running" state. */
   tool?: string;
@@ -960,7 +994,7 @@ export interface AgentStatusLineProps extends Omit<React.HTMLAttributes<HTMLDivE
   showElapsed?: boolean;
   /** Tokens used so far, shown as "1.2k tokens". */
   tokens?: number;
-  /** @deprecated Use `tokens`. */
+  /** Tokens used so far, shown as "1.2k tokens". @deprecated Use `tokens`. */
   tokenCount?: number;
   /** Text before the token count, e.g. "↓" for streamed output tokens. */
   tokensPrefix?: string;

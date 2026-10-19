@@ -37,10 +37,18 @@ export interface OnboardingStep {
 export interface OnboardingDialogProps extends BlockDialogBaseProps {
   /** Custom steps. Defaults to pick apps → name workspace → preferences. */
   steps?: OnboardingStep[];
+  /** Controlled index of the current step. Use with `onStepChange`. */
   step?: number;
+  /** Initial step index when uncontrolled. */
   defaultStep?: number;
+  /** Called with the new step index when the user moves between steps. */
   onStepChange?: (step: number) => void;
+  /** Called when the user finishes the last step. A returned promise shows a spinner; throw to show the error message. */
   onComplete?: () => unknown;
+  /**
+   * Text of the button on the last step.
+   * @default "Get started"
+   */
   finishLabel?: React.ReactNode;
 }
 

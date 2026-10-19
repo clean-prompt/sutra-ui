@@ -163,27 +163,43 @@ export interface TerminalProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   connection?: TerminalConnection;
   /** Error / disconnect detail shown in the overlay. */
   connectionMessage?: React.ReactNode;
+  /** Called when the user presses Reconnect in the disconnected or error overlay; the button is hidden when unset. */
   onReconnect?: () => void;
   /** Keystrokes / pasted data from the user. */
   onData?: (data: string) => void;
+  /** Called with the new columns and rows when the terminal is resized to fit its container. */
   onResize?: (size: { cols: number; rows: number }) => void;
+  /** Called once with the imperative handle (write, clear, focus and so on) when the terminal has mounted. */
   onReady?: (handle: TerminalHandle) => void;
+  /** Text in the header bar. */
   title?: React.ReactNode;
   /** Extra header controls. */
   toolbar?: React.ReactNode;
+  /** Hides the header bar with the title, connection state and toolbar. */
   hideHeader?: boolean;
+  /** Font size in px. Default 13. */
   fontSize?: number;
+  /** CSS font stack; defaults to the mono font of the theme. */
   fontFamily?: string;
+  /** Blinks the cursor. Default true. */
   cursorBlink?: boolean;
+  /** Lines kept in the scrollback buffer. Default 5000. */
   scrollback?: number;
   /** Extra xterm constructor options. */
   options?: Record<string, unknown>;
+  /**
+   * Colours that replace parts of the theme-derived terminal palette (background, foreground, cursor, ANSI colours).
+   */
   themeOverrides?: TerminalTheme;
   /** Height of the terminal area (ignored in fullscreen). Default 360. */
   height?: number | string;
+  /** Shows the fullscreen button in the header. Default true. */
   fullscreenable?: boolean;
+  /** Controlled fullscreen state. */
   fullscreen?: boolean;
+  /** Initial fullscreen state when `fullscreen` is not controlled. */
   defaultFullscreen?: boolean;
+  /** Called with the new state when the user enters or leaves fullscreen. */
   onFullscreenChange?: (fullscreen: boolean) => void;
   /** Accessible name. Default "Terminal". */
   label?: string;
@@ -486,16 +502,23 @@ export interface TerminalSession {
 }
 
 export interface TerminalSessionPickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "defaultValue"> {
+  /** Terminal sessions to choose from, each with an id, title and state. */
   sessions: TerminalSession[];
   /** Selected (active) session id. */
   value?: string | null;
+  /** Initially active session id when `value` is not controlled. */
   defaultValue?: string | null;
+  /** Called with the session id when the user picks a session. */
   onValueChange?: (id: string) => void;
   /** Shows a "New session" button. */
   onCreate?: () => void;
+  /** Shows a busy state on the new-session button while a session is being created. */
   creating?: boolean;
+  /** Shows placeholder rows while the sessions load. */
   loading?: boolean;
+  /** Shown when there are no sessions. Default "No sessions". */
   emptyState?: React.ReactNode;
+  /** Accessible name of the session list. Default "Terminal sessions". */
   label?: string;
 }
 

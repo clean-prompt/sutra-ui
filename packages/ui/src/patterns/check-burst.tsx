@@ -27,6 +27,7 @@ export interface CheckBurstProps extends Omit<React.HTMLAttributes<HTMLSpanEleme
   duration?: number;
   /** `"multi"` cycles brand, success, warning and info; a tone paints them all in one colour. Default "multi". */
   tone?: Tone | "multi";
+  /** Particle shape of the burst: `dots`, `dashes` or `mixed`. */
   shape?: BurstShape;
   /** Swell the children with the burst. Default true. */
   pop?: boolean;

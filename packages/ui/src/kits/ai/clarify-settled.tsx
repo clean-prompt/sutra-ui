@@ -17,11 +17,15 @@ export interface ClarifySettledItem {
 }
 
 export interface ClarifySettledProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Answered questions to summarise, each with the question and the answer given. */
   items: ClarifySettledItem[];
   /** Summary line. Default "Answered n questions". */
   title?: React.ReactNode;
+  /** Controlled expanded state of the answers list. */
   open?: boolean;
+  /** Initial expanded state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called with the new state when the user expands or collapses the list. */
   onOpenChange?: (open: boolean) => void;
   /** Shows an "Edit" button per answer. */
   onEdit?: (id: string) => void;

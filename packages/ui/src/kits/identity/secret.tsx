@@ -125,19 +125,25 @@ function SecretCanvas({ value, label, className }: { value: string; label: strin
 /* ------------------------------------------------------------------ */
 
 export interface SecretTextProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "onCopy"> {
+  /** The secret to mask, reveal and copy. */
   value: string;
+  /** Controlled reveal state. */
   revealed?: boolean;
+  /** Initial reveal state when `revealed` is not controlled. Hidden by default. */
   defaultRevealed?: boolean;
+  /** Called with the new state when the user shows or hides the secret. */
   onRevealedChange?: (revealed: boolean) => void;
   /** Auto-hide this many ms after revealing. */
   revealFor?: number;
   /** Fixed mask length so the secret's length isn't leaked. Default 8. */
   maskLength?: number;
+  /** Character repeated for the mask. Default "•". */
   maskChar?: string;
   /** Show a reveal toggle. Default true. */
   revealable?: boolean;
   /** Show a copy button. Default true. */
   copyable?: boolean;
+  /** Called after the secret has been copied. */
   onCopy?: () => void;
   /** Clear the clipboard this many ms after copying (0 disables). Default 30000. */
   clipboardClearAfter?: number;
@@ -147,6 +153,7 @@ export interface SecretTextProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   label?: string;
   /** Strength badge: a 0–4 score, or `"auto"` to score the value. */
   strength?: 0 | 1 | 2 | 3 | 4 | "auto";
+  /** Sets the secret in a monospace font. Default true. */
   mono?: boolean;
   /** `field` renders a bordered input-like box. */
   variant?: "inline" | "field";
@@ -277,6 +284,7 @@ SecretText.displayName = "SecretText";
 export interface SecretFieldProps extends Omit<SecretTextProps, "variant" | "label"> {
   /** Visible field label (also used as the accessible name). */
   label: string;
+  /** Helper text under the field. */
   description?: React.ReactNode;
 }
 
@@ -303,17 +311,25 @@ SecretField.displayName = "SecretField";
 /* ------------------------------------------------------------------ */
 
 export interface SecretRevealOnceProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "children" | "onCopy"> {
+  /** The secret to show once; it is not stored by the component. */
   secret: string;
+  /** Heading of the card. Default "Copy this key now". */
   title?: React.ReactNode;
+  /** Helper text under the heading. Default says only a hash is stored. */
   description?: React.ReactNode;
+  /** Label of the confirmation checkbox that unlocks Done. Default "I've stored this key somewhere safe". */
   acknowledgeLabel?: React.ReactNode;
+  /** Label of the Done button. Default "Done". */
   doneLabel?: React.ReactNode;
+  /** Called when the user presses Done after confirming. */
   onDone?: () => void;
+  /** Called after the secret has been copied. */
   onCopy?: () => void;
   /** File name for the download button; `false` hides it. Default "secret.txt". */
   fileName?: string | false;
   /** Content written to the downloaded file. Defaults to the secret plus a newline. */
   fileContent?: string;
+  /** `canvas` draws the secret into a canvas so it never lands in the DOM as text. Default "text". */
   renderAs?: "text" | "canvas";
   /** Extra content between the secret and the acknowledgement (e.g. usage snippet). */
   children?: React.ReactNode;

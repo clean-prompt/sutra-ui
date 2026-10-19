@@ -134,9 +134,11 @@ export function findActiveHeading(headings: OutlineHeading[], line: number): Out
 /* ------------------------------------------------------------------ */
 
 export interface DocumentOutlineProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Headings in document order, each with a level, text and id. */
   headings: OutlineHeading[];
   /** `id` (or `line-<n>`) of the current heading. */
   activeId?: string;
+  /** Called with the heading when the user presses an entry. */
   onNavigate?: (heading: OutlineHeading) => void;
   /** Show a filter box. Default: when there are more than 8 headings. */
   filterable?: boolean;
@@ -144,7 +146,7 @@ export interface DocumentOutlineProps extends Omit<React.HTMLAttributes<HTMLElem
   title?: React.ReactNode;
   /** Shown when there are no headings. */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyHint?: React.ReactNode;
   /** Deepest level listed. Default 6. */
   maxLevel?: number;

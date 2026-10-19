@@ -10,9 +10,14 @@ export type { ShortcutPlatform, FormatShortcutOptions } from "../lib/shortcuts";
 export interface ShortcutKeysProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** Keys spec: "mod+k", "shift+?", "g t". */
   keys: string;
+  /** Platform whose key glyphs are shown (`mac` shows ⌘ and ⌥). Defaults to the detected or provided platform. */
   platform?: ShortcutPlatform;
   /** Classes for each Kbd chip. */
   kbdClassName?: string;
+  /**
+   * Key chip size.
+   * @default "sm"
+   */
   size?: "sm" | "md";
 }
 

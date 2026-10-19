@@ -70,6 +70,7 @@ function statusTone(code: number | null): "success" | "warning" | "destructive" 
 /* ------------------------------------------------------------------ */
 
 export interface WebhookUrlCopyProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Webhook endpoint URL, shown in mono with a copy button. */
   url: string;
   /** Accessible label of the copy button. Default "Copy URL". */
   copyLabel?: string;
@@ -93,16 +94,21 @@ WebhookUrlCopy.displayName = "WebhookUrlCopy";
 /* ------------------------------------------------------------------ */
 
 export interface WebhookRouteListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Webhook routes to list, one row each. */
   routes: WebhookRoute[];
+  /** Id of the selected route; `null` or unset selects none. */
   selectedId?: string | null;
+  /** Called with the route when its row is pressed. */
   onSelect?: (route: WebhookRoute) => void;
+  /** Called with the route and its new state when the user flips a row's switch; the switch is hidden when unset. */
   onToggleEnabled?: (route: WebhookRoute, enabled: boolean) => void;
   /** Shows a "New route" button. */
   onCreate?: () => void;
+  /** Delivery state per platform, shown beside each route's delivery target. */
   deliveryStatus?: Partial<Record<DeliveryPlatform, DeliveryPlatformStatus>>;
   /** Shown when there are no routes. Default "No webhook routes yet". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
@@ -173,14 +179,24 @@ export interface WebhookRouteEditorProps extends Omit<React.HTMLAttributes<HTMLF
   events: (string | NameCheckboxOption)[];
   /** Freshly issued signing secret: shown once, then masked. */
   newSecret?: string | null;
+  /**
+   * Called with the validated route draft; may return a promise, and the save button shows a spinner until it
+   * settles.
+   */
   onSave?: (draft: WebhookRouteDraft) => void | Promise<void>;
+  /** Called when the user presses Cancel; the button is hidden when unset. */
   onCancel?: () => void;
   /** Issue a new secret (after confirmation); the result is shown once. */
   onRegenerateSecret?: () => string | Promise<string>;
+  /** Sends a test event and resolves with its result; shows a "Send test" button when set. */
   onTestSend?: () => WebhookTestResult | Promise<WebhookTestResult>;
+  /** Called with a past delivery when the user presses Redeliver on it; the action is hidden when unset. */
   onRedeliver?: (delivery: WebhookDelivery) => void;
+  /** Delivery state per platform, shown beside the delivery targets. */
   deliveryStatus?: Partial<Record<DeliveryPlatform, DeliveryPlatformStatus>>;
+  /** Delivery targets to offer; defaults to the built-in platforms. */
   deliveryPlatforms?: DeliveryPlatform[];
+  /** Called when the user presses Channels in the home-channel warning; the button is hidden when unset. */
   onConfigureChannels?: () => void;
 }
 

@@ -33,6 +33,7 @@ const stateMeta: Record<RemoteScreenState, { label: string; dot: string }> = {
 };
 
 export interface RemoteScreenViewerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Connection state: `connecting`, `live`, `paused` or `disconnected`; sets the status badge and overlay. */
   state: RemoteScreenState;
   /**
    * Your remote-desktop surface. Sutra does not bundle a VNC / RDP client: mount e.g. a noVNC
@@ -43,10 +44,13 @@ export interface RemoteScreenViewerProps extends Omit<React.HTMLAttributes<HTMLD
   frameSrc?: string;
   /** Who holds the input lease. */
   controller?: RemoteScreenController;
+  /** Initially controlling party when `controller` is not controlled. */
   defaultController?: RemoteScreenController;
+  /** Called with the new controller when the user takes or hands back control. */
   onControllerChange?: (controller: RemoteScreenController) => void;
   /** Remote desktop width / height, used for the aspect ratio and "actual size". Default 1280×800. */
   screenWidth?: number;
+  /** Remote desktop height in px, used with `screenWidth` for the aspect ratio. Default 800. */
   screenHeight?: number;
   /** Round-trip latency in ms. */
   latencyMs?: number;
@@ -54,10 +58,13 @@ export interface RemoteScreenViewerProps extends Omit<React.HTMLAttributes<HTMLD
   onScreenshot?: () => void;
   /** Shows a Reconnect button while disconnected. */
   onReconnect?: () => void;
+  /** Heading in the viewer toolbar. */
   title?: React.ReactNode;
   /** Scale-to-fit (default) or actual size with scrolling. */
   fit?: boolean;
+  /** Initial scale-to-fit state when `fit` is not controlled. */
   defaultFit?: boolean;
+  /** Called with the new state when the user toggles between fit and actual size. */
   onFitChange?: (fit: boolean) => void;
 }
 
@@ -243,8 +250,11 @@ export interface OsPermission {
 }
 
 export interface PermissionPreflightCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** OS permissions to check, each with its granted state. */
   permissions: OsPermission[];
+  /** Heading of the card. */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
   /** Opens the OS settings pane for a permission. */
   onOpenSettings?: (id: string) => void;

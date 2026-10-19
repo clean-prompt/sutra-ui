@@ -24,9 +24,14 @@ export function formatStopwatch(ms: number) {
 }
 
 export interface StopwatchProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Starts counting on mount.
+   * @default false
+   */
   autoStart?: boolean;
   /** Show the laps list. Default true. */
   showLaps?: boolean;
+  /** Called with the lap when the user records one. */
   onLap?: (lap: StopwatchLap) => void;
 }
 

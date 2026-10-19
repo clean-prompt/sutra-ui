@@ -99,7 +99,11 @@ const capabilityMeta: Record<ModelCapability, { label: string; icon: React.Compo
 };
 
 export interface ModelCapabilityChipsProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /**
+   * Capabilities to show as chips (`tools`, `vision`, `reasoning`), in the order given; renders nothing when empty.
+   */
   capabilities?: ModelCapability[];
+  /** Badge size of each chip. */
   size?: "sm" | "md";
 }
 
@@ -141,9 +145,11 @@ function ModelRefLabel({ providers, value, className }: { providers: RoutingProv
 /* ------------------------------------------------------------------ */
 
 export interface ProviderModelPickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect" | "defaultValue"> {
+  /** Providers with their models; unconfigured providers show a "Set up" call to action instead of models. */
   providers: RoutingProvider[];
   /** The current model ("current" tag). */
   value?: ModelRef | null;
+  /** Called with the chosen model reference and the model record when the user picks a model. */
   onSelect?: (ref: ModelRef, model: RoutingModel) => void;
   /** Called from an unconfigured provider's "Set up" CTA. */
   onSetupProvider?: (providerId: string) => void;
@@ -151,7 +157,9 @@ export interface ProviderModelPickerProps extends Omit<React.HTMLAttributes<HTML
   emptyActions?: React.ReactNode;
   /** Return true to disable a model (shown greyed with `disabledReason`). */
   isModelDisabled?: (ref: ModelRef, model: RoutingModel) => boolean;
+  /** Tooltip text for models that `isModelDisabled` greys out. */
   disabledReason?: string;
+  /** Focus the search field on mount. */
   autoFocus?: boolean;
 }
 
@@ -393,12 +401,17 @@ export const ProviderModelPicker = React.forwardRef<HTMLDivElement, ProviderMode
 ProviderModelPicker.displayName = "ProviderModelPicker";
 
 export interface ProviderModelPickerDialogProps extends Omit<ProviderModelPickerProps, "autoFocus" | "title"> {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes (it closes after a model is picked). */
   onOpenChange?: (open: boolean) => void;
   /** Element that opens the dialog. */
   trigger?: React.ReactNode;
+  /** Dialog heading; screen-reader label of the picker. */
   title?: React.ReactNode;
+  /** Helper text under the dialog heading. */
   description?: React.ReactNode;
 }
 
@@ -439,8 +452,11 @@ ProviderModelPickerDialog.displayName = "ProviderModelPickerDialog";
 export interface ProviderModelPickerPopoverProps extends Omit<ProviderModelPickerProps, "autoFocus" | "onSelect"> {
   /** Initial model when uncontrolled (no `value`). */
   defaultValue?: ModelRef | null;
+  /** Called with the chosen model reference and the model record when the user picks a model. */
   onValueChange?: (ref: ModelRef, model: RoutingModel) => void;
+  /** Trigger text shown while no model is selected. */
   placeholder?: string;
+  /** Extra classes for the trigger button; `className` goes to the picker inside the popover. */
   triggerClassName?: string;
 }
 
@@ -494,10 +510,15 @@ export interface ModelVisibilityState {
 }
 
 export interface ModelVisibilityManagerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Providers (id, name, monogram, colour and models) whose models can be shown or hidden. */
   providers: Pick<RoutingProvider, "id" | "name" | "monogram" | "color" | "models">[];
+  /** Controlled visibility map: which models are hidden from pickers. */
   value?: ModelVisibilityState;
+  /** Initial visibility map when `value` is not controlled. */
   defaultValue?: ModelVisibilityState;
+  /** Called with the updated visibility map when the user toggles a model or a provider. */
   onValueChange?: (value: ModelVisibilityState) => void;
+  /** Provider selected on mount; defaults to the first provider. */
   defaultProviderId?: string;
 }
 
@@ -631,11 +652,17 @@ ModelVisibilityManager.displayName = "ModelVisibilityManager";
 /* ------------------------------------------------------------------ */
 
 export interface FallbackChainEditorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Providers whose models can be added to the chain. */
   providers: RoutingProvider[];
+  /** Controlled chain: model references in the order they are tried. */
   value?: ModelRef[];
+  /** Initial chain when `value` is not controlled. */
   defaultValue?: ModelRef[];
+  /** Called with the new chain when the user adds, removes or reorders a model. */
   onValueChange?: (value: ModelRef[]) => void;
+  /** Helper text above the chain. */
   caption?: React.ReactNode;
+  /** Called from an unconfigured provider's "Set up" call to action in the add-model picker. */
   onSetupProvider?: (providerId: string) => void;
   /** Maximum chain length. */
   max?: number;
@@ -740,10 +767,15 @@ export const defaultAuxiliaryTasks: AuxiliaryTask[] = [
 export type TaskModelMap = Record<string, ModelRef | "auto">;
 
 export interface TaskModelAssignmentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Providers whose models can be assigned to a task. */
   providers: RoutingProvider[];
+  /** Auxiliary tasks (title generation, summaries and so on) to assign a model to; defaults to the built-in list. */
   tasks?: AuxiliaryTask[];
+  /** Controlled map of task id to model reference; a task without an entry uses the main model (Auto). */
   value?: TaskModelMap;
+  /** Initial map when `value` is not controlled. */
   defaultValue?: TaskModelMap;
+  /** Called with the updated map when the user assigns or clears a task's model. */
   onValueChange?: (value: TaskModelMap) => void;
   /** Caption for the Auto option. */
   autoLabel?: string;
@@ -835,13 +867,19 @@ export interface EnsembleConfig {
 }
 
 export interface EnsembleBuilderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Providers whose models can join the ensemble. */
   providers: RoutingProvider[];
+  /** Controlled configuration: `references`, `aggregator` and `rounds`. */
   value?: EnsembleConfig;
+  /** Initial configuration when `value` is not controlled. */
   defaultValue?: EnsembleConfig;
+  /** Called with the new configuration when the user changes any part of it. */
   onValueChange?: (value: EnsembleConfig) => void;
   /** Extra check for models that resolve to an ensemble (models with `ensemble: true` are always rejected). */
   isEnsemble?: (ref: ModelRef) => boolean;
+  /** Upper bound of the rounds stepper. */
   maxRounds?: number;
+  /** Maximum number of reference models that can be added. */
   maxReferences?: number;
 }
 
@@ -984,10 +1022,16 @@ EnsembleBuilder.displayName = "EnsembleBuilder";
 /* ------------------------------------------------------------------ */
 
 export interface ModelInfoCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** The model to describe (name, context length, pricing, capabilities). */
   model: RoutingModel;
+  /** Provider name, monogram and colour shown beside the model; omit for a provider-less card. */
   provider?: Pick<RoutingProvider, "name" | "monogram" | "color">;
   /** Context length override in tokens; `null`/undefined uses the model's own value. */
   contextOverride?: number | null;
+  /**
+   * Called with a new context length in tokens, or `null` to reset to the model value; the Edit and Reset buttons
+   * show only when set.
+   */
   onContextOverrideChange?: (tokens: number | null) => void;
 }
 
@@ -1099,13 +1143,19 @@ export interface ReasoningSettings {
 }
 
 export interface ReasoningPillProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue"> {
+  /** Controlled reasoning settings (thinking on/off, effort level, fast mode). */
   value?: ReasoningSettings;
+  /** Initial settings when `value` is not controlled. */
   defaultValue?: ReasoningSettings;
+  /** Called with the new settings when the user changes any control in the popover. */
   onValueChange?: (value: ReasoningSettings) => void;
+  /** Effort levels offered in the slider, lowest to highest. */
   levels?: EffortLevel[];
   /** Hide controls the current model doesn't support. */
   supportsThinking?: boolean;
+  /** Show the Fast mode switch; set false when the current model has no fast mode. */
   supportsFast?: boolean;
+  /** Show the effort slider; set false when the current model has fixed effort. */
   supportsEffort?: boolean;
 }
 

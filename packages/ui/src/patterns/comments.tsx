@@ -65,12 +65,17 @@ export type CommentRole = "owner" | "editor" | "commenter" | "viewer";
 export type CommentFilter = "open" | "resolved" | "all";
 
 export interface CommentHandlers {
+  /** Called with the thread id and the reply text when a reply is submitted. */
   onReply?: (threadId: string, body: string) => void;
+  /** Called with the thread id and the new resolved state when a thread is resolved or reopened. */
   onResolve?: (threadId: string, resolved: boolean) => void;
+  /** Called with the thread id, comment id and new text when a comment is edited. */
   onEdit?: (threadId: string, commentId: string, body: string) => void;
+  /** Called with the thread id and comment id when a comment is deleted. */
   onDelete?: (threadId: string, commentId: string) => void;
   /** Enables reactions. */
   onReact?: (threadId: string, commentId: string, emoji: string) => void;
+  /** Called with the thread when the user asks to jump to its anchor in the document. */
   onFocusAnchor?: (thread: CommentThreadData) => void;
 }
 
@@ -82,22 +87,35 @@ const defaultReactions = ["👍", "❤️", "🎉", "👀", "✅"];
 
 export interface CommentComposerProps
   extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue"> {
+  /** Called with the trimmed text when the user submits (button or Enter); the field is then cleared. */
   onSubmit: (body: string) => void;
+  /** Called when the user cancels (Cancel button or Escape); setting it shows the Cancel button. */
   onCancel?: () => void;
   /** Excerpt shown above the field. */
   quote?: string;
+  /**
+   * Placeholder of the text field.
+   * @default "Add a comment…"
+   */
   placeholder?: string;
+  /**
+   * Text of the submit button.
+   * @default "Comment"
+   */
   submitLabel?: string;
   /** Draft text (controlled). */
   value?: string;
+  /** Initial draft text when uncontrolled. */
   defaultValue?: string;
+  /** Called with the draft text as it changes. */
   onValueChange?: (value: string) => void;
+  /** Focuses the field on mount. */
   autoFocus?: boolean;
   /** Accessible label of the field. Default "Comment". */
   label?: string;
   /** `compact` hides the buttons until the field is focused or has text. Default `normal`. */
   density?: Density;
-  /** @deprecated Use `density="compact"`. */
+  /** Legacy form of `density="compact"`. @deprecated Use `density="compact"`. */
   compact?: boolean;
 }
 
@@ -191,11 +209,15 @@ CommentComposer.displayName = "CommentComposer";
 /* ------------------------------------------------------------------ */
 
 export interface CommentThreadProps extends Omit<React.HTMLAttributes<HTMLElement>, "onReset">, CommentHandlers {
+  /** The thread to render: its comments, resolved state and optional anchor quote. */
   thread: CommentThreadData;
+  /** Id of the current user; their comments get edit and delete actions. */
   currentUserId?: string;
+  /** What the current user may do: `owner` and `editor` resolve any thread, `commenter` resolves their own and replies, `viewer` can only read. */
   role?: CommentRole;
   /** Highlight (e.g. the thread whose anchor holds the cursor). */
   active?: boolean;
+  /** Emoji offered in the reaction picker (needs `onReact`). */
   reactionOptions?: string[];
   /** Reference time for relative timestamps. */
   now?: Date | number;
@@ -456,21 +478,34 @@ CommentThread.displayName = "CommentThread";
 /* ------------------------------------------------------------------ */
 
 export interface CommentsPanelProps extends Omit<React.HTMLAttributes<HTMLElement>, "title">, CommentHandlers {
+  /** Threads to list, in display order. */
   threads: CommentThreadData[];
+  /** Id of the current user; their comments get edit and delete actions. */
   currentUserId?: string;
+  /** What the current user may do: `owner` and `editor` resolve any thread, `commenter` resolves their own and replies, `viewer` can only read. */
   role?: CommentRole;
+  /** Controlled filter: open threads, resolved threads or all. Use with `onFilterChange`. */
   filter?: CommentFilter;
+  /** Initial filter when uncontrolled. */
   defaultFilter?: CommentFilter;
+  /** Called with the new filter when the user switches tabs. */
   onFilterChange?: (filter: CommentFilter) => void;
   /** Current editor selection; enables "Comment on selection". */
   selection?: string | null;
   /** Creates a thread anchored to the selection. */
   onCreateThread?: (body: string, quote?: string) => void;
+  /** Id of the highlighted thread (e.g. the one whose anchor holds the cursor). */
   activeThreadId?: string;
+  /** Emoji offered in the reaction picker (needs `onReact`). */
   reactionOptions?: string[];
+  /**
+   * Panel heading.
+   * @default "Comments"
+   */
   title?: React.ReactNode;
   /** Header actions (e.g. a close button). */
   actions?: React.ReactNode;
+  /** Reference time for relative timestamps ("5m ago"); pass it to keep renders deterministic. */
   now?: Date | number;
 }
 

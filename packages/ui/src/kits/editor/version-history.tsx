@@ -77,11 +77,17 @@ export function groupVersionsByDay<T extends Pick<DocumentVersion, "createdAt">>
 export interface VersionHistoryProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Newest first. */
   versions: DocumentVersion[];
+  /** Controlled selected range: `from` is the older version id, `to` the newer; equal for one version. */
   selection?: VersionSelection | null;
+  /** Initial selection when `selection` is not controlled; defaults to the newest version. */
   defaultSelection?: VersionSelection | null;
+  /** Called with the selected range when the user picks a version or extends the range. */
   onSelectionChange?: (selection: VersionSelection) => void;
+  /** Controlled list filter: `all` or `named` versions. */
   tab?: VersionHistoryTab;
+  /** Initial filter when `tab` is not controlled. */
   defaultTab?: VersionHistoryTab;
+  /** Called with the filter when the user switches tab. */
   onTabChange?: (tab: VersionHistoryTab) => void;
   /** Enables "Name this version" (empty string clears the name). */
   onRename?: (version: DocumentVersion, label: string) => void;
@@ -93,9 +99,11 @@ export interface VersionHistoryProps extends Omit<React.HTMLAttributes<HTMLDivEl
   diffMode?: DiffMode;
   /** Initial diff layout when uncontrolled. Default "inline". */
   defaultDiffMode?: DiffMode;
+  /** Called with the diff layout (`inline` or `split`) when the user changes it. */
   onDiffModeChange?: (mode: DiffMode) => void;
   /** Reference time for day grouping. */
   now?: Date | number;
+  /** Heading of the panel. Default "Version history". */
   title?: React.ReactNode;
 }
 

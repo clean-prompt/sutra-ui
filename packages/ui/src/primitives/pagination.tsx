@@ -20,11 +20,13 @@ const itemSize: Record<Size, string> = {
 };
 
 export interface PaginationItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Page number this item represents and selects when clicked (1-based). */
   page?: number;
   /** Marks the current page (`aria-current="page"`). */
   active?: boolean;
-  /** @deprecated Use `active`. */
+  /** Legacy name of `active`. @deprecated Use `active`. */
   isActive?: boolean;
+  /** Item height and text size; match the other pagination controls. */
   size?: Size;
 }
 
@@ -57,6 +59,7 @@ export const PaginationItem = React.forwardRef<HTMLButtonElement, PaginationItem
 PaginationItem.displayName = "PaginationItem";
 
 export interface PaginationEllipsisProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Size of the ellipsis, matching the neighbouring items. */
   size?: Size;
   /** Which gap this marks (before or after the current range); handed to `onJump`. Default `"end"`. */
   direction?: "start" | "end";
@@ -174,6 +177,7 @@ function PaginationJump({ direction, size, total, onGo }: PaginationJumpProps) {
 }
 
 export interface PaginationNavButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Button height and text size; match the other pagination controls. */
   size?: Size;
   /** Hide the text label and render only the arrow. */
   iconOnly?: boolean;
@@ -219,26 +223,56 @@ PaginationNext.displayName = "PaginationNext";
 export interface PaginationProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange"> {
   /** Current page (1-based). */
   page?: number;
+  /**
+   * Initial page (1-based) when uncontrolled.
+   * @default 1
+   */
   defaultPage?: number;
+  /** Total number of pages (not rows); drives which page buttons are shown. */
   totalPages: number;
+  /** Called with the new 1-based page when the user changes page. */
   onPageChange?: (page: number) => void;
+  /**
+   * Pages shown on each side of the current page before collapsing into an ellipsis.
+   * @default 1
+   */
   siblingCount?: number;
+  /**
+   * Pages always shown at the start and end of the range.
+   * @default 1
+   */
   boundaryCount?: number;
+  /**
+   * Layout: numbered page buttons, prev/next only, a dot indicator, or a "load more" button.
+   * @default "numbered"
+   */
   variant?: "numbered" | "simple" | "dots" | "load-more";
+  /** Control height and text size. */
   size?: Size;
   /** Rows per page; enables the page size selector together with `pageSizeOptions`. */
   pageSize?: number;
+  /** Choices for the page size selector (needs `pageSize`); each is a rows-per-page count. */
   pageSizeOptions?: number[];
+  /** Called with the chosen rows-per-page count; update `pageSize` and usually reset the page. */
   onPageSizeChange?: (pageSize: number) => void;
+  /**
+   * Label of the page size selector.
+   * @default "Rows per page"
+   */
   pageSizeLabel?: React.ReactNode;
   /** load-more: spinner on the button. */
   loading?: boolean;
+  /**
+   * Text of the load-more button.
+   * @default "Load more"
+   */
   loadMoreLabel?: React.ReactNode;
   /**
    * numbered: activating an ellipsis turns it into a page field (Enter jumps to that page, Escape cancels), so a long
    * range can be crossed in one step. Opt-in; the page list is shown from the `@lg` container width up.
    */
   pageJump?: boolean;
+  /** Disables every control. */
   disabled?: boolean;
 }
 
@@ -437,6 +471,7 @@ Pagination.displayName = "Pagination";
 export interface PaginationStatusProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** Current page (1-based). */
   page: number;
+  /** Rows per page; with `page` and `total` it gives the "1–10 of 245" window. */
   pageSize: number;
   /** Total number of rows. */
   total: number;

@@ -201,13 +201,27 @@ export interface MarketplaceHeroStat {
 }
 
 export interface MarketplaceHeroProps extends Omit<React.HTMLAttributes<HTMLElement>, "title" | "onChange"> {
+  /** Small label above the title. */
   eyebrow?: React.ReactNode;
+  /**
+   * Hero headline.
+   * @default "Extend Sutra with plugins"
+   */
   title?: React.ReactNode;
+  /** Supporting text under the headline. */
   subtitle?: React.ReactNode;
+  /** Counters under the search (e.g. plugins, authors); each has a `label` and a `value`. */
   stats?: MarketplaceHeroStat[];
+  /** Controlled search text. Use with `onQueryChange`. */
   query?: string;
+  /** Initial search text when uncontrolled. */
   defaultQuery?: string;
+  /** Called with the search text as it changes. */
   onQueryChange?: (query: string) => void;
+  /**
+   * Placeholder of the search field.
+   * @default "Search plugins, tools, authors…"
+   */
   searchPlaceholder?: string;
   /** Extra content under the search (popular tags, CTAs). */
   children?: React.ReactNode;
@@ -288,13 +302,15 @@ MarketplaceHero.displayName = "MarketplaceHero";
 /* ------------------------------------------------------------------ */
 
 export interface MarketplaceCardProps extends Omit<React.HTMLAttributes<HTMLElement>, "onClick"> {
+  /** The extension to show: name, author, tier, description, capabilities, install count and dates. */
   extension: MarketplaceExtension;
   /** Capability chips shown before "+N". Default 3. */
   maxCapabilities?: number;
+  /** Called with the extension when the card is clicked; the card then becomes a button. */
   onOpen?: (extension: MarketplaceExtension) => void;
   /** `compact` hides the dates row (shelves). Default "normal". */
   density?: Density;
-  /** @deprecated Use `density="compact"`. */
+  /** Legacy form of `density="compact"`. @deprecated Use `density="compact"`. */
   compact?: boolean;
 }
 
@@ -411,11 +427,21 @@ function matchesQuery(e: MarketplaceExtension, q: string) {
 }
 
 export interface MarketplaceGridProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Extensions to list, before search and filters. */
   items: MarketplaceExtension[];
   /** Search query (e.g. from MarketplaceHero). */
   query?: string;
+  /**
+   * Initially selected tier filter when uncontrolled.
+   * @default "all"
+   */
   defaultTier?: MarketplaceTier | "all";
+  /** Initially selected category filter when uncontrolled. */
   defaultCategory?: string;
+  /**
+   * Initial sort order when uncontrolled.
+   * @default "popular"
+   */
   defaultSort?: MarketplaceSort;
   /** Group by category with "View all" when no category is selected. Default true. */
   sectioned?: boolean;
@@ -423,6 +449,7 @@ export interface MarketplaceGridProps extends React.HTMLAttributes<HTMLDivElemen
   sectionLimit?: number;
   /** Cards per page in the flat grid. Default 9. */
   pageSize?: number;
+  /** Called with the extension when a card is opened. */
   onOpen?: (extension: MarketplaceExtension) => void;
   /** Called when the empty state's reset button is pressed (after filters reset). */
   onClearQuery?: () => void;
@@ -576,10 +603,15 @@ MarketplaceGrid.displayName = "MarketplaceGrid";
 /* ------------------------------------------------------------------ */
 
 export interface AuthorShelfProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** The author shown in the shelf header (name, avatar, handle). */
   author: MarketplaceAuthor;
+  /** The author's extensions, shown as cards. */
   items: MarketplaceExtension[];
+  /** Shelf heading; defaults to the author's name. */
   title?: React.ReactNode;
+  /** Called with the extension when a card is opened. */
   onOpen?: (extension: MarketplaceExtension) => void;
+  /** Called when "View all" is clicked; setting it shows the link. */
   onViewAll?: () => void;
 }
 
@@ -628,11 +660,15 @@ AuthorShelf.displayName = "AuthorShelf";
 /* ------------------------------------------------------------------ */
 
 export interface ExtensionDetailPageProps extends React.HTMLAttributes<HTMLElement> {
+  /** The extension to describe: name, author, tier, versions, capabilities, readme and links. */
   extension: MarketplaceExtension;
   /** Other extensions by the same author. */
   moreFromAuthor?: MarketplaceExtension[];
+  /** Breadcrumb trail above the header; each crumb has a `label` and an optional `href`. */
   breadcrumbs?: { label: string; href?: string }[];
+  /** Renders breadcrumb links in place of the default `<a>`, e.g. to use your router's Link. */
   renderLink?: BreadcrumbRenderLink;
+  /** Called with the extension when a card in "More from author" is opened. */
   onOpenExtension?: (extension: MarketplaceExtension) => void;
   /** Called with the screenshot index; wire it to a Lightbox. */
   onOpenScreenshot?: (index: number) => void;
@@ -850,9 +886,19 @@ const sourceMeta: Record<TestimonialSource, { label: string; className: string }
 };
 
 export interface TestimonialWallProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Quotes to show; each has a `quote`, a `name`, a `source` and optional handle, avatar and categories. */
   testimonials: Testimonial[];
+  /**
+   * Section heading.
+   * @default "Loved by people who ship"
+   */
   title?: React.ReactNode;
+  /** Supporting text under the heading. */
   description?: React.ReactNode;
+  /**
+   * Initially selected category tab when uncontrolled.
+   * @default "all"
+   */
   defaultCategory?: string;
 }
 
@@ -931,10 +977,18 @@ export interface FeatureGridItem {
 }
 
 export interface FeatureGridProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Features to list; each has a `title`, a `description` and an `icon`. */
   features: FeatureGridItem[];
+  /** Small label above the title. */
   eyebrow?: React.ReactNode;
+  /** Section heading. */
   title?: React.ReactNode;
+  /** Supporting text under the heading. */
   description?: React.ReactNode;
+  /**
+   * Number of columns on large screens (fewer on small ones).
+   * @default 3
+   */
   columns?: 2 | 3 | 4;
 }
 
@@ -987,10 +1041,18 @@ export interface InstallSnippetTab {
 }
 
 export interface InstallSnippetProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** Install methods as tabs; each has an `id`, a `label` and a `command` (or several). */
   tabs: InstallSnippetTab[];
+  /** Controlled selected tab id. Use with `onValueChange`. */
   value?: string;
+  /** Initially selected tab id when uncontrolled. */
   defaultValue?: string;
+  /** Called with the id of the tab the user picked. */
   onValueChange?: (id: string) => void;
+  /**
+   * Accessible name of the tab list.
+   * @default "Install method"
+   */
   label?: string;
 }
 
@@ -1051,9 +1113,16 @@ export interface ComparisonFootnote {
 }
 
 export interface ComparisonTableProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Columns of the table; each has an `id`, a `name` and an optional `highlight` for your own product. */
   products: ComparisonProduct[];
+  /** Feature rows; each has a `feature` and `values` keyed by product id (`yes`, `no`, `partial` or text). */
   rows: ComparisonRow[];
+  /** Footnotes listed under the table; rows reference them by id. */
   footnotes?: ComparisonFootnote[];
+  /**
+   * Visually hidden caption that names the table for assistive technology.
+   * @default "Product comparison"
+   */
   caption?: string;
 }
 

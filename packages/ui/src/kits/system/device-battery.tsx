@@ -127,6 +127,7 @@ export function summarizeDeviceBatteries(
 }
 
 export interface DeviceBatteryListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+  /** Bluetooth devices with their battery level, charging state and connection. */
   devices: BatteryDevice[];
   /** Replaces the computed summary sentence. */
   summary?: React.ReactNode;
@@ -146,6 +147,7 @@ export interface DeviceBatteryListProps extends Omit<React.HTMLAttributes<HTMLDi
   emptyState?: React.ReactNode;
   /** Accessible name of the devices table. Default "Device batteries". */
   label?: string;
+  /** BCP 47 locale used to format numbers. */
   locale?: string;
   /** Data is on its way. With no devices yet the summary and table show placeholders; with devices the root is only marked busy. */
   loading?: boolean;

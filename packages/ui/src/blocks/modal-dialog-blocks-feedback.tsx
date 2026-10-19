@@ -35,8 +35,14 @@ export interface FeedbackValues {
 }
 
 export interface FeedbackDialogProps extends BlockDialogBaseProps {
+  /**
+   * Dialog heading.
+   * @default "Share your feedback"
+   */
   title?: React.ReactNode;
+  /** Feedback categories offered in the select; each has a `value` and a `label`. */
   categories?: { value: string; label: string }[];
+  /** Called with the rating, category, message and contact choice when the form is submitted. A returned promise shows a spinner; throw to show the error message. */
   onSubmit?: (values: FeedbackValues) => unknown;
 }
 

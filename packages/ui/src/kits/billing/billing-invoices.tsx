@@ -26,13 +26,17 @@ export interface BillingInvoice {
 }
 
 export interface UsageInvoiceTableProps extends React.HTMLAttributes<HTMLTableElement> {
+  /** Invoices to list, each with a number, date, amount and status. */
   invoices: BillingInvoice[];
+  /** BCP 47 locale used to format amounts and dates. Default "en-US". */
   locale?: string;
+  /** Called with the invoice when the user presses Download; the action is hidden when unset. */
   onDownload?: (invoice: BillingInvoice) => void;
+  /** Called with the invoice when the user presses Pay on an open one; the action is hidden when unset. */
   onPay?: (invoice: BillingInvoice) => void;
   /** Shown when there are no invoices. Default "No invoices yet". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyLabel?: React.ReactNode;
 }
 

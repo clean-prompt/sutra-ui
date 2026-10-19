@@ -30,13 +30,17 @@ export interface OnboardingMilestone {
 }
 
 export interface OnboardingChecklistProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Milestones in order, each with a title, description and completed state. */
   items: OnboardingMilestone[];
   /** Default "Get started". */
   title?: React.ReactNode;
+  /** Helper text under the title. */
   description?: React.ReactNode;
   /** Highlighted item. Defaults to the first incomplete milestone. */
   nextId?: string;
+  /** Called with the milestone id when the user presses the action of the next milestone ("Show me"). */
   onShowMe?: (id: string) => void;
+  /** Called when the user dismisses the checklist; the close button is hidden when unset. */
   onDismiss?: () => void;
 }
 
@@ -130,12 +134,19 @@ const connectionDefaults: Record<ConnectionStateKind, { title: string; descripti
 };
 
 export interface ConnectionStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /**
+   * Why the connection is shown: `unresponsive`, `disconnected` or `error`; picks the default title and description.
+   */
   state: ConnectionStateKind;
+  /** Replaces the default title of the state. */
   title?: React.ReactNode;
+  /** Replaces the default description of the state. */
   description?: React.ReactNode;
   /** Shows a spinner in place of the reconnect link. */
   reconnecting?: boolean;
+  /** Called when the user presses Reconnect; the link is hidden when unset. */
   onReconnect?: () => void;
+  /** Called when the user presses Retry in the error state; the button is hidden when unset. */
   onRetry?: () => void;
   /** Error details shown in a mono block (error state). */
   details?: string;
@@ -215,6 +226,7 @@ export type PasteCodeAuthStatus = "idle" | "submitting" | "success" | "error";
 export interface PasteCodeAuthProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSubmit" | "title"> {
   /** Sign-in URL to open in a browser. */
   url: string;
+  /** Heading of the card. Default "Sign in with a code". */
   title?: React.ReactNode;
   /** Called instead of following the link. */
   onOpenUrl?: (url: string) => void;
@@ -226,7 +238,9 @@ export interface PasteCodeAuthProps extends Omit<React.HTMLAttributes<HTMLDivEle
   status?: PasteCodeAuthStatus;
   /** Controlled error message. */
   error?: string | null;
+  /** Label of the submit button. Default "Sign in". */
   submitLabel?: string;
+  /** Message shown once the code is accepted. Default "Signed in. You can close the browser tab.". */
   successText?: React.ReactNode;
 }
 

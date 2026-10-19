@@ -58,23 +58,35 @@ export function truncatePlanQuote(text: string, max = 80) {
 export interface PlanReviewCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Plan body (Markdown). */
   plan: string;
+  /** Card heading. Default "Plan". */
   title?: React.ReactNode;
+  /** Controlled comments, each quoting a passage of the plan. */
   comments?: PlanComment[];
+  /** Initial comments when `comments` is not controlled. */
   defaultComments?: PlanComment[];
+  /** Called with the comments when the user adds, edits or removes one. */
   onCommentsChange?: (comments: PlanComment[]) => void;
   /** Mode options offered after approval. `[]` hides the picker. */
   nextModes?: PlanNextModeOption[];
+  /** Controlled id of the mode chosen for after approval. */
   nextMode?: string;
+  /** Initially chosen mode when `nextMode` is not controlled. */
   defaultNextMode?: string;
+  /** Called with the mode id when the user picks one. */
   onNextModeChange?: (mode: string) => void;
+  /** Called with the approval (chosen next mode and comments) when the user approves the plan. */
   onApprove?: (approval: PlanApproval) => void;
   /** "Keep planning": sends the comments (and optional message) back as feedback. */
   onFeedback?: (comments: PlanComment[], message: string) => void;
+  /** Controlled expanded state of the plan body. */
   expanded?: boolean;
+  /** Initial expanded state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user expands or collapses the plan. */
   onExpandedChange?: (expanded: boolean) => void;
   /** Recorded outcome: renders read-only. */
   outcome?: PlanReviewOutcome | null;
+  /** Disables commenting and the approve and feedback actions; always true when `outcome` is set. */
   readOnly?: boolean;
   /** Max quote length shown in the composer and list. Default 80. */
   quoteLength?: number;

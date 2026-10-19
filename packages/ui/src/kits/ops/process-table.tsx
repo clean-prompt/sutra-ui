@@ -35,14 +35,20 @@ export type KillSignal = "SIGTERM" | "SIGKILL";
 /* ------------------------------------------------------------------ */
 
 export interface KillButtonProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Process id, shown in the confirm step and used in labels. */
   pid: number;
   /** Process name, used in labels. */
   name?: string;
+  /**
+   * Called with the chosen signal after the user confirms; may return a promise, and the button shows "Killing…"
+   * until it settles.
+   */
   onKill: (signal: KillSignal) => void | Promise<unknown>;
   /** External loading state (e.g. waiting for the process to exit). Shows "Killing…". */
   loading?: boolean;
-  /** @deprecated Use `loading`. */
+  /** External busy state; shows "Killing…" while true. @deprecated Use `loading`. */
   pending?: boolean;
+  /** Disables the button. */
   disabled?: boolean;
   /** Called when the confirm step opens / closes. */
   onConfirmingChange?: (signal: KillSignal | null) => void;
@@ -264,11 +270,15 @@ const presenceRowClass = (state: Presence) =>
   );
 
 export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableElement>, "children"> {
+  /** Processes to list, each with a pid, name, CPU, memory and start time. */
   processes: ProcessInfo[];
   /** Visible columns, in order. */
   columns?: ProcessColumn[];
+  /** Controlled sort column and direction; `null` keeps the given order. */
   sort?: ProcessSort | null;
+  /** Initial sort when `sort` is not controlled. */
   defaultSort?: ProcessSort | null;
+  /** Called with the sort (or `null`) when the user clicks a column header. */
   onSortChange?: (sort: ProcessSort | null) => void;
   /** Enables the kill column. */
   onKill?: (process: ProcessInfo, signal: KillSignal) => void | Promise<unknown>;
@@ -276,11 +286,13 @@ export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableEl
   canKill?: (process: ProcessInfo) => boolean;
   /** PIDs with a kill in flight. */
   pendingPids?: number[];
+  /** Shows the totals row with summed CPU and memory. Default true. */
   showTotals?: boolean;
   /** Command column truncation in characters for the visible text. Default 60. */
   commandMaxLength?: number;
   /** "now" for the started column. */
   now?: number;
+  /** Maximum height of the scrolling body; a number is px. */
   maxHeight?: number | string;
   /** Shown when there are no processes. Default "No processes". */
   emptyState?: React.ReactNode;
@@ -301,6 +313,7 @@ export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableEl
   expandedGroups?: string[];
   /** Initially expanded group keys. Default none. */
   defaultExpandedGroups?: string[];
+  /** Called with the expanded group keys when the user expands or collapses a group. */
   onExpandedGroupsChange?: (keys: string[]) => void;
   /** Enables Quit… and Force Quit… on group rows; each asks for confirmation first. */
   onQuitGroup?: (group: ProcessTableGroup, options: ProcessQuitOptions) => void | Promise<unknown>;

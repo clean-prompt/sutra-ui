@@ -52,7 +52,12 @@ export interface MonogramProps extends Omit<React.HTMLAttributes<HTMLSpanElement
   letters?: string;
   /** Tile colour (any CSS colour); defaults to `colorForSeed(name)`. Ignored by the `brand` variant. */
   color?: string;
+  /** Tile size from `xs` to `xl`. */
   size?: MonogramSize;
+  /**
+   * Look: `solid` (tinted tile, white letters), `soft` (light tile) or `brand` (brand-colour tile).
+   * @default "solid"
+   */
   variant?: MonogramVariant;
   /** Options for the generated letters. */
   initialsOptions?: InitialsOptions;

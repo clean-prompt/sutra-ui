@@ -7,6 +7,10 @@ import { cn } from "../lib/cn";
 
 export const containerVariants = cva("mx-auto w-full px-4 md:px-6 lg:px-8", {
   variants: {
+    /**
+     * Maximum content width: `sm` 48rem to `xl` 90rem, or `full` for no limit.
+     * @default "lg"
+     */
     size: {
       sm: "max-w-3xl",
       md: "max-w-5xl",
@@ -21,9 +25,11 @@ export const containerVariants = cva("mx-auto w-full px-4 md:px-6 lg:px-8", {
 export interface ContainerProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof containerVariants> {
+  /** Render as the child element (e.g. `<main>` or `<section>`) instead of a `<div>`, keeping the container styles. */
   asChild?: boolean;
 }
 
+/** Centres content and caps its width (`size`), with responsive horizontal padding. Extra props are spread to the root. */
 export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
   ({ className, size, asChild, ...props }, ref) => {
     const Comp: React.ElementType = asChild ? Slot.Root : "div";
@@ -73,6 +79,7 @@ export interface GridItemProps extends React.HTMLAttributes<HTMLDivElement> {
   lg?: Span;
 }
 
+/** A cell of `Grid`: `span` columns on mobile, with `md` and `lg` spans for larger screens. Extra props are spread to the root. */
 export const GridItem = React.forwardRef<HTMLDivElement, GridItemProps>(
   ({ className, span = "full", md, lg, ...props }, ref) => (
     <div
@@ -86,16 +93,28 @@ GridItem.displayName = "GridItem";
 
 const stackVariants = cva("flex", {
   variants: {
+    /**
+     * Main axis of the flex layout: `column` stacks, `row` lines up.
+     * @default "column"
+     */
     direction: { row: "flex-row", column: "flex-col" },
+    /**
+     * Space between children, in Tailwind spacing steps (4 = 1rem).
+     * @default 4
+     */
     gap: { 0: "gap-0", 1: "gap-1", 2: "gap-2", 3: "gap-3", 4: "gap-4", 5: "gap-5", 6: "gap-6", 8: "gap-8", 10: "gap-10", 12: "gap-12" },
+    /** Cross-axis alignment of the children (`align-items`). */
     align: { start: "items-start", center: "items-center", end: "items-end", stretch: "items-stretch", baseline: "items-baseline" },
+    /** Main-axis distribution of the children (`justify-content`). */
     justify: { start: "justify-start", center: "justify-center", end: "justify-end", between: "justify-between" },
+    /** Lets children wrap onto new lines when they overflow. */
     wrap: { true: "flex-wrap" },
   },
   defaultVariants: { direction: "column", gap: 4 },
 });
 
 export interface StackProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof stackVariants> {
+  /** Render as the child element instead of a `<div>`, keeping the stack styles. */
   asChild?: boolean;
 }
 
@@ -108,6 +127,7 @@ export const Stack = React.forwardRef<HTMLDivElement, StackProps>(
 );
 Stack.displayName = "Stack";
 
+/** Horizontal `Stack` (`direction="row"`). Takes the other `Stack` props. */
 export const HStack = React.forwardRef<HTMLDivElement, Omit<StackProps, "direction">>((props, ref) => (
   <Stack ref={ref} direction="row" align="center" {...props} />
 ));

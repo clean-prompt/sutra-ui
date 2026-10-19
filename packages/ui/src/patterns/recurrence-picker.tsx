@@ -27,13 +27,17 @@ export type { RecurrenceWeekday, RecurrenceFrequency, RecurrenceEnd, RecurrenceR
 /* ------------------------------------------------------------------ */
 
 export interface RecurrencePickerProps extends Omit<React.HTMLAttributes<HTMLFieldSetElement>, "defaultValue" | "onChange"> {
+  /** Controlled recurrence rule (frequency, interval, weekdays, end). Use with `onValueChange`. */
   value?: RecurrenceRule;
+  /** Initial rule when uncontrolled; the default is "does not repeat". */
   defaultValue?: RecurrenceRule;
+  /** Called with the new rule after every edit. */
   onValueChange?: (rule: RecurrenceRule) => void;
   /** Reference date used for sensible defaults (weekday, day of month). Default today. */
   referenceDate?: Date;
   /** Show the human-readable summary under the controls. Default true. */
   showSummary?: boolean;
+  /** Caption of the fieldset, shown above the controls. */
   legend?: string;
 }
 

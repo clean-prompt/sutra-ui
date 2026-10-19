@@ -39,6 +39,7 @@ export const hitAreaTouch = `${hitArea} pointer-coarse:after:h-[max(100%,2.75rem
 export const invalidRing =
   "aria-invalid:border-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/20";
 
+/** The shared three-step control size scale. */
 export type Size = "sm" | "md" | "lg";
 
 /** Spacing density for lists, tables and timelines. */

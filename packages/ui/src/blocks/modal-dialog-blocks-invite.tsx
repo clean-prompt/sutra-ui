@@ -140,9 +140,16 @@ const defaultMembers: DialogMember[] = [
 /* ------------------------------------------------------------------ */
 
 export interface InviteMembersDialogProps extends BlockDialogBaseProps {
+  /** Dialog heading; the default is sample text, so set it to your workspace. */
   title?: React.ReactNode;
+  /** Supporting text under the heading. */
   description?: React.ReactNode;
+  /** Roles offered in the role select; each has a `value` and a `label`. */
   roles?: SelectOption[];
+  /**
+   * Role selected when the dialog opens.
+   * @default "member"
+   */
   defaultRole?: string;
   /**
    * Controlled member list when paired with `onMembersChange`. Passed alone it only seeds the
@@ -151,8 +158,11 @@ export interface InviteMembersDialogProps extends BlockDialogBaseProps {
   members?: DialogMember[];
   /** Initial member list when uncontrolled. */
   defaultMembers?: DialogMember[];
+  /** Called with the full member list after a role change or removal. */
   onMembersChange?: (members: DialogMember[]) => void;
+  /** Invite link shown in the copy field; the default is a sample URL. */
   inviteLink?: string;
+  /** Called with the entered emails and the chosen role when the user sends the invites. A returned promise shows a spinner; throw to show the error message. */
   onInvite?: (emails: string[], role: string) => unknown;
 }
 

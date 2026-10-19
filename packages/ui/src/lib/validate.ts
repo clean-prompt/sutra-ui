@@ -19,6 +19,7 @@ export function isEmail(s: string | null | undefined): boolean {
   return typeof s === "string" && EMAIL.test(s.trim());
 }
 
+/** Options for `isHttpUrl`. */
 export interface IsHttpUrlOptions {
   /** Accept plain `http:`. Default true; `false` requires `https:`. */
   allowHttp?: boolean;
@@ -33,6 +34,7 @@ export function isHttpUrl(s: string | null | undefined, options: IsHttpUrlOption
   return url.protocol === "http:" && options.allowHttp !== false;
 }
 
+/** Options for `hostnameOf`. */
 export interface HostnameOfOptions {
   /** Keep a non-default port (`"localhost:3000"`). Default false. */
   port?: boolean;

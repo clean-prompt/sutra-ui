@@ -2,6 +2,7 @@ import * as React from "react";
 import { toMs, type DateInput } from "../lib/time";
 import { useLatestRef } from "./use-iso-layout-effect";
 
+/** Options for `useNow`: whether it ticks, the interval, and a fixed time for tests and demos. */
 export interface UseNowOptions {
   /** Tick only while true. Default true. */
   active?: boolean;
@@ -26,6 +27,7 @@ export function useNow(options: UseNowOptions = {}): number {
   return fixedMs ?? now;
 }
 
+/** Options for `useCountdown`: the tick interval and an expiry callback. */
 export interface UseCountdownOptions {
   /** Tick interval in ms. Default 250 (keeps a ceil-rounded seconds display on time). */
   interval?: number;
@@ -33,6 +35,7 @@ export interface UseCountdownOptions {
   onExpire?: () => void;
 }
 
+/** State of a countdown: the milliseconds left and whether it has expired. */
 export interface CountdownState {
   /** Milliseconds left (0 once expired or without a deadline). */
   remainingMs: number;

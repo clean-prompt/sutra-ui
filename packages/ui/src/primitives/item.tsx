@@ -11,11 +11,19 @@ import { ItemListContext } from "./item-internal";
 
 const groupVariants = cva("flex min-w-0 flex-col", {
   variants: {
+    /**
+     * Surface of the group: plain, an outlined card, or a muted tinted panel.
+     * @default "plain"
+     */
     variant: {
       plain: "",
       outline: "overflow-hidden rounded-box border border-border bg-card",
       muted: "overflow-hidden rounded-box bg-muted/50",
     },
+    /**
+     * Draws a divider between rows.
+     * @default false
+     */
     divided: { true: "divide-y divide-border", false: "" },
   },
   defaultVariants: { variant: "plain", divided: false },
@@ -84,16 +92,28 @@ ItemSeparator.displayName = "ItemSeparator";
 
 const itemVariants = cva("group/item flex w-full min-w-0 text-start text-sm text-foreground", {
   variants: {
+    /**
+     * Surface of the row: plain, outlined card or muted panel.
+     * @default "plain"
+     */
     variant: {
       plain: "",
       outline: "rounded-box border border-border bg-card",
       muted: "rounded-box bg-muted/50",
     },
+    /**
+     * Row padding and gap: `default`, `sm` or `xs`.
+     * @default "default"
+     */
     size: {
       default: "gap-3 px-4 py-3",
       sm: "gap-2.5 px-3 py-2",
       xs: "gap-2 px-2.5 py-1.5",
     },
+    /**
+     * Lays the media, content and actions out in a row or stacks them.
+     * @default "horizontal"
+     */
     orientation: {
       horizontal: "flex-row items-center",
       vertical: "flex-col items-start",
@@ -115,6 +135,7 @@ export interface ItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "role
   disabled?: boolean;
   /** Link `target` when `href` is set. */
   target?: string;
+  /** Link `rel` when `href` is set. Defaults to `noreferrer noopener` for `target="_blank"`. */
   rel?: string;
 }
 
@@ -191,6 +212,10 @@ Item.displayName = "Item";
 
 const mediaVariants = cva("flex shrink-0 items-center justify-center overflow-hidden text-muted-foreground [&_svg]:size-4", {
   variants: {
+    /**
+     * Shape of the media slot: plain, a tinted icon tile, a rounded image or a round avatar.
+     * @default "plain"
+     */
     variant: {
       plain: "",
       icon: "size-9 rounded-control border border-border bg-muted",

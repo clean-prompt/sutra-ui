@@ -96,6 +96,7 @@ const DialogsContext = React.createContext<DialogsApi | null>(null);
 /* ------------------------------------------------------------------ */
 
 export interface DialogProviderProps {
+  /** The app subtree that can call `useDialogs()`. */
   children?: React.ReactNode;
 }
 

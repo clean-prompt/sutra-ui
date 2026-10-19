@@ -17,7 +17,9 @@ interface InputOTPStyleContextValue {
 const InputOTPStyleContext = React.createContext<InputOTPStyleContextValue>({ size: "md", invalid: false });
 
 export type InputOTPProps = DistributiveOmit<OTPInputPrimitiveProps, "size"> & {
+  /** Slot size. */
   size?: Size;
+  /** Marks the field invalid: error ring on the slots and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
 };
 
@@ -90,6 +92,7 @@ const slotSize: Record<Size, string> = {
 };
 
 export interface InputOTPSlotProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Zero-based position of the character this slot shows. */
   index: number;
 }
 
@@ -157,8 +160,11 @@ export type OTPFieldProps = Omit<OTPInputPrimitiveProps, "children" | "render" |
   groupSize?: number;
   /** Custom separator node. */
   separator?: React.ReactNode;
+  /** Slot size. */
   size?: Size;
+  /** Marks the field invalid: error ring on the slots and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
+  /** Classes for every slot. */
   slotClassName?: string;
 };
 

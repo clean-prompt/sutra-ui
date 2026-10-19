@@ -47,9 +47,14 @@ export interface CountdownProps extends React.HTMLAttributes<HTMLDivElement> {
   hideSeconds?: boolean;
   /** Flip-in animation when a digit changes (skipped with reduced motion). */
   flip?: boolean;
+  /** Called once when the target time is reached. */
   onComplete?: () => void;
   /** Shown once the target has passed (defaults to zeros). */
   completeContent?: React.ReactNode;
+  /**
+   * Digit size.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
   /** Final stretch: in the last this-many milliseconds (and not yet complete) the countdown takes the warning tone and sets `data-urgent`. */
   urgentBelow?: number;

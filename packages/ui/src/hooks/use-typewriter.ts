@@ -3,6 +3,7 @@ import { graphemes } from "../lib/text";
 import { useLatestRef } from "./use-iso-layout-effect";
 import { prefersReducedMotion } from "./use-media-query";
 
+/** Options for `useTypewriter`: typing and deleting speed, delays, looping and a done callback. */
 export interface UseTypewriterOptions {
   /** Milliseconds per typed character. Default 45. */
   speed?: number;
@@ -18,6 +19,7 @@ export interface UseTypewriterOptions {
   onDone?: () => void;
 }
 
+/** State of a typewriter: the text typed so far, the current line and index, and whether it is done. */
 export interface TypewriterState {
   /** The part of the current line typed so far. */
   text: string;

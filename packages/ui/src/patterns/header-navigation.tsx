@@ -21,6 +21,7 @@ export interface HeaderNavProps extends React.HTMLAttributes<HTMLElement> {
   border?: "scroll" | "always" | "never";
   /** Inner container width. Default "lg". */
   containerSize?: "sm" | "md" | "lg" | "xl" | "full";
+  /** Classes for the inner container that holds the brand, links and actions. */
   innerClassName?: string;
 }
 
@@ -63,6 +64,7 @@ export const HeaderNav = React.forwardRef<HTMLElement, HeaderNavProps>(
 HeaderNav.displayName = "HeaderNav";
 
 export interface HeaderNavBrandProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** Render as the child element (e.g. a router `Link`) while keeping the brand styles. */
   asChild?: boolean;
 }
 
@@ -192,8 +194,11 @@ HeaderNavLink.displayName = "HeaderNavLink";
 
 export interface HeaderNavFeatureLinkProps
   extends Omit<React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Link>, "title"> {
+  /** Icon tile shown beside the title. */
   icon?: React.ReactNode;
+  /** Link title. */
   title: React.ReactNode;
+  /** One-line description under the title. */
   description?: React.ReactNode;
   /** Small tag after the title, e.g. "New". */
   badge?: React.ReactNode;
@@ -261,9 +266,13 @@ export interface HeaderNavMobileItem {
 }
 
 export interface HeaderNavMobileProps {
+  /** Links of the mobile menu; each has a label, an `href` and optional children for a sub-list. */
   items: HeaderNavMobileItem[];
+  /** Controlled open state of the sheet. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the sheet opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Shown at the top of the sheet. */
   brand?: React.ReactNode;
@@ -276,6 +285,7 @@ export interface HeaderNavMobileProps {
     children: React.ReactNode;
     onClick: () => void;
   }) => React.ReactElement;
+  /** Classes for the sheet content. */
   className?: string;
   /** Accessible label for the hamburger. */
   label?: string;

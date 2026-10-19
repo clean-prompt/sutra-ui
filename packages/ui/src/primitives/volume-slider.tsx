@@ -10,10 +10,21 @@ export interface VolumeSliderProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange" | "dir"> {
   /** Volume 0–100. */
   value?: number;
+  /**
+   * Initial volume from 0 to 100 when uncontrolled.
+   * @default 100
+   */
   defaultValue?: number;
+  /** Called with the new volume (0 to 100) as the slider moves. */
   onValueChange?: (value: number) => void;
+  /** Controlled muted state; the slider shows zero while muted. Use with `onMutedChange`. */
   muted?: boolean;
+  /**
+   * Initial muted state when uncontrolled.
+   * @default false
+   */
   defaultMuted?: boolean;
+  /** Called when the mute button toggles the muted state. */
   onMutedChange?: (muted: boolean) => void;
   /** Show the level ("64%", or "Muted") after the slider. Default true. */
   showLevel?: boolean;
@@ -21,6 +32,7 @@ export interface VolumeSliderProps
   hideMuteButton?: boolean;
   /** Categorical colour of the range and thumb. Default primary. */
   accent?: Accent;
+  /** Disables the slider and the mute button. */
   disabled?: boolean;
   /** Accessible name of the slider, e.g. "Music volume". Default "Volume". */
   label?: string;
@@ -28,6 +40,10 @@ export interface VolumeSliderProps
   muteLabel?: string;
   /** Keyboard step. Default 1. */
   step?: number;
+  /**
+   * Slider and button size.
+   * @default "md"
+   */
   size?: Size;
   /** Class for the level label. */
   levelClassName?: string;

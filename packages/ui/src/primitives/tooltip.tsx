@@ -51,6 +51,10 @@ export const tooltipContentVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Look of the bubble: `inverse` (dark, default) or `light` (bordered popover surface).
+       * @default "inverse"
+       */
       variant: {
         inverse: "bg-inverse text-inverse-foreground shadow-md",
         light: "border border-border bg-popover text-popover-foreground shadow-lg",
@@ -97,16 +101,22 @@ TooltipContent.displayName = "TooltipContent";
 
 export interface SimpleTooltipProps
   extends Omit<React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root>, "children"> {
+  /** Tooltip content. */
   content: React.ReactNode;
+  /** The element the tooltip describes; it must accept a ref and focus. */
   children: React.ReactNode;
+  /** Side of the trigger the tooltip opens on; it flips when there is no room. */
   side?: TooltipContentProps["side"];
+  /** Alignment of the tooltip along that side. */
   align?: TooltipContentProps["align"];
+  /** Look of the bubble: `inverse` (dark) or `light` (bordered popover surface). */
   variant?: TooltipContentProps["variant"];
   /**
    * Keyboard shortcut. A keys spec ("mod+k", "g t") renders platform-aware chips; a glyph string ("⌘K")
    * or an array (["⌘", "K"]) renders one Kbd per entry.
    */
   shortcut?: string | string[];
+  /** Classes for the tooltip bubble. */
   contentClassName?: string;
   /** Skip the tooltip entirely (renders children only). */
   disabled?: boolean;

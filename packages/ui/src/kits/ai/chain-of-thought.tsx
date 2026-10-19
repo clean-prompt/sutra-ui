@@ -37,9 +37,13 @@ export interface ThinkingExpandAllContextValue {
 const ThinkingExpandAllContext = React.createContext<ThinkingExpandAllContextValue | null>(null);
 
 export interface ThinkingExpandAllProviderProps {
+  /** Controlled "expand all thinking" state shared by every `ChainOfThought` below. */
   expanded?: boolean;
+  /** Initial state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user toggles it. */
   onExpandedChange?: (expanded: boolean) => void;
+  /** Transcript subtree whose thinking blocks and `ThinkingToggle` share the state. */
   children?: React.ReactNode;
 }
 
@@ -68,6 +72,7 @@ export function useThinkingExpandAll() {
 }
 
 export interface ThinkingToggleProps extends Omit<ButtonProps, "onClick"> {
+  /** Click handler, called before the toggle; call `preventDefault()` to keep the state unchanged. */
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -105,6 +110,7 @@ export interface ChainOfThoughtProps
   duration?: number;
   /** Custom header text (overrides "Thinking…" / "Thought for 12s"). */
   title?: React.ReactNode;
+  /** Replaces the default header icon. */
   icon?: React.ReactNode;
   /** Open while streaming and collapse when done (default true, uncontrolled only). */
   autoCollapse?: boolean;
@@ -246,7 +252,9 @@ export type ChainOfThoughtStepStatus = "pending" | "active" | "complete";
 export type ChainOfThoughtStepStatusInput = ChainOfThoughtStepStatus | TaskStatusInput;
 
 export interface ChainOfThoughtStepProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Step title, shown on the first line. */
   label: React.ReactNode;
+  /** Detail under the label. */
   description?: React.ReactNode;
   /** Default "succeeded" (legacy "complete"). */
   status?: ChainOfThoughtStepStatusInput;
@@ -312,6 +320,7 @@ export const ChainOfThoughtStep = React.forwardRef<HTMLDivElement, ChainOfThough
 ChainOfThoughtStep.displayName = "ChainOfThoughtStep";
 
 export interface ChainOfThoughtSearchResultProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** Address of the source; unsafe schemes are not linked. */
   href: string;
   /** Text in the chip; defaults to the domain. */
   title?: string;

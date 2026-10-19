@@ -1,14 +1,17 @@
 import * as React from "react";
 import { prefersReducedMotion } from "./use-media-query";
 
+/** Lifecycle state of a presence item: entering, idle or exiting. */
 export type PresenceState = "enter" | "idle" | "exit";
 
+/** One item of a presence list: the item, its key and its lifecycle state. */
 export interface PresenceItem<T, K = string> {
   item: T;
   key: K;
   state: PresenceState;
 }
 
+/** Options for `usePresence`: exit duration, initial entering and how long the enter state is held. */
 export interface UsePresenceOptions {
   /** Milliseconds a removed item stays in the list as `"exit"` (match the exit animation). Default 200, the `--sutra-duration` token. */
   exitDuration?: number;

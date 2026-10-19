@@ -205,10 +205,13 @@ export function searchLanguages(query: string, list: Language[] = languages) {
 /* ------------------------------------------------------------------ */
 
 export interface LanguagePickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
+  /** Controlled language code of the selected entry. */
   value?: string;
   /** Initially selected code when uncontrolled. */
   defaultValue?: string;
+  /** Called with the language code when the user picks a language. */
   onValueChange?: (code: string) => void;
+  /** Languages to offer, each with a code and name; defaults to the built-in list. */
   languages?: Language[];
   /** Recently used codes, most recent first. */
   recent?: string[];
@@ -216,6 +219,7 @@ export interface LanguagePickerProps extends Omit<React.HTMLAttributes<HTMLDivEl
   allowDetect?: boolean;
   /** Language detected while on "Detect". */
   detected?: string;
+  /** Focuses the search field on mount. */
   autoFocus?: boolean;
   /** Accessible name for the list. Default "Languages". */
   label?: string;
@@ -372,6 +376,7 @@ LanguagePicker.displayName = "LanguagePicker";
 /* ------------------------------------------------------------------ */
 
 export interface SwapButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  /** Called when the user presses the button to swap source and target. */
   onSwap?: () => void;
 }
 
@@ -405,20 +410,27 @@ export const SwapButton = React.forwardRef<HTMLButtonElement, SwapButtonProps>((
 SwapButton.displayName = "SwapButton";
 
 export interface LanguageBarProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Controlled source language code, or `"auto"` to detect. */
   source?: string;
   /** Initial source code when uncontrolled. Default "auto" (detect). */
   defaultSource?: string;
+  /** Controlled target language code. */
   target?: string;
   /** Initial target code when uncontrolled. Default "en". */
   defaultTarget?: string;
+  /** Called with the language code when the user picks a source language. */
   onSourceChange?: (code: string) => void;
+  /** Called with the language code when the user picks a target language. */
   onTargetChange?: (code: string) => void;
   /** Custom swap; default swaps (using the detected language when source is "auto"). */
   onSwap?: () => void;
+  /** Recently used source codes, most recent first, listed at the top of the source picker. */
   recentSources?: string[];
+  /** Recently used target codes, most recent first, listed at the top of the target picker. */
   recentTargets?: string[];
   /** Language detected while source is "auto". */
   detected?: string;
+  /** Languages to offer in both pickers; defaults to the built-in list. */
   languages?: Language[];
 }
 
@@ -527,17 +539,21 @@ LanguageBar.displayName = "LanguageBar";
 
 
 export interface SourcePaneProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange" | "defaultValue"> {
+  /** Controlled text to translate. */
   value?: string;
   /** Initial text when uncontrolled. Default "". */
   defaultValue?: string;
+  /** Called with the text on every edit. */
   onValueChange?: (value: string) => void;
   /** Language code of the text (drives `dir` and `lang`). */
   lang?: string;
   /** Character limit. Default 5000. */
   maxLength?: number;
+  /** Placeholder of the text area. Default "Enter text". */
   placeholder?: string;
   /** "Did you mean" correction. */
   suggestion?: string;
+  /** Called with the suggestion when the user accepts the "Did you mean" correction. */
   onAcceptSuggestion?: (suggestion: string) => void;
   /** Slot for a VoiceInput. */
   voice?: React.ReactNode;
@@ -635,21 +651,27 @@ export interface TranslationSense {
 }
 
 export interface TargetPaneProps extends React.HTMLAttributes<HTMLElement> {
+  /** The translated text. */
   text: string;
+  /** Language code of `text`; sets `lang` and the text direction. */
   lang?: string;
   /** Output is still arriving: shows a blinking caret. */
   streaming?: boolean;
   /** Romanized reading of the output. */
   romanization?: string;
+  /** Other phrasings of the translation, shown as chips. */
   alternatives?: string[];
+  /** Called with the alternative when the user picks one. */
   onPickAlternative?: (alt: string) => void;
   /** Time to translate, in ms. */
   latencyMs?: number;
+  /** Called with the text when the user presses Share; the button is hidden when unset. */
   onShare?: (text: string) => void;
   /** Override the speak button. */
   speak?: React.ReactNode;
   /** Other meanings of a single-word translation. */
   senses?: TranslationSense[];
+  /** Text shown while `text` is empty. Default "Translation". */
   placeholder?: string;
 }
 
@@ -746,11 +768,13 @@ export interface TransliterationCandidatesProps extends Omit<React.HTMLAttribute
   anchorRef: React.RefObject<HTMLTextAreaElement | HTMLInputElement | null>;
   /** Return candidates for a romanized word. May be async. */
   getCandidates: (word: string, lang: string) => string[] | Promise<string[]>;
+  /** Language code passed to `getCandidates`. */
   lang: string;
   /** IME on/off. Default true. */
   enabled?: boolean;
   /** Max candidates shown (and number keys honored). Default 5. */
   max?: number;
+  /** Called with the chosen candidate and the romanized word it replaces. */
   onSelect?: (candidate: string, word: string) => void;
 }
 
@@ -921,9 +945,11 @@ export const TransliterationCandidates = React.forwardRef<HTMLDivElement, Transl
 TransliterationCandidates.displayName = "TransliterationCandidates";
 
 export interface TransliterationToggleProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
+  /** Controlled on/off state of transliteration. */
   pressed?: boolean;
   /** Initial state when uncontrolled. Default false. */
   defaultPressed?: boolean;
+  /** Called with the new state when the user presses the toggle. */
   onPressedChange?: (pressed: boolean) => void;
   /** Script sample shown on the button. Default "अ". */
   glyph?: React.ReactNode;
@@ -1003,10 +1029,15 @@ export interface DictionarySense {
 }
 
 export interface DictionaryCardProps extends React.HTMLAttributes<HTMLElement> {
+  /** The headword. */
   word: string;
+  /** Pronunciation text shown under the word (for example IPA). */
   phonetic?: string;
+  /** Language code of the word; sets `lang` and adds a speak button. */
   lang?: string;
+  /** Meanings grouped by part of speech, each with a definition and examples. */
   senses: DictionarySense[];
+  /** How common the word is, from 0 (rare) to 3 (very common); drawn as a three-bar meter. */
   frequency?: 0 | 1 | 2 | 3;
   /** Extra header actions (a SpeakButton is added for `lang` automatically). */
   actions?: React.ReactNode;
@@ -1076,12 +1107,17 @@ export interface ConversationTurn {
 export type ConversationLiveState = "idle" | "hearing" | "translating" | "speaking";
 
 export interface ConversationTurnsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The speaker on the left (name, language and avatar). */
   left: ConversationSpeaker;
+  /** The speaker on the right (name, language and avatar). */
   right: ConversationSpeaker;
+  /** Finished turns in order, each with a speaker, original text and translation. */
   turns: ConversationTurn[];
   /** Who is active and what is happening. */
   live?: { speaker: "left" | "right"; state: ConversationLiveState; level?: number; text?: string } | null;
+  /** Called with `left` or `right` when the user presses a speaker's microphone button. */
   onMicPress?: (speaker: "left" | "right") => void;
+  /** Shown when there are no turns and nothing is live. */
   emptyState?: React.ReactNode;
 }
 

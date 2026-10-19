@@ -36,6 +36,10 @@ export interface ContextUsageCategory {
 const resolveColor = (c: string | undefined, i: number) => (c ? resolveColorToken(c) : chartColorVars[i % chartColorVars.length]!);
 
 export interface ContextUsageBreakdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /**
+   * Context categories (system prompt, tools, messages and so on), each with a label and a token count; reserved ones
+   * are excluded from `used`.
+   */
   categories: ContextUsageCategory[];
   /** Context window size in tokens. */
   max: number;
@@ -45,12 +49,15 @@ export interface ContextUsageBreakdownProps extends Omit<React.HTMLAttributes<HT
   title?: React.ReactNode;
   /** Show the free-space row and track remainder. Default true. */
   showFree?: boolean;
+  /** Label of the free-space row. Default "Free space". */
   freeLabel?: string;
   /** Token formatter for the summary and rows. Default `formatAgentTokens` ("100k"). */
   valueFormatter?: (tokens: number) => string;
   /** Short line under the bar, e.g. "Getting full". */
   caption?: React.ReactNode;
+  /** Called when the user presses the compact button; the button is hidden when unset. */
   onCompact?: () => void;
+  /** Label of the compact button. Default "Compact now". */
   compactLabel?: string;
   /** Shows a spinner on the compact button and disables it. */
   compacting?: boolean;
@@ -216,16 +223,26 @@ export interface UsageModelShare {
 }
 
 export interface UsageLimitBarsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /**
+   * Usage windows (session, weekly and so on), each with a label, percent used and reset time; a window with a `view`
+   * shows only under that view.
+   */
   windows: UsageLimitWindow[];
+  /** Heading of the card. */
   title?: React.ReactNode;
   /** Toggle options for the window views, e.g. Session / Weekly. */
   views?: { value: string; label: string }[];
+  /** Controlled value of the active view from `views`. */
   view?: string;
+  /** Initially active view when `view` is not controlled. */
   defaultView?: string;
+  /** Called with the view value when the user switches views. */
   onViewChange?: (view: string) => void;
   /** Per-model attribution ("Opus 62% of usage"). */
   models?: UsageModelShare[];
+  /** Used-percent levels at which a bar turns warning and danger. */
   thresholds?: MeterThresholds;
+  /** Reference time for reset countdowns; set it in tests and SSR for stable output. */
   now?: number;
 }
 
@@ -347,10 +364,15 @@ export interface SessionStatsItem {
 export interface SessionStatsProps extends Omit<React.HTMLAttributes<HTMLDListElement>, "title"> {
   /** Total cost in `currency`. */
   cost?: number;
+  /** ISO 4217 code used to format `cost`. Default "USD". */
   currency?: string;
+  /** Time spent waiting on the API, in ms; the row is hidden when unset. */
   apiDurationMs?: number;
+  /** Elapsed wall-clock time of the session, in ms; the row is hidden when unset. */
   wallDurationMs?: number;
+  /** Lines added; shown as "+N" with `linesRemoved`. */
   linesAdded?: number;
+  /** Lines removed; shown as "−N" with `linesAdded`. */
   linesRemoved?: number;
   /** Extra rows appended at the end. */
   extra?: SessionStatsItem[];

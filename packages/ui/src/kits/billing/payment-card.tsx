@@ -120,6 +120,7 @@ export function validateCardNumber(number: string): CardNumberValidation {
 /* ------------------------------------------------------------------ */
 
 export interface CardBrandMarkProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Card network (for example visa, mastercard or amex) whose mark to draw. */
   brand: CardBrand;
 }
 
@@ -179,9 +180,11 @@ const cardSize = {
 export interface PaymentCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** Full number, or just the last 4 digits. */
   number: string;
+  /** Cardholder name, shown on the card face. */
   holder?: string;
   /** "MM/YY". */
   expiry?: string;
+  /** Security code, shown on the back; setting it makes the card flippable. */
   cvv?: string;
   /** Overrides detection. */
   brand?: CardBrand;
@@ -191,16 +194,23 @@ export interface PaymentCardProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   color?: string;
   /** Full CSS background override. */
   background?: string;
+  /** Card size: `sm`, `md` or `lg`. */
   size?: "sm" | "md" | "lg";
   /** Allow revealing the full number. Default true when the full number is known. */
   revealable?: boolean;
+  /** Controlled state of the full number: true shows it, false masks all but the last four digits. */
   revealed?: boolean;
+  /** Initial reveal state when `revealed` is not controlled. */
   defaultRevealed?: boolean;
+  /** Called with the new state when the user shows or hides the number. */
   onRevealedChange?: (revealed: boolean) => void;
   /** Allow flipping to the back (default true when `cvv` is set). */
   flippable?: boolean;
+  /** Controlled state of the card: true shows the back. */
   flipped?: boolean;
+  /** Initial state when `flipped` is not controlled. */
   defaultFlipped?: boolean;
+  /** Called with the new state when the user flips the card. */
   onFlippedChange?: (flipped: boolean) => void;
 }
 
@@ -393,15 +403,21 @@ export interface PaymentCardValue {
 }
 
 export interface PaymentCardInputProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** Controlled card details (number, expiry and security code). */
   value?: PaymentCardValue;
+  /** Initial card details when `value` is not controlled. */
   defaultValue?: PaymentCardValue;
+  /** Called with the card details and the detected brand and validity on every edit. */
   onValueChange?: (value: PaymentCardValue, meta: { brand: CardBrand; valid: boolean }) => void;
   /** Called when every field is complete and valid. */
   onComplete?: (value: PaymentCardValue, brand: CardBrand) => void;
+  /** Field size: `sm`, `md` or `lg`. */
   size?: "sm" | "md" | "lg";
+  /** Disables every field. */
   disabled?: boolean;
   /** Reference date for expiry validation. */
   now?: Date;
+  /** Accessible labels of the number, expiry and security code fields. */
   labels?: { number?: string; expiry?: string; cvc?: string };
 }
 

@@ -230,8 +230,14 @@ export function useAudioLevel(stream: MediaStream | null | undefined, { smoothin
 export interface AudioLevelMeterProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 0..1 */
   level: number;
+  /** Number of bars in the meter. Default 5. */
   bars?: number;
+  /**
+   * Direction the bars run: `horizontal` (a row, left to right) or `vertical` (a column, filling upward). Default
+   * "horizontal".
+   */
   orientation?: "horizontal" | "vertical";
+  /** Meter size: `sm`, `md` or `lg`. Default "md". */
   size?: "sm" | "md" | "lg";
   /** Accessible name. Default "Input level". */
   label?: string;
@@ -289,9 +295,11 @@ AudioLevelMeter.displayName = "AudioLevelMeter";
 /* ------------------------------------------------------------------ */
 
 export interface VoiceInputProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onError"> {
+  /** BCP 47 language of the speech to recognise; defaults to the document language. */
   lang?: string;
   /** Called with each finalized phrase (`done: false`) and with the whole transcript when dictation stops (`done: true`). */
   onTranscript?: (text: string, info: { done: boolean }) => void;
+  /** Called with the speech recognition error code (for example `not-allowed` when the microphone is blocked). */
   onError?: (error: string) => void;
   /** Auto-stop after this many seconds. Default 60. */
   maxDuration?: number;
@@ -301,7 +309,9 @@ export interface VoiceInputProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   showTranscript?: boolean;
   /** Capture the mic for the level meter. Default true. */
   meter?: boolean;
+  /** Button size: `sm`, `md` or `lg`. Default "md". */
   size?: "sm" | "md" | "lg";
+  /** Disables the microphone button. */
   disabled?: boolean;
 }
 
@@ -542,11 +552,13 @@ export function useSpeechSynthesis(lang?: string): SpeechSynthesisState {
 }
 
 export interface SpeakButtonProps extends Omit<ButtonProps, "onClick" | "children"> {
+  /** Text to read aloud. */
   text: string;
   /** BCP-47 language of `text`. */
   lang?: string;
   /** Accessible label while idle. Default "Listen". */
   label?: string;
+  /** Speaking speed, where 1 is normal; passed to speech synthesis. */
   rate?: number;
 }
 

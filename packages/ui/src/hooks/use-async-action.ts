@@ -22,6 +22,7 @@ export function errorMessage(error: unknown, fallback = DEFAULT_ERROR): string {
   return fallback;
 }
 
+/** Options for `useAsyncAction`: success and error callbacks and the fallback error message. */
 export interface UseAsyncActionOptions<R> {
   /** Called with the raw error of the latest run (not for superseded runs or after unmount). */
   onError?: (error: unknown) => void;
@@ -31,6 +32,7 @@ export interface UseAsyncActionOptions<R> {
   fallbackMessage?: string;
 }
 
+/** What `useAsyncAction` returns: `run`, the `busy` flag, the `error` message and its `cause`, plus `reset` and `setError`. */
 export interface AsyncAction<A extends unknown[], R> {
   /** Runs the action. Resolves to its result, or `undefined` if it threw, was superseded or the component unmounted. Never rejects. */
   run: (...args: A) => Promise<R | undefined>;

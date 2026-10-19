@@ -57,6 +57,7 @@ const levels: { label: string; tone: Tone; bar?: string; text: string }[] = [
 ];
 
 export interface PasswordStrengthProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The password to rate; it is scored locally and never sent anywhere. */
   password: string;
   /** Checklist items; pass `[]` to hide the checklist. */
   requirements?: PasswordRequirement[];
@@ -64,6 +65,10 @@ export interface PasswordStrengthProps extends React.HTMLAttributes<HTMLDivEleme
   labels?: [string, string, string, string];
   /** Override the computed score (0–4). */
   score?: 0 | 1 | 2 | 3 | 4;
+  /**
+   * Shows the strength word (Weak, Fair, ...) beside the meter.
+   * @default true
+   */
   showLabel?: boolean;
 }
 

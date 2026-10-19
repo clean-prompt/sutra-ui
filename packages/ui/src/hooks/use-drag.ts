@@ -4,6 +4,8 @@ import {
   applyBounds,
   dragStartDecision,
   recordSample,
+  trackPoint,
+  unscaleTravel,
   velocityFromSamples,
   AXIS_LOCK_DISTANCE,
   DRAG_THRESHOLD,
@@ -31,6 +33,9 @@ export interface DragInfo {
   time: number;
   /** The axis this drag follows (the locked one with `lockAxis`). */
   axis: DragAxis;
+  /** Absolute mode only: the pointer as a 0..1 fraction of the track (from the inline start with `rtl`). `x` / `y` are px inside the track. */
+  fx?: number;
+  fy?: number;
 }
 
 export interface DragBounds {
@@ -56,6 +61,23 @@ export interface UseDragOptions {
   /** Also drag with the mouse (touch and pen always count). Default true. */
   mouse?: boolean;
   enabled?: boolean;
+  /**
+   * "relative" (default): the offset is the press offset plus the pointer travel. "absolute": the offset IS the pointer position in the
+   * track (a seek bar, a slider rail): the press itself is the first position (`onStart` then `onMove` run on it), the pointer is
+   * captured at once, there is no threshold, axis lock, bounds or buttons check, and `touch-action` is `none`.
+   */
+  mode?: "relative" | "absolute";
+  /** Absolute mode: the element whose rectangle is the track. Default: the element the hook is bound to. */
+  trackRef?: React.RefObject<HTMLElement | null>;
+  /** Absolute mode: measure `fx` from the right edge (pass `useDirection() === "rtl"`). */
+  rtl?: boolean;
+  /**
+   * Relative mode: capture the pointer on the press instead of when the drag starts, and trust that the release will arrive (no
+   * `buttons` check). For handles with nothing clickable inside, where a press is never a click (a window title bar, a resize grip).
+   */
+  captureOnPress?: boolean;
+  /** Relative mode: the dragged layer sits inside a parent scaled by this factor (a zoomed image), so the offset is travel / scale. Default 1. */
+  scale?: number;
   /** Asked on press; return false to ignore the whole gesture (a slider, a text field, a scrolled area). */
   allow?: (event: React.PointerEvent<HTMLElement>) => boolean;
   /** Called on every accepted press, before any travel (stop an inertia loop here). */
@@ -82,10 +104,12 @@ export interface DragBinding {
   dragging: boolean;
   /** Spring to a position (an omitted axis stays), starting at the release velocity (px/s). Instant under reduced motion. */
   settle(to: { x?: number; y?: number }, spring?: SpringConfig | SpringName, velocity?: { x?: number; y?: number }, onDone?: () => void): void;
-  /** Jump to a position at rest (stops a settle in flight). */
+  /** Jump to a position at rest (stops a settle in flight). During a relative drag the finger carries on from the new position. */
   set(x: number, y: number): void;
   /** Stop a settle where it is. */
   stop(): void;
+  /** End a drag in flight as cancelled (`onEnd(info, true)`, no click guard); a no-op when idle. */
+  cancel(): void;
   /** The current offset. */
   get(): { x: number; y: number };
 }
@@ -99,10 +123,16 @@ interface Session {
   active: boolean;
   axis: DragAxis;
   samples: DragSample[];
+  /** Latest pointer position (client coordinates) and, in absolute mode, the track fractions. */
+  lastX: number;
+  lastY: number;
+  fx: number;
+  fy: number;
 }
 
 const clock = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
-const touchActionFor = (axis: DragAxis) => (axis === "x" ? "pan-y" : axis === "y" ? "pan-x" : "none");
+const touchActionFor = (axis: DragAxis, mode?: "relative" | "absolute") =>
+  mode === "absolute" ? "none" : axis === "x" ? "pan-y" : axis === "y" ? "pan-x" : "none";
 
 /**
  * Tracks a pointer drag: the offset follows the finger through CSS variables (no React state per move), with an axis lock,
@@ -113,7 +143,7 @@ const touchActionFor = (axis: DragAxis) => (axis === "x" ? "pan-y" : axis === "y
  */
 export function useDrag(options: UseDragOptions = {}): DragBinding {
   const opts = useLatestRef(options);
-  const { axis = "both", enabled = true } = options;
+  const { axis = "both", enabled = true, mode: dragMode } = options;
   const [dragging, setDragging] = React.useState(false);
   const elRef = React.useRef<HTMLElement | null>(null);
   const pos = React.useRef({ x: 0, y: 0 });
@@ -123,7 +153,7 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
   const clickTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const touched = React.useRef(false);
 
-  const touchAction = enabled ? touchActionFor(axis) : "";
+  const touchAction = enabled ? touchActionFor(axis, dragMode) : "";
   const applyTouchAction = (el: HTMLElement | null, value: string) => {
     if (!el) return;
     if (value) {
@@ -151,11 +181,20 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
       settling.current = [];
     };
     const offsetFor = (s: Session, dx: number, dy: number) => {
-      const { bounds: b = {}, elastic = 0 } = opts.current;
+      const { bounds: b = {}, elastic = 0, scale } = opts.current;
       return {
-        x: s.axis === "y" ? s.originX : applyBounds(s.originX + dx, b.left, b.right, elastic),
-        y: s.axis === "x" ? s.originY : applyBounds(s.originY + dy, b.top, b.bottom, elastic),
+        x: s.axis === "y" ? s.originX : applyBounds(s.originX + unscaleTravel(dx, scale), b.left, b.right, elastic),
+        y: s.axis === "x" ? s.originY : applyBounds(s.originY + unscaleTravel(dy, scale), b.top, b.bottom, elastic),
       };
+    };
+    /** Absolute mode: the pointer inside the track (also remembered on the session for `infoFor`). */
+    const pointFor = (s: Session, clientX: number, clientY: number) => {
+      const o = opts.current;
+      const rect = (o.trackRef?.current ?? elRef.current)?.getBoundingClientRect();
+      const p = rect ? trackPoint(rect, clientX, clientY, o.rtl) : { x: 0, y: 0, fx: 0, fy: 0 };
+      s.fx = p.fx;
+      s.fy = p.fy;
+      return p;
     };
     const infoFor = (s: Session, clientX: number, clientY: number, t: number): DragInfo => {
       const v = velocityFromSamples(s.samples, t);
@@ -170,6 +209,7 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
         startY: s.startY,
         time: t,
         axis: s.axis,
+        ...(opts.current.mode === "absolute" ? { fx: s.fx, fy: s.fy } : null),
       };
     };
     const end = (event: React.PointerEvent<HTMLElement>, cancelled: boolean) => {
@@ -180,12 +220,15 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
       const t = clock();
       if (!cancelled) {
         recordSample(s.samples, { t, x: event.clientX, y: event.clientY });
-        const o = offsetFor(s, event.clientX - s.startX, event.clientY - s.startY);
+        const o = opts.current.mode === "absolute" ? pointFor(s, event.clientX, event.clientY) : offsetFor(s, event.clientX - s.startX, event.clientY - s.startY);
         write(o.x, o.y);
       }
-      justDragged.current = true;
-      clearTimeout(clickTimer.current);
-      clickTimer.current = setTimeout(() => (justDragged.current = false), 0);
+      if (opts.current.mode !== "absolute") {
+        // The press of an absolute drag is itself the click, so only a relative drag swallows the click that follows it.
+        justDragged.current = true;
+        clearTimeout(clickTimer.current);
+        clickTimer.current = setTimeout(() => (justDragged.current = false), 0);
+      }
       setDragging(false);
       opts.current.onEnd?.(infoFor(s, event.clientX, event.clientY, t), cancelled);
     };
@@ -209,18 +252,45 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
           active: false,
           axis: o.axis ?? "both",
           samples: [{ t, x: event.clientX, y: event.clientY }],
+          lastX: event.clientX,
+          lastY: event.clientY,
+          fx: 0,
+          fy: 0,
         };
+        if (o.captureOnPress && o.mode !== "absolute") {
+          try {
+            elRef.current?.setPointerCapture?.(event.pointerId);
+          } catch {
+            /* capture is best-effort */
+          }
+        }
+        if (o.mode === "absolute") {
+          const s = session.current;
+          s.active = true;
+          try {
+            elRef.current?.setPointerCapture?.(event.pointerId);
+          } catch {
+            /* capture is best-effort */
+          }
+          setDragging(true);
+          const p = pointFor(s, event.clientX, event.clientY);
+          write(p.x, p.y);
+          o.onStart?.(infoFor(s, event.clientX, event.clientY, t));
+          o.onMove?.(infoFor(s, event.clientX, event.clientY, t));
+        }
       },
       onPointerMove(event) {
         const s = session.current;
         if (!s || s.id !== event.pointerId) return;
         const o = opts.current;
         const t = clock();
-        if (!s.active && event.pointerType === "mouse" && event.buttons === 0) {
+        if (!s.active && event.pointerType === "mouse" && event.buttons === 0 && !o.captureOnPress) {
           session.current = null; // the release happened outside the window
           return;
         }
         recordSample(s.samples, { t, x: event.clientX, y: event.clientY });
+        s.lastX = event.clientX;
+        s.lastY = event.clientY;
         const dx = event.clientX - s.startX;
         const dy = event.clientY - s.startY;
         if (!s.active) {
@@ -254,7 +324,7 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
           setDragging(true);
           o.onStart?.(infoFor(s, event.clientX, event.clientY, t));
         }
-        const next = offsetFor(s, dx, dy);
+        const next = o.mode === "absolute" ? pointFor(s, event.clientX, event.clientY) : offsetFor(s, dx, dy);
         write(next.x, next.y);
         o.onMove?.(infoFor(s, event.clientX, event.clientY, t));
       },
@@ -274,6 +344,21 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
     const set = (x: number, y: number) => {
       stop();
       write(x, y);
+      const s = session.current;
+      if (s?.active && opts.current.mode !== "absolute") {
+        // Carry on from here: the next move adds the travel since the press to this new origin.
+        const scale = opts.current.scale;
+        s.originX = s.axis === "y" ? x : x - unscaleTravel(s.lastX - s.startX, scale);
+        s.originY = s.axis === "x" ? y : y - unscaleTravel(s.lastY - s.startY, scale);
+      }
+    };
+    const cancel = () => {
+      const s = session.current;
+      if (!s) return;
+      session.current = null;
+      if (!s.active) return;
+      setDragging(false);
+      opts.current.onEnd?.(infoFor(s, s.lastX, s.lastY, clock()), true);
     };
     const settle: DragBinding["settle"] = (to, spring = "snappy", velocity, onDone) => {
       stop();
@@ -318,6 +403,7 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
       set,
       settle,
       stop,
+      cancel,
       get: () => ({ x: pos.current.x, y: pos.current.y }),
       ref: (el: HTMLElement | null) => {
         elRef.current = el;
@@ -329,7 +415,7 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
           }
           return;
         }
-        applyTouchAction(el, opts.current.enabled === false ? "" : touchActionFor(opts.current.axis ?? "both"));
+        applyTouchAction(el, opts.current.enabled === false ? "" : touchActionFor(opts.current.axis ?? "both", opts.current.mode));
         el.style.setProperty("--sutra-drag-x", `${pos.current.x}px`);
         el.style.setProperty("--sutra-drag-y", `${pos.current.y}px`);
       },
@@ -359,7 +445,16 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
   );
 
   return React.useMemo<DragBinding>(
-    () => ({ ref: binding.ref, handlers: binding.handlers, dragging, settle: binding.settle, set: binding.set, stop: binding.stop, get: binding.get }),
+    () => ({
+      ref: binding.ref,
+      handlers: binding.handlers,
+      dragging,
+      settle: binding.settle,
+      set: binding.set,
+      stop: binding.stop,
+      cancel: binding.cancel,
+      get: binding.get,
+    }),
     [binding, dragging]
   );
 }

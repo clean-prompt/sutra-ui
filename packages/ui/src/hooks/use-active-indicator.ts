@@ -9,6 +9,7 @@ export interface ActiveIndicatorRect {
   height: number;
 }
 
+/** Options for `useActiveIndicator`. */
 export interface UseActiveIndicatorOptions {
   /** Measure only while true; the rect is `null` otherwise. Default true. */
   enabled?: boolean;
@@ -18,6 +19,7 @@ export interface UseActiveIndicatorOptions {
   watchAttributes?: string[];
 }
 
+/** What `useActiveIndicator` returns: the measured rect, whether to animate, and a `measure` function. */
 export interface ActiveIndicatorState {
   /** Where to draw the indicator, or `null` when there is no active item. */
   rect: ActiveIndicatorRect | null;

@@ -3,16 +3,21 @@
 
 import { celsiusToFahrenheit, fahrenheitToCelsius, type TemperatureUnit } from "./temperature";
 
+/** What an alert rule watches: CPU, memory (and its growth), disk read or write, network, temperature and so on. */
 export type AlertMetric = "cpu" | "memory" | "memory-growth" | "disk-read" | "disk-write" | "network" | "temperature" | "gpu";
 /** How samples in the window are combined. Omitted: the condition must hold for the whole window (sustained). */
 export type AlertAggregate = "average" | "peak";
+/** Whether the rule fires when the reading is above or below its threshold. */
 export type AlertComparator = "above" | "below";
+/** What the rule applies to: any app, one named app, or the whole Mac. */
 export type AlertScope = { kind: "any-app" } | { kind: "app"; app: string } | { kind: "mac" };
+/** The `kind` values of `AlertScope`. */
 export type AlertScopeKind = AlertScope["kind"];
 /** Same values as the thermals kit's unit, so one setting drives both. */
 /** Temperature display unit for alert rules (the same type the thermal readouts use). */
 export type AlertTemperatureUnit = TemperatureUnit;
 
+/** A saved alert rule: the metric, comparison, threshold, time window and scope it fires on. */
 export interface AlertRule {
   id: string;
   enabled: boolean;
@@ -30,6 +35,7 @@ export interface AlertRule {
   label?: string;
 }
 
+/** Display metadata of one metric: label, sentence noun, unit, threshold range, defaults and the comparators, scopes and aggregates it allows. */
 export interface AlertMetricInfo {
   id: AlertMetric;
   /** Picker label ("CPU", "Memory growth"). */
@@ -108,6 +114,7 @@ export const MIN_ALERT_WINDOW = MINUTE;
 /** Longest window a rule accepts. */
 export const MAX_ALERT_WINDOW = 24 * HOUR;
 
+/** True when `value` is one of the known `AlertMetric` ids. */
 export function isAlertMetric(value: unknown): value is AlertMetric {
   return typeof value === "string" && Object.hasOwn(ALERT_METRICS, value);
 }
@@ -119,6 +126,7 @@ export function isAlertMetric(value: unknown): value is AlertMetric {
 
 const roundSmall = (n: number) => Math.round(n * 100) / 100;
 
+/** Display options for alert thresholds: the temperature unit and the number locale. */
 export interface AlertUnitOptions {
   temperatureUnit?: AlertTemperatureUnit;
   locale?: string;
@@ -274,6 +282,7 @@ export function changeAlertMetric(rule: AlertRule, metric: AlertMetric): AlertRu
   return next;
 }
 
+/** A ready-made rule offered as a one-click starting point in the rule editor. */
 export interface AlertRulePreset {
   id: string;
   /** Short button text. */
@@ -300,7 +309,9 @@ export const ALERT_RULE_PRESETS: readonly AlertRulePreset[] = [
   },
 ];
 
+/** The rule fields that can carry a validation error. */
 export type AlertRuleField = "metric" | "comparator" | "threshold" | "window" | "scope";
+/** Validation messages keyed by rule field; empty when the rule is valid. */
 export type AlertRuleErrors = Partial<Record<AlertRuleField, string>>;
 
 /** Field errors for a rule (an empty object when it's valid). Ranges are reported in the display unit. */
@@ -354,6 +365,7 @@ export interface AlertSample {
   app?: string;
 }
 
+/** Result of evaluating a rule: whether it fires, the compared reading, and since when and for which app. */
 export interface AlertEvaluation {
   firing: boolean;
   /**

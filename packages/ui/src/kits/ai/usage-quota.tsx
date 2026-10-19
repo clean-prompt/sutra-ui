@@ -34,6 +34,7 @@ export interface UsageQuota {
   limit?: number;
   /** Window start; enables the pace line ("On pace · 10% to spare"). */
   startsAt?: TimeInput;
+  /** When the window resets; drives the pace line and the reset caption. */
   resetsAt?: TimeInput;
   /** Overrides the computed reset caption shown when there is no pace. */
   resetLabel?: React.ReactNode;
@@ -293,10 +294,15 @@ QuotaRing.displayName = "QuotaRing";
 /* ------------------------------------------------------------------ */
 
 export interface QuotaStripProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Quotas to show, one ring each. */
   quotas: UsageQuota[];
+  /** What each ring and number show: `left` (remaining) or `used`. Default "left". */
   mode?: UsageQuotaMode;
+  /** Reference time for pace and reset text. Default `Date.now()` at render. */
   now?: number;
+  /** "On pace" band in percentage points. Default 5. */
   tolerance?: number;
+  /** Ring size. */
   size?: QuotaRingProps["size"];
   /** `card` (default): a padded card surface · `plain`: no surface. */
   variant?: "card" | "plain";
@@ -356,6 +362,7 @@ QuotaStrip.displayName = "QuotaStrip";
 /* ------------------------------------------------------------------ */
 
 export interface QuotaBarsProps extends React.HTMLAttributes<HTMLUListElement> {
+  /** Quotas to show, one bar each. */
   quotas: UsageQuota[];
   /** What each bar shows. Default "left". */
   mode?: UsageQuotaMode;

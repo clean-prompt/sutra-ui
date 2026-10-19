@@ -59,8 +59,14 @@ const stateMeta: Record<AgentJobState, { label: string; tone: Tone }> = {
 };
 
 export interface JobStatePillProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /**
+   * Job state (`scheduled`, `running`, `paused`, `error`, `completed` or `disabled`); sets the pill text, icon and
+   * tone.
+   */
   state: AgentJobState;
+  /** Replaces the default text of the state. */
   label?: React.ReactNode;
+  /** Badge size of the pill. */
   size?: "sm" | "md";
 }
 
@@ -112,6 +118,7 @@ function RunStatusGlyph({ status: statusInput }: { status: AgentJobRunStatusInpu
 }
 
 export interface JobNextRunProps extends Omit<React.TimeHTMLAttributes<HTMLTimeElement>, "children"> {
+  /** Time of the next run (timestamp or date); renders a relative "in 5 min" label with the exact time on hover. */
   at: TimeLike;
 }
 
@@ -131,17 +138,24 @@ export const JobNextRun = React.forwardRef<HTMLTimeElement, JobNextRunProps>(fun
 JobNextRun.displayName = "JobNextRun";
 
 export interface JobRowActions {
+  /** Called with the job when the user presses Pause; the action is hidden when unset. */
   onPause?: (job: AgentJob) => void;
+  /** Called with the job when the user presses Resume on a paused job; the action is hidden when unset. */
   onResume?: (job: AgentJob) => void;
+  /** Called with the job when the user presses Run now; the action is hidden when unset. */
   onRunNow?: (job: AgentJob) => void;
+  /** Called with the job when the user presses Edit; the action is hidden when unset. */
   onEdit?: (job: AgentJob) => void;
   /** Called after the user confirms. */
   onDelete?: (job: AgentJob) => void | Promise<void>;
 }
 
 export interface JobRowProps extends Omit<React.HTMLAttributes<HTMLLIElement>, "onSelect" | "onPause">, JobRowActions {
+  /** The job to show (name, schedule, state, model, next and last run). */
   job: AgentJob;
+  /** Marks the row as the selected one in the list. */
   selected?: boolean;
+  /** Called with the job when the row is pressed. */
   onSelect?: (job: AgentJob) => void;
   /** Label for the model id. */
   modelLabel?: React.ReactNode;
@@ -249,14 +263,17 @@ export const JobRow = React.forwardRef<HTMLLIElement, JobRowProps>(
 JobRow.displayName = "JobRow";
 
 export interface JobListProps extends Omit<React.HTMLAttributes<HTMLUListElement>, "onSelect" | "onPause">, JobRowActions {
+  /** Jobs to list, one row each. */
   jobs: AgentJob[];
+  /** Id of the selected job; `null` or unset selects none. */
   selectedId?: string | null;
+  /** Called with the job when a row is pressed. */
   onSelect?: (job: AgentJob) => void;
   /** Map model ids to labels. */
   modelLabels?: Record<string, React.ReactNode>;
   /** Shown when there are no jobs. Default "No scheduled jobs yet". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
@@ -295,18 +312,23 @@ JobList.displayName = "JobList";
 const usd = (n: number) => formatCost(n, { locale: "en-US" });
 
 export interface RunHistoryProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Past runs of the job, newest first. */
   runs: AgentJobRun[];
   /** Runs revealed per "Load more". Default 5. */
   pageSize?: number;
   /** More runs exist on the server; "Load more" calls `onLoadMore` once local runs are exhausted. */
   hasMore?: boolean;
+  /** Called when the user presses "Load more" after the local runs are all shown and `hasMore` is true. */
   onLoadMore?: () => void;
+  /** Shows a busy state on the "Load more" button while the next page is fetched. */
   loadingMore?: boolean;
+  /** Called with the run when the user opens its transcript; the link is hidden when unset. */
   onOpenTranscript?: (run: AgentJobRun) => void;
+  /** BCP 47 locale used to format run times. Default "en-US". */
   locale?: string;
   /** Shown when there are no runs. Default "No runs yet". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
@@ -387,18 +409,32 @@ RunHistory.displayName = "RunHistory";
 /* ------------------------------------------------------------------ */
 
 export interface JobDetailProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onPause">, JobRowActions {
+  /** The job to show (schedule, prompt, model, delivery, state). */
   job: AgentJob;
+  /** Past runs, shown in the history list and the timeline. */
   runs?: AgentJobRun[];
+  /** More runs exist on the server; enables "Load more" in the history. */
   hasMoreRuns?: boolean;
+  /** Called when the user asks for the next page of runs. */
   onLoadMoreRuns?: () => void;
+  /** Shows a busy state on "Load more" while the next page is fetched. */
   loadingMoreRuns?: boolean;
+  /** Called with the run when the user opens its transcript. */
   onOpenTranscript?: (run: AgentJobRun) => void;
   /** Show a timeline of recent runs. */
   showTimeline?: boolean;
+  /**
+   * IANA time zone used to describe the schedule and format times (for example `Europe/Berlin`); the viewer's zone
+   * when unset.
+   */
   timeZone?: string;
+  /** Reference time for relative labels; set it in tests and SSR for stable output. */
   now?: Date | number;
+  /** Display label for the job's model id. */
   modelLabel?: React.ReactNode;
+  /** Delivery state per target platform, shown next to each delivery target. */
   deliveryStatus?: Partial<Record<DeliveryPlatform, DeliveryPlatformStatus>>;
+  /** Runs revealed per "Load more" in the history. */
   runsPageSize?: number;
 }
 

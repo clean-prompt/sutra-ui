@@ -21,6 +21,7 @@ import {
 /* ------------------------------------------------------------------ */
 
 export interface LayoutThumbnailProps extends React.SVGProps<SVGSVGElement> {
+  /** The layout to draw as a small thumbnail. */
   layout: LayoutNode;
   /** Gap between tiles in viewBox units (viewBox is 100×64). Default 3. */
   gap?: number;
@@ -91,8 +92,11 @@ export interface LayoutPresetPickerProps extends Omit<React.HTMLAttributes<HTMLD
   panes?: string[];
   /** Called with the layout to apply. */
   onSelect: (layout: LayoutNode, presetId: string) => void;
+  /** Controlled list of saved layouts (each with an `id`, a `name` and a `layout`), listed after the built-in presets. Use with `onSavedPresetsChange`. */
   savedPresets?: SavedLayoutPreset[];
+  /** Initially saved layouts when uncontrolled. */
   defaultSavedPresets?: SavedLayoutPreset[];
+  /** Called with the full list of saved layouts after one is saved or deleted. */
   onSavedPresetsChange?: (presets: SavedLayoutPreset[]) => void;
   /** Show the save form. Default true. */
   allowSave?: boolean;

@@ -184,6 +184,7 @@ export interface FileFormatIconProps extends Omit<React.ComponentPropsWithoutRef
   label?: string;
   /** Override the format color. */
   color?: string;
+  /** Accessible name; when set the icon is exposed as an image, otherwise it is decorative. */
   title?: string;
 }
 

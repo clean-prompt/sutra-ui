@@ -15,6 +15,7 @@ export interface ModelPickerModel extends PickerModel {
 }
 
 export interface ModelPickerProps extends Omit<ModelSelectProps, "models"> {
+  /** Models to choose from, each with an id, name, provider, lifecycle state and optional badges. */
   models: ModelPickerModel[];
 }
 

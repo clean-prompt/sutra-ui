@@ -229,12 +229,17 @@ function MessageBlock({ message }: { message: RequestLogMessage }) {
 export type RequestInspectorTab = "messages" | "request" | "response" | "raw";
 
 export interface RequestInspectorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** The request to inspect (messages, request and response bodies, timing, tokens). */
   record: RequestLogRecord;
+  /** Controlled active tab: `messages`, `request`, `response` or `raw`. */
   tab?: RequestInspectorTab;
+  /** Initially active tab when `tab` is not controlled. */
   defaultTab?: RequestInspectorTab;
+  /** Called with the tab when the user switches tabs. */
   onTabChange?: (tab: RequestInspectorTab) => void;
   /** Hide the header (when rendered under a table row that already shows it). */
   hideHeader?: boolean;
+  /** BCP 47 locale used to format numbers and times. */
   locale?: string;
 }
 
@@ -360,19 +365,27 @@ export function filterRequestLogs(records: RequestLogRecord[], f: RequestLogFilt
 }
 
 export interface RequestLogTableProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Request log records, one row each, newest first. */
   records: RequestLogRecord[];
   /** Rows per page. Default 20. */
   pageSize?: number;
+  /** Controlled filters (status, model, time range, search). */
   filters?: RequestLogFilters;
+  /** Initial filters when `filters` is not controlled. */
   defaultFilters?: Partial<RequestLogFilters>;
+  /** Called with the filters when the user changes any of them. */
   onFiltersChange?: (filters: RequestLogFilters) => void;
   /** Controlled expanded record id. */
   expandedId?: string | null;
+  /** Called with the record id (or `null`) when the user expands or collapses a row. */
   onExpandedChange?: (id: string | null) => void;
+  /** Shows the Identity (user or key) column. Default true. */
   showIdentity?: boolean;
+  /** Shown when no record matches the filters. */
   emptyState?: React.ReactNode;
   /** Extra toolbar content (refresh button, date picker…). */
   toolbar?: React.ReactNode;
+  /** BCP 47 locale used to format numbers and times. */
   locale?: string;
 }
 

@@ -82,6 +82,7 @@ export interface MetricReadoutProps extends Omit<React.HTMLAttributes<HTMLSpanEl
   size?: "xs" | "sm";
   /** Icon colour while the reading is normal. Default: muted. */
   accent?: Accent;
+  /** BCP 47 locale used by the default number formatter. */
   locale?: string;
   /** Waiting for the first reading: with no `value` the label stays and the value is a short placeholder. */
   loading?: boolean;

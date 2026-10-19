@@ -40,6 +40,10 @@ export interface SplitButtonProps extends Omit<ButtonProps, "size"> {
   menuLabel?: string;
   /** Optional heading inside the menu. */
   menuHeading?: React.ReactNode;
+  /**
+   * Alignment of the menu against the button.
+   * @default "end"
+   */
   align?: "start" | "center" | "end";
   /** Class for the outer group. */
   groupClassName?: string;

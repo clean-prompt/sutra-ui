@@ -132,34 +132,62 @@ export interface ImageCropperHandle {
 }
 
 export interface ImageCropperProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "onError" | "onLoad"> {
+  /** URL of the image to crop. */
   src: string;
   /** Alternative text for the image. Default "Image to crop". */
   alt?: string;
+  /** `crossOrigin` of the loaded image; cross-origin images need CORS (`"anonymous"`) or the exported canvas is tainted. */
   crossOrigin?: React.ImgHTMLAttributes<HTMLImageElement>["crossOrigin"];
   /** Crop in natural pixels of the image after `rotation`. */
   crop?: CropRect | null;
+  /** Initial crop in natural pixels when uncontrolled. */
   defaultCrop?: CropRect | null;
+  /** Called with the crop on every change while dragging or stepping. */
   onCropChange?: (crop: CropRect) => void;
   /** Fires when a drag ends or after a keyboard step, with the final crop. */
   onCropEnd?: (crop: CropRect) => void;
   /** Width ÷ height to lock to, or `null` for free. */
   aspect?: number | null;
+  /**
+   * Initial aspect ratio when uncontrolled (`null` is free).
+   * @default null
+   */
   defaultAspect?: number | null;
+  /** Called with the new aspect ratio (or `null` for free) when the user picks a preset. */
   onAspectChange?: (aspect: number | null) => void;
   /** Aspect presets, shown as a segmented control (see `imageCropperAspectOptions`). */
   aspectOptions?: ImageCropperAspectOption[];
   /** Clockwise rotation in degrees (snapped to 0, 90, 180, 270). */
   rotation?: number;
+  /**
+   * Initial rotation in degrees when uncontrolled.
+   * @default 0
+   */
   defaultRotation?: number;
+  /** Called with the new rotation (0, 90, 180 or 270) when the user rotates the image. */
   onRotationChange?: (rotation: CropRotation) => void;
   /** Show the rotate left/right buttons. Default true. */
   rotatable?: boolean;
+  /** Controlled zoom factor (1 shows the whole image). Use with `onZoomChange`. */
   zoom?: number;
+  /**
+   * Initial zoom factor when uncontrolled.
+   * @default 1
+   */
   defaultZoom?: number;
+  /** Called with the new zoom factor when it changes. */
   onZoomChange?: (zoom: number) => void;
   /** Show a zoom slider. Default false. */
   zoomable?: boolean;
+  /**
+   * Smallest zoom factor.
+   * @default 1
+   */
   minZoom?: number;
+  /**
+   * Largest zoom factor.
+   * @default 3
+   */
   maxZoom?: number;
   /** Smallest crop in natural pixels. Default 16. */
   minWidth?: number;
@@ -169,6 +197,10 @@ export interface ImageCropperProps extends Omit<React.HTMLAttributes<HTMLDivElem
   keyboardStep?: number;
   /** Shows an Apply button that encodes the crop and calls this. */
   onComplete?: (blob: Blob, crop: CropRect) => void | Promise<void>;
+  /**
+   * Text of the Apply button.
+   * @default "Apply"
+   */
   applyLabel?: string;
   /** Output settings for Apply and `getCroppedBlob`. */
   output?: CropToBlobOptions;
@@ -176,7 +208,9 @@ export interface ImageCropperProps extends Omit<React.HTMLAttributes<HTMLDivElem
   loading?: boolean;
   /** Replaces the default "could not be loaded" message. */
   errorState?: React.ReactNode;
+  /** Called with the natural size of the image once it has loaded. */
   onImageLoad?: (size: CropSize) => void;
+  /** Called when the image fails to load. */
   onImageError?: () => void;
   /** Extra controls at the end of the toolbar. */
   toolbar?: React.ReactNode;

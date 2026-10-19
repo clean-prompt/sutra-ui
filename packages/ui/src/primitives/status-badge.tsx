@@ -68,6 +68,7 @@ export interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: ToneInput;
   /** Animated halo. Defaults to true for `processing`. */
   pulse?: boolean;
+  /** Dot size. */
   size?: "sm" | "md" | "lg";
   /** Accessible label; defaults to the status name. Set to "" to hide from assistive tech. */
   label?: string;
@@ -141,9 +142,11 @@ export interface StatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> 
   tone?: ToneInput;
   /** Custom text; defaults to the status name. */
   label?: React.ReactNode;
+  /** Animated halo around the dot; defaults to on for the `processing` status. */
   pulse?: boolean;
   /** soft: tinted pill · outline: bordered pill · plain: dot + text only */
   variant?: "soft" | "outline" | "plain";
+  /** Badge height and text size. */
   size?: "sm" | "md" | "lg";
   /** Leading indicator: `"dot"` (default), `"spinner"`, any icon node, or `null` for none. Always decorative. */
   icon?: StatusIndicatorIcon;

@@ -1,5 +1,6 @@
 import * as React from "react";
 
+/** Result of `useObjectUrl`: the object URL (or `undefined`) and whether it is still being created. */
 export interface ObjectUrlState {
   /** The object URL for the current source; undefined while pending, for no source, or where object URLs are unsupported. */
   url: string | undefined;

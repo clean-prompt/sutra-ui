@@ -40,7 +40,12 @@ export type IconComponent = React.ElementType;
 export interface IconProps extends Omit<React.ComponentPropsWithoutRef<"svg">, "children"> {
   /** The icon component to render, e.g. `RiHomeLine`. */
   as: IconComponent;
+  /**
+   * Icon size: `xs` 12px, `sm` 16px, `md` 20px, `lg` 24px or `xl` 32px.
+   * @default "sm"
+   */
   size?: IconSize;
+  /** Semantic colour; the default inherits the surrounding text colour. */
   tone?: IconTone;
   /** Accessible label. When omitted the icon is decorative (`aria-hidden`). */
   label?: string;
@@ -88,6 +93,10 @@ export const featuredIconVariants = cva(
   "relative inline-flex shrink-0 select-none items-center justify-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
+      /**
+       * Look: `soft` (tinted tile), `solid`, `outline-ring` or `glass`.
+       * @default "soft"
+       */
       variant: {
         soft: "",
         solid: "shadow-xs shadow-inner-highlight",
@@ -103,12 +112,20 @@ export const featuredIconVariants = cva(
         destructive: "",
         info: "",
       },
+      /**
+       * Tile size from `xs` to `xl`.
+       * @default "md"
+       */
       size: {
         sm: "size-8 [&_svg]:size-4",
         md: "size-10 [&_svg]:size-5",
         lg: "size-12 [&_svg]:size-6",
         xl: "size-14 [&_svg]:size-7",
       },
+      /**
+       * Tile outline: round or square.
+       * @default "circle"
+       */
       shape: {
         circle: "rounded-full",
         square: "",
@@ -153,7 +170,7 @@ export interface FeaturedIconProps
     Omit<VariantProps<typeof featuredIconVariants>, "color"> {
   /** Semantic colour. Default `primary`. */
   tone?: ToneInput;
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   color?: FeaturedIconColor | null;
   /** Icon component to render inside the tile. Alternatively pass the icon as children. */
   icon?: IconComponent;

@@ -75,16 +75,46 @@ export interface MarketingHeaderProps extends Omit<React.HTMLAttributes<HTMLElem
   apps?: SutraApp[];
   /** Plain links after "Products". */
   links?: HeaderLink[];
+  /** Brand mark in the top-left; the default is the Sutra logo. */
   logo?: React.ReactNode;
+  /**
+   * Link target of the logo.
+   * @default "/"
+   */
   homeHref?: string;
+  /**
+   * Link target of the sign-in button.
+   * @default "#login"
+   */
   loginHref?: string;
+  /**
+   * Link target of the sign-up button.
+   * @default "#signup"
+   */
   signupHref?: string;
+  /**
+   * Text of the sign-in button.
+   * @default "Sign in"
+   */
   loginLabel?: React.ReactNode;
+  /**
+   * Text of the sign-up button.
+   * @default "Get started"
+   */
   signupLabel?: React.ReactNode;
+  /** Renders every link in place of the default `<a>`, e.g. to use your router's Link. Spread the given props onto it. */
   renderLink?: BlockLinkRenderer;
   /** href for each app in the mega-menu. */
   getAppHref?: (app: SutraApp) => string;
+  /**
+   * Pins the header to the top of the page.
+   * @default true
+   */
   sticky?: boolean;
+  /**
+   * When the bottom border shows: always, never, or only after the page scrolls.
+   * @default "scroll"
+   */
   border?: "scroll" | "always" | "never";
 }
 
@@ -254,18 +284,30 @@ export interface AppHeaderCommandGroup {
 }
 
 export interface AppHeaderProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
+  /** Breadcrumb trail shown after the sidebar toggle; the last crumb is the current page. */
   breadcrumbs?: BreadcrumbCrumb[];
   /** Render the sidebar toggle. Requires a `SidebarProvider` ancestor (e.g. `AppShell`). */
   showSidebarTrigger?: boolean;
+  /** The signed-in user for the account menu. The default is demo data. */
   user?: UserAccountMenuUser;
+  /** Notifications listed in the bell menu. */
   notifications?: NotificationItem[];
+  /** Groups of commands for the search palette; each has a `heading` and `items`. */
   commandGroups?: AppHeaderCommandGroup[];
+  /** Called with the value of the command the user ran from the palette. */
   onCommand?: (value: string) => void;
+  /** Called when "Sign out" is chosen in the account menu. */
   onSignOut?: () => void;
+  /** Called with the key of the row chosen in the account menu. */
   onAccountSelect?: (key: string) => void;
   /** Extra actions before the notifications bell. */
   actions?: React.ReactNode;
+  /**
+   * Placeholder of the palette search field.
+   * @default "Search or jump to…"
+   */
   searchPlaceholder?: string;
+  /** Renders breadcrumb links in place of the default `<a>`, e.g. to use your router's Link. */
   renderLink?: BlockLinkRenderer;
 }
 
@@ -388,14 +430,30 @@ AppHeader.displayName = "AppHeader";
 /* ------------------------------------------------------------------ */
 
 export interface CenteredHeaderProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
+  /** Links on the left of the logo, in order. */
   leftLinks?: HeaderLink[];
+  /** Links on the right of the logo, in order. */
   rightLinks?: HeaderLink[];
+  /** Brand mark in the centre; the default is the Sutra logo. */
   logo?: React.ReactNode;
+  /**
+   * Link target of the logo.
+   * @default "/"
+   */
   homeHref?: string;
   /** Call to action on the far right. Pass `null` to hide. */
   cta?: React.ReactNode;
+  /** Renders every link in place of the default `<a>`, e.g. to use your router's Link. */
   renderLink?: BlockLinkRenderer;
+  /**
+   * Pins the header to the top of the page.
+   * @default true
+   */
   sticky?: boolean;
+  /**
+   * When the bottom border shows: always, never, or only after the page scrolls.
+   * @default "always"
+   */
   border?: "scroll" | "always" | "never";
 }
 
@@ -486,20 +544,42 @@ export interface DocsSearchItem {
 }
 
 export interface DocsHeaderProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
+  /** Documentation versions offered in the version select; omit to hide it. */
   versions?: string[];
+  /** Controlled selected version. Use with `onVersionChange`. */
   version?: string;
+  /** Initially selected version when uncontrolled. */
   defaultVersion?: string;
+  /** Called with the version the user picked. */
   onVersionChange?: (version: string) => void;
+  /** Links in the header, after the logo. */
   links?: HeaderLink[];
+  /**
+   * Link target of the GitHub button.
+   * @default "https://github.com"
+   */
   githubHref?: string;
   /** Current color mode. When uncontrolled the header toggles the `dark` class on <html>. */
   theme?: "light" | "dark";
+  /** Called with the new mode when the theme button is clicked. */
   onThemeChange?: (theme: "light" | "dark") => void;
+  /** Items listed in the search palette; each has a `value`, a `label` and an optional section and href. */
   searchItems?: DocsSearchItem[];
+  /** Called with the item the user picked in the search palette. */
   onSearchSelect?: (item: DocsSearchItem) => void;
+  /** Brand mark in the top-left; the default is the Sutra logo. */
   logo?: React.ReactNode;
+  /**
+   * Link target of the logo.
+   * @default "/"
+   */
   homeHref?: string;
+  /** Renders every link in place of the default `<a>`, e.g. to use your router's Link. */
   renderLink?: BlockLinkRenderer;
+  /**
+   * Pins the header to the top of the page.
+   * @default true
+   */
   sticky?: boolean;
 }
 

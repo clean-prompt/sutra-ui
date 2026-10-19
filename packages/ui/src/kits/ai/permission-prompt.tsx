@@ -114,12 +114,17 @@ export function getDefaultPermissionOptions(tool: PermissionToolKind = "other", 
 
 export interface RuleScopePickerProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, "defaultValue" | "onChange" | "prefix" | "children"> {
+  /** Controlled value of the selected scope (for example this session, this project, always). */
   value?: string;
+  /** Initially selected scope value when `value` is not controlled; defaults to the first scope. */
   defaultValue?: string;
+  /** Called with the scope value when the user picks another scope. */
   onValueChange?: (value: string) => void;
+  /** Scopes a "don't ask again" rule can apply to; defaults to the built-in set. */
   scopes?: PermissionScopeOption[];
   /** Text before the link (visually). Default "in". */
   prefix?: React.ReactNode;
+  /** Disables the picker. */
   disabled?: boolean;
 }
 
@@ -180,6 +185,7 @@ export interface PermissionPromptProps extends Omit<React.HTMLAttributes<HTMLDiv
   title?: React.ReactNode;
   /** File path, command or URL the tool acts on. */
   target?: React.ReactNode;
+  /** Replaces the icon chosen from `tool`. */
   icon?: React.ReactNode;
   /** Preview slot (diff, command, URL). `children` is used when omitted. */
   preview?: React.ReactNode;
@@ -187,12 +193,19 @@ export interface PermissionPromptProps extends Omit<React.HTMLAttributes<HTMLDiv
   options?: PermissionOption[];
   /** What "don't ask again for …" refers to, e.g. <code>npm test</code>. */
   ruleLabel?: React.ReactNode;
+  /** Scopes offered for the "always allow" rule; defaults to the built-in set. */
   scopes?: PermissionScopeOption[];
+  /** Controlled value of the selected rule scope. */
   scope?: string;
+  /** Initially selected scope when `scope` is not controlled; defaults to the first scope. */
   defaultScope?: string;
+  /** Called with the scope value when the user picks another scope. */
   onScopeChange?: (scope: string) => void;
+  /** Controlled folded state: folded shows only the header and turns off key capture. */
   folded?: boolean;
+  /** Initial folded state when `folded` is not controlled. */
   defaultFolded?: boolean;
+  /** Called with the new state when the user folds or unfolds the prompt. */
   onFoldedChange?: (folded: boolean) => void;
   /** Capture number / arrow keys even when focus is elsewhere (e.g. the newest prompt). Default: only while focused. */
   active?: boolean;
@@ -206,6 +219,7 @@ export interface PermissionPromptProps extends Omit<React.HTMLAttributes<HTMLDiv
   defaultDecision?: PermissionDecision | null;
   /** Show the keyboard hints footer. Default true. */
   showHints?: boolean;
+  /** Placeholder of the feedback field shown with "No". Default "Tell the agent what to do instead…". */
   feedbackPlaceholder?: string;
 }
 
@@ -558,6 +572,7 @@ export interface PermissionPendingHintProps extends Omit<React.ButtonHTMLAttribu
   target?: React.RefObject<HTMLElement | null> | HTMLElement | null;
   /** Number of pending prompts. */
   count?: number;
+  /** Replaces the default "N pending" text. */
   children?: React.ReactNode;
 }
 

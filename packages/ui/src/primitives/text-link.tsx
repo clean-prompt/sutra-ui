@@ -15,6 +15,10 @@ export const textLinkVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Colour: `default` (primary), `muted`, `subtle` (text colour) or `destructive`.
+       * @default "default"
+       */
       variant: {
         default: "text-primary decoration-primary/40 hover:text-primary-hover hover:decoration-primary-hover",
         muted:
@@ -22,11 +26,19 @@ export const textLinkVariants = cva(
         subtle: "text-foreground decoration-border-strong hover:decoration-foreground",
         destructive: "text-destructive decoration-destructive/50 hover:decoration-destructive",
       },
+      /**
+       * When the underline shows: `always`, on `hover` or `none`.
+       * @default "hover"
+       */
       underline: {
         always: "underline",
         hover: "no-underline hover:underline",
         none: "no-underline",
       },
+      /**
+       * Text size: `inherit` keeps the surrounding size, or `sm`, `md`, `lg`.
+       * @default "inherit"
+       */
       size: {
         inherit: "[&_svg]:size-[1em]",
         sm: "text-sm [&_svg]:size-3.5",

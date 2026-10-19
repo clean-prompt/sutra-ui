@@ -9,6 +9,10 @@ import { cn } from "../lib/cn";
 export type DeviceFrameVariant = "browser" | "phone" | "tablet";
 
 export interface DeviceFrameProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Frame style: a `browser` window, a `phone` or a `tablet`.
+   * @default "browser"
+   */
   variant?: DeviceFrameVariant;
   /** Address bar text (browser). */
   url?: string;

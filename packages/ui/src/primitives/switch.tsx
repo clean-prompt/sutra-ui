@@ -21,6 +21,10 @@ export const switchVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Switch size: `sm`, `md` or `lg`.
+       * @default "md"
+       */
       size: {
         sm: "h-4 w-7",
         md: "h-5 w-9",
@@ -40,11 +44,13 @@ const thumbSize = {
 export interface SwitchProps
   extends React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root>,
     VariantProps<typeof switchVariants> {
+  /** Marks the switch invalid: error ring and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
   /** Icon shown in the thumb while on. */
   checkedIcon?: React.ReactNode;
   /** Icon shown in the thumb while off. */
   uncheckedIcon?: React.ReactNode;
+  /** Classes for the thumb (the sliding knob). */
   thumbClassName?: string;
 }
 
@@ -101,11 +107,15 @@ export const Switch = React.forwardRef<React.ElementRef<typeof SwitchPrimitive.R
 Switch.displayName = "Switch";
 
 export interface SwitchFieldProps extends SwitchProps {
+  /** Label shown beside the switch and wired to it, so clicking it toggles the switch. */
   label: React.ReactNode;
+  /** Secondary text under the label, announced as the switch description. */
   description?: React.ReactNode;
   /** `left` puts the label before the switch (settings style), `right` after it. Inside a `SettingsGroup`, use `SettingsRow type="toggle"`. */
   labelPosition?: "left" | "right";
+  /** Classes for the `<label>` element. */
   labelClassName?: string;
+  /** Classes for the wrapper around the switch, label and description. */
   wrapperClassName?: string;
 }
 
@@ -162,16 +172,26 @@ export interface SwitchGroupOption {
 
 export interface SwitchGroupProps
   extends Omit<React.FieldsetHTMLAttributes<HTMLFieldSetElement>, "defaultValue" | "onChange"> {
+  /** Group title, rendered as the fieldset legend. */
   legend?: React.ReactNode;
+  /** Help text under the legend. */
   description?: React.ReactNode;
+  /** Switches to render, in order; each has a `value`, a `label` and optional description and disabled flag. */
   options?: SwitchGroupOption[];
+  /** Controlled state as a map of option value to on/off. Use with `onValueChange`. */
   value?: Record<string, boolean>;
+  /** Initial state when uncontrolled. */
   defaultValue?: Record<string, boolean>;
+  /** Called with the full value map after any switch is toggled. */
   onValueChange?: (value: Record<string, boolean>) => void;
   /** `card` wraps the rows in a bordered panel. */
   variant?: "plain" | "card";
   /** Label placement for generated rows. Defaults to `left` (settings style). */
   labelPosition?: "left" | "right";
+  /**
+   * Switch size for every row.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
 }
 

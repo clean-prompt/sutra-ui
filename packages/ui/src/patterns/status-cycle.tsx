@@ -41,14 +41,19 @@ const pillColor: Record<Tone, string> = {
 export interface StatusCycleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
   /** Ordered statuses, e.g. unread → reading → read. */
   statuses: StatusCycleOption[];
+  /** Controlled status id. Use with `onValueChange`. */
   value?: string;
+  /** Initial status id when uncontrolled. */
   defaultValue?: string;
+  /** Called with the status id the user cycled or picked. */
   onValueChange?: (value: string) => void;
   /** Wrap from the last status back to the first. Default true. */
   loop?: boolean;
   /** Show a chevron menu to pick a status directly. Default true. */
   showMenu?: boolean;
+  /** Button height and text size. */
   size?: "sm" | "md";
+  /** Disables cycling and the menu. */
   disabled?: boolean;
   /** Prefix for the accessible label, e.g. "Reading status". Default "Status". */
   label?: string;

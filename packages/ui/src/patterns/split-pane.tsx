@@ -5,6 +5,8 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { useElementWidth } from "../hooks/use-resize-observer";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { logicalArrow } from "../lib/direction";
+import { useDrag } from "../hooks/use-drag";
+import { useDirection } from "../hooks/use-direction";
 
 type Orientation = "horizontal" | "vertical";
 
@@ -64,6 +66,7 @@ export interface SplitPaneProps extends Omit<React.HTMLAttributes<HTMLDivElement
   size?: number;
   /** Initial size of the first panel in percent; also the double-click reset value. Default 50. */
   defaultSize?: number;
+  /** Called with the first panel's size in percent while the divider moves. */
   onSizeChange?: (size: number) => void;
   /** Minimum first-panel size in percent. Default 15. */
   min?: number;
@@ -259,23 +262,41 @@ export interface SplitPaneHandleProps extends React.HTMLAttributes<HTMLDivElemen
 /** Draggable divider: `role="separator"` with arrows/Home/End, Enter to collapse, double-click to reset. */
 export const SplitPaneHandle = React.forwardRef<HTMLDivElement, SplitPaneHandleProps>(
   (
-    { className, withGrip = true, onKeyDown, onDoubleClick, onPointerDown, onPointerMove, onPointerUp, onPointerCancel, ...props },
+    {
+      className,
+      withGrip = true,
+      onKeyDown,
+      onDoubleClick,
+      onPointerDown,
+      onPointerMove,
+      onPointerUp,
+      onPointerCancel,
+      onLostPointerCapture,
+      ...props
+    },
     ref
   ) => {
     const ctx = useSplitPane();
     const horizontal = ctx.orientation === "horizontal";
-    const dragRef = React.useRef<number | null>(null);
+    const rtl = useDirection(ctx.rootRef) === "rtl";
+    // The divider follows the pointer's position along the pane (absolute mode: fractions from the inline start, so RTL is right).
+    const drag = useDrag({
+      mode: "absolute",
+      axis: horizontal ? "x" : "y",
+      trackRef: ctx.rootRef,
+      rtl,
+      onDown: (event) => event.preventDefault(),
+      onStart: () => ctx.setDragging(true),
+      onMove: (info) => {
+        if (info.dx === 0 && info.dy === 0) return; // the press itself moves nothing; the first real move sets the size
+        const rect = ctx.rootRef.current?.getBoundingClientRect();
+        if (!rect || !(horizontal ? rect.width : rect.height)) return;
+        ctx.setSize((horizontal ? info.fx! : info.fy!) * 100);
+      },
+      onEnd: () => ctx.setDragging(false),
+    });
+    const setRefs = useMergedRefs<HTMLDivElement>(ref, drag.ref as React.Ref<HTMLDivElement>);
     if (ctx.stacked) return null;
-
-    const sizeFromPointer = (event: React.PointerEvent) => {
-      const root = ctx.rootRef.current;
-      if (!root) return;
-      const rect = root.getBoundingClientRect();
-      const total = horizontal ? rect.width : rect.height;
-      if (!total) return;
-      const pos = horizontal ? event.clientX - rect.left : event.clientY - rect.top;
-      ctx.setSize((pos / total) * 100);
-    };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
       onKeyDown?.(event);
@@ -307,7 +328,7 @@ export const SplitPaneHandle = React.forwardRef<HTMLDivElement, SplitPaneHandleP
 
     return (
       <div
-        ref={ref}
+        ref={setRefs}
         role="separator"
         tabIndex={0}
         aria-orientation={horizontal ? "vertical" : "horizontal"}
@@ -334,31 +355,23 @@ export const SplitPaneHandle = React.forwardRef<HTMLDivElement, SplitPaneHandleP
         }}
         onPointerDown={(event) => {
           onPointerDown?.(event);
-          if (event.defaultPrevented || (event.pointerType === "mouse" && event.button !== 0)) return;
-          dragRef.current = event.pointerId;
-          ctx.setDragging(true);
-          try {
-            event.currentTarget.setPointerCapture?.(event.pointerId);
-          } catch {
-            /* best effort */
-          }
-          event.preventDefault();
+          drag.handlers.onPointerDown?.(event);
         }}
         onPointerMove={(event) => {
           onPointerMove?.(event);
-          if (dragRef.current === event.pointerId) sizeFromPointer(event);
+          drag.handlers.onPointerMove?.(event);
         }}
         onPointerUp={(event) => {
           onPointerUp?.(event);
-          if (dragRef.current === event.pointerId) {
-            dragRef.current = null;
-            ctx.setDragging(false);
-          }
+          drag.handlers.onPointerUp?.(event);
         }}
         onPointerCancel={(event) => {
           onPointerCancel?.(event);
-          dragRef.current = null;
-          ctx.setDragging(false);
+          drag.handlers.onPointerCancel?.(event);
+        }}
+        onLostPointerCapture={(event) => {
+          onLostPointerCapture?.(event);
+          drag.handlers.onLostPointerCapture?.(event);
         }}
         {...props}
       >

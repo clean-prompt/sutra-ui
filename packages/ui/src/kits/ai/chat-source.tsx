@@ -53,6 +53,7 @@ ChatSource.displayName = "ChatSource";
 
 export interface ChatSourceListProps
   extends Omit<React.ComponentPropsWithoutRef<typeof Collapsible.Root>, "children"> {
+  /** Sources to show, each with a title, URL and optional favicon. */
   sources: ChatSourceData[];
   /** Max favicons in the collapsed stack. */
   maxIcons?: number;

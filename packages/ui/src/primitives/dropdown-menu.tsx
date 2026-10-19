@@ -114,13 +114,17 @@ DropdownMenuContent.displayName = "DropdownMenuContent";
 
 export interface DropdownMenuItemProps
   extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {
+  /** Icon shown at the start of the row. */
   icon?: React.ReactNode;
+  /** Shortcut hint shown at the end of the row (display only: it does not bind the keys). */
   shortcut?: React.ReactNode;
+  /** Secondary line under the label. */
   description?: React.ReactNode;
   /** `destructive` colours the row red for dangerous actions. Default `neutral`. */
   tone?: "neutral" | "destructive";
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   variant?: "default" | "destructive";
+  /** Indents the row to line up with rows that have an icon. */
   inset?: boolean;
 }
 
@@ -151,6 +155,7 @@ DropdownMenuItem.displayName = "DropdownMenuItem";
 
 export interface DropdownMenuCheckboxItemProps
   extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem> {
+  /** Shortcut hint shown at the end of the row (display only: it does not bind the keys). */
   shortcut?: React.ReactNode;
 }
 
@@ -192,6 +197,7 @@ export const DropdownMenuRadioItem = React.forwardRef<
 DropdownMenuRadioItem.displayName = "DropdownMenuRadioItem";
 
 export interface DropdownMenuLabelProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> {
+  /** Indents the label to line up with rows that have an icon. */
   inset?: boolean;
 }
 
@@ -218,7 +224,9 @@ DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
 
 export interface DropdownMenuSubTriggerProps
   extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> {
+  /** Icon shown at the start of the row. */
   icon?: React.ReactNode;
+  /** Indents the row to line up with rows that have an icon. */
   inset?: boolean;
 }
 

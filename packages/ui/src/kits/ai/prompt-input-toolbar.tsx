@@ -61,6 +61,7 @@ PromptInputButton.displayName = "PromptInputButton";
 export interface PromptInputAttachButtonProps extends Omit<PromptInputButtonProps, "onChange"> {
   /** File input `accept` filter, e.g. "image/*,.pdf". */
   accept?: string;
+  /** Lets the file picker select several files. Default true. */
   multiple?: boolean;
 }
 
@@ -102,7 +103,9 @@ export const PromptInputAttachButton = React.forwardRef<HTMLButtonElement, Promp
 PromptInputAttachButton.displayName = "PromptInputAttachButton";
 
 export interface PromptInputSubmitProps extends Omit<ButtonProps, "type"> {
+  /** Accessible name of the button while idle. Default "Send message". */
   submitLabel?: string;
+  /** Accessible name of the button while `loading` (it acts as stop). Default "Stop generating". */
   stopLabel?: string;
 }
 

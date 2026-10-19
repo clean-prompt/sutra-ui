@@ -153,12 +153,26 @@ for (const category of emojiCategories) for (const entry of category.emojis) emo
 
 export interface EmojiReactionProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onToggle" | "children"> {
+  /** The emoji shown on the chip. */
   emoji: string;
+  /**
+   * How many people reacted; shown beside the emoji, hidden at 0.
+   * @default 0
+   */
   count?: number;
   /** Whether the current user has reacted (controlled). */
   reacted?: boolean;
+  /**
+   * Initial reacted state when uncontrolled.
+   * @default false
+   */
   defaultReacted?: boolean;
+  /** Called with the new reacted state when the chip is toggled. */
   onToggle?: (reacted: boolean) => void;
+  /**
+   * Chip height and text size.
+   * @default "md"
+   */
   size?: "sm" | "md";
 }
 
@@ -227,18 +241,31 @@ EmojiReaction.displayName = "EmojiReaction";
 /* ------------------------------------------------------------------ */
 
 export interface EmojiPickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Called with the picked emoji and its dictionary entry. */
   onSelect?: (emoji: string, entry: EmojiEntry) => void;
   /** Emoji shown as a quick-pick row above the search field. */
   quickPicks?: readonly string[];
   /** Recently used emoji (controlled). */
   recent?: string[];
+  /** Initial recently used emoji when uncontrolled. */
   defaultRecent?: string[];
+  /** Called with the new recent list after a pick. */
   onRecentChange?: (recent: string[]) => void;
+  /**
+   * Maximum number of recent emoji kept.
+   * @default 16
+   */
   maxRecent?: number;
   /** Number of grid columns. */
   columns?: number;
+  /**
+   * Placeholder of the search field.
+   * @default "Search emoji"
+   */
   searchPlaceholder?: string;
+  /** Focuses the search field on mount. */
   autoFocus?: boolean;
+  /** Categories to show, in order, instead of the full set. */
   categories?: EmojiCategory[];
   /** Drop the card surface (background, border, radius, shadow), e.g. when inside a popover. */
   bare?: boolean;
@@ -507,15 +534,25 @@ export interface EmojiReactionItem {
 export interface EmojiReactionBarProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Reactions (controlled). */
   reactions?: EmojiReactionItem[];
+  /** Initial reactions when uncontrolled. */
   defaultReactions?: EmojiReactionItem[];
+  /** Called with the full reaction list after the user adds or removes one. */
   onReactionsChange?: (reactions: EmojiReactionItem[]) => void;
   /** Fired whenever the current user adds or removes a reaction. */
   onReact?: (emoji: string, reacted: boolean) => void;
   /** Quick picks shown at the top of the picker. */
   presets?: readonly string[];
+  /**
+   * Chip height and text size.
+   * @default "md"
+   */
   size?: "sm" | "md";
   /** Hide the add-reaction button. */
   readOnly?: boolean;
+  /**
+   * Accessible name of the add-reaction button.
+   * @default "Add reaction"
+   */
   addLabel?: string;
 }
 

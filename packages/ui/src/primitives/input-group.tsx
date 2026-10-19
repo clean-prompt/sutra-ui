@@ -21,6 +21,10 @@ export const inputGroupVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Group height and text size.
+       * @default "md"
+       */
       size: {
         sm: "h-8 text-sm",
         md: "h-9 text-sm",
@@ -57,6 +61,7 @@ export const inputGroupAddonVariants = cva(
   ],
   {
     variants: {
+      /** Where the addon sits: at the start or end of the line, or in a row above (`block-start`) or below (`block-end`) the input. */
       align: {
         "inline-start": "order-first ps-3 has-[>button]:-ms-1.5 has-[>kbd]:-ms-1",
         "inline-end": "order-last pe-3 has-[>button]:-me-1.5 has-[>kbd]:-me-1",
@@ -115,6 +120,10 @@ export const InputGroupText = React.forwardRef<HTMLSpanElement, React.HTMLAttrib
 InputGroupText.displayName = "InputGroupText";
 
 export interface InputGroupButtonProps extends Omit<ButtonProps, "size"> {
+  /**
+   * Button size: `xs` or `sm` with text, `icon-xs` or `icon-sm` for square icon buttons.
+   * @default "xs"
+   */
   size?: "xs" | "sm" | "icon-xs" | "icon-sm";
 }
 
@@ -142,7 +151,9 @@ const controlBase =
   "min-w-0 flex-1 border-0 bg-transparent text-foreground shadow-none outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed";
 
 export interface InputGroupInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  /** Marks the group invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
+  /** Input height and text size. */
   size?: Size;
 }
 
@@ -183,6 +194,7 @@ export const InputGroupInput = React.forwardRef<HTMLInputElement, InputGroupInpu
 InputGroupInput.displayName = "InputGroupInput";
 
 export interface InputGroupTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  /** Marks the textarea invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
 }
 

@@ -8,11 +8,17 @@ import { Button } from "../../primitives/button";
 /* ------------------------------------------------------------------ */
 
 export interface UndeliveredNoticeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Heading of the notice. Default "Your answer couldn't be delivered". */
   title?: React.ReactNode;
+  /** Explanation under the heading, for example why delivery failed. */
   description?: React.ReactNode;
+  /** Called when the user presses Retry; the button is hidden when unset. */
   onRetry?: () => void;
+  /** Shows a busy state on the retry button while a retry is in flight. */
   retrying?: boolean;
+  /** Label of the retry button. Default "Retry". */
   retryLabel?: string;
+  /** Called when the user dismisses the notice; the dismiss button is hidden when unset. */
   onDismiss?: () => void;
 }
 

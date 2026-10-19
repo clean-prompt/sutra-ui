@@ -333,6 +333,7 @@ export interface MarkdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   components?: Components;
   /** Extra remark plugins (GFM is always on). Keep the array stable. */
   remarkPlugins?: Options["remarkPlugins"];
+  /** Extra rehype plugins. Keep the array stable. */
   rehypePlugins?: Options["rehypePlugins"];
   /**
    * Render TeX math with KaTeX: inline `$…$` and display `$$…$$`. Default false.

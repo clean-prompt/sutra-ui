@@ -5,6 +5,7 @@ import { usePresence, type PresenceState } from "../hooks/use-presence";
 import { useFlip, type UseFlipOptions } from "../hooks/use-flip";
 
 export interface AnimatedListProps<T> extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
+  /** Items to render, in order; items added or removed animate in and out. */
   items: readonly T[];
   /** A stable key per item (an id, not the index). */
   getKey: (item: T) => string | number;

@@ -61,9 +61,13 @@ export interface SegmentedControlProps
     React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Root>,
     "type" | "value" | "defaultValue" | "onValueChange"
   > {
+  /** Controlled selected item value. Use with `onValueChange`. */
   value?: string;
+  /** Initially selected item value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the value of the segment the user picked. */
   onValueChange?: (value: string) => void;
+  /** Control height and text size. */
   size?: Size;
   /** Stretch to the container and split segments evenly. */
   fullWidth?: boolean;
@@ -144,6 +148,7 @@ SegmentedControl.displayName = "SegmentedControl";
 
 export interface SegmentedControlItemProps
   extends React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item> {
+  /** Icon shown before the segment label. */
   icon?: React.ReactNode;
 }
 

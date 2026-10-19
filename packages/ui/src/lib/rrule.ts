@@ -8,12 +8,15 @@ import { formatShortDate, pad2 } from "./time";
 /* ------------------------------------------------------------------ */
 
 export type RecurrenceWeekday = "MO" | "TU" | "WE" | "TH" | "FR" | "SA" | "SU";
+/** How often an event repeats; `none` means it does not repeat. */
 export type RecurrenceFrequency = "none" | "daily" | "weekly" | "monthly" | "yearly";
+/** When a recurrence ends: never, on a date, or after a number of occurrences. */
 export type RecurrenceEnd =
   | { type: "never" }
   | { type: "on"; date: Date }
   | { type: "after"; count: number };
 
+/** A recurrence rule: frequency, interval, weekdays and end. */
 export interface RecurrenceRule {
   freq: RecurrenceFrequency;
   /** Every n units. Default 1. */
@@ -32,6 +35,7 @@ export interface RecurrenceRule {
   end?: RecurrenceEnd;
 }
 
+/** Weekday codes of a recurrence rule, Monday first. */
 export const recurrenceWeekdays: RecurrenceWeekday[] = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 const weekdayNames: Record<RecurrenceWeekday, string> = {
   MO: "Monday",

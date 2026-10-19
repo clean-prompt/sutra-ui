@@ -37,7 +37,9 @@ import { isEmail } from "../lib/validate";
 
 /** Props shared by every auth card. */
 export interface AuthCardBaseProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onSubmit"> {
+  /** Card heading; each card has its own default. */
   title?: React.ReactNode;
+  /** Supporting text under the heading; each card has its own default. */
   description?: React.ReactNode;
   /** `card` renders a bordered surface; `plain` renders only the content (for full-page layouts). */
   variant?: "card" | "plain";
@@ -185,16 +187,43 @@ export interface LoginCardValues {
 export interface LoginCardProps extends AuthCardBaseProps {
   /** Called with the form values. Return a promise to show a spinner; throw to show the error message. */
   onSubmit?: (values: LoginCardValues) => unknown;
+  /** Called with the provider when a social button is clicked. A returned promise shows a spinner on that button. */
   onSocialSignIn?: (provider: SocialProvider) => unknown;
   /** OAuth providers shown above the form. Pass `[]` to hide. */
   providers?: SocialProvider[];
+  /**
+   * Social buttons as a row/grid (for two or three providers) or stacked full-width.
+   * @default "grid"
+   */
   socialLayout?: "grid" | "stack";
+  /** Disables the form and shows a spinner on the submit button (use it while you sign in). */
   loading?: boolean;
+  /** Error message shown above the form (e.g. a failed sign-in); also marks the form invalid. */
   error?: React.ReactNode;
+  /**
+   * Shows the "Remember me" checkbox.
+   * @default true
+   */
   showRemember?: boolean;
+  /**
+   * Link target of "Forgot password?".
+   * @default "#forgot-password"
+   */
   forgotPasswordHref?: string;
+  /**
+   * Link target of the "Sign up" prompt.
+   * @default "#sign-up"
+   */
   signUpHref?: string;
+  /**
+   * Initial value of the email field.
+   * @default ""
+   */
   defaultEmail?: string;
+  /**
+   * Text of the submit button.
+   * @default "Sign in"
+   */
   submitLabel?: React.ReactNode;
 }
 
@@ -341,17 +370,42 @@ export interface SignUpCardValues {
 }
 
 export interface SignUpCardProps extends AuthCardBaseProps {
+  /** Called with the form values (name, email, password). Return a promise to show a spinner; throw to show the error message. */
   onSubmit?: (values: SignUpCardValues) => unknown;
+  /** Called with the provider when a social button is clicked. A returned promise shows a spinner on that button. */
   onSocialSignIn?: (provider: SocialProvider) => unknown;
+  /** OAuth providers shown above the form. Pass `[]` to hide. */
   providers?: SocialProvider[];
+  /**
+   * Social buttons as a row/grid (for two or three providers) or stacked full-width.
+   * @default "grid"
+   */
   socialLayout?: "grid" | "stack";
+  /** Disables the form and shows a spinner on the submit button. */
   loading?: boolean;
+  /** Error message shown above the form; also marks the form invalid. */
   error?: React.ReactNode;
+  /**
+   * Link target of the "Sign in" prompt.
+   * @default "#sign-in"
+   */
   signInHref?: string;
+  /**
+   * Link target of the terms-of-service text.
+   * @default "#terms"
+   */
   termsHref?: string;
+  /**
+   * Link target of the privacy-policy text.
+   * @default "#privacy"
+   */
   privacyHref?: string;
   /** Minimum strength score (1–4) required to submit. Default 2. */
   minScore?: 0 | 1 | 2 | 3 | 4;
+  /**
+   * Text of the submit button.
+   * @default "Create account"
+   */
   submitLabel?: React.ReactNode;
 }
 
@@ -514,16 +568,29 @@ SignUpCard.displayName = "SignUpCard";
 /* ------------------------------------------------------------------ */
 
 export interface MagicLinkCardProps extends AuthCardBaseProps {
+  /** Called with the email when the user asks for a link. A returned promise shows a spinner; throw to show the error message. */
   onSubmit?: (email: string) => unknown;
+  /** Called with the email when the user asks to resend the link. */
   onResend?: (email: string) => unknown;
   /** Control the "check your inbox" state. */
   sent?: boolean;
+  /** Called when the card switches between the form and the "check your inbox" state. */
   onSentChange?: (sent: boolean) => void;
+  /** Disables the form and shows a spinner on the submit button. */
   loading?: boolean;
+  /** Error message shown above the form; also marks the form invalid. */
   error?: React.ReactNode;
+  /**
+   * Initial value of the email field.
+   * @default ""
+   */
   defaultEmail?: string;
   /** Link for the "Open mail app" button in the success state. */
   mailAppHref?: string;
+  /**
+   * Link target of the "Sign in with password" alternative.
+   * @default "#sign-in"
+   */
   passwordSignInHref?: string;
 }
 
@@ -667,8 +734,14 @@ MagicLinkCard.displayName = "MagicLinkCard";
 export interface OTPVerifyCardProps extends AuthCardBaseProps {
   /** Where the code was sent (shown in the description). */
   email?: string;
+  /**
+   * Number of code digits.
+   * @default 6
+   */
   length?: number;
+  /** Called with the code once every digit is entered. A returned promise shows a spinner; throw to show the error message. */
   onVerify?: (code: string) => unknown;
+  /** Called when the user asks for a new code. */
   onResend?: () => unknown;
   /** Seconds before the code can be resent. Default 30. */
   resendSeconds?: number;
@@ -676,8 +749,14 @@ export interface OTPVerifyCardProps extends AuthCardBaseProps {
   autoSubmit?: boolean;
   /** Focus the first slot on mount. Default true. */
   autoFocus?: boolean;
+  /** Disables the input and shows a spinner while the code is checked. */
   loading?: boolean;
+  /** Error message shown under the input (e.g. a wrong code). */
   error?: React.ReactNode;
+  /**
+   * Link target of the "Back to sign in" link.
+   * @default "#sign-in"
+   */
   backHref?: string;
 }
 
@@ -800,12 +879,25 @@ OTPVerifyCard.displayName = "OTPVerifyCard";
 /* ------------------------------------------------------------------ */
 
 export interface ForgotPasswordCardProps extends AuthCardBaseProps {
+  /** Called with the email when the form is submitted. A returned promise shows a spinner; throw to show the error message. */
   onSubmit?: (email: string) => unknown;
+  /** Controls the success state ("check your inbox"). Use with `onSentChange`. */
   sent?: boolean;
+  /** Called when the card switches between the form and the success state. */
   onSentChange?: (sent: boolean) => void;
+  /** Disables the form and shows a spinner on the submit button. */
   loading?: boolean;
+  /** Error message shown above the form; also marks the form invalid. */
   error?: React.ReactNode;
+  /**
+   * Initial value of the email field.
+   * @default ""
+   */
   defaultEmail?: string;
+  /**
+   * Link target of the "Back to sign in" link.
+   * @default "#sign-in"
+   */
   backHref?: string;
 }
 
@@ -903,13 +995,25 @@ ForgotPasswordCard.displayName = "ForgotPasswordCard";
 /* ------------------------------------------------------------------ */
 
 export interface ResetPasswordCardProps extends AuthCardBaseProps {
+  /** Called with the new password when the form is submitted. A returned promise shows a spinner; throw to show the error message. */
   onSubmit?: (password: string) => unknown;
   /** Called from the success state's "Continue" button. */
   onContinue?: () => void;
+  /** Makes the success state's "Continue" button a link to this URL (alternative to `onContinue`). */
   continueHref?: string;
+  /** Disables the form and shows a spinner on the submit button. */
   loading?: boolean;
+  /** Error message shown above the form; also marks the form invalid. */
   error?: React.ReactNode;
+  /**
+   * Minimum strength score (1 to 4) required to submit.
+   * @default 2
+   */
   minScore?: 0 | 1 | 2 | 3 | 4;
+  /**
+   * Link target of the "Back to sign in" link.
+   * @default "#sign-in"
+   */
   backHref?: string;
 }
 
@@ -1024,13 +1128,28 @@ ResetPasswordCard.displayName = "ResetPasswordCard";
 /* ------------------------------------------------------------------ */
 
 export interface SSOOnlyCardProps extends AuthCardBaseProps {
+  /** OAuth providers to list; defaults to Google, Microsoft, Apple, GitHub and Slack. */
   providers?: SocialProvider[];
+  /** Called with the provider when a social button is clicked. A returned promise shows a spinner on that button. */
   onSocialSignIn?: (provider: SocialProvider) => unknown;
   /** Show a "Continue with SAML SSO" button. */
   onSAML?: () => unknown;
+  /**
+   * Shows the "Continue with SAML SSO" button (needs `onSAML`).
+   * @default true
+   */
   showSAML?: boolean;
+  /**
+   * Link target of the terms-of-service text.
+   * @default "#terms"
+   */
   termsHref?: string;
+  /**
+   * Link target of the privacy-policy text.
+   * @default "#privacy"
+   */
   privacyHref?: string;
+  /** Error message shown above the buttons (e.g. a failed sign-in). */
   error?: React.ReactNode;
 }
 
@@ -1126,12 +1245,17 @@ export interface TwoFactorSetupCardProps extends AuthCardBaseProps {
    * `issuer`, `account` and `secret` (TOTP). Pass your server's URI to include digits/period/algorithm.
    */
   otpauthUri?: string;
+  /** Called with the code when the user submits it. A returned promise shows a spinner; throw to show the error message. */
   onVerify?: (code: string) => unknown;
+  /** Called when the user cancels the setup. */
   onCancel?: () => void;
+  /** Called when the user finishes the setup (after the recovery codes are shown). */
   onDone?: () => void;
   /** Recovery codes revealed after a successful verification. */
   recoveryCodes?: string[];
+  /** Disables the form and shows a spinner while the code is checked. */
   loading?: boolean;
+  /** Error message shown under the code input (e.g. a wrong code). */
   error?: React.ReactNode;
 }
 

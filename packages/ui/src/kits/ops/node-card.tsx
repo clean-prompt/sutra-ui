@@ -42,16 +42,21 @@ const trim = (n: number) => (Math.abs(n) >= 100 || Number.isInteger(n) ? Math.ro
 
 export interface NodeMetric {
   key?: string;
+  /** Name of the metric, shown above the value. */
   label: string;
   /** Current value; `null` = no sample. */
   value: number | null;
   /** Default 100 (percent). For memory pass the total. */
   max?: number;
+  /** Unit appended to the value (for example "GB" or "°C"); the default text shows a percent. */
   unit?: string;
   /** Text next to the label, defaults to "42%" or "12.3 / 64 GB". */
   valueText?: React.ReactNode;
+  /** Percent levels at which the meter turns warning and danger; `false` keeps one colour. */
   thresholds?: MeterThresholds | false;
+  /** Icon beside the label. */
   icon?: React.ReactNode;
+  /** Small line under the meter, for example the process using it. */
   caption?: React.ReactNode;
 }
 
@@ -110,12 +115,19 @@ NodeMetricTile.displayName = "NodeMetricTile";
 /* ------------------------------------------------------------------ */
 
 export interface NodeMiniChartProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "color"> {
+  /** Name of the series, shown above the chart and used as its accessible name. */
   label: string;
+  /** Samples, oldest first. */
   data: number[];
+  /** Current value shown beside the label. */
   value?: React.ReactNode;
+  /** Colour of the line and fill. */
   color?: SparklineColor;
+  /** Chart height in px. Default 36. */
   height?: number;
+  /** Lower bound of the value axis. Default 0. */
   min?: number;
+  /** Upper bound of the value axis; defaults to the largest sample. */
   max?: number;
 }
 
@@ -143,14 +155,19 @@ export interface NodeMemory {
 }
 
 export interface NodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Node name, shown as the card heading. */
   name: React.ReactNode;
   /** Hostname / IP / role line under the name. */
   description?: React.ReactNode;
+  /** Icon beside the name. */
   icon?: React.ReactNode;
   /** Badges next to the name (e.g. "Priority"). */
   badges?: React.ReactNode;
+  /** Connection state of the node (`online`, `offline`, `connecting` or `error`); sets the status dot and label. */
   status: NodeStatus;
+  /** Replaces the default text of the status. */
   statusLabel?: string;
+  /** Preformatted uptime shown in the header. */
   uptime?: React.ReactNode;
   /** CPU percent. */
   cpu?: number | null;
@@ -164,6 +181,7 @@ export interface NodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   noGpu?: boolean;
   /** Custom metric tiles (replaces cpu/ram/gpu/vram). */
   metrics?: NodeMetric[];
+  /** Percent levels at which the CPU, RAM, GPU and VRAM meters turn warning and danger. */
   thresholds?: MeterThresholds;
   /** Mini chart slot (e.g. `<NodeMiniChart/>`). */
   chart?: React.ReactNode;
@@ -173,8 +191,11 @@ export interface NodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   footer?: React.ReactNode;
   /** Error message (status="error"). */
   error?: React.ReactNode;
+  /** Called when the user presses Retry in the error state; the button is hidden when unset. */
   onRetry?: () => void;
+  /** Shows a busy state on the retry button. */
   retrying?: boolean;
+  /** Element used for the name, so the heading level fits the page outline. Default "h3". */
   headingAs?: "h2" | "h3" | "h4" | "div";
 }
 
@@ -329,6 +350,7 @@ NodeCard.displayName = "NodeCard";
 export interface NodeGridProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Minimum card width in px before wrapping. Default 300. */
   minCardWidth?: number;
+  /** Space between cards: `sm`, `md` or `lg`. Default "md". */
   gap?: "sm" | "md" | "lg";
 }
 
@@ -350,7 +372,9 @@ NodeGrid.displayName = "NodeGrid";
 /* ------------------------------------------------------------------ */
 
 export interface GpuCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Zero-based GPU index, shown as "GPU 0". */
   index: number;
+  /** GPU model name, shown beside the index. */
   model?: React.ReactNode;
   /** VRAM used, GB. */
   memoryUsed: number;
@@ -364,9 +388,11 @@ export interface GpuCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   processes?: number;
   /** Power draw W. */
   power?: number | null;
+  /** Power cap in W; shown after the draw, for example "120 / 300 W". */
   powerLimit?: number;
   /** Temperature thresholds in °C. Default warn 75, danger 85. */
   temperatureThresholds?: { warn: number; danger: number };
+  /** Extra content at the bottom of the card. */
   footer?: React.ReactNode;
 }
 
@@ -455,18 +481,27 @@ export interface ResourceHeroChip {
 }
 
 export interface ResourceHeroProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Resource name, shown as the heading. */
   name: React.ReactNode;
+  /** Icon beside the name. */
   icon?: React.ReactNode;
+  /**
+   * Connection state (`online`, `offline`, `connecting` or `error`); sets the status dot and label. Default "online".
+   */
   status?: NodeStatus;
+  /** Replaces the default text of the status. */
   statusLabel?: string;
   /** Endpoint URL with a copy button. */
   endpoint?: string;
+  /** Preformatted uptime shown beside the status. */
   uptime?: React.ReactNode;
   /** "N of M ready" counter. */
   ready?: { ready: number; total: number; noun?: string };
   /** Config chips (key → value). */
   chips?: ResourceHeroChip[];
+  /** Buttons on the right of the header. */
   actions?: React.ReactNode;
+  /** Line under the name (for example a model or region). */
   description?: React.ReactNode;
 }
 

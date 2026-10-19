@@ -38,6 +38,7 @@ export function describeIdleSavings(summary: IdleServerSummary, formatBytes: (by
 }
 
 export interface DevServerListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Projects with their dev servers, each with a name, port, state, CPU and memory. */
   projects: DevServerProject[];
   /** Stops one server (after confirmation). May return a promise; the dialog waits for it. */
   onStop?: (id: string) => void | Promise<void>;
@@ -57,6 +58,7 @@ export interface DevServerListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   formatBytes?: (bytes: number) => string;
   /** Accessible name of the list. Default "Dev servers". */
   label?: string;
+  /** Shown when `projects` is empty. */
   emptyState?: React.ReactNode;
   /** Data is on its way. With no projects yet the list shows placeholder rows; with projects the root is only marked busy. */
   loading?: boolean;

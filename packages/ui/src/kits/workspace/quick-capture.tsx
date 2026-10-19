@@ -266,17 +266,23 @@ export interface QuickCaptureProps {
   onCapture?: (value: QuickCaptureValue) => unknown;
   /** Target apps that Alt+↑ / Alt+↓ cycle through. */
   apps?: SutraApp[];
+  /** App selected at first; defaults to the first of `apps`. */
   defaultApp?: SutraApp;
   /** "dialog" (default) opens on the shortcut; "inline" renders the bar in place. */
   variant?: "dialog" | "inline";
+  /** Controlled open state of the dialog variant. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Toggle shortcut for the dialog. Default "mod+shift+space"; `null` disables. */
   shortcut?: string | null;
+  /** Placeholder of the capture field; the default shows an example with a date and a tag. */
   placeholder?: string;
   /** Reference time for relative dates (defaults to the current time). */
   now?: Date;
+  /** Extra classes for the inline bar or the dialog content. */
   className?: string;
 }
 

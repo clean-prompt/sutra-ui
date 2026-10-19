@@ -32,9 +32,17 @@ export interface MeshGradientProps extends React.HTMLAttributes<HTMLDivElement> 
   speed?: number;
   /** Blur radius in px. */
   blur?: number;
+  /**
+   * Slowly drifts the colour blobs; the motion stops under `prefers-reduced-motion`.
+   * @default true
+   */
   animated?: boolean;
   /** Film-grain noise overlay. */
   grain?: boolean;
+  /**
+   * Opacity of the grain overlay, 0 to 1 (needs `grain`).
+   * @default 0.18
+   */
   grainOpacity?: number;
   /** Blob opacity, 0–1. */
   intensity?: number;

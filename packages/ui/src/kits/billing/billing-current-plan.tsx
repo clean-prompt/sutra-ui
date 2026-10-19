@@ -37,19 +37,31 @@ export type SubscriptionStatus = "active" | "trialing" | "past_due" | "canceled"
 export type SubscriptionStatusInput = SubscriptionStatus | "cancelled";
 
 export interface CurrentPlanCardProps extends React.HTMLAttributes<HTMLElement> {
+  /** Name of the plan, shown as the heading. */
   planName: string;
   /** Price per interval in minor units. */
   price: number;
+  /** Billing interval the price is for. Default "monthly". */
   interval?: BillingInterval;
+  /** ISO 4217 code used to format the price. Default "USD". */
   currency?: string;
+  /** BCP 47 locale used to format the price and dates. Default "en-US". */
   locale?: string;
+  /** Subscription status (for example active, trialing, past due or canceled); sets the status badge. */
   status?: SubscriptionStatusInput;
+  /** Date the plan renews or ends; shown beside the status. */
   renewsAt?: Date | string;
+  /** Seats in use and total; shown as a seat meter. */
   seats?: { used: number; total: number };
+  /** Usage quotas of the plan, each drawn as a labelled meter. */
   usage?: PlanUsageQuota[];
+  /** Payment method on file, shown as a brand and last four digits. */
   paymentMethod?: BillingPaymentMethod;
+  /** Called when the user presses Manage; the button is hidden when unset. */
   onManage?: () => void;
+  /** Called when the user presses Cancel plan; the button is hidden when unset. */
   onCancel?: () => void;
+  /** Called when the user presses Update payment method; the button is hidden when unset. */
   onUpdatePayment?: () => void;
 }
 

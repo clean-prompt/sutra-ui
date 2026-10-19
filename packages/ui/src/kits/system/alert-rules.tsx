@@ -116,7 +116,9 @@ const accentSwitch = "data-[state=checked]:bg-[var(--sutra-accent,var(--primary)
 export interface MutedAppsListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
   /** Muted app names. */
   value?: string[];
+  /** Initially muted app names when `value` is not controlled. */
   defaultValue?: string[];
+  /** Called with the remaining muted apps when the user unmutes one. */
   onValueChange?: (apps: string[]) => void;
   /** Called with the app that was unmuted (in addition to `onValueChange`). */
   onUnmute?: (app: string) => void;
@@ -181,6 +183,7 @@ export interface AlertRuleEditorProps
   value?: AlertRule;
   /** Initial draft. Default: a new CPU rule. */
   defaultValue?: AlertRule;
+  /** Called with the draft rule on every edit. */
   onValueChange?: (rule: AlertRule) => void;
   /** Called with the cleaned-up rule when the form is valid and submitted. */
   onSubmit?: (rule: AlertRule) => void;
@@ -549,8 +552,11 @@ AlertRuleEditor.displayName = "AlertRuleEditor";
  * ----------------------------------------------------------------------------------------------*/
 
 export interface AlertRuleDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Element that opens the dialog. */
   trigger?: React.ReactNode;
@@ -560,14 +566,19 @@ export interface AlertRuleDialogProps {
   defaultMetric?: AlertMetric;
   /** Called with the saved rule; the dialog then closes. */
   onSubmit?: (rule: AlertRule) => void;
+  /** Apps to pick for a one-app rule and to mute. */
   apps?: string[];
+  /** Unit for temperature thresholds. Default "celsius". */
   temperatureUnit?: AlertTemperatureUnit;
   /** Default "New alert" or "Edit alert". */
   title?: React.ReactNode;
+  /** Helper text under the dialog heading. */
   description?: React.ReactNode;
   /** Default "Add alert" or "Save". */
   submitLabel?: React.ReactNode;
+  /** Categorical colour. Default "red". */
   accent?: Accent;
+  /** Extra classes for the dialog content. */
   className?: string;
 }
 
@@ -622,9 +633,13 @@ AlertRuleDialog.displayName = "AlertRuleDialog";
  * ----------------------------------------------------------------------------------------------*/
 
 export interface AlertRuleListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "defaultValue" | "onChange" | "onToggle"> {
+  /** Controlled list of alert rules. */
   rules?: AlertRule[];
+  /** Initial rules when `rules` is not controlled. */
   defaultRules?: AlertRule[];
+  /** Called with the full list after the user adds, edits, toggles or deletes a rule. */
   onRulesChange?: (rules: AlertRule[]) => void;
+  /** Called with the rule id and the new enabled state when the user flips a rule's switch. */
   onToggle?: (id: string, enabled: boolean) => void;
   /** Edit a rule yourself. When omitted, the built-in `AlertRuleDialog` edits it and updates `rules`. */
   onEdit?: (rule: AlertRule) => void;
@@ -640,6 +655,7 @@ export interface AlertRuleListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   presets?: readonly AlertRulePreset[];
   /** Apps for the built-in editor. */
   apps?: string[];
+  /** Unit for temperature thresholds in the built-in editor. Default "celsius". */
   temperatureUnit?: AlertTemperatureUnit;
   /** Header title. Default "Alerts". */
   title?: React.ReactNode;

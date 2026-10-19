@@ -93,6 +93,7 @@ function CredentialChips({ c, inverse }: { c: Credential; inverse?: boolean }) {
 }
 
 export interface CredentialCardProps extends Omit<React.HTMLAttributes<HTMLElement>, "onClick"> {
+  /** The credential to show (type, issuer, holder, claims, validity). */
   credential: Credential;
   /** `card` is the wallet visual, `row` a compact list row. */
   variant?: "card" | "row";
@@ -100,6 +101,7 @@ export interface CredentialCardProps extends Omit<React.HTMLAttributes<HTMLEleme
   onClick?: (credential: Credential) => void;
   /** Override the gradient (CSS background). */
   background?: string;
+  /** Reference time for the validity status; set it in tests and SSR for stable output. */
   now?: number;
 }
 
@@ -226,6 +228,7 @@ CredentialCard.displayName = "CredentialCard";
 /* ------------------------------------------------------------------ */
 
 export interface CredentialDetailProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** The credential to show (type, issuer, holder, claims, validity). */
   credential: Credential;
   /** Selective disclosure: show a checkbox per claim. */
   selectable?: boolean;
@@ -233,9 +236,11 @@ export interface CredentialDetailProps extends Omit<React.HTMLAttributes<HTMLDiv
   value?: string[];
   /** Default: required claims only. */
   defaultValue?: string[];
+  /** Called with the disclosed claim keys when the user ticks or clears a claim (`selectable`). */
   onValueChange?: (keys: string[]) => void;
   /** Show the metadata block (issuer, dates, status). Default true. */
   showMeta?: boolean;
+  /** Reference time for the validity status; set it in tests and SSR for stable output. */
   now?: number;
 }
 

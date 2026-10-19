@@ -55,12 +55,20 @@ const gaugeSizes = {
 } as const;
 
 export interface GaugeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "color"> {
+  /** Current reading in `min` to `max` units; `null` shows an empty "no data" gauge. */
   value: number | null;
+  /**
+   * Value at the start of the arc.
+   * @default 0
+   */
   min?: number;
   /** Default 100. */
   max?: number;
+  /** Caption under the value (also the accessible name). */
   label?: React.ReactNode;
+  /** Unit shown beside the value (e.g. "°C"). Without it the value is shown as given. */
   unit?: string;
+  /** Formats the number in the middle. Default is the rounded value. */
   valueFormatter?: (value: number) => string;
   /** Arc start in degrees (0 = top, clockwise). Default -135. */
   startAngle?: number;
@@ -72,13 +80,17 @@ export interface GaugeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   colorStops?: GaugeColorStop[];
   /** Base tone below thresholds. Default `primary`. */
   tone?: ToneInput;
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   color?: MeterColor | ToneInput;
   /**
    * Categorical arc colour (a sensor or metric colour). Colour order: `colorStops`, then the warning/danger threshold
    * colours, then `tone`/`color`, then `accent`, then primary. Sets `--sutra-accent` on the root.
    */
   accent?: Accent;
+  /**
+   * Gauge diameter: `sm`, `md` or `lg`.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
   /** Stroke width override in px. */
   thickness?: number;
@@ -86,6 +98,7 @@ export interface GaugeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   glow?: boolean;
   /** Extra content under the value (replaces the label slot). */
   children?: React.ReactNode;
+  /** Screen-reader value text override (default is the formatted value with its unit). */
   ariaValueText?: string;
   /** Waiting for the first reading: with `value` null, the track stays empty and a placeholder stands in for the number. */
   loading?: boolean;
@@ -206,16 +219,22 @@ Gauge.displayName = "Gauge";
 export interface RingMeterProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
   /** Value in `max` units (percent by default). `null` means no reading yet: an empty track. */
   value: number | null;
+  /**
+   * Value that counts as 100%.
+   * @default 100
+   */
   max?: number;
   /** Diameter in px. Default 20. */
   size?: number;
+  /** Ring thickness in px; scales with `size` by default. */
   thickness?: number;
   /** Show the percentage beside the ring once it reaches this percent. Default 50. Use 0 to always show. */
   showValueAbove?: number;
+  /** Warning and danger percent cut-offs for the automatic colour, or `false` to turn it off. */
   thresholds?: MeterThresholds | false;
   /** Base tone below thresholds. Default `primary`. */
   tone?: ToneInput;
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   color?: MeterColor | ToneInput;
   /**
    * Categorical ring colour (a provider or metric colour). Colour order: the warning/danger threshold colours, then

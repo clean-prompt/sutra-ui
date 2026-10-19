@@ -42,8 +42,14 @@ export function useSidebar() {
 }
 
 export interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Controlled collapsed state of the sidebar (icon rail or hidden, per `collapsible`). Use with `onCollapsedChange`. */
   collapsed?: boolean;
+  /**
+   * Initial collapsed state when uncontrolled.
+   * @default false
+   */
   defaultCollapsed?: boolean;
+  /** Called when the sidebar collapses or expands (trigger button or keyboard shortcut). */
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Key used with ⌘/Ctrl to toggle. Default "b". Pass `null` to disable. */
   shortcut?: string | null;
@@ -155,9 +161,17 @@ export const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderP
 SidebarProvider.displayName = "SidebarProvider";
 
 export interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
+  /**
+   * Look: `default` (flush panel), `inset` (content area sits in a card beside it) or `floating` (detached rounded panel).
+   * @default "default"
+   */
   variant?: "default" | "inset" | "floating";
   /** icon: shrink to an icon rail · offcanvas: slide fully away · none: never collapse. */
   collapsible?: "icon" | "offcanvas" | "none";
+  /**
+   * Edge of the layout the sidebar sits on.
+   * @default "left"
+   */
   side?: "left" | "right";
   /** Accessible title for the mobile sheet. */
   mobileTitle?: string;
@@ -332,6 +346,10 @@ export const sidebarMenuButtonVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Row height: `sm`, `md` or `lg` (taller, for a two-line row).
+       * @default "md"
+       */
       size: {
         sm: "h-7 text-xs",
         md: "h-8",
@@ -345,11 +363,13 @@ export const sidebarMenuButtonVariants = cva(
 export interface SidebarMenuButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof sidebarMenuButtonVariants> {
+  /** Render as the child element (e.g. a router `Link`) while keeping the button styles. */
   asChild?: boolean;
   /** Marks the current page (sets `aria-current="page"`). */
   active?: boolean;
-  /** @deprecated Use `active`. */
+  /** Legacy name of `active`. @deprecated Use `active`. */
   isActive?: boolean;
+  /** Icon at the start of the row; it stays visible in the icon rail. */
   icon?: React.ReactNode;
   /** Count or status shown on the right; hidden in icon mode. */
   badge?: React.ReactNode;
@@ -411,12 +431,15 @@ export interface SidebarMenuSubProps
   trigger?: React.ReactElement;
   /** Or let the sub menu render its own trigger button. */
   label?: React.ReactNode;
+  /** Icon at the start of the row; it stays visible in the icon rail. */
   icon?: React.ReactNode;
+  /** Badge or count at the end of the row. */
   badge?: React.ReactNode;
   /** Marks the current page (sets `aria-current="page"`). */
   active?: boolean;
-  /** @deprecated Use `active`. */
+  /** Legacy name of `active`. @deprecated Use `active`. */
   isActive?: boolean;
+  /** Sub-menu items, shown when the row is expanded. */
   children?: React.ReactNode;
 }
 
@@ -456,12 +479,15 @@ export const SidebarMenuSub = React.forwardRef<HTMLDivElement, SidebarMenuSubPro
 SidebarMenuSub.displayName = "SidebarMenuSub";
 
 export interface SidebarMenuSubButtonProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** Render as the child element (e.g. a router `Link`) while keeping the link styles. */
   asChild?: boolean;
   /** Marks the current page (sets `aria-current="page"`). */
   active?: boolean;
-  /** @deprecated Use `active`. */
+  /** Legacy name of `active`. @deprecated Use `active`. */
   isActive?: boolean;
+  /** Icon at the start of the sub item. */
   icon?: React.ReactNode;
+  /** Sub item height and text size. */
   size?: "sm" | "md";
 }
 
@@ -573,7 +599,9 @@ export const SidebarSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttri
 SidebarSeparator.displayName = "SidebarSeparator";
 
 export interface SidebarUserCardProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Display name shown in the card (and used for the initials). */
   name: string;
+  /** Email shown under the name. */
   email?: string;
   /** Image URL; falls back to initials. */
   avatarSrc?: string;

@@ -12,6 +12,7 @@ export interface ApprovalStackRenderState {
 }
 
 export interface ApprovalStackProps<T> extends Omit<React.HTMLAttributes<HTMLElement>, "children" | "defaultValue"> {
+  /** Items to approve, in order; the first is the top card and `renderItem` draws each one. */
   items: readonly T[];
   /** Stable key for an item. Default: its index. */
   getKey?: (item: T, index: number) => React.Key;
@@ -19,7 +20,9 @@ export interface ApprovalStackProps<T> extends Omit<React.HTMLAttributes<HTMLEle
   renderItem: (item: T, state: ApprovalStackRenderState) => React.ReactNode;
   /** Index of the top card (controlled). */
   index?: number;
+  /** Initial index of the top card when `index` is not controlled. */
   defaultIndex?: number;
+  /** Called with the index of the new top card when the user steps through the stack. */
   onIndexChange?: (index: number) => void;
   /** Shows "Approve all" when set. */
   onApproveAll?: () => void;
@@ -31,7 +34,7 @@ export interface ApprovalStackProps<T> extends Omit<React.HTMLAttributes<HTMLEle
   label?: string;
   /** Shown when `items` is empty. Renders nothing by default. */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 

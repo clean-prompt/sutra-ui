@@ -309,27 +309,49 @@ function trackByline(track: PlayerTrack) {
 }
 
 export interface PlayerTransportProps {
+  /** Track that is loaded (title, artist, artwork); `null` shows an empty player. */
   track: PlayerTrack | null;
+  /** Whether audio is playing; sets the play and pause icon. */
   playing: boolean;
+  /** Called when the user presses the play or pause button. */
   onPlayPause?: () => void;
+  /** Shows a spinner on the play button while audio loads. */
   buffering?: boolean;
+  /** Playback position in seconds. */
   currentTime?: number;
+  /** Track length in seconds. Default 0; an infinite or NaN value marks a live stream with no progress or seeking. */
   duration?: number;
+  /** Buffered ranges, or a single buffered-until time, drawn on the seek bar. */
   buffered?: MediaTimeRange[] | number;
+  /** Called with the time in seconds when the user seeks. */
   onSeek?: (time: number) => void;
+  /** Called when the user presses Next. */
   onNext?: () => void;
+  /** Called when the user presses Previous. */
   onPrevious?: () => void;
+  /** Whether a next track exists; `false` disables Next (it is also disabled without `onNext`). */
   hasNext?: boolean;
+  /** Whether a previous track exists; `false` disables Previous (it is also disabled without `onPrevious`). */
   hasPrevious?: boolean;
+  /** Shuffle state shown on the shuffle button. */
   shuffle?: boolean;
+  /** Called with the new state when the user toggles shuffle; the button is hidden when unset. */
   onShuffleChange?: (shuffle: boolean) => void;
+  /** Repeat mode (`off`, `all` or `one`) shown on the repeat button. */
   repeat?: RepeatMode;
+  /** Called with the next mode when the user cycles repeat; the button is hidden when unset. */
   onRepeatChange?: (repeat: RepeatMode) => void;
+  /** Volume from 0 to 1. */
   volume?: number;
+  /** Whether audio is muted. */
   muted?: boolean;
+  /** Called with the volume (0 to 1) when the user moves the slider; the volume control is hidden when unset. */
   onVolumeChange?: (volume: number) => void;
+  /** Called with the new state when the user presses the mute button. */
   onMutedChange?: (muted: boolean) => void;
+  /** Whether the track is a favourite; fills the heart button. */
   favorite?: boolean;
+  /** Called with the new state when the user toggles the heart; the button is hidden when unset. */
   onFavoriteChange?: (favorite: boolean) => void;
   /** 0-based position, rendered as "3 of 12". */
   queuePosition?: { index: number; total: number };
@@ -584,9 +606,11 @@ export interface NowPlayingProps extends PlayerTransportProps {
   open?: boolean;
   /** Initial open state when uncontrolled. Default false. */
   defaultOpen?: boolean;
+  /** Called when the full-screen player opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Replaces the artwork (e.g. a `<video>`). */
   media?: React.ReactNode;
+  /** Called when the user presses Add to playlist; the button is hidden when unset. */
   onAddToPlaylist?: () => void;
   /** Extra action buttons next to favorite / add (e.g. a "More" menu). */
   actions?: React.ReactNode;
@@ -594,7 +618,9 @@ export interface NowPlayingProps extends PlayerTransportProps {
   header?: React.ReactNode;
   /** Queue rendered under "Up next" (e.g. a `QueueList`). */
   queue?: React.ReactNode;
+  /** Heading above the queue. Default "Up next". */
   queueTitle?: React.ReactNode;
+  /** Extra classes for the full-screen player. */
   className?: string;
 }
 
@@ -716,11 +742,15 @@ NowPlaying.displayName = "NowPlaying";
 /* ------------------------------------------------------------------ */
 
 export interface QueueListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Tracks in the queue, in play order. */
   items: PlayerTrack[];
+  /** Id of the track that is current; its row is highlighted. */
   currentId?: string | null;
+  /** Whether the current track is playing; animates the now-playing bars on its row. */
   playing?: boolean;
   /** Tap a row to jump to it. */
   onSelect?: (item: PlayerTrack, index: number) => void;
+  /** Called with the track and its index when the user removes a row; the remove action is hidden when unset. */
   onRemove?: (item: PlayerTrack, index: number) => void;
   /** Enables drag handles and Alt+↑/↓. Indices are positions in `items`. */
   onReorder?: (from: number, to: number) => void;
@@ -728,7 +758,7 @@ export interface QueueListProps extends Omit<React.HTMLAttributes<HTMLDivElement
   label?: string;
   /** Shown when the queue is empty. Default "Nothing queued". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
 }
 
@@ -924,18 +954,25 @@ QueueList.displayName = "QueueList";
 /* ------------------------------------------------------------------ */
 
 export interface TrackRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onPlay" | "onPause"> {
+  /** The track to show (title, artist, album, artwork, duration). */
   track: PlayerTrack;
   /** 1-based number shown in the lead column. */
   index?: number;
   /** This row is the queue's current track. */
   current?: boolean;
+  /** Whether this row's track is playing; shows the pause icon and the now-playing bars. */
   playing?: boolean;
+  /** Called with the track when the user presses the row's play button. */
   onPlay?: (track: PlayerTrack) => void;
   /** Pause when this is the current playing row (falls back to `onPlay`). */
   onPause?: (track: PlayerTrack) => void;
+  /** Shows the artwork thumbnail. Default true. */
   showArtwork?: boolean;
+  /** Shows the album column. Default true. */
   showAlbum?: boolean;
+  /** Whether the track is a favourite; fills the heart button. */
   favorite?: boolean;
+  /** Called with the new state when the user toggles the heart; the button is hidden when unset. */
   onFavoriteChange?: (favorite: boolean) => void;
   /** Extra inline actions shown on hover. */
   actions?: React.ReactNode;

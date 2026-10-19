@@ -139,6 +139,10 @@ const WORDMARK_PATH =
   "M10.22 -17.77A4.3 4.3 0 1 0 6.7 -11A4.3 4.3 0 1 1 3.18 -4.23M20.2 -19.6V-7.56A5.16 5.16 0 0 0 30.52 -7.56M30.52 -19.6V-2.4M44.12 -28.4V-6.18A3.78 3.78 0 0 0 47.9 -2.4M39.72 -19.6H49.84M59.04 -19.6V-2.4M59.04 -14.44A5.16 5.16 0 0 1 64.2 -19.6h1.38M74.78 -11a8.6 8.6 0 1 0 17.2 0a8.6 8.6 0 1 0 -17.2 0M91.98 -19.6V-2.4";
 
 export interface SutraWordmarkProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /**
+   * Wordmark text size.
+   * @default "md"
+   */
   size?: SutraLogoSize;
   /** Show the brand name in a gradient instead of `currentColor`. */
   gradient?: boolean;
@@ -207,7 +211,15 @@ SutraWordmark.displayName = "SutraWordmark";
 /* ------------------------------------------------------------------ */
 
 export interface SutraLogoProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /**
+   * Mark beside the wordmark (`horizontal`) or above it (`stacked`).
+   * @default "horizontal"
+   */
   layout?: "horizontal" | "stacked";
+  /**
+   * Logo size.
+   * @default "md"
+   */
   size?: SutraLogoSize;
   /** Which `SutraMark` variant leads the lockup. Default `glyph` (ink on paper). */
   markVariant?: SutraMarkVariant;
@@ -325,6 +337,7 @@ const appPictograms: Record<SutraApp, { d: string[]; dots?: [number, number][] }
 export type SutraAppTone = "mono" | "reversed" | "dyed";
 
 export interface SutraAppIconProps extends SvgBaseProps {
+  /** The Sutra app to draw the icon for. */
   app: SutraApp;
   /** Corner style of the tile. */
   shape?: "rounded" | "squircle" | "circle";

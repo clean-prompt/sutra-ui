@@ -73,11 +73,13 @@ export function formatSessionLastActive(value: Date | number | string | undefine
 /* ------------------------------------------------------------------ */
 
 export interface DeviceSessionRowProps extends React.HTMLAttributes<HTMLLIElement> {
+  /** The session to show (device, location, last active, current flag). */
   session: DeviceSession;
   /** Sign this session out. May return a promise; the row shows a spinner until it settles. */
   onRevoke?: (id: string) => void | Promise<void>;
   /** Reference time for "last active" (handy for tests and SSR). */
   now?: number;
+  /** Label of the sign-out button. Default "Sign out". */
   revokeLabel?: string;
 }
 
@@ -174,7 +176,7 @@ export const DeviceSessionRow = React.forwardRef<HTMLLIElement, DeviceSessionRow
 );
 DeviceSessionRow.displayName = "DeviceSessionRow";
 
-/** @deprecated Use `DeviceSessionRow`. */
+/** Alias of `DeviceSessionRow`. @deprecated Use `DeviceSessionRow`. */
 export const SessionRow = DeviceSessionRow;
 /** @deprecated Use `DeviceSessionRowProps`. */
 export type SessionRowProps = DeviceSessionRowProps;
@@ -184,18 +186,28 @@ export type SessionRowProps = DeviceSessionRowProps;
 /* ------------------------------------------------------------------ */
 
 export interface DeviceSessionListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Signed-in sessions; the current one is listed first and cannot be revoked. `null` or unset counts as loading. */
   sessions?: DeviceSession[] | null;
   /** Shows skeleton rows. `sessions == null` is treated as loading too. */
   loading?: boolean;
+  /**
+   * Called with the session id when the user signs a session out; may return a promise, and the row shows a spinner
+   * until it settles.
+   */
   onRevoke?: (id: string) => void | Promise<void>;
   /** Shows "Sign out all other sessions" (with a confirm dialog) when there are other sessions. */
   onRevokeOthers?: () => void | Promise<void>;
+  /** Heading of the list. Default "Active sessions". */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
   /** Replaces the whole empty state (overrides `emptyTitle` / `emptyDescription`). */
   emptyState?: React.ReactNode;
+  /** Title of the empty state. Default "No active sessions". */
   emptyTitle?: React.ReactNode;
+  /** Text of the empty state. Default "Devices appear here after they sign in.". */
   emptyDescription?: React.ReactNode;
+  /** Reference time for "last active" labels; set it in tests and SSR for stable output. */
   now?: number;
 }
 
@@ -286,7 +298,7 @@ DeviceSessionList.displayName = "DeviceSessionList";
 
 /** @deprecated Use `DeviceSession`. */
 export type Session = DeviceSession;
-/** @deprecated Use `DeviceSessionList`. */
+/** Alias of `DeviceSessionList`. @deprecated Use `DeviceSessionList`. */
 export const SessionList = DeviceSessionList;
 /** @deprecated Use `DeviceSessionListProps`. */
 export type SessionListProps = DeviceSessionListProps;
@@ -304,13 +316,17 @@ export interface AccountPanelApp {
 }
 
 export interface AccountPanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "role"> {
+  /** Account holder's name, shown as the heading and used for the avatar fallback. */
   name: string;
   /** Handle or email under the name. */
   handle?: string;
+  /** Avatar image URL; initials are shown when unset. */
   avatarSrc?: string;
   /** Role badge, e.g. "Admin". */
   role?: React.ReactNode;
+  /** Apps signed in on this account, listed in the panel. */
   apps?: AccountPanelApp[];
+  /** Called when the user signs out of this session; the button is hidden when unset. */
   onSignOut?: () => void | Promise<void>;
   /** Ends every session (with a confirm dialog). */
   onSignOutEverywhere?: () => void | Promise<void>;

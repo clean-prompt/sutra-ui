@@ -66,26 +66,37 @@ export interface TaskDetailDialogProps {
   open?: boolean;
   /** Initial open state when uncontrolled. Default false. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** The task to edit; the dialog stays closed while it is `null`. */
   task: KanbanCardData | null;
   /** Columns, assignees, labels and the other tasks (for dependencies). */
   board: KanbanBoardModel;
   /** Called with the changed fields. Status changes arrive as `{ columnId }`. */
   onChange?: (patch: Partial<KanbanCardData>) => void;
+  /** Called with the dependency kind (`blockedBy` or `blocks`) and the task id when the user adds a dependency. */
   onAddDependency?: (kind: KanbanDependencyKind, taskId: string) => void;
+  /** Called with the dependency kind and the task id when the user removes a dependency. */
   onRemoveDependency?: (kind: KanbanDependencyKind, taskId: string) => void;
   /** Model override choices; the empty option means "inherit". */
   models?: KanbanModelOption[];
   /** Existing comments on the task. */
   comments?: CommentThreadData;
+  /** Reply, edit, delete and react handlers for the comment thread. */
   commentHandlers?: CommentHandlers;
   /** Adds a new top-level comment. */
   onComment?: (body: string) => void;
+  /** Activity log entries for the Activity tab. */
   activity?: KanbanTaskActivity[];
+  /** Agent runs for the Runs tab. */
   runs?: KanbanTaskRun[];
+  /** Id of the signed-in user; their comments get edit and delete actions. */
   currentUserId?: string;
+  /** Reference time for relative labels; set it in tests and SSR for stable output. */
   now?: Date | number;
+  /** BCP 47 locale used to format dates. */
   locale?: string;
+  /** Tab shown first: `comments`, `activity` or `runs`. Default "comments". */
   defaultTab?: "comments" | "activity" | "runs";
   /** Extra content at the end of the property sidebar (e.g. an OrchestrationPanel). */
   sidebarExtra?: React.ReactNode;

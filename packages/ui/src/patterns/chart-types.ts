@@ -86,10 +86,13 @@ export type ChartCurve = "linear" | "monotone" | "step";
  * ----------------------------------------------------------------------------------------------*/
 
 export interface CartesianChartProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+  /** Rows to plot, one per index value. */
   data: ChartDatum[];
   /** Key of the x (category / time) value in each datum. */
   index: string;
+  /** Series to draw: each has a `key` (the field in each row), a `label` and an optional colour. */
   series: ChartSeries[];
+  /** Formats values in the tooltip and on the value axis. Receives the value and the series key. Default is the localized number. */
   valueFormatter?: (value: number, seriesKey: string) => string;
   /** Plot height in px (legend excluded). Default 240. */
   height?: number;
@@ -103,17 +106,26 @@ export interface CartesianChartProps extends Omit<React.HTMLAttributes<HTMLDivEl
   legend?: boolean | "top" | "bottom";
   /** Allow toggling/isolating series from the legend. Default true. */
   legendInteractive?: boolean;
+  /**
+   * Shows a tooltip with every series at the hovered index.
+   * @default true
+   */
   tooltip?: boolean;
   /** CSS transitions on data changes (disabled under prefers-reduced-motion). Default true. */
   animate?: boolean;
+  /** Content shown instead of the plot when there is no data. */
   emptyState?: React.ReactNode;
   /** Accessible name. Defaults to a description built from the series. */
   label?: string;
   /** Horizontal threshold / target lines. */
   referenceLines?: ChartReferenceLine[];
+  /** Controlled list of hidden series keys (toggled from the legend). Use with `onHiddenSeriesChange`. */
   hiddenSeries?: string[];
+  /** Initially hidden series keys when uncontrolled. */
   defaultHiddenSeries?: string[];
+  /** Called with the hidden series keys when a legend entry is toggled. */
   onHiddenSeriesChange?: (hidden: string[]) => void;
+  /** Called with the hovered index (or `null` when the pointer leaves); use it to sync other views. */
   onActiveIndexChange?: (index: number | null) => void;
   /** Data is on its way: with no data, a placeholder plot (and legend) of the same size; with data, the root is marked busy. */
   loading?: boolean;

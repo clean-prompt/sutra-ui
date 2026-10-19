@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useNow } from "./use-now";
 
+/** One recorded lap: its index, the lap time and the total time. */
 export interface StopwatchLap {
   /** 1-based lap number. */
   index: number;
@@ -10,9 +11,14 @@ export interface StopwatchLap {
   total: number;
 }
 
+/** Options for `useStopwatch`: the refresh interval and whether to start on mount. */
 export interface UseStopwatchOptions {
   /** Refresh interval while running, ms. Default 50. */
   interval?: number;
+  /**
+   * Starts running as soon as the hook mounts.
+   * @default false
+   */
   autoStart?: boolean;
 }
 

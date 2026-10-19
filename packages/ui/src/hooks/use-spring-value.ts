@@ -3,6 +3,7 @@ import { createSpring, springs, type SpringConfig, type SpringHandle, type Sprin
 import { useLatestRef } from "./use-iso-layout-effect";
 import { prefersReducedMotion } from "./use-media-query";
 
+/** Options for `useSpringValue`: spring config (a preset name or physics), the starting value and an update callback. */
 export interface UseSpringValueOptions {
   /** A named spring (`"gentle"`, `"snappy"`, `"bouncy"`) or a physical config. Default `"gentle"`. */
   config?: SpringConfig | SpringName;

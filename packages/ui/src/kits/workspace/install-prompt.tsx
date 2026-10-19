@@ -82,6 +82,7 @@ export interface InstallButtonProps extends Omit<ButtonProps, "onClick"> {
   appName?: string;
   /** Force a platform: `ios` always shows the Add to Home Screen instructions (useful for previews). */
   platform?: "auto" | "ios";
+  /** Called with `accepted`, `dismissed` or `unavailable` after the user responds to the install prompt. */
   onOutcome?: (outcome: InstallOutcome) => void;
 }
 

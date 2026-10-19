@@ -2,6 +2,7 @@ import * as React from "react";
 import { flushSync } from "react-dom";
 import { prefersReducedMotion } from "./use-media-query";
 
+/** Options for a view transition: its transition types and a `skip` switch. */
 export interface ViewTransitionOptions {
   /** Transition types, matched in CSS by `:root:active-view-transition-type(name)` (ignored where unsupported). */
   types?: string[];

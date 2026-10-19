@@ -84,6 +84,7 @@ export interface GeoMapDataProps {
   steps?: number;
   /** Value range for `quantize`. Defaults to the data's min and max. */
   domain?: [number, number];
+  /** Formats a country value for the tooltip, legend and table. */
   valueFormatter?: (value: number) => string;
   /** Name of the value in the tooltip, legend and table. Default "Value". */
   valueLabel?: string;
@@ -94,24 +95,31 @@ export interface GeoMapDataProps {
   /** Locale for country names. Default English. */
   locale?: string;
 
+  /** Points to plot on the map, each with an id, a location and optional label, value and colour. */
   markers?: readonly GeoMarker[];
+  /** Controlled id of the selected marker; `null` selects none. */
   selectedMarkerId?: string | null;
+  /** Initially selected marker id when `selectedMarkerId` is not controlled. */
   defaultSelectedMarkerId?: string | null;
+  /** Called with the marker id (or `null`) and the marker when the user selects or clears a marker. */
   onMarkerSelect?: (id: string | null, marker: GeoMarker | undefined) => void;
   /** Merge nearby markers into count bubbles (`{ radius }` in px, default 36; 48 for compact markers). */
   cluster?: boolean | GeoMarkerClusterOptions;
+  /** Called with the members and the cluster when the user activates a cluster bubble. */
   onClusterSelect?: GeoMarkerLayerProps["onClusterSelect"];
   /** Diameter range in px for `value`-scaled markers. Default `[8, 28]`. */
   markerSizeRange?: [number, number];
   /** Smaller markers and a wider cluster radius. Default: on when the drawing is narrower than 480 px. */
   compactMarkers?: boolean;
 
+  /** Great-circle arcs between two points, for example traffic or replication links. */
   arcs?: readonly GeoArc[];
 
   /** Hover tooltips for countries and markers. Default true. */
   tooltip?: boolean;
   /** Highlighted country (alpha-2 code). Clicking a country selects it when this, `defaultSelectedCountry` or `onCountrySelect` is set. */
   selectedCountry?: string | null;
+  /** Initially selected country (alpha-2 code) when `selectedCountry` is not controlled. */
   defaultSelectedCountry?: string | null;
   /** Called with the clicked country, or `null` when the selected one is clicked again. */
   onCountrySelect?: (code: string | null, country: WorldMapCountry | undefined) => void;

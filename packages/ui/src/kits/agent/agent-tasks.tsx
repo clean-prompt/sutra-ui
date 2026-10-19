@@ -100,17 +100,21 @@ function TodoGlyph({ status, compact }: { status: TaskStatus; compact?: boolean 
 }
 
 export interface AgentTodoListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Todo items in order, each with a label and status (pending, in progress, completed). */
   items: AgentTodoItem[];
   /** Header title. Default "Tasks". */
   title?: React.ReactNode;
   /** `compact` drops the card chrome for use inline in a transcript. Default "normal". */
   density?: Density;
-  /** @deprecated Use `density` (`"compact"`). */
+  /** `compact` drops the card chrome for use inline in a transcript. @deprecated Use `density` (`"compact"`). */
   variant?: "default" | "compact";
   /** Header toggles the list. Default true. */
   collapsible?: boolean;
+  /** Controlled expanded state of the list when `collapsible`. */
   open?: boolean;
+  /** Initial expanded state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called with the new state when the user expands or collapses the list. */
   onOpenChange?: (open: boolean) => void;
   /** Thin progress bar under the header. Default true. */
   showProgress?: boolean;
@@ -312,10 +316,13 @@ export function aggregateAgentStatus(agents: AgentRosterAgent[]): AgentRosterSta
 }
 
 export interface AgentRosterRowProps extends React.HTMLAttributes<HTMLLIElement> {
+  /** The agent to show (name, status, current activity, start time). */
   agent: AgentRosterAgent;
   /** Reference time; the row ticks on its own when omitted. */
   now?: number;
+  /** Called with the agent id when the user opens its transcript; the button is hidden when unset. */
   onOpenTranscript?: (id: string) => void;
+  /** Called with the agent id when the user stops a running agent; the button is hidden when unset. */
   onStop?: (id: string) => void;
 }
 
@@ -389,15 +396,19 @@ export const AgentRosterRow = React.forwardRef<HTMLLIElement, AgentRosterRowProp
 AgentRosterRow.displayName = "AgentRosterRow";
 
 export interface AgentRosterPanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Agents to list, one row each. */
   agents: AgentRosterAgent[];
   /** Default "Agents". */
   title?: React.ReactNode;
   /** Shown when there are no agents. Default "No agents running". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
+  /** Reference time for elapsed labels; the rows tick on their own when omitted. */
   now?: number;
+  /** Called with the agent id when the user opens an agent's transcript. */
   onOpenTranscript?: (id: string) => void;
+  /** Called with the agent id when the user stops a running agent. */
   onStop?: (id: string) => void;
   /** Extra rows (e.g. `BackgroundTaskRow`s) rendered under the agents. */
   children?: React.ReactNode;
@@ -435,6 +446,7 @@ export const AgentRosterPanel = React.forwardRef<HTMLDivElement, AgentRosterPane
 AgentRosterPanel.displayName = "AgentRosterPanel";
 
 export interface AgentRosterPillProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Agents the pill summarises; the text and status dot come from their states. */
   agents: AgentRosterAgent[];
   /** Override the "3 agents" text. */
   label?: React.ReactNode;
@@ -473,13 +485,19 @@ export const AgentRosterPill = React.forwardRef<HTMLButtonElement, AgentRosterPi
 AgentRosterPill.displayName = "AgentRosterPill";
 
 export interface AgentRosterProps extends Omit<AgentRosterPanelProps, "title"> {
+  /** Controlled open state of the roster popover. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the popover opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Panel title. */
   title?: React.ReactNode;
+  /** Replaces the pill text ("3 agents"). */
   pillLabel?: React.ReactNode;
+  /** Alignment of the popover against the pill. */
   align?: "start" | "center" | "end";
+  /** Side of the pill the popover opens on. */
   side?: "top" | "bottom" | "left" | "right";
 }
 
@@ -526,17 +544,25 @@ const bgStatusMeta: Record<TaskStatus | "killed", { label: string; tone: Tone }>
 };
 
 export interface BackgroundTaskRowProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Command line that was started; shown in mono. */
   command: string;
+  /** Status of the task (running, completed, failed, killed and so on); sets the glyph and tone. */
   status: BackgroundTaskStatusInput;
+  /** When the task started; the elapsed time counts from here. */
   startedAt: TimeInput;
+  /** When the task ended; freezes the elapsed time. */
   endedAt?: TimeInput;
+  /** Exit code, shown once the task has ended. */
   exitCode?: number;
   /** Full or partial output; only the last `tailLines` lines are shown. */
   output?: string;
   /** Default 3. */
   tailLines?: number;
+  /** Reference time for elapsed labels; the row ticks on its own when omitted. */
   now?: number;
+  /** Called when the user stops a running task; the button is hidden when unset. */
   onKill?: () => void;
+  /** Called when the user opens the task's full output; the button is hidden when unset. */
   onOpen?: () => void;
 }
 
@@ -637,11 +663,15 @@ export function useFocusView(): FocusViewContextValue {
 }
 
 export interface FocusViewProviderProps {
+  /** Controlled focus state: true hides the kinds in `hiddenKinds`. */
   focused?: boolean;
+  /** Initial focus state when `focused` is not controlled. */
   defaultFocused?: boolean;
+  /** Called with the new state when the user toggles focus view. */
   onFocusedChange?: (focused: boolean) => void;
   /** Kinds hidden while focused. Default `["tool"]`. */
   hiddenKinds?: FocusViewKind[];
+  /** Transcript subtree whose `FocusViewItem`s and `FocusViewToggle` share the state. */
   children?: React.ReactNode;
 }
 
@@ -664,10 +694,13 @@ export function FocusViewProvider({
 export interface FocusViewToggleProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
   /** Used only outside a `FocusViewProvider`. */
   pressed?: boolean;
+  /** Initial state when used outside a `FocusViewProvider` and `pressed` is not controlled. */
   defaultPressed?: boolean;
+  /** Called with the new state when the toggle is pressed. */
   onPressedChange?: (pressed: boolean) => void;
   /** Visible label. Default "Focus". Set `iconOnly` to hide it. */
   label?: React.ReactNode;
+  /** Hides the visible label; `label` stays as the accessible name. */
   iconOnly?: boolean;
 }
 
@@ -708,7 +741,12 @@ export const FocusViewToggle = React.forwardRef<HTMLButtonElement, FocusViewTogg
 FocusViewToggle.displayName = "FocusViewToggle";
 
 export interface FocusViewItemProps {
+  /**
+   * Kind of transcript item (`user`, `assistant`, `tool` or `system`); the item is hidden when its kind is in
+   * `hiddenKinds`.
+   */
   kind: FocusViewKind;
+  /** Content to hide while the focus view hides this kind. */
   children?: React.ReactNode;
 }
 

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useResizeObserver } from "./use-resize-observer";
 
+/** Options for `useStickToBottom`: the at-bottom threshold, whether to follow size changes and the initial position. */
 export interface UseStickToBottomOptions {
   /** Distance in px from the bottom that still counts as "at bottom". */
   threshold?: number;
@@ -10,6 +11,7 @@ export interface UseStickToBottomOptions {
   initial?: ScrollBehavior | false;
 }
 
+/** What `useStickToBottom` returns: the scroll and content refs, whether the view is at the bottom and `scrollToBottom`. */
 export interface StickToBottomState {
   /** Attach to the scrolling element. */
   scrollRef: (node: HTMLElement | null) => void;

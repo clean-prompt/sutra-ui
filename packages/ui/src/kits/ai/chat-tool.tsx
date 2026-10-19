@@ -33,6 +33,10 @@ const stateMeta: Record<TaskStatus, { label: string; tone: Tone; icon: StatusInd
 };
 
 export interface ChatToolStateBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /**
+   * Tool call state (`pending`, `running`, `completed`, `error` or a `TaskStatus`); sets the badge text, icon and
+   * tone.
+   */
   state: ChatToolState;
 }
 
@@ -82,7 +86,9 @@ export interface ChatToolProps
   extends Omit<React.ComponentPropsWithoutRef<typeof Collapsible.Root>, "title"> {
   /** Tool name, e.g. "web_search". */
   name: React.ReactNode;
+  /** State of the tool call; shows a state badge and, while `running`, a spinner. */
   state?: ChatToolState;
+  /** Replaces the default tool icon. */
   icon?: React.ReactNode;
   /** Duration in milliseconds. */
   duration?: number;
@@ -168,15 +174,23 @@ export type ChatToolApprovalStatus = "pending" | "approved" | "denied";
 export interface ChatToolApprovalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Tool name awaiting approval. */
   name: React.ReactNode;
+  /** Heading of the card. Default "Approval required". */
   title?: React.ReactNode;
+  /** Explains what approving does; replaces the default help text. */
   description?: React.ReactNode;
   /** Arguments the tool will run with. */
   input?: unknown;
+  /** Decision state: `pending` shows the approve and deny buttons, `approved` and `denied` show the outcome. */
   status?: ChatToolApprovalStatus;
+  /** Called when the user approves the call. */
   onApprove?: () => void;
+  /** Called when the user denies the call. */
   onDeny?: () => void;
+  /** Label of the approve button. Default "Approve". */
   approveLabel?: string;
+  /** Label of the deny button. Default "Deny". */
   denyLabel?: string;
+  /** Replaces the default tool icon. */
   icon?: React.ReactNode;
   /** "numbered" renders a keyboard-driven `PermissionPrompt` (Yes / Always / No with feedback). Default "default". */
   variant?: "default" | "numbered";

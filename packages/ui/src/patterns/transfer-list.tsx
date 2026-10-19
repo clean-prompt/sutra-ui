@@ -68,9 +68,11 @@ export interface TransferSample {
 
 export interface TransferItemData {
   id: string;
+  /** File or item name shown as the row title. */
   name: string;
   /** Transfer state; canonical `TaskStatus` values and "cancelled" are accepted too. */
   status: TransferStatusInput;
+  /** Kind of transfer; picks the row icon and wording (`upload`, `download`, `move` or `process`). */
   direction?: TransferDirection;
   /** 0–100. Derived from `bytes / total` when omitted. */
   progress?: number;
@@ -198,11 +200,17 @@ const directionMeta: Record<TransferDirection, { label: string; Icon: typeof RiU
 };
 
 export interface TransferItemActions {
+  /** Called when the pause button is clicked. */
   onPause?: () => void;
+  /** Called when the resume button is clicked. */
   onResume?: () => void;
+  /** Called when the cancel button is clicked. */
   onCancel?: () => void;
+  /** Called when the retry button is clicked (failed transfers). */
   onRetry?: () => void;
+  /** Called when the remove button is clicked (finished transfers). */
   onRemove?: () => void;
+  /** Called when a finished row is opened. */
   onOpen?: () => void;
 }
 
@@ -210,12 +218,13 @@ export interface TransferItemProps
   extends Omit<React.LiHTMLAttributes<HTMLLIElement>, "id" | "onPause">,
     Omit<TransferItemData, "id">,
     TransferItemActions {
+  /** Row id; the list sets it from the item data. */
   id?: string;
   /** Override "now" (epoch ms) for speed computed from `startedAt`. */
   now?: number;
   /** Row spacing. `compact` is the denser tray row. Default `normal`. */
   density?: Density;
-  /** @deprecated Use `density="compact"`. */
+  /** Legacy form of `density="compact"`. @deprecated Use `density="compact"`. */
   compact?: boolean;
 }
 
@@ -386,11 +395,17 @@ TransferItem.displayName = "TransferItem";
 /* ------------------------------------------------------------------ */
 
 export interface TransferListActions {
+  /** Called with the item id when its pause button is clicked. */
   onPause?: (id: string) => void;
+  /** Called with the item id when its resume button is clicked. */
   onResume?: (id: string) => void;
+  /** Called with the item id when its cancel button is clicked. */
   onCancel?: (id: string) => void;
+  /** Called with the item id when its retry button is clicked (failed transfers). */
   onRetry?: (id: string) => void;
+  /** Called with the item id when its remove button is clicked (finished transfers). */
   onRemove?: (id: string) => void;
+  /** Called with the item id when a finished row is opened. */
   onOpen?: (id: string) => void;
   /** Shows "Clear completed" when there are finished rows. */
   onClearCompleted?: () => void;
@@ -399,6 +414,7 @@ export interface TransferListActions {
 export interface TransferListProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onPause">,
     TransferListActions {
+  /** Transfers to show, in order; each has an `id`, `name`, `status` and optional progress, size and speed data. */
   items: TransferItemData[];
   /** Group header title. Pass `null` to hide the header. Default "Transfers". */
   title?: React.ReactNode | null;
@@ -406,11 +422,11 @@ export interface TransferListProps
   now?: number;
   /** Row spacing. Default `normal`. */
   density?: Density;
-  /** @deprecated Use `density="compact"`. */
+  /** Legacy form of `density="compact"`. @deprecated Use `density="compact"`. */
   compact?: boolean;
   /** Shown when there are no items. Default "No transfers". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Legacy name of `emptyState`. @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
   /** Max height of the scrolling list. */
   maxHeight?: number | string;
@@ -503,11 +519,21 @@ TransferList.displayName = "TransferList";
 export interface TransferTrayProps extends Omit<TransferListProps, "title" | "compact" | "density"> {
   /** Header title; defaults to e.g. "Uploading 3 items" / "2 transfers complete". */
   title?: React.ReactNode;
+  /** Controlled collapsed state of the tray. Use with `onMinimizedChange`. */
   minimized?: boolean;
+  /**
+   * Initial collapsed state when uncontrolled.
+   * @default false
+   */
   defaultMinimized?: boolean;
+  /** Called when the user collapses or expands the tray. */
   onMinimizedChange?: (minimized: boolean) => void;
   /** Shows a close button. */
   onClose?: () => void;
+  /**
+   * Corner of the screen the tray sits in.
+   * @default "bottom-right"
+   */
   position?: "bottom-right" | "bottom-left";
   /** Render in place instead of fixed to the viewport (for previews). */
   inline?: boolean;

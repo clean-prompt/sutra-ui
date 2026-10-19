@@ -76,12 +76,17 @@ export const badgeVariants = cva(
   "inline-flex max-w-full shrink-0 items-center whitespace-nowrap rounded-control border font-medium leading-none transition-colors [&_svg]:shrink-0",
   {
     variants: {
+      /**
+       * Fill style: `soft` (tinted), `solid` (full colour), `outline` (border only) or `dot` (neutral pill with a coloured dot).
+       * @default "soft"
+       */
       variant: {
         soft: "border-transparent",
         solid: "border-transparent",
         outline: "bg-transparent",
         dot: "border-border bg-background text-foreground",
       },
+      /** Legacy colour name; prefer `tone`. Also accepts the categorical hues (gray, blue, purple, pink, orange). */
       color: {
         neutral: "",
         primary: "",
@@ -96,6 +101,10 @@ export const badgeVariants = cva(
         pink: "",
         orange: "",
       },
+      /**
+       * Badge height and text size.
+       * @default "md"
+       */
       size: {
         sm: "h-5 gap-1 px-1.5 text-2xs [&_svg]:size-3",
         md: "h-6 gap-1 px-2 text-xs [&_svg]:size-3.5",
@@ -116,10 +125,16 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {
   /** Semantic colour (`neutral | primary | success | warning | destructive | info`). Wins over `color`. */
   tone?: ToneInput;
+  /** Icon before the label. */
   leadingIcon?: React.ReactNode;
+  /** Icon after the label. */
   trailingIcon?: React.ReactNode;
   /** Shows a small remove button. */
   onRemove?: () => void;
+  /**
+   * Accessible name of the remove button.
+   * @default "Remove"
+   */
   removeLabel?: string;
 }
 

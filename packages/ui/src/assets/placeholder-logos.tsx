@@ -238,12 +238,24 @@ export interface LogoCloudProps extends Omit<React.HTMLAttributes<HTMLDivElement
   marquee?: boolean;
   /** Seconds per full marquee loop. */
   duration?: number;
+  /**
+   * Runs the marquee in the opposite direction.
+   * @default false
+   */
   reverse?: boolean;
+  /**
+   * Pauses the marquee while the pointer is over it.
+   * @default true
+   */
   pauseOnHover?: boolean;
   /** Marquee mode: show a pause and play button beside the row (see `Marquee` `pausable`). */
   pausable?: boolean;
   /** Grid columns (non-marquee). */
   columns?: 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  /**
+   * Size of each logo.
+   * @default "md"
+   */
   logoSize?: PlaceholderLogoProps["size"];
   /** Muted grayscale logos that brighten on hover. */
   muted?: boolean;

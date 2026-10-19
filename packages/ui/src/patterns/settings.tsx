@@ -24,16 +24,24 @@ export interface SettingsShellSection {
 export type SettingsShellLayout = "auto" | "split" | "stacked";
 
 export interface SettingsShellProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+  /** Sections of the settings area, in order; each has an `id`, a `label` and optional icon. */
   sections: SettingsShellSection[];
   /** Open section id. In the stacked layout `null` shows the section list. */
   section?: string | null;
+  /** Initially open section id when uncontrolled; `null` shows the section list in the stacked layout. */
   defaultSection?: string | null;
+  /** Called with the section id the user opened, or `null` when they go back to the list. */
   onSectionChange?: (section: string | null) => void;
   /** Section body: a node, or a render function receiving the open section id. */
   children?: React.ReactNode | ((section: string) => React.ReactNode);
+  /** Heading shown above the section list (and as the stacked header). */
   title?: React.ReactNode;
   /** `auto` switches to the drill-in list when the container is narrower than `breakpoint`. */
   layout?: SettingsShellLayout;
+  /**
+   * Container width in px below which `layout="auto"` switches to the drill-in list.
+   * @default 640
+   */
   breakpoint?: number;
   /** Shows a close button and closes on Escape (unless a nested layer handled it). */
   onClose?: () => void;
@@ -207,11 +215,15 @@ SettingsShell.displayName = "SettingsShell";
 /* ------------------------------------------------------------------ */
 
 export interface SettingsDialogProps extends Omit<SettingsShellProps, "onClose" | "closeOnEscape"> {
+  /** Controlled open state of the dialog. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Element that opens the dialog (wrapped with `asChild`). */
   trigger?: React.ReactNode;
+  /** Classes for the dialog panel. */
   contentClassName?: string;
 }
 
@@ -257,7 +269,9 @@ SettingsDialog.displayName = "SettingsDialog";
 /* ------------------------------------------------------------------ */
 
 export interface SettingsSectionProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Section heading. */
   title?: React.ReactNode;
+  /** Supporting text under the heading. */
   description?: React.ReactNode;
   /** Right-aligned header content (e.g. a "Reset" button). */
   actions?: React.ReactNode;
@@ -295,6 +309,7 @@ export const SettingsSection = React.forwardRef<HTMLElement, SettingsSectionProp
 SettingsSection.displayName = "SettingsSection";
 
 export interface SettingsGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Heading of the group, shown above the rows. */
   title?: React.ReactNode;
   /** Muted note under the group. */
   footer?: React.ReactNode;
@@ -330,25 +345,35 @@ SettingsGroup.displayName = "SettingsGroup";
 /* ------------------------------------------------------------------ */
 
 interface SettingsRowCommon {
+  /** Icon at the start of the row. */
   icon?: React.ReactNode;
+  /** Primary text of the row. */
   title: React.ReactNode;
+  /** Secondary line under the title. */
   description?: React.ReactNode;
   /** Why the setting can't be changed; disables the row and shows a muted note. */
   disabledReason?: React.ReactNode;
+  /** Disables the row without a reason; set `disabledReason` to explain why. */
   disabled?: boolean;
+  /** Classes for the row. */
   className?: string;
 }
 
 export interface SettingsToggleRowProps extends SettingsRowCommon {
+  /** Controlled switch state. Use with `onCheckedChange`. */
   checked?: boolean;
+  /** Initial switch state when uncontrolled. */
   defaultChecked?: boolean;
+  /** Called with the new state when the switch is toggled. */
   onCheckedChange?: (checked: boolean) => void;
 }
 
 export interface SettingsNavRowProps extends SettingsRowCommon {
   /** Current value shown before the chevron, e.g. "System" or "3". */
   value?: React.ReactNode;
+  /** Called when the row is clicked; makes the row a button. */
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  /** Makes the row a link to this URL. */
   href?: string;
 }
 
@@ -530,7 +555,9 @@ function SettingsToggleRow({
 /* ------------------------------------------------------------------ */
 
 export interface SettingsDangerZoneProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Heading of the danger zone. */
   title?: React.ReactNode;
+  /** Supporting text that explains what the destructive actions do. */
   description?: React.ReactNode;
 }
 

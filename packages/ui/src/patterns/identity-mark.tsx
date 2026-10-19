@@ -89,6 +89,7 @@ export interface IdentityMarkProps extends Omit<React.HTMLAttributes<HTMLSpanEle
   seed: string;
   /** Shape of the core: a circle with an initial (person), a square core (machine) or a squircle (app). */
   kind?: IdentityMarkKind;
+  /** Mark size: a step from `xs` to `xl`, or a pixel number. */
   size?: IdentityMarkSize | number;
   /** Adds an outer ring: pulsing green for live, amber for busy, dashed grey for offline. */
   state?: IdentityMarkState | null;
@@ -249,11 +250,23 @@ const textButtonVariant: Record<TextButtonTone, NonNullable<TextLinkProps["varia
 export interface TextButtonProps extends React.HTMLAttributes<HTMLElement> {
   /** Renders an `<a>` when set; otherwise a `<button type="button">`. */
   href?: string;
+  /** Link `target` when `href` is set. */
   target?: string;
+  /** Link `rel` when `href` is set. */
   rel?: string;
+  /** Makes the link a download; a string sets the file name. */
   download?: string | boolean;
+  /**
+   * Button `type` when there is no `href`.
+   * @default "button"
+   */
   type?: "button" | "submit" | "reset";
+  /** Disables the button. */
   disabled?: boolean;
+  /**
+   * Text colour: `default`, `muted` or `destructive` (`danger` is an alias).
+   * @default "default"
+   */
   tone?: TextButtonTone;
 }
 

@@ -86,6 +86,7 @@ const nf = new Intl.NumberFormat();
 export type SaveState = "saved" | "dirty" | "saving" | "error" | "conflict";
 
 export interface SaveStatusProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Save state (`saved`, `dirty`, `saving`, `error` or `conflict`); sets the icon, label and tone. */
   status: SaveState;
   /** Last successful save; renders "Saved 2m ago" (refreshed every 30 s). */
   savedAt?: Date | number | string;
@@ -103,6 +104,7 @@ export interface SaveStatusProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   onResolve?: () => void;
   /** Override the default labels. */
   labels?: Partial<Record<SaveState, string>>;
+  /** Text and icon size. */
   size?: "sm" | "md";
 }
 
@@ -217,10 +219,15 @@ export interface EditorStatusBarProps extends React.HTMLAttributes<HTMLDivElemen
   words?: number;
   /** Explicit character count (overrides `text`). */
   characters?: number;
+  /** Options for counting words and reading time (reading speeds, CJK handling). */
   statsOptions?: TextStatsOptions;
+  /** Shows the word count. Default true. */
   showWords?: boolean;
+  /** Shows the character count. Default true. */
   showCharacters?: boolean;
+  /** Shows the estimated reading time. Default true. */
   showReadingTime?: boolean;
+  /** Shows the estimated page count. Default true. */
   showPages?: boolean;
   /** 1-based cursor position. */
   cursor?: { line: number; column: number };
@@ -228,6 +235,7 @@ export interface EditorStatusBarProps extends React.HTMLAttributes<HTMLDivElemen
   selectionLength?: number;
   /** Mode chip, e.g. "Live" or "Offline". */
   mode?: React.ReactNode;
+  /** Colour of the mode chip: `live`, `offline`, `neutral` or `warning`. */
   modeTone?: EditorModeTone;
 }
 

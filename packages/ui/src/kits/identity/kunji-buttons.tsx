@@ -35,16 +35,25 @@ export const kunjiButtonVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Button colours: `dark`, `light` (bordered) or `amber`.
+       * @default "dark"
+       */
       theme: {
         dark: "bg-[#1a1a18] text-[#faf9f6] hover:bg-[#2c2c29]",
         light: "border border-border-strong bg-white text-[#1a1a18] hover:bg-[#faf9f6]",
         amber: "bg-[#f59e0b] text-[#1a1a18] hover:bg-[#d97706]",
       },
+      /**
+       * Button height and text size: `sm`, `md` or `lg`.
+       * @default "md"
+       */
       size: {
         sm: "h-8 px-3 text-sm [&_svg]:size-4",
         md: "h-10 px-5 text-[15px] [&_svg]:size-[18px]",
         lg: "h-12 px-5 text-base [&_svg]:size-5",
       },
+      /** Stretches the button to the width of its container. */
       fullWidth: { true: "w-full" },
     },
     defaultVariants: { theme: "dark", size: "md" },
@@ -54,8 +63,11 @@ export const kunjiButtonVariants = cva(
 export interface KunjiButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onError">,
     VariantProps<typeof kunjiButtonVariants> {
+  /** Kunji client that creates the session and polls for approval (see `createKunjiClient`). */
   client: KunjiClient;
+  /** Called with the poll result once the user has approved sign-in in kunji. */
   onSuccess?: (result: KunjiPollResult) => void;
+  /** Called with the error when sign-in fails or is denied. */
   onError?: (error: unknown) => void;
   /** Props for the `KunjiSignIn` inside the dialog. */
   signInProps?: Partial<Omit<KunjiSignInProps, "client" | "onSuccess" | "onError">>;
@@ -63,6 +75,7 @@ export interface KunjiButtonProps
   open?: boolean;
   /** Initial dialog open state when uncontrolled. Default false. */
   defaultOpen?: boolean;
+  /** Called when the sign-in dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
 }
 
@@ -121,8 +134,11 @@ KunjiButton.displayName = "KunjiButton";
 export interface KunjiRpSignInProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onError"> {
   /** Adapter from `createRpScriptAdapter()`. Loading the hosted script is a third-party request. */
   adapter?: KunjiRpScriptAdapter;
+  /** Options for the hosted relying-party script (client id, callback and so on). */
   options: KunjiRpOptions;
+  /** Called with the success detail from the hosted script. */
   onSuccess?: (detail: KunjiRpSuccessDetail) => void;
+  /** Called with the error when the hosted script fails to load or sign-in fails. */
   onError?: (error: unknown) => void;
 }
 

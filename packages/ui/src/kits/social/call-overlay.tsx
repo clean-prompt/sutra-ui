@@ -38,18 +38,23 @@ export function formatCallDuration(totalSeconds: number) {
 export interface IncomingCallProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Caller display name. */
   name: string;
+  /** Caller avatar image URL; initials are shown when unset. */
   avatarSrc?: string;
   /** Custom avatar node (overrides `avatarSrc`). */
   avatar?: React.ReactNode;
+  /** `audio` or `video`; sets the call type line and the accept icon. Default "audio". */
   type?: CallType;
   /** Extra line under the call type, e.g. "Sutra Mail · work". */
   subtitle?: React.ReactNode;
+  /** Called when the user accepts the call. */
   onAccept?: () => void;
+  /** Called when the user declines the call, or when it rings out without `onTimeout`. */
   onDecline?: () => void;
   /** Shows a "Message" quick-reply action. */
   onMessage?: () => void;
   /** Auto-dismiss after this many ms (calls `onTimeout`, else `onDecline`). `0` disables. Default 30000. */
   ringFor?: number;
+  /** Called when `ringFor` elapses; `onDecline` is called instead when unset. */
   onTimeout?: () => void;
   /**
    * `card` renders inline as a non-modal dialog (focus stays where it is; Escape inside it declines).
@@ -248,6 +253,7 @@ const qualityColor: Record<CallQuality, string> = {
 };
 
 export interface CallQualityIndicatorProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Connection quality (`excellent`, `good`, `poor` or `offline`); sets the bars and tone. */
   quality: CallQuality;
 }
 
@@ -297,7 +303,9 @@ const pipCornerClass: Record<CallPipCorner, string> = {
 export interface CallScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Remote participant name. */
   name: string;
+  /** Remote participant's avatar image URL, shown when there is no video. */
   avatarSrc?: string;
+  /** `audio` or `video`; video calls show the video stage and camera controls. Default "video". */
   type?: CallType;
   /** Remote video as a node (e.g. your own `<video>` or a placeholder). */
   remote?: React.ReactNode;
@@ -305,6 +313,7 @@ export interface CallScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   remoteStream?: MediaStream | null;
   /** Local preview node. */
   local?: React.ReactNode;
+  /** Local camera stream piped into the preview `<video>`; the component never creates streams. */
   localStream?: MediaStream | null;
   /** Mirror the local preview. Default true. */
   mirrorLocal?: boolean;
@@ -312,24 +321,41 @@ export interface CallScreenProps extends React.HTMLAttributes<HTMLDivElement> {
   startedAt?: Date | number;
   /** Status text instead of the timer, e.g. "Connecting…". */
   status?: React.ReactNode;
+  /** Connection quality shown as a quality indicator in the header. */
   quality?: CallQuality;
+  /** Controlled microphone-muted state. */
   muted?: boolean;
+  /** Initial muted state when `muted` is not controlled. */
   defaultMuted?: boolean;
+  /** Called with the new state when the user toggles the microphone. */
   onMutedChange?: (muted: boolean) => void;
+  /** Controlled camera-off state. */
   cameraOff?: boolean;
+  /** Initial camera-off state when `cameraOff` is not controlled. */
   defaultCameraOff?: boolean;
+  /** Called with the new state when the user toggles the camera. */
   onCameraOffChange?: (off: boolean) => void;
+  /** Controlled screen-sharing state. */
   screenSharing?: boolean;
+  /** Initial screen-sharing state when `screenSharing` is not controlled. */
   defaultScreenSharing?: boolean;
+  /** Called with the new state when the user toggles screen sharing. */
   onScreenSharingChange?: (sharing: boolean) => void;
+  /** Controlled speaker state. */
   speakerOn?: boolean;
+  /** Initial speaker state when `speakerOn` is not controlled. */
   defaultSpeakerOn?: boolean;
+  /** Called with the new state when the user toggles the speaker. */
   onSpeakerOnChange?: (on: boolean) => void;
   /** Hide the screen share control. */
   hideScreenShare?: boolean;
+  /** Called when the user presses the end call button. */
   onEndCall?: () => void;
+  /** Controlled corner of the local preview: `top-left`, `top-right`, `bottom-left` or `bottom-right`. */
   pipCorner?: CallPipCorner;
+  /** Initial corner of the local preview when `pipCorner` is not controlled. */
   defaultPipCorner?: CallPipCorner;
+  /** Called with the corner when the user drags the local preview to another corner. */
   onPipCornerChange?: (corner: CallPipCorner) => void;
 }
 

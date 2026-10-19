@@ -109,13 +109,20 @@ export interface SnackbarAction {
 }
 
 export interface SnackbarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Notification text. */
   message: React.ReactNode;
+  /** Icon shown before the message. */
   icon?: React.ReactNode;
+  /** Optional action button on the right (`label` and `onClick`), e.g. Undo. */
   action?: SnackbarAction;
   /** Shows a dismiss button when provided. */
   onDismiss?: () => void;
-  /** @deprecated Use `onDismiss`. */
+  /** Legacy name of `onDismiss`. @deprecated Use `onDismiss`. */
   onClose?: () => void;
+  /**
+   * Accessible name of the dismiss button.
+   * @default "Dismiss"
+   */
   closeLabel?: string;
 }
 

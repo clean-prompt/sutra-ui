@@ -101,6 +101,7 @@ export interface SlotProviderProps {
   registry?: SlotRegistry;
   /** Initial contributions when no `registry` is given. */
   contributions?: SlotContribution[];
+  /** App subtree that can render `SlotOutlet`s and `SlotFill`s. */
   children?: React.ReactNode;
 }
 
@@ -218,8 +219,11 @@ export interface SlotFillProps {
   slot: string;
   /** Stable id; defaults to a generated one. */
   id?: string;
+  /** Lower renders first; ties keep registration order. Default 0. */
   order?: number;
+  /** Name of the contributor (for example a plugin), shown in the error note when the fill throws. */
   source?: string;
+  /** Content to render in the slot. */
   children?: React.ReactNode;
 }
 

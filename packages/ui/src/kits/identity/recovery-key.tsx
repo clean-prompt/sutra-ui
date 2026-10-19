@@ -66,9 +66,11 @@ export type RecoveryKeyStep = "show" | "confirm" | "done";
 export interface RecoveryKeyProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
   /** The raw key (separators are ignored). */
   value: string;
+  /** Characters per group, separated by a gap. Default 4. */
   groupSize?: number;
   /** Grid columns for the groups. Default 4. */
   columns?: 2 | 3 | 4 | 6;
+  /** Heading of the card. Default "Recovery key". */
   title?: string;
   /** Download file name; `false` hides the button. */
   fileName?: string | false;
@@ -86,7 +88,9 @@ export interface RecoveryKeyProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   confirm?: boolean;
   /** Called after the confirm step succeeds (or on "I've saved it" when `confirm` is false). */
   onConfirmed?: () => void;
+  /** Called after the key has been copied. */
   onCopy?: () => void;
+  /** Called after the key file has been downloaded. */
   onDownload?: () => void;
   /** Override printing. */
   onPrint?: () => void;
@@ -314,13 +318,17 @@ export interface RecoveryKeyInputProps
   extends Omit<InputProps, "value" | "defaultValue" | "onChange" | "maxLength"> {
   /** Normalized key (no separators). */
   value?: string;
+  /** Initial key when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the normalized key (no separators) on every edit. */
   onValueChange?: (value: string) => void;
   /** Called once the key reaches `length` and passes `validate`. */
   onComplete?: (value: string) => void;
   /** Expected number of characters. Default 24. */
   length?: number;
+  /** Characters per group shown between separators. Default 4. */
   groupSize?: number;
+  /** Text between groups in the field. Default "-". */
   separator?: string;
   /** Allowed characters (tested per uppercased char). */
   alphabet?: RegExp;

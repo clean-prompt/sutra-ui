@@ -13,6 +13,8 @@ import {
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
+import { useDrag } from "../../hooks/use-drag";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { formatClock } from "../../lib/duration";
 import { clamp, toPercent } from "../../lib/math";
 import { Spinner } from "../../primitives/spinner";
@@ -427,7 +429,9 @@ export const mediaButtonVariants = cva(
 );
 
 type MediaButtonBaseProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue"> & {
+  /** `default` follows the theme; `overlay` is for controls drawn over video or artwork. */
   tone?: MediaTone;
+  /** Button size: `sm`, `md` or `lg`. */
   size?: "sm" | "md" | "lg";
 };
 
@@ -443,6 +447,10 @@ const playPauseVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Look: `solid` (filled), `primary`, `ghost`, `overlay` (white, for video) or `overlay-ghost`.
+       * @default "solid"
+       */
       variant: {
         solid: "bg-foreground text-background shadow-sm hover:opacity-90",
         primary: "bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover",
@@ -450,6 +458,10 @@ const playPauseVariants = cva(
         overlay: "bg-white text-black shadow-lg hover:bg-white/90 focus-visible:ring-white/60",
         "overlay-ghost": "text-white hover:bg-white/15 focus-visible:ring-white/50",
       },
+      /**
+       * Button diameter: `sm` 32px, `md` 40px, `lg` 48px or `xl` 64px.
+       * @default "md"
+       */
       size: {
         sm: "size-8 [&_svg]:size-4",
         md: "size-10 [&_svg]:size-5",
@@ -464,10 +476,13 @@ const playPauseVariants = cva(
 export interface PlayPauseButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof playPauseVariants> {
+  /** Whether media is playing; shows the pause icon when true and the play icon when false. */
   playing: boolean;
   /** Show a spinner ring around the icon (buffering). */
   loading?: boolean;
+  /** Accessible name while paused. Default "Play". */
   playLabel?: string;
+  /** Accessible name while playing. Default "Pause". */
   pauseLabel?: string;
 }
 
@@ -541,6 +556,7 @@ function SkipGlyph({ seconds, direction }: { seconds: number; direction: "back" 
 }
 
 export interface SkipButtonProps extends MediaButtonBaseProps {
+  /** `back` skips backwards, `forward` skips ahead. Default "forward". */
   direction?: "back" | "forward";
   /** Seconds to skip (drawn inside the glyph). Default 10. */
   seconds?: number;
@@ -581,6 +597,7 @@ export interface MediaChapter {
 export interface SeekBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   /** Current playback time (seconds). */
   value: number;
+  /** Total length in seconds. */
   duration: number;
   /** Buffered ranges, or a single buffered-until time. */
   buffered?: MediaTimeRange[] | number;
@@ -590,6 +607,7 @@ export interface SeekBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   onScrub?: (time: number | null) => void;
   /** Arrow-key step in seconds. Default 5. */
   step?: number;
+  /** Chapter markers drawn on the track, each with a start time and title. */
   chapters?: MediaChapter[];
   /** Preview image for a time, shown in the hover bubble. */
   thumbnails?: (time: number) => string | null | undefined;
@@ -597,11 +615,17 @@ export interface SeekBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   showTimes?: boolean | "inline" | "below";
   /** Right-hand label shows the total or the remaining time (click toggles). */
   timeDisplay?: "total" | "remaining";
+  /** Initial mode of the right-hand label when `timeDisplay` is not controlled. Default "total". */
   defaultTimeDisplay?: "total" | "remaining";
+  /** Called with `total` or `remaining` when the user toggles the right-hand label. */
   onTimeDisplayChange?: (mode: "total" | "remaining") => void;
+  /** `default` follows the theme; `overlay` is for a bar drawn over video. */
   tone?: MediaTone;
+  /** Track thickness: `sm` or `md`. */
   size?: "sm" | "md";
+  /** Disables dragging, clicking and keyboard seeking. */
   disabled?: boolean;
+  /** Accessible name of the slider. */
   label?: string;
 }
 
@@ -680,34 +704,34 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
       commit(map[e.key]);
     };
 
-    const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-      if (disabled || !finite || (e.pointerType === "mouse" && e.button !== 0)) return;
-      e.currentTarget.setPointerCapture?.(e.pointerId);
-      e.currentTarget.focus({ preventScroll: true });
-      const t = timeAt(e.clientX);
-      draggingRef.current = t;
-      setScrub(t);
-      onScrub?.(t);
-    };
-    const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-      if (!finite) return;
-      const t = timeAt(e.clientX);
-      if (draggingRef.current !== null) {
+    // The scrub is a position drag (absolute mode: the press is the first position, the pointer is captured at once); the hover
+    // bubble stays here. A disabled bar refuses the press in `allow`, so a drag already under way still ends cleanly.
+    const drag = useDrag({
+      mode: "absolute",
+      axis: "x",
+      allow: () => !disabled && finite,
+      onDown: (e) => e.currentTarget.focus({ preventScroll: true }),
+      onMove: (info) => {
+        const width = trackRef.current?.getBoundingClientRect().width ?? 0;
+        const t = width > 0 ? clampTime((info.fx ?? 0) * total) : shown;
         draggingRef.current = t;
         setScrub(t);
         onScrub?.(t);
-      } else if (e.pointerType !== "touch") {
-        setHover(t);
-      }
-    };
-    const endDrag = (e: React.PointerEvent<HTMLDivElement>, cancelled = false) => {
-      const t = draggingRef.current;
-      if (t === null) return;
-      draggingRef.current = null;
-      e.currentTarget.releasePointerCapture?.(e.pointerId);
-      setScrub(null);
-      onScrub?.(null);
-      if (!cancelled) commit(t);
+      },
+      onEnd: (_info, cancelled) => {
+        const t = draggingRef.current;
+        if (t === null) return;
+        draggingRef.current = null;
+        setScrub(null);
+        onScrub?.(null);
+        if (!cancelled) commit(t);
+      },
+    });
+    const setTrackRef = useMergedRefs<HTMLDivElement>(trackRef, drag.ref as React.Ref<HTMLDivElement>);
+    const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!finite) return;
+      drag.handlers.onPointerMove?.(e);
+      if (draggingRef.current === null && e.pointerType !== "touch") setHover(timeAt(e.clientX));
     };
 
     const bubbleTime = scrub ?? hover;
@@ -738,7 +762,7 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
 
     const track = (
       <div
-        ref={trackRef}
+        ref={setTrackRef}
         role="slider"
         tabIndex={disabled ? -1 : 0}
         aria-label={label}
@@ -750,10 +774,11 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
         aria-orientation="horizontal"
         data-dragging={scrub !== null ? "" : undefined}
         onKeyDown={onKeyDown}
-        onPointerDown={onPointerDown}
+        onPointerDown={drag.handlers.onPointerDown}
         onPointerMove={onPointerMove}
-        onPointerUp={(e) => endDrag(e)}
-        onPointerCancel={(e) => endDrag(e, true)}
+        onPointerUp={drag.handlers.onPointerUp}
+        onPointerCancel={drag.handlers.onPointerCancel}
+        onLostPointerCapture={drag.handlers.onLostPointerCapture}
         onPointerLeave={() => setHover(null)}
         className={cn(
           "group/seek relative flex min-w-0 flex-1 cursor-pointer touch-none select-none items-center outline-none",
@@ -870,10 +895,15 @@ SeekBar.displayName = "SeekBar";
 export interface VolumeControlProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue" | "onVolumeChange"> {
   /** 0–1. */
   volume?: number;
+  /** Initial volume (0 to 1) when `volume` is not controlled. */
   defaultVolume?: number;
+  /** Called with the volume (0 to 1) while the user moves the slider or presses an arrow key. */
   onVolumeChange?: (volume: number) => void;
+  /** Controlled mute state. */
   muted?: boolean;
+  /** Initial mute state when `muted` is not controlled. */
   defaultMuted?: boolean;
+  /** Called with the new state when the user presses the mute button. */
   onMutedChange?: (muted: boolean) => void;
   /** Horizontal slider beside the button, or a vertical slider in a popover above it. */
   orientation?: "horizontal" | "vertical";
@@ -881,7 +911,9 @@ export interface VolumeControlProps extends Omit<React.HTMLAttributes<HTMLDivEle
   expand?: "hover" | "always";
   /** Volume change per arrow key. Default 0.05. */
   step?: number;
+  /** `default` follows the theme; `overlay` is for controls drawn over video. */
   tone?: MediaTone;
+  /** Button size: `sm`, `md` or `lg`. */
   size?: "sm" | "md" | "lg";
 }
 
@@ -1034,11 +1066,17 @@ const chipClass = (tone: MediaTone, active: boolean) =>
   );
 
 export interface PlaybackRateMenuProps {
+  /** Current playback speed, where 1 is normal. */
   rate: number;
+  /** Called with the chosen speed when the user picks a rate. */
   onRateChange: (rate: number) => void;
+  /** Speeds offered in the menu. Default 0.5 to 2 in steps of 0.25. */
   rates?: number[];
+  /** `default` follows the theme; `overlay` is for a chip drawn over video. */
   tone?: MediaTone;
+  /** Disables the trigger. */
   disabled?: boolean;
+  /** Extra classes for the trigger chip. */
   className?: string;
 }
 
@@ -1086,20 +1124,27 @@ export interface MediaTrackOption {
 }
 
 export interface TrackCycleChipProps {
+  /** Which track set this chip switches: `subtitles` or `audio`; sets the icon and labels. */
   kind: "subtitles" | "audio";
+  /** Tracks to choose from, each with an id and label. */
   tracks: MediaTrackOption[];
   /** Selected track id, or null for off (subtitles). Controlled. */
   value?: string | null;
   /** Initial track id when uncontrolled. Default null (off). */
   defaultValue?: string | null;
+  /** Called with the chosen track id, or `null` for off. */
   onValueChange?: (id: string | null) => void;
   /** Click cycles through the options, or opens a menu. Default: cycle up to 3 options, menu beyond. */
   mode?: "cycle" | "menu";
   /** Include an "Off" option. Default true for subtitles. */
   allowOff?: boolean;
+  /** Label of the "off" option. Default "Off". */
   offLabel?: string;
+  /** `default` follows the theme; `overlay` is for a chip drawn over video. */
   tone?: MediaTone;
+  /** Disables the chip. */
   disabled?: boolean;
+  /** Extra classes for the chip. */
   className?: string;
 }
 
@@ -1197,8 +1242,11 @@ export function nextRepeatMode(mode: RepeatMode): RepeatMode {
 const repeatLabels: Record<RepeatMode, string> = { off: "Repeat off", all: "Repeat all", one: "Repeat one" };
 
 export interface RepeatButtonProps extends MediaButtonBaseProps {
+  /** Controlled repeat mode: `off`, `all` or `one`. */
   value?: RepeatMode;
+  /** Initial mode when `value` is not controlled. Default "off". */
   defaultValue?: RepeatMode;
+  /** Called with the next mode when the user presses the button, which cycles off, all and one. */
   onValueChange?: (mode: RepeatMode) => void;
 }
 
@@ -1230,8 +1278,11 @@ export const RepeatButton = React.forwardRef<HTMLButtonElement, RepeatButtonProp
 RepeatButton.displayName = "RepeatButton";
 
 export interface ShuffleButtonProps extends MediaButtonBaseProps {
+  /** Controlled shuffle state. */
   pressed?: boolean;
+  /** Initial state when `pressed` is not controlled. */
   defaultPressed?: boolean;
+  /** Called with the new state when the user presses the button. */
   onPressedChange?: (pressed: boolean) => void;
 }
 
@@ -1268,6 +1319,7 @@ ShuffleButton.displayName = "ShuffleButton";
 export interface NowPlayingBarsProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Animate (sounding) or hold still (current but paused). Default true. */
   playing?: boolean;
+  /** Size of the animated bars. Default "sm". */
   size?: "sm" | "md" | "lg";
   /** Accessible label; defaults to "Now playing" / "Paused". Pass `null` to hide from assistive tech. */
   label?: string | null;

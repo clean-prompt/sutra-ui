@@ -27,10 +27,13 @@ export interface StepWizardLabels {
 }
 
 export interface StepWizardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** Steps in order; each has an `id`, a `title` and the content to show. */
   steps: readonly StepWizardStep[];
   /** Id of the step in view. */
   value?: string;
+  /** Initially shown step id when uncontrolled. */
   defaultValue?: string;
+  /** Called with the new step id, its index and the direction when the user moves between steps. */
   onValueChange?: (id: string, meta: { index: number; direction: "forward" | "back" }) => void;
   /**
    * Checked before leaving a step forward (Next, Finish, or a jump ahead); return false (or a promise of false) to stay.
@@ -51,6 +54,7 @@ export interface StepWizardProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   keepMounted?: boolean;
   /** Replace the Back / Next row, or pass false to hide it. */
   footer?: React.ReactNode | false;
+  /** Overrides for the button and progress texts (`back`, `next`, `finish`, `step`). */
   labels?: StepWizardLabels;
 }
 

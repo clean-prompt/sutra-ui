@@ -271,10 +271,15 @@ const stateTone: Partial<Record<StreamingTaskState, { tone: DialogTone; icon: Re
 };
 
 export interface ProgressDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Dialog heading. */
   title: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
   /** Pull state, progress, phase, logs, error, cancel and retry from `useStreamingTask`. Explicit props win. */
   task?: UseStreamingTaskResult;
@@ -288,7 +293,9 @@ export interface ProgressDialogProps {
   logs?: readonly LogLine[];
   /** Show the log panel (defaults to true when logs exist). */
   showLogs?: boolean;
+  /** Height of the log panel; a number is px. Default 200. */
   logHeight?: number | string;
+  /** Failure message shown when the state is `failed`. */
   error?: React.ReactNode;
   /** Shown when succeeded. */
   successMessage?: React.ReactNode;
@@ -296,15 +303,23 @@ export interface ProgressDialogProps {
   children?: React.ReactNode;
   /** Shows a Start button while idle. */
   onStart?: () => void;
+  /** Label of the start button. Default "Start". */
   startLabel?: React.ReactNode;
+  /** Disables the start button, for example until a required choice is made. */
   startDisabled?: boolean;
+  /** Called when the user stops the running operation (after confirmation); the Cancel button is hidden when unset. */
   onCancel?: () => void;
+  /** Called when the user presses Retry after a failure; the button is hidden when unset. */
   onRetry?: () => void;
   /** Ask before closing while running. Default true. */
   confirmClose?: boolean;
+  /** Heading of the confirm-close dialog. Default "Stop this operation?". */
   confirmTitle?: React.ReactNode;
+  /** Text of the confirm-close dialog. */
   confirmDescription?: React.ReactNode;
+  /** Dialog width: `sm`, `md`, `lg` or `xl`. Default "md". */
   size?: "sm" | "md" | "lg" | "xl";
+  /** Extra classes for the dialog content. */
   className?: string;
 }
 

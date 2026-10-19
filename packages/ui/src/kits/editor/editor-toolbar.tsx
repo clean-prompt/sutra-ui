@@ -343,6 +343,7 @@ export interface EditorToolbarButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
   /** Accessible name, tooltip text and overflow-menu label. */
   label: string;
+  /** Icon of the button. */
   icon?: React.ReactNode;
   /** Keys spec for the tooltip ("mod+b"). */
   shortcut?: string;
@@ -430,16 +431,23 @@ EditorToolbarSeparator.displayName = "EditorToolbarSeparator";
 /* ------------------------------------------------------------------ */
 
 export interface EditorToolbarMenuProps {
+  /** Accessible name and menu label of the trigger. */
   label: string;
+  /** Icon of the trigger. */
   icon?: React.ReactNode;
+  /** Menu entries, each with a label, optional icon, shortcut and handler. */
   items: EditorToolbarMenuItem[];
   /** Show the label text (default true); icon-only otherwise. */
   showLabel?: boolean;
+  /** Disables the trigger. */
   disabled?: boolean;
   /** Extra content under the items (e.g. a hint). */
   footer?: React.ReactNode;
+  /** Alignment of the menu against the trigger. */
   align?: "start" | "center" | "end";
+  /** Extra classes for the trigger. */
   className?: string;
+  /** Extra classes for the menu content. */
   contentClassName?: string;
 }
 

@@ -11,6 +11,7 @@ export function portHref(port: number | string, host = "localhost"): string {
 }
 
 export interface PortBadgeProps extends Omit<React.HTMLAttributes<HTMLElement>, "color" | "children"> {
+  /** Port number; a leading colon is stripped when a string is given. */
   port: number | string;
   /** Show a leading colon (":3000"). Default false. */
   colon?: boolean;
@@ -24,6 +25,10 @@ export interface PortBadgeProps extends Omit<React.HTMLAttributes<HTMLElement>, 
   accent?: Accent;
   /** Semantic colour; wins over the accent. */
   tone?: ToneInput;
+  /**
+   * Badge height and text size.
+   * @default "sm"
+   */
   size?: "sm" | "md" | "lg";
 }
 
@@ -70,15 +75,30 @@ export const PortBadge = React.forwardRef<HTMLElement, PortBadgeProps>(
 PortBadge.displayName = "PortBadge";
 
 export interface PortBadgeListProps extends Omit<React.HTMLAttributes<HTMLUListElement>, "color" | "children"> {
+  /** Ports to show, in order. */
   ports: readonly (number | string)[];
   /** Show at most this many badges, then "+N". Default: all. */
   max?: number;
   /** Link each port to localhost. Default false. */
   linked?: boolean;
+  /**
+   * Host for the links when `linked`.
+   * @default "localhost"
+   */
   host?: string;
+  /**
+   * Shows a leading colon on every badge (":3000").
+   * @default false
+   */
   colon?: boolean;
+  /** Categorical colour for every badge; without `accent` or `tone` they follow the inherited accent. */
   accent?: Accent;
+  /** Semantic colour for every badge; wins over `accent`. */
   tone?: ToneInput;
+  /**
+   * Badge height and text size.
+   * @default "sm"
+   */
   size?: "sm" | "md" | "lg";
   /** Accessible name of the list. Default "Ports". */
   label?: string;

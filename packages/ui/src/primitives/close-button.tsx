@@ -20,6 +20,10 @@ export const closeButtonVariants = cva("inline-flex shrink-0 items-center justif
       ],
       pill: ["rounded-full", hitArea],
     },
+    /**
+     * Look: `ghost`, `subtle` (muted fill), `inverse` (for dark surfaces), `current` (inherits the text colour, dimmed until hover) or `muted`.
+     * @default "ghost"
+     */
     variant: {
       ghost: "text-muted-foreground hover:bg-accent hover:text-foreground",
       subtle: "bg-muted text-muted-foreground hover:bg-border hover:text-foreground",
@@ -30,6 +34,10 @@ export const closeButtonVariants = cva("inline-flex shrink-0 items-center justif
       /** Muted icon that darkens on a border-coloured hover fill. */
       muted: "text-muted-foreground transition-colors hover:bg-border hover:text-foreground",
     },
+    /**
+     * Button size from `3xs` (16px) up; icons scale with it.
+     * @default "md"
+     */
     size: {
       "3xs": "size-4 [&_svg]:size-3",
       "2xs": "size-5 [&_svg]:size-3.5",

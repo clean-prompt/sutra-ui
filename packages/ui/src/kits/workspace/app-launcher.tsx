@@ -41,6 +41,7 @@ export function filterLauncherItems(items: AppLauncherItem[], query: string) {
 export type AppLauncherVariant = "grid" | "dock" | "popover";
 
 export interface AppLauncherProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Apps to show as tiles, each with an id, name, icon and optional badge. */
   items: AppLauncherItem[];
   /** `grid` home-screen grid, `dock` single row, `popover` 3×3 waffle menu (see `AppLauncherMenu`). */
   variant?: AppLauncherVariant;
@@ -48,9 +49,13 @@ export interface AppLauncherProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   columns?: number;
   /** Show a search field that filters the tiles. */
   searchable?: boolean;
+  /** Controlled search text (with `searchable`). */
   query?: string;
+  /** Initial search text when `query` is not controlled. */
   defaultQuery?: string;
+  /** Called with the search text on every change. */
   onQueryChange?: (query: string) => void;
+  /** Called with the app when the user opens a tile. */
   onSelect?: (item: AppLauncherItem) => void;
   /** Right-click / long-press menu for a tile: return `ContextMenuItem`s. */
   renderMenu?: (item: AppLauncherItem) => React.ReactNode;
@@ -293,20 +298,29 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
 AppLauncher.displayName = "AppLauncher";
 
 export interface AppLauncherMenuProps {
+  /** Apps to show as tiles in the waffle menu. */
   items: AppLauncherItem[];
+  /** Called with the app when the user opens a tile. */
   onSelect?: (item: AppLauncherItem) => void;
+  /** Right-click and long-press menu for a tile: return `ContextMenuItem`s. */
   renderMenu?: (item: AppLauncherItem) => React.ReactNode;
+  /** Shows a search field that filters the tiles. */
   searchable?: boolean;
   /** Accessible name of the trigger and grid. */
   label?: string;
   /** Custom trigger element (defaults to a waffle icon button). */
   trigger?: React.ReactElement;
+  /** Controlled open state of the menu. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the menu opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Content below the grid, e.g. a "More apps" link. */
   footer?: React.ReactNode;
+  /** Alignment of the menu against the trigger. */
   align?: "start" | "center" | "end";
+  /** Extra classes for the menu content. */
   className?: string;
 }
 

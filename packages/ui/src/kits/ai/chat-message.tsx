@@ -33,6 +33,7 @@ const caretAfterLast =
   "[&>:last-child]:after:ms-0.5 [&>:last-child]:after:inline-block [&>:last-child]:after:h-[1.1em] [&>:last-child]:after:w-[0.45em] [&>:last-child]:after:translate-y-[0.2em] [&>:last-child]:after:rounded-[1px] [&>:last-child]:after:bg-foreground [&>:last-child]:after:animate-caret-blink motion-reduce:[&>:last-child]:after:animate-none [&>:last-child]:after:content-['']";
 
 export interface ChatMessageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "role"> {
+  /** Who wrote the message: `user`, `assistant` or `system`; sets alignment and styling. */
   role?: ChatMessageRole;
   /** bubble: user messages sit right-aligned in a soft bubble · flat: every message is left-aligned with no bubble. */
   variant?: ChatMessageVariant;
@@ -93,6 +94,7 @@ export interface ChatMessageAvatarProps extends Omit<AvatarProps, "size" | "shap
   name?: string;
   /** Custom fallback content (overrides initials / the assistant spark). */
   fallback?: React.ReactNode;
+  /** Avatar size. */
   size?: "sm" | "md" | "lg";
 }
 
@@ -177,6 +179,7 @@ export const ChatMessageContent = React.forwardRef<HTMLDivElement, ChatMessageCo
 ChatMessageContent.displayName = "ChatMessageContent";
 
 export interface ChatMessageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Author name, shown before the timestamp. */
   name?: React.ReactNode;
   /** A Date / timestamp (formatted as a short time) or a preformatted string. */
   timestamp?: Date | string | number;

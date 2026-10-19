@@ -27,11 +27,13 @@ export interface ZoneEditorProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   defaultLayout?: LayoutNode;
   /** When given, the applied layout has these panes filled into the zones in order. */
   panes?: string[];
+  /** Called with the layout the user drew when "Apply" is clicked. */
   onApply: (layout: LayoutNode) => void;
+  /** Called when the user cancels the editor. */
   onCancel?: () => void;
   /** Called on every edit with the zone tree. */
   onValueChange?: (zones: LayoutNode) => void;
-  /** @deprecated Use `onValueChange`. */
+  /** Called on every edit with the zone tree. @deprecated Use `onValueChange`. */
   onChange?: (zones: LayoutNode) => void;
   /** Minimum zone fraction per split. Default 0.1. */
   minSize?: number;

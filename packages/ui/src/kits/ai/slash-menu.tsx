@@ -127,15 +127,17 @@ export interface SlashCommand {
 export interface SlashMenuProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
   /** The composer textarea to attach to. */
   anchorRef: React.RefObject<HTMLTextAreaElement | HTMLInputElement | null>;
+  /** Commands (or mentions) to offer, each with a name, optional description and keywords. */
   commands: SlashCommand[];
   /** Trigger character(s). Default "/". Use "@" for mentions. */
   trigger?: string | string[];
+  /** Called with the chosen command and the trigger match (trigger, query and caret range) when the user picks one. */
   onSelect?: (command: SlashCommand, match: SlashTriggerMatch) => void;
   /** Header label. Default "Commands" (or "Mentions" for "@"). */
   heading?: React.ReactNode;
   /** Shown when nothing matches. Default "No matching commands". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
   /** Max visible rows before scrolling. Default 8. */
   maxRows?: number;

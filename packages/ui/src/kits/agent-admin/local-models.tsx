@@ -132,11 +132,13 @@ export function estimateModelFit(model: ModelFootprint, hardware: HardwareProfil
 const fitColor: Record<ModelFitLevel, BadgeColor> = { gpu: "success", partial: "warning", cpu: "info", none: "destructive" };
 
 export interface HardwareFitHintProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Memory footprint of the model (parameters, quantisation, size) to check against the hardware. */
   model: ModelFootprint;
+  /** Memory and GPU of the machine to estimate fit on. */
   hardware: HardwareProfile;
   /** `compact` renders only the badge, with the explanation in a tooltip. Default `normal`. */
   density?: Density;
-  /** @deprecated Use `density` (`"compact"` → `density="compact"`). */
+  /** `compact` renders only the badge, with the explanation in a tooltip. @deprecated Use `density` (`"compact"` → `density="compact"`). */
   variant?: "default" | "compact";
 }
 
@@ -206,14 +208,21 @@ export interface SetupDownloadProgress {
 }
 
 export interface StagedSetupHeroProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Setup stages in order, each with an id, title, status and optional action. */
   stages: SetupStage[];
+  /** Heading of the hero. Default "Run models on this machine". */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
+  /** Called with the stage id when the user presses the current stage's action button (its `actionLabel`). */
   onAction?: (stageId: string) => void;
+  /** Called with the stage id when the user retries a failed stage. */
   onRetry?: (stageId: string) => void;
+  /** Called when the user cancels the running download; the Cancel button is hidden when unset. */
   onCancelDownload?: () => void;
   /** Progress for the stage with id `download` (or `downloadStageId`). */
   download?: SetupDownloadProgress;
+  /** Id of the stage that `download` progress belongs to. Default "download". */
   downloadStageId?: string;
   /** Content shown once every stage is done. */
   readyContent?: React.ReactNode;
@@ -381,13 +390,19 @@ export interface LocalModelDownloadState {
 }
 
 export interface LocalModelBrowserProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onDownload"> {
+  /** Models available to download, each with its quantisation options. */
   models: LocalModelListing[];
+  /** Machine profile; when set, each model shows a hardware-fit hint. */
   hardware?: HardwareProfile;
   /** Per-model download state, keyed by model id. */
   downloads?: Record<string, LocalModelDownloadState>;
+  /** Called with the model id and the chosen quantisation when the user starts a download. */
   onDownload?: (modelId: string, quant: string) => void;
+  /** Called with the model id when the user cancels a running download. */
   onCancelDownload?: (modelId: string) => void;
+  /** Search text that filters the list; controlled by the parent when set. */
   query?: string;
+  /** Called with the search text when the user types in the search field. */
   onQueryChange?: (q: string) => void;
 }
 
@@ -558,12 +573,17 @@ export interface SystemResourceReading {
 }
 
 export interface SystemResourcesBarProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** CPU load in percent (0 to 100); the reading is hidden when unset. */
   cpuPercent?: number;
+  /** Memory in use and total in GB; the reading is hidden when unset. */
   ram?: { usedGB: number; totalGB: number };
+  /** GPU load in percent (0 to 100); the reading is hidden when unset. */
   gpuPercent?: number;
+  /** GPU memory in use and total in GB; the reading is hidden when unset. */
   vram?: { usedGB: number; totalGB: number };
   /** Extra or custom readings appended after the built-ins. */
   readings?: SystemResourceReading[];
+  /** Used-percent levels at which a reading turns warning and danger. Default 75 / 90. */
   thresholds?: MeterThresholds;
 }
 

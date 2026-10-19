@@ -30,6 +30,7 @@ export const CROP_HANDLES: readonly CropHandle[] = ["nw", "n", "ne", "e", "se", 
 /** Rotation in quarter turns, clockwise. */
 export type CropRotation = 0 | 90 | 180 | 270;
 
+/** Rules a crop rectangle must keep: aspect ratio and minimum size. */
 export interface CropConstraints {
   /** Width ÷ height to keep; `null`/`undefined` (or anything not positive and finite) means free. */
   aspect?: number | null;
@@ -234,6 +235,7 @@ export function cropEquals(a: CropRect | null | undefined, b: CropRect | null | 
   );
 }
 
+/** Options for the exported crop image: output width or height and a size cap. */
 export interface CropOutputOptions {
   /** Output width in pixels; the height follows the crop's shape. */
   outputWidth?: number;
@@ -243,6 +245,7 @@ export interface CropOutputOptions {
   maxOutputSize?: number;
 }
 
+/** Output size of a crop, with the scale from crop pixels to output pixels. */
 export interface CropOutputSize extends CropSize {
   /** Horizontal scale from crop pixels to output pixels. */
   scaleX: number;

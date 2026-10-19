@@ -7,6 +7,7 @@ function keepLast<T>(items: T[], capacity: number): T[] {
   return items.length > capacity ? items.slice(items.length - Math.floor(capacity)) : items;
 }
 
+/** Options for `useRollingSeries`: how many points to keep and the starting data. */
 export interface UseRollingSeriesOptions<T> {
   /** How many values to keep; pushing past it drops the oldest. */
   capacity: number;
@@ -14,6 +15,7 @@ export interface UseRollingSeriesOptions<T> {
   initial?: T[];
 }
 
+/** What `useRollingSeries` returns: the current data and the `push` and `reset` actions. */
 export interface RollingSeries<T> {
   /** The kept values, oldest first. */
   data: T[];
@@ -51,6 +53,7 @@ export function useRollingSeries<T = number>({ capacity, initial }: UseRollingSe
   return React.useMemo(() => ({ data, push, reset }), [data, push, reset]);
 }
 
+/** Options for `useSampler`: interval, capacity, enabled switch, starting data and whether to sample immediately. */
 export interface UseSamplerOptions<T> {
   /** Milliseconds between samples. */
   interval: number;

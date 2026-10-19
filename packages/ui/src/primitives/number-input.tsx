@@ -12,11 +12,20 @@ export interface NumberInputProps
     React.InputHTMLAttributes<HTMLInputElement>,
     "value" | "defaultValue" | "onChange" | "size" | "min" | "max" | "step" | "type" | "prefix"
   > {
+  /** Controlled number; `null` is an empty field. Use with `onValueChange`. */
   value?: number | null;
+  /** Initial number when uncontrolled; `null` starts empty. */
   defaultValue?: number | null;
+  /** Called with the parsed number (or `null` when emptied) as the user types or steps. */
   onValueChange?: (value: number | null) => void;
+  /** Smallest allowed value; stepping and blur clamp to it. */
   min?: number;
+  /** Largest allowed value; stepping and blur clamp to it. */
   max?: number;
+  /**
+   * Amount added or removed by the buttons and the arrow keys.
+   * @default 1
+   */
   step?: number;
   /** Step used by PageUp / PageDown and Shift+Arrow. Defaults to `step * 10`. */
   largeStep?: number;
@@ -24,18 +33,29 @@ export interface NumberInputProps
   precision?: number;
   /** Display formatting, e.g. `{ style: "currency", currency: "USD" }`. */
   formatOptions?: Intl.NumberFormatOptions;
+  /** BCP 47 locale for number formatting and parsing (decimal and group separators). Defaults to the user's locale. */
   locale?: string;
   /** `split` renders − value +, `stacked` renders chevrons on the right. */
   layout?: "split" | "stacked";
+  /** Field height and text size. */
   size?: Size;
   /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
   variant?: "outline" | "filled";
+  /** Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
   /** Clamp typed values to min/max on blur. */
   clampOnBlur?: boolean;
   /** Class for the outer group. */
   wrapperClassName?: string;
+  /**
+   * Accessible name of the increment button.
+   * @default "Increase"
+   */
   incrementLabel?: string;
+  /**
+   * Accessible name of the decrement button.
+   * @default "Decrease"
+   */
   decrementLabel?: string;
 }
 

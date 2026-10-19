@@ -21,13 +21,17 @@ export interface FanMenuItem {
 export type FanMenuDirection = "up" | "down" | "left" | "right";
 
 export interface FanMenuProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Actions that fan out from the hub button; each has an `id`, a `label` and an `icon`. */
   items: FanMenuItem[];
   /** Hub button icon. */
   icon: React.ReactNode;
   /** Accessible name of the hub button. */
   label: string;
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the menu opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Fired with the selected item id (after the item's own `onSelect`). */
   onSelect?: (id: string) => void;

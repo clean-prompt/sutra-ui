@@ -4,9 +4,17 @@ import { cn } from "../lib/cn";
 
 export interface SeparatorProps
   extends React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root> {
+  /**
+   * Line style.
+   * @default "solid"
+   */
   variant?: "solid" | "dashed";
   /** Text or content shown inside the line. `children` works too. */
   label?: React.ReactNode;
+  /**
+   * Where the label sits along the line.
+   * @default "center"
+   */
   labelPosition?: "start" | "center" | "end";
 }
 
@@ -79,7 +87,7 @@ export const Separator = React.forwardRef<
 );
 Separator.displayName = "Separator";
 
-/** @deprecated Use `Separator` (it takes a `label`). */
+/** Alias of `Separator`. @deprecated Use `Separator` (it takes a `label`). */
 export const ContentDivider = Separator;
 /** @deprecated Use `SeparatorProps`. */
 export type ContentDividerProps = SeparatorProps;

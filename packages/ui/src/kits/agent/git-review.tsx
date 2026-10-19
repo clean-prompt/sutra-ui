@@ -133,12 +133,15 @@ function FilePathLabel({ path, className }: { path: string; className?: string }
 export type BranchStatus = "clean" | "dirty" | "conflict";
 
 export interface BranchPillProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Branch name, shown in mono and copied by the copy button. */
   name: string;
   /** Max visible characters; longer names lose their head. Default 28. */
   maxLength?: number;
+  /** Working-tree state of the branch (`clean`, `dirty` or `conflict`); adds a status dot. */
   status?: BranchStatus;
   /** Copy button. Default true. */
   copyable?: boolean;
+  /** Pill size. */
   size?: "sm" | "md";
 }
 
@@ -195,16 +198,23 @@ BranchPill.displayName = "BranchPill";
 /* ------------------------------------------------------------------ */
 
 export interface ChangedFilesCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+  /** Changed files with their path, change kind and +/- counts. */
   files: ChangedFile[];
   /** Override the "N files changed" heading. */
   title?: React.ReactNode;
+  /** Controlled expanded state of the file list. */
   expanded?: boolean;
+  /** Initial expanded state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user expands or collapses the list. */
   onExpandedChange?: (expanded: boolean) => void;
   /** Files visible while collapsed. Default 4. */
   collapsedCount?: number;
+  /** Called when the user presses the review button; the button is hidden when unset. */
   onReview?: () => void;
+  /** Label of the review button. Default "Review". */
   reviewLabel?: string;
+  /** Called with the file when the user opens a row. */
   onOpenFile?: (file: ChangedFile) => void;
 }
 
@@ -312,8 +322,11 @@ export type ReviewScope = "uncommitted" | "branch" | "turn";
 
 export interface ReviewScopeTabsProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "dir" | "onChange"> {
+  /** Controlled review scope: `uncommitted`, `branch` or `turn`. */
   value?: ReviewScope;
+  /** Initial scope when `value` is not controlled. */
   defaultValue?: ReviewScope;
+  /** Called with the scope when the user switches tabs. */
   onValueChange?: (scope: ReviewScope) => void;
   /** File counts per scope. */
   counts?: Partial<Record<ReviewScope, number>>;
@@ -321,6 +334,7 @@ export interface ReviewScopeTabsProps
   baseBranch?: string;
   /** Hide scopes, e.g. "turn" outside a session. */
   scopes?: ReviewScope[];
+  /** Tab size. */
   size?: "sm" | "md" | "lg";
 }
 
@@ -427,15 +441,19 @@ function collectDirIds(nodes: TreeNode[], out: string[] = []) {
 
 export interface ReviewFileTreeProps
   extends Omit<React.HTMLAttributes<HTMLUListElement>, "onSelect" | "defaultValue" | "children" | "defaultChecked"> {
+  /** Changed files; shown as a folder tree built from their paths. */
   files: ChangedFile[];
   /** Selected file path. */
   selected?: string | null;
+  /** Initially selected path when `selected` is not controlled. */
   defaultSelected?: string | null;
+  /** Called with the file path (or `null`) when the selection changes. */
   onSelectedChange?: (path: string | null) => void;
   /** Called on click / Enter on a file. */
   onOpenFile?: (file: ChangedFile) => void;
   /** Per-file +/− counts. Default false. */
   showStats?: boolean;
+  /** Row size. */
   size?: "sm" | "md";
 }
 
@@ -519,39 +537,65 @@ export function getShipDisabledReason(action: ShipAction, s: ShipState): string 
 }
 
 export interface ShipBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Current branch name. */
   branch: string;
+  /** Working-tree state of the branch (`clean`, `dirty` or `conflict`); adds a status dot to the branch pill. */
   branchStatus?: BranchStatus;
+  /** Branch the work will be merged into, shown beside the current branch. */
   baseBranch?: string;
+  /**
+   * Commits the branch is ahead of its upstream; with no changed files, a non-zero value still allows the `pr`
+   * action.
+   */
   ahead?: number;
+  /**
+   * Commits the branch is behind its upstream; a non-zero value disables push and PR actions with a "Pull first"
+   * reason.
+   */
   behind?: number;
   /** Files that would be committed. */
   changedCount: number;
+  /**
+   * Number of conflicted files; a non-zero value disables every ship action with a "Resolve conflicts first" reason.
+   */
   conflicts?: number;
+  /** Controlled commit message. */
   message?: string;
+  /** Initial commit message when `message` is not controlled. */
   defaultMessage?: string;
+  /** Called with the message on every edit. */
   onMessageChange?: (message: string) => void;
   /** Adds a "Generate" button for the message. */
   onGenerateMessage?: () => void;
+  /** Shows a busy state on the Generate button while a message is being written. */
   generating?: boolean;
   /** Custom content next to the message field (e.g. a suggestion chip). */
   generateSlot?: React.ReactNode;
   /** Primary action of the split button. */
   action?: ShipAction;
+  /** Initial primary action when `action` is not controlled. */
   defaultAction?: ShipAction;
+  /** Called with the action (`commit`, `commit-push` or `pr`) when the user picks one from the split button. */
   onActionChange?: (action: ShipAction) => void;
+  /** Called with the commit message when the user runs the `commit` action. */
   onCommit?: (message: string) => void;
+  /** Called with the commit message when the user runs the `commit-push` action. */
   onCommitAndPush?: (message: string) => void;
+  /** Called with the commit message when the user runs the `pr` action. */
   onCreatePR?: (message: string) => void;
   /** "Hand to agent": delegate committing / resolving to the agent. */
   onDelegate?: () => void;
+  /** Label of the hand-to-agent button. Default "Hand to agent". */
   delegateLabel?: string;
   /** Extra per-action reasons (e.g. `{ pr: "GitHub CLI not signed in" }`). */
   actionDisabledReasons?: Partial<Record<ShipAction, string>>;
+  /** Progress of the ship action: `idle`, `running`, `success` or `error`. */
   status?: ShipStatus;
   /** Shown while running, e.g. "Pushing…". */
   progressLabel?: React.ReactNode;
   /** Shown on success, e.g. "Committed a1b2c3d". */
   result?: React.ReactNode;
+  /** Failure message shown when `status` is `error`. */
   error?: React.ReactNode;
 }
 
@@ -787,10 +831,15 @@ export function validateWorktreeName(name: string, existing: readonly string[] =
 }
 
 export interface WorktreeDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Branches the new worktree can start from. */
   branches: WorktreeBranch[];
+  /** Branch preselected as the base; defaults to the current branch, then the first local one. */
   defaultBase?: string;
   /** Names already taken by branches or worktrees. Branch names are always included. */
   existingNames?: string[];
@@ -798,8 +847,11 @@ export interface WorktreeDialogProps {
   worktreeRoot?: string;
   /** Custom path preview. */
   pathFor?: (name: string) => string;
+  /** Initial state of the "open in a new session" checkbox. */
   defaultOpenInNewSession?: boolean;
+  /** Called with the branch name, base and options when the user creates the worktree. */
   onCreate?: (values: WorktreeCreateValues) => void;
+  /** Shows a busy state on the create button while the worktree is being made. */
   creating?: boolean;
   /** Server-side error (e.g. from `git worktree add`). */
   error?: React.ReactNode;

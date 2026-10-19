@@ -12,6 +12,7 @@ export interface CollapseProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   fade?: boolean;
   /** Class names for the clipping wrapper around the children (put padding on a child inside, not here, or the closed state keeps it). */
   contentClassName?: string;
+  /** Content that is revealed and hidden by the `open` prop. */
   children?: React.ReactNode;
 }
 

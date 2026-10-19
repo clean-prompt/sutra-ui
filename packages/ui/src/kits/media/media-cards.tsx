@@ -237,15 +237,21 @@ function MediaFrame({
 /* ------------------------------------------------------------------ */
 
 export interface PosterCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Title of the film or show; shown under the poster and in the accessible name. */
   title: string;
+  /** Poster image URL. */
   image?: string;
+  /** Alt text of the poster; decorative (empty) by default, since the title is shown beside it. */
   imageAlt?: string;
+  /** Release year, shown in the meta line. */
   year?: string | number;
   /** Extra meta after the year, e.g. "2h 14m" or "8 episodes". */
   meta?: React.ReactNode;
   /** Primary action (the whole poster is the hit target). */
   onPlay?: () => void;
+  /** Makes the poster a link to this address instead of a button. */
   href?: string;
+  /** Accessible name of the poster's main action. Default "Play {title}". */
   playLabel?: string;
   /** One status badge, top-left. */
   status?: MediaStatus;
@@ -257,7 +263,9 @@ export interface PosterCardProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   busy?: MediaBusyState;
   /** Quiet icon actions revealed on hover (always visible on touch). */
   actions?: MediaCardAction[];
+  /** Disables the main action and dims the poster. */
   disabled?: boolean;
+  /** Why the poster cannot be played; shown as a tooltip and read with the title. */
   disabledReason?: string;
   /** Width / height. Default 2/3. */
   ratio?: number;
@@ -347,10 +355,13 @@ PosterCard.displayName = "PosterCard";
 /* ------------------------------------------------------------------ */
 
 export interface EpisodeCardProps extends Omit<PosterCardProps, "ratio" | "year" | "languages"> {
+  /** Episode number, shown in the meta line and the default accessible name. */
   episode?: number | string;
+  /** Season number, shown in the meta line. */
   season?: number | string;
   /** Seconds, or a preformatted string. */
   runtime?: number | string;
+  /** Short synopsis under the title. */
   description?: React.ReactNode;
   /** Thumbnail beside the text instead of above it. */
   orientation?: "vertical" | "horizontal";
@@ -442,11 +453,15 @@ EpisodeCard.displayName = "EpisodeCard";
 /* ------------------------------------------------------------------ */
 
 export interface AlbumCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Album, playlist or artist name, shown under the artwork. */
   title: string;
+  /** Line under the title (for example the artist or the track count). */
   subtitle?: React.ReactNode;
+  /** Artwork image URL. */
   image?: string;
   /** Open the album/playlist (whole card). */
   onOpen?: () => void;
+  /** Makes the card a link to this address instead of a button. */
   href?: string;
   /** Floating play button on the artwork. */
   onPlay?: () => void;
@@ -594,10 +609,15 @@ const shelfGrid: Record<ShelfBreakpoint, { list: string; item: string; hide: str
 };
 
 export interface MediaShelfProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Heading of the shelf. */
   title: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
+  /** Called when the user presses See all; with `seeAllHref` set the link is used instead. */
   onSeeAll?: () => void;
+  /** Address of the See all link. */
   seeAllHref?: string;
+  /** Label of the See all link. Default "See all". */
   seeAllLabel?: string;
   /** Width classes for each item in the row. Default "w-36 sm:w-40 md:w-44". */
   itemClassName?: string;
@@ -735,22 +755,31 @@ MediaShelf.displayName = "MediaShelf";
 /* ------------------------------------------------------------------ */
 
 export interface MediaHeroProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Title of the film or show; the accessible name even when `logo` replaces it visually. */
   title: string;
   /** Title artwork (replaces the text title visually; the title stays the accessible name). */
   logo?: string;
+  /** Full-bleed background image URL. */
   backdrop?: string;
+  /** Small line above the title (for example "New episode" or "Featured"). */
   eyebrow?: React.ReactNode;
   /** Short facts shown as chips: year, rating, runtime, genres. */
   meta?: React.ReactNode[];
+  /** Short description under the title. */
   synopsis?: React.ReactNode;
+  /** Called when the user presses the play button; the button is hidden when unset. */
   onPlay?: () => void;
+  /** Label of the play button. Default "Play". */
   playLabel?: string;
+  /** Called when the user presses the more-info button; the button is hidden when unset. */
   onMoreInfo?: () => void;
+  /** Label of the more-info button. Default "More info". */
   moreInfoLabel?: string;
   /** Extra buttons after Play / More info. */
   actions?: React.ReactNode;
   /** Watch progress 0–100 with an optional label ("38 min left"). */
   progress?: number;
+  /** Text beside the progress bar (for example "38 min left"). */
   progressLabel?: React.ReactNode;
 }
 

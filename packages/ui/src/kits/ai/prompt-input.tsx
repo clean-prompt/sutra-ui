@@ -15,17 +15,21 @@ export * from "./prompt-input-model";
 
 export interface PromptInputProps
   extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue"> {
+  /** Controlled text of the prompt. */
   value?: string;
+  /** Initial text when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the new text on every edit. */
   onValueChange?: (value: string) => void;
   /** Called with the current text when the user submits (Enter or the submit button). */
   onSubmit?: (value: string, event: React.FormEvent<HTMLFormElement>) => void;
   /** A response is streaming: the submit button becomes a stop button and Enter won't submit. */
   loading?: boolean;
-  /** @deprecated Use `loading`. */
+  /** A response is streaming: the submit button becomes a stop button and Enter will not submit. @deprecated Use `loading`. */
   isLoading?: boolean;
   /** Called by the stop button while `loading`. */
   onStop?: () => void;
+  /** Disables the textarea and the submit button. */
   disabled?: boolean;
   /** Clear the text after submitting (default true). */
   clearOnSubmit?: boolean;
@@ -295,6 +299,7 @@ export interface PromptInputRestoredDraftProps extends React.HTMLAttributes<HTML
   onDiscard?: () => void;
   /** Keep the draft (just dismisses the notice). */
   onKeep?: () => void;
+  /** Clears the prompt text when Discard is pressed inside a `PromptInput`. Default true. */
   clearOnDiscard?: boolean;
   /** Controlled visibility. Uncontrolled notices hide themselves after either choice. */
   open?: boolean;
@@ -302,7 +307,9 @@ export interface PromptInputRestoredDraftProps extends React.HTMLAttributes<HTML
   defaultOpen?: boolean;
   /** Called when Discard or Keep hides the notice. */
   onOpenChange?: (open: boolean) => void;
+  /** Label of the discard button. Default "Discard". */
   discardLabel?: string;
+  /** Label of the keep button. Default "Keep". */
   keepLabel?: string;
 }
 

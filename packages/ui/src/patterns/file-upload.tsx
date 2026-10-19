@@ -76,18 +76,30 @@ export function useFileUpload() {
 export interface FileUploadProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   /** Controlled list of files. */
   files?: UploadFile[];
+  /** Initial list of files when uncontrolled. */
   defaultFiles?: UploadFile[];
+  /** Called with the full file list after files are added, removed or updated. */
   onFilesChange?: (files: UploadFile[]) => void;
   /** Called with newly added files only — a good place to start uploads. */
   onFilesAdded?: (files: UploadFile[]) => void;
+  /** Called with the files that failed validation (type, size or count) and the reasons. */
   onFilesRejected?: (rejections: FileRejection[]) => void;
+  /** Accepted types, as for `<input accept>`: extensions (".pdf") and/or MIME types ("image/*"), comma separated. */
   accept?: string;
+  /** Largest accepted file in bytes; larger files are rejected. */
   maxSize?: number;
+  /** Most files accepted in total; extra files are rejected. */
   maxFiles?: number;
+  /**
+   * Accepts more than one file.
+   * @default true
+   */
   multiple?: boolean;
+  /** Disables dropping and picking files. */
   disabled?: boolean;
   /** Render validation errors under the children. */
   showErrors?: boolean;
+  /** Name of the hidden file input, for native form submission. */
   name?: string;
 }
 
@@ -384,6 +396,7 @@ function FileTypeIcon({ name }: { name: string }) {
 }
 
 export interface FileUploadItemProps extends Omit<React.HTMLAttributes<HTMLLIElement>, "onRemove"> {
+  /** The file to show: its name, size, upload `status`, `progress` and any error. */
   file: UploadFile;
   /** Overrides the default remove behaviour (removing from `FileUpload` state). */
   onRemove?: (file: UploadFile) => void;

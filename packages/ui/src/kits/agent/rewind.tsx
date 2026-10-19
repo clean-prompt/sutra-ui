@@ -88,8 +88,11 @@ function ChangeCounts({ additions = 0, deletions = 0 }: { additions?: number; de
 /* ------------------------------------------------------------------ */
 
 export interface RewindDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Element that opens the dialog (rendered with `asChild`). */
   trigger?: React.ReactNode;
@@ -99,16 +102,28 @@ export interface RewindDialogProps {
   timestamp?: TimeInput;
   /** Files that would be restored. */
   files?: RewindFileChange[];
+  /**
+   * What can be rewound (conversation, files or both); defaults to the built-in options. Disabled options cannot be
+   * chosen.
+   */
   scopes?: RewindScopeOption[];
+  /** Controlled value of the selected scope. */
   scope?: string;
+  /** Initially selected scope when `scope` is not controlled; defaults to the first enabled one. */
   defaultScope?: string;
+  /** Called with the scope value when the user picks another one. */
   onScopeChange?: (scope: string) => void;
   /** Show the fork notice when the conversation is rewound. Default true. */
   fork?: boolean;
+  /** Text of the fork notice; shown when `fork` is true. */
   forkNotice?: React.ReactNode;
+  /** Dialog heading. */
   title?: React.ReactNode;
+  /** Label of the confirm button. Default "Rewind". */
   confirmLabel?: React.ReactNode;
+  /** Called with the chosen scope when the user confirms; may return a promise, and the dialog waits for it. */
   onRewind?: (request: RewindRequest) => void | Promise<void>;
+  /** Extra classes for the dialog content. */
   className?: string;
 }
 
@@ -243,7 +258,9 @@ RewindDialog.displayName = "RewindDialog";
 export interface RewindButtonProps extends Omit<RewindDialogProps, "trigger"> {
   /** Accessible label and tooltip. Default "Rewind to here". */
   label?: string;
+  /** Extra classes for the trigger button; `className` goes to the dialog. */
   buttonClassName?: string;
+  /** Disables the trigger button. */
   disabled?: boolean;
 }
 
@@ -284,11 +301,13 @@ export interface CheckpointMarkerProps extends React.HTMLAttributes<HTMLDivEleme
   label?: React.ReactNode;
   /** Changed files (count derived) or a plain count. */
   files?: RewindFileChange[] | number;
+  /** When the checkpoint was taken, shown beside the label. */
   timestamp?: TimeInput;
   /** Rewind action (button click). */
   onRewind?: () => void;
   /** Wire the action to a `RewindDialog` instead; `files` are passed through. */
   dialog?: Omit<RewindDialogProps, "trigger" | "files">;
+  /** Label of the rewind button. Default "Rewind". */
   rewindLabel?: string;
 }
 

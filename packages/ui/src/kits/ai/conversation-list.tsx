@@ -114,7 +114,9 @@ const actionButton = cn(
 );
 
 export interface ConversationRowProps extends Omit<React.LiHTMLAttributes<HTMLLIElement>, "title" | "onSelect"> {
+  /** Conversation title, shown on one line and used as the rename field's value. */
   title: string;
+  /** Marks the row as the open conversation (highlight and `aria-current`). */
   active?: boolean;
   /** Shows a pin icon before the title. */
   pinned?: boolean;
@@ -126,9 +128,11 @@ export interface ConversationRowProps extends Omit<React.LiHTMLAttributes<HTMLLI
   folders?: ConversationFolder[];
   /** `inline`: hover icon buttons for rename / delete. `menu`: one "⋯" menu with every action. Default `inline`. */
   rowActions?: ConversationRowActions;
+  /** Called when the row is pressed. */
   onSelect?: () => void;
   /** Enables rename (button or menu item, double-click, inline editor); called with the trimmed new title. */
   onRename?: (title: string) => void;
+  /** Called when the user chooses delete (hover button or menu item); the action is hidden when unset. */
   onDelete?: () => void;
   /** Menu only: called with the new pinned state. */
   onPin?: (pinned: boolean) => void;
@@ -138,8 +142,11 @@ export interface ConversationRowProps extends Omit<React.LiHTMLAttributes<HTMLLI
   onArchive?: (archived: boolean) => void;
   /** Extra hover actions rendered before the built-in ones. */
   actions?: React.ReactNode;
+  /** Controlled state of the inline rename editor. */
   editing?: boolean;
+  /** Initial state of the rename editor when `editing` is not controlled. */
   defaultEditing?: boolean;
+  /** Called with the new state when the rename editor opens or closes. */
   onEditingChange?: (editing: boolean) => void;
   /** Accessible name of the rename field. Default "Conversation title". */
   renameLabel?: string;
@@ -337,9 +344,13 @@ ConversationRow.displayName = "ConversationRow";
 /* ------------------------------------------------------------------ */
 
 export interface ConversationGroupHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Group name, shown in the header and used as the rename field's value. */
   name: string;
+  /** Number of conversations in the group, shown beside the name. */
   count?: number;
+  /** Whether the group is open; sets `aria-expanded` and the chevron direction. */
   expanded: boolean;
+  /** Called with the new state when the user presses the header. */
   onExpandedChange?: (expanded: boolean) => void;
   /** Id of the list this header expands (sets `aria-controls` while expanded). */
   controlsId?: string;
@@ -355,12 +366,17 @@ export interface ConversationGroupHeaderProps extends React.HTMLAttributes<HTMLD
   renameButton?: boolean;
   /** Accessible name of the pencil button. Default "Rename {name}". */
   renameButtonLabel?: string;
+  /** Controlled state of the inline rename editor. */
   editing?: boolean;
+  /** Initial state of the rename editor when `editing` is not controlled. */
   defaultEditing?: boolean;
+  /** Called with the new state when the rename editor opens or closes. */
   onEditingChange?: (editing: boolean) => void;
   /** Trailing buttons, hidden while renaming. */
   actions?: React.ReactNode;
+  /** Extra classes for the toggle button. */
   triggerClassName?: string;
+  /** Extra classes for the rename field. */
   inputClassName?: string;
 }
 
@@ -459,6 +475,7 @@ ConversationGroupHeader.displayName = "ConversationGroupHeader";
 export type ConversationGroupBy = "date" | "folder" | "none";
 
 export interface ConversationListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Conversations to list, each with an id, title, date and optional folder, pinned and archived flags. */
   items: ConversationListItem[];
   /** Folders for `groupBy="folder"` and the "Move to" menu. */
   folders?: ConversationFolder[];
@@ -466,19 +483,34 @@ export interface ConversationListProps extends Omit<React.HTMLAttributes<HTMLDiv
   groupBy?: ConversationGroupBy;
   /** Show the search field. Default false. */
   searchable?: boolean;
+  /** Controlled search text. */
   search?: string;
+  /** Initial search text when `search` is not controlled. */
   defaultSearch?: string;
+  /** Called with the search text on every change. */
   onSearchChange?: (query: string) => void;
+  /** Placeholder of the search field. Default "Search chats…". */
   searchPlaceholder?: string;
   /** `inline`: hover rename / delete buttons. `menu`: a "⋯" menu with rename, pin, move, archive and delete. Default `inline`. */
   rowActions?: ConversationRowActions;
+  /** Id of the open conversation; its row is highlighted. */
   activeId?: string;
+  /** Called with the conversation id when a row is pressed. */
   onSelect?: (id: string) => void;
+  /** Called with the conversation id and the trimmed new title when the user renames one. */
   onRename?: (id: string, title: string) => void;
+  /** Called with the conversation id when the user deletes one. */
   onDelete?: (id: string) => void;
+  /** Called with the conversation id and the new pinned state (menu rows only). */
   onPin?: (id: string, pinned: boolean) => void;
+  /**
+   * Called with the conversation id and the target folder id, or `null` to remove it from its folder (menu rows
+   * only).
+   */
   onMove?: (id: string, folderId: string | null) => void;
+  /** Called with the conversation id and the new archived state (menu rows only). */
   onArchive?: (id: string, archived: boolean) => void;
+  /** Called with the folder id and the trimmed new name when the user renames a folder group. */
   onRenameFolder?: (folderId: string, name: string) => void;
   /** Folder ids expanded initially. Default all. */
   defaultExpandedFolders?: string[];

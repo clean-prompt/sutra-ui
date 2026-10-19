@@ -2,8 +2,11 @@
 
 export type PaginationRangeItem = number | "ellipsis-start" | "ellipsis-end";
 
+/** Options for the page-range maths used by `usePagination`. */
 export interface UsePaginationOptions {
+  /** Current page (1-based). */
   page: number;
+  /** Total number of pages. */
   totalPages: number;
   /** Pages shown on each side of the current page. Default 1. */
   siblingCount?: number;
@@ -53,6 +56,7 @@ export function getPaginationRange({
   return items;
 }
 
+/** The row window of the current page: the clamped page, the page count and the first and last row of the total. */
 export interface PageWindow {
   /** The page used, clamped into 1..pageCount (1 when there are no rows). */
   page: number;

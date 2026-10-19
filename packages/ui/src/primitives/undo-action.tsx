@@ -16,13 +16,23 @@ export interface UndoActionProps extends Omit<ButtonProps, "onClick" | "children
   seconds?: number;
   /** Label of the idle button. Default "Delete". */
   label?: React.ReactNode;
+  /**
+   * Label of the button while the undo window is open.
+   * @default "Undo"
+   */
   undoLabel?: React.ReactNode;
+  /**
+   * Text shown once the action went through (after the window closes).
+   * @default "Deleted"
+   */
   committedLabel?: React.ReactNode;
   /** Icon before the idle label. */
   icon?: React.ReactNode;
   /** The countdown is running. Set it from outside (a toast's Undo button sets it to false). */
   armed?: boolean;
+  /** Initial armed state when uncontrolled. */
   defaultArmed?: boolean;
+  /** Called when the countdown starts or stops (including when undone). */
   onArmedChange?: (armed: boolean) => void;
   /** Hold the countdown while the pointer is over the button. */
   pauseOnHover?: boolean;

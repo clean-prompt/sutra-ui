@@ -13,8 +13,11 @@ export interface MorphPillContext<S extends string> {
 export interface MorphPillProps<S extends string> extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "defaultValue"> {
   /** The content of each state; a function receives the current state and `setState`, for buttons inside the pill. */
   states: Record<S, React.ReactNode | ((context: MorphPillContext<S>) => React.ReactNode)>;
+  /** Controlled state key; one of the keys of `states`. Use with `onStateChange`. */
   state?: S;
+  /** Initial state key when uncontrolled. */
   defaultState?: S;
+  /** Called with the new state key when `setState` from a state's render function is used. */
   onStateChange?: (state: S) => void;
   /** Which spring token the size change rides. Default "snappy". */
   spring?: "gentle" | "snappy" | "bouncy";
@@ -22,6 +25,7 @@ export interface MorphPillProps<S extends string> extends Omit<React.HTMLAttribu
   label?: string;
   /** Text for a polite live region that screen readers hear when the state changes (the pill itself is silent). */
   announcement?: string;
+  /** Ref to the pill's root `<div>` (the component is generic, so `ref` is a plain prop). */
   ref?: React.Ref<HTMLDivElement>;
 }
 

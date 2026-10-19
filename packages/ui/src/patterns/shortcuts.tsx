@@ -43,6 +43,7 @@ export { ShortcutKeys, type ShortcutKeysProps } from "../primitives/shortcut-key
 /* ------------------------------------------------------------------ */
 
 export interface ShortcutProviderProps extends ShortcutManagerOptions {
+  /** The app subtree whose shortcuts the manager handles. */
   children?: React.ReactNode;
   /** Element the keydown listener attaches to. Default `document`. */
   target?: Document | HTMLElement | null;
@@ -115,6 +116,10 @@ export function useShortcut(keys: string | string[] | null | undefined, handler:
 }
 
 export interface UseShortcutScopeOptions {
+  /**
+   * Turns the scope's shortcuts on or off without unmounting.
+   * @default true
+   */
   enabled?: boolean;
   /** Block every lower scope, including global (modal behaviour). */
   exclusive?: boolean;
@@ -130,7 +135,9 @@ export function useShortcutScope(name: string, { enabled = true, exclusive = fal
 }
 
 export interface ShortcutScopeProps extends UseShortcutScopeOptions {
+  /** Scope name; shortcuts registered inside it are listed under this group. */
   name: string;
+  /** The subtree the scope applies to. */
   children?: React.ReactNode;
 }
 
@@ -232,12 +239,23 @@ export function useShortcutRegistry({ includeInactive = false }: UseShortcutRegi
 /* ------------------------------------------------------------------ */
 
 export interface ShortcutsDialogProps {
+  /** Controlled open state of the sheet. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the sheet opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Shortcut that toggles the sheet. Default "shift+?"; `null` disables. */
   keys?: string | null;
+  /**
+   * Sheet heading.
+   * @default "Keyboard shortcuts"
+   */
   title?: React.ReactNode;
+  /**
+   * Text under the heading.
+   * @default "Every shortcut available on this screen."
+   */
   description?: string;
   /** Extra static groups appended to the registry listing. */
   extraGroups?: ShortcutRegistryGroup[];
@@ -247,6 +265,7 @@ export interface ShortcutsDialogProps {
   trigger?: React.ReactNode;
   /** Platform for the key glyphs. Defaults to the provider's (or the detected) platform. */
   platform?: ShortcutPlatform;
+  /** Classes for the sheet content. */
   className?: string;
 }
 

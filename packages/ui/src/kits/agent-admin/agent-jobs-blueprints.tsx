@@ -104,13 +104,19 @@ function initialSlotValues(slots: BlueprintSlot[] = [], channels: SelectOption[]
 }
 
 export interface BlueprintCardProps extends React.HTMLAttributes<HTMLElement> {
+  /** The template to show (title, description, icon and the slots it asks for). */
   blueprint: Blueprint;
   /** `create` expands into the slot form; `open` links to the app instead. */
   variant?: "create" | "open";
+  /** Controlled expanded state of the slot form. */
   expanded?: boolean;
+  /** Initial expanded state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user expands or collapses the card. */
   onExpandedChange?: (expanded: boolean) => void;
+  /** Called with the blueprint and the filled slot values when the user creates the job (`create` variant). */
   onCreate?: (blueprint: Blueprint, values: BlueprintValues) => void | Promise<void>;
+  /** Called with the blueprint when the user opens its app (`open` variant). */
   onOpen?: (blueprint: Blueprint) => void;
   /** Options for `channel` slots. */
   channels?: SelectOption[];
@@ -273,15 +279,21 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
 BlueprintCard.displayName = "BlueprintCard";
 
 export interface BlueprintGalleryProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Templates to list, one card each. */
   blueprints: Blueprint[];
+  /** `create` expands each card into the slot form; `open` links to the app instead. */
   variant?: "create" | "open";
+  /** Called with the blueprint and the filled slot values when the user creates a job (`create` variant). */
   onCreate?: (blueprint: Blueprint, values: BlueprintValues) => void | Promise<void>;
+  /** Called with the blueprint when the user opens its app (`open` variant). */
   onOpen?: (blueprint: Blueprint) => void;
+  /** Options offered by `channel` slots. */
   channels?: SelectOption[];
+  /** Shows the search box above the cards. */
   searchable?: boolean;
   /** Shown when no template matches. Default "No templates match". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 

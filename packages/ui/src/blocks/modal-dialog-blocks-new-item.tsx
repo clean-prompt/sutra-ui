@@ -41,8 +41,14 @@ export interface NewItemValues {
 }
 
 export interface NewItemDialogProps extends BlockDialogBaseProps {
+  /**
+   * Item type selected when the dialog opens.
+   * @default "task"
+   */
   defaultType?: "task" | "note";
+  /** Suggested labels shown as quick-pick chips. */
   labelSuggestions?: string[];
+  /** Called with the new item's values when the form is submitted. A returned promise shows a spinner; throw to show the error message. */
   onCreate?: (values: NewItemValues) => unknown;
 }
 

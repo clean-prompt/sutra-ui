@@ -14,6 +14,10 @@ export const buttonVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Visual style: `primary` (filled), `secondary` (bordered), `tertiary` (muted fill), `soft`, `ghost`, `outline`, `destructive`, `destructive-soft`, `inverse` or `link`.
+       * @default "primary"
+       */
       variant: {
         primary:
           "bg-primary text-primary-foreground shadow-xs shadow-inner-highlight hover:bg-primary-hover",
@@ -31,6 +35,10 @@ export const buttonVariants = cva(
         inverse: "bg-inverse text-inverse-foreground hover:bg-inverse/90",
         link: "h-auto px-0 text-primary underline-offset-4 hover:underline active:scale-100",
       },
+      /**
+       * Button height and padding; `icon-*` sizes are square.
+       * @default "md"
+       */
       size: {
         xs: "h-7 px-2.5 text-xs [&_svg]:size-3.5",
         sm: "h-8 px-3 text-sm [&_svg]:size-4",
@@ -43,6 +51,7 @@ export const buttonVariants = cva(
         "icon-lg": ["size-10 [&_svg]:size-[18px]", hitAreaTouch],
         "icon-xl": "size-12 [&_svg]:size-5",
       },
+      /** Stretches the button to the width of its container. */
       fullWidth: { true: "w-full" },
     },
     defaultVariants: { variant: "primary", size: "md" },
@@ -58,10 +67,13 @@ export interface ButtonProps
   loading?: boolean;
   /** Overrides for the loading spinner (variant, size, `label`, colour via `className`); it inherits the button text colour by default. */
   spinnerProps?: Partial<SpinnerProps>;
+  /** Icon before the label. */
   leadingIcon?: React.ReactNode;
+  /** Icon after the label. */
   trailingIcon?: React.ReactNode;
 }
 
+/** The standard button. Extra props are spread to the `<button>` (or to the child with `asChild`); icon-only sizes need an `aria-label`. */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {

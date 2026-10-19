@@ -363,18 +363,31 @@ export interface JsonViewerProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   defaultExpandDepth?: number;
   /** Children shown per "Show more" chunk. Default 100. */
   chunkSize?: number;
+  /** Controlled view: the collapsible `tree` or the `raw` text. Use with `onModeChange`. */
   mode?: JsonViewerMode;
+  /**
+   * Initial view when uncontrolled.
+   * @default "tree"
+   */
   defaultMode?: JsonViewerMode;
+  /** Called when the user switches between tree and raw. */
   onModeChange?: (mode: JsonViewerMode) => void;
   /** Controlled search query. */
   search?: string;
+  /** Initial search text when uncontrolled. */
   defaultSearch?: string;
+  /** Called with the search text as it changes. */
   onSearchChange?: (q: string) => void;
   /** Show the toolbar (search, expand/collapse all, tree/raw). Default true. */
   toolbar?: boolean;
   /** Show the search box in the toolbar. Default true. */
   searchable?: boolean;
+  /**
+   * Maximum height of the viewer in px or CSS length; longer content scrolls.
+   * @default 480
+   */
   maxHeight?: number | string;
+  /** Called when a value or a path is copied, with the copied text, what was copied and the path. */
   onCopy?: (text: string, kind: "value" | "path", path: string) => void;
   /** Accessible label. */
   label?: string;
@@ -606,6 +619,7 @@ function inlineTokens(v: unknown, depth: number, seen: Set<object>, out: Tok[]) 
 }
 
 export interface JsonInlineProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** The value to render on one line (objects and arrays are summarised). */
   value: unknown;
   /** Max characters before truncating with "…". Default 80. */
   maxLength?: number;

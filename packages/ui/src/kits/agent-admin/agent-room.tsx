@@ -63,13 +63,17 @@ const memberColor = (m: AgentRoomMember) => m.color ?? (m.kind === "agent" ? ide
 /* ------------------------------------------------------------------ */
 
 export interface AgentMessageNoticeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** `outgoing` for a message this agent sent, `incoming` for one it received. */
   direction: "outgoing" | "incoming";
   /** The other agent. */
   agent: string;
   /** Full message body, revealed on expand. */
   payload: string;
+  /** Initial expanded state of the payload when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Controlled expanded state of the payload. */
   expanded?: boolean;
+  /** Called with the new state when the user expands or collapses the payload. */
   onExpandedChange?: (expanded: boolean) => void;
 }
 
@@ -170,8 +174,11 @@ function ThinkingDots() {
 /* ------------------------------------------------------------------ */
 
 export interface AgentRoomProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Agents in the room, in turn order. */
   members: AgentRoomMember[];
+  /** Transcript messages, oldest first. */
   messages: AgentRoomMessage[];
+  /** Heading of the room. */
   title?: React.ReactNode;
   /** Current round number (1-based). */
   round?: number;
@@ -394,7 +401,9 @@ AgentRoom.displayName = "AgentRoom";
 export interface AgentRoomMembersProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   /** Members in turn order. */
   value?: AgentRoomMember[];
+  /** Initial members when `value` is not controlled. */
   defaultValue?: AgentRoomMember[];
+  /** Called with the members in the new order when the user adds, removes or reorders one. */
   onValueChange?: (members: AgentRoomMember[]) => void;
   /** Agents that can be added. Ones already in the room are hidden. */
   available?: AgentRoomMember[];

@@ -112,12 +112,20 @@ export interface KeybindEditorProps extends Omit<React.HTMLAttributes<HTMLDivEle
   shortcuts?: KeybindItem[];
   /** Controlled overrides: id → keys ("" = cleared). */
   value?: Record<string, string>;
+  /** Initial overrides when uncontrolled: an object of id to keys. */
   defaultValue?: Record<string, string>;
+  /** Called with the full overrides object after a binding changes or is reset. */
   onValueChange?: (overrides: Record<string, string>) => void;
   /** Fired for every binding change (including the cleared side of a replace and resets). */
   onChange?: (id: string, keys: string) => void;
+  /** Called after the user resets every binding to its default. */
   onResetAll?: () => void;
+  /** Platform whose key glyphs are shown. Defaults to the detected platform. */
   platform?: ShortcutPlatform;
+  /**
+   * Placeholder of the search field.
+   * @default "Search shortcuts…"
+   */
   searchPlaceholder?: string;
 }
 

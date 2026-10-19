@@ -122,8 +122,11 @@ export interface BottomTabBarPrimaryAction {
 }
 
 export interface BottomTabBarProps extends Omit<React.HTMLAttributes<HTMLElement>, "defaultValue"> {
+  /** Controlled value of the selected tab. Use with `onValueChange`. */
   value?: string;
+  /** Initially selected tab value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the value of the tab the user picked. */
   onValueChange?: (value: string) => void;
   /** Data-driven tabs; alternatively pass `BottomTabBarItem` children. */
   items?: BottomTabBarItemData[];
@@ -226,15 +229,23 @@ export const BottomTabBar = React.forwardRef<HTMLElement, BottomTabBarProps>(
 BottomTabBar.displayName = "BottomTabBar";
 
 export interface BottomTabBarItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
+  /** Value this tab represents; the bar's `value` selects it. */
   value: string;
+  /** Text label shown under the icon. */
   label: React.ReactNode;
+  /** Icon shown above the label (inactive state). */
   icon: React.ReactNode;
+  /** Icon shown instead of `icon` while the tab is active (e.g. a filled variant). */
   activeIcon?: React.ReactNode;
+  /** Count badge on the icon; `true` shows a dot and `0` or `false` hides it. */
   badge?: number | boolean;
+  /** Makes the tab a link to this URL. */
   href?: string;
+  /** Disables the tab. */
   disabled?: boolean;
   /** Merge tab props into the single child element (e.g. a router `<Link>`). */
   asChild?: boolean;
+  /** The single child element to render as the tab when `asChild` is set. */
   children?: React.ReactElement;
 }
 
@@ -333,9 +344,13 @@ const barHideClass: Record<"viewport" | "container", Record<"sm" | "md" | "lg", 
 };
 
 export interface AdaptiveTabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Tabs to show, in order; each has a `value`, a `label` and an `icon`. */
   items: BottomTabBarItemData[];
+  /** Controlled selected tab value. Use with `onValueChange`. */
   value?: string;
+  /** Initially selected tab value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the value of the tab the user picked. */
   onValueChange?: (value: string) => void;
   /** Width from which the inline pills replace the bottom bar. Default "md". */
   breakpoint?: "sm" | "md" | "lg";
@@ -343,6 +358,7 @@ export interface AdaptiveTabsProps extends Omit<React.HTMLAttributes<HTMLDivElem
   query?: "viewport" | "container";
   /** Force one presentation instead of switching by width. */
   mode?: "auto" | "inline" | "bottom";
+  /** Renders each tab link in place of the default `<a>`, e.g. to use your router's Link. */
   renderLink?: (props: BottomTabBarLinkProps) => React.ReactNode;
   /** Extra props for the bottom bar (position, glass, primaryAction…). */
   bottomBarProps?: Omit<BottomTabBarProps, "items" | "value" | "onValueChange" | "defaultValue" | "renderLink">;

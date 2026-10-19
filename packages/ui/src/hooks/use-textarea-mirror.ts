@@ -10,6 +10,7 @@ const MIRRORED_STYLES = [
   "borderBottomStyle", "borderLeftStyle", "whiteSpace", "wordBreak", "overflowWrap",
 ] as const;
 
+/** Options for `useTextareaMirror`: an enabled switch. */
 export interface UseTextareaMirrorOptions {
   /** Skip all work when false. Default true. */
   enabled?: boolean;

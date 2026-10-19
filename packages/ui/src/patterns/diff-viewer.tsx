@@ -330,7 +330,9 @@ function GapButton({ count, onClick, className }: { count: number; onClick: () =
 /* ------------------------------------------------------------------ */
 
 export interface DiffViewerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Original text (the "before" side). */
   oldValue?: string;
+  /** Changed text (the "after" side). */
   newValue?: string;
   /** Precomputed (e.g. server-side, author-attributed) comparison; overrides old/new values. */
   segments?: DiffSegment[];
@@ -352,7 +354,9 @@ export interface DiffViewerProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   changeAuthors?: ReadonlyArray<string | undefined>;
   /** Current change (controlled). */
   activeChange?: number;
+  /** Initially active change index when uncontrolled. */
   defaultActiveChange?: number;
+  /** Called with the change index when the user steps through changes. */
   onActiveChange?: (index: number) => void;
   /** Header with counts and next/previous. Default true. */
   showHeader?: boolean;
@@ -364,6 +368,10 @@ export interface DiffViewerProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   font?: "mono" | "sans";
   /** Labels for the split columns. */
   oldLabel?: React.ReactNode;
+  /**
+   * Label of the "after" split column.
+   * @default "After"
+   */
   newLabel?: React.ReactNode;
   /** Max height of the scrolling body (CSS length). */
   maxHeight?: number | string;
@@ -702,19 +710,34 @@ function toTokens(original: string, suggestion: string, granularity: "word" | "c
 }
 
 export interface SuggestionDiffProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Original text. */
   original: string;
+  /** Suggested replacement text. */
   suggestion: string;
   /** Called with the resulting text (pending changes count as accepted). */
   onAccept?: (newText: string) => void;
+  /** Called when the user discards the whole suggestion. */
   onDiscard?: () => void;
   /** Header title. Default "Suggested edit". */
   title?: React.ReactNode;
   /** e.g. the model name. */
   meta?: React.ReactNode;
+  /**
+   * How changes are split: by word or by character.
+   * @default "word"
+   */
   granularity?: "word" | "char";
   /** Per-change accept / reject buttons. Default true. */
   perHunk?: boolean;
+  /**
+   * Text of the accept button.
+   * @default "Accept"
+   */
   acceptLabel?: string;
+  /**
+   * Text of the discard button.
+   * @default "Discard"
+   */
   discardLabel?: string;
 }
 
@@ -891,7 +914,9 @@ function statBlocks(additions: number, deletions: number, blocks: number) {
 }
 
 export interface DiffStatProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Number of added lines. */
   additions: number;
+  /** Number of removed lines. */
   deletions: number;
   /** Proportional block bar. Default true. */
   showBar?: boolean;
@@ -967,7 +992,9 @@ export type DiffCardFileStatus = "modified" | "added" | "deleted";
 export interface DiffCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** File path shown in the header. */
   path: string;
+  /** Original file content ("before"). */
   oldValue?: string;
+  /** Changed file content ("after"). */
   newValue?: string;
   /** new-file / deleted-file presentation. Inferred from empty old/new values when omitted. */
   fileStatus?: DiffCardFileStatus;
@@ -975,8 +1002,11 @@ export interface DiffCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   collapsedLines?: number;
   /** Unchanged lines kept around each change. Default 3. */
   context?: number;
+  /** Controlled expanded state of the preview. Use with `onExpandedChange`. */
   expanded?: boolean;
+  /** Initial expanded state when uncontrolled. */
   defaultExpanded?: boolean;
+  /** Called when the preview is expanded or collapsed. */
   onExpandedChange?: (expanded: boolean) => void;
   /** When set, "Click to expand" calls this (e.g. open a full diff editor) instead of expanding inline. */
   onOpen?: () => void;
@@ -984,9 +1014,19 @@ export interface DiffCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   pathHref?: string;
   /** Makes the path a button (e.g. open the file). */
   onPathClick?: () => void;
+  /** Called when the accept button is clicked; setting it shows the button. */
   onAccept?: () => void;
+  /** Called when the reject button is clicked; setting it shows the button. */
   onReject?: () => void;
+  /**
+   * Text of the accept button.
+   * @default "Accept"
+   */
   acceptLabel?: string;
+  /**
+   * Text of the reject button.
+   * @default "Reject"
+   */
   rejectLabel?: string;
   /** Extra header content (right side, before the stat). */
   headerExtra?: React.ReactNode;

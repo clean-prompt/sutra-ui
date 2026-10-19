@@ -112,6 +112,7 @@ export const MARQUEE_IGNORE_SELECTOR = [
   "[data-marquee-ignore]",
 ].join(", ");
 
+/** Options for `useMarqueeSelection`. */
 export interface UseMarqueeSelectionOptions {
   /** The scrollable (or static) element the marquee is drawn in. Give it `position: relative` to render `box`. */
   containerRef: React.RefObject<HTMLElement | null>;
@@ -123,7 +124,9 @@ export interface UseMarqueeSelectionOptions {
   getItems?: () => Iterable<MarqueeItem>;
   /** Selected ids (controlled). */
   value?: string[];
+  /** Initially selected ids when uncontrolled. */
   defaultValue?: string[];
+  /** Called with the selected ids as the marquee changes the selection. */
   onValueChange?: (value: string[]) => void;
   /** Whether an item must touch (`intersect`, default) or lie fully inside (`contain`) the marquee. */
   mode?: "intersect" | "contain";
@@ -137,9 +140,11 @@ export interface UseMarqueeSelectionOptions {
   ignoreSelector?: string;
   /** Start marquees from touch too. Off by default so touch drags keep scrolling; set `touch-action: none` when on. */
   touch?: boolean;
+  /** Disables marquee selection. */
   disabled?: boolean;
 }
 
+/** What `useMarqueeSelection` returns: the selection and its setter, the marquee box, the selecting flag and `cancel`. */
 export interface UseMarqueeSelectionResult {
   /** Selected ids. */
   value: string[];

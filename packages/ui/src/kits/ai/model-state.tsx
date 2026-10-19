@@ -67,7 +67,9 @@ const glyphName: Record<ModelState, string> = {
 };
 
 export interface ModelStateGlyphProps extends React.SVGAttributes<SVGSVGElement> {
+  /** Model lifecycle state (for example ready, loading, cold or error); picks the glyph and its tone. */
   state: ModelStateInput;
+  /** Glyph width and height in px. */
   size?: number;
 }
 
@@ -120,6 +122,7 @@ ModelStateGlyph.displayName = "ModelStateGlyph";
 /* ------------------------------------------------------------------ */
 
 export interface ModelStatePillProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Model lifecycle state (for example ready, loading, cold or error); sets the pill text, glyph and tone. */
   state: ModelStateInput;
   /** Override the visible label. */
   label?: string;
@@ -127,6 +130,7 @@ export interface ModelStatePillProps extends Omit<React.HTMLAttributes<HTMLSpanE
   detail?: React.ReactNode;
   /** Glyph only; the label stays available to screen readers. */
   hideLabel?: boolean;
+  /** Pill size. */
   size?: "sm" | "md";
 }
 

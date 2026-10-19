@@ -47,7 +47,9 @@ const stateIcon: Record<SyncState, RemixiconComponentType> = {
 };
 
 export interface SyncStatusProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  /** Sync state (`synced`, `syncing`, `offline`, `error` or `conflict`); sets the icon, label and tone. */
   status: SyncState;
+  /** Time of the last successful sync; shown as a relative label. */
   lastSyncedAt?: Date | number;
   /** Local changes waiting to upload. */
   pendingChanges?: number;
@@ -145,10 +147,13 @@ SyncStatus.displayName = "SyncStatus";
 export interface OfflineBannerProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Force the offline state; defaults to `navigator.onLine`. */
   offline?: boolean;
+  /** Local changes waiting to upload, shown in the message. */
   pendingChanges?: number;
+  /** Called when the user presses Retry; the button is hidden when unset. */
   onRetry?: () => void;
   /** Shows a dismiss button. */
   dismissible?: boolean;
+  /** Called when the user dismisses the banner (with `dismissible`). */
   onDismiss?: () => void;
 }
 
@@ -218,17 +223,27 @@ export interface ConflictVersion {
 }
 
 export interface ConflictResolverProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Dialog heading. */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
+  /** Your local version of the content, with its source and update time. */
   yours: ConflictVersion;
+  /** The other version of the content, with its source and update time. */
   theirs: ConflictVersion;
+  /** Called when the user keeps your version. */
   onKeepMine?: () => void;
+  /** Called when the user keeps the other version. */
   onKeepTheirs?: () => void;
   /** Shows a "Merge both" action. */
   onMerge?: () => void;
+  /** Reference time for relative update labels; set it in tests and SSR for stable output. */
   now?: Date;
   /** Class name for the dialog content. */
   className?: string;

@@ -1,7 +1,9 @@
 import * as React from "react";
 
+/** Direction of a swipe on the screen: left, right, up or down. */
 export type SwipeDirection = "left" | "right" | "up" | "down";
 
+/** Describes a recognised swipe: its direction, distance, duration and velocity. */
 export interface SwipeInfo {
   direction: SwipeDirection;
   dx: number;
@@ -12,11 +14,17 @@ export interface SwipeInfo {
   velocity: number;
 }
 
+/** Options for `useSwipe`: the direction callbacks, axis, travel and speed thresholds, mouse support and an enabled switch. */
 export interface UseSwipeOptions {
+  /** Called after any recognised swipe, with its direction, `dx`, `dy`, duration and velocity. */
   onSwipe?: (info: SwipeInfo) => void;
+  /** Called after a swipe towards the left of the screen (not logical start). */
   onSwipeLeft?: (info: SwipeInfo) => void;
+  /** Called after a swipe towards the right of the screen (not logical end). */
   onSwipeRight?: (info: SwipeInfo) => void;
+  /** Called after an upward swipe. */
   onSwipeUp?: (info: SwipeInfo) => void;
+  /** Called after a downward swipe. */
   onSwipeDown?: (info: SwipeInfo) => void;
   /** Which axis counts. Default "both". */
   axis?: "x" | "y" | "both";
@@ -30,9 +38,11 @@ export interface UseSwipeOptions {
   mouse?: boolean;
   /** Asked on pointer down; return false to ignore the whole gesture (e.g. from inside a slider). */
   allow?: (event: React.PointerEvent<HTMLElement>) => boolean;
+  /** Turns the gesture off without unmounting; on unless set to `false`. */
   enabled?: boolean;
 }
 
+/** Pointer handlers that `useSwipe` returns; spread them on the swipeable element. */
 export interface SwipeHandlers {
   onPointerDown: (event: React.PointerEvent<HTMLElement>) => void;
   onPointerMove: (event: React.PointerEvent<HTMLElement>) => void;

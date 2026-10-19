@@ -8,10 +8,16 @@ import { inputShellVariants } from "./input";
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
   variant?: "outline" | "filled";
+  /** Marks the textarea invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
   /** Grow with the content between `minRows` and `maxRows`. */
   autoResize?: boolean;
+  /**
+   * Minimum height in text rows (also the initial height).
+   * @default 3
+   */
   minRows?: number;
+  /** Largest height in text rows when `autoResize` is on; taller content scrolls. Default: unlimited. */
   maxRows?: number;
   /** Show a character counter (uses `maxLength` as the limit when set). */
   showCount?: boolean;

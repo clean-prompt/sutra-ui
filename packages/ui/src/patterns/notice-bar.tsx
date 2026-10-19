@@ -111,6 +111,7 @@ export function useNoticeQueue(source: NoticeItem[] = [], { initialDismissed, on
 
 
 export interface RotatingNoticeBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Notices to rotate through; each has an `id` and `content`, with optional tone and action. */
   notices: NoticeItem[];
   /** Seconds per notice. Default 6. */
   interval?: number;
@@ -118,9 +119,11 @@ export interface RotatingNoticeBarProps extends Omit<React.HTMLAttributes<HTMLDi
   autoRotate?: boolean;
   /** Persist a dismissal (the bar hides it locally either way). */
   onDismiss?: (id: string) => void;
+  /** Called with the shown index and the notice when the rotation advances or the user pages. */
   onIndexChange?: (index: number, notice: NoticeItem) => void;
   /** Stick to the top. Default false. */
   sticky?: boolean;
+  /** Accessible name of the notice region. */
   label?: string;
 }
 

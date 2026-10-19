@@ -19,6 +19,7 @@ export interface TimelineRailTurn {
 }
 
 export interface TranscriptTimelineRailProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  /** Conversation turns to mark on the rail, each with an id and a label. */
   turns: TimelineRailTurn[];
   /** Scrollable transcript element (IntersectionObserver root and position source). Defaults to the viewport. */
   scrollContainer?: React.RefObject<HTMLElement | null>;
@@ -28,7 +29,9 @@ export interface TranscriptTimelineRailProps extends Omit<React.HTMLAttributes<H
   onJump?: (id: string) => void;
   /** Controlled current turn; tracked via IntersectionObserver when omitted. */
   activeId?: string | null;
+  /** Called with the turn id (or `null`) when the active turn changes while scrolling. */
   onActiveChange?: (id: string | null) => void;
+  /** Accessible name of the rail. Default "Transcript timeline". */
   label?: string;
 }
 

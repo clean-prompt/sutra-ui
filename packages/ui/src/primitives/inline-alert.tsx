@@ -75,11 +75,19 @@ export const inlineAlertVariants = cva(
         neutral: "[&>[data-slot=inline-alert-icon]]:text-muted-foreground",
         brand: "[&>[data-slot=inline-alert-icon]]:text-primary",
       },
+      /**
+       * Surface style: `soft` (tinted), `outline` (bordered) or `accent` (soft with a coloured start edge).
+       * @default "soft"
+       */
       appearance: {
         soft: "border border-transparent",
         outline: "border bg-background text-foreground shadow-xs",
         accent: "rounded-s-xs border-s-[3px]",
       },
+      /**
+       * Shape: `box` is a rounded block, `strip` is a full-width bar with only a bottom border.
+       * @default "box"
+       */
       layout: {
         box: "",
         strip: "items-center rounded-none border-x-0 border-t-0 py-2 shadow-none [&>[data-slot=inline-alert-icon]]:mt-0",
@@ -104,7 +112,7 @@ export interface InlineAlertProps
     Omit<VariantProps<typeof inlineAlertVariants>, "variant"> {
   /** Semantic colour. Default `info`. */
   tone?: InlineAlertTone | null;
-  /** @deprecated Use `tone` (`brand` → `primary`). */
+  /** Legacy name of `tone`. @deprecated Use `tone` (`brand` → `primary`). */
   variant?: InlineAlertVariant | InlineAlertTone | null;
   /** Custom icon; pass `false` or `null` to hide the default per-variant icon. */
   icon?: React.ReactNode | false;
@@ -112,6 +120,10 @@ export interface InlineAlertProps
   action?: React.ReactNode;
   /** Shows a close button that calls this handler. */
   onDismiss?: () => void;
+  /**
+   * Accessible name of the dismiss button.
+   * @default "Dismiss"
+   */
   dismissLabel?: string;
 }
 

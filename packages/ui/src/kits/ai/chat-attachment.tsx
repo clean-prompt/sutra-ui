@@ -77,9 +77,11 @@ export function formatAttachmentSize(bytes: number) {
 }
 
 export interface ChatAttachmentProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** File name, shown in the card, chip or tooltip. */
   name: string;
   /** Size in bytes. */
   fileSize?: number;
+  /** MIME type (for example `application/pdf`); picks the file-kind icon. */
   mimeType?: string;
   /** Image thumbnail (object URL or remote URL). */
   previewUrl?: string;

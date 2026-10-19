@@ -27,7 +27,9 @@ export interface UseKunjiSignInOptions {
   client: KunjiClient;
   /** Called after the success animation with the approved poll result. */
   onSuccess?: (result: KunjiPollResult) => void;
+  /** Called with the error when creating the session or polling fails. */
   onError?: (error: unknown) => void;
+  /** Called with the new status each time the attempt moves to another state. */
   onStatusChange?: (status: KunjiSignInStatus) => void;
   /** Start a session on mount. Default true. */
   autoStart?: boolean;

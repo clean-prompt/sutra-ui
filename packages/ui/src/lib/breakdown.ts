@@ -6,6 +6,7 @@ export function breakdownValue(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : 0;
 }
 
+/** Options for `topWithOther`: how to rank items, how many to keep and how to build the "Other" item. */
 export interface TopWithOtherOptions<T> {
   /** The number each item is ranked by. */
   value: (item: T) => number;

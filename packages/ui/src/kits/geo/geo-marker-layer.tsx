@@ -50,13 +50,17 @@ export interface GeoMarkerClusterOptions {
 }
 
 export interface GeoMarkerLayerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "onSelect"> {
+  /** Markers to place, each with an id, a point and optional label, value, colour and avatar. */
   markers: readonly GeoMarker[];
   /** Screen position of a point, or `null` to hide the marker (clipped, or on a globe's far side). */
   project: (point: GeoPointInput) => readonly [number, number] | null;
   /** Size of the drawing the layer sits on, used to keep tooltips inside. */
   width: number;
+  /** Height in px of the drawing the layer sits on, used to keep tooltips inside. */
   height: number;
+  /** Controlled id of the selected marker; `null` selects none. */
   selectedId?: string | null;
+  /** Initially selected marker id when `selectedId` is not controlled. */
   defaultSelectedId?: string | null;
   /** Called with the new selection (`null` when the selected marker is activated again). */
   onSelectedIdChange?: (id: string | null, marker: GeoMarker | undefined) => void;

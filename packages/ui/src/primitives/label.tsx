@@ -3,11 +3,13 @@ import { Label as LabelPrimitive } from "radix-ui";
 import { cn } from "../lib/cn";
 
 export interface LabelProps extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> {
+  /** Appends a red asterisk (hidden from assistive technology); set `required` on the control itself for validation. */
   required?: boolean;
   /** Muted helper shown after the label text, e.g. "(optional)". */
   hint?: React.ReactNode;
 }
 
+/** Form label with an optional required asterisk and `hint`; use it with `htmlFor` or let `Field` wire it. Extra props are spread to the `<label>`. */
 export const Label = React.forwardRef<React.ElementRef<typeof LabelPrimitive.Root>, LabelProps>(
   ({ className, required, hint, children, ...props }, ref) => (
     <LabelPrimitive.Root

@@ -39,8 +39,11 @@ function useDrawerContext() {
 }
 
 export interface DrawerProps {
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the drawer opens or closes (drag, Escape, scrim click, a close button). */
   onOpenChange?: (open: boolean) => void;
   /** Allow closing by drag, Escape and scrim click. Default true. */
   dismissible?: boolean;
@@ -48,10 +51,13 @@ export interface DrawerProps {
   snapPoints?: number[];
   /** Active snap point (one of `snapPoints`). */
   snapPoint?: number;
+  /** Initially active snap point when uncontrolled; one of `snapPoints`. */
   defaultSnapPoint?: number;
+  /** Called with the snap point the sheet settled on after a drag. */
   onSnapPointChange?: (snap: number) => void;
   /** Modal (scroll lock, focus trap, inert page). Default true. */
   modal?: boolean;
+  /** The drawer parts: a `DrawerTrigger` and a `DrawerContent`. */
   children?: React.ReactNode;
 }
 
@@ -173,6 +179,7 @@ export interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeo
   showHandle?: boolean;
   /** Show a top-right close button. Default false. */
   showClose?: boolean;
+  /** Classes for the dimmed backdrop behind the sheet. */
   overlayClassName?: string;
 }
 

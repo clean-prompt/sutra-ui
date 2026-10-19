@@ -194,21 +194,27 @@ const riskLabel: Record<ScopeRisk, string> = { low: "Low risk", medium: "Medium 
 /* ------------------------------------------------------------------ */
 
 export interface ScopeListProps extends Omit<React.HTMLAttributes<HTMLUListElement>, "defaultValue"> {
+  /** Requested scopes: id strings (`read:orders`) or objects with constraints. */
   scopes: ScopeInput[];
   /** Ids the user may toggle. Others are required (always granted). */
   optional?: string[];
   /** Granted optional scope ids (controlled). */
   value?: string[];
+  /** Initially granted optional ids when `value` is not controlled. */
   defaultValue?: string[];
+  /** Called with the granted optional ids when the user toggles one. */
   onValueChange?: (value: string[]) => void;
   /** Ids already granted earlier; shown with an "Already granted" tag. */
   held?: string[];
+  /** Extra or overriding scope definitions (label, description, icon, risk), merged over the built-in set. */
   definitions?: Record<string, ScopeDefinition>;
+  /** Untrusted app-supplied labels by scope id, used only when no definition matches. */
   labels?: Record<string, string>;
   /** Show the risk badge on medium/high scopes. Default true. */
   showRisk?: boolean;
   /** Show the raw scope id under each label. Default true. */
   showId?: boolean;
+  /** Disables every toggle. */
   disabled?: boolean;
 }
 
@@ -335,30 +341,43 @@ export interface ConsentSelection {
 }
 
 export interface ConsentScreenProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** The app asking for access (name, logo, publisher, verification). */
   app: ConsentApp;
+  /** Requested scopes: id strings (`read:orders`) or objects with constraints. */
   scopes: ScopeInput[];
   /** Scope ids the user may decline. Default-deny: none are pre-granted unless in `defaultOptionalGranted`. */
   optionalScopes?: string[];
+  /** Optional scope ids granted at first; none by default. */
   defaultOptionalGranted?: string[];
+  /** Scope ids the app already holds; tagged "Already granted". */
   heldScopes?: string[];
+  /** Extra or overriding scope definitions (label, description, icon, risk), merged over the built-in set. */
   definitions?: Record<string, ScopeDefinition>;
+  /** Untrusted app-supplied labels by scope id, used only when no definition matches. */
   scopeLabels?: Record<string, string>;
   /** Offer to share this profile (off by default). */
   profile?: ConsentProfile;
+  /** Initial state of the share-profile switch. Default false. */
   defaultShareProfile?: boolean;
   /** Credentials the user can present (radio list; none preselected). */
   credentials?: ConsentCredentialOption[];
   /** Require a credential choice before Approve. Default true when credentials are given. */
   credentialRequired?: boolean;
+  /** Label above the credential list. Default "Choose a credential to present". */
   credentialLabel?: React.ReactNode;
   /** When the request expires (ms or Date). */
   expiresAt?: number | Date;
+  /** Called once when the request reaches `expiresAt`. */
   onExpire?: () => void;
+  /** Heading of the screen; defaults to a sentence naming the app. */
   title?: React.ReactNode;
+  /** Label of the approve button. Default "Approve". */
   approveLabel?: React.ReactNode;
+  /** Label of the deny button. Default "Deny". */
   denyLabel?: React.ReactNode;
   /** May return a promise; buttons show progress until it settles. */
   onApprove?: (selection: ConsentSelection) => void | Promise<void>;
+  /** Called when the user denies the request; may return a promise, and the buttons show progress until it settles. */
   onDeny?: () => void | Promise<void>;
 }
 
@@ -585,25 +604,35 @@ export const defaultScopeTTLOptions: ScopeMatrixTTLOption[] = [
 ];
 
 export interface ScopeMatrixProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Apps to list as rows, each with an id and name. */
   apps: ScopeMatrixApp[];
   /** Column scope ids. */
   scopes: string[];
   /** Granted scope ids per app id. */
   value?: Record<string, string[]>;
+  /** Initial grants (scope ids per app id) when `value` is not controlled. */
   defaultValue?: Record<string, string[]>;
+  /** Called with the grants (scope ids per app id) when the user ticks or clears a cell. */
   onValueChange?: (value: Record<string, string[]>) => void;
   /** Scopes each app already holds; pre-ticked and tagged. */
   held?: Record<string, string[]>;
+  /** Lifetimes offered per app, each with seconds and a label; defaults to the built-in set. */
   ttlOptions?: ScopeMatrixTTLOption[];
   /** TTL seconds per app id. */
   ttl?: Record<string, number>;
+  /** Initial lifetime in seconds per app id when `ttl` is not controlled. */
   defaultTtl?: Record<string, number>;
+  /** Called with the lifetime in seconds per app id when the user changes one. */
   onTtlChange?: (ttl: Record<string, number>) => void;
   /** Show the "Replace prior grant" option (defaults to on when any app holds scopes). */
   showReplacePrior?: boolean;
+  /** Controlled state of the "Replace prior grant" option. */
   replacePrior?: boolean;
+  /** Initial state of the option when `replacePrior` is not controlled. */
   defaultReplacePrior?: boolean;
+  /** Called with the new state when the user flips the option. */
   onReplacePriorChange?: (replace: boolean) => void;
+  /** Extra or overriding scope definitions (label, description, icon, risk), merged over the built-in set. */
   definitions?: Record<string, ScopeDefinition>;
 }
 
@@ -744,8 +773,11 @@ export const ScopeMatrix = React.forwardRef<HTMLDivElement, ScopeMatrixProps>(
 ScopeMatrix.displayName = "ScopeMatrix";
 
 export interface ScopeIconProps {
+  /** Scope id or object whose definition picks the icon. */
   scope: ScopeInput;
+  /** Extra classes for the icon. */
   className?: string;
+  /** Extra or overriding scope definitions, merged over the built-in set. */
   definitions?: Record<string, ScopeDefinition>;
 }
 

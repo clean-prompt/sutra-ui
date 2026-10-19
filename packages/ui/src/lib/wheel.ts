@@ -57,6 +57,7 @@ export function typeAheadIndex(texts: readonly string[], disabled: readonly bool
   return -1;
 }
 
+/** Options for the wheel value range: the step between values and zero-padding. */
 export interface WheelRangeOptions {
   /** Step between values. Default 1. */
   step?: number;

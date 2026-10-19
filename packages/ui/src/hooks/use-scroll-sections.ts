@@ -1,6 +1,7 @@
 import * as React from "react";
 import { prefersReducedMotion } from "./use-media-query";
 
+/** Options for `useScrollSections`: section ids, offsets and root, smooth scrolling, the initial active section and a change callback. */
 export interface UseScrollSectionsOptions {
   /** Element ids of the sections, in page order. */
   ids: readonly string[];
@@ -20,6 +21,7 @@ export interface UseScrollSectionsOptions {
   onActiveChange?: (id: string) => void;
 }
 
+/** What `useScrollSections` returns: the active section id and the `scrollTo` and `setActive` actions. */
 export interface ScrollSections {
   /** The id of the section in view (the last one seen while none is). */
   active: string | undefined;

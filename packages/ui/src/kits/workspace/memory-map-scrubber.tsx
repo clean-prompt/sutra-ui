@@ -20,17 +20,29 @@ const SCALE = 1000;
 export interface TimeScrubberProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   /** Items to histogram (only `createdAt` is used). */
   nodes: readonly Pick<MemoryNode, "id" | "createdAt">[];
+  /** Start of the time axis in epoch ms; defaults to the earliest `createdAt` in `nodes`. */
   min?: number;
+  /** End of the time axis in epoch ms; defaults to the latest `createdAt` in `nodes`. */
   max?: number;
+  /** Controlled selected range as `[from, to]` in epoch ms. */
   value?: [number, number];
+  /** Initial range when `value` is not controlled; defaults to the full axis. */
   defaultValue?: [number, number];
+  /** Called with the new `[from, to]` range while the user drags a handle or playback advances. */
   onValueChange?: (range: [number, number]) => void;
+  /** Controlled playback state: true sweeps the range forward on a timer. */
   playing?: boolean;
+  /** Initial playback state when `playing` is not controlled. */
   defaultPlaying?: boolean;
+  /** Called with the new state when the user presses play or pause, or playback reaches the end. */
   onPlayingChange?: (playing: boolean) => void;
+  /** Controlled playback speed multiplier; one of `speeds`. */
   speed?: number;
+  /** Initial speed when `speed` is not controlled. */
   defaultSpeed?: number;
+  /** Called with the multiplier when the user picks another speed. */
   onSpeedChange?: (speed: number) => void;
+  /** Speed multipliers the user can cycle through. Default `[0.5, 1, 2, 4]`. */
   speeds?: number[];
   /** Histogram bucket count. Default 32. */
   buckets?: number;
@@ -38,7 +50,9 @@ export interface TimeScrubberProps extends Omit<React.HTMLAttributes<HTMLDivElem
   duration?: number;
   /** Playback tick in ms. Default 100. */
   tickMs?: number;
+  /** Custom formatter for the axis and handle labels, given epoch ms. */
   formatTime?: (t: number) => string;
+  /** BCP 47 locale used to format the default labels. */
   locale?: string;
 }
 

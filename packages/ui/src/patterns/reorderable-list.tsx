@@ -36,11 +36,15 @@ export interface ReorderMove {
 }
 
 export interface ReorderableListProps<T> extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+  /** Items to render, in the current order. */
   items: T[];
+  /** Returns a stable unique key for an item. */
   getKey: (item: T) => string;
   /** Text used in announcements and button labels. Defaults to `String(item)`. */
   getLabel?: (item: T) => string;
+  /** Renders the row content for an item; the context carries drag and position state. */
   renderItem: (item: T, context: ReorderableListRenderContext) => React.ReactNode;
+  /** Called with the new order and a description of the move after every reorder. */
   onReorder: (items: T[], move: ReorderMove) => void;
   /** Show up / down buttons on each row. */
   moveButtons?: boolean;
@@ -48,13 +52,16 @@ export interface ReorderableListProps<T> extends Omit<React.HTMLAttributes<HTMLU
   handle?: boolean;
   /** Accessible name of the list. */
   label?: string;
+  /** Classes for every row. */
   itemClassName?: string;
+  /** Disables dragging, the handles and the move buttons. */
   disabled?: boolean;
   /**
    * Rows glide to their new place when the order changes (while dragging, with the keyboard or the buttons), and a
    * dropped row settles from where it was let go (`useFlip`; pass options to tune it). Off under reduced motion. Default true.
    */
   flip?: boolean | UseFlipOptions;
+  /** Ref to the `<ul>` element (the component is generic, so `ref` is a plain prop). */
   ref?: React.Ref<HTMLUListElement>;
 }
 
@@ -319,14 +326,27 @@ export interface ChecklistEntry {
 }
 
 export interface ChecklistProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Controlled entries (`{ id, text, done }`). Use with `onItemsChange`. */
   items?: ChecklistEntry[];
+  /** Initial entries when uncontrolled. */
   defaultItems?: ChecklistEntry[];
+  /** Called with the full entry list after an item is added, edited, toggled, removed or reordered. */
   onItemsChange?: (items: ChecklistEntry[]) => void;
   /** Heading shown with the progress count. */
   label?: string;
+  /**
+   * Placeholder of the add field.
+   * @default "Add an item"
+   */
   addPlaceholder?: string;
+  /** Controlled: hides completed entries. Use with `onHideCompletedChange`. */
   hideCompleted?: boolean;
+  /**
+   * Initially hides completed entries when uncontrolled.
+   * @default false
+   */
   defaultHideCompleted?: boolean;
+  /** Called when the "hide completed" toggle changes. */
   onHideCompletedChange?: (hide: boolean) => void;
   /** Allow adding, editing and deleting items. Default true. */
   editable?: boolean;
@@ -334,6 +354,7 @@ export interface ChecklistProps extends Omit<React.HTMLAttributes<HTMLDivElement
   reorderable?: boolean;
   /** Show up / down buttons in addition to the drag handle. */
   moveButtons?: boolean;
+  /** Generates ids for new entries. Default is a random id. */
   createId?: () => string;
 }
 

@@ -50,19 +50,27 @@ export interface AccessGateAdapter {
 }
 
 export interface AccessGateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Functions that send, poll and cancel the access request against your backend. */
   adapter: AccessGateAdapter;
+  /** Controlled access request record (status and details); drives which step is shown. */
   record?: AccessGateRecord;
+  /** Initial record when `record` is not controlled. */
   defaultRecord?: AccessGateRecord;
+  /** Called with the record whenever the request changes state. */
   onRecordChange?: (record: AccessGateRecord) => void;
   /** What is being requested, e.g. "GPU access". */
   resourceName?: string;
   /** Who is signed in. */
   signedInAs?: React.ReactNode;
+  /** Scopes the user can ask for in the form. */
   scopes?: AccessGateScopeOption[];
+  /** Scope ids ticked initially. */
   defaultScopes?: string[];
+  /** Placeholder of the purpose field. */
   purposePlaceholder?: string;
   /** Poll interval while pending. Default 5000ms. */
   pollInterval?: number;
+  /** Called once the user has collected the approved access (for example after copying the credential). */
   onCollected?: () => void;
   /** Escape hatch shown under the form, e.g. "Sign in with kunji instead". */
   otherWays?: React.ReactNode;

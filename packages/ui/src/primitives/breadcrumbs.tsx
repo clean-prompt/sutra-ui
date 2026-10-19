@@ -19,6 +19,7 @@ const BreadcrumbContext = React.createContext<{ separator: BreadcrumbSeparatorVa
 export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
   /** Default separator for every `BreadcrumbSeparator` inside. */
   separator?: BreadcrumbSeparatorVariant;
+  /** Text size of the trail. */
   size?: "sm" | "md";
 }
 
@@ -104,6 +105,7 @@ export const BreadcrumbPage = React.forwardRef<HTMLSpanElement, React.HTMLAttrib
 BreadcrumbPage.displayName = "BreadcrumbPage";
 
 export interface BreadcrumbSeparatorProps extends React.LiHTMLAttributes<HTMLLIElement> {
+  /** Separator glyph for this one separator; overrides the `separator` of the trail. */
   variant?: BreadcrumbSeparatorVariant;
 }
 
@@ -149,6 +151,7 @@ export type BreadcrumbRenderLink = (props: {
 export interface BreadcrumbEllipsisProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Hidden crumbs shown in a dropdown. Without items, renders a plain ellipsis. */
   items?: BreadcrumbCrumb[];
+  /** Renders a crumb link in place of the default `<a>`, e.g. to use your router's Link. */
   renderLink?: BreadcrumbRenderLink;
 }
 
@@ -215,6 +218,7 @@ export const BreadcrumbEllipsis = React.forwardRef<HTMLButtonElement, Breadcrumb
 BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis";
 
 export interface BreadcrumbsProps extends Omit<BreadcrumbProps, "children"> {
+  /** Crumbs in order; the last one is the current page. */
   items: BreadcrumbCrumb[];
   /** Collapse middle crumbs into an ellipsis menu when there are more than this many. */
   maxItems?: number;

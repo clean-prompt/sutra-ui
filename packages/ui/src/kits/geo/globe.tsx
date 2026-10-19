@@ -80,6 +80,7 @@ export interface GlobeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   onRotationChange?: (rotation: GeoRotation) => void;
   /** Zoom as a scale multiplier (1 = the whole globe fits). Same jump-and-report contract as `rotation`. */
   zoom?: number;
+  /** Initial zoom multiplier when `zoom` is not controlled. Default 1. */
   defaultZoom?: number;
   /** Called with the resting zoom (see `onRotationChange`). */
   onZoomChange?: (zoom: number) => void;

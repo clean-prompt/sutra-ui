@@ -21,13 +21,20 @@ export interface HeatmapColorStop {
 }
 
 export interface HeatmapColorOptions {
+  /** Value that maps to the emptiest step; defaults to the smallest value in the data (0 when all are positive). */
   min?: number;
+  /** Value that maps to the strongest step; defaults to the largest value in the data. */
   max?: number;
+  /**
+   * Colour ramp: a semantic token (`primary`, `success`, `warning`, `destructive`, `info`) or `thresholds` to colour by `thresholds`.
+   * @default "primary"
+   */
   scale?: HeatmapScale;
   /** Number of discrete intensity steps above "empty". Default 4. */
   steps?: number;
   /** Custom step stops (overrides `scale`). */
   colorStops?: HeatmapColorStop[];
+  /** Warning and danger percent cut-offs used when `scale="thresholds"`. */
   thresholds?: MeterThresholds;
 }
 
@@ -314,10 +321,24 @@ function HeatmapMatrix({
 /* ------------------------------------------------------------------ */
 
 export interface HeatmapLegendProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Swatch colours from the lowest to the highest step. */
   colors: string[];
+  /**
+   * Text before the swatches.
+   * @default "Less"
+   */
   lowLabel?: React.ReactNode;
+  /**
+   * Text after the swatches.
+   * @default "More"
+   */
   highLabel?: React.ReactNode;
+  /** Labelled colour stops to list instead of the plain gradient (for threshold scales). */
   stops?: HeatmapColorStop[];
+  /**
+   * Swatch size in px.
+   * @default 10
+   */
   swatchSize?: number;
 }
 
@@ -367,6 +388,7 @@ export interface HeatmapGridCell {
 }
 
 export interface HeatmapGridProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">, HeatmapColorOptions {
+  /** Values in reading order, each a number, `null` for an empty cell, or a `{ value, label }` cell. */
   data: (number | null | HeatmapGridCell)[];
   /** Cells per row. Default 10. */
   columns?: number;
@@ -382,13 +404,20 @@ export interface HeatmapGridProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   label?: string;
   /** Default cell label: `Cell ${i}`. */
   cellLabel?: (index: number) => string;
+  /** Formats a cell value for the tooltip and the accessible label. Default is the localized number. */
   formatValue?: (value: number) => string;
   /** Tooltip content; `false` disables. */
   tooltip?: boolean | ((cell: HeatmapGridCell, index: number) => React.ReactNode);
+  /**
+   * Shows a "less to more" legend under the grid.
+   * @default false
+   */
   legend?: boolean;
+  /** Texts for the low and high ends of the legend: `[low, high]`. */
   legendLabels?: [React.ReactNode, React.ReactNode];
   /** Show column indices below the grid, labelling every Nth (true = every 1). */
   showIndices?: boolean | number;
+  /** Called with the cell and its index when a cell is clicked; cells then become buttons. */
   onCellClick?: (cell: HeatmapGridCell, index: number) => void;
 }
 
@@ -539,6 +568,7 @@ export function calendarHeatmapLayout(
 export interface CalendarHeatmapProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">,
     Omit<HeatmapColorOptions, "thresholds"> {
+  /** One entry per day with a `date` and a `value`; missing days count as empty. */
   data: CalendarHeatmapDatum[];
   /** year: last 53 weeks · month: a single month with navigation. */
   mode?: "year" | "month";
@@ -546,25 +576,52 @@ export interface CalendarHeatmapProps
   endDate?: Date | string;
   /** Month mode: controlled month (any date in it). */
   month?: Date;
+  /** Initially shown month when uncontrolled (month mode). */
   defaultMonth?: Date;
+  /** Called with the new month when the user navigates (month mode). */
   onMonthChange?: (month: Date) => void;
+  /**
+   * First day of the week: 0 Sunday, 1 Monday.
+   * @default 0
+   */
   weekStartsOn?: 0 | 1;
+  /** BCP 47 locale for month and weekday names and the numbers. */
   locale?: string;
   /** Cell size in px. Default 11 (year) / 32 (month). */
   cellSize?: number;
+  /** Gap between cells in px. */
   gap?: number;
+  /** Accessible name of the calendar. */
   label?: string;
   /** Unit noun used in totals, e.g. "contributions". */
   unit?: string;
+  /** Formats values in the tooltip and the total. Default is the localized number. */
   formatValue?: (value: number) => string;
   /** Tooltip / accessible text. Default "12 on Oct 3". */
   formatTooltip?: (value: number, date: Date) => string;
+  /**
+   * Shows the total line under the grid.
+   * @default true
+   */
   showTotal?: boolean;
+  /**
+   * Shows the weekday labels beside the rows.
+   * @default true
+   */
   showWeekdayLabels?: boolean;
+  /**
+   * Shows the month labels above the columns (year mode).
+   * @default true
+   */
   showMonthLabels?: boolean;
+  /**
+   * Shows the "less to more" legend.
+   * @default true
+   */
   legend?: boolean;
   /** Show day numbers inside cells (month mode default). */
   showDayNumbers?: boolean;
+  /** Called with the day and its value when a cell is clicked; cells then become buttons. */
   onCellClick?: (date: Date, value: number) => void;
 }
 

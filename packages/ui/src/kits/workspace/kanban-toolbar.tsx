@@ -13,12 +13,19 @@ import { KanbanAssigneeAvatar } from "./kanban-card";
 /* ------------------------------------------------------------------ */
 
 export interface KanbanToolbarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Board model; supplies the assignees, labels and priorities offered by the filters. */
   board: KanbanBoardModel;
+  /** Current filters (search, assignees, labels, priorities). */
   filters: KanbanFilters;
+  /** Called with the new filters when the user changes any of them. */
   onFiltersChange: (filters: KanbanFilters) => void;
+  /** Current grouping into lanes: `none`, `assignee` or `priority`. Default "none". */
   swimlanes?: KanbanSwimlanes;
+  /** Called with the grouping when the user picks one; the control is hidden when unset. */
   onSwimlanesChange?: (mode: KanbanSwimlanes) => void;
+  /** Slot at the start of the toolbar (for example a board switcher). */
   boardSwitcher?: React.ReactNode;
+  /** Extra toolbar content, pushed to the end. */
   extra?: React.ReactNode;
 }
 

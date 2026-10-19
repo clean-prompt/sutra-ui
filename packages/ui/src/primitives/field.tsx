@@ -25,6 +25,7 @@ export interface FieldContextValue {
   registerPart: (part: FieldPart, id?: string) => () => void;
 }
 
+/** Carries the `Field` state (id, invalid, disabled, required, description ids) to the control and its label. */
 export const FieldContext = React.createContext<FieldContextValue | null>(null);
 
 /** Read the surrounding field context, or `null` outside a `Field`. */
@@ -42,11 +43,17 @@ function isAriaTrue(value: React.AriaAttributes["aria-invalid"]) {
 }
 
 export interface UseFieldProps {
+  /** Control id; defaults to the id of the surrounding `Field`. */
   id?: string;
+  /** Disables the control; an explicit value wins over the surrounding `Field`. */
   disabled?: boolean;
+  /** Marks the control required; an explicit value wins over the surrounding `Field`. */
   required?: boolean;
+  /** Marks the control invalid; an explicit value (or a true `aria-invalid`) wins over the surrounding `Field`. */
   invalid?: boolean;
+  /** Extra description id(s), joined with the ids of the surrounding `Field` (description, hint, error). */
   "aria-describedby"?: string;
+  /** Explicit `aria-invalid`; a true value marks the control invalid. */
   "aria-invalid"?: React.AriaAttributes["aria-invalid"];
 }
 
@@ -89,9 +96,16 @@ export function useField(props: UseFieldProps = {}): UseFieldReturn {
 export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Id applied to the control. Generated when omitted. */
   id?: string;
+  /** Marks the control invalid; the control and the error text pick it up. */
   invalid?: boolean;
+  /** Disables the control. */
   disabled?: boolean;
+  /** Marks the control required; the label shows the required indicator. */
   required?: boolean;
+  /**
+   * Places the label above the control (`vertical`) or beside it (`horizontal`).
+   * @default "vertical"
+   */
   orientation?: "vertical" | "horizontal";
 }
 

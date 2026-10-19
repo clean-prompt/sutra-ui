@@ -172,7 +172,9 @@ function Glyph({ platform }: { platform: ChannelPlatform }) {
 const iconSizes = { sm: "size-6 rounded-md [&_svg]:size-4", md: "size-8 rounded-lg [&_svg]:size-5", lg: "size-10 rounded-xl [&_svg]:size-6" };
 
 export interface PlatformIconProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Messaging platform whose logo to draw. */
   platform: ChannelPlatform;
+  /** Icon box size: `sm`, `md` or `lg`. */
   size?: "sm" | "md" | "lg";
   /** Accessible name. Defaults to the platform name. */
   label?: string;
@@ -308,13 +310,17 @@ function fieldError(platform: ChannelPlatform, field: PlatformConfigField, value
 }
 
 export interface PlatformConfigFormProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue"> {
+  /** Messaging platform being configured; picks the default fields. */
   platform: ChannelPlatform;
   /** Defaults to `platformConfigFields(platform)`. */
   fields?: PlatformConfigField[];
+  /** Initial field values keyed by field id. */
   defaultValues?: PlatformConfigValues;
   /** Called with valid values. May return a promise; the button shows a spinner until it settles. */
   onSubmit?: (values: PlatformConfigValues) => void | Promise<void>;
+  /** Called when the user presses Cancel; the button is hidden when unset. */
   onCancel?: () => void;
+  /** Label of the submit button. */
   submitLabel?: React.ReactNode;
 }
 
@@ -461,7 +467,9 @@ export interface ConnectorTestResult {
 }
 
 export interface PlatformConnectorCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** The connector to show (platform, status, enabled state, summary). */
   connector: PlatformConnector;
+  /** Called with the new state when the user flips the enable switch. */
   onEnabledChange?: (enabled: boolean) => void;
   /** Runs a connectivity test. Shows a Test button when set. */
   onTest?: () => ConnectorTestResult | Promise<ConnectorTestResult>;
@@ -606,13 +614,19 @@ const gatewayMeta: Record<GatewayStatus, { status: StatusBadgeStatus; text: stri
 };
 
 export interface PlatformConnectorListProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Connectors to list, one card each. */
   connectors: PlatformConnector[];
+  /** Heading of the list. Default "Messaging channels". */
   title?: React.ReactNode;
+  /** State of the message gateway; shows a status hint under the heading. */
   gatewayStatus?: GatewayStatus;
   /** Overrides the default gateway hint text. */
   gatewayHint?: React.ReactNode;
+  /** Called with the connector id and new state when the user flips a connector's switch. */
   onEnabledChange?: (id: string, enabled: boolean) => void;
+  /** Runs a connectivity test for the connector id; shows a Test button on each card when set. */
   onTest?: (id: string) => ConnectorTestResult | Promise<ConnectorTestResult>;
+  /** Saves a connector's config form; shows a Configure button on each card when set. */
   onSaveConfig?: (id: string, values: PlatformConfigValues) => void | Promise<void>;
   /** Header actions (e.g. restart gateway). */
   actions?: React.ReactNode;
@@ -686,8 +700,11 @@ export interface RotatingQRPairingProps extends Omit<React.HTMLAttributes<HTMLDi
   getPayload: () => RotatingQRPollResult | Promise<RotatingQRPollResult>;
   /** Poll interval in ms. Default 2000. */
   pollInterval?: number;
+  /** Controlled phase of the pairing flow: `installing`, `waiting`, `connected`, `expired` or `error`. */
   phase?: QRPairingPhase;
+  /** Initial phase when `phase` is not controlled. */
   defaultPhase?: QRPairingPhase;
+  /** Called with the new phase when polling or the timer moves the flow on. */
   onPhaseChange?: (phase: QRPairingPhase) => void;
   /** Absolute deadline (ms epoch) for the whole pairing session. */
   expiresAt?: number;
@@ -695,12 +712,19 @@ export interface RotatingQRPairingProps extends Omit<React.HTMLAttributes<HTMLDi
   ttl?: number;
   /** Called by the Refresh / Retry button, after the phase returns to waiting. */
   onRefresh?: () => void;
+  /** Called once when the device links and the phase becomes `connected`. */
   onConnected?: () => void;
+  /** Error detail shown in the `error` phase. */
   error?: React.ReactNode;
+  /** Heading above the QR code. */
   title?: React.ReactNode;
+  /** Instructions under the QR code, shown only while waiting for a scan. */
   caption?: React.ReactNode;
+  /** Text shown in the `installing` phase. Default "Installing the bridge…". */
   installingLabel?: React.ReactNode;
+  /** Text shown in the `connected` phase. Default "Device linked". */
   connectedLabel?: React.ReactNode;
+  /** QR code width and height in px. */
   size?: number;
 }
 
@@ -898,10 +922,13 @@ export interface GuidedSetupStep {
 }
 
 export interface GuidedSetupStepsProps extends Omit<React.HTMLAttributes<HTMLOListElement>, "defaultValue"> {
+  /** Setup steps in order, each with an id, title and optional description, copyable value and link. */
   steps: GuidedSetupStep[];
   /** Ids of completed steps. */
   value?: string[];
+  /** Initially completed step ids when `value` is not controlled. */
   defaultValue?: string[];
+  /** Called with the ids of the completed steps when the user checks or unchecks a step. */
   onValueChange?: (ids: string[]) => void;
   /** Fired once every step is checked. */
   onComplete?: () => void;
@@ -1015,13 +1042,19 @@ export function formatChannelAgo(at: Date | number | string, now: number = Date.
 }
 
 export interface AccessRequestQueueProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Pending pairing requests awaiting approval or denial. */
   requests: AccessRequest[];
+  /** Users already approved; listed with a confirm-to-revoke action. */
   approved?: ApprovedChannelUser[];
+  /** Called with the request id when the user approves it; may return a promise. */
   onApprove?: (id: string) => void | Promise<void>;
+  /** Called with the request id when the user denies it; may return a promise. */
   onDeny?: (id: string) => void | Promise<void>;
+  /** Called with the approved user's id after the user confirms revoking access; may return a promise. */
   onRevoke?: (id: string) => void | Promise<void>;
   /** Reference time for relative stamps (tests / SSR). */
   now?: number;
+  /** Text shown when there are no pending requests; defaults to a hint about pairing codes. */
   emptyHint?: React.ReactNode;
 }
 

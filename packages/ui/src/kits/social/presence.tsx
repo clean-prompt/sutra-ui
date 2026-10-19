@@ -41,6 +41,7 @@ const statusText: Record<PresenceStatus, string> = { active: "Active", idle: "Id
 /* ------------------------------------------------------------------ */
 
 export interface PresenceAvatarsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Users currently present, each with a name, avatar and active or idle state. */
   users: PresenceUser[];
   /** Avatars shown before the "+N" overflow. Default 4. */
   max?: number;
@@ -50,6 +51,7 @@ export interface PresenceAvatarsProps extends React.HTMLAttributes<HTMLDivElemen
   showStatus?: boolean;
   /** Mark the current user ("(you)") in tooltips and the list. */
   currentUserId?: string;
+  /** Called with the user when the user presses an avatar; avatars are not interactive when unset. */
   onUserClick?: (user: PresenceUser) => void;
 }
 
@@ -173,6 +175,7 @@ PresenceAvatars.displayName = "PresenceAvatars";
 export type PresenceConnection = "live" | "offline" | "reconnecting" | "connecting";
 
 export interface PresenceIndicatorProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Connection state (`live`, `offline`, `reconnecting` or `connecting`); sets the dot, label and tone. */
   status: PresenceConnection;
   /** Override the label for the current status. */
   label?: React.ReactNode;
@@ -234,10 +237,13 @@ PresenceIndicator.displayName = "PresenceIndicator";
 export interface RemoteCursorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "color"> {
   /** Position inside the nearest positioned ancestor (px number or any CSS length). */
   x: number | string;
+  /** Vertical position inside the nearest positioned ancestor (a number is px, or any CSS length). */
   y: number | string;
+  /** Collaborator name shown on the cursor label. */
   name: string;
   /** Defaults to a color derived from `id ?? name`. */
   color?: string;
+  /** Stable collaborator id; with the name, it seeds the default colour. */
   id?: string;
   /** `arrow` for canvases, `caret` for text editors. */
   variant?: "arrow" | "caret";

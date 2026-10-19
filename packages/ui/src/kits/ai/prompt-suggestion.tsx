@@ -26,6 +26,7 @@ function highlightText(text: string, query: string) {
 }
 
 export interface PromptSuggestionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Icon rendered before the text. */
   icon?: React.ReactNode;
   /** Autocomplete mode: bolds the matching part of string children and renders as a full-width row. */
   highlight?: string;

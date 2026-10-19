@@ -49,13 +49,17 @@ export const ContextMenuContent = React.forwardRef<
 ContextMenuContent.displayName = "ContextMenuContent";
 
 export interface ContextMenuItemProps extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Item> {
+  /** Icon shown at the start of the row. */
   icon?: React.ReactNode;
+  /** Shortcut hint shown at the end of the row (display only: it does not bind the keys). */
   shortcut?: React.ReactNode;
+  /** Secondary line under the label. */
   description?: React.ReactNode;
   /** `destructive` colours the row red for dangerous actions. Default `neutral`. */
   tone?: "neutral" | "destructive";
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   variant?: "default" | "destructive";
+  /** Indents the row to line up with rows that have an icon. */
   inset?: boolean;
 }
 
@@ -86,6 +90,7 @@ ContextMenuItem.displayName = "ContextMenuItem";
 
 export interface ContextMenuCheckboxItemProps
   extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.CheckboxItem> {
+  /** Shortcut hint shown at the end of the row (display only: it does not bind the keys). */
   shortcut?: React.ReactNode;
 }
 
@@ -123,6 +128,7 @@ export const ContextMenuRadioItem = React.forwardRef<
 ContextMenuRadioItem.displayName = "ContextMenuRadioItem";
 
 export interface ContextMenuLabelProps extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> {
+  /** Indents the label to line up with rows that have an icon. */
   inset?: boolean;
 }
 
@@ -149,7 +155,9 @@ ContextMenuShortcut.displayName = "ContextMenuShortcut";
 
 export interface ContextMenuSubTriggerProps
   extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubTrigger> {
+  /** Icon shown at the start of the row. */
   icon?: React.ReactNode;
+  /** Indents the row to line up with rows that have an icon. */
   inset?: boolean;
 }
 

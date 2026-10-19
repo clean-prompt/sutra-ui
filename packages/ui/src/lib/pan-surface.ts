@@ -1,11 +1,13 @@
 /* Pure logic for `PanSurface`: how far centred content may travel, what the keys and the wheel mean. No DOM, no React. */
 import { clamp } from "./math";
 
+/** Width and height of a pan surface or its viewport, in px. */
 export interface PanSize {
   width: number;
   height: number;
 }
 
+/** How far a pan surface may move in each direction, in px. */
 export interface PanLimits {
   left: number;
   right: number;
@@ -57,6 +59,7 @@ export function wheelDelta(e: { deltaX: number; deltaY: number; deltaMode: numbe
   return { dx, dy };
 }
 
+/** What a key does on a pan surface: pan by an offset, recentre, or zoom in or out. */
 export type PanKeyAction =
   | { type: "pan"; dx: number; dy: number }
   | { type: "recenter" }

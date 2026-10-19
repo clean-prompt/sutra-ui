@@ -92,7 +92,9 @@ export { useTextareaMirror, type UseTextareaMirrorOptions } from "../../hooks/us
 
 export interface PromptInputTextareaProps
   extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "value" | "defaultValue"> {
+  /** Rows shown when the text is short. Default 1. */
   minRows?: number;
+  /** Rows after which the textarea stops growing and scrolls. Default 8. */
   maxRows?: number;
   /** Submit on Enter (Shift+Enter inserts a newline). Default true. */
   submitOnEnter?: boolean;

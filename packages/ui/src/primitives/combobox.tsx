@@ -33,12 +33,21 @@ export interface ComboboxOption {
 }
 
 interface ComboboxBaseProps {
+  /** Options to choose from; each has a `value`, a `label` and optional description, icon, group and disabled flag. */
   options: ComboboxOption[];
+  /**
+   * Trigger text while nothing is selected.
+   * @default "Select…"
+   */
   placeholder?: string;
+  /**
+   * Placeholder of the search input inside the list.
+   * @default "Search…"
+   */
   searchPlaceholder?: string;
   /** Shown when the query matches nothing. Default "No results". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Legacy name of `emptyState`. @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
   /** Hide the search input. */
   searchable?: boolean;
@@ -49,13 +58,17 @@ interface ComboboxBaseProps {
    * automatically: return a different string (e.g. a generated id) to select that instead.
    */
   onCreate?: (query: string) => string | void;
+  /** Builds the "Create …" row label from the current query; the default reads `Create "query"`. */
   createLabel?: (query: string) => React.ReactNode;
+  /** Control height and text size; match the neighbouring inputs. */
   size?: Size;
   /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
   variant?: "outline" | "filled";
+  /** Disables the trigger so the list cannot be opened. */
   disabled?: boolean;
   /** Marks the combobox required. Inherited from a surrounding `Field` when omitted. */
   required?: boolean;
+  /** Marks the combobox invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
   /** Max chips shown in the trigger before collapsing into "+N" (multiple only). */
   maxChips?: number;
@@ -85,22 +98,36 @@ interface ComboboxBaseProps {
    * removes it, so a held key cannot empty the field. Default false: Backspace removes the last chip at once.
    */
   confirmBackspace?: boolean;
+  /** Controlled open state of the list. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the list opens or closes (selection, Escape, outside click). */
   onOpenChange?: (open: boolean) => void;
+  /** Classes for the trigger button. */
   className?: string;
+  /** Classes for the popover list. */
   contentClassName?: string;
+  /** `id` of the trigger, so a `<label htmlFor>` or `Field` can point at it. */
   id?: string;
+  /** Accessible name of the trigger when there is no visible label. */
   "aria-label"?: string;
+  /** Id(s) of the element(s) that label the trigger. */
   "aria-labelledby"?: string;
+  /** Id(s) of the element(s) that describe the trigger (hint, error text). */
   "aria-describedby"?: string;
+  /** Overrides the invalid state announced to assistive technology; normally set `invalid` instead. */
   "aria-invalid"?: boolean;
 }
 
 export interface ComboboxSingleProps extends ComboboxBaseProps {
+  /** Single-select mode (the default); `value` and `onValueChange` then work with one string. */
   multiple?: false;
+  /** Controlled selected value (an option `value`); an empty string means nothing selected. */
   value?: string;
+  /** Initially selected value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the option `value` the user picked (or the created value). */
   onValueChange?: (value: string) => void;
 }
 

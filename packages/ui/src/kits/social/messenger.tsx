@@ -184,6 +184,7 @@ const statusLabel: Record<MessageDeliveryStatus, string> = {
 };
 
 export interface MessageStatusIconProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Delivery state (`sending`, `sent`, `delivered`, `read` or `failed`); picks the tick icon and its tone. */
   status: MessageDeliveryStatus;
 }
 
@@ -214,19 +215,29 @@ export const MessageStatusIcon = React.forwardRef<HTMLSpanElement, MessageStatus
 MessageStatusIcon.displayName = "MessageStatusIcon";
 
 export interface MessageBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** `incoming` aligns the bubble to the start, `outgoing` to the end with the accent fill. */
   direction?: MessageDirection;
+  /** Place in a run of messages from one sender (`single`, `first`, `middle`, `last`); shapes the corners. */
   position?: MessageGroupPosition;
+  /** Time of the message (Date, epoch ms or ISO string), shown in the footer when `showTimestamp`. */
   timestamp?: Date | number | string;
   /** Show the time inside the bubble footer. Default true. */
   showTimestamp?: boolean;
+  /** Delivery state of an outgoing message; shows the tick icon in the footer. */
   status?: MessageDeliveryStatus;
+  /** Called when the user presses Retry on a `failed` message; the button is hidden when unset. */
   onRetry?: () => void;
+  /** Quoted message this one replies to, shown above the text. */
   replyTo?: MessageReplyTo;
+  /** Called when the user presses the quoted reply, for example to scroll to the original. */
   onReplyClick?: () => void;
+  /** Reaction pills under the bubble, each with an emoji, count and whether you reacted. */
   reactions?: MessageReactionSummary[];
+  /** Called with the emoji and the new reacted state when the user presses a reaction pill. */
   onReactionToggle?: (emoji: string, reacted: boolean) => void;
   /** Rich shared-item preview rendered above the text. */
   attachment?: React.ReactNode;
+  /** Shows an "edited" mark in the footer. */
   edited?: boolean;
   /** Sender name shown above the first incoming bubble of a group (group chats). */
   senderName?: string;
@@ -351,16 +362,23 @@ export interface MessengerUser {
 }
 
 export interface MessageListProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Messages in order, oldest first; grouped into runs by sender and time. */
   messages: MessengerMessage[];
   /** Messages from this sender render as outgoing. */
   currentUserId: string;
+  /** Sender details by user id (name and avatar), used for sender names and avatars in group chats. */
   users?: Record<string, MessengerUser>;
+  /** Largest gap in ms between messages that still share a run. Default 300000 (5 minutes). */
   windowMs?: number;
+  /** Id of the first unread message; an "unread" divider is drawn above it. */
   firstUnreadId?: string;
   /** Show sender names and avatars on incoming groups (group chats). */
   showSenders?: boolean;
+  /** Called with the message when the user retries a failed one. */
   onRetry?: (message: MessengerMessage) => void;
+  /** Called with the message, the emoji and the new reacted state when the user presses a reaction pill. */
   onReactionToggle?: (message: MessengerMessage, emoji: string, reacted: boolean) => void;
+  /** Reference time for date dividers; set it in tests and SSR for stable output. */
   now?: Date;
   /** Keep scrolled to the newest message. Default true. */
   autoScroll?: boolean;
@@ -482,8 +500,11 @@ MessageList.displayName = "MessageList";
 /* ------------------------------------------------------------------ */
 
 export interface MessageComposerProps extends Omit<React.HTMLAttributes<HTMLFormElement>, "onSubmit"> {
+  /** Controlled text of the field. */
   value?: string;
+  /** Initial text when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the text on every edit. */
   onValueChange?: (value: string) => void;
   /** Called with the trimmed text; the field clears afterwards. */
   onSend?: (text: string) => void;
@@ -491,11 +512,15 @@ export interface MessageComposerProps extends Omit<React.HTMLAttributes<HTMLForm
   onAttach?: () => void;
   /** Show the emoji picker button. Default true. */
   emoji?: boolean;
+  /** Placeholder of the field. Default "Message". */
   placeholder?: string;
+  /** Disables the field and the buttons. */
   disabled?: boolean;
   /** Message being replied to, shown above the field. */
   replyingTo?: MessageReplyTo;
+  /** Called when the user dismisses the reply preview; the close button is hidden when unset. */
   onCancelReply?: () => void;
+  /** Rows after which the field stops growing and scrolls. Default 6. */
   maxRows?: number;
 }
 
@@ -629,17 +654,25 @@ export interface MessengerHeaderMember {
 }
 
 export interface MessengerHeaderProps extends React.HTMLAttributes<HTMLElement> {
+  /** Conversation or contact name, shown as the title. */
   name: string;
+  /** Avatar image URL for one-to-one chats; initials are shown when unset. */
   avatarSrc?: string;
   /** Group members: renders stacked avatars instead of a single one. */
   members?: MessengerHeaderMember[];
   /** `"online"`, a last-seen time, or any custom string. */
   presence?: "online" | Date | number | (string & {});
+  /** Shows "typing…" in place of the presence line. */
   typing?: boolean;
+  /** Called when the user presses the back button (small screens); the button is hidden when unset. */
   onBack?: () => void;
+  /** Called when the user presses the voice call button; the button is hidden when unset. */
   onVoiceCall?: () => void;
+  /** Called when the user presses the video call button; the button is hidden when unset. */
   onVideoCall?: () => void;
+  /** Called when the user presses the info button; the button is hidden when unset. */
   onInfo?: () => void;
+  /** Reference time for the last-seen label; set it in tests and SSR for stable output. */
   now?: Date;
 }
 
@@ -702,7 +735,7 @@ export const MessengerHeader = React.forwardRef<HTMLElement, MessengerHeaderProp
 );
 MessengerHeader.displayName = "MessengerHeader";
 
-/** @deprecated Use `MessengerHeader` (the AI `Chat*` components are a separate family). */
+/** Alias of `MessengerHeader`. @deprecated Use `MessengerHeader` (the AI `Chat*` components are a separate family). */
 export const ChatHeader = MessengerHeader;
 /** @deprecated Use `MessengerHeaderProps`. */
 export type ChatHeaderProps = MessengerHeaderProps;
@@ -732,19 +765,33 @@ export interface GroupMediaItem {
 }
 
 export interface GroupInfoPanelProps extends React.HTMLAttributes<HTMLElement> {
+  /** Group name, shown as the heading. */
   name: string;
+  /** Group description under the name. */
   description?: React.ReactNode;
+  /** Group avatar image URL. */
   avatarSrc?: string;
+  /** Members to list, each with a name, role and presence. */
   members: GroupMember[];
+  /** Id of the signed-in member; that row is marked "you". */
   currentUserId?: string;
+  /** Shared media shown as a thumbnail grid. */
   media?: GroupMediaItem[];
+  /** Called with the item when the user opens a thumbnail. */
   onMediaClick?: (item: GroupMediaItem) => void;
+  /** Controlled state of the mute switch. */
   muted?: boolean;
+  /** Initial mute state when `muted` is not controlled. */
   defaultMuted?: boolean;
+  /** Called with the new state when the user flips the mute switch. */
   onMutedChange?: (muted: boolean) => void;
+  /** Called when the user presses Add member; the button is hidden when unset. */
   onAddMember?: () => void;
+  /** Called with the member when the user opens a member row. */
   onMemberClick?: (member: GroupMember) => void;
+  /** Called when the user presses the leave button; the button is hidden when unset. */
   onLeave?: () => void;
+  /** Label of the leave button. Default "Leave group". */
   leaveLabel?: string;
 }
 

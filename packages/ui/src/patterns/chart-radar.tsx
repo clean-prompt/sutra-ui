@@ -26,6 +26,7 @@ export interface RadarChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   index: string;
   /** One polygon per series. */
   series: RadarSeries[];
+  /** Formats values in the tooltip and on the axis. Receives the value and the series key. Default is the localized number. */
   valueFormatter?: (value: number, seriesKey: string) => string;
   /**
    * Value range from the center to the rim: `[min, max]`, either end may be `"auto"` (fit the data). Default: from
@@ -48,14 +49,22 @@ export interface RadarChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   legend?: boolean | "top" | "bottom";
   /** Allow toggling/isolating series from the legend. Default true. */
   legendInteractive?: boolean;
+  /**
+   * Shows a tooltip with every series at the hovered axis.
+   * @default true
+   */
   tooltip?: boolean;
   /** CSS transitions on data changes (disabled under prefers-reduced-motion). Default true. */
   animate?: boolean;
+  /** Content shown instead of the plot when there is no data. */
   emptyState?: React.ReactNode;
   /** Accessible name. Defaults to a description built from the series. */
   label?: string;
+  /** Controlled list of hidden series keys (toggled from the legend). Use with `onHiddenSeriesChange`. */
   hiddenSeries?: string[];
+  /** Initially hidden series keys when uncontrolled. */
   defaultHiddenSeries?: string[];
+  /** Called with the hidden series keys when a legend entry is toggled. */
   onHiddenSeriesChange?: (hidden: string[]) => void;
   /** The spoke under the pointer or keyboard focus (index in `data`), or null. */
   onActiveIndexChange?: (index: number | null) => void;

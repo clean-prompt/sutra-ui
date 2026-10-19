@@ -10,8 +10,11 @@ const titleSize = { sm: "lg", md: "xl", lg: "display-xs" } as const;
 const descriptionSize: Record<Size, string> = { sm: "text-sm", md: "text-sm", lg: "text-base" };
 
 export interface SectionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Small label above the title (a section or category name). */
   eyebrow?: React.ReactNode;
+  /** Section heading. */
   title: React.ReactNode;
+  /** Supporting text under the heading. */
   description?: React.ReactNode;
   /** Buttons on the right; wrap below the text on mobile. */
   actions?: React.ReactNode;
@@ -19,7 +22,15 @@ export interface SectionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivEle
   tabs?: React.ReactNode;
   /** Bottom border under the header. */
   divider?: boolean;
+  /**
+   * Heading size and spacing.
+   * @default "md"
+   */
   size?: Size;
+  /**
+   * Alignment of the heading text.
+   * @default "start"
+   */
   align?: "start" | "center";
   /** Heading element. Default h2. */
   as?: HeadingLevel;
@@ -108,6 +119,10 @@ export interface PageHeaderProps extends Omit<SectionHeaderProps, "as" | "align"
   onBack?: () => void;
   /** Render the back button as a link. */
   backHref?: string;
+  /**
+   * Accessible name of the icon-only back button.
+   * @default "Back"
+   */
   backLabel?: string;
 }
 

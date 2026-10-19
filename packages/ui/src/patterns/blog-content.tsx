@@ -53,9 +53,17 @@ const proseSize = {
 } as const;
 
 export interface BlogContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Body text size, which sets the reading scale.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
   /** Remove the readable max width. */
   fullWidth?: boolean;
+  /**
+   * Element to render.
+   * @default "div"
+   */
   as?: "div" | "article" | "section";
 }
 
@@ -74,19 +82,28 @@ export const BlogContent = React.forwardRef<HTMLDivElement, BlogContentProps>(
 );
 BlogContent.displayName = "BlogContent";
 
-/** @deprecated Use `BlogContent`. */
+/** Alias of `BlogContent`. @deprecated Use `BlogContent`. */
 export const Prose = BlogContent;
 /** @deprecated Use `BlogContentProps`. */
 export type ProseProps = BlogContentProps;
 
 export interface BlogPostHeaderProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Small label above the title (e.g. the post category). */
   category?: React.ReactNode;
+  /** Post title, rendered as the page heading. */
   title: React.ReactNode;
+  /** Standfirst under the title. */
   subtitle?: React.ReactNode;
+  /** Author name or element. */
   author?: React.ReactNode;
+  /** Publication date; a string is shown as given, a `Date` is formatted. */
   date?: string | Date;
   /** Minutes (number) or a preformatted string. */
   readTime?: number | string;
+  /**
+   * Alignment of the header text.
+   * @default "left"
+   */
   align?: "left" | "center";
 }
 
@@ -150,7 +167,9 @@ export interface BlogTocHeading {
 }
 
 export interface BlogTableOfContentsProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Headings to list; each has an `id` (the anchor), a `title` and an optional `level`. */
   headings: BlogTocHeading[];
+  /** Heading above the list. */
   title?: React.ReactNode;
   /** Controlled active id; otherwise tracked with IntersectionObserver. */
   activeId?: string;

@@ -46,6 +46,7 @@ export interface TurnStickyHeaderProps extends Omit<React.HTMLAttributes<HTMLDiv
   index?: number;
   /** Level of the visually hidden heading. Default 2. */
   headingLevel?: 2 | 3 | 4;
+  /** Called when the user presses the header, after it scrolls to `targetId`. */
   onJump?: () => void;
 }
 
@@ -90,8 +91,11 @@ TurnStickyHeader.displayName = "TurnStickyHeader";
 export interface TranscriptTurnProps extends Omit<React.HTMLAttributes<HTMLElement>, "id"> {
   /** Unique id; the turn start anchor gets `${id}-start`. */
   id: string;
+  /** The user's prompt, shown in the sticky turn header. */
   prompt: React.ReactNode;
+  /** 1-based turn number for the screen-reader heading. */
   index?: number;
+  /** Level of the visually hidden heading. Default 2. */
   headingLevel?: 2 | 3 | 4;
 }
 
@@ -112,6 +116,7 @@ TranscriptTurn.displayName = "TranscriptTurn";
 /* ------------------------------------------------------------------ */
 
 export interface DividerPillProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Icon before the text inside the pill. */
   icon?: React.ReactNode;
   /** Trailing action inside the pill, e.g. a "Restore" link. */
   action?: React.ReactNode;
@@ -136,24 +141,31 @@ DividerPill.displayName = "DividerPill";
 export type TranscriptSystemRowKind = "compaction" | "compacting" | "interrupted" | "command" | "error" | "divider" | "date";
 
 export interface TranscriptSystemRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** What the row announces: `compaction`, `compacting`, `interrupted`, `command`, `error`, `divider` or `date`. */
   kind: TranscriptSystemRowKind;
   /** Overrides the default label for the kind. */
   title?: React.ReactNode;
   /** compaction: the summary revealed by "Show summary". */
   summary?: React.ReactNode;
+  /** Compaction rows: whether the summary starts revealed. */
   defaultExpanded?: boolean;
   /** command: slash command name, e.g. "/review". */
   command?: string;
+  /** Command rows: arguments shown after the command name. */
   args?: string;
   /** command: output shown under the command. */
   result?: React.ReactNode;
   /** error: details. */
   error?: React.ReactNode;
+  /** Error rows: called when the user presses Retry; the button is hidden when unset. */
   onRetry?: () => void;
+  /** Error rows: label of the retry button. Default "Retry". */
   retryLabel?: string;
   /** date: the day to show. */
   date?: TimeInput;
+  /** Date rows: reference time for "Today" and "Yesterday" labels; set it in tests and SSR. */
   now?: number;
+  /** Divider rows: icon before the text in the pill. */
   icon?: React.ReactNode;
   /** divider: trailing action in the pill. */
   action?: React.ReactNode;
@@ -311,9 +323,13 @@ TranscriptSystemRow.displayName = "TranscriptSystemRow";
 /* ------------------------------------------------------------------ */
 
 export interface BookmarkButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange"> {
+  /** Controlled bookmarked state. */
   pressed?: boolean;
+  /** Initial bookmarked state when `pressed` is not controlled. */
   defaultPressed?: boolean;
+  /** Called with the new state when the user toggles the bookmark. */
   onPressedChange?: (pressed: boolean) => void;
+  /** Button size. */
   size?: "xs" | "sm";
 }
 
@@ -369,16 +385,19 @@ function formatBookmarkTime(t: number | undefined) {
 }
 
 export interface BookmarksPaneProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Bookmarked messages with their id, excerpt and time. */
   bookmarks: TranscriptBookmark[];
   /** Default "Bookmarks". */
   title?: React.ReactNode;
   /** Called on click; when omitted the element with the bookmark's id is scrolled into view. */
   onJump?: (id: string) => void;
+  /** Called with the bookmark id when the user removes it; the remove button is hidden when unset. */
   onRemove?: (id: string) => void;
+  /** Called when the user closes the pane; the close button is hidden when unset. */
   onClose?: () => void;
   /** Shown when there is nothing to list. Default "Bookmark a message to find it here". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
 }
 
@@ -471,6 +490,7 @@ export const defaultSpinnerVerbs = [
 ];
 
 export interface SpinnerVerbsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Words cycled while working (for example "Pondering"); defaults to a built-in list. */
   verbs?: string[];
   /** Default "random". */
   order?: "random" | "sequential";
@@ -478,11 +498,13 @@ export interface SpinnerVerbsProps extends React.HTMLAttributes<HTMLDivElement> 
   interval?: number;
   /** Shows elapsed time when set. */
   startedAt?: TimeInput;
+  /** Token count shown beside the elapsed time. */
   tokens?: number;
   /** Optional hint after the stats, e.g. "esc to interrupt". */
   hint?: React.ReactNode;
   /** Accessible status label. Default "Working". */
   label?: string;
+  /** Replaces the default spinner glyph. */
   icon?: React.ReactNode;
 }
 
@@ -538,16 +560,23 @@ export interface ContextBannerAction {
 }
 
 export interface ContextBannerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** `info` for neutral notices, `warning` for ones that need attention. */
   variant?: "info" | "warning";
+  /** Replaces the default icon of the variant. */
   icon?: React.ReactNode;
   /** Name rendered as a mono pill after the message (worktree, branch…). */
   name?: string;
+  /** Icon inside the name pill. */
   nameIcon?: React.ReactNode;
+  /** Call-to-action button with a label, click handler and optional loading state. */
   action?: ContextBannerAction;
   /** Command output revealed by a "Show output" toggle. */
   output?: string;
+  /** Label of the toggle that reveals `output`. */
   outputLabel?: string;
+  /** Whether `output` starts revealed. */
   defaultExpanded?: boolean;
+  /** Called when the user dismisses the banner; the close button is hidden when unset. */
   onDismiss?: () => void;
 }
 
@@ -656,8 +685,14 @@ export interface ResponseRatingProps extends Omit<React.HTMLAttributes<HTMLDivEl
   badReasons?: string[];
   /** Reason chips after a good rating. Empty (default) to submit immediately. */
   goodReasons?: string[];
+  /** Called with `good` or `bad` as soon as the user picks a thumb. */
   onRate?: (rating: ResponseRatingValue) => void;
+  /**
+   * Called with the rating and chosen reasons once the user finishes (immediately when there are no reasons for that
+   * rating).
+   */
   onSubmit?: (feedback: ResponseRatingSubmit) => void;
+  /** Text shown after submitting. Default "Thanks for the feedback". */
   thanksText?: React.ReactNode;
 }
 

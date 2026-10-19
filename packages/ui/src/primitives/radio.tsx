@@ -10,6 +10,7 @@ function joinIds(...ids: Array<string | undefined>) {
 }
 
 export interface RadioGroupProps extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
+  /** Marks the group invalid: error styling on the items and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
 }
 
@@ -60,6 +61,10 @@ export const radioItemVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Radio size: `sm` 14px or `md` 16px.
+       * @default "md"
+       */
       size: {
         sm: "size-3.5 [&_[data-slot=radio-dot]]:size-1.5",
         md: "size-4 [&_[data-slot=radio-dot]]:size-1.5",
@@ -94,9 +99,13 @@ export const RadioGroupItem = React.forwardRef<React.ElementRef<typeof RadioGrou
 RadioGroupItem.displayName = "RadioGroupItem";
 
 export interface RadioFieldProps extends RadioGroupItemProps {
+  /** Label shown beside the radio and wired to it, so clicking it selects the item. */
   label?: React.ReactNode;
+  /** Secondary text under the label, announced as the item description. */
   description?: React.ReactNode;
+  /** Classes for the `<label>` element. */
   labelClassName?: string;
+  /** Classes for the wrapper around the radio, label and description. */
   wrapperClassName?: string;
 }
 
@@ -149,9 +158,16 @@ export const RadioField = React.forwardRef<React.ElementRef<typeof RadioGroupPri
 RadioField.displayName = "RadioField";
 
 export interface RadioCardProps extends RadioGroupItemProps {
+  /** Primary text of the card (the whole card is the label and click target). */
   label: React.ReactNode;
+  /** Supporting text under the label. */
   description?: React.ReactNode;
+  /** Icon shown at the start of the card. */
   icon?: React.ReactNode;
+  /**
+   * Which side of the card the radio dot sits on.
+   * @default "end"
+   */
   indicatorPosition?: "start" | "end";
   /** Class for the radio control (`className` styles the card). */
   radioClassName?: string;
@@ -215,11 +231,18 @@ export interface RadioGroupOption {
 }
 
 export interface RadioGroupFieldProps extends RadioGroupProps {
+  /** Options to render, in order; each has a `value`, a `label` and optional description, icon and disabled flag. */
   options: RadioGroupOption[];
+  /** Group label shown above the options; it is the accessible name of the group. */
   label?: React.ReactNode;
+  /** Help text under the group label. */
   description?: React.ReactNode;
   /** `card` renders each option as a `RadioCard`. */
   variant?: "default" | "card";
+  /**
+   * Radio size for every option.
+   * @default "md"
+   */
   size?: "sm" | "md";
   /** Class for the outer wrapper. */
   wrapperClassName?: string;

@@ -10,6 +10,7 @@ export interface DurationSplit {
   ms: number;
 }
 
+/** Options for `splitDuration`. */
 export interface SplitDurationOptions {
   /** Round to whole seconds first (`ms` is then 0). Default: no rounding, the remainder stays in `ms`. */
   round?: RoundingMode;
@@ -31,6 +32,7 @@ export function splitDuration(ms: number, options: SplitDurationOptions = {}): D
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/** Options for `formatClock`. */
 export interface FormatClockOptions {
   /** Zero-pad the leading minutes (`"01:05"`). Default false. */
   padMinutes?: boolean;
@@ -79,11 +81,13 @@ export function formatCountdown(msRemaining: number, options: Omit<FormatClockOp
   return formatClock(Number.isFinite(msRemaining) ? msRemaining / 1000 : msRemaining, { ...options, round: "ceil" });
 }
 
+/** Unit letter of a duration: days, hours, minutes or seconds. */
 export type DurationUnit = "d" | "h" | "m" | "s";
 
 const UNIT_ORDER: DurationUnit[] = ["d", "h", "m", "s"];
 const UNIT_MS: Record<DurationUnit, number> = { d: 86_400_000, h: 3_600_000, m: 60_000, s: 1000 };
 
+/** Options for `formatDuration`: style, units shown (`units`, `maxUnit`, `minUnit`), decimals and rounding. */
 export interface FormatDurationOptions {
   /**
    * `"compact"` (default) → `"1h 5m"`; `"long"` → `"1 hour 5 minutes"` (English unit words, always spaced);

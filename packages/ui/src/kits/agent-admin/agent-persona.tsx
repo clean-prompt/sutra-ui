@@ -76,8 +76,11 @@ function OptionGroup<T extends string>({
 const colorName = (c: string) => (c === "var(--primary)" ? "Brand" : c);
 
 export interface AgentAvatarBuilderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Controlled avatar spec (shape, colour, glyph or uploaded image). */
   value?: AgentAvatarSpec;
+  /** Initial avatar spec when `value` is not controlled. */
   defaultValue?: AgentAvatarSpec;
+  /** Called with the new spec on every change. */
   onValueChange?: (spec: AgentAvatarSpec) => void;
   /** Swatches. Default `agentAvatarColors`. */
   colors?: string[];
@@ -231,14 +234,21 @@ AgentAvatarBuilder.displayName = "AgentAvatarBuilder";
 /* ------------------------------------------------------------------ */
 
 export interface PersonaEditorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** Controlled persona text (Markdown). */
   value?: string;
+  /** Initial text when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the new text on every edit. */
   onValueChange?: (value: string) => void;
+  /** Label of the text area. Default "Persona". */
   label?: React.ReactNode;
+  /** Placeholder shown while the text area is empty. */
   placeholder?: string;
   /** Textarea rows. Default 8. */
   rows?: number;
+  /** Maximum number of characters; also shows a character counter. */
   maxLength?: number;
+  /** Helper text under the text area; pass `null` to hide it. */
   hint?: React.ReactNode;
 }
 
@@ -312,8 +322,11 @@ export interface CreateAgentValues {
 }
 
 export interface CreateAgentDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Element that opens the dialog (wrapped with `asChild`). */
   trigger?: React.ReactNode;
@@ -321,12 +334,15 @@ export interface CreateAgentDialogProps {
   onCreate?: (values: CreateAgentValues) => void | Promise<void>;
   /** Names already taken (case-insensitive). */
   existingNames?: string[];
+  /** Initial values of the form fields (name, description and so on). */
   defaultValues?: Partial<CreateAgentValues>;
   /** Default model picker (e.g. a `SimpleSelect`). */
   modelSlot?: React.ReactNode;
   /** Toolset picker. */
   toolsetsSlot?: React.ReactNode;
+  /** Dialog heading. Default "Create agent". */
   title?: React.ReactNode;
+  /** Label of the submit button. Default "Create agent". */
   submitLabel?: React.ReactNode;
 }
 

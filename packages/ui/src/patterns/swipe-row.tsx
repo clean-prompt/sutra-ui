@@ -35,10 +35,13 @@ export interface SwipeRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   onAction?: (action: SwipeAction, side: SwipeSide) => void;
   /** Which side's actions are open (`null` closed). */
   value?: SwipeSide | null;
+  /** Initially open side when uncontrolled; `null` is closed. */
   defaultValue?: SwipeSide | null;
+  /** Called with the open side (`null` when closed) after a swipe. */
   onValueChange?: (side: SwipeSide | null) => void;
   /** A full swipe runs the outermost action. Default true; false stops at the revealed actions. */
   commit?: boolean;
+  /** Disables swiping. */
   disabled?: boolean;
   /** Width of one action button in px, so the reveal distance is known without measuring. Default 72. */
   actionWidth?: number;

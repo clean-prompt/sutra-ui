@@ -56,16 +56,23 @@ export function looksSecretKey(key: string) {
 }
 
 export interface KeyValueRowsInputProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** Controlled rows as `{ key, value }` entries. */
   value?: KeyValueRowsEntry[];
+  /** Initial rows when `value` is not controlled. */
   defaultValue?: KeyValueRowsEntry[];
+  /** Called with the full row list when the user edits, adds or removes a row. */
   onValueChange?: (rows: KeyValueRowsEntry[]) => void;
   /** Mask values: always, never, or `"auto"` (keys that look like secrets). Default "auto". */
   secret?: boolean | "auto";
+  /** Placeholder of the key field in each row. */
   keyPlaceholder?: string;
+  /** Placeholder of the value field in each row. */
   valuePlaceholder?: string;
+  /** Label of the button that appends an empty row. */
   addLabel?: string;
   /** Accessible name for the group, also used to label row inputs. */
   label?: string;
+  /** Disables every field and the add and remove buttons. */
   disabled?: boolean;
 }
 
@@ -296,13 +303,22 @@ export function validateMcpServerConfig(config: McpServerConfig, existingNames: 
 /* ------------------------------------------------------------------ */
 
 export interface McpServerFormProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue" | "onChange"> {
+  /** Controlled server configuration (name, transport, command or URL, env, headers). */
   value?: McpServerConfig;
+  /** Initial configuration when `value` is not controlled. */
   defaultValue?: McpServerConfig;
+  /** Called with the configuration on every edit. */
   onValueChange?: (config: McpServerConfig) => void;
+  /**
+   * Called with the valid configuration; may return a promise, and the submit button shows a spinner until it
+   * settles.
+   */
   onSubmit?: (config: McpServerConfig) => void | Promise<void>;
+  /** Called when the user presses Cancel; the button is hidden when unset. */
   onCancel?: () => void;
   /** Names already in use (for the uniqueness check). */
   existingNames?: string[];
+  /** Label of the submit button. */
   submitLabel?: React.ReactNode;
   /** Show the "Paste JSON config" box. Default true. */
   allowPaste?: boolean;
@@ -579,6 +595,7 @@ const mcpStatusMeta: Record<McpServerStatus, { status: StatusBadgeStatus; label:
 };
 
 export interface McpTransportBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
+  /** Transport to label (for example stdio or HTTP); sets the badge text and icon. */
   transport: McpTransport;
 }
 
@@ -597,18 +614,30 @@ export function formatMcpTestResult(result: McpTestResult) {
 }
 
 export interface McpServerCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Server name, shown as the card title. */
   name: string;
+  /** How the server is reached (shown as a transport badge). */
   transport: McpTransport;
+  /**
+   * Connection state: `connected`, `connecting`, `failed`, `disabled` or `needs-auth`; sets the status pill and the
+   * actions offered.
+   */
   status: McpServerStatus;
   /** Command line or URL. */
   endpoint?: string;
+  /** Number of tools the server exposes, shown as a count. */
   toolCount?: number;
+  /** Most recent error message, shown when the server is in an error state. */
   lastError?: string;
+  /** Runs a connection test and resolves with its result; shows a Test button when set. */
   onTest?: () => Promise<McpTestResult>;
   /** Start OAuth. Resolve when signed in; reject to show the retry state. */
   onConnect?: () => Promise<void>;
+  /** Called with the new state when the user presses Enable or Disable; the button is hidden when unset. */
   onEnabledChange?: (enabled: boolean) => void;
+  /** Called after the user confirms removal; may return a promise. */
   onRemove?: () => void | Promise<void>;
+  /** Called when the user presses View logs; the button is hidden when unset. */
   onViewLogs?: () => void;
 }
 
@@ -806,8 +835,11 @@ const defaultWays: Record<ConnectorWay, Required<Omit<ConnectionMethodInfo, "dis
 };
 
 export interface ConnectionMethodChooserProps extends Omit<React.ComponentPropsWithoutRef<typeof RadioGroup>, "value" | "defaultValue" | "onValueChange"> {
+  /** Controlled selected way: `hosted` or `local`. */
   value?: ConnectorWay;
+  /** Initially selected way (`hosted` or `local`) when `value` is not controlled. */
   defaultValue?: ConnectorWay;
+  /** Called with the way the user selects. */
   onValueChange?: (way: ConnectorWay) => void;
   /** Ways offered. Default both. */
   ways?: ConnectorWay[];
@@ -892,15 +924,24 @@ export interface ConnectorCatalogEntry {
 }
 
 export interface ConnectorDirectoryProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Connectors to list, each with name, description, category and install state. */
   entries: ConnectorCatalogEntry[];
   /** Category order; derived from entries when omitted. */
   categories?: string[];
+  /** Controlled category filter; `null` shows every category. */
   category?: string | null;
+  /** Initial category filter when `category` is not controlled. */
   defaultCategory?: string | null;
+  /** Called with the category (or `null` for all) when the user picks a filter. */
   onCategoryChange?: (category: string | null) => void;
   /** Filter by name/description. */
   search?: string;
+  /**
+   * Called when the user installs a connector that is not installed yet; may return a promise to keep the button
+   * busy.
+   */
   onInstall?: (entry: ConnectorCatalogEntry) => void | Promise<void>;
+  /** Called when the user presses Manage on an installed connector. */
   onManage?: (entry: ConnectorCatalogEntry) => void;
 }
 
@@ -1047,12 +1088,17 @@ const accountStatusMeta: Record<ConnectorAccountStatus, { status: StatusBadgeSta
 };
 
 export interface ConnectorAccountsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Accounts linked to the connector, each with alias, status and identity. */
   accounts: ConnectorAccount[];
   /** Rename an account. Throw to show an error. */
   onRename?: (id: string, alias: string) => void | Promise<void>;
+  /** Called with the account id when the user presses Repair on an expired or errored account. */
   onRepair?: (id: string) => void;
+  /** Called when the user presses Add account; the button is hidden when unset. */
   onAdd?: () => void;
+  /** Called with the account id when the user presses Remove on a non-retired account. */
   onRemove?: (id: string) => void;
+  /** Connector name used in the heading ("Slack accounts"); the heading reads "Accounts" when unset. */
   connectorName?: string;
 }
 

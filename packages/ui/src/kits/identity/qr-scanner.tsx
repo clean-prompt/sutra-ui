@@ -120,6 +120,7 @@ const SCAN_KEYFRAMES = `@keyframes sutra-qr-scanline{0%{top:6%;opacity:0}12%{opa
 export interface QRScannerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onError" | "onResult"> {
   /** Called once with the decoded text; scanning then pauses until "Scan again". */
   onResult: (text: string) => void;
+  /** Called with the error when the camera cannot start or decoding fails. */
   onError?: (error: unknown) => void;
   /** Inject a detector (tests, custom engines). Otherwise BarcodeDetector, else jsQR. */
   detector?: QRScannerDetector | null;
@@ -133,6 +134,7 @@ export interface QRScannerProps extends Omit<React.HTMLAttributes<HTMLDivElement
   allowUpload?: boolean;
   /** Pause the camera and decoding. */
   paused?: boolean;
+  /** Extra classes for the camera viewport. */
   viewportClassName?: string;
 }
 
@@ -462,12 +464,17 @@ QRScanner.displayName = "QRScanner";
 /* ------------------------------------------------------------------ */
 
 export interface QRScannerDialogProps extends Omit<QRScannerProps, "title"> {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Element that opens the scanner (wrapped with `asChild`). */
   trigger?: React.ReactNode;
+  /** Dialog heading. */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
   /** Close the dialog after a successful scan. Default true. */
   closeOnResult?: boolean;

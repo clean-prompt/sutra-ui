@@ -78,26 +78,46 @@ export type ExtensionTier = "official" | "community";
 export type CatalogEntryState = "available" | "installed" | "update-available" | "removed";
 
 export interface CatalogCardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Extension name, shown as the card title. */
   name: string;
+  /** Publisher, shown as "by <author>" under the name. */
   author?: string;
+  /** Short summary of what the extension does; clamped to two lines. */
   description?: React.ReactNode;
+  /** Extension icon or logo, shown beside the name. */
   icon?: React.ReactNode;
   /** Banner image URL or node. */
   banner?: string | React.ReactNode;
+  /** `official` (first-party) or `community`; sets the tier badge. */
   tier?: ExtensionTier;
+  /** Trust level of the publisher or capability; shown as a trust badge. */
   trust?: CapabilityTrustLevel;
+  /** Version of the catalog entry (without the leading `v`). */
   version?: string;
+  /**
+   * Newest available version; with `onUpdate` and `state="update-available"` it labels the Update button ("Update to
+   * v1.2").
+   */
   latestVersion?: string;
   /** Capability ids (mono chips), capped at `maxCapabilities`. */
   capabilities?: string[];
+  /** How many capability chips to show before collapsing the rest into a "+N" badge. */
   maxCapabilities?: number;
+  /** Supported platforms (e.g. "macos", "linux"), shown as small chips. */
   platforms?: string[];
+  /** Star count from the source repository; hidden when unset. */
   stars?: number;
+  /** Install state of this entry; drives the action button (Install, Installed, Update, Removed). */
   state?: CatalogEntryState;
+  /** Link to the extension's documentation; shows a Docs link when set. */
   docsUrl?: string;
+  /** Link to the source repository; shows a Repository link when set. */
   repoUrl?: string;
+  /** Called when the user presses Install; may return a promise to keep the button busy until it settles. */
   onInstall?: () => void | Promise<void>;
+  /** Called when the user presses Update (shown when the entry has a newer version). */
   onUpdate?: () => void;
+  /** Called when the user presses Open; the button is hidden when unset. */
   onOpen?: () => void;
 }
 
@@ -283,17 +303,27 @@ const runtimeMeta: Record<ExtensionRuntimeStatus, { status: StatusBadgeStatus; l
 };
 
 export interface InstalledExtensionCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Extension name, shown as the card title. */
   name: string;
+  /** Extension icon or logo, shown beside the name. */
   icon?: React.ReactNode;
   /** "Catalog", a git URL or a local path. */
   source?: string;
+  /** Installed version (without the leading `v`). */
   version?: string;
+  /** Newest available version; an update is offered when it differs from `version` and `onUpdate` is set. */
   latestVersion?: string;
+  /** Runtime status of the extension (`running`, `disabled`, `error`, `restart-required`); sets the status pill. */
   runtime: ExtensionRuntimeStatus;
+  /** Error detail shown when `runtime` is `error`. */
   error?: string;
+  /** Shows an "Auth required" badge when the extension needs the user to sign in before it works. */
   authRequired?: boolean;
+  /** Controlled on/off state of the enable switch. */
   enabled?: boolean;
+  /** Initial on/off state when `enabled` is not controlled. */
   defaultEnabled?: boolean;
+  /** Called with the new state when the user flips the enable switch. */
   onEnabledChange?: (enabled: boolean) => void;
   /** Called after the user consents to the update. */
   onUpdate?: () => void | Promise<void>;
@@ -301,8 +331,11 @@ export interface InstalledExtensionCardProps extends Omit<React.HTMLAttributes<H
   updateNotes?: React.ReactNode;
   /** New permissions requested by the update. */
   updatePermissions?: string[];
+  /** Called when the user opens the extension's page or settings; the button is hidden when unset. */
   onOpen?: () => void;
+  /** Called when the user hides the extension from the UI without uninstalling it; the button is hidden when unset. */
   onHide?: () => void;
+  /** Called after the user confirms removal; may return a promise to keep the dialog busy until it settles. */
   onRemove?: () => void | Promise<void>;
   /** UI slots this extension contributes to (e.g. "sidebar.footer"). */
   slots?: string[];
@@ -482,12 +515,17 @@ InstalledExtensionCard.displayName = "InstalledExtensionCard";
 export type ExtensionInstallStatus = "idle" | "installing" | "success" | "error" | TaskStatusInput;
 
 export interface ExtensionInstallDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Element that opens the dialog when pressed. */
   trigger?: React.ReactNode;
   /** "catalog" installs a known entry; "git" asks for a URL. */
   mode?: "catalog" | "git";
+  /** Name of the extension being installed (catalog mode). */
   name?: string;
   /** Source URL (prefill for git mode). */
   source?: string;
@@ -497,9 +535,16 @@ export interface ExtensionInstallDialogProps {
   sha?: string;
   /** Permissions or capabilities requested. */
   permissions?: string[];
+  /**
+   * Progress of the install (`idle`, `installing`, `success`, `error`); the dialog shows the log and the Done button
+   * once it leaves `idle`.
+   */
   status?: ExtensionInstallStatus;
+  /** Installer output lines streamed into the log view while installing. */
   log?: readonly LogLine[];
+  /** Failure message shown when `status` is `error`. */
   error?: string;
+  /** Called with the source (catalog id or git URL) when the user confirms the install. */
   onInstall?: (source: string) => void;
   /** Called by "Done" after success. */
   onDone?: () => void;
@@ -710,7 +755,9 @@ const verdictMeta: Record<ScanVerdictLevel, { label: string; tone: string; icon:
 const severityColor: Record<ScanSeverity, BadgeColor> = { critical: "destructive", high: "orange", medium: "warning", low: "neutral" };
 
 export interface SecurityScanVerdictProps extends React.HTMLAttributes<HTMLElement> {
+  /** Overall scan result (`safe`, `caution` or `dangerous`); sets the headline and tone. */
   verdict: ScanVerdictLevel;
+  /** Individual issues the scan found, listed under the verdict. */
   findings?: ScanFinding[];
   /** Policy outcome, e.g. "Blocked by policy" or "Allowed". */
   policy?: string;
@@ -718,6 +765,7 @@ export interface SecurityScanVerdictProps extends React.HTMLAttributes<HTMLEleme
   policyTone?: "allow" | "block" | ToneInput;
   /** Preformatted scan time. */
   scannedAt?: string;
+  /** Name of the scanner that produced the verdict. */
   scanner?: string;
 }
 
@@ -821,9 +869,13 @@ export interface SkillSummary {
 }
 
 export interface SkillCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** The skill to show (name, description, source, enabled state). */
   skill: SkillSummary;
+  /** Marks the card as the selected one in a list. */
   selected?: boolean;
+  /** Called when the card is pressed. */
   onSelect?: () => void;
+  /** Called with the new state when the user flips the enable switch. */
   onEnabledChange?: (enabled: boolean) => void;
 }
 
@@ -892,17 +944,27 @@ export const SkillCard = React.forwardRef<HTMLDivElement, SkillCardProps>(({ ski
 SkillCard.displayName = "SkillCard";
 
 export interface SkillDetailProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** The skill to show (name, description, source, enabled state). */
   skill: SkillSummary;
   /** SKILL.md body (markdown). */
   markdown?: string;
+  /** Parsed SKILL.md frontmatter, shown as key/value rows on the Frontmatter tab. */
   frontmatter?: Record<string, unknown>;
+  /** Security scan result for the skill; props of `SecurityScanVerdict`, shown on the Security tab. */
   scan?: SecurityScanVerdictProps;
+  /** Controlled active tab (`preview`, `frontmatter` or `security`). */
   tab?: string;
+  /** Initially active tab when `tab` is not controlled. */
   defaultTab?: "preview" | "frontmatter" | "security";
+  /** Called with the tab id when the user switches tabs. */
   onTabChange?: (tab: string) => void;
+  /** Called with the new state when the user flips the enable switch. */
   onEnabledChange?: (enabled: boolean) => void;
+  /** Called after the user confirms archiving the skill; the button is hidden when unset. */
   onArchive?: () => void | Promise<void>;
+  /** Called when the user presses Edit; the button is hidden when unset. */
   onEdit?: () => void;
+  /** Called when the user closes the detail view; the close button is hidden when unset. */
   onClose?: () => void;
 }
 
@@ -1032,14 +1094,21 @@ export interface SyncReceiptIssue {
 }
 
 export interface SyncReceiptCardProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Heading of the receipt; defaults to a generic "Sync complete" style title. */
   title?: React.ReactNode;
   /** Preformatted time of the sync. */
   syncedAt?: string;
+  /** Items that were updated by the sync, with old and new versions. */
   updated?: SyncReceiptUpdated[];
+  /** Items that failed to sync, each with the reason. */
   failed?: SyncReceiptIssue[];
+  /** Items disabled by a dependency conflict, each with the reason. */
   disabled?: SyncReceiptIssue[];
+  /** Items with updates still available after the sync. */
   availableUpdates?: SyncReceiptUpdated[];
+  /** Called when the user presses Retry on the failures; the button is hidden when unset. */
   onRetry?: () => void;
+  /** Called when the user presses Update all for `availableUpdates`; the button is hidden when unset. */
   onUpdateAll?: () => void;
 }
 

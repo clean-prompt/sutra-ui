@@ -108,6 +108,7 @@ export interface CameraCaptureProps extends Omit<React.HTMLAttributes<HTMLDivEle
   photoQuality?: number;
   /** Recorder MIME types in order of preference; the first supported one is used. */
   videoTypes?: readonly string[];
+  /** Target bitrate of recorded video in bits per second; the browser picks a default when omitted. */
   videoBitsPerSecond?: number;
   /** Stop recording after this many seconds. */
   maxDuration?: number;
@@ -125,6 +126,7 @@ export interface CameraCaptureProps extends Omit<React.HTMLAttributes<HTMLDivEle
   loading?: boolean;
   /** Instruction under the viewport. */
   hint?: React.ReactNode;
+  /** Classes for the camera viewport. */
   viewportClassName?: string;
 }
 

@@ -188,21 +188,37 @@ function TokenForm({ onSubmit, hint }: { onSubmit?: (token: string) => unknown; 
 export type SignInMethodId = "kunji" | "password" | "token";
 
 export interface SignInMethodsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** The kunji client that issues and polls sign-in challenges (and supplies the app name). */
   client: KunjiClient;
   /** Methods to offer, in order. Default all three. */
   methods?: SignInMethodId[];
+  /** Overrides for the method tab labels, keyed by method id (`kunji`, `password`, `token`). */
   labels?: Partial<Record<SignInMethodId, React.ReactNode>>;
+  /** Method shown first when nothing is remembered; defaults to the first of `methods`. */
   defaultMethod?: SignInMethodId;
   /** localStorage key for the last used method. `null` disables remembering. */
   rememberKey?: string | null;
   /** Label of the username field, e.g. "Lab username". */
   usernameLabel?: React.ReactNode;
+  /** Called with the poll result when a kunji sign-in is approved. */
   onKunjiSuccess?: (result: KunjiPollResult) => void;
+  /** Called with the username and password when the password form is submitted. A returned promise shows a spinner; throw to show the error message. */
   onPasswordSubmit?: (values: SignInPasswordValues) => unknown;
+  /** Called with the token when the token form is submitted. A returned promise shows a spinner; throw to show the error message. */
   onTokenSubmit?: (token: string) => unknown;
+  /** Props passed through to the kunji widget (everything except `client`). */
   kunjiProps?: Partial<Omit<KunjiSignInProps, "client">>;
+  /**
+   * Heading of the card.
+   * @default "Sign in"
+   */
   title?: React.ReactNode;
+  /** Text under the heading. */
   description?: React.ReactNode;
+  /**
+   * `card` draws the bordered card; `plain` drops the chrome so you can place it in your own surface.
+   * @default "card"
+   */
   variant?: "card" | "plain";
 }
 
@@ -299,14 +315,24 @@ SignInMethods.displayName = "SignInMethods";
 /* ------------------------------------------------------------------ */
 
 export interface KunjiSignInPageProps extends AuthPageBaseProps {
+  /** The kunji client that issues and polls sign-in challenges (and supplies the app name). */
   client: KunjiClient;
+  /** Called with the poll result when a kunji sign-in is approved. */
   onKunjiSuccess?: (result: KunjiPollResult) => void;
   /** Other ways offered under the widget. Pass `[]` to hide. */
   otherMethods?: Exclude<SignInMethodId, "kunji">[];
+  /**
+   * Label of the username field in the password form.
+   * @default "Username"
+   */
   usernameLabel?: React.ReactNode;
+  /** Called with the username and password when the password form is submitted. A returned promise shows a spinner; throw to show the error message. */
   onPasswordSubmit?: (values: SignInPasswordValues) => unknown;
+  /** Called with the token when the token form is submitted. A returned promise shows a spinner; throw to show the error message. */
   onTokenSubmit?: (token: string) => unknown;
+  /** Props passed through to the kunji widget (everything except `client`). */
   kunjiProps?: Partial<Omit<KunjiSignInProps, "client">>;
+  /** Heading above the widget; defaults to "Sign in to" plus the app name. */
   heading?: React.ReactNode;
 }
 
@@ -388,15 +414,27 @@ KunjiSignInPage.displayName = "KunjiSignInPage";
 /* ------------------------------------------------------------------ */
 
 export interface AwaitingApprovalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Heading; defaults to a waiting-for-approval message. */
   title?: React.ReactNode;
+  /** Text under the heading. */
   description?: React.ReactNode;
   /** The handle that is waiting. */
   handle?: string;
   /** Resolve `true` once approved. Polled every `pollInterval`. */
   onCheck?: () => boolean | Promise<boolean>;
+  /**
+   * Milliseconds between `onCheck` calls.
+   * @default 15000
+   */
   pollInterval?: number;
+  /** Called once `onCheck` resolves `true`. */
   onApproved?: () => void;
+  /** Called when "Sign out" is clicked; setting it shows the button. */
   onSignOut?: () => void;
+  /**
+   * `card` draws the bordered card; `plain` drops the chrome.
+   * @default "card"
+   */
   variant?: "card" | "plain";
 }
 
@@ -531,14 +569,28 @@ export interface RegisterWithKunjiProps extends Omit<React.HTMLAttributes<HTMLDi
   firstAdmin?: boolean;
   /** How new people join. */
   joinPolicy?: "open" | "invite" | "approval";
+  /**
+   * Name the field starts with.
+   * @default ""
+   */
   suggestedName?: string;
+  /**
+   * Handles that cannot be taken (checked case-insensitively).
+   * @default ["admin", "root", "system", "support", "kunji"]
+   */
   reservedHandles?: string[];
   /** kunji identity being registered. */
   sub?: string;
   /** Create the account. Return `{ pending: true }` (or use `joinPolicy="approval"`) to show `AwaitingApproval`. */
   onSubmit?: (values: RegisterWithKunjiValues) => unknown;
+  /** Props passed through to the `AwaitingApproval` screen shown when the account is pending. */
   awaitingProps?: Partial<AwaitingApprovalProps>;
+  /**
+   * `card` draws the bordered card; `plain` drops the chrome.
+   * @default "card"
+   */
   variant?: "card" | "plain";
+  /** Heading of the form. */
   title?: React.ReactNode;
 }
 
@@ -675,10 +727,15 @@ RegisterWithKunji.displayName = "RegisterWithKunji";
 export interface SignedInPanelProps extends AccountPanelProps {
   /** Enables "Link kunji" when given. */
   client?: KunjiClient;
+  /** Controlled linked state of the kunji identity. Use with `onLinkKunji` and `onUnlinkKunji`. */
   kunjiLinked?: boolean;
+  /** Initial linked state when uncontrolled. */
   defaultKunjiLinked?: boolean;
+  /** The linked kunji subject id, shown once linked. */
   kunjiSub?: string;
+  /** Called with the poll result when the user links their kunji identity. */
   onLinkKunji?: (result: KunjiPollResult) => unknown;
+  /** Called when the user unlinks their kunji identity. */
   onUnlinkKunji?: () => unknown;
 }
 
@@ -736,11 +793,18 @@ export interface DevicePairingAdapter {
 }
 
 export interface DevicePairingFlowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Adapter that performs the pairing (create, show or enter the code, confirm); the flow only drives the UI. */
   adapter: DevicePairingAdapter;
   /** `existing` shows the QR + code; `new` types the code. */
   side?: "existing" | "new";
+  /** Called with the peer when pairing finishes. */
   onDone?: (peer: DevicePairingPeer) => void;
+  /** Called when the user cancels the pairing. */
   onCancel?: () => void;
+  /**
+   * `card` draws the bordered card; `plain` drops the chrome.
+   * @default "card"
+   */
   variant?: "card" | "plain";
 }
 

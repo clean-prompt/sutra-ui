@@ -84,9 +84,11 @@ export function layoutTimeline(items: TimelineItem[], defaultDurationMinutes = D
 }
 
 export interface TodayTimelineProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onSelect" | "onToggle"> {
+  /** Events, tasks and habits for the day, each with a time, title and kind. */
   items: TimelineItem[];
   /** Toggle a task or habit. */
   onToggle?: (item: TimelineItem, done: boolean) => void;
+  /** Called with the item when the user opens it. */
   onSelect?: (item: TimelineItem) => void;
   /**
    * Rail spacing. `compact` tightens the hour rail; `normal` (default) and `relaxed` use the
@@ -97,8 +99,11 @@ export interface TodayTimelineProps extends Omit<React.HTMLAttributes<HTMLDivEle
   now?: Date;
   /** First / last hour on the rail. Defaults fit the items within 8–20. */
   startHour?: number;
+  /** Last hour on the rail; defaults to fit the items within 8 to 20. */
   endHour?: number;
+  /** Heading above the timeline. */
   title?: React.ReactNode;
+  /** Shown when there are no items. */
   emptyState?: React.ReactNode;
 }
 

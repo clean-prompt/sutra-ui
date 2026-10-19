@@ -50,14 +50,21 @@ function formatEntityDate(value: Date | string | undefined) {
 /* ------------------------------------------------------------------ */
 
 export interface EntityChipProps extends Omit<React.HTMLAttributes<HTMLElement>, "id" | "title"> {
+  /** What the chip refers to: an app (notes, tasks and so on), `person` or `tag`; picks the icon and colour. */
   type: EntityType;
+  /** Id of the referenced item. */
   id: string;
+  /** Display name of the referenced item. */
   title: string;
+  /** Status text of the item (for example "In progress"), shown in the hover card. */
   status?: string;
+  /** Date of the item (due or created), shown in the hover card. */
   date?: Date | string;
+  /** Link target; the chip renders as plain text when unset. */
   href?: string;
   /** Hover card content (e.g. a preview of the note or task). */
   preview?: React.ReactNode;
+  /** Chip size. */
   size?: "sm" | "md";
   /** Hide the app icon. */
   hideIcon?: boolean;
@@ -211,6 +218,7 @@ export interface MentionTextProps extends React.HTMLAttributes<HTMLSpanElement> 
   getHref?: (mention: MentionToken) => string | undefined;
   /** Custom renderer for each mention. */
   renderMention?: (mention: MentionToken, index: number) => React.ReactNode;
+  /** Size of the chips that replace mention tokens. */
   chipSize?: EntityChipProps["size"];
 }
 
@@ -260,7 +268,9 @@ export type MentionSearchHandler = (
 
 export interface MentionInputProps
   extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "value" | "defaultValue" | "onChange"> {
+  /** Controlled stored text, with mention tokens like `@[Title](tasks:123)`. */
   value?: string;
+  /** Initial stored text when `value` is not controlled. */
   defaultValue?: string;
   /** Receives the stored text, with tokens like `@[Title](tasks:123)`. */
   onValueChange?: (value: string) => void;
@@ -276,7 +286,9 @@ export interface MentionInputProps
   singleLine?: boolean;
   /** Max suggestions shown. Default 8. */
   maxSuggestions?: number;
+  /** Marks the field as invalid (red border, `aria-invalid`). */
   invalid?: boolean;
+  /** Extra classes for the wrapper around the field and its menu; `className` goes to the field. */
   wrapperClassName?: string;
 }
 

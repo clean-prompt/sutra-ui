@@ -3,8 +3,10 @@ import { FLIP_MAX, flipInverseKeyframes, flipKeyframes, flipMoves, parseCssTime,
 import { useIsoLayoutEffect } from "./use-iso-layout-effect";
 import { prefersReducedMotion } from "./use-media-query";
 
+/** How a FLIP move eases: a quick `snap`, a `spring` or a plain `ease`. */
 export type FlipEasing = "snap" | "spring" | "ease";
 
+/** Options for `useFlip`: duration, easing, move cap, scaling and an enabled switch. */
 export interface UseFlipOptions {
   /** Milliseconds. Default: the duration that goes with the easing token (a spring token's own, 300 for `"ease"`). */
   duration?: number;
@@ -21,6 +23,7 @@ export interface UseFlipOptions {
 /** The part of a `DOMRect` that `register.from` reads. */
 export type FlipViewportRect = Pick<DOMRectReadOnly, "left" | "top" | "width" | "height">;
 
+/** Function that registers an element's previous position so its next layout can animate from it. */
 export interface FlipRegister {
   /** The ref callback of the element that stands for `key`. */
   (key: string): React.RefCallback<HTMLElement>;

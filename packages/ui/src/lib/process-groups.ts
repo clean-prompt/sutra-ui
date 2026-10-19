@@ -4,6 +4,7 @@ import { toMs, type TimeInput } from "./time";
 /** Sortable process-table columns. */
 export type ProcessColumn = "pid" | "name" | "user" | "cpu" | "memory" | "vram" | "state" | "started";
 
+/** Sort of a process table: the column and the direction. */
 export interface ProcessSort {
   key: ProcessColumn;
   direction: "asc" | "desc";
@@ -25,6 +26,7 @@ export interface GroupableProcess {
   startedAt?: TimeInput;
 }
 
+/** One group of processes: key, name and icon, with its processes and their summed CPU, memory and VRAM. */
 export interface ProcessGroup<T extends GroupableProcess = GroupableProcess> {
   key: string;
   name: string;
@@ -39,6 +41,7 @@ export interface ProcessGroup<T extends GroupableProcess = GroupableProcess> {
   count: number;
 }
 
+/** Options for `groupProcesses`: how to key and name the groups. */
 export interface GroupProcessesOptions<T extends GroupableProcess> {
   /** Group key per process; `undefined` leaves the process ungrouped. Default `defaultProcessGroupKey`. */
   key?: (process: T) => string | undefined;
@@ -46,6 +49,7 @@ export interface GroupProcessesOptions<T extends GroupableProcess> {
   name?: (key: string, processes: T[]) => string;
 }
 
+/** Result of `groupProcesses`: the groups and the processes that belong to none. */
 export interface GroupedProcesses<T extends GroupableProcess> {
   groups: ProcessGroup<T>[];
   ungrouped: T[];

@@ -61,6 +61,7 @@ function limitText(memoryBytes: number, limitBytes: number, formatBytes: (b: num
  * ----------------------------------------------------------------------------------------------*/
 
 export interface ContainerListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Containers to list, grouped by Compose project; each with a name, state, ports, CPU and memory. */
   containers: ContainerInfo[];
   /** Stops a container (after confirmation). May return a promise; the dialog waits for it. */
   onStop?: (id: string) => void | Promise<void>;
@@ -72,7 +73,9 @@ export interface ContainerListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   accent?: Accent;
   /** Expanded Compose groups (by name). Uncontrolled default: every group expanded. */
   expanded?: string[];
+  /** Initially expanded group names when `expanded` is not controlled. */
   defaultExpanded?: string[];
+  /** Called with the expanded group names when the user expands or collapses a group. */
   onExpandedChange?: (expanded: string[]) => void;
   /** Group subtitle lead. Default "Started together by Docker Compose". */
   groupDescription?: React.ReactNode;
@@ -80,6 +83,7 @@ export interface ContainerListProps extends Omit<React.HTMLAttributes<HTMLDivEle
   formatBytes?: (bytes: number) => string;
   /** Accessible name of the list. Default "Containers". */
   label?: string;
+  /** Shown when `containers` is empty. */
   emptyState?: React.ReactNode;
   /** Data is on its way. With no containers yet the list shows placeholder rows; with containers the root is only marked busy. */
   loading?: boolean;
@@ -352,6 +356,7 @@ ContainerList.displayName = "ContainerList";
  * ----------------------------------------------------------------------------------------------*/
 
 export interface ContainerSummaryProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Containers to summarise: totals, the breakdown by container and the one closest to its limit. */
   containers: ContainerInfo[];
   /** Recent total-memory readings (bytes) for the Lowest / Peak rows. */
   history?: number[];
@@ -365,6 +370,7 @@ export interface ContainerSummaryProps extends Omit<React.HTMLAttributes<HTMLDiv
   accent?: Accent;
   /** Where the containers run, for the heading ("4 containers in Docker"). Default "Docker". */
   runtimeName?: string;
+  /** Memory text formatter. Default decimal units ("312 MB"). */
   formatBytes?: (bytes: number) => string;
   /** Data is on its way. With no containers yet the total, breakdown and tiles show placeholders; with containers the root is only marked busy. */
   loading?: boolean;

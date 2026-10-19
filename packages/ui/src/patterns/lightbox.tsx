@@ -13,6 +13,7 @@ import { cn, focusRing } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { clamp } from "../lib/math";
 import { useSwipe } from "../hooks/use-swipe";
+import { useDrag } from "../hooks/use-drag";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useObjectUrl } from "../hooks/use-object-url";
@@ -29,10 +30,13 @@ const shimmerClass =
 
 export interface ImageWithFallbackProps
   extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src" | "width" | "height" | "onLoad" | "onError"> {
+  /** URL of the image; with no `src` the fallback shows. */
   src?: string;
+  /** Alternative text of the image (empty for a decorative image). */
   alt: string;
   /** Intrinsic size; reserves the aspect ratio before the image loads. */
   width?: number;
+  /** Intrinsic height in px; with `width` it reserves the aspect ratio before the image loads. */
   height?: number;
   /** Aspect ratio (width / height) to reserve, e.g. `16 / 9`. Overrides width/height. */
   ratio?: number;
@@ -44,7 +48,9 @@ export interface ImageWithFallbackProps
   imgClassName?: string;
   /** `object-fit` of the image. Default "cover". */
   fit?: "cover" | "contain";
+  /** Called when the image has loaded. */
   onLoad?: () => void;
+  /** Called when the image fails to load. */
   onError?: () => void;
 }
 
@@ -196,12 +202,25 @@ interface LightboxContextValue {
 const LightboxContext = React.createContext<LightboxContextValue | null>(null);
 
 export interface LightboxProps {
+  /** Items to show; each has a `src`, an `alt` and an optional caption, type, thumbnail, poster and download name. */
   items: LightboxItem[];
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /**
+   * Initial open state when uncontrolled.
+   * @default false
+   */
   defaultOpen?: boolean;
+  /** Called when the viewer opens or closes (Escape, backdrop click, the close button). */
   onOpenChange?: (open: boolean) => void;
+  /** Controlled index of the visible item. Use with `onIndexChange`. */
   index?: number;
+  /**
+   * Initial item index when uncontrolled.
+   * @default 0
+   */
   defaultIndex?: number;
+  /** Called with the new item index when the user browses. */
   onIndexChange?: (index: number) => void;
   /** Wrap from the last item to the first. Default false. */
   loop?: boolean;
@@ -213,6 +232,7 @@ export interface LightboxProps {
   maxZoom?: number;
   /** Accessible name for the viewer. Default "Image viewer". */
   label?: string;
+  /** Classes for the viewer panel. */
   className?: string;
   /** Children (e.g. `LightboxTrigger`s) can open the viewer at an index. */
   children?: React.ReactNode;
@@ -250,14 +270,25 @@ export function Lightbox({
   const index = count ? clamp(rawIndex, 0, count - 1) : 0;
   const item = items[index];
   const [zoom, setZoom] = React.useState(1);
-  const [pan, setPan] = React.useState({ x: 0, y: 0 });
   const [stage, setStage] = React.useState<HTMLDivElement | null>(null);
-  const panStart = React.useRef<{ x: number; y: number; px: number; py: number; id: number } | null>(null);
+  const isVideo = item?.type === "video";
+  // Pan while zoomed in: the offset lives in the drag hook (image pixels, so the travel is divided by the zoom) and reaches the
+  // image through `--sutra-drag-x/-y`, so a pan re-renders nothing.
+  const pan = useDrag({ axis: "both", threshold: 0, scale: zoom, enabled: zoom > 1 && !isVideo });
+  const resetPan = pan.set;
+  const panRef = pan.ref;
+  const setStageRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      setStage(node);
+      panRef(node);
+    },
+    [panRef]
+  );
 
   const resetZoom = React.useCallback(() => {
     setZoom(1);
-    setPan({ x: 0, y: 0 });
-  }, []);
+    resetPan(0, 0);
+  }, [resetPan]);
 
   React.useEffect(resetZoom, [index, open, resetZoom]);
 
@@ -278,9 +309,9 @@ export function Lightbox({
     (z: number) => {
       const next = clamp(z, MIN_ZOOM, maxZoom);
       setZoom(next);
-      if (next === 1) setPan({ x: 0, y: 0 });
+      if (next === 1) resetPan(0, 0);
     },
-    [maxZoom]
+    [maxZoom, resetPan]
   );
 
   // Preload neighbours.
@@ -303,13 +334,13 @@ export function Lightbox({
       event.preventDefault();
       setZoom((z) => {
         const next = clamp(z * Math.exp(-event.deltaY * 0.01), MIN_ZOOM, maxZoom);
-        if (next === 1) setPan({ x: 0, y: 0 });
+        if (next === 1) resetPan(0, 0);
         return next;
       });
     };
     stage.addEventListener("wheel", onWheel, { passive: false });
     return () => stage.removeEventListener("wheel", onWheel);
-  }, [stage, maxZoom]);
+  }, [stage, maxZoom, resetPan]);
 
   // A swipe towards the inline start brings the next item (towards the left in LTR, the right in RTL).
   const along = inlineSign(useDirection());
@@ -365,7 +396,6 @@ export function Lightbox({
     event.preventDefault();
   };
 
-  const isVideo = item?.type === "video";
   const counter = count > 0 ? `${index + 1} / ${count}` : "0 / 0";
 
   return (
@@ -411,7 +441,7 @@ export function Lightbox({
             </div>
 
             <div
-              ref={setStage}
+              ref={setStageRef}
               data-slot="lightbox-stage"
               className={cn(
                 "relative flex min-h-0 flex-1 touch-pan-y items-center justify-center overflow-hidden px-2 sm:px-16",
@@ -419,30 +449,21 @@ export function Lightbox({
               )}
               onPointerDown={(event) => {
                 swipe.onPointerDown(event);
-                if (zoom > 1 && !isVideo) {
-                  panStart.current = { x: event.clientX, y: event.clientY, px: pan.x, py: pan.y, id: event.pointerId };
-                  try {
-                    event.currentTarget.setPointerCapture?.(event.pointerId);
-                  } catch {
-                    /* best effort */
-                  }
-                }
+                pan.handlers.onPointerDown?.(event);
               }}
               onPointerMove={(event) => {
                 swipe.onPointerMove(event);
-                const p = panStart.current;
-                if (p && p.id === event.pointerId) {
-                  setPan({ x: p.px + (event.clientX - p.x) / zoom, y: p.py + (event.clientY - p.y) / zoom });
-                }
+                pan.handlers.onPointerMove?.(event);
               }}
               onPointerUp={(event) => {
                 swipe.onPointerUp(event);
-                panStart.current = null;
+                pan.handlers.onPointerUp?.(event);
               }}
               onPointerCancel={(event) => {
                 swipe.onPointerCancel(event);
-                panStart.current = null;
+                pan.handlers.onPointerCancel?.(event);
               }}
+              onLostPointerCapture={pan.handlers.onLostPointerCapture}
             >
               {item ? (
                 isVideo ? (
@@ -460,7 +481,6 @@ export function Lightbox({
                     key={item.src}
                     item={item}
                     zoom={zoom}
-                    pan={pan}
                     onDoubleClick={() => zoomTo(zoom > 1 ? 1 : 2)}
                   />
                 )
@@ -526,12 +546,10 @@ Lightbox.displayName = "Lightbox";
 function LightboxImage({
   item,
   zoom,
-  pan,
   onDoubleClick,
 }: {
   item: LightboxItem;
   zoom: number;
-  pan: { x: number; y: number };
   onDoubleClick: () => void;
 }) {
   const [failed, setFailed] = React.useState(false);
@@ -552,7 +570,7 @@ function LightboxImage({
       onError={() => setFailed(true)}
       data-zoom={zoom}
       className="max-h-full max-w-full select-none object-contain transition-transform duration-150 ease-out-quart will-change-transform"
-      style={{ transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)` }}
+      style={{ transform: `scale(${zoom}) translate(var(--sutra-drag-x, 0px), var(--sutra-drag-y, 0px))` }}
     />
   );
 }
@@ -560,6 +578,7 @@ function LightboxImage({
 export interface LightboxTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Item index to open. */
   index: number;
+  /** Render as the child element instead of a `<button>`, keeping the trigger behaviour. */
   asChild?: boolean;
 }
 

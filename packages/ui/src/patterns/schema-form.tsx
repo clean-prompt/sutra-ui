@@ -222,16 +222,19 @@ function SaveStatus({ status }: { status?: SchemaFieldSaveStatus }) {
 const noop = () => {};
 
 export interface NestedValueEditorProps {
+  /** JSON-schema-like description of the value to edit (type, properties, enums, constraints). */
   schema: SchemaFormSchema;
+  /** The value to edit; its shape follows `schema`. */
   value: unknown;
   /** Called with the edited value. */
   onValueChange?: (value: unknown) => void;
-  /** @deprecated Use `onValueChange`. */
+  /** Legacy name of `onValueChange`. @deprecated Use `onValueChange`. */
   onChange?: (value: unknown) => void;
   /** Dotted path of this value inside the form. */
   path?: string;
   /** Property name (used for the label when the schema has no title). */
   name?: string;
+  /** Marks the field required: shows the asterisk and blocks an empty value. */
   required?: boolean;
   /** Render without the label row (e.g. array items of primitive type). */
   bare?: boolean;
@@ -541,14 +544,20 @@ function DisabledNote({ reason }: { reason: string }) {
 export interface SchemaFormProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onChange" | "onSubmit" | "defaultValue"> {
   /** Root schema (an object schema). */
   schema: SchemaFormSchema;
+  /** Controlled form value. Use with `onValueChange`. */
   value?: Record<string, unknown>;
+  /** Initial form value when uncontrolled. */
   defaultValue?: Record<string, unknown>;
   /** Called with the whole form value after every edit. */
   onValueChange?: (value: Record<string, unknown>) => void;
-  /** @deprecated Use `onValueChange`. */
+  /** Legacy name of `onValueChange`. @deprecated Use `onValueChange`. */
   onChange?: (value: Record<string, unknown>) => void;
   /** Explicit submit (non-autosave). Only called when valid. */
   onSubmit?: (value: Record<string, unknown>) => void | Promise<void>;
+  /**
+   * Text of the submit button (explicit-submit mode).
+   * @default "Save"
+   */
   submitLabel?: React.ReactNode;
   /** Save automatically after edits (debounced). */
   autosave?: boolean;
@@ -558,6 +567,7 @@ export interface SchemaFormProps extends Omit<React.FormHTMLAttributes<HTMLFormE
   onSave?: (value: Record<string, unknown>, changedKeys: string[]) => void | Promise<void>;
   /** Disable fields by path with a reason. */
   disabledFields?: Record<string, string>;
+  /** Disables every field. */
   disabled?: boolean;
   /** Show section navigation + search when there are more top-level fields than this. Default 8. */
   navThreshold?: number;

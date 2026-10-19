@@ -119,19 +119,21 @@ export function groupEventsByDay<T extends { at: DateInput }>(events: T[], now: 
 }
 
 export interface SecurityActivityFeedProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Security events, newest first, each with a kind, time and optional details. */
   events: SecurityEvent[];
   /** Group under day headings. Default true. */
   groupByDay?: boolean;
   /** Click handler; without it, rows expand inline to show details. */
   onEventClick?: (event: SecurityEvent) => void;
+  /** Reference time for relative labels; set it in tests and SSR for stable output. */
   now?: number;
   /** Shown when there are no events. Default "No activity yet". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
   /** Row spacing; `compact` is used inside drawers. */
   density?: Density;
-  /** @deprecated Use `density="compact"`. */
+  /** Tighter row spacing, used inside drawers. @deprecated Use `density="compact"`. */
   compact?: boolean;
 }
 
@@ -226,7 +228,7 @@ export const SecurityActivityFeed = React.forwardRef<HTMLDivElement, SecurityAct
 );
 SecurityActivityFeed.displayName = "SecurityActivityFeed";
 
-/** @deprecated Use `SecurityActivityFeed`. */
+/** Alias of `SecurityActivityFeed`. @deprecated Use `SecurityActivityFeed`. */
 export const ActivityFeed = SecurityActivityFeed;
 /** @deprecated Use `SecurityActivityFeedProps`. */
 export type ActivityFeedProps = SecurityActivityFeedProps;
@@ -259,8 +261,11 @@ export interface ConnectedApp {
 }
 
 export interface ConnectedAppRowProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onClick"> {
+  /** The connected app to show (name, scopes, last used, devices). */
   app: ConnectedApp;
+  /** Called with the app when the row is pressed to open its detail. */
   onOpen?: (app: ConnectedApp) => void;
+  /** Reference time for relative labels; set it in tests and SSR for stable output. */
   now?: number;
 }
 
@@ -315,15 +320,19 @@ export const ConnectedAppRow = React.forwardRef<HTMLButtonElement, ConnectedAppR
 ConnectedAppRow.displayName = "ConnectedAppRow";
 
 export interface ConnectedAppListProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Connected apps, one row each; pressing a row opens its detail with scopes and devices. */
   apps: ConnectedApp[];
   /** May return a promise; the confirm dialog waits for it. */
   onRevoke?: (app: ConnectedApp) => void | Promise<void>;
+  /** Called with the app, the device id and the new state when the user flips a device's push switch. */
   onPushChange?: (app: ConnectedApp, deviceId: string, enabled: boolean) => void;
+  /** Extra or overriding scope definitions, merged over the built-in set, for the scope labels in the detail. */
   definitions?: Record<string, ScopeDefinition>;
+  /** Reference time for relative labels; set it in tests and SSR for stable output. */
   now?: number;
   /** Shown when there are no apps. Default "No connected apps". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 

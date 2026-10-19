@@ -36,12 +36,25 @@ export interface UpgradePlan {
 }
 
 export interface UpgradeDialogProps extends BlockDialogBaseProps {
+  /** Plans to compare; each has an `id`, a `name`, monthly and yearly prices and a feature list. The default is demo data. */
   plans?: UpgradePlan[];
+  /** Id of the plan the user is on; its button reads "Current plan". */
   currentPlan?: string;
+  /** Controlled billing period. Use with `onBillingChange`. */
   billing?: "monthly" | "yearly";
+  /**
+   * Initial billing period when uncontrolled.
+   * @default "yearly"
+   */
   defaultBilling?: "monthly" | "yearly";
+  /** Called with the billing period the user picked. */
   onBillingChange?: (billing: "monthly" | "yearly") => void;
+  /** Called with the plan id and the billing period when a plan is chosen. A returned promise shows a spinner on that plan. */
   onSelectPlan?: (planId: string, billing: "monthly" | "yearly") => unknown;
+  /**
+   * Currency symbol shown before prices.
+   * @default "$"
+   */
   currency?: string;
 }
 

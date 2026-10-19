@@ -35,21 +35,31 @@ export interface AudioOutputDevice {
 }
 
 export interface VolumeMixerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue" | "onVolumeChange"> {
+  /** Apps using audio, each with a name, volume, muted state and playing flag. */
   apps: VolumeMixerApp[];
+  /** Called with the app id and the new volume (0 to 100) while the user moves its slider. */
   onAppVolumeChange?: (id: string, volume: number) => void;
+  /** Called with the app id and the new state when the user mutes or unmutes an app. */
   onAppMutedChange?: (id: string, muted: boolean) => void;
   /** Master output volume 0–100. */
   volume?: number;
+  /** Initial master volume when `volume` is not controlled. */
   defaultVolume?: number;
+  /** Called with the master volume (0 to 100) while the user moves the slider. */
   onVolumeChange?: (volume: number) => void;
+  /** Controlled master mute state. */
   muted?: boolean;
+  /** Initial master mute state when `muted` is not controlled. */
   defaultMuted?: boolean;
+  /** Called with the new state when the user mutes or unmutes the output. */
   onMutedChange?: (muted: boolean) => void;
   /** Output devices for the picker. With one device or none, the name is shown as plain text. */
   devices?: AudioOutputDevice[];
   /** Selected device id. */
   device?: string;
+  /** Initially selected device id when `device` is not controlled. */
   defaultDevice?: string;
+  /** Called with the device id when the user picks an output device. */
   onDeviceChange?: (id: string) => void;
   /** Header title. Default "Output". */
   outputLabel?: React.ReactNode;
@@ -59,6 +69,7 @@ export interface VolumeMixerProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   emptyState?: React.ReactNode;
   /** Accessible name of the apps table. Default "App volumes". */
   label?: string;
+  /** Disables the master and per-app controls. */
   disabled?: boolean;
   /** Data is on its way. With no apps yet the card and table show placeholders; with apps the root is only marked busy. */
   loading?: boolean;

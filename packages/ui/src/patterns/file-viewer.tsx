@@ -264,6 +264,7 @@ export interface FileViewerProps {
   index?: number;
   /** Initial position in `files` (uncontrolled). Default 0. */
   defaultIndex?: number;
+  /** Called with the new index and the file when the user browses to another file. */
   onIndexChange?: (index: number, file: ViewerFile) => void;
   /** Wrap from the last file to the first and back. Default false. */
   loop?: boolean;
@@ -271,8 +272,11 @@ export interface FileViewerProps {
   thumbnails?: boolean;
   /** Render in place instead of in a modal. */
   inline?: boolean;
+  /** Controlled open state of the modal viewer. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the modal viewer opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Text content for text/code/markdown/json files (single `file` only; in a gallery set each file's `text`). */
   text?: string;
@@ -282,6 +286,7 @@ export interface FileViewerProps {
   kind?: FilePreviewKind;
   /** App renderers, tried in order before the built-in kinds. */
   renderers?: FileRenderer[];
+  /** Called when the download button is clicked; setting it shows the button. */
   onDownload?: () => void;
   /** Show the header download action. Default true when the file has a URL. */
   download?: boolean;
@@ -297,9 +302,11 @@ export interface FileViewerProps {
   panel?: FileViewerSlot;
   /** Name of the side panel and its header toggle. Default "Details". */
   panelLabel?: string;
+  /** Controlled open state of the details side panel. Use with `onPanelOpenChange`. */
   panelOpen?: boolean;
   /** Default true. */
   defaultPanelOpen?: boolean;
+  /** Called when the side panel opens or closes. */
   onPanelOpenChange?: (open: boolean) => void;
   /** Waiting for the file (or its URL). Shows skeletons until there is something to show. */
   loading?: boolean;
@@ -307,6 +314,7 @@ export interface FileViewerProps {
   emptyState?: React.ReactNode;
   /** Close action for inline viewers (modal viewers close via `onOpenChange`). */
   onClose?: () => void;
+  /** Classes for the viewer root. */
   className?: string;
 }
 
@@ -928,6 +936,7 @@ FileViewer.displayName = "FileViewer";
 /* ------------------------------------------------------------------ */
 
 export interface FilePreviewCardProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
+  /** The file to preview: its name, type, size and an optional thumbnail URL. */
   file: ViewerFile;
   /** Extra line under the name (defaults to the formatted size). */
   meta?: React.ReactNode;

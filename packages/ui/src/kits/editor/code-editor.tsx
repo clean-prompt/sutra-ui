@@ -237,11 +237,13 @@ export interface CodeEditorHandle {
 
 export interface CodeEditorProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue" | "onScroll"> {
+  /** Controlled document text. */
   value?: string;
+  /** Initial text when `value` is not controlled. */
   defaultValue?: string;
   /** Called with the new text and the CodeMirror `ViewUpdate` when the user edits the document. */
   onValueChange?: (value: string, update: ViewUpdate) => void;
-  /** @deprecated Use `onValueChange`. */
+  /** Called with the new text and the CodeMirror `ViewUpdate` when the user edits the document. @deprecated Use `onValueChange`. */
   onChange?: (value: string, update: ViewUpdate) => void;
   /** "markdown" (built in) or "plain"; pass other languages through `extensions`. Default "markdown". */
   language?: "markdown" | "plain";
@@ -251,10 +253,13 @@ export interface CodeEditorProps
    * here with `history={false}` and `keyBindings={yUndoManagerKeymap}`.
    */
   extensions?: Extension[];
+  /** Shows the line number gutter. Default true. */
   lineNumbers?: boolean;
   /** Soft-wrap long lines. Default true. */
   wrap?: boolean;
+  /** Text shown while the document is empty. */
   placeholder?: string;
+  /** Makes the document read-only. Default false. */
   readOnly?: boolean;
   /** Search panel and Mod-F keymap. Default true. */
   search?: boolean;
@@ -268,13 +273,17 @@ export interface CodeEditorProps
    * reconfigures the editor and drops the undo stack.
    */
   history?: boolean;
+  /** Called with the selection range and text when the cursor or selection moves. */
   onSelectionChange?: (selection: CodeEditorSelection) => void;
   /** Scroll position, for preview sync. */
   onScroll?: (info: CodeEditorScrollInfo) => void;
+  /** Called with true when the editor gains focus and false when it loses it. */
   onFocusChange?: (focused: boolean) => void;
   /** Font size in px. */
   fontSize?: number;
+  /** Turns on the browser spell checker for the text area. Default true. */
   spellCheck?: boolean;
+  /** Focuses the editor on mount. */
   autoFocus?: boolean;
   /** Accessible name of the text area. Default "Editor". */
   label?: string;

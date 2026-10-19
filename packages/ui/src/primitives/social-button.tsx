@@ -165,16 +165,25 @@ export const socialButtonVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Look: `default` (outlined), `brand` (provider colours) or `icon` (square, icon only; set an `aria-label`).
+       * @default "default"
+       */
       variant: {
         default: "border border-border bg-background text-foreground shadow-xs hover:bg-muted",
         brand: "shadow-xs shadow-inner-highlight",
         icon: "border border-border bg-background text-foreground shadow-xs hover:bg-muted",
       },
+      /**
+       * Button height and text size.
+       * @default "md"
+       */
       size: {
         sm: "h-8 px-3 text-sm [&_svg]:size-4",
         md: "h-9 px-3.5 text-sm [&_svg]:size-[18px]",
         lg: "h-10 px-4 text-sm [&_svg]:size-5",
       },
+      /** Stretches the button to the width of its container. */
       fullWidth: { true: "w-full" },
     },
     compoundVariants: [
@@ -189,8 +198,11 @@ export const socialButtonVariants = cva(
 export interface SocialButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof socialButtonVariants> {
+  /** Identity provider; sets the logo and the default label ("Continue with Google"). */
   provider: SocialProvider;
+  /** Render as the child element (e.g. a link) while keeping the button styles. */
   asChild?: boolean;
+  /** Shows a spinner and disables the button. */
   loading?: boolean;
 }
 

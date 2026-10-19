@@ -26,11 +26,16 @@ export interface ChartTableData {
 export interface ChartContainerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** Accessible name announced for the chart image. */
   label: string;
+  /**
+   * Plot height in px.
+   * @default 240
+   */
   height?: number;
   /** Width used before the container is measured (and in jsdom). */
   defaultWidth?: number;
   /** Rendered as a visually hidden `<table>` after the chart for screen readers. */
   table?: ChartTableData;
+  /** The chart drawing: a node, or a function that receives the measured `{ width, height }`. */
   children: React.ReactNode | ((size: ChartSize) => React.ReactNode);
 }
 
@@ -104,8 +109,11 @@ export interface ChartTooltipItem {
 }
 
 export interface ChartTooltipProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Heading of the tooltip (the hovered x value). */
   label?: React.ReactNode;
+  /** Rows of the tooltip: each has a `label`, a `value` and a colour. */
   items: ChartTooltipItem[];
+  /** Extra content below the rows (e.g. a total). */
   footer?: React.ReactNode;
 }
 
@@ -150,11 +158,16 @@ export interface ChartLegendItem {
 }
 
 export interface ChartLegendProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "hidden"> {
+  /** Legend entries: each has a `key`, a `label` and a colour. */
   items: ChartLegendItem[];
   /** Keys currently hidden. */
   hidden?: string[];
   /** Makes entries toggle buttons. Alt/⌥-click, Alt+Enter or double-click isolates a series. */
   onHiddenChange?: (hidden: string[]) => void;
+  /**
+   * Alignment of the entries within the legend row.
+   * @default "start"
+   */
   align?: "start" | "center" | "end";
   /** Swatch shape: "square" for bars/areas, "line" for line charts. */
   marker?: "square" | "line" | "dot";

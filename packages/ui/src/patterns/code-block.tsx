@@ -347,22 +347,42 @@ const isShell = (language?: string) =>
 export interface CodeBlockProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** Source to display. `children` (a string) works too. */
   code?: string;
+  /** Source as a string, when `code` is not set. */
   children?: string;
+  /** Language name for syntax highlighting (e.g. "ts", "bash", "json") and the header label; unknown languages render as plain text. */
   language?: string;
+  /** File name shown in the header instead of the language. */
   filename?: string;
   /** dark: always-dark editor surface · light: follows the app theme */
   theme?: CodeBlockTheme;
+  /** Shows a line-number gutter. */
   showLineNumbers?: boolean;
+  /**
+   * Number of the first line.
+   * @default 1
+   */
   startLine?: number;
   /** 1-based line numbers to highlight. */
   highlightLines?: number[];
+  /** Controlled soft wrapping of long lines. Use with `onWrapChange`. */
   wrap?: boolean;
+  /**
+   * Initial wrapping when uncontrolled.
+   * @default false
+   */
   defaultWrap?: boolean;
+  /** Called when the wrap toggle changes. */
   onWrapChange?: (wrap: boolean) => void;
   /** Show a soft-wrap toggle in the header. */
   showWrapToggle?: boolean;
+  /** Maximum height of the code area (px number or CSS length); longer code scrolls. */
   maxHeight?: number | string;
+  /**
+   * Shows the copy button.
+   * @default true
+   */
   copyable?: boolean;
+  /** Hides the header (language or file name, actions). */
   hideHeader?: boolean;
   /** Extra header actions, placed before the copy button. */
   actions?: React.ReactNode;
@@ -489,14 +509,29 @@ export interface CodeBlockTab {
 
 export interface CodeBlockTabsProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange" | "dir"> {
+  /** Tabs to show; each has a `label`, a `code` and optional language, filename and highlighted lines. */
   tabs: CodeBlockTab[];
+  /** Controlled active tab value. Use with `onValueChange`. */
   value?: string;
+  /** Initially active tab value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the tab value the user picked. */
   onValueChange?: (value: string) => void;
+  /**
+   * `dark` keeps the editor surface dark; `light` follows the app theme.
+   * @default "dark"
+   */
   theme?: CodeBlockTheme;
+  /** Shows a line-number gutter. */
   showLineNumbers?: boolean;
+  /** Soft-wraps long lines. */
   wrap?: boolean;
+  /** Maximum height of the code area (px number or CSS length); longer code scrolls. */
   maxHeight?: number | string;
+  /**
+   * Shows the copy button.
+   * @default true
+   */
   copyable?: boolean;
 }
 
@@ -590,7 +625,15 @@ export interface InlineCopyProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   value: string;
   /** Prefix shown before the value (not copied). Set `false` to hide. */
   prompt?: React.ReactNode | false;
+  /**
+   * `dark` keeps the surface dark; `light` follows the app theme.
+   * @default "light"
+   */
   theme?: CodeBlockTheme;
+  /**
+   * Snippet height and text size.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
 }
 

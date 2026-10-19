@@ -45,7 +45,9 @@ export const deliveryPlatformMeta: Record<DeliveryPlatform, PlatformMeta> = {
 const ALL_PLATFORMS: DeliveryPlatform[] = ["local", "telegram", "discord", "slack", "whatsapp", "email", "github", "webhook"];
 
 export interface DeliveryPlatformIconProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Delivery platform whose logo to draw. */
   platform: DeliveryPlatform;
+  /** Icon box size of the logo. */
   size?: "sm" | "md";
 }
 
@@ -90,8 +92,11 @@ export function formatDeliveryTarget(target: DeliveryTarget, status?: Partial<Re
 }
 
 export interface DeliveryTargetPickerProps extends Omit<React.HTMLAttributes<HTMLFieldSetElement>, "defaultValue" | "onChange"> {
+  /** Controlled delivery target (platform and optional channel). */
   value?: DeliveryTarget;
+  /** Initial target when `value` is not controlled. */
   defaultValue?: DeliveryTarget;
+  /** Called with the new target when the user changes the platform or channel. */
   onValueChange?: (value: DeliveryTarget) => void;
   /** Platforms offered, in order. */
   platforms?: DeliveryPlatform[];
@@ -99,7 +104,9 @@ export interface DeliveryTargetPickerProps extends Omit<React.HTMLAttributes<HTM
   status?: Partial<Record<DeliveryPlatform, DeliveryPlatformStatus>>;
   /** Shows a "Channels" button in the home-channel warning. */
   onConfigureChannels?: () => void;
+  /** Legend of the field set. */
   legend?: React.ReactNode;
+  /** Disables every option. */
   disabled?: boolean;
 }
 

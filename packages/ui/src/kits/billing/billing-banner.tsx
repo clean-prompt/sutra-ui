@@ -26,10 +26,15 @@ export interface BillingBannerProps extends Omit<React.HTMLAttributes<HTMLDivEle
   tone?: ToneInput | BillingBannerKind;
   /** Days left in the trial (kind "trial"). */
   daysLeft?: number;
+  /** Replaces the default heading of the `kind`. */
   title?: React.ReactNode;
+  /** Replaces the default text of the `kind`. */
   description?: React.ReactNode;
+  /** Label of the action button; defaults to a label chosen from the `kind`. */
   actionLabel?: string;
+  /** Called when the user presses the action button; the button is hidden when unset. */
   onAction?: () => void;
+  /** Called when the user dismisses the banner; the close button is hidden when unset. */
   onDismiss?: () => void;
 }
 

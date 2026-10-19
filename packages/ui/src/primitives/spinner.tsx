@@ -5,6 +5,10 @@ import { usePrefersReducedMotion } from "../hooks/use-media-query";
 
 const spinnerSize = cva("inline-block shrink-0 text-primary", {
   variants: {
+    /**
+     * Spinner diameter: `xs` 12px, `sm` 16px, `md` 20px, `lg` 24px or `xl` 32px.
+     * @default "md"
+     */
     size: { xs: "size-3", sm: "size-4", md: "size-5", lg: "size-6", xl: "size-8" },
   },
   defaultVariants: { size: "md" },

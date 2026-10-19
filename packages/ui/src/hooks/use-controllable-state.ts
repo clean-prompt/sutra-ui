@@ -9,8 +9,11 @@ export function useControllableState<T>({
   defaultValue,
   onChange,
 }: {
+  /** Controlled value; when it is not `undefined` the hook mirrors it and never changes it on its own. */
   value?: T;
+  /** Initial value used while the state is uncontrolled. */
   defaultValue: T;
+  /** Called with the next value whenever it changes (controlled or not). */
   onChange?: (value: T) => void;
 }) {
   const [internal, setInternal] = React.useState<T>(defaultValue);

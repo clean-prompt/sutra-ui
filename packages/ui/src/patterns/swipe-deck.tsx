@@ -51,7 +51,12 @@ export interface SwipeDeckProps<T> extends Omit<React.HTMLAttributes<HTMLDivElem
   getLabel?: (item: T) => string;
   /** Index of the top card (`items.length` = none left). */
   index?: number;
+  /**
+   * Initial top-card index when uncontrolled.
+   * @default 0
+   */
   defaultIndex?: number;
+  /** Called with the new top-card index after a card is swiped away. */
   onIndexChange?: (index: number) => void;
   /** A card was dismissed to a side by a drag, a key or a button. `start` and `end` follow the reading direction. */
   onSwipe?: (side: SwipeDeckSide, item: T, index: number) => void;
@@ -59,6 +64,7 @@ export interface SwipeDeckProps<T> extends Omit<React.HTMLAttributes<HTMLDivElem
   onUndo?: (item: T, index: number) => void;
   /** The last card was swiped away. */
   onEmpty?: () => void;
+  /** Content shown once every card has been swiped away. */
   emptyState?: React.ReactNode;
   /** Name of the start action. Default "Skip". */
   startLabel?: string;

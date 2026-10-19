@@ -13,21 +13,30 @@ import { FeaturedIcon, type FeaturedIconColor, type IconComponent } from "../../
 export type AuthProblemVariant = "not-owner" | "sso-down" | "cookie-conflict" | "sign-in-loop" | "expired-session" | "offline";
 
 export interface AuthProblemProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /**
+   * Which problem to explain: `not-owner`, `sso-down`, `cookie-conflict`, `sign-in-loop`, `expired-session` or
+   * `offline`.
+   */
   variant: AuthProblemVariant;
   /** Who is signed in (not-owner). */
   accountName?: string;
+  /** Handle or email of the signed-in account, shown beside the name (`not-owner`). */
   accountHandle?: string;
   /** Name of the app or the suite's sign-in. */
   appName?: string;
   /** Where the shared sign-in lives, e.g. "the suite". */
   providerName?: string;
+  /** Called when the user presses Try again; the button is hidden when unset. */
   onRetry?: () => void;
+  /** Called when the user presses Sign in; the button is hidden when unset. */
   onSignIn?: () => void;
   /** Link to switch account at the provider. */
   switchAccountHref?: string;
   /** Link to open the provider's sign-in. */
   providerHref?: string;
+  /** Replaces the default heading of the variant. */
   title?: React.ReactNode;
+  /** Replaces the default explanation of the variant. */
   description?: React.ReactNode;
   /** Replace the default actions. */
   actions?: React.ReactNode;

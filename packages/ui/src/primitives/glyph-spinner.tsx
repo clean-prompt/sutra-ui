@@ -11,6 +11,7 @@ export const glyphSpinnerFrames = spinnerGlyphFrames;
 export type GlyphSpinnerVariant = SpinnerGlyphFrameSet;
 
 export interface GlyphSpinnerProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Which glyph animation to play (a key of the spinner glyph frame sets). */
   variant?: GlyphSpinnerVariant;
   /** Custom frames (overrides `variant`). */
   frames?: readonly string[];

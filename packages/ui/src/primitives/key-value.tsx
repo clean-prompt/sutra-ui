@@ -77,11 +77,15 @@ export const KeyValueList = React.forwardRef<HTMLDListElement, KeyValueListProps
 KeyValueList.displayName = "KeyValueList";
 
 export interface KeyValueProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Name of the entry, shown as the row's label. */
   label: React.ReactNode;
   /** The value; `children` work too. Empty values render the list's placeholder. */
   value?: React.ReactNode;
+  /** The value, when `value` is not set. */
   children?: React.ReactNode;
+  /** Adds a copy button; `true` copies the value text, a string copies that text instead. */
   copyable?: boolean | string;
+  /** Shows this value in the monospace face. */
   mono?: boolean;
   /** Single-line with ellipsis; the full text is in the `title` tooltip. Default true in `rows`. */
   truncate?: boolean;

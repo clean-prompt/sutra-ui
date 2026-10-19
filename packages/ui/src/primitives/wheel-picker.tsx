@@ -32,14 +32,19 @@ const fade = "[mask-image:linear-gradient(to_bottom,transparent,black_32%,black_
 const oddRows = (n: number) => Math.max(1, Math.round(n) % 2 === 0 ? Math.round(n) + 1 : Math.round(n));
 
 export interface WheelPickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** Items on the wheel, as strings or `{ value, label }` objects, in order. */
   options: readonly (string | WheelPickerOption)[];
+  /** Controlled selected value. Use with `onValueChange`. */
   value?: string | null;
+  /** Initially selected value when uncontrolled. */
   defaultValue?: string | null;
+  /** Called with the value that is centred when scrolling settles or a key is pressed. */
   onValueChange?: (value: string) => void;
   /** Rows in view (odd; an even number is raised by one). Default 5. */
   visibleCount?: number;
   /** Row height in px. Default 36. */
   itemHeight?: number;
+  /** Disables scrolling and keyboard changes. */
   disabled?: boolean;
   /** Options are on their way: placeholder rows and `aria-busy`, no listbox. */
   loading?: boolean;
@@ -290,14 +295,27 @@ export interface WheelPickerColumn {
 }
 
 export interface WheelPickerGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** Wheels to show side by side; each has an `id`, an accessible `label`, `options` and an optional separator. */
   columns: readonly WheelPickerColumn[];
   /** One value per column, in order. */
   value?: readonly string[];
+  /** Initially selected values, one per column, when uncontrolled. */
   defaultValue?: readonly string[];
+  /** Called with all column values plus the column that changed. */
   onValueChange?: (value: string[], meta: { columnId: string; index: number }) => void;
+  /**
+   * Rows visible per wheel (odd numbers centre the selection).
+   * @default 5
+   */
   visibleCount?: number;
+  /**
+   * Height of one row in px.
+   * @default 36
+   */
   itemHeight?: number;
+  /** Disables every wheel. */
   disabled?: boolean;
+  /** Dims the wheels and blocks changes while options load. */
   loading?: boolean;
 }
 

@@ -89,8 +89,11 @@ export interface ApiKey {
 }
 
 export interface ApiKeyListProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** API keys to list (name, prefix, scopes, created, last used, expiry); the secret is never part of a key. */
   keys: ApiKey[];
+  /** Called with the key when the user presses Edit; the action is hidden when unset. */
   onEdit?: (key: ApiKey) => void;
+  /** Called with the key when the user presses Rotate; the action is hidden when unset. */
   onRotate?: (key: ApiKey) => void;
   /** May return a promise; the confirm dialog waits for it. */
   onRevoke?: (key: ApiKey) => void | Promise<void>;
@@ -102,7 +105,7 @@ export interface ApiKeyListProps extends React.HTMLAttributes<HTMLDivElement> {
   now?: number;
   /** Shown when there is nothing to list. Default "No API keys yet". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
 }
 
@@ -316,14 +319,23 @@ export interface ApiKeyCreateInput {
 }
 
 export interface ApiKeyCreateDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Element that opens the dialog when pressed. */
   trigger?: React.ReactNode;
+  /** Dialog heading. Default "Create API key". */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
+  /** Scopes the key can be limited to, each with an id and label. */
   scopes: ApiKeyOption[];
+  /** Extra permission options shown after the scopes; the section is hidden when empty. */
   permissions?: ApiKeyOption[];
+  /** Expiry choices, each with a label and a number of days (or none); defaults to the built-in set. */
   expiryOptions?: ApiKeyExpiryOption[];
   /** Default expiry index. Default 1 (30 days). */
   defaultExpiryIndex?: number;
@@ -566,8 +578,11 @@ export interface ApiKeyUsageRow {
 }
 
 export interface ApiKeyUsageProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Usage rows, one per endpoint or key, each with a label and request counts. */
   rows: ApiKeyUsageRow[];
+  /** Header of the label column. Default "Endpoint". */
   labelHeader?: React.ReactNode;
+  /** Reference time for relative labels; set it in tests and SSR for stable output. */
   now?: number;
   /** Show a totals row. Default true. */
   showTotal?: boolean;

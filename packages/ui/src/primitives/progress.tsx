@@ -25,18 +25,23 @@ const strokeColor: Record<Tone, string> = {
 
 export interface ProgressProps
   extends Omit<React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>, "value" | "color"> {
+  /** Completed amount from 0 to `max`; `null` or `undefined` renders the indeterminate animation. */
   value?: number | null;
   /** Track height: 2xs 2px (hairline loading strips), xs 4px, sm 6px, md 8px, lg 12px. Default "md". */
   size?: "2xs" | "xs" | "sm" | "md" | "lg";
   /** Semantic colour of the filled part. Default "primary". */
   tone?: ToneInput;
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   color?: ProgressColor;
+  /** Forces the looping animation regardless of `value` (also used when `value` is null). */
   indeterminate?: boolean;
+  /** Text shown above the bar; it also becomes the accessible name. */
   label?: React.ReactNode;
   /** Show the percentage on the right of the bar or above it, next to the label. */
   showValue?: boolean | "right" | "top";
+  /** Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". */
   formatValue?: (value: number, max: number) => React.ReactNode;
+  /** Classes for the filled indicator bar (`className` styles the track). */
   indicatorClassName?: string;
 }
 
@@ -144,14 +149,23 @@ Progress.displayName = "Progress";
 
 export interface ProgressCircleProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "color" | "children"> {
+  /** Completed amount from 0 to `max`; the centre shows it as a percentage unless `children` replaces it. */
   value?: number;
+  /**
+   * Value that counts as 100%.
+   * @default 100
+   */
   max?: number;
   /** Diameter in px. */
   size?: number;
+  /**
+   * Ring thickness in px.
+   * @default 6
+   */
   strokeWidth?: number;
   /** Semantic colour of the filled part. Default "primary". */
   tone?: ToneInput;
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   color?: ProgressColor;
   /** Brand gradient stroke instead of a flat color. */
   gradient?: boolean;
@@ -159,6 +173,7 @@ export interface ProgressCircleProps
   showValue?: boolean;
   /** Custom center content (overrides the value). */
   children?: React.ReactNode;
+  /** Accessible name of the progressbar (`aria-label`). */
   label?: string;
 }
 
@@ -167,6 +182,7 @@ export interface ProgressRingSvgProps extends Omit<React.SVGProps<SVGSVGElement>
   percent: number;
   /** Diameter in px. */
   size: number;
+  /** Ring thickness in px. */
   strokeWidth: number;
   /** Classes for the fill arc, e.g. a `stroke-*` tone class. */
   fillClassName?: string;
@@ -176,6 +192,7 @@ export interface ProgressRingSvgProps extends Omit<React.SVGProps<SVGSVGElement>
   trackClassName?: string;
   /** Explicit track stroke (e.g. `currentColor`). */
   trackStroke?: string;
+  /** Opacity of the track ring, 0 to 1. */
   trackOpacity?: number;
   /** `data-slot` on the fill arc. */
   fillSlot?: string;
@@ -306,12 +323,15 @@ export interface ProgressSegmentsProps
   segments?: number;
   /** Filled amount, relative to `max` (defaults to `segments`). */
   value: number;
+  /** Total number of units the bar represents; defaults to the segment count. */
   max?: number;
   /** Semantic colour of the filled part. Default "primary". */
   tone?: ToneInput;
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   color?: ProgressColor;
+  /** Segment height: sm, md or lg. */
   size?: "sm" | "md" | "lg";
+  /** Accessible name of the progressbar (`aria-label`). */
   label?: string;
   /** `progressbar` (default) for steps done; `meter` for a level such as password strength. Pair with `aria-valuetext`. */
   role?: "progressbar" | "meter";
@@ -358,10 +378,16 @@ export const ProgressSegments = React.forwardRef<HTMLDivElement, ProgressSegment
 ProgressSegments.displayName = "ProgressSegments";
 
 export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * What the placeholder looks like: text lines, a circle (avatar) or a rectangle.
+   * @default "rect"
+   */
   shape?: "text" | "circle" | "rect";
   /** Number of text lines (shape "text" only). The last line is shorter. */
   lines?: number;
+  /** Width of the placeholder (px number or CSS length); defaults to the full width. */
   width?: number | string;
+  /** Height of the placeholder (px number or CSS length); a circle without a height is as tall as it is wide. */
   height?: number | string;
   /** Shimmer sweep instead of a pulse. Default true. */
   shimmer?: boolean;

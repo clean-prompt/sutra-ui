@@ -76,21 +76,29 @@ export interface AppSidebarProps extends Omit<SidebarProps, "children" | "defaul
   defaultValue?: string;
   /** Called with the id of the item the user navigates to. */
   onValueChange?: (id: string) => void;
-  /** @deprecated Use `value`. */
+  /** Legacy name of `value`. @deprecated Use `value`. */
   active?: string;
-  /** @deprecated Use `defaultValue`. */
+  /** Legacy name of `defaultValue`. @deprecated Use `defaultValue`. */
   defaultActive?: string;
-  /** @deprecated Use `onValueChange`. */
+  /** Legacy name of `onValueChange`. @deprecated Use `onValueChange`. */
   onNavigate?: (id: string) => void;
+  /** Top-level navigation rows (each with an `id`, a `label` and an icon); the default is a standard set. */
   primaryItems?: AppSidebarNavItem[];
+  /** Sutra apps listed in the Apps section; defaults to all of them. */
   apps?: SutraApp[];
+  /** Favourite entries listed under Favorites; each has an `id`, a `label`, an `app` and optional child links. The default is demo data. */
   favorites?: AppSidebarFavorite[];
+  /** Workspaces offered in the switcher at the top. The default is demo data. */
   workspaces?: Workspace[];
+  /** The signed-in user for the account card at the bottom. The default is demo data. */
   user?: UserAccountMenuUser;
   /** Storage usage in GB. Pass `null` to hide the card. */
   storage?: { used: number; total: number } | null;
+  /** Called when the search row is clicked. */
   onSearch?: () => void;
+  /** Called when the upgrade button in the storage card is clicked. */
   onUpgrade?: () => void;
+  /** Called when "Sign out" is chosen in the account menu. */
   onSignOut?: () => void;
 }
 
@@ -329,9 +337,13 @@ export interface SettingsNavGroup {
 }
 
 export interface SettingsSidebarProps extends Omit<React.HTMLAttributes<HTMLElement>, "defaultValue"> {
+  /** Navigation groups; each has a `label` and `items`. */
   groups?: SettingsNavGroup[];
+  /** Controlled id of the active item. Use with `onValueChange`. */
   value?: string;
+  /** Initially active item id when uncontrolled. */
   defaultValue?: string;
+  /** Called with the id of the item the user picked. */
   onValueChange?: (value: string) => void;
 }
 
@@ -434,6 +446,7 @@ export interface DocsNavSection {
 }
 
 export interface DocsSidebarProps extends Omit<React.HTMLAttributes<HTMLElement>, "defaultValue"> {
+  /** Documentation sections; each has an `id`, a `label` and `links`. */
   sections?: DocsNavSection[];
   /** Currently active link id. */
   value?: string;
@@ -441,11 +454,11 @@ export interface DocsSidebarProps extends Omit<React.HTMLAttributes<HTMLElement>
   defaultValue?: string;
   /** Called with the id of the link the user navigates to. */
   onValueChange?: (id: string) => void;
-  /** @deprecated Use `value`. */
+  /** Legacy name of `value`. @deprecated Use `value`. */
   active?: string;
-  /** @deprecated Use `defaultValue`. */
+  /** Legacy name of `defaultValue`. @deprecated Use `defaultValue`. */
   defaultActive?: string;
-  /** @deprecated Use `onValueChange`. */
+  /** Legacy name of `onValueChange`. @deprecated Use `onValueChange`. */
   onNavigate?: (id: string) => void;
   /** `sections`: collapsible groups of links. `tree`: a keyboard-navigable TreeView. */
   mode?: "sections" | "tree";
@@ -619,10 +632,13 @@ DocsSidebar.displayName = "DocsSidebar";
 /* ------------------------------------------------------------------ */
 
 export interface AppShellProps extends Omit<SidebarProviderProps, "children"> {
+  /** Props passed to the inner `AppSidebar`. */
   sidebarProps?: AppSidebarProps;
+  /** Props passed to the inner `AppHeader`. */
   headerProps?: AppHeaderProps;
   /** Page content. Defaults to a demo dashboard header. */
   children?: React.ReactNode;
+  /** Classes for the scrolling content area. */
   contentClassName?: string;
   /** Element for the content area. Default `"main"`; use `"div"` when nested inside another `<main>`. */
   insetAs?: React.ElementType;

@@ -63,6 +63,7 @@ const kindIcon: Record<BackendKind, React.ComponentType<{ className?: string }>>
 /* ------------------------------------------------------------------ */
 
 export interface BackendHealthPillProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Probe result of a backend (for example ok, failed, not configured or unknown); sets the pill text and tone. */
   health: BackendHealth;
 }
 
@@ -114,13 +115,19 @@ BackendHealthPill.displayName = "BackendHealthPill";
 /* ------------------------------------------------------------------ */
 
 export interface BackendPickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "dir"> {
+  /** Execution backends to choose from, each with its probe. */
   backends: BackendOption[];
+  /** Controlled id of the selected backend. */
   value?: string;
+  /** Initially selected backend id when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the backend id when the user selects one. */
   onValueChange?: (id: string) => void;
+  /** Called with the backend id when the user presses Configure on a backend; the button is hidden when unset. */
   onConfigure?: (id: string) => void;
   /** Run every probe on mount. Default true. */
   autoProbe?: boolean;
+  /** Accessible name of the radio group. Default "Execution backend". */
   label?: string;
 }
 

@@ -14,6 +14,7 @@ import { priorityLabel } from "./kanban-internal";
 /* ------------------------------------------------------------------ */
 
 export interface KanbanPriorityIconProps extends React.SVGAttributes<SVGSVGElement> {
+  /** Priority level to draw (for example low, medium, high, urgent); sets the glyph and tone. */
   priority: KanbanPriority;
 }
 
@@ -59,9 +60,11 @@ export const KanbanPriorityIcon = React.forwardRef<SVGSVGElement, KanbanPriority
 KanbanPriorityIcon.displayName = "KanbanPriorityIcon";
 
 export interface KanbanAssigneeAvatarProps {
+  /** The person or agent to show; agents render an `AgentAvatar`. */
   assignee: KanbanAssignee;
   /** Pixel size. Default 20. */
   size?: number;
+  /** Extra classes for the avatar. */
   className?: string;
 }
 
@@ -129,19 +132,25 @@ KanbanRunBadge.displayName = "KanbanRunBadge";
 /* ------------------------------------------------------------------ */
 
 export interface KanbanCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick"> {
+  /** The card to show (title, priority, due date, label ids, subtask counts). */
   card: KanbanCardData;
+  /** Assignee resolved from the card's assignee id; shown as an avatar. */
   assignee?: KanbanAssignee;
+  /** Labels resolved from the card's label ids; shown as chips. */
   labels?: KanbanLabel[];
   /** The card's column counts as done. */
   done?: boolean;
   /** Reference time for the overdue check. */
   now?: Date | number;
+  /** BCP 47 locale used to format the due date. */
   locale?: string;
+  /** Called when the user activates the card to open it. */
   onOpen?: () => void;
   /** Actions rendered top-right (e.g. a menu). */
   actions?: React.ReactNode;
   /** Props for the full-card activator button (drag listeners, aria). */
   activatorProps?: React.ButtonHTMLAttributes<HTMLButtonElement> & Record<string, unknown>;
+  /** Ref to the full-card activator button (for drag sensors). */
   activatorRef?: React.Ref<HTMLButtonElement>;
   /** Rendered as a drop placeholder. */
   placeholder?: boolean;

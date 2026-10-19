@@ -138,13 +138,19 @@ export interface TOTPCodeProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   nextCode?: string;
   /** Resolve a code for a timestamp (ms), e.g. from a server. */
   getCode?: (timestamp: number) => string | Promise<string>;
+  /** Seconds each code is valid. Default 30. */
   period?: number;
+  /** Number of digits in a code. Default 6. */
   digits?: number;
+  /** HMAC algorithm (`SHA1`, `SHA256` or `SHA512`). Default "SHA1". */
   algorithm?: TOTPAlgorithm;
+  /** Style of the time-left indicator: `circular`, `linear` or `none`. Default "circular". */
   countdown?: "circular" | "linear" | "none";
+  /** Size of the code and countdown. Default "md". */
   size?: "sm" | "md" | "lg";
   /** Show the copy button. Default true. */
   copyable?: boolean;
+  /** Called with the code after it has been copied. */
   onCopy?: (code: string) => void;
   /** Preview the next code when fewer than `nextThreshold` seconds remain. Default true. */
   showNext?: boolean;
@@ -364,7 +370,9 @@ export interface TOTPCardProps
       | "nextThreshold"
       | "onRollover"
     > {
+  /** Service the code belongs to (for example "GitHub"), shown as the card title. */
   issuer: string;
+  /** Account name or email, shown under the issuer. */
   account?: string;
   /** Domain for the favicon (defaults to the issuer name, which renders a monogram). */
   domain?: string;
@@ -374,6 +382,7 @@ export interface TOTPCardProps
   icon?: React.ReactNode;
   /** Slot for an overflow menu (e.g. a DropdownMenu trigger). */
   menu?: React.ReactNode;
+  /** Size of the card. Default "md". */
   size?: "sm" | "md" | "lg";
 }
 

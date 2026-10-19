@@ -24,6 +24,10 @@ export const checkboxVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Box size: `sm` 14px or `md` 16px.
+       * @default "md"
+       */
       size: {
         sm: "size-3.5 [&_svg]:size-3",
         md: "size-4 [&_svg]:size-3.5",
@@ -36,6 +40,7 @@ export const checkboxVariants = cva(
 export interface CheckboxProps
   extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>,
     VariantProps<typeof checkboxVariants> {
+  /** Marks the checkbox invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
 }
 
@@ -76,8 +81,11 @@ export const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimiti
 Checkbox.displayName = "Checkbox";
 
 export interface CheckboxFieldProps extends CheckboxProps {
+  /** Label shown beside the box and wired to it (`htmlFor`), so clicking it toggles the checkbox. */
   label?: React.ReactNode;
+  /** Secondary text under the label, announced as the checkbox description. */
   description?: React.ReactNode;
+  /** Classes for the `<label>` element. */
   labelClassName?: string;
   /** Class for the outer row. */
   wrapperClassName?: string;
@@ -135,7 +143,9 @@ export const CheckboxField = React.forwardRef<React.ElementRef<typeof CheckboxPr
 CheckboxField.displayName = "CheckboxField";
 
 export interface CheckboxCardProps extends CheckboxProps {
+  /** Primary text of the card (the whole card is the label and click target). */
   label: React.ReactNode;
+  /** Supporting text under the label. */
   description?: React.ReactNode;
   /** Optional leading icon or media. */
   icon?: React.ReactNode;
@@ -236,18 +246,33 @@ export interface CheckboxGroupOption {
 
 export interface CheckboxGroupProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange" | "dir"> {
+  /** Controlled list of checked item values. Use with `onValueChange`. */
   value?: string[];
+  /** Initially checked item values when uncontrolled. */
   defaultValue?: string[];
+  /** Called with the full list of checked values after every toggle. */
   onValueChange?: (value: string[]) => void;
   /** Render items from data instead of children. */
   options?: CheckboxGroupOption[];
+  /**
+   * Stacks the items in a column or lays them out in a row.
+   * @default "vertical"
+   */
   orientation?: "vertical" | "horizontal";
+  /** Group label shown above the items; it is the accessible name of the group. */
   label?: React.ReactNode;
+  /** Help text under the group label. */
   description?: React.ReactNode;
+  /** Disables every item in the group. */
   disabled?: boolean;
+  /** Marks the group invalid: error styling on the items and `aria-invalid`. */
   invalid?: boolean;
   /** Form field name submitted for every checked item. */
   name?: string;
+  /**
+   * Checkbox size for every item in the group.
+   * @default "md"
+   */
   size?: "sm" | "md";
 }
 
@@ -365,6 +390,7 @@ CheckboxGroup.displayName = "CheckboxGroup";
 
 export interface CheckboxGroupItemProps
   extends Omit<CheckboxFieldProps, "value" | "checked" | "defaultChecked" | "onCheckedChange" | "name"> {
+  /** Value added to or removed from the group's value when this item is toggled. */
   value: string;
 }
 

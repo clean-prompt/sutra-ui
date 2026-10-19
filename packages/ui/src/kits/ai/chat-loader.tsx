@@ -13,6 +13,7 @@ export interface ChatLoaderProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: ChatLoaderVariant;
   /** Visible text next to the indicator (the shimmer variant uses it as its text). */
   label?: React.ReactNode;
+  /** Loader size. */
   size?: "sm" | "md" | "lg";
 }
 

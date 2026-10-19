@@ -37,6 +37,7 @@ function useCooldownSeconds(seconds: number | undefined, active: boolean, onEnd?
 export interface PromptInputModelPillProps extends ButtonProps {
   /** Model name. */
   model?: React.ReactNode;
+  /** Replaces the default model icon. */
   icon?: React.ReactNode;
   /** Reasoning-effort display (e.g. "High" or a glyph), shown muted after the name. */
   effort?: React.ReactNode;
@@ -110,6 +111,7 @@ export const PromptInputModelPill = React.forwardRef<HTMLButtonElement, PromptIn
 PromptInputModelPill.displayName = "PromptInputModelPill";
 
 export interface PromptInputModelSelectProps extends Omit<ButtonProps, "value" | "defaultValue"> {
+  /** Models to choose from, each with an id, name and optional description. */
   models: PromptInputModel[];
   /** Reasoning-effort display next to the model name. */
   effort?: React.ReactNode;
@@ -117,14 +119,19 @@ export interface PromptInputModelSelectProps extends Omit<ButtonProps, "value" |
   fast?: PromptInputFastMode;
   /** Seconds left while `fast="cooldown"`. */
   fastCooldown?: number;
+  /** Called when the fast-mode cooldown countdown reaches zero. */
   onFastCooldownEnd?: () => void;
   /** Extra menu content below the model list (e.g. effort or fast-mode toggles). */
   menuFooter?: React.ReactNode;
+  /** Controlled id of the selected model. */
   value?: string;
+  /** Initially selected model id when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the model id when the user picks a model. */
   onValueChange?: (id: string) => void;
   /** Heading inside the menu. */
   menuLabel?: string;
+  /** Alignment of the menu against the pill. */
   align?: "start" | "center" | "end";
 }
 

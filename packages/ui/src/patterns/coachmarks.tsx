@@ -56,14 +56,26 @@ export interface CoachmarkTourLabels {
 }
 
 export interface CoachmarkTourProps {
+  /** Tour steps in order; each has a `target`, a `title` and optional body, placement and action. */
   steps: CoachmarkStep[];
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the tour opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Controlled index of the current step. Use with `onStepChange`. */
   step?: number;
+  /**
+   * Initial step index when uncontrolled.
+   * @default 0
+   */
   defaultStep?: number;
+  /** Called with the new step index when the user moves between steps. */
   onStepChange?: (step: number) => void;
+  /** Called when the user finishes the last step. */
   onFinish?: () => void;
+  /** Called with the step index where the user chose Skip. */
   onSkip?: (step: number) => void;
   /** Persist completion; called for both finish and skip. */
   onComplete?: (reason: "finish" | "skip") => void;
@@ -71,9 +83,11 @@ export interface CoachmarkTourProps {
   padding?: number;
   /** Spotlight corner radius, px. Default 10. */
   radius?: number;
+  /** Overrides for the button texts (`next`, `back`, `skip`, `finish`). */
   labels?: CoachmarkTourLabels;
   /** Close (skip) when the dimmed area is clicked. Default false. */
   closeOnOverlayClick?: boolean;
+  /** Classes for the tour card. */
   className?: string;
 }
 
@@ -396,12 +410,19 @@ export interface TipBubbleProps {
   tips: TipBubbleItem[];
   /** Anchor element (wrapped with asChild). Use `target` instead to anchor to an existing element. */
   children?: React.ReactElement;
+  /** Existing element to anchor to: a CSS selector or a ref. Use it instead of wrapping an anchor in `children`. */
   target?: CoachmarkTarget;
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the bubble opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Controlled index of the visible tip when there are several. Use with `onIndexChange`. */
   index?: number;
+  /** Initial tip index when uncontrolled. */
   defaultIndex?: number;
+  /** Called with the new tip index when the user pages through the tips. */
   onIndexChange?: (index: number) => void;
   /** Called when the bubble is closed. */
   onDismiss?: () => void;
@@ -409,11 +430,21 @@ export interface TipBubbleProps {
   onDontShowAgain?: () => void;
   /** Accent colour of the bar and icon. Default `primary`. */
   tone?: ToneInput;
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   accent?: TipBubbleAccent;
+  /** Icon shown beside the tip text. */
   icon?: React.ReactNode;
+  /**
+   * Side of the anchor the bubble opens on.
+   * @default "bottom"
+   */
   side?: "top" | "right" | "bottom" | "left";
+  /**
+   * Alignment of the bubble along that side.
+   * @default "start"
+   */
   align?: "start" | "center" | "end";
+  /** Classes for the bubble. */
   className?: string;
 }
 

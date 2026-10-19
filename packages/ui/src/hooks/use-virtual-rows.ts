@@ -1,6 +1,8 @@
 import * as React from "react";
 
+/** Options for `useVirtualRows`: row count and height, the scroll element, overscan and an enabled switch. */
 export interface UseVirtualRowsOptions {
+  /** Total number of rows in the list. */
   count: number;
   /** Fixed row height in px. */
   rowHeight: number;
@@ -14,6 +16,7 @@ export interface UseVirtualRowsOptions {
   fallbackHeight?: number;
 }
 
+/** What `useVirtualRows` returns: the first and last row to render, the total height and the offset of the first row. */
 export interface VirtualRows {
   start: number;
   end: number;

@@ -4,8 +4,10 @@ import { useLatestRef } from "./use-iso-layout-effect";
 /** Lifecycle of a `useCamera` stream. */
 export type CameraStatus = "idle" | "requesting" | "live" | "denied" | "unavailable" | "error";
 
+/** Which camera to prefer: the front (`user`) or the back (`environment`) one. */
 export type CameraFacingMode = "user" | "environment";
 
+/** Options for `useCamera`: facing mode, device, audio, whether it is enabled, extra constraints and an error callback. */
 export interface UseCameraOptions {
   /** Camera to ask for first (`ideal`, so a device without it still opens). Default `"environment"`. */
   facingMode?: CameraFacingMode;
@@ -21,6 +23,7 @@ export interface UseCameraOptions {
   onError?: (error: unknown) => void;
 }
 
+/** What `useCamera` returns: the video ref, the stream and its status, the device list and the start, stop and switch actions. */
 export interface UseCameraResult {
   /** Attach to a muted, `playsInline` `<video>`; the hook sets `srcObject` and plays it. */
   videoRef: React.RefObject<HTMLVideoElement | null>;

@@ -106,21 +106,30 @@ const ChipGroupContext = React.createContext<ChipGroupContextValue | null>(null)
 
 export interface ChipProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "color" | "value"> {
+  /** Visual style: `outline` (border only), `soft` (tinted fill) or `solid` (filled). */
   variant?: ChipVariant;
   /** Semantic colour. Default `neutral` (`primary` inside a `ChipGroup`). */
   tone?: ToneInput;
-  /** @deprecated Use `tone` (`brand` is `primary`). */
+  /** Legacy name of `tone`. @deprecated Use `tone` (`brand` is `primary`). */
   color?: ChipColor;
+  /** Chip height and text size. */
   size?: ChipSize;
   /** Controlled toggle state (renders `aria-pressed`). */
   selected?: boolean;
+  /** Initial toggle state when uncontrolled. */
   defaultSelected?: boolean;
+  /** Called with the new state when the chip is toggled; also makes the chip a toggle button. */
   onSelectedChange?: (selected: boolean) => void;
   /** Identifies the chip inside a `ChipGroup`. */
   value?: string;
   /** Shows a remove button; Backspace/Delete also trigger it. */
   onRemove?: () => void;
+  /**
+   * Accessible name of the remove button.
+   * @default "Remove"
+   */
   removeLabel?: string;
+  /** Icon at the start of the chip; takes the place of the selection check mark. */
   leadingIcon?: React.ReactNode;
   /** Small avatar or image at the start (sized automatically). */
   avatar?: React.ReactNode;
@@ -266,28 +275,39 @@ Chip.displayName = "Chip";
 
 interface ChipGroupBaseProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "color" | "defaultValue" | "onChange"> {
+  /** Visual style for every chip in the group (a chip's own `variant` wins). */
   variant?: ChipVariant;
   /** Semantic colour for every chip in the group. Default `primary`. */
   tone?: ToneInput;
-  /** @deprecated Use `tone` (`brand` is `primary`). */
+  /** Legacy name of `tone`. @deprecated Use `tone` (`brand` is `primary`). */
   color?: ChipColor;
+  /** Chip size for every chip in the group. */
   size?: ChipSize;
+  /** Disables every chip in the group. */
   disabled?: boolean;
 }
 
 export interface ChipGroupSingleProps extends ChipGroupBaseProps {
+  /** Selection mode: at most one chip selected (the default); use `"multiple"` for a list. */
   type?: "single";
+  /** Controlled selected chip value (`null` for none). Use with `onValueChange`. */
   value?: string | null;
+  /** Initially selected chip value when uncontrolled. */
   defaultValue?: string | null;
+  /** Called with the selected value, or `null` when the selection is cleared. */
   onValueChange?: (value: string | null) => void;
   /** Allow clicking the selected chip to clear the selection. Default true. */
   allowDeselect?: boolean;
 }
 
 export interface ChipGroupMultipleProps extends ChipGroupBaseProps {
+  /** Selection mode: any number of chips can be selected. */
   type: "multiple";
+  /** Controlled list of selected chip values. Use with `onValueChange`. */
   value?: string[];
+  /** Initially selected chip values when uncontrolled. */
   defaultValue?: string[];
+  /** Called with the full list of selected values after every toggle. */
   onValueChange?: (value: string[]) => void;
 }
 

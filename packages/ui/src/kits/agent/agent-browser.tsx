@@ -93,21 +93,31 @@ export interface AgentBrowserPaneProps extends Omit<React.HTMLAttributes<HTMLDiv
   pageTitle?: string;
   /** Override the inferred security indicator. */
   security?: BrowserSecurity;
+  /** Shows the page as loading: the reload button becomes Stop and the progress bar appears. */
   loading?: boolean;
   /** 0–100. Indeterminate while `loading` and unset. */
   progress?: number;
+  /** Enables the back button. */
   canGoBack?: boolean;
+  /** Enables the forward button. */
   canGoForward?: boolean;
+  /** Called when the user presses Back. */
   onBack?: () => void;
+  /** Called when the user presses Forward. */
   onForward?: () => void;
+  /** Called when the user presses Reload. */
   onReload?: () => void;
+  /** Called when the user presses Stop while `loading`. */
   onStop?: () => void;
   /** Called with the normalized URL when the user submits the address bar. */
   onNavigate?: (url: string) => void;
   /** Who holds the control lease. */
   controller?: BrowserController;
+  /** Initial controlling party (`agent` or `user`) when `controller` is not controlled. */
   defaultController?: BrowserController;
+  /** Called with the new controller when the user takes over or hands control back. */
   onControllerChange?: (controller: BrowserController) => void;
+  /** Name used in the control banner ("<name> is driving"). Default "The agent". */
   agentName?: string;
   /** What the agent is doing right now, e.g. "Clicking “Sign in”". */
   agentActivity?: React.ReactNode;
@@ -115,6 +125,7 @@ export interface AgentBrowserPaneProps extends Omit<React.HTMLAttributes<HTMLDiv
   toolbarExtra?: React.ReactNode;
   /** Rendered under the viewport, e.g. a `BrowserConsole`. */
   footer?: React.ReactNode;
+  /** Extra classes for the viewport that wraps `children`. */
   viewportClassName?: string;
   /** The viewport (iframe, screenshot, canvas…) supplied by the app. */
   children?: React.ReactNode;
@@ -373,17 +384,27 @@ export interface BrowserConsoleEntry {
 }
 
 export interface BrowserConsoleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Console messages to list, each with a level, text and time. */
   entries: readonly BrowserConsoleEntry[];
+  /** Controlled expanded state of the console. */
   open?: boolean;
+  /** Initial expanded state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called with the new state when the user expands or collapses the console. */
   onOpenChange?: (open: boolean) => void;
   /** Levels shown. Default all. */
   levels?: BrowserConsoleLevel[];
+  /** Initially visible levels when `levels` is not controlled. */
   defaultLevels?: BrowserConsoleLevel[];
+  /** Called with the visible levels when the user toggles a level filter. */
   onLevelsChange?: (levels: BrowserConsoleLevel[]) => void;
+  /** Controlled text filter applied to the messages. */
   filter?: string;
+  /** Initial text filter when `filter` is not controlled. */
   defaultFilter?: string;
+  /** Called with the filter text on every change. */
   onFilterChange?: (filter: string) => void;
+  /** Called when the user presses Clear; the button is hidden when unset. */
   onClear?: () => void;
   /** Max height of the list (CSS length). Default 200. */
   maxHeight?: number | string;
@@ -568,12 +589,17 @@ export interface BrowserAnnotation {
 }
 
 export interface AnnotationLayerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Controlled pins, each with a position and optional comment. */
   annotations?: BrowserAnnotation[];
+  /** Initial pins when `annotations` is not controlled. */
   defaultAnnotations?: BrowserAnnotation[];
+  /** Called with the pins when the user adds, edits or removes one. */
   onAnnotationsChange?: (annotations: BrowserAnnotation[]) => void;
   /** Annotate mode: clicks on the surface drop pins. */
   active?: boolean;
+  /** Initial annotate mode when `active` is not controlled. */
   defaultActive?: boolean;
+  /** Called with the new state when the user toggles annotate mode. */
   onActiveChange?: (active: boolean) => void;
   /** "Send to agent". Receives annotations that have a comment. */
   onSendAnnotations?: (annotations: BrowserAnnotation[]) => void;
@@ -581,6 +607,7 @@ export interface AnnotationLayerProps extends Omit<React.HTMLAttributes<HTMLDivE
   clearOnSend?: boolean;
   /** Show the numbered list under the surface. Default true. */
   showList?: boolean;
+  /** Extra classes for the surface that wraps `children`. */
   surfaceClassName?: string;
   /** Page content to annotate. */
   children?: React.ReactNode;
@@ -822,11 +849,15 @@ AnnotationLayer.displayName = "AnnotationLayer";
 export type RealProfileChoice = "once" | "always" | "clean";
 
 export interface RealProfileConsentDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Called with the choice and whether to remember it. Closes the dialog. */
   onChoose?: (choice: RealProfileChoice, options: { remember: boolean }) => void;
+  /** Name of the agent asking for the real browser profile, shown in the copy. */
   agentName?: string;
   /** e.g. "Chrome — Personal". */
   profileName?: string;
@@ -834,6 +865,7 @@ export interface RealProfileConsentDialogProps {
   site?: string;
   /** Default state of "Remember my choice". */
   defaultRemember?: boolean;
+  /** Extra classes for the dialog content. */
   className?: string;
 }
 

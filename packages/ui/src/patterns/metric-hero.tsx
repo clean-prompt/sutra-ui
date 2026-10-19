@@ -15,7 +15,9 @@ export interface MetricHeroDetail {
 export interface MetricHeroProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** Small text above the value ("Now", "Apple M2 Max"). */
   caption?: React.ReactNode;
+  /** The big number or text to show. */
   value: React.ReactNode;
+  /** Unit shown after the value (e.g. "ms"). */
   unit?: React.ReactNode;
   /** Under the value, e.g. a `StatusBadge`. */
   status?: React.ReactNode;

@@ -93,13 +93,17 @@ export function ClearButton({ onClear, size }: ClearButtonProps) {
 }
 
 export interface BasePickerProps {
+  /** Trigger text while no date is selected (each picker has its own default, e.g. "Pick a date"). */
   placeholder?: string;
   /** Show an inline button that resets the value. */
   clearable?: boolean;
+  /** Disables the trigger so the calendar cannot be opened. */
   disabled?: boolean;
   /** Marks the picker required. Inherited from a surrounding `Field` when omitted. */
   required?: boolean;
+  /** Marks the picker invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
+  /** Trigger height and text size; match the neighbouring inputs. */
   size?: Size;
   /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
   variant?: "outline" | "filled";
@@ -109,18 +113,35 @@ export interface BasePickerProps {
   formatOptions?: Intl.DateTimeFormatOptions;
   /** Dates that can't be picked (react-day-picker matchers). */
   disabledDates?: Matcher | Matcher[];
+  /** Earliest month the calendar can navigate to (days before it are not reachable). */
   startMonth?: Date;
+  /** Latest month the calendar can navigate to. */
   endMonth?: Date;
+  /**
+   * Alignment of the calendar popover against the trigger.
+   * @default "start"
+   */
   align?: "start" | "center" | "end";
+  /** Controlled open state of the calendar popover. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the popover opens or closes (selection, Escape, outside click). */
   onOpenChange?: (open: boolean) => void;
+  /** Classes for the trigger button. */
   className?: string;
+  /** Classes for the calendar popover. */
   contentClassName?: string;
+  /** `id` of the trigger, so a `<label htmlFor>` or `Field` can point at it. */
   id?: string;
+  /** Name of the hidden input that submits the value with a surrounding form. */
   name?: string;
+  /** Accessible name of the trigger when there is no visible label. */
   "aria-label"?: string;
+  /** Id(s) of the element(s) that label the trigger. */
   "aria-labelledby"?: string;
+  /** Id(s) of the element(s) that describe the trigger (hint, error text). */
   "aria-describedby"?: string;
+  /** Overrides the invalid state announced to assistive technology; normally set `invalid` instead. */
   "aria-invalid"?: boolean;
 }

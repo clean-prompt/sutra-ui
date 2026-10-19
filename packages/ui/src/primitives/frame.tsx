@@ -9,6 +9,10 @@ import { ItemListContext } from "./item-internal";
 
 const frameVariants = cva("group/frame flex min-w-0 flex-col", {
   variants: {
+    /**
+     * Container look: `default` (tray with a raised panel), `band` (one card with header and footer bands), `inset` (soft tray, roomy panel) or `plain` (no tray).
+     * @default "default"
+     */
     variant: {
       /** A subtle tray with a raised panel inside it. */
       default: "gap-1 rounded-box border border-border bg-subtle p-1",

@@ -15,6 +15,7 @@ import { ChartContainer, ChartLegend, ChartTooltip } from "./chart-container";
  * ----------------------------------------------------------------------------------------------*/
 
 export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+  /** Rows to plot; each has the `index` key (name) and the `valueKey` field (number). */
   data: ChartDatum[];
   /** Key of the segment name. */
   index: string;
@@ -22,7 +23,9 @@ export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   valueKey?: string;
   /** Colors in segment order (defaults to the chart palette). */
   colors?: string[];
+  /** Returns a colour for a segment (a token name or CSS colour), or `undefined` to use the palette colour. */
   colorFor?: (datum: ChartDatum, index: number) => string | undefined;
+  /** Formats values in the tooltip, legend and centre. Default is the localized number. */
   valueFormatter?: (value: number) => string;
   /** Diameter in px. Default 200. */
   size?: number;
@@ -34,6 +37,10 @@ export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   centerLabel?: React.ReactNode;
   /** Center value. Defaults to the formatted total. Pass null to hide. */
   centerValue?: React.ReactNode;
+  /**
+   * Legend placement: below the ring, to its right, or `false` to hide it.
+   * @default "bottom"
+   */
   legend?: boolean | "bottom" | "right";
   /**
    * Show values in the legend: it becomes a `BreakdownList` (one row per segment, value right-aligned).
@@ -45,12 +52,25 @@ export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   legendInteractive?: boolean;
   /** Icon per segment (an app icon) shown in the legend rows. Setting it switches the legend to a `BreakdownList`. */
   iconFor?: (datum: ChartDatum, index: number) => React.ReactNode;
+  /**
+   * Shows a tooltip with the name, value and share on hover or focus.
+   * @default true
+   */
   tooltip?: boolean;
+  /**
+   * Animates the segments in when the chart mounts; off under reduced motion.
+   * @default true
+   */
   animate?: boolean;
+  /** Content shown instead of the ring when there is no data. */
   emptyState?: React.ReactNode;
+  /** Accessible name of the chart. */
   label?: string;
+  /** Controlled list of hidden segment names (toggled from the legend). Use with `onHiddenSeriesChange`. */
   hiddenSeries?: string[];
+  /** Initially hidden segment names when uncontrolled. */
   defaultHiddenSeries?: string[];
+  /** Called with the hidden segment names when a legend entry is toggled. */
   onHiddenSeriesChange?: (hidden: string[]) => void;
   /** Data is on its way: with no data, a placeholder ring (and legend) of the same size; with data, the root is marked busy. */
   loading?: boolean;

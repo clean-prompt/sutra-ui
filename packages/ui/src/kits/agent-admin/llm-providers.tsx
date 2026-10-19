@@ -100,11 +100,13 @@ export function providerMonogram(name: string) {
 /* ------------------------------------------------------------------ */
 
 export interface ProviderLogoProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Provider name; used for the accessible name and, without `monogram`, to derive the letter. */
   name: string;
   /** Override the generated monogram (1–2 characters). */
   monogram?: string;
   /** Tile color; defaults to a stable color derived from the name. */
   color?: string;
+  /** Tile size: `sm`, `md` or `lg`. */
   size?: "sm" | "md" | "lg";
 }
 
@@ -123,6 +125,7 @@ ProviderLogo.displayName = "ProviderLogo";
 export interface ProviderQuotaChipProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** Percent of the quota already used, 0–100. */
   used: number;
+  /** When the quota window resets (timestamp or date); drives the "Resets in 3h" text. */
   resetsAt?: TimeValue;
   /** Overrides the computed "Resets in 3h" text. */
   resetLabel?: string;
@@ -130,6 +133,7 @@ export interface ProviderQuotaChipProps extends Omit<React.HTMLAttributes<HTMLSp
   thresholds?: MeterThresholds;
   /** Name of the quota window, e.g. "Weekly". */
   label?: string;
+  /** Reference time for the reset text; set it in tests and SSR for stable output. */
   now?: number;
 }
 
@@ -198,10 +202,15 @@ export interface ProviderEntry {
 }
 
 export interface ProviderRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** The provider to show (name, status, auth method, quotas). */
   provider: ProviderEntry;
+  /** Called with the provider when the user presses Connect on an unconfigured provider. */
   onConnect?: (provider: ProviderEntry) => void;
+  /** Called with the provider when the user disconnects a connected provider. */
   onDisconnect?: (provider: ProviderEntry) => void;
+  /** Called with the provider when the user presses Manage on a connected provider. */
   onManage?: (provider: ProviderEntry) => void;
+  /** Reference time for relative quota labels; set it in tests and SSR for stable output. */
   now?: number;
 }
 
@@ -287,8 +296,11 @@ export const ProviderRow = React.forwardRef<HTMLDivElement, ProviderRowProps>(
 ProviderRow.displayName = "ProviderRow";
 
 export interface ProviderListProps extends Omit<ProviderRowProps, "provider" | "title"> {
+  /** Providers to list, grouped into connected and available. */
   providers: ProviderEntry[];
+  /** Heading of the group of configured providers. */
   connectedLabel?: string;
+  /** Heading of the group of providers that are not configured. */
   availableLabel?: string;
 }
 
@@ -346,12 +358,17 @@ export interface ApiKeyValidation {
 }
 
 export interface ProviderConnectDialogProps {
+  /** Controlled open state of the dialog. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Provider being connected (name, monogram, colour), shown in the dialog header. */
   provider: Pick<ProviderEntry, "name" | "monogram" | "color">;
   /** Tabs to show, in order. Default all three. */
   methods?: ProviderConnectMethod[];
+  /** Tab shown first; defaults to the first of `methods`. */
   defaultMethod?: ProviderConnectMethod;
   /** Device flow: request a user code. */
   onStartDeviceFlow?: () => Promise<DeviceCodeGrant>;
@@ -363,7 +380,9 @@ export interface ProviderConnectDialogProps {
   onSubmitCode?: (code: string) => Promise<void> | void;
   /** API key: "Get a key" link. */
   getKeyUrl?: string;
+  /** API key flow: checks the typed key before saving; resolve `true`, `false` or a result with a message. */
   onValidateKey?: (key: string) => Promise<ApiKeyValidation | boolean>;
+  /** API key flow: called with the key when the user saves it. */
   onSaveKey?: (key: string) => void;
   /** Called once any flow completes. */
   onConnected?: (method: ProviderConnectMethod) => void;
@@ -771,10 +790,15 @@ export interface CustomEndpointTestResult {
 }
 
 export interface CustomEndpointFormProps extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "defaultValue"> {
+  /** Initial field values (base URL, key, model id and so on). */
   defaultValues?: Partial<CustomEndpointValues>;
+  /** Tests the endpoint with the current values and resolves with the result; shows a Test button when set. */
   onTest?: (values: CustomEndpointValues) => Promise<CustomEndpointTestResult>;
+  /** Called with the valid values when the user submits the form. */
   onSave?: (values: CustomEndpointValues) => void;
+  /** Called when the user presses Cancel; the button is hidden when unset. */
   onCancel?: () => void;
+  /** Label of the submit button. */
   submitLabel?: string;
 }
 
@@ -1002,11 +1026,15 @@ export interface ProviderKeyGroup {
 }
 
 export interface ProviderKeysGroupsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Provider groups, each with the environment keys it needs and whether they are set. */
   groups: ProviderKeyGroup[];
+  /** User-added environment keys listed in the custom section. */
   customKeys?: ProviderEnvKey[];
   /** Store a key. May return a promise; a rejection is shown under the input. */
   onSetKey?: (name: string, value: string) => void | Promise<void>;
+  /** Called with the key name when the user clears a stored key. */
   onClearKey?: (name: string) => void;
+  /** Called with the name and value when the user adds a custom key. */
   onAddCustomKey?: (name: string, value: string) => void;
   /** Hide the custom keys section. */
   hideCustom?: boolean;

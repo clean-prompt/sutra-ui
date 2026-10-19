@@ -12,6 +12,7 @@ export interface NumberColumn {
   digit?: number;
 }
 
+/** A number split into digit columns and glyphs for rolling-digit displays, with its plain-text form. */
 export interface NumberParts {
   /** The whole value formatted as plain text (what a screen reader should get). */
   text: string;

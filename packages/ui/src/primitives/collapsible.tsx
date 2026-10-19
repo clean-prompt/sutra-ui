@@ -25,9 +25,13 @@ function useCollapsibleContext(part: string) {
 }
 
 export interface CollapsibleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the panel opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Disables the trigger so the panel cannot be toggled. */
   disabled?: boolean;
   /** default: bare · surface: bordered card · ghost: soft hover and open background. */
   variant?: CollapsibleVariant;

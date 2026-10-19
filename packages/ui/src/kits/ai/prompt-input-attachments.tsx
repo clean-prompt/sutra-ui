@@ -45,6 +45,7 @@ export interface PromptInputDropOverlayProps extends React.HTMLAttributes<HTMLDi
   label?: React.ReactNode;
   /** Secondary line (e.g. accepted types). */
   description?: React.ReactNode;
+  /** Replaces the default drop icon. */
   icon?: React.ReactNode;
 }
 
@@ -94,16 +95,21 @@ export function formatContextRange(path: string, lines?: PromptInputLineRange) {
 export interface PromptInputContextChipProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** File path, shown as its base name (full path in the tooltip). */
   path: string;
+  /** Line range the context covers; shown after the file name. */
   lines?: PromptInputLineRange;
   /** Overrides the visible label. */
   label?: React.ReactNode;
+  /** Replaces the default file icon. */
   icon?: React.ReactNode;
   /** Whether the context is sent with the prompt (eye toggle). */
   included?: boolean;
+  /** Initial state of the eye toggle when `included` is not controlled. */
   defaultIncluded?: boolean;
+  /** Called with the new state when the user flips the eye toggle. */
   onIncludedChange?: (included: boolean) => void;
   /** Show the eye toggle. Default true. */
   toggleable?: boolean;
+  /** Called when the user removes the chip; the remove button is hidden when unset. */
   onRemove?: () => void;
   /** Makes the label a button (e.g. open the file). */
   onOpen?: () => void;
@@ -226,6 +232,7 @@ export interface PromptInputAddContextMenuProps extends Omit<PromptInputButtonPr
   items?: PromptInputAddContextItem[] | ((defaults: PromptInputAddContextItem[]) => PromptInputAddContextItem[]);
   /** Heading inside the menu. Default "Add context". */
   menuLabel?: string;
+  /** Alignment of the menu against the button. */
   align?: "start" | "center" | "end";
 }
 

@@ -28,6 +28,7 @@ export function useResizeObserver<T extends Element>(target: Target<T>, callback
   }, [target, el, cb]);
 }
 
+/** Measured size of an element, in px. */
 export interface ElementSize {
   width: number;
   height: number;

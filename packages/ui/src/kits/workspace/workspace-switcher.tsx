@@ -86,21 +86,36 @@ export interface WorkspaceSelection {
 
 export interface WorkspaceProfileSwitcherProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue" | "children" | "type"> {
+  /**
+   * Gateways and their profiles; unreachable gateways are listed but cannot be picked unless `allowUnreachable` is
+   * set.
+   */
   gateways: WorkspaceGateway[];
+  /** Controlled selection: the gateway id and profile id. */
   value?: WorkspaceSelection;
+  /** Initial selection when `value` is not controlled. */
   defaultValue?: WorkspaceSelection;
+  /** Called with the new selection and the chosen gateway and profile when the user picks a profile. */
   onValueChange?: (value: WorkspaceSelection, detail: { gateway: WorkspaceGateway; profile: WorkspaceProfile }) => void;
+  /** Called when the user presses Manage connections in the menu; the item is hidden when unset. */
   onManageConnections?: () => void;
   /** "New profile" action; receives the gateway of the current selection. */
   onNewProfile?: (gatewayId?: string) => void;
+  /** Controlled open state of the menu. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the menu opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Allow picking profiles on unreachable gateways. Default false. */
   allowUnreachable?: boolean;
+  /** Placeholder of the search field. Default "Search gateways and profiles…". */
   searchPlaceholder?: string;
+  /** Disables the trigger. */
   disabled?: boolean;
+  /** Extra classes for the trigger button. */
   className?: string;
+  /** Extra classes for the menu content. */
   contentClassName?: string;
 }
 
@@ -297,7 +312,9 @@ export interface ProfileScopeBannerProps extends Omit<React.HTMLAttributes<HTMLD
   gatewayName?: React.ReactNode;
   /** Custom message; replaces the default sentence. */
   message?: React.ReactNode;
+  /** Called when the user presses the switch-back button; the button is hidden when unset. */
   onSwitchBack?: () => void;
+  /** Label of the switch-back button. Default "Switch back". */
   switchBackLabel?: React.ReactNode;
   /** Stick to the top of the scroll container. Default true. */
   sticky?: boolean;
@@ -382,13 +399,19 @@ export interface ConnectionTestResult {
 }
 
 export interface ConnectionRegistryProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  /** Controlled list of saved connections. */
   connections?: SavedConnection[];
+  /** Initial connections when `connections` is not controlled. */
   defaultConnections?: SavedConnection[];
+  /** Called with the full list after the user adds, edits, removes or defaults a connection. */
   onConnectionsChange?: (connections: SavedConnection[]) => void;
   /** Runs a connection check for the editor's current values. */
   onTest?: (connection: SavedConnection) => Promise<ConnectionTestResult> | ConnectionTestResult;
+  /** Called with the connection and whether it is new when the user saves the editor. */
   onSave?: (connection: SavedConnection, isNew: boolean) => void;
+  /** Called with the connection when the user removes it. */
   onRemove?: (connection: SavedConnection) => void;
+  /** Called with the connection when the user makes it the default. */
   onSetDefault?: (connection: SavedConnection) => void;
   /** Id generator for new entries. */
   createId?: () => string;
@@ -740,26 +763,40 @@ const runStateMeta: Record<GatewayRunState, { label: string; dot: string }> = {
 
 export interface GatewayStatusPopoverProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "name" | "children" | "type" | "onError"> {
+  /**
+   * Run state of the gateway (`running`, `starting`, `stopping`, `stopped` or `error`); sets the dot, label and the
+   * actions offered.
+   */
   state: GatewayRunState;
   /** Gateway display name. Default "Gateway". */
   name?: React.ReactNode;
   /** Seconds (formatted) or a preformatted string. */
   uptime?: number | string;
+  /** Gateway version, shown in the popover. */
   version?: string;
+  /** Host or address the gateway listens on, shown in the popover. */
   host?: string;
   /** Error detail shown when state is "error". */
   error?: React.ReactNode;
+  /** Called when the user presses Restart; the button is hidden when unset. */
   onRestart?: () => void;
+  /** Called when the user presses Stop; the button is hidden when unset. */
   onStop?: () => void;
+  /** Called when the user presses Start on a stopped gateway; the button is hidden when unset. */
   onStart?: () => void;
   /** Recent log lines rendered in the tail panel. */
   logLines?: string[];
   /** Custom log tail content (e.g. a streaming LogViewer); replaces `logLines`. */
   logSlot?: React.ReactNode;
+  /** Controlled open state of the popover. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the popover opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Extra classes for the trigger button. */
   className?: string;
+  /** Extra classes for the popover content. */
   contentClassName?: string;
 }
 

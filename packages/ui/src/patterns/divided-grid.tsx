@@ -25,6 +25,7 @@ interface CellContextValue {
 const CellContext = React.createContext<CellContextValue | null>(null);
 
 export interface DividedGridItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "title" | "onSelect" | "children"> {
+  /** Cell heading. */
   title: React.ReactNode;
   /** Up to three lines; longer text is clamped. */
   description?: React.ReactNode;
@@ -36,10 +37,13 @@ export interface DividedGridItemProps extends Omit<React.HTMLAttributes<HTMLElem
   meta?: React.ReactNode;
   /** Makes the cell a link. Unsafe URLs (`javascript:`) are ignored and the cell stays static. */
   href?: string;
+  /** Link `target` when `href` is set. */
   target?: string;
+  /** Link `rel` when `href` is set. */
   rel?: string;
   /** Called when the cell is clicked (after `onClick`, unless that prevented the default). Alone it makes the cell a button; with `href` it runs before the link opens. */
   onSelect?: (event: React.MouseEvent<HTMLElement>) => void;
+  /** Disables the cell: dimmed and not interactive. */
   disabled?: boolean;
 }
 

@@ -70,6 +70,7 @@ export interface LiveVisitor {
 export type LiveVisitorsMapView = "globe" | "flat";
 
 export interface LiveVisitorsMapProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
+  /** Visitors currently on the site, each with a location, source and last-seen time. */
   visitors: readonly LiveVisitor[];
   /** Header source counts. Defaults to counts grouped from `visitors`. */
   sources?: readonly LiveVisitorSourceCount[];
@@ -80,14 +81,18 @@ export interface LiveVisitorsMapProps extends Omit<React.HTMLAttributes<HTMLElem
   /** Time window text in the header, e.g. "Last 30 minutes". */
   windowLabel?: React.ReactNode;
 
+  /** Controlled id of the selected visitor; `null` selects none. */
   selectedId?: string | null;
+  /** Initially selected visitor id when `selectedId` is not controlled. */
   defaultSelectedId?: string | null;
   /** Called when a marker or list row is selected, or the card is closed (`null`). */
   onSelectedIdChange?: (id: string | null, visitor: LiveVisitor | undefined) => void;
 
+  /** Controlled view: `globe` or `flat`. */
   view?: LiveVisitorsMapView;
   /** Default `globe`. */
   defaultView?: LiveVisitorsMapView;
+  /** Called with the view when the user flips the globe and flat switch. */
   onViewChange?: (view: LiveVisitorsMapView) => void;
 
   /** Actions in the visitor card, e.g. a "View history" button. */

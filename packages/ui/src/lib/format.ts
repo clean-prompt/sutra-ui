@@ -30,6 +30,7 @@ function numberText(n: number, decimals: number, trimZeros: boolean | "whole", l
 
 const BYTE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB"] as const;
 
+/** Options for `formatBytes`: decimals, unit base, units and number locale. */
 export interface FormatBytesOptions {
   /** Decimal places above bytes. Default 1. */
   decimals?: number;
@@ -96,6 +97,7 @@ export function formatBytes(bytes: number | null | undefined, options: FormatByt
 
 const COMPACT_SUFFIXES = ["", "k", "M", "B", "T"] as const;
 
+/** Options for `formatCompact`: decimals, suffix letter case and number locale. */
 export interface FormatCompactOptions {
   /** Decimal places once abbreviated. Default 1. */
   decimals?: number;
@@ -140,6 +142,7 @@ export function formatCompact(n: number | null | undefined, options: FormatCompa
   return `${sign}${numberText(r, d, trim || i === 0, options.locale)}${suffix}`;
 }
 
+/** Options for `formatTokens`: the compact options plus an optional "tokens" label. */
 export interface FormatTokensOptions extends FormatCompactOptions {
   /** Append `"token"`/`"tokens"` (`"1.2k tokens"`). Default false. */
   label?: boolean;
@@ -219,6 +222,7 @@ export function pluralize(n: number, singular: string, plural?: string): string 
   return Math.abs(n) === 1 ? singular : (plural ?? `${singular}s`);
 }
 
+/** Options for `formatList`: locale, list type and style. */
 export interface FormatListOptions {
   locale?: string;
   /** `"conjunction"` (default, "a, b, and c"), `"disjunction"` ("a, b, or c") or `"unit"`. */

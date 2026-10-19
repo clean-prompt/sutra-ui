@@ -43,6 +43,10 @@ function barPath(x: number, y: number, w: number, h: number, radius: number, end
  * ----------------------------------------------------------------------------------------------*/
 
 export interface AreaChartProps extends CartesianChartProps {
+  /**
+   * Stacks the series on top of each other instead of overlapping them.
+   * @default false
+   */
   stacked?: boolean;
   /**
    * Draw straight through null values instead of breaking the line (the null points themselves stay absent).
@@ -51,9 +55,17 @@ export interface AreaChartProps extends CartesianChartProps {
    */
   connectNulls?: boolean;
 
+  /**
+   * Curve between points: smooth (`monotone`), straight (`linear`) or stepped.
+   * @default "monotone"
+   */
   curve?: ChartCurve;
   /** Gradient fill fading to the baseline. Default true. */
   gradient?: boolean;
+  /**
+   * Line thickness in px.
+   * @default 2
+   */
   strokeWidth?: number;
 }
 
@@ -131,6 +143,10 @@ AreaChart.displayName = "AreaChart";
  * ----------------------------------------------------------------------------------------------*/
 
 export interface LineChartProps extends CartesianChartProps {
+  /**
+   * Curve between points: smooth (`monotone`), straight (`linear`) or stepped.
+   * @default "monotone"
+   */
   curve?: ChartCurve;
   /**
    * Draw straight through null values instead of breaking the line (the null points themselves stay absent).
@@ -140,6 +156,10 @@ export interface LineChartProps extends CartesianChartProps {
 
   /** Draw a dot on every data point. */
   dots?: boolean;
+  /**
+   * Line thickness in px.
+   * @default 2
+   */
   strokeWidth?: number;
 }
 
@@ -198,6 +218,10 @@ LineChart.displayName = "LineChart";
  * ----------------------------------------------------------------------------------------------*/
 
 export interface BarChartProps extends CartesianChartProps {
+  /**
+   * Stacks the series on top of each other instead of side by side.
+   * @default false
+   */
   stacked?: boolean;
   /** "vertical" = columns (default); "horizontal" = bars growing to the right, categories down the side. */
   layout?: "vertical" | "horizontal";

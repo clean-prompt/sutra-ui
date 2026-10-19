@@ -3,8 +3,10 @@ import { formatDuration } from "./duration";
 import { MINUTE_MS, toMs, type TimeInput } from "./time";
 import type { Tone } from "./tone";
 
+/** Whether usage is under, on, or over the pace the window allows. */
 export type UsagePaceStatus = "under" | "on-pace" | "over";
 
+/** Inputs of the pace calculation: usage so far, the window's start and reset times and the reference time. */
 export interface UsagePaceInput {
   /** Usage so far, in the same units as `limit` (a percentage by default). */
   used: number;
@@ -20,6 +22,7 @@ export interface UsagePaceInput {
   tolerance?: number;
 }
 
+/** Result of the pace calculation: status, expected usage now, elapsed share of the window and the projected usage at reset. */
 export interface UsagePace {
   /** `over`: using faster than the window allows; `under`: slower; `on-pace`: within `tolerance` points. */
   status: UsagePaceStatus;
@@ -85,6 +88,7 @@ export function formatResetsIn(resetsAt: TimeInput | null | undefined, options: 
   return compactUntil(Math.max(0, t - now), options.units ?? 2);
 }
 
+/** Human-readable pace text and the tone to show it in. */
 export interface UsagePaceDescription {
   /** "On pace · 10% to spare", "Ahead of pace · 25% to spare", "Runs out in 4d at this rate", "Limit reached". */
   text: string;
@@ -92,6 +96,7 @@ export interface UsagePaceDescription {
   tone: Extract<Tone, "neutral" | "warning" | "destructive">;
 }
 
+/** Options for `describeUsagePace`: the reference time. */
 export interface DescribeUsagePaceOptions {
   /** Reference time in ms for "Runs out in …". Default `Date.now()`. */
   now?: number;

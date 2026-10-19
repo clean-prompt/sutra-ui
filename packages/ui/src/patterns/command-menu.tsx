@@ -35,6 +35,7 @@ export interface CommandInputProps extends React.ComponentPropsWithoutRef<typeof
   loading?: boolean;
   /** Content rendered at the right of the input (e.g. an esc hint). */
   trailing?: React.ReactNode;
+  /** Classes for the wrapper around the input and its icon. */
   wrapperClassName?: string;
 }
 
@@ -170,7 +171,9 @@ export const CommandShortcut = React.forwardRef<HTMLSpanElement, React.HTMLAttri
 CommandShortcut.displayName = "CommandShortcut";
 
 export interface CommandItemProps extends React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item> {
+  /** Icon shown at the start of the item. */
   icon?: React.ReactNode;
+  /** Secondary line under the label. */
   description?: React.ReactNode;
   /**
    * Shortcut hint. A keys spec ("mod+n", "g t") renders platform-aware Kbd chips; an array renders
@@ -280,6 +283,7 @@ export interface CommandDialogProps extends React.ComponentPropsWithoutRef<typeo
   commandProps?: React.ComponentPropsWithoutRef<typeof CommandPrimitive>;
   /** Render the keyboard hints footer. Default true. */
   showFooter?: boolean;
+  /** Classes for the palette panel. */
   className?: string;
 }
 
@@ -387,10 +391,14 @@ export function useRegistryCommands({ exclude = [] }: UseRegistryCommandsOptions
 export interface CommandPaletteFromRegistryProps extends Omit<CommandDialogProps, "children"> {
   /** Shortcut that toggles the palette. Default "mod+k"; `null` disables. */
   keys?: string | null;
+  /**
+   * Placeholder of the search input.
+   * @default "Type a command or search…"
+   */
   placeholder?: string;
   /** Shown when nothing matches. Default "No commands found". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Legacy name of `emptyState`. @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
   /** Extra items rendered above the registry groups. */
   children?: React.ReactNode;

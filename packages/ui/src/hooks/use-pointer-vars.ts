@@ -2,6 +2,7 @@ import * as React from "react";
 import { clamp } from "../lib/math";
 import { useMediaQuery, usePrefersReducedMotion } from "./use-media-query";
 
+/** Options for `usePointerVars`: pull radius, strength and an enabled switch. */
 export interface UsePointerVarsOptions {
   /** Magnetic reach in px beyond the box. 0 (default): only while the pointer is over the element. */
   radius?: number;
@@ -11,6 +12,7 @@ export interface UsePointerVarsOptions {
   enabled?: boolean;
 }
 
+/** Pointer-derived CSS variable values: the pointer position, its tilt, the pull toward it and whether it is near. */
 export interface PointerVars {
   /** Pointer position inside the box, in px (outside the 0..width range when the pull reaches past the box). */
   px: number;

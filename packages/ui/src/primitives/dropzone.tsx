@@ -214,23 +214,34 @@ export interface DropzoneProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onDrop" | "title"> {
   /** Called with accepted files and rejections after a drop or pick. */
   onDrop?: (files: File[], rejections: FileRejection[]) => void;
+  /** Accepted types, as for `<input accept>`: extensions (".pdf") and/or MIME types ("image/*"), comma separated. Others are rejected. */
   accept?: string;
+  /** Largest accepted file in bytes; larger files are rejected. */
   maxSize?: number;
+  /** Most files accepted per drop or pick (counted with `currentCount`); extra files are rejected. */
   maxFiles?: number;
+  /**
+   * Accept more than one file per drop or pick.
+   * @default true
+   */
   multiple?: boolean;
+  /** Disables dropping and picking. */
   disabled?: boolean;
   /** `compact` is a single-row layout for tight spaces. Default `normal`. */
   density?: Density;
-  /** @deprecated Use `density="compact"`. */
+  /** Legacy form of `density="compact"`. @deprecated Use `density="compact"`. */
   compact?: boolean;
   /** Files already selected elsewhere, counted against `maxFiles`. */
   currentCount?: number;
+  /** Icon above the title. Defaults to an upload icon. */
   icon?: React.ReactNode;
+  /** Headline of the drop target. Defaults to a prompt to drop or choose files. */
   title?: React.ReactNode;
   /** Defaults to a description of `accept` / `maxSize`. */
   hint?: React.ReactNode;
   /** Name for the underlying file input. */
   name?: string;
+  /** Ref to the hidden `<input type="file">`, e.g. to open the picker from your own button. */
   inputRef?: React.Ref<HTMLInputElement>;
   /**
    * Upload whole folders: clicking opens a folder picker (`webkitdirectory`) and dropped folders are

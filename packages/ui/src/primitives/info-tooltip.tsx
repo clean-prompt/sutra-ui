@@ -13,13 +13,22 @@ export interface InfoTooltipProps
   title?: React.ReactNode;
   /** Body text. */
   description?: React.ReactNode;
+  /** Trigger icon: an info "i" or a help "?". */
   icon?: "info" | "help";
+  /** Icon size. */
   size?: Size;
+  /**
+   * Side of the trigger the tooltip opens on.
+   * @default "top"
+   */
   side?: TooltipContentProps["side"];
+  /** Alignment of the tooltip along that side. */
   align?: TooltipContentProps["align"];
+  /** Look of the bubble: `inverse` (dark) or `light`. */
   variant?: TooltipContentProps["variant"];
   /** Accessible label for the trigger. */
   label?: string;
+  /** Classes for the tooltip bubble. */
   contentClassName?: string;
 }
 

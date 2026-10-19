@@ -26,7 +26,9 @@ export const defaultJobPhases: JobBannerPhase[] = [
 ];
 
 export interface JobBannerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Name of the job, shown in the banner header. */
   title: React.ReactNode;
+  /** Ordered phases of the job (id and label), drawn as a step trail; defaults to planning, searching, reading and writing. */
   phases?: JobBannerPhase[];
   /** Current phase id. */
   phase?: string;
@@ -38,8 +40,11 @@ export interface JobBannerProps extends Omit<React.HTMLAttributes<HTMLDivElement
   elapsed?: number;
   /** Extra detail, e.g. the current query. */
   detail?: React.ReactNode;
+  /** Called when the user cancels a running job; the Cancel button is hidden when unset. */
   onCancel?: () => void;
+  /** Called when the user presses Ask again after the job ends; the button is hidden when unset. */
   onAskAgain?: () => void;
+  /** Called when the user opens the finished result; the button is hidden when unset. */
   onOpenResult?: () => void;
 }
 

@@ -22,9 +22,11 @@ export interface BarListItem {
 }
 
 export interface BarListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Rows to show; each has a `label` and a `value`, plus optional icon, colour and href. */
   items: BarListItem[];
   /** Value of a full bar. Default: the largest value. */
   max?: number;
+  /** Formats the value shown at the end of each row. Default is the localized number. */
   valueFormatter?: (value: number) => React.ReactNode;
   /** Bar colour. Default primary. */
   accent?: Accent;
@@ -38,14 +40,25 @@ export interface BarListProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   limit?: number;
   /** Show a "Show all" / "Show less" toggle when rows are hidden. Default true. */
   showAllToggle?: boolean;
+  /** Controlled expanded state when `limit` hides rows. Use with `onExpandedChange`. */
   expanded?: boolean;
+  /**
+   * Initial expanded state when uncontrolled.
+   * @default false
+   */
   defaultExpanded?: boolean;
+  /** Called when the "Show all" toggle expands or collapses the list. */
   onExpandedChange?: (expanded: boolean) => void;
   /** Toggle text; receives the number of rows in total. */
   showAllLabel?: (total: number) => React.ReactNode;
+  /**
+   * Text of the toggle while expanded.
+   * @default "Show less"
+   */
   showLessLabel?: React.ReactNode;
   /** Accessible name of the list. */
   label?: string;
+  /** Content shown when there are no items. */
   emptyState?: React.ReactNode;
   /** Data is on its way: with no items, placeholder rows stand in (header labels stay); with items, the root is marked busy. */
   loading?: boolean;

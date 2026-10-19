@@ -449,33 +449,73 @@ export interface LogViewerProps extends Omit<React.HTMLAttributes<HTMLDivElement
   rowHeight?: number;
   /** Virtualize when more than this many lines are shown and wrapping is off. Default 200. */
   virtualizeThreshold?: number;
+  /** Controlled visibility of the timestamp column. Use with `onShowTimestampsChange`. */
   showTimestamps?: boolean;
+  /**
+   * Initial timestamp visibility when uncontrolled.
+   * @default true
+   */
   defaultShowTimestamps?: boolean;
+  /** Called when the timestamp toggle changes. */
   onShowTimestampsChange?: (value: boolean) => void;
+  /** Controlled visibility of the line-number column. Use with `onShowLineNumbersChange`. */
   showLineNumbers?: boolean;
+  /**
+   * Initial line-number visibility when uncontrolled.
+   * @default false
+   */
   defaultShowLineNumbers?: boolean;
+  /** Called when the line-number toggle changes. */
   onShowLineNumbersChange?: (value: boolean) => void;
+  /** Controlled line wrapping (off keeps one line per entry and enables virtualization). Use with `onWrapChange`. */
   wrap?: boolean;
+  /**
+   * Initial wrapping when uncontrolled.
+   * @default false
+   */
   defaultWrap?: boolean;
+  /** Called when the wrap toggle changes. */
   onWrapChange?: (value: boolean) => void;
+  /** Controlled pause state: while paused the view freezes and new lines are counted. Use with `onPausedChange`. */
   paused?: boolean;
+  /**
+   * Initial pause state when uncontrolled.
+   * @default false
+   */
   defaultPaused?: boolean;
+  /** Called when the user pauses or resumes. */
   onPausedChange?: (value: boolean) => void;
+  /** Controlled search text. Use with `onFilterChange`. */
   filter?: string;
+  /** Initial search text when uncontrolled. */
   defaultFilter?: string;
+  /** Called with the search text as it changes. */
   onFilterChange?: (value: string) => void;
   /** Treat the filter as a regular expression. */
   regex?: boolean;
+  /**
+   * Initially treat the search text as a regular expression.
+   * @default false
+   */
   defaultRegex?: boolean;
+  /** Called when the regex toggle changes. */
   onRegexChange?: (value: boolean) => void;
   /** Levels currently shown. Default all. */
   levels?: LogLevel[];
+  /**
+   * Initially shown levels when uncontrolled.
+   * @default all levels
+   */
   defaultLevels?: LogLevel[];
+  /** Called with the shown levels when a level filter is toggled. */
   onLevelsChange?: (levels: LogLevel[]) => void;
   /** Source picker options (e.g. services or models). The picker reports changes via `onSourceChange`. */
   sources?: (string | LogSourceOption)[];
+  /** Controlled selected source. Use with `onSourceChange`. */
   source?: string;
+  /** Initially selected source when uncontrolled. */
   defaultSource?: string;
+  /** Called with the source the user picked. */
   onSourceChange?: (source: string) => void;
   /** Also hide entries whose `source` differs from the selected one (client-side). Default false. */
   filterBySource?: boolean;
@@ -489,7 +529,7 @@ export interface LogViewerProps extends Omit<React.HTMLAttributes<HTMLDivElement
   onReconnect?: () => void;
   /** Shown when there are no lines (and no filter/connection message applies). Default "No log lines yet". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Legacy name of `emptyState`. @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
   "aria-label"?: string;
 }

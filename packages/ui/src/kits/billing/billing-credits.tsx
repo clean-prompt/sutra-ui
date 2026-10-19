@@ -24,14 +24,19 @@ export interface CreditPreset {
 }
 
 export interface CreditBalanceCardProps extends React.HTMLAttributes<HTMLElement> {
+  /** Credits left. */
   balance: number;
   /** Average credits spent per day. */
   dailyBurn?: number;
   /** "Now" for the projection (defaults to the current date). */
   now?: Date;
+  /** Top-up packs offered in the buy dialog, each with credits and a price; defaults to the built-in set. */
   presets?: CreditPreset[];
+  /** ISO 4217 code used to format prices. Default "USD". */
   currency?: string;
+  /** BCP 47 locale used to format numbers and dates. Default "en-US". */
   locale?: string;
+  /** Name of the credit unit. Default "credits". */
   unitLabel?: string;
   /** Days of runway below which the card warns. Default 7. */
   lowRunwayDays?: number;
@@ -215,12 +220,17 @@ export function validateAutoReload(v: AutoReloadSettings): AutoReloadErrors {
 }
 
 export interface CreditAutoReloadProps extends Omit<React.HTMLAttributes<HTMLElement>, "defaultValue" | "onChange"> {
+  /** Controlled auto-reload settings (enabled, threshold and top-up amount). */
   value?: AutoReloadSettings;
+  /** Initial settings when `value` is not controlled. */
   defaultValue?: AutoReloadSettings;
+  /** Called with the settings on every edit, before saving. */
   onValueChange?: (value: AutoReloadSettings) => void;
   /** May return a promise; shows "Saved" when it resolves. */
   onSave?: (value: AutoReloadSettings) => void | Promise<void>;
+  /** Name of the credit unit. Default "credits". */
   unitLabel?: string;
+  /** BCP 47 locale used to format numbers. */
   locale?: string;
 }
 

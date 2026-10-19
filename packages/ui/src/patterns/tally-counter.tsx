@@ -20,14 +20,33 @@ export interface TallyEntry {
 }
 
 export interface TallyCounterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Controlled count. Use with `onValueChange`. */
   value?: number;
+  /**
+   * Initial count when uncontrolled.
+   * @default 0
+   */
   defaultValue?: number;
+  /** Called with the new count when the user increments or decrements. */
   onValueChange?: (value: number) => void;
+  /**
+   * Amount added or removed by the buttons.
+   * @default 1
+   */
   step?: number;
+  /**
+   * Lowest allowed count.
+   * @default 0
+   */
   min?: number;
+  /** Highest allowed count. */
   max?: number;
   /** Draws a progress ring towards this target. */
   goal?: number;
+  /**
+   * Accessible name of the counter.
+   * @default "Count"
+   */
   label?: string;
   /** Show the entry log with undo. Default true. */
   showLog?: boolean;

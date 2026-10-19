@@ -58,6 +58,7 @@ export interface ParsedCron {
   dowRestricted: boolean;
 }
 
+/** Result of parsing a cron expression: the parsed fields, or an error message. */
 export type CronParseResult = { ok: true; value: ParsedCron } | { ok: false; error: string };
 
 function parseCronNumber(token: string, spec: CronFieldSpec): number | string {
@@ -339,6 +340,7 @@ export function zonedWallTimeToDate(wall: number, timeZone?: string): Date {
   }
 }
 
+/** Options for `nextCronRuns`. */
 export interface NextCronRunsOptions {
   /** IANA zone the expression is evaluated in. Default: the runtime's local zone. */
   timeZone?: string;
@@ -406,6 +408,7 @@ export function nextCronRuns(expr: string, from: Date | number = new Date(), cou
 
 export type CronIntervalUnit = "m" | "h" | "d";
 
+/** A fixed interval (every n minutes, hours or days) that a cron-like schedule can be written as. */
 export interface CronInterval {
   every: number;
   unit: CronIntervalUnit;

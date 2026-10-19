@@ -9,9 +9,13 @@ export type DateInput = TimeInput | null | undefined;
 
 const DATE_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/;
 
+/** Milliseconds in a second. */
 export const SECOND_MS = 1000;
+/** Milliseconds in a minute. */
 export const MINUTE_MS = 60 * SECOND_MS;
+/** Milliseconds in an hour. */
 export const HOUR_MS = 60 * MINUTE_MS;
+/** Milliseconds in a day. */
 export const DAY_MS = 24 * HOUR_MS;
 
 /** True for a `Date` instance holding a real (finite) time. */
@@ -176,6 +180,7 @@ export function formatClockTime(v: DateInput, options: FormatClockTimeOptions = 
   }).format(d);
 }
 
+/** Options for `formatShortDate`: locale, when the year and weekday show, and the reference time. */
 export interface FormatShortDateOptions {
   locale?: string;
   /** `"auto"` (default) shows the year only when it differs from `now`'s. */
@@ -203,6 +208,7 @@ export function formatShortDate(v: DateInput, options: FormatShortDateOptions = 
   }).format(d);
 }
 
+/** Options for `formatDateTime`: short-date options plus 12-hour and seconds. */
 export interface FormatDateTimeOptions extends FormatShortDateOptions {
   hour12?: boolean;
   seconds?: boolean;
@@ -227,6 +233,7 @@ export function formatDateTime(v: DateInput, options: FormatDateTimeOptions = {}
   }).format(d);
 }
 
+/** Options for `formatDayLabel`: the reference time, locale and how the Today, Tomorrow and weekday labels read. */
 export interface FormatDayLabelOptions {
   /** Reference time. Default `Date.now()`. */
   now?: DateInput;
@@ -274,6 +281,7 @@ export type RelativeTimeStyle = "narrow" | "short" | "long";
 /** The units `formatRelative` counts in. */
 export type RelativeTimeUnit = "second" | "minute" | "hour" | "day" | "month" | "year";
 
+/** Options for `formatRelative`: reference time, style, cut-offs for "just now" and for switching to dates, and labels. */
 export interface FormatRelativeOptions {
   /** Reference time. Default `Date.now()`. */
   now?: DateInput;

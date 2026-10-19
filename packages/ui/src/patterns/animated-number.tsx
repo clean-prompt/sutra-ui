@@ -4,6 +4,7 @@ import { splitNumberParts } from "../lib/number-parts";
 import { useAddedKeys } from "../hooks/use-added-keys";
 
 export interface AnimatedNumberProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Number to display; changes tween from the previous value. */
   value: number;
   /** `Intl.NumberFormat` options (currency, percent, compact, fraction digits …). */
   format?: Intl.NumberFormatOptions;

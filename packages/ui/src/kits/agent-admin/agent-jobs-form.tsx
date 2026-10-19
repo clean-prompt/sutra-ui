@@ -31,16 +31,21 @@ export interface NameCheckboxOption {
 export interface NameCheckboxPickerProps extends Omit<React.HTMLAttributes<HTMLFieldSetElement>, "defaultValue" | "onChange"> {
   /** Legend, also used to name the search box. */
   label: string;
+  /** Choices as plain names or objects with a name, label and description. */
   options: (string | NameCheckboxOption)[];
+  /** Controlled names of the checked options. */
   value?: string[];
+  /** Initially checked names when `value` is not controlled. */
   defaultValue?: string[];
+  /** Called with the checked names when the user checks or unchecks an option. */
   onValueChange?: (value: string[]) => void;
   /** Show the search box. Default: when there are more than 6 options. */
   searchable?: boolean;
   /** Shown when the search matches nothing. Default "No matches". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
+  /** Disables every checkbox and the search box. */
   disabled?: boolean;
   /** Class for the scrolling list. */
   listClassName?: string;
@@ -151,20 +156,31 @@ export interface AgentJobFormProps extends Omit<React.FormHTMLAttributes<HTMLFor
   value?: AgentJobDraft;
   /** Called with the next draft on every edit. */
   onValueChange?: (draft: AgentJobDraft) => void;
+  /** Called with the valid job draft; may return a promise, and the submit button shows a spinner until it settles. */
   onSubmit?: (job: AgentJobDraft) => void | Promise<void>;
+  /** Called when the user presses Cancel; the button is hidden when unset. */
   onCancel?: () => void;
   /** Model options (or replace the select with `modelSlot`). */
   models?: (string | SelectOption)[];
+  /** Replaces the model select, for a custom model picker. */
   modelSlot?: React.ReactNode;
+  /** Profile options for the profile select; the select is hidden when empty or unset. */
   profiles?: (string | SelectOption)[];
+  /** Skills the user can attach to the job, as names or option objects. */
   skills?: (string | NameCheckboxOption)[];
+  /** Toolsets the user can enable for the job, as names or option objects. */
   toolsets?: (string | NameCheckboxOption)[];
+  /** Delivery state per platform, shown beside the delivery targets. */
   deliveryStatus?: Partial<Record<DeliveryPlatform, DeliveryPlatformStatus>>;
+  /** Delivery targets to offer; defaults to the built-in platforms. */
   deliveryPlatforms?: DeliveryPlatform[];
+  /** Called when the user presses Configure channels next to the delivery targets; the link is hidden when unset. */
   onConfigureChannels?: () => void;
+  /** IANA time zone for the schedule preview (for example `Europe/Berlin`); the viewer's zone when unset. */
   timeZone?: string;
   /** Reference time for the schedule preview. */
   now?: Date | number;
+  /** Label of the submit button. */
   submitLabel?: React.ReactNode;
 }
 

@@ -59,6 +59,7 @@ function scrollParent(el: HTMLElement): HTMLElement | null {
   return null;
 }
 
+/** Options for `useScrollProgress`: the range, the scroller, whether it always updates, an enabled switch and a progress callback. */
 export interface UseScrollProgressOptions {
   /** Where progress runs. Default `"entry"`. */
   range?: ScrollRange;

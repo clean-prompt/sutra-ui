@@ -10,8 +10,14 @@ const iconSizes: Record<Size, string> = { sm: "size-4", md: "size-5", lg: "size-
 
 export interface RatingProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange" | "dir"> {
+  /** Controlled rating, from 0 to `max` (halves when `allowHalf`). Use with `onValueChange`. */
   value?: number;
+  /**
+   * Initial rating when uncontrolled.
+   * @default 0
+   */
   defaultValue?: number;
+  /** Called with the new rating when the user picks, clears or steps it. */
   onValueChange?: (value: number) => void;
   /** Number of stars. */
   max?: number;
@@ -22,8 +28,14 @@ export interface RatingProps
    * below the first step. `false` keeps a given rating at one star or more. Default true.
    */
   allowClear?: boolean;
+  /** Displays the rating without letting the user change it (still announced as a rating). */
   readOnly?: boolean;
+  /** Disables the control: dimmed and not focusable. */
   disabled?: boolean;
+  /**
+   * Star size.
+   * @default "md"
+   */
   size?: Size;
   /** Icon component used for every star; receives `className`. */
   icon?: React.ComponentType<{ className?: string }>;
@@ -233,9 +245,14 @@ export interface RatingSummaryProps extends React.HTMLAttributes<HTMLDivElement>
   count?: number;
   /** Ratings per star, keyed by star value: `{ 5: 120, 4: 40, … }`. */
   distribution?: Partial<Record<number, number>>;
+  /**
+   * Number of stars the average is out of.
+   * @default 5
+   */
   max?: number;
   /** Text after the count. */
   countLabel?: (count: number) => React.ReactNode;
+  /** BCP 47 locale used to format the average and the counts. */
   locale?: string;
 }
 

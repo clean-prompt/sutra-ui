@@ -26,6 +26,10 @@ export const selectTriggerVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Trigger height and text size: `sm`, `md` or `lg`.
+       * @default "md"
+       */
       size: {
         sm: "h-8 px-2.5 text-sm [&_svg]:size-4",
         md: "h-9 px-3 text-sm [&_svg]:size-4",
@@ -209,17 +213,35 @@ export interface SelectOption {
 
 export interface SimpleSelectProps
   extends Omit<React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>, "children"> {
+  /** Options to render, in order; each has a `value`, a `label` and optional description, icon and disabled flag. */
   options: SelectOption[];
+  /**
+   * Trigger text while nothing is selected.
+   * @default "Select…"
+   */
   placeholder?: React.ReactNode;
+  /**
+   * Trigger height and text size.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
+  /** Icon shown at the start of the trigger. */
   leadingIcon?: React.ReactNode;
+  /** Marks the select invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
+  /** Classes for the trigger. */
   className?: string;
+  /** Classes for the popover list. */
   contentClassName?: string;
+  /** `id` of the trigger, so a `<label htmlFor>` or `Field` can point at it. */
   id?: string;
+  /** Accessible name of the trigger when there is no visible label. */
   "aria-label"?: string;
+  /** Id(s) of the element(s) that label the trigger. */
   "aria-labelledby"?: string;
+  /** Id(s) of the element(s) that describe the trigger (hint, error text). */
   "aria-describedby"?: string;
+  /** Overrides the invalid state announced to assistive technology; normally set `invalid` instead. */
   "aria-invalid"?: boolean;
   /** Disables the select. Inherited from a surrounding `Field` when omitted. */
   disabled?: boolean;

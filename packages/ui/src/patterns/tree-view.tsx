@@ -26,21 +26,29 @@ export type TreeCheckState = "checked" | "unchecked" | "indeterminate";
 
 export interface TreeViewProps
   extends Omit<React.HTMLAttributes<HTMLUListElement>, "onSelect" | "defaultValue" | "defaultChecked" | "children"> {
+  /** Top-level nodes; each has an `id`, a `label` and optional `children`, icon and disabled flag. */
   nodes: TreeNode[];
   /** Expanded node ids. */
   expanded?: string[];
+  /** Initially expanded node ids when uncontrolled. */
   defaultExpanded?: string[];
+  /** Called with the expanded node ids after a node is expanded or collapsed. */
   onExpandedChange?: (expanded: string[]) => void;
   /** Default "single". */
   selectionMode?: "single" | "multiple" | "none";
+  /** Controlled selected node ids. Use with `onSelectedChange`. */
   selected?: string[];
+  /** Initially selected node ids when uncontrolled. */
   defaultSelected?: string[];
+  /** Called with the selected node ids after the selection changes. */
   onSelectedChange?: (selected: string[]) => void;
   /** Show tri-state checkboxes. Checking a parent checks every descendant. */
   checkable?: boolean;
   /** Fully checked node ids (parents included). */
   checked?: string[];
+  /** Initially checked node ids when uncontrolled (see `checkable`). */
   defaultChecked?: string[];
+  /** Called with the fully checked node ids after a checkbox changes. */
   onCheckedChange?: (checked: string[]) => void;
   /** Fired on click or Enter. */
   onNodeAction?: (node: TreeNode) => void;
@@ -52,6 +60,10 @@ export interface TreeViewProps
   showIcons?: boolean;
   /** Jump to nodes by typing their first letters. Default true. */
   typeahead?: boolean;
+  /**
+   * Row height and text size.
+   * @default "md"
+   */
   size?: "sm" | "md";
 }
 

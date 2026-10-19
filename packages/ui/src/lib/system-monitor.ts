@@ -51,6 +51,7 @@ export function formatSpan(from: TimeInput | null | undefined, now: TimeInput = 
 
 export type DevServerState = "working" | "idle" | "running";
 
+/** A dev-server project row: id, name, runtime or process count, ports, memory, state and activity times. */
 export interface DevServerProject {
   id: string;
   name: string;
@@ -70,6 +71,7 @@ export interface DevServerProject {
   cpu?: number;
 }
 
+/** How active a dev server is: its state, pill label and idle or uptime durations. */
 export interface DevServerActivity {
   /** `idle` counts toward "running but idle"; `running` servers may still show an "idle 20 min" pill. */
   kind: DevServerState;
@@ -81,6 +83,7 @@ export interface DevServerActivity {
   barelyUsed: boolean;
 }
 
+/** Options for classifying dev servers: the reference time and the idle threshold. */
 export interface DevServerClassifyOptions {
   now?: TimeInput;
   /** A `running` server idle at least this long counts as idle. Default 30 minutes. */
@@ -111,6 +114,7 @@ export function classifyDevServer(project: DevServerProject, options: DevServerC
   return { kind: idle ? "idle" : "running", label, idleForMs, upForMs, barelyUsed };
 }
 
+/** Summary of idle dev servers: their ids and names, count, memory and ports. */
 export interface IdleServerSummary {
   ids: string[];
   names: string[];
@@ -144,6 +148,7 @@ export function uniquePorts(ports: readonly number[]): number[] {
 
 export type ContainerState = "running" | "exited" | "paused" | "restarting";
 
+/** A container as listed: id, name, image, Compose group, state, ports and CPU, memory and network use. */
 export interface ContainerInfo {
   id: string;
   name: string;
@@ -161,6 +166,7 @@ export interface ContainerInfo {
   network?: { rxBps: number; txBps: number };
 }
 
+/** One entry of a container list: a named group of containers, or a single container. */
 export type ContainerListEntry<T extends ContainerInfo = ContainerInfo> =
   | { type: "group"; name: string; containers: T[] }
   | { type: "container"; container: T };
@@ -185,6 +191,7 @@ export function groupContainers<T extends ContainerInfo>(containers: readonly T[
   return out;
 }
 
+/** Totals for a set of containers: count, running count, CPU, memory and published ports. */
 export interface ContainerTotals {
   count: number;
   running: number;
@@ -210,6 +217,7 @@ export function containerLimitRatio(container: ContainerInfo): number | undefine
   return limit > 0 ? Math.max(0, finite(container.memoryBytes)) / limit : undefined;
 }
 
+/** Container totals plus the container using the most CPU. */
 export interface ContainerSummaryData extends ContainerTotals {
   /** The container using the most CPU. */
   topCpu?: { id: string; name: string; cpu: number };

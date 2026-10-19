@@ -44,6 +44,10 @@ export function formatBatteryLevel(
 export interface BatteryLevelProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** Charge 0–100. `null`/`undefined` renders an unknown reading ("—"). */
   value?: number | null;
+  /**
+   * Shows a charging bolt and announces "charging".
+   * @default false
+   */
   charging?: boolean;
   /** Low threshold (warning tone). Default 20. */
   low?: number;
@@ -51,6 +55,7 @@ export interface BatteryLevelProps extends Omit<React.HTMLAttributes<HTMLSpanEle
   critical?: number;
   /** `icon`: battery glyph + percentage · `bar`: small horizontal bar + percentage · `text`: percentage only. Default `icon`. */
   variant?: BatteryLevelVariant;
+  /** Glyph and text size. */
   size?: Size;
   /** Show the percentage next to the glyph or bar. Default true. */
   showValue?: boolean;

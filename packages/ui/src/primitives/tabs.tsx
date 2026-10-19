@@ -24,7 +24,15 @@ const TabsContext = React.createContext<TabsContextValue>({
 });
 
 export interface TabsProps extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root> {
+  /**
+   * Tab list style: `pill` (filled active pill), `underline`, `solid` (segmented) or `ghost`.
+   * @default "pill"
+   */
   variant?: TabsVariant;
+  /**
+   * Tab height and text size.
+   * @default "md"
+   */
   size?: Size;
   /**
    * Categorical colour for the active trigger (pill, underline, text) on every trigger. Inactive triggers stay
@@ -223,6 +231,7 @@ export const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.L
 TabsList.displayName = "TabsList";
 
 export interface TabsTriggerProps extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> {
+  /** Icon shown before the tab label. */
   icon?: React.ReactNode;
   /** Count badge after the label. */
   badge?: React.ReactNode;

@@ -14,12 +14,20 @@ export const toggleVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Look of the items: `default` (ghost), `outline` or `soft` (tinted when on).
+       * @default "default"
+       */
       variant: {
         default: "text-muted-foreground hover:bg-accent hover:text-foreground data-[state=on]:bg-muted data-[state=on]:text-foreground",
         outline:
           "border border-input bg-background text-muted-foreground shadow-xs hover:bg-muted hover:text-foreground data-[state=on]:border-border-strong data-[state=on]:bg-muted data-[state=on]:text-foreground",
         soft: "text-muted-foreground hover:bg-accent hover:text-foreground data-[state=on]:bg-primary-soft data-[state=on]:text-primary-soft-foreground",
       },
+      /**
+       * Item height and padding.
+       * @default "md"
+       */
       size: {
         sm: "h-8 min-w-8 px-2.5 text-sm [&_svg]:size-4",
         md: "h-9 min-w-9 px-3 text-sm [&_svg]:size-4",
@@ -51,19 +59,24 @@ const ToggleGroupContext = React.createContext<ToggleGroupContextValue>({ values
 interface ToggleGroupBaseProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "dir" | "onChange">,
     VariantProps<typeof toggleVariants> {
+  /** Disables every item. */
   disabled?: boolean;
   /** Arrow keys move along this axis (default horizontal). */
   orientation?: "horizontal" | "vertical";
   /** Wrap focus from the last item to the first (default true). */
   loop?: boolean;
+  /** Reading direction for arrow-key navigation; inherits the surrounding direction by default. */
   dir?: "ltr" | "rtl";
 }
 
 export interface ToggleGroupSingleProps extends ToggleGroupBaseProps {
   /** At most one item pressed; pressing it again clears the value to `""`. */
   type?: "single";
+  /** Controlled pressed item value (empty string for none). Use with `onValueChange`. */
   value?: string;
+  /** Initially pressed item value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the pressed item value, or an empty string when it is toggled off. */
   onValueChange?: (value: string) => void;
 }
 

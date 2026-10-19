@@ -61,6 +61,7 @@ export function deckStamps(offset: number, dir: Direction, distance = COMMIT_DIS
   return { end: logical > 0 ? ramp(p) : 0, start: logical < 0 ? ramp(p) : 0 };
 }
 
+/** What a key does on a swipe deck: swipe a card to one side, or undo the last swipe. */
 export type DeckKeyAction = { type: "swipe"; side: DeckSide } | { type: "undo" };
 
 /**
@@ -80,6 +81,7 @@ export function clampDeckIndex(index: number, count: number): number {
   return clamp(Number.isFinite(index) ? Math.round(index) : 0, 0, Math.max(0, count));
 }
 
+/** One swiped card in the history: its index, key and the side it left towards. */
 export interface DeckHistoryEntry {
   index: number;
   key: string | number;

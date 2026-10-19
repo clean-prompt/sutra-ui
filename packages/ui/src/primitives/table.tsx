@@ -49,10 +49,13 @@ const alignClass: Record<TableAlign, string> = {
 export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
   /** Row density. Default `normal`; `"comfortable"` is accepted as a legacy alias of `relaxed`. */
   density?: TableDensity;
+  /** Zebra-stripe the body rows. */
   striped?: boolean;
   /** Keeps the header visible while the container scrolls. Pair with `maxHeight`. */
   stickyHeader?: boolean;
+  /** Maximum height of the scroll container (px number or CSS length); the body scrolls past it. Pair with `stickyHeader`. */
   maxHeight?: number | string;
+  /** Classes for the scroll container that wraps the `<table>` (`className` styles the table itself). */
   containerClassName?: string;
   /** Remove the bordered box around the table. */
   bare?: boolean;
@@ -175,9 +178,11 @@ export const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttribut
 TableRow.displayName = "TableRow";
 
 export interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+  /** Horizontal alignment of the header cell text. */
   align?: TableAlign;
   /** Current sort of this column. `false` = sortable but unsorted. */
   sortDirection?: TableSortDirection;
+  /** Called when the sort button is clicked; setting it (or `sortDirection`) makes the header sortable. */
   onSort?: () => void;
 }
 
@@ -241,6 +246,7 @@ export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
 TableHead.displayName = "TableHead";
 
 export interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  /** Horizontal alignment of the cell text; match the column's header. */
   align?: TableAlign;
 }
 
@@ -284,9 +290,13 @@ TableCaption.displayName = "TableCaption";
 
 export interface TableCheckboxProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "checked" | "defaultChecked" | "onChange"> {
+  /** Controlled checked state. */
   checked?: boolean;
+  /** Initial checked state when uncontrolled. */
   defaultChecked?: boolean;
+  /** Shows the mixed state (some rows selected); takes precedence over `checked` visually. */
   indeterminate?: boolean;
+  /** Called with the new checked state when the user toggles the box. */
   onCheckedChange?: (checked: boolean) => void;
 }
 
@@ -355,30 +365,52 @@ export interface DataTableSort {
 }
 
 export interface DataTableProps<T> {
+  /** Column definitions in display order. */
   columns: DataTableColumn<T>[];
+  /** Row objects to render; each row is passed to `cell`, `sortValue` and `onRowClick`. */
   data: T[];
   /** Stable row id. Defaults to `row.id` or the index. */
   getRowId?: (row: T, index: number) => string;
+  /** Adds a leading checkbox column (with select-all in the header) for row selection. */
   selectable?: boolean;
+  /** Controlled selected row ids (see `getRowId`). Use with `onSelectionChange`. */
   selectedRowIds?: string[];
+  /** Initially selected row ids when uncontrolled. */
   defaultSelectedRowIds?: string[];
+  /** Called with the full list of selected row ids after every selection change. */
   onSelectionChange?: (ids: string[]) => void;
+  /** Controlled sort (`{ key, direction }`), or `null` for unsorted. Use with `onSortChange`. */
   sort?: DataTableSort | null;
+  /** Initial sort when uncontrolled. */
   defaultSort?: DataTableSort | null;
+  /** Called with the next sort (or `null` when sorting is cleared) when a sortable header is activated. */
   onSortChange?: (sort: DataTableSort | null) => void;
   /** Disable built-in sorting (e.g. when sorting on the server). */
   manualSorting?: boolean;
+  /** Shows skeleton rows instead of the data. */
   loading?: boolean;
+  /**
+   * Number of skeleton rows shown while `loading`.
+   * @default 5
+   */
   loadingRows?: number;
+  /** Content shown in place of the body when `data` is empty. */
   emptyState?: React.ReactNode;
+  /** Called with the row and its index when a row is clicked; rows get a pointer cursor. */
   onRowClick?: (row: T, index: number) => void;
+  /** Caption rendered under the table (`<caption>`), e.g. a source note or the table title. */
   caption?: React.ReactNode;
   /** Row density. Default `normal`; `"comfortable"` is accepted as a legacy alias of `relaxed`. */
   density?: TableDensity;
+  /** Zebra-stripe the body rows. */
   striped?: boolean;
+  /** Keeps the header visible while the table scrolls. Pair with `maxHeight`. */
   stickyHeader?: boolean;
+  /** Maximum height of the scroll area (px number or CSS length); the body scrolls past it. */
   maxHeight?: number | string;
+  /** Classes for the outer wrapper. */
   className?: string;
+  /** Classes for the `<table>` element. */
   tableClassName?: string;
   /**
    * Ref to the `<table>` element. DataTable is generic, so it takes `ref` as a plain prop

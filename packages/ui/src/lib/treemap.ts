@@ -116,6 +116,7 @@ export function treemapValue(node: TreemapDatum | null | undefined): number {
   return (node.children ?? []).reduce((s, c) => s + treemapValue(c), 0);
 }
 
+/** One laid-out treemap node: the data node, its depth, path, value, frame and expanded state. */
 export interface TreemapLayoutNode<T extends TreemapDatum = TreemapDatum> {
   node: T;
   /** 1 for the root's children, 2 for theirs, … */
@@ -133,6 +134,7 @@ export interface TreemapLayoutNode<T extends TreemapDatum = TreemapDatum> {
   rank: number;
 }
 
+/** Options for the treemap layout: padding, header height and depth. */
 export interface LayoutTreeOptions {
   /** Inset between a parent frame and its children, in px. Default 0. */
   padding?: number;
@@ -192,6 +194,7 @@ export function resolveTreemapPath<T extends TreemapDatum>(root: T, path: readon
   return nodes;
 }
 
+/** Direction a keyboard move takes between treemap tiles. */
 export type TreemapDirection = "left" | "right" | "up" | "down";
 
 /**

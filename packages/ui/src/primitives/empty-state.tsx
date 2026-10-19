@@ -23,9 +23,11 @@ export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLElement>,
   illustration?: EmptyStateIllustrationVariant | React.ReactNode;
   /** Heading. Optional only for the `welcome` variant. */
   title?: React.ReactNode;
+  /** Supporting text under the title. */
   description?: React.ReactNode;
   /** Buttons or links under the text. */
   actions?: React.ReactNode;
+  /** Spacing and type scale of the empty state. */
   size?: Size;
   /** `dashed` draws a dashed bordered drop-area style box; `welcome` is the large first-run greeting (`ChatEmptyState`). */
   variant?: EmptyStateVariant;
@@ -123,9 +125,14 @@ export interface NoteProps extends React.HTMLAttributes<HTMLDivElement> {
   tone?: NoteTone;
   /** Shows a spinner and marks the note `aria-busy`. */
   loading?: boolean;
-  /** @deprecated Use `loading`. */
+  /** Legacy name of `loading`. @deprecated Use `loading`. */
   busy?: boolean;
+  /**
+   * Aligns the icon and text to the centre or the start.
+   * @default "center"
+   */
   align?: "center" | "start";
+  /** Icon shown before the text. */
   icon?: React.ReactNode;
 }
 

@@ -48,8 +48,11 @@ export function layoutMemoryGraph(nodes: readonly MemoryNode[], options: MemoryL
 /* ------------------------------------------------------------------ */
 
 export interface MemoryNodeActions {
+  /** Called with the node when the user presses Open in the detail panel or list; the action is hidden when unset. */
   onOpen?: (node: MemoryNode) => void;
+  /** Called with the node when the user presses Edit; the action is hidden when unset. */
   onEdit?: (node: MemoryNode) => void;
+  /** Called with the node when the user presses Delete; the action is hidden when unset. */
   onDelete?: (node: MemoryNode) => void;
 }
 
@@ -61,18 +64,31 @@ export interface MemoryMapDetailHelpers {
 }
 
 export interface MemoryMapProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect">, MemoryNodeActions {
+  /** Memories to plot, each with an id, title, kind, creation time and optional links to other nodes. */
   nodes: MemoryNode[];
+  /** Controlled id of the selected node; `null` selects none. */
   selectedId?: string | null;
+  /** Initially selected node id when `selectedId` is not controlled. */
   defaultSelectedId?: string | null;
+  /** Called with the node, or `null` when the selection is cleared. */
   onSelect?: (node: MemoryNode | null) => void;
+  /** Controlled kinds hidden from the map; toggled from the legend. */
   hiddenKinds?: string[];
+  /** Initially hidden kinds when `hiddenKinds` is not controlled. */
   defaultHiddenKinds?: string[];
+  /** Called with the hidden kinds when the user toggles one in the legend. */
   onHiddenKindsChange?: (kinds: string[]) => void;
+  /** Controlled visible range `[from, to]` in epoch ms; nodes created outside it are hidden. */
   timeRange?: [number, number];
+  /** Initial range when `timeRange` is not controlled; defaults to all nodes. */
   defaultTimeRange?: [number, number];
+  /** Called with the range when the user moves the time scrubber. */
   onTimeRangeChange?: (range: [number, number]) => void;
+  /** Controlled pan and zoom: scale `k` and offsets `x` and `y`. */
   zoom?: MemoryMapZoom;
+  /** Initial pan and zoom when `zoom` is not controlled. */
   defaultZoom?: MemoryMapZoom;
+  /** Called with the pan and zoom when the user pans, pinches or zooms the map. */
   onZoomChange?: (zoom: MemoryMapZoom) => void;
   /** Rings by creation time: true / "old-center" puts the oldest at the center, "old-outer" at the edge. */
   radialTime?: MemoryRadialTime;
@@ -86,19 +102,27 @@ export interface MemoryMapProps extends Omit<React.HTMLAttributes<HTMLDivElement
   onLayout?: (positions: Record<string, MemoryPoint>) => void;
   /** Canvas height in px. Default 480. */
   height?: number;
+  /** Shows the kind legend, which doubles as a filter. Default true. */
   showLegend?: boolean;
+  /** Shows the time scrubber under the map. Default true. */
   showScrubber?: boolean;
+  /** Shows the detail panel for the selected node. Default true. */
   showDetail?: boolean;
   /** Replace the default detail panel. */
   renderDetail?: (node: MemoryNode, helpers: MemoryMapDetailHelpers) => React.ReactNode;
+  /** Labels, colours and glyphs that replace the defaults for kinds in the legend. */
   legendOverrides?: MemoryLegendOverrides;
+  /** Controlled state of the list view: true shows the accessible list instead of the canvas. */
   listView?: boolean;
+  /** Initial state when `listView` is not controlled. */
   defaultListView?: boolean;
+  /** Called with the new state when the user switches between map and list. */
   onListViewChange?: (on: boolean) => void;
   /** Props forwarded to the TimeScrubber (e.g. controlled `playing`). */
   scrubberProps?: Partial<Omit<TimeScrubberProps, "nodes" | "value" | "onValueChange">>;
   /** Extra toolbar content. */
   toolbarExtra?: React.ReactNode;
+  /** BCP 47 locale used to format dates and numbers. */
   locale?: string;
   "aria-label"?: string;
 }

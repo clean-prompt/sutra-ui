@@ -135,6 +135,7 @@ function Face({ face, seed }: { face: AgentAvatarFace; seed: string }) {
 /* ------------------------------------------------------------------ */
 
 export interface AgentAvatarProps extends Omit<React.SVGAttributes<SVGSVGElement>, "color"> {
+  /** What to draw: shape, colour, face and seed, plus an optional uploaded image. */
   spec: AgentAvatarSpec;
   /** Pixel size. Default 40. */
   size?: number;

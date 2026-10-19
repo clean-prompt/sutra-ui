@@ -15,6 +15,7 @@ export interface SectionRailItem {
 }
 
 export interface SectionRailProps extends Omit<React.HTMLAttributes<HTMLElement>, "title" | "defaultValue" | "onChange"> {
+  /** Sections to list, in order; each has an `id` and a `label`. */
   sections: SectionRailItem[];
   /** Controlled active id. Omit it and the rail tracks the sections in view itself. */
   value?: string;

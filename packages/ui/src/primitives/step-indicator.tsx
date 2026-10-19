@@ -21,10 +21,19 @@ export interface StepIndicatorStep {
 }
 
 export interface StepsProps extends Omit<React.HTMLAttributes<HTMLOListElement>, "onChange"> {
+  /** Steps in order; each has a `label` and optional description. */
   steps: StepIndicatorStep[];
   /** Zero-based index of the current step. Use `steps.length` to mark all complete. */
   current: number;
+  /**
+   * Lays the steps out in a row or a column.
+   * @default "horizontal"
+   */
   orientation?: "horizontal" | "vertical";
+  /**
+   * Marker style: numbered `circles`, thin progress `bars` or small `dots`.
+   * @default "circles"
+   */
   variant?: "circles" | "bars" | "dots";
   /** Marker size for circles: `md` (32px, default) or `sm` (24px, tighter spacing). */
   size?: "sm" | "md";
@@ -293,7 +302,7 @@ export const Steps = React.forwardRef<HTMLOListElement, StepsProps>(
 );
 Steps.displayName = "Steps";
 
-/** @deprecated Use `Steps` (this is a plain alias). */
+/** Alias of `Steps`. @deprecated Use `Steps` (this is a plain alias). */
 export const StepIndicator = Steps;
 /** @deprecated Use `StepsProps`. */
 export type StepIndicatorProps = StepsProps;

@@ -238,8 +238,11 @@ export interface AgentProcessCardProps extends Omit<React.HTMLAttributes<HTMLEle
   accent?: Accent;
   /** Lets the process list collapse behind the "Started · N" toggle. */
   collapsible?: boolean;
+  /** Controlled expanded state of the process list (with `collapsible`). */
   expanded?: boolean;
+  /** Initial expanded state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user expands or collapses the process list. */
   onExpandedChange?: (expanded: boolean) => void;
 }
 
@@ -446,13 +449,17 @@ AgentProcessCard.displayName = "AgentProcessCard";
 export interface AgentProcessListProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
     Pick<AgentProcessCardProps, "onQuit" | "onStopProcess" | "onOpen" | "now" | "accent" | "collapsible"> {
+  /** Sessions to list, one card each. */
   sessions: AgentProcessSession[];
   /** Ids of the sessions whose process list is open (with `collapsible`). Default: all. */
   expanded?: string[];
+  /** Initially expanded session ids when `expanded` is not controlled. */
   defaultExpanded?: string[];
+  /** Called with the expanded session ids when the user expands or collapses a card. */
   onExpandedChange?: (expanded: string[]) => void;
   /** Accessible name of the list. Default "Agent sessions". */
   label?: string;
+  /** Shown when there are no sessions. */
   emptyState?: React.ReactNode;
   /** Waiting for sessions: with none yet, `loadingRows` placeholder sessions stand in; sessions without `processes` show placeholder rows. */
   loading?: boolean;

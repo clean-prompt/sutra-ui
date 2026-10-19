@@ -12,6 +12,7 @@ export const springs = {
   bouncy: { stiffness: 350, damping: 20.6 },
 } satisfies Record<string, SpringConfig>;
 
+/** Name of a built-in spring preset. */
 export type SpringName = keyof typeof springs;
 
 /** Step response from rest: 0 at t = 0, tending to 1 (t in seconds). Closed form, so it is exact at any t. */
@@ -58,6 +59,7 @@ function simplify(pts: readonly (readonly [number, number])[], a: number, b: num
   return worst > tol ? [...simplify(pts, a, at, tol).slice(0, -1), ...simplify(pts, at, b, tol)] : [a, b];
 }
 
+/** Handle that drives a spring-animated value: set a target, jump to a value, or stop it. */
 export interface SpringHandle {
   /** Spring toward `target`, optionally starting with a velocity (units per second). */
   to(target: number, velocity?: number): void;

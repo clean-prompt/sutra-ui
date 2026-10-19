@@ -27,10 +27,19 @@ function strokeFor(data: number[], color: string | undefined, trend: boolean | u
 }
 
 export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>, "type" | "color" | "radius"> {
+  /** Values to plot, in order. */
   data: number[];
+  /**
+   * Chart style: a `line`, a filled `area` or `bar`s.
+   * @default "line"
+   */
   type?: "line" | "area" | "bar";
   /** Intrinsic width (or viewBox width when `responsive`). */
   width?: number;
+  /**
+   * Intrinsic height in px.
+   * @default 32
+   */
   height?: number;
   /** Stretch to 100% of the container width. */
   responsive?: boolean;
@@ -45,7 +54,15 @@ export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>,
   accent?: Accent;
   /** Color green when the series ends higher than it started, red otherwise. */
   trend?: boolean;
+  /**
+   * Draws the line as a smooth curve instead of straight segments.
+   * @default true
+   */
   smooth?: boolean;
+  /**
+   * Line thickness in px.
+   * @default 1.5
+   */
   strokeWidth?: number;
   /** Gradient under the line (`type="area"`). Default true. */
   gradient?: boolean;
@@ -53,8 +70,11 @@ export interface SparklineProps extends Omit<React.SVGAttributes<SVGSVGElement>,
   highlightLast?: boolean;
   /** Fixed y-domain; defaults to the data range. */
   min?: number;
+  /** Fixed top of the y-domain; defaults to the data range. */
   max?: number;
+  /** Accessible name of the chart (it is exposed as an image). */
   label?: string;
+  /** Classes for the wrapper around the SVG. */
   wrapperClassName?: string;
 }
 
@@ -190,9 +210,19 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
 Sparkline.displayName = "Sparkline";
 
 export interface SparkBarProps extends Omit<React.SVGAttributes<SVGSVGElement>, "color" | "radius"> {
+  /** Values to plot, one bar each, in order. */
   data: number[];
+  /**
+   * Intrinsic width in px (or viewBox width when `responsive`).
+   * @default 120
+   */
   width?: number;
+  /**
+   * Intrinsic height in px.
+   * @default 32
+   */
   height?: number;
+  /** Stretches to 100% of the container width. */
   responsive?: boolean;
   /** Semantic colour. Takes precedence over `color`. */
   tone?: ToneInput;
@@ -206,11 +236,18 @@ export interface SparkBarProps extends Omit<React.SVGAttributes<SVGSVGElement>, 
   max?: number;
   /** Color for non-highlighted bars when `highlightLast` is on. Defaults to a faded `color`. */
   mutedColor?: string;
+  /** Draws the last bar in full colour and the others in `mutedColor`. */
   highlightLast?: boolean;
   /** Gap between bars in px (viewBox units). */
   gap?: number;
+  /**
+   * Corner radius of the bars in px (viewBox units).
+   * @default 1.5
+   */
   radius?: number;
+  /** Accessible name of the chart (it is exposed as an image). */
   label?: string;
+  /** Classes for the wrapper around the SVG. */
   wrapperClassName?: string;
 }
 

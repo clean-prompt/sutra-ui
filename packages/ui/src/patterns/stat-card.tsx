@@ -46,6 +46,7 @@ const chevronClass = (extra?: string) =>
   cn("size-4 shrink-0 text-muted-foreground transition-transform group-hover/stat:translate-x-0.5 rtl:group-hover/stat:-translate-x-0.5", extra);
 
 export interface StatValueProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** The number or text to show. */
   value: React.ReactNode;
   /** Smaller, muted suffix ("%", "GB"). */
   unit?: React.ReactNode;
@@ -93,9 +94,11 @@ export interface StatCardStat {
 }
 
 export interface StatCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onClick"> {
+  /** Metric name shown above the value. */
   label: React.ReactNode;
   /** The big number. Optional for cards whose body is `children` (e.g. a donut breakdown under the header). */
   value?: React.ReactNode;
+  /** Unit shown after the value (e.g. "ms", "GB"). */
   unit?: React.ReactNode;
   /** Change vs. a previous period. Numbers are shown signed with `deltaSuffix`. */
   delta?: number | string;
@@ -107,10 +110,16 @@ export interface StatCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   deltaLabel?: React.ReactNode;
   /** Secondary line under the value. */
   hint?: React.ReactNode;
+  /** Icon shown beside the label. */
   icon?: React.ReactNode;
   /** Sparkline values. */
   trend?: number[];
+  /**
+   * Sparkline style for `trend`.
+   * @default "area"
+   */
   trendType?: "line" | "area" | "bar";
+  /** Colour of the trend line; defaults to follow `tone`. */
   trendColor?: SparklineColor;
   /** `footer` draws the trend full-width at the bottom on an accent-tinted strip. Default inline. */
   trendPlacement?: "inline" | "footer";
@@ -123,7 +132,12 @@ export interface StatCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
    * the progress bar, trend and `children` body get placeholders of the same size.
    */
   loading?: boolean;
+  /** Semantic colour of the trend and accents. */
   tone?: StatTone;
+  /**
+   * Card padding and value size.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
   /** Categorical colour for the icon chip, label, trend and progress bar. `tone` stays for status. */
   accent?: Accent;
@@ -145,6 +159,10 @@ export interface StatCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   stats?: StatCardStat[];
   /** A thin bar under the value (`progressMax` default 100). */
   progress?: number;
+  /**
+   * Value that counts as 100% for `progress`.
+   * @default 100
+   */
   progressMax?: number;
   /** Number face for the value: monospaced (default) or the UI sans with tabular figures. */
   valueFont?: "mono" | "sans";

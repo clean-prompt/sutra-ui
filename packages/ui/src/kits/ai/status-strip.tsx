@@ -43,8 +43,14 @@ export type StatusStripStatus =
 export type StatusStripTone = "neutral" | "info" | "warning" | "destructive";
 
 export interface StatusStripProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /**
+   * What to announce (cold start, retry countdown, error and so on, by `kind`); the strip renders nothing for `null`
+   * or `undefined`.
+   */
   status: StatusStripStatus | null | undefined;
+  /** Called when the user presses Retry now; the button is hidden when unset. */
   onRetry?: () => void;
+  /** Called when the user presses Cancel; the button is hidden when unset. */
   onCancel?: () => void;
   /** Override the tone derived from the status kind. */
   tone?: ToneInput;

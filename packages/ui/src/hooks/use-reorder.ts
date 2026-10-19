@@ -1,9 +1,13 @@
 import { useControllableState } from "./use-controllable-state";
 import { reorderArray, reorderBy } from "../lib/reorder";
 
+/** Options for `useReorder`: controlled or initial items and the change callback. */
 export interface UseReorderOptions<T> {
+  /** Controlled items in order. Use with `onItemsChange`. */
   items?: T[];
+  /** Initial items when uncontrolled. */
   defaultItems?: T[];
+  /** Called with the full list in its new order after every move. */
   onItemsChange?: (items: T[]) => void;
 }
 

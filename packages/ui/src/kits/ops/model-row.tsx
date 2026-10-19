@@ -20,6 +20,9 @@ export { ModelStatePill, type ModelState, type ModelStatePillProps } from "../ai
 export type DownloadStatus = "downloading" | "cached" | "partial" | "failed" | "missing";
 
 export interface DownloadBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children" | "color"> {
+  /**
+   * Download state (`downloading`, `cached`, `partial`, `failed` or `missing`); sets the badge text, icon and tone.
+   */
   status: DownloadStatus;
   /** 0–100 for downloading / partial. */
   progress?: number;
@@ -181,11 +184,18 @@ const fmtIdle = (s: number) =>
   formatDuration(s * 1000, s < 5400 ? { units: 1, maxUnit: s < 90 ? "s" : "m" } : { style: "decimal", maxUnit: "h", minUnit: "h", trimZeros: false });
 
 export interface ModelRowProps extends Omit<React.HTMLAttributes<HTMLTableRowElement>, "children"> {
+  /** The model to show (name, family, size, state, download status). */
   model: ModelInfo;
+  /**
+   * Called with the model and the action (`download`, `cancel`, `start`, `stop`, `sleep`, `wake`, `pin`, `unpin` or
+   * `test`) when the user picks one.
+   */
   onAction?: (model: ModelInfo, action: ModelAction) => void;
   /** Action currently in flight for this model. */
   pendingAction?: ModelAction | null;
+  /** Smoke-test result; shown in a row under the model until dismissed. */
   testResult?: ModelTestResult | null;
+  /** Called when the user dismisses the test result. */
   onDismissTest?: () => void;
   /** Column count for the test-result row. Default 6. */
   colSpan?: number;
@@ -330,22 +340,31 @@ const filterTest: Record<ModelFilter, (m: ModelInfo) => boolean> = {
 };
 
 export interface ModelTableProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Models to list, grouped by family unless `grouped` is false. */
   models: ModelInfo[];
+  /** Called with the model and the action when the user picks one on a row. */
   onAction?: (model: ModelInfo, action: ModelAction) => void;
   /** name → action in flight. */
   pendingActions?: Record<string, ModelAction | null | undefined>;
   /** name → smoke-test result. */
   testResults?: Record<string, ModelTestResult | null | undefined>;
+  /** Called with the model name when the user dismisses its test result. */
   onDismissTest?: (name: string) => void;
   /** Group rows by family. Default true. */
   grouped?: boolean;
+  /** Custom grouping: returns the group name of a model. Defaults to its family. */
   groupBy?: (model: ModelInfo) => string;
+  /** Controlled filter state (search, download status, state). */
   filter?: ModelFilter;
+  /** Initial filter when `filter` is not controlled. */
   defaultFilter?: ModelFilter;
+  /** Called with the filter when the user changes it. */
   onFilterChange?: (filter: ModelFilter) => void;
   /** Hide the filter bar. */
   hideFilters?: boolean;
+  /** Initial sort column and direction; unsorted when `null` or unset. */
   defaultSort?: { key: ModelSortKey; direction: "asc" | "desc" } | null;
+  /** Shown when no model matches the filter. */
   emptyState?: React.ReactNode;
 }
 

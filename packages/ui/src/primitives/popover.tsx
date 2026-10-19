@@ -26,7 +26,15 @@ export const popoverContentVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Panel width: `sm` 14rem, `md` 18rem, `lg` 24rem or `auto` (content width).
+       * @default "md"
+       */
       size: { sm: "w-56", md: "w-72", lg: "w-96", auto: "w-auto" },
+      /**
+       * Adds inner padding; turn it off for content that supplies its own (lists, menus).
+       * @default true
+       */
       padded: { true: "p-4", false: "" },
     },
     defaultVariants: { size: "md", padded: true },
@@ -129,6 +137,7 @@ export const HoverCardTrigger = HoverCardPrimitive.Trigger;
 export interface HoverCardContentProps
   extends React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content>,
     VariantProps<typeof popoverContentVariants> {
+  /** Renders the pointing arrow. */
   arrow?: boolean;
 }
 

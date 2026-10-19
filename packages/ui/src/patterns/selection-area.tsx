@@ -59,7 +59,9 @@ export interface SelectionAreaProps
     Pick<UseMarqueeSelectionOptions, "mode" | "threshold" | "autoScroll" | "clearOnClick" | "touch" | "disabled"> {
   /** Selected ids (controlled). */
   value?: string[];
+  /** Initially selected ids when uncontrolled. */
   defaultValue?: string[];
+  /** Called with the selected ids as the selection changes. */
   onValueChange?: (value: string[]) => void;
   /** All item ids in display order: used by select-all and Shift range selection. Default: the DOM order. */
   items?: string[];
@@ -69,6 +71,7 @@ export interface SelectionAreaProps
   selectOnClick?: boolean;
   /** Screen-reader text after the selection count changes. Default "3 items selected" / "No items selected". */
   formatAnnouncement?: (count: number) => string;
+  /** The selectable items: a node, or a function that receives the selection API. */
   children?: React.ReactNode | ((api: SelectionAreaContextValue) => React.ReactNode);
 }
 

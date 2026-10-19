@@ -29,6 +29,7 @@ export const dialogContentVariants = cva(
   ],
   {
     variants: {
+      /** Dialog max width from `sm` to `xl`; `full` fills the viewport minus a margin. Below the `sm` breakpoint dialogs are always full width. */
       size: {
         sm: "sm:max-w-sm",
         md: "sm:max-w-lg",
@@ -77,7 +78,15 @@ function FeaturedIcon({ icon, tone = "primary" }: { icon: React.ReactNode; tone?
 export interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Featured icon shown above the title. */
   icon?: React.ReactNode;
+  /**
+   * Colour of the featured `icon` badge.
+   * @default "primary"
+   */
   tone?: DialogTone;
+  /**
+   * Alignment of the icon, title and description.
+   * @default "start"
+   */
   align?: "start" | "center";
 }
 
@@ -155,6 +164,7 @@ export interface DialogContentProps
     VariantProps<typeof dialogContentVariants> {
   /** Show the top-right close button. Default true. */
   showClose?: boolean;
+  /** Classes for the dimmed backdrop behind the dialog. */
   overlayClassName?: string;
 }
 
@@ -224,6 +234,7 @@ export const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
 export interface AlertDialogContentProps
   extends React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>,
     VariantProps<typeof dialogContentVariants> {
+  /** Classes for the dimmed backdrop behind the dialog. */
   overlayClassName?: string;
 }
 
@@ -292,23 +303,39 @@ export const AlertDialogCancel = React.forwardRef<HTMLButtonElement, ButtonProps
 AlertDialogCancel.displayName = "AlertDialogCancel";
 
 export interface ConfirmDialogProps {
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the dialog opens or closes (confirm, cancel, Escape; closing is blocked while a confirm is pending). */
   onOpenChange?: (open: boolean) => void;
   /** Element that opens the dialog (wrapped with `asChild`). */
   trigger?: React.ReactNode;
+  /** Dialog heading; also its accessible name. */
   title: React.ReactNode;
+  /** Supporting text under the title; also the accessible description. */
   description?: React.ReactNode;
+  /**
+   * Text of the confirm button.
+   * @default "Confirm"
+   */
   confirmLabel?: React.ReactNode;
+  /**
+   * Text of the cancel button.
+   * @default "Cancel"
+   */
   cancelLabel?: React.ReactNode;
   /** `destructive` turns the icon and confirm button red. Default `neutral`. `default` is a deprecated alias of `neutral`. */
   tone?: ToneInput;
+  /** Featured icon shown above the title (tone-coloured). */
   icon?: React.ReactNode;
   /** May return a promise; the confirm button shows a spinner until it settles. Throw to keep the dialog open. */
   onConfirm?: () => void | Promise<void>;
+  /** Called when the cancel button is clicked; the dialog closes either way. */
   onCancel?: () => void;
   /** Extra content between the header and the footer. */
   children?: React.ReactNode;
+  /** Classes for the dialog panel. */
   className?: string;
 }
 
@@ -473,6 +500,7 @@ const SheetStackContext = React.createContext<SheetStackValue | null>(null);
 export interface SheetContentProps
   extends Omit<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>, "children">,
     Omit<VariantProps<typeof sheetContentVariants>, "side"> {
+  /** Sheet body content. */
   children?: React.ReactNode;
   /**
    * Edge the panel slides from. `start` and `end` follow the document direction (left and right in LTR); `left` and
@@ -489,6 +517,7 @@ export interface SheetContentProps
   blur?: boolean;
   /** Show the close button (default: when `dismissible`). */
   showClose?: boolean;
+  /** Classes for the dimmed backdrop behind the sheet. */
   overlayClassName?: string;
 }
 

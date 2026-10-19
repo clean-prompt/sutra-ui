@@ -105,6 +105,34 @@ export function dragStartDecision({
   return cross > main ? { type: "ignore" } : { type: "start", axis };
 }
 
+/** A pointer position inside a track (seek bar, slider rail, split divider lane): px from the track's top-left and 0..1 fractions. */
+export interface TrackPoint {
+  x: number;
+  y: number;
+  /** Fraction along the width, clamped to 0..1 and measured from the inline start (the right edge when `rtl`). 0 for an empty track. */
+  fx: number;
+  /** Fraction along the height from the top, clamped to 0..1. 0 for an empty track. */
+  fy: number;
+}
+
+/** Where the pointer is in a track rectangle (`x`/`y` clamped to the track, fractions from the inline start). Pure: pass `getBoundingClientRect()`. */
+export function trackPoint(
+  rect: { left: number; top: number; width: number; height: number },
+  clientX: number,
+  clientY: number,
+  rtl = false
+): TrackPoint {
+  const x = Math.min(Math.max(clientX - rect.left, 0), Math.max(rect.width, 0));
+  const y = Math.min(Math.max(clientY - rect.top, 0), Math.max(rect.height, 0));
+  const fx = rect.width > 0 ? x / rect.width : 0;
+  return { x, y, fx: rect.width > 0 && rtl ? 1 - fx : fx, fy: rect.height > 0 ? y / rect.height : 0 };
+}
+
+/** A pointer travel in a layer that is itself scaled by `scale` (a zoomed image): divide by the scale; a bad scale counts as 1. */
+export function unscaleTravel(delta: number, scale = 1): number {
+  return Number.isFinite(scale) && scale > 0 ? delta / scale : delta;
+}
+
 /** Sign of a number as -1, 0 or 1. */
 export const signOf = (n: number): -1 | 0 | 1 => (n > 0 ? 1 : n < 0 ? -1 : 0);
 

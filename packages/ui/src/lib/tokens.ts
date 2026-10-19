@@ -5,20 +5,27 @@
  */
 
 export const brands = ["indigo", "blue", "sky", "cyan", "violet", "rose", "lime", "green", "yellow", "orange", "red"] as const;
+/** Brand palette names that can drive the primary colour. */
 export type Brand = (typeof brands)[number];
 
+/** Neutral palette names for backgrounds, borders and text. */
 export const neutrals = ["zinc", "slate", "gray", "stone"] as const;
+/** One of the neutral palette names. */
 export type Neutral = (typeof neutrals)[number];
 
+/** Corner radius presets, from rounded corners to pills and square corners. */
 export const radiusModes = ["rounded", "pill", "square"] as const;
+/** One of the radius preset names. */
 export type RadiusMode = (typeof radiusModes)[number];
 
 /** Visual styles. `default` is the stock look; `paper` (`@sutra/ui/paper.css`) is calm, monochrome and flat. */
 export const themeStyles = ["default", "paper"] as const;
+/** One of the visual style names. */
 export type ThemeStyle = (typeof themeStyles)[number];
 
 const v = (name: string) => `var(--${name})`;
 
+/** Semantic colour tokens as CSS `var()` references, for inline styles and charts. */
 export const colors = {
   background: v("background"),
   foreground: v("foreground"),
@@ -57,6 +64,7 @@ export const chartColors = ["#615fff", "#00b8db", "#f0b100", "#ff2056", "#00c950
  */
 export const chartColorVars: readonly string[] = chartColors.map((c, i) => `var(--chart-${i + 1}, ${c})`);
 
+/** Font family tokens as CSS `var()` references. */
 export const typography = {
   fontSans: "var(--font-sans)",
   fontMono: "var(--font-mono)",
@@ -83,19 +91,23 @@ export const spacing = {
   8: "32px", 10: "40px", 12: "48px", 16: "64px", 20: "80px", 24: "96px", 32: "128px",
 } as const;
 
+/** Radius tokens as CSS `var()` references (`full` is a fixed pill radius). */
 export const radii = {
   xs: "var(--radius-xs)", sm: "var(--radius-sm)", md: "var(--radius-md)", lg: "var(--radius-lg)",
   xl: "var(--radius-xl)", "2xl": "var(--radius-2xl)", control: "var(--radius-control)", action: "var(--radius-action)", box: "var(--radius-box)",
   full: "9999px",
 } as const;
 
+/** Shadow tokens as CSS `var()` references. */
 export const shadows = {
   xs: "var(--shadow-xs)", sm: "var(--shadow-sm)", md: "var(--shadow-md)", lg: "var(--shadow-lg)",
   xl: "var(--shadow-xl)", "2xl": "var(--shadow-2xl)", "3xl": "var(--shadow-3xl)",
 } as const;
 
+/** Breakpoint widths in px, matching the Tailwind screens. */
 export const breakpoints = { xs: 480, sm: 640, md: 768, lg: 1024, xl: 1280, "2xl": 1536 } as const;
 
+/** Layout grid by breakpoint: column count, gutter and margin in px. */
 export const grid = {
   mobile: { columns: 4, gutter: 16, margin: 16 },
   tablet: { columns: 8, gutter: 24, margin: 24 },

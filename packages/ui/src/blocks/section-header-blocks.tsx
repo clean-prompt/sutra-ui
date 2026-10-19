@@ -73,16 +73,23 @@ function ActionButton({ action, variant }: { action: HeaderAction; variant: "pri
 /* ------------------------------------------------------------------ */
 
 export interface PageHeaderWithActionsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Page title; the default is sample text, so always set it. */
   title?: React.ReactNode;
+  /** Supporting text under the title. */
   description?: React.ReactNode;
+  /** Breadcrumb trail shown above the title; the last crumb is the current page. */
   breadcrumbs?: BreadcrumbCrumb[];
+  /** Main action button (`label`, optional `icon`, and `onClick` or `href`); `null` hides it. */
   primaryAction?: HeaderAction | null;
+  /** Secondary buttons shown beside the primary action. */
   secondaryActions?: HeaderAction[];
   /** Replace the generated buttons entirely. */
   actions?: React.ReactNode;
   /** Small badges or meta next to the title. */
   meta?: React.ReactNode;
+  /** Called when the back button is clicked; setting it shows the button. */
   onBack?: () => void;
+  /** Draws a bottom border under the header. */
   divider?: boolean;
 }
 
@@ -151,12 +158,19 @@ export interface PageHeaderTab {
 }
 
 export interface PageHeaderWithTabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Page title; the default is sample text, so always set it. */
   title?: React.ReactNode;
+  /** Supporting text under the title. */
   description?: React.ReactNode;
+  /** Tabs under the title; each has a `value`, a `label` and optional count and icon. */
   tabs?: PageHeaderTab[];
+  /** Controlled selected tab value. Use with `onValueChange`. */
   value?: string;
+  /** Initially selected tab value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the value of the tab the user picked. */
   onValueChange?: (value: string) => void;
+  /** Buttons shown on the right of the title row. */
   actions?: React.ReactNode;
   /** Tab panels (`TabsContent`) rendered under the header, sharing the tab state. */
   children?: React.ReactNode;
@@ -249,13 +263,21 @@ export interface PageHeaderStat {
 }
 
 export interface PageHeaderWithStatsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Page title; the default is sample text, so always set it. */
   title?: React.ReactNode;
+  /** Supporting text under the title. */
   description?: React.ReactNode;
+  /** Metric tiles under the title; each has a `label`, a `value` and an optional `change`. */
   stats?: PageHeaderStat[];
+  /** Buttons shown on the right of the title row. */
   actions?: React.ReactNode;
+  /** Choices for the date-range select; omit to hide the select. */
   rangeOptions?: SelectOption[];
+  /** Controlled selected range value. Use with `onRangeChange`. */
   range?: string;
+  /** Initially selected range value when uncontrolled. */
   defaultRange?: string;
+  /** Called with the range value the user picked. */
   onRangeChange?: (value: string) => void;
 }
 
@@ -376,17 +398,35 @@ export interface PageHeaderFilter {
 }
 
 export interface PageHeaderWithSearchProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Page title; the default is sample text, so always set it. */
   title?: React.ReactNode;
+  /** Item count shown as a badge next to the title. */
   count?: number;
+  /** Supporting text under the title. */
   description?: React.ReactNode;
+  /**
+   * Placeholder of the search field.
+   * @default "Search tasks…"
+   */
   searchPlaceholder?: string;
+  /** Controlled search text. Use with `onSearchChange`. */
   search?: string;
+  /** Called with the search text as it changes. */
   onSearchChange?: (value: string) => void;
+  /** Filter selects next to the search; each has an `id`, a `label` and `options`. */
   filters?: PageHeaderFilter[];
+  /** Called with the filter id and the chosen value when a filter changes. */
   onFilterChange?: (id: string, value: string) => void;
+  /** Controlled list or grid view of the view toggle. Use with `onViewChange`. */
   view?: "list" | "grid";
+  /**
+   * Initial view when uncontrolled.
+   * @default "list"
+   */
   defaultView?: "list" | "grid";
+  /** Called with the view the user picked; setting it shows the toggle. */
   onViewChange?: (view: "list" | "grid") => void;
+  /** Main action button (`label`, optional `icon`, and `onClick` or `href`); `null` hides it. */
   primaryAction?: HeaderAction | null;
 }
 
@@ -501,17 +541,27 @@ export interface ProfileHeaderMeta {
 }
 
 export interface ProfileHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Display name. */
   name?: string;
+  /** Handle shown under the name (e.g. "@maya"). */
   handle?: string;
+  /** Short bio under the handle. */
   bio?: React.ReactNode;
+  /** Avatar image URL; falls back to initials from `name`. */
   avatarSrc?: string;
   /** Cover image URL; defaults to a brand mesh gradient. */
   coverSrc?: string;
+  /** Shows a verified badge next to the name. */
   verified?: boolean;
+  /** Meta line items (location, link, join date); each has a `label` and optional icon and href. */
   meta?: ProfileHeaderMeta[];
+  /** Counters shown under the bio (followers, posts); each has a `label` and a `value`. */
   stats?: { label: React.ReactNode; value: React.ReactNode }[];
+  /** Custom actions; replaces the follow and message buttons. */
   actions?: React.ReactNode;
+  /** Called when the Follow button is clicked; setting it shows the button. */
   onFollow?: () => void;
+  /** Called when the Message button is clicked; setting it shows the button. */
   onMessage?: () => void;
 }
 
@@ -638,16 +688,26 @@ ProfileHeader.displayName = "ProfileHeader";
 /* ------------------------------------------------------------------ */
 
 export interface HeroHeaderProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Small label above the title. */
   eyebrow?: React.ReactNode;
+  /** Makes the eyebrow a link to this URL. */
   eyebrowHref?: string;
+  /** Headline; the default is sample text, so always set it. */
   title?: React.ReactNode;
+  /** Supporting text under the headline. */
   description?: React.ReactNode;
+  /** Main call-to-action (`label`, optional `icon`, and `onClick` or `href`); `null` hides it. */
   primaryAction?: HeaderAction | null;
+  /** Secondary call-to-action; `null` hides it. */
   secondaryAction?: HeaderAction | null;
   /** Media below the copy (screenshot, DeviceFrame…). */
   media?: React.ReactNode;
   /** Show a logo cloud under the actions. */
   showLogos?: boolean;
+  /**
+   * Alignment of the copy and actions.
+   * @default "center"
+   */
   align?: "center" | "start";
 }
 

@@ -56,8 +56,11 @@ export const defaultDateRangePresets: DateRangePreset[] = [
 ];
 
 export interface DateRangePickerProps extends BasePickerProps {
+  /** Controlled range as `{ from, to }`; either may be undefined while picking. Use with `onValueChange`. */
   value?: DateRange;
+  /** Initial range when uncontrolled. */
   defaultValue?: DateRange;
+  /** Called with the new range (or `undefined` when cleared); with `presets` or apply/cancel it fires on apply. */
   onValueChange?: (value: DateRange | undefined) => void;
   /** Sidebar presets. Pass `[]` to hide the sidebar. */
   presets?: DateRangePreset[];
@@ -65,7 +68,15 @@ export interface DateRangePickerProps extends BasePickerProps {
   numberOfMonths?: number;
   /** Custom formatter for the trigger text. */
   formatRange?: (range: DateRange) => string;
+  /**
+   * Text of the apply button.
+   * @default "Apply"
+   */
   applyLabel?: string;
+  /**
+   * Text of the cancel button.
+   * @default "Cancel"
+   */
   cancelLabel?: string;
 }
 

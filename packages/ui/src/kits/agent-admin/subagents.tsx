@@ -112,6 +112,7 @@ const statusLabel: Record<SubagentDisplayStatus, string> = { running: "Running",
 const statusRank: Record<SubagentDisplayStatus, number> = { running: 0, waiting: 1, failed: 2, canceled: 3, done: 4 };
 
 export interface SubagentStatusGlyphProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Subagent status (running, completed, failed and so on); picks the glyph and its tone. */
   status: SubagentStatusInput;
 }
 
@@ -140,16 +141,25 @@ SubagentStatusGlyph.displayName = "SubagentStatusGlyph";
 export type SubagentSort = "none" | "status" | "elapsed" | "cost";
 
 export interface SubagentTreeProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Root subagents, each with its children, status, elapsed time and cost. */
   nodes: SubagentNode[];
   /** Expanded node ids. Default: every node with children. */
   expanded?: string[];
+  /** Initially expanded node ids when `expanded` is not controlled. */
   defaultExpanded?: string[];
+  /** Called with the expanded node ids when the user expands or collapses a node. */
   onExpandedChange?: (ids: string[]) => void;
+  /** Controlled sort order of siblings: `none`, `status`, `elapsed` or `cost`. */
   sort?: SubagentSort;
+  /** Initial sort order when `sort` is not controlled. */
   defaultSort?: SubagentSort;
+  /** Called with the sort order when the user changes it. */
   onSortChange?: (sort: SubagentSort) => void;
+  /** Controlled "running only" filter; hides finished subagents when true. */
   runningOnly?: boolean;
+  /** Initial filter state when `runningOnly` is not controlled. */
   defaultRunningOnly?: boolean;
+  /** Called with the new state when the user flips the filter. */
   onRunningOnlyChange?: (on: boolean) => void;
   /** Sends steering text into a running subagent. Shows a Steer button on running nodes. */
   onSteer?: (id: string, text: string) => void;
@@ -161,6 +171,7 @@ export interface SubagentTreeProps extends Omit<React.HTMLAttributes<HTMLDivElem
   now?: number;
   /** Hide sort / filter controls. */
   hideToolbar?: boolean;
+  /** Accessible name of the tree. Default "Subagents". */
   label?: string;
 }
 
@@ -546,11 +557,15 @@ export interface RunTickerActivity {
 }
 
 export interface RunTickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Activities to show in the ticker, in order; the latest one is on top of the reel. */
   activities: RunTickerActivity[];
   /** Label before the reel. */
   label?: React.ReactNode;
+  /** Controlled expanded state of the full activity list. */
   expanded?: boolean;
+  /** Initial expanded state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user expands or collapses the list. */
   onExpandedChange?: (expanded: boolean) => void;
   /** Shows a spinner while true. */
   running?: boolean;
@@ -651,6 +666,7 @@ export interface DelegateTask {
 }
 
 export interface DelegateToolBodyProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Delegated tasks (child agents) with their prompt, status and result. */
   tasks: DelegateTask[];
   /** Opens the child's transcript. */
   onOpen?: (id: string) => void;

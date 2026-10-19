@@ -47,11 +47,16 @@ export const buttonGroupVariants = cva("isolate inline-flex w-fit", {
 });
 
 interface ButtonGroupOwnProps {
+  /**
+   * Lays the buttons out in a row or a column.
+   * @default "horizontal"
+   */
   orientation?: ButtonGroupOrientation;
   /** Size applied to every `ButtonGroupItem`. */
   size?: Size;
   /** Merge borders and radii into one segmented control. Default true. */
   attached?: boolean;
+  /** Classes for the group container. */
   className?: string;
 }
 
@@ -140,6 +145,7 @@ export const buttonGroupItemVariants = cva(
         md: "h-9 px-3.5 text-sm [&_svg]:size-4",
         lg: "h-10 px-4 text-sm [&_svg]:size-[18px]",
       },
+      /** Makes the item square for an icon-only button; set it together with an `aria-label`. */
       iconOnly: { true: "aspect-square px-0" },
     },
     defaultVariants: { size: "md" },
@@ -153,8 +159,11 @@ export interface ButtonGroupItemProps
   value?: string;
   /** Overrides the size from the group. */
   size?: Size;
+  /** Render as the child element (e.g. a link) while keeping the item styles. */
   asChild?: boolean;
+  /** Icon before the label. */
   leadingIcon?: React.ReactNode;
+  /** Icon after the label. */
   trailingIcon?: React.ReactNode;
 }
 

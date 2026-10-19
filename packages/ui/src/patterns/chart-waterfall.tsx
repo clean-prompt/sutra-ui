@@ -53,6 +53,7 @@ export interface WaterfallChartProps extends Omit<React.HTMLAttributes<HTMLDivEl
   height?: number;
   /** Step name axis: `hide`, `formatter`, `label` (table header) and `tickCount` (a maximum). */
   xAxis?: Pick<ChartXAxisOptions, "hide" | "formatter" | "label" | "tickCount">;
+  /** Value-axis options: formatter, domain, tick count, hidden. */
   yAxis?: ChartYAxisOptions;
   /** Horizontal gridlines. Default true. */
   grid?: boolean;
@@ -60,12 +61,18 @@ export interface WaterfallChartProps extends Omit<React.HTMLAttributes<HTMLDivEl
   legend?: boolean | "top" | "bottom";
   /** Horizontal threshold lines (`axis: "y"` only). */
   referenceLines?: ChartReferenceLine[];
+  /**
+   * Shows a tooltip with the step value and the running total.
+   * @default true
+   */
   tooltip?: boolean;
   /** CSS transitions on data changes (disabled under prefers-reduced-motion). Default true. */
   animate?: boolean;
+  /** Content shown instead of the chart when there is no data. */
   emptyState?: React.ReactNode;
   /** Accessible name. Defaults to a description built from the steps. */
   label?: string;
+  /** Called with the hovered step index (or `null` when the pointer leaves); use it to sync other views. */
   onActiveIndexChange?: (index: number | null) => void;
   /** Data is on its way: with no data, a placeholder plot (and legend) of the same size; with data, the root is marked busy. */
   loading?: boolean;

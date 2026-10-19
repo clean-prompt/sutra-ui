@@ -33,13 +33,17 @@ export interface ThemeToggleProps
   variant?: "icon" | "segmented";
   /** Modes offered, in cycle order. `["light", "dark"]` makes a two-state toggle. */
   modes?: ThemeToggleMode[];
+  /** Controlled theme mode. Use with `onValueChange`. */
   value?: ThemeToggleMode;
+  /** Initial theme mode when uncontrolled. */
   defaultValue?: ThemeToggleMode;
+  /** Called with the new mode when the user toggles it. */
   onValueChange?: (mode: ThemeToggleMode) => void;
   /** Toggle the `dark` class / color-scheme on <html>. Default true. */
   applyToDocument?: boolean;
   /** localStorage key used when uncontrolled; `null` disables persistence. */
   storageKey?: string | null;
+  /** Button size. */
   size?: Size;
   /** Show labels next to icons in the segmented variant. Default true. */
   showLabels?: boolean;

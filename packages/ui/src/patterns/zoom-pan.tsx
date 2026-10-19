@@ -15,7 +15,12 @@ export interface ZoomPanProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   label?: string;
   /** Show the zoom controls overlay. Default true. */
   controls?: boolean;
+  /**
+   * Corner the zoom controls sit in.
+   * @default "bottom-right"
+   */
   controlsPosition?: "top-right" | "bottom-right" | "bottom-left" | "top-left";
+  /** Classes for the zoomable content wrapper. */
   contentClassName?: string;
 }
 

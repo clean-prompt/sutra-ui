@@ -152,6 +152,7 @@ export interface TimePickerProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange" | "role" | "children"> {
   /** Time as `"HH:mm"` (24-hour), or `"HH:mm:ss"` with `granularity="second"`. `undefined` means empty. */
   value?: string;
+  /** Initial time (`"HH:mm"`) when uncontrolled. */
   defaultValue?: string;
   /** Called with the new time, or `undefined` when it is cleared or no longer complete. */
   onValueChange?: (value: string | undefined) => void;
@@ -169,11 +170,15 @@ export interface TimePickerProps
   max?: string;
   /** Show an inline button that clears the time. */
   clearable?: boolean;
+  /** Disables every segment. */
   disabled?: boolean;
+  /** Shows the time without letting the user change it. */
   readOnly?: boolean;
   /** Marks the field required. Inherited from a surrounding `Field` when omitted. */
   required?: boolean;
+  /** Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
+  /** Field height and text size. */
   size?: Size;
   /** Submits the value under this name through a hidden input. */
   name?: string;

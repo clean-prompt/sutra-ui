@@ -9,7 +9,9 @@ export type FaviconResolver = (domain: string) => string | undefined;
 const FaviconContext = React.createContext<FaviconResolver | undefined>(undefined);
 
 export interface FaviconProviderProps {
+  /** Maps a domain to an icon URL, or returns `undefined` to fall back to the monogram. */
   resolve: FaviconResolver;
+  /** The subtree whose `Favicon` components use this resolver. */
   children: React.ReactNode;
 }
 
@@ -34,9 +36,14 @@ export function domainOf(url: string) {
 }
 
 export interface FaviconProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Domain of the site, e.g. "github.com"; it feeds the resolver and the monogram fallback. */
   domain: string;
   /** Explicit icon URL; overrides the provider. */
   src?: string;
+  /**
+   * Outline of the icon.
+   * @default "circle"
+   */
   shape?: "circle" | "square";
 }
 

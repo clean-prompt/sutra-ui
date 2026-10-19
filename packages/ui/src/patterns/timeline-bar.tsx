@@ -105,7 +105,12 @@ export interface TimelineBarProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   now?: TimeInput;
   /** Number of tick intervals. Default 6; fewer are drawn when the axis is too narrow for their labels. */
   ticks?: number;
+  /** Formats the axis tick labels. Default depends on the window: time of day, or date and time across days. */
   tickFormatter?: (time: Date) => string;
+  /**
+   * Shows the time axis under the lanes.
+   * @default true
+   */
   showAxis?: boolean;
   /** Show the "now" marker when inside the window. Default true. */
   showNow?: boolean;
@@ -113,11 +118,15 @@ export interface TimelineBarProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   laneHeight?: number;
   /** Width of the lane label column in px. Default 112. */
   labelWidth?: number;
+  /** Formats the time shown in the span tooltip. */
   formatTime?: (time: Date) => string;
+  /** Formats the duration shown in the span tooltip. Default is a short "1h 20m". */
   formatDuration?: (ms: number) => string;
+  /** Called with the span (and its lane) when a span is clicked; spans then become buttons. */
   onSpanClick?: (span: TimelineSpan, lane?: TimelineLane) => void;
   /** Accessible name. */
   label?: string;
+  /** BCP 47 locale for the default time formatting. */
   locale?: string;
 }
 
@@ -340,16 +349,24 @@ const uptimeLabel: Record<UptimeStatus, string> = {
 };
 
 export interface UptimeBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Time slices from oldest to newest: each is a status (`up`, `degraded`, `down`, `no-data`) or a `{ status, label, detail }` object. */
   buckets: (UptimeBucket | UptimeStatus)[];
   /** Service name shown above the bar. */
   label?: React.ReactNode;
+  /**
+   * Shows the uptime percentage next to the label.
+   * @default true
+   */
   showPercent?: boolean;
   /** Override the computed uptime. */
   percent?: number;
+  /** Text under the left end of the bar (e.g. "90 days ago"). */
   startLabel?: React.ReactNode;
+  /** Text under the right end of the bar (e.g. "Today"). */
   endLabel?: React.ReactNode;
   /** Bar height in px. Default 32. */
   height?: number;
+  /** Formats the uptime percentage. Default is e.g. "99.95%". */
   formatPercent?: (percent: number) => string;
 }
 

@@ -19,9 +19,16 @@ FilterBar.displayName = "FilterBar";
 
 export interface FilterBarSearchProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "size"> {
+  /** Controlled search text. Use with `onValueChange`. */
   value?: string;
+  /** Initial search text when uncontrolled. */
   defaultValue?: string;
+  /** Called with the search text as it changes. */
   onValueChange?: (value: string) => void;
+  /**
+   * Field height and text size.
+   * @default "sm"
+   */
   size?: "sm" | "md";
 }
 
@@ -122,16 +129,26 @@ export interface FilterBarOption {
 
 export interface FilterBarChipProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue"> {
+  /** Filter name shown on the chip (e.g. "Status"). */
   label: string;
+  /** Choices in the popover; each is a string or `{ value, label }`. */
   options: Array<FilterBarOption | string>;
+  /** Controlled selected values. Use with `onValueChange`. */
   value?: string[];
+  /** Initially selected values when uncontrolled. */
   defaultValue?: string[];
+  /** Called with the selected values after every change. */
   onValueChange?: (value: string[]) => void;
   /** Show a search input inside the popover. Defaults to true when there are more than 7 options. */
   searchable?: boolean;
   /** How many selected values to list before collapsing to "N selected". */
   maxDisplay?: number;
+  /** Icon shown before the label. */
   icon?: React.ReactNode;
+  /**
+   * Alignment of the popover against the chip.
+   * @default "start"
+   */
   align?: "start" | "center" | "end";
 }
 
@@ -349,7 +366,7 @@ export const FilterBarChip = React.forwardRef<HTMLButtonElement, FilterBarChipPr
 );
 FilterBarChip.displayName = "FilterBarChip";
 
-/** @deprecated Use `FilterBarChip` (the dashed "+ Filter" button; it is not a pill). */
+/** Alias of `FilterBarChip`. @deprecated Use `FilterBarChip` (the dashed "+ Filter" button; it is not a pill). */
 export const FilterPill = FilterBarChip;
 /** @deprecated Use `FilterBarChipProps`. */
 export type FilterPillProps = FilterBarChipProps;
@@ -364,6 +381,7 @@ export interface FilterBarActiveFilter {
 }
 
 export interface FilterBarActiveProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Active filters to show as removable tokens, each with a `label` and a remove handler. */
   filters?: FilterBarActiveFilter[];
 }
 
@@ -389,8 +407,14 @@ export const FilterBarActive = React.forwardRef<HTMLDivElement, FilterBarActiveP
 FilterBarActive.displayName = "FilterBarActive";
 
 export interface FilterBarTokenProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Token text, e.g. "Status: Open". */
   label?: React.ReactNode;
+  /** Called when the remove button is clicked; setting it shows the button. */
   onRemove?: () => void;
+  /**
+   * Accessible name of the remove button.
+   * @default "Remove filter"
+   */
   removeLabel?: string;
 }
 

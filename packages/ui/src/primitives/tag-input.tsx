@@ -24,8 +24,11 @@ export interface TagInputProps
     React.InputHTMLAttributes<HTMLInputElement>,
     "value" | "defaultValue" | "onChange" | "size" | "max" | "prefix"
   > {
+  /** Controlled list of tags. Use with `onValueChange`. */
   value?: string[];
+  /** Initial tags when uncontrolled. */
   defaultValue?: string[];
+  /** Called with the full tag list after a tag is added or removed. */
   onValueChange?: (value: string[]) => void;
   /** Maximum number of tags. */
   max?: number;
@@ -55,16 +58,19 @@ export interface TagInputProps
   renderTag?: (tag: string, state: TagRenderState) => React.ReactNode;
   /** Show the number of tags (and the limit, with `max`) after the tags. */
   showCount?: boolean;
+  /** Field height and text size. */
   size?: Size;
   /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
   variant?: "outline" | "filled";
+  /** Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
   /** Class for the outer container. */
   wrapperClassName?: string;
+  /** Classes for each tag chip. */
   tagClassName?: string;
   /** Empty state inside the suggestions dropdown. */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Legacy name of `emptyState`. @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
 }
 

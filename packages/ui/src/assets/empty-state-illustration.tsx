@@ -9,9 +9,14 @@ import { useSafeId } from "../hooks/use-safe-id";
 export type EmptyStateIllustrationVariant = "search" | "inbox" | "files" | "error" | "success" | "cloud";
 
 export interface EmptyStateIllustrationProps extends Omit<React.ComponentPropsWithoutRef<"svg">, "children"> {
+  /**
+   * Which scene to draw: `search`, `inbox`, `files`, `error`, `success` or `cloud`.
+   * @default "search"
+   */
   variant?: EmptyStateIllustrationVariant;
   /** Width in pixels (height follows the 4:3 ratio). */
   size?: number;
+  /** Accessible name; when set the illustration is exposed as an image, otherwise it is decorative. */
   title?: string;
 }
 

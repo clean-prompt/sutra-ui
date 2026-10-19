@@ -55,16 +55,28 @@ export const fabVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Fill style: `primary`, `secondary` (outlined) or `inverse`.
+       * @default "primary"
+       */
       variant: {
         primary: "bg-primary text-primary-foreground hover:bg-primary-hover",
         secondary: "border border-border bg-background text-foreground hover:bg-muted",
         inverse: "bg-inverse text-inverse-foreground hover:bg-inverse/90",
       },
+      /**
+       * Button size: 48, 56 or 64 px (`sm`, `md`, `lg`).
+       * @default "md"
+       */
       size: {
         sm: "h-12 min-w-12 text-sm [&_svg]:size-5",
         md: "h-14 min-w-14 text-sm [&_svg]:size-6",
         lg: "h-16 min-w-16 text-base [&_svg]:size-7",
       },
+      /**
+       * Outline: fully round, or rounded square.
+       * @default "circle"
+       */
       shape: { circle: "rounded-full", rounded: "rounded-2xl" },
       extended: { true: "", false: "" },
     },
@@ -87,17 +99,26 @@ export interface FloatingActionButtonProps
     Omit<VariantProps<typeof fabVariants>, "extended"> {
   /** Accessible name; also the visible text when `extended`. */
   label: string;
+  /** Icon inside the button; the only content unless `extended`. */
   icon?: React.ReactNode;
   /** Show the label next to the icon. */
   extended?: boolean;
+  /**
+   * Corner or edge of the container the button sits in.
+   * @default "bottom-right"
+   */
   position?: FabPosition;
   /** `fixed` to the viewport (default), `absolute` within a relative parent, or `static` inline. */
   strategy?: "fixed" | "absolute" | "static";
   /** Speed-dial actions that fan out on click. */
   actions?: FabAction[];
+  /** Controlled open state of the speed dial. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state of the speed dial when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the speed dial opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Classes for the positioned wrapper (`className` styles the button). */
   containerClassName?: string;
 }
 

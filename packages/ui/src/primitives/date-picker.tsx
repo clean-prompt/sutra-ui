@@ -28,8 +28,11 @@ export { DateTimePicker, type DateTimeInput, type DateTimePickerProps, type Date
 /* ---------------------------------------------------------------- */
 
 export interface DatePickerProps extends BasePickerProps {
+  /** Selected date; `undefined` means none. Use with `onValueChange`. */
   value?: Date;
+  /** Initially selected date when uncontrolled. */
   defaultValue?: Date;
+  /** Called with the picked date, or `undefined` when cleared. */
   onValueChange?: (value: Date | undefined) => void;
   /** Custom formatter for the trigger text; overrides `formatOptions`. */
   formatDate?: (date: Date) => string;

@@ -107,8 +107,11 @@ export const ChatScrollButton = React.forwardRef<HTMLButtonElement, ChatScrollBu
 ChatScrollButton.displayName = "ChatScrollButton";
 
 export interface ChatEmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Icon above the title. */
   icon?: React.ReactNode;
+  /** Heading of the empty state. */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
 }
 

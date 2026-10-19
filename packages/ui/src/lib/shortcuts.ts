@@ -10,6 +10,7 @@ export type ShortcutPlatform = "mac" | "other";
 /** Called when a shortcut fires. `event` is undefined when run from a palette. */
 export type ShortcutHandler = (event?: KeyboardEvent) => void;
 
+/** Options for registering a shortcut: id, label, group, scope, enabling conditions and whether it works inside inputs. */
 export interface ShortcutOptions {
   /** Stable id; defaults to `<scope>:<keys>`. Registrations with the same id are listed once. */
   id?: string;
@@ -32,12 +33,14 @@ export interface ShortcutOptions {
   enabled?: boolean;
 }
 
+/** A registered shortcut: the key spec (or alternatives) plus its options. */
 export interface ShortcutDefinition extends ShortcutOptions {
   /** "mod+k", "shift+?", "g t" (sequence), or an array of alternatives. */
   keys: string | string[];
   handler: ShortcutHandler;
 }
 
+/** One parsed key combination: the key and the modifiers it needs. */
 export interface ParsedCombo {
   key: string;
   mod: boolean;
@@ -47,8 +50,10 @@ export interface ParsedCombo {
   shift: boolean;
 }
 
+/** A parsed key sequence: combinations pressed one after the other ("g t"). */
 export type ParsedSequence = ParsedCombo[];
 
+/** A key combination read from a keyboard event, for matching against parsed shortcuts. */
 export interface EventCombo {
   key: string;
   codeKey: string;
@@ -356,6 +361,7 @@ interface ScopeFrame {
 }
 
 export interface ShortcutManagerOptions {
+  /** Platform used to read `mod` and to show key glyphs. Defaults to the detected platform. */
   platform?: ShortcutPlatform;
   /** Max delay between the keys of a sequence. Default 1000ms. */
   sequenceTimeout?: number;

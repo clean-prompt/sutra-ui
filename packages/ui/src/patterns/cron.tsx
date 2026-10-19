@@ -172,11 +172,16 @@ export interface CronScheduleChangeDetails {
 export interface CronScheduleFieldProps extends Omit<React.HTMLAttributes<HTMLFieldSetElement>, "defaultValue" | "onChange"> {
   /** Value or schedule string ("every 30m", cron, ISO timestamp). */
   value?: CronScheduleValue | string | null;
+  /** Initial value (schedule object or schedule string) when uncontrolled. */
   defaultValue?: CronScheduleValue | string | null;
   /** Fires on every edit; `value` is `null` while the schedule is invalid. */
   onValueChange?: (value: CronScheduleValue | null, details: CronScheduleChangeDetails) => void;
   /** Modes offered (and their order). Default: all eight. */
   modes?: CronScheduleMode[];
+  /**
+   * Caption of the fieldset, shown above the controls.
+   * @default "Schedule"
+   */
   legend?: React.ReactNode;
   /** IANA zone the schedule runs in; shown next to the preview. Default: the browser zone. */
   timeZone?: string;
@@ -184,8 +189,11 @@ export interface CronScheduleFieldProps extends Omit<React.HTMLAttributes<HTMLFi
   now?: Date | number;
   /** Number of upcoming runs to preview. Default 3; 0 hides the list. */
   previewCount?: number;
+  /** BCP 47 locale for the preview and the plain-language description. */
   locale?: string;
+  /** Forces a 12-hour (`true`) or 24-hour (`false`) clock in the preview; the locale decides otherwise. */
   hour12?: boolean;
+  /** Disables every control. */
   disabled?: boolean;
 }
 

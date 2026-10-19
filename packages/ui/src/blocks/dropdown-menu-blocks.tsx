@@ -72,22 +72,38 @@ export interface UserAccountMenuItem {
 }
 
 export interface UserAccountMenuProps {
+  /** The signed-in user: `name`, optional `email`, `avatarSrc` and `plan`. Shown in the menu header and used by the default trigger. The default is demo data. */
   user?: UserAccountMenuUser;
   /** Custom trigger element (e.g. a `SidebarUserCard`). Defaults to an avatar button. */
   trigger?: React.ReactElement;
+  /** Menu rows above the sign-out row; each has a `key`, a `label` and optional icon and shortcut hint. Defaults to a standard account set. */
   items?: UserAccountMenuItem[];
+  /** Called with the `key` of the chosen row. */
   onSelect?: (key: string) => void;
+  /** Called when "Sign out" is chosen. */
   onSignOut?: () => void;
+  /** Controlled theme preference (`light`, `dark` or `system`). Use with `onThemeChange`. */
   theme?: ThemePreference;
+  /** Initial theme preference when uncontrolled. */
   defaultTheme?: ThemePreference;
+  /** Called with the preference the user picked in the theme submenu. */
   onThemeChange?: (theme: ThemePreference) => void;
   /** Show the theme submenu. Default true. */
   showTheme?: boolean;
+  /**
+   * Alignment of the menu against the trigger.
+   * @default "end"
+   */
   align?: Align;
+  /** Side of the trigger the menu opens on. */
   side?: Side;
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the menu opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Classes for the menu panel. */
   contentClassName?: string;
 }
 
@@ -216,15 +232,26 @@ export interface Workspace {
 }
 
 export interface WorkspaceSwitcherProps {
+  /** Workspaces to choose from; each has an `id`, a `name` and optional plan and app. The default is demo data. */
   workspaces?: Workspace[];
+  /** Controlled id of the active workspace. Use with `onValueChange`. */
   value?: string;
+  /** Initially active workspace id when uncontrolled. */
   defaultValue?: string;
+  /** Called with the workspace id the user picked. */
   onValueChange?: (id: string) => void;
+  /** Called when "Create workspace" is chosen. */
   onCreate?: () => void;
   /** `sidebar` is a full-width row (collapses to an icon in an icon sidebar); `compact` is a small inline button. */
   variant?: "sidebar" | "compact";
+  /**
+   * Alignment of the menu against the trigger.
+   * @default "start"
+   */
   align?: Align;
+  /** Side of the trigger the menu opens on. */
   side?: Side;
+  /** Classes for the trigger. */
   className?: string;
 }
 
@@ -355,13 +382,24 @@ export interface NotificationsMenuProps {
   notifications?: NotificationItem[];
   /** Initial list when uncontrolled. */
   defaultNotifications?: NotificationItem[];
+  /** Called with the full list after the user marks items read, dismisses them or marks all read. */
   onNotificationsChange?: (items: NotificationItem[]) => void;
+  /** Called with the notification when a row is clicked. */
   onNotificationClick?: (item: NotificationItem) => void;
+  /** Called when "View all" is clicked. */
   onViewAll?: () => void;
+  /**
+   * Alignment of the panel against the trigger.
+   * @default "end"
+   */
   align?: Align;
+  /** Controlled open state. Use with `onOpenChange`. */
   open?: boolean;
+  /** Initial open state when uncontrolled. */
   defaultOpen?: boolean;
+  /** Called when the panel opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Classes for the trigger. */
   className?: string;
 }
 
@@ -517,12 +555,31 @@ export interface QuickCreateItem {
 }
 
 export interface QuickCreateMenuProps {
+  /** Apps offered for creation; each has an `app`, a `label` and optional description and shortcut hint. Defaults to the standard Sutra apps. */
   items?: QuickCreateItem[];
+  /** Called with the app the user chose. */
   onCreate?: (app: SutraApp) => void;
+  /**
+   * Text of the trigger button.
+   * @default "New"
+   */
   label?: React.ReactNode;
+  /**
+   * Trigger button height and text size.
+   * @default "sm"
+   */
   size?: "sm" | "md" | "lg";
+  /**
+   * Trigger button style.
+   * @default "primary"
+   */
   variant?: "primary" | "secondary";
+  /**
+   * Alignment of the menu against the trigger.
+   * @default "end"
+   */
   align?: Align;
+  /** Classes for the trigger. */
   className?: string;
 }
 
@@ -592,19 +649,39 @@ export interface SortFilterOption {
 }
 
 export interface SortFilterMenuProps {
+  /** Sort choices; each has a `value` and a `label`. */
   sortOptions?: SortFilterOption[];
+  /** Controlled sort value. Use with `onSortChange`. */
   sort?: string;
+  /** Initial sort value when uncontrolled. */
   defaultSort?: string;
+  /** Called with the sort value the user picked. */
   onSortChange?: (value: string) => void;
+  /** Controlled sort direction. Use with `onDirectionChange`. */
   direction?: "asc" | "desc";
+  /**
+   * Initial sort direction when uncontrolled.
+   * @default "asc"
+   */
   defaultDirection?: "asc" | "desc";
+  /** Called with the direction the user picked. */
   onDirectionChange?: (value: "asc" | "desc") => void;
+  /** Filter choices (checkable); each has a `value` and a `label`. */
   filterOptions?: SortFilterOption[];
+  /** Controlled list of active filter values. Use with `onFiltersChange`. */
   filters?: string[];
+  /** Initially active filter values when uncontrolled. */
   defaultFilters?: string[];
+  /** Called with the full list of active filter values after a change. */
   onFiltersChange?: (value: string[]) => void;
+  /**
+   * Text of the trigger button.
+   * @default "View"
+   */
   label?: React.ReactNode;
+  /** Alignment of the menu against the trigger. */
   align?: Align;
+  /** Classes for the trigger. */
   className?: string;
 }
 

@@ -18,9 +18,17 @@ const fadeMasks: Record<BackgroundFade, string | undefined> = {
 };
 
 export interface BackgroundPatternProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Pattern shape: `grid`, `dots`, `circles` or `lines`.
+   * @default "grid"
+   */
   variant?: BackgroundPatternVariant;
   /** Pattern cell size in pixels. */
   cellSize?: number;
+  /**
+   * Where the pattern fades out: `radial`, `top`, `bottom`, `edges` or `none`.
+   * @default "radial"
+   */
   fade?: BackgroundFade;
   /** Line or dot color. Defaults to the border token. */
   color?: string;
@@ -82,7 +90,15 @@ export interface SpotlightProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: number;
   /** Center position, as CSS lengths/percentages. */
   x?: string;
+  /**
+   * Vertical centre position, as a CSS length or percentage.
+   * @default "0%"
+   */
   y?: string;
+  /**
+   * Glow strength, 0 to 1.
+   * @default 0.35
+   */
   intensity?: number;
   /** Slowly drift the glow. */
   animated?: boolean;
@@ -125,11 +141,19 @@ const BEAM_CSS = `
 `;
 
 export interface GridBeamsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Grid cell size in px.
+   * @default 40
+   */
   cellSize?: number;
   /** Number of animated beams. */
   beams?: number;
   /** Seconds for a beam to cross. */
   duration?: number;
+  /**
+   * Where the grid fades out: `radial`, `top`, `bottom`, `edges` or `none`.
+   * @default "radial"
+   */
   fade?: BackgroundFade;
 }
 
@@ -199,6 +223,10 @@ GridBeams.displayName = "GridBeams";
 /* ------------------------------------------------------------------ */
 
 export interface NoiseTextureProps extends Omit<React.ComponentPropsWithoutRef<"svg">, "children"> {
+  /**
+   * Grain opacity, 0 to 1; keep it low.
+   * @default 0.08
+   */
   opacity?: number;
   /** Turbulence base frequency; higher is finer grain. */
   frequency?: number;

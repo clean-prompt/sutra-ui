@@ -121,6 +121,7 @@ export interface TemperatureReadingProps extends Omit<React.HTMLAttributes<HTMLD
   statusLabels?: ReadoutStatusLabels;
   /** Colour of a normal reading. Default "orange". */
   accent?: Accent;
+  /** BCP 47 locale used to format the number. */
   locale?: string;
 }
 
@@ -268,10 +269,13 @@ export interface ThermalSensor {
 }
 
 export interface ThermalSensorsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+  /** Sensors to list, each with a label, a reading in °C and optional history. */
   sensors: ThermalSensor[];
   /** Display unit (readings stay °C). */
   unit?: TemperatureUnit;
+  /** Initial display unit when `unit` is not controlled. */
   defaultUnit?: TemperatureUnit;
+  /** Called with the unit when the user flips the °C / °F switch. */
   onUnitChange?: (unit: TemperatureUnit) => void;
   /** Show the °C / °F switch in the header. Default true when `onUnitChange` is set. */
   showUnitToggle?: boolean;
@@ -279,11 +283,13 @@ export interface ThermalSensorsProps extends Omit<React.HTMLAttributes<HTMLDivEl
   thresholds?: ReadoutThresholds;
   /** Scale bottom and top in °C. Default 20–110. */
   min?: number;
+  /** Scale top in °C. Default 110. */
   max?: number;
   /** `meter` rows (default) or a grid of `gauge`s. */
   variant?: "meter" | "gauge";
   /** Header title. Default "Temperatures"; `null` hides the header (unless the unit switch is shown). */
   title?: React.ReactNode;
+  /** Words shown when a sensor is strained. Default "hot" / "critical". */
   statusLabels?: ReadoutStatusLabels;
   /** Default "orange". */
   accent?: Accent;
@@ -291,6 +297,7 @@ export interface ThermalSensorsProps extends Omit<React.HTMLAttributes<HTMLDivEl
   emptyState?: React.ReactNode;
   /** Accessible name of the list. Default "Temperature sensors". */
   label?: string;
+  /** BCP 47 locale used to format numbers. */
   locale?: string;
   /** Data is on its way. With no sensors yet the card shows placeholder rows; with sensors the root is only marked busy. */
   loading?: boolean;
@@ -467,7 +474,9 @@ export interface FanControlFan {
 }
 
 export interface FanControlProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "title"> {
+  /** Fans to list, each with a name, current rpm, target rpm and mode. */
   fans: FanControlFan[];
+  /** Called with the fan id and the mode (automatic or fixed) when the user switches a fan's mode. */
   onModeChange?: (id: string, mode: FanMode) => void;
   /** Fires while the target slider moves. */
   onTargetChange?: (id: string, rpm: number) => void;
@@ -487,6 +496,7 @@ export interface FanControlProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   emptyState?: React.ReactNode;
   /** Accessible name of the list. Default "Fans". */
   label?: string;
+  /** BCP 47 locale used to format numbers. */
   locale?: string;
   /** Data is on its way. With no fans yet placeholder fan cards are shown (no mode switch or slider); with fans the root is only marked busy. */
   loading?: boolean;
@@ -685,6 +695,7 @@ export interface HeatByAppItem {
 }
 
 export interface HeatByAppProps extends Omit<BarListProps, "items"> {
+  /** Apps with their heat contribution, drawn as ranked bars. */
   apps: HeatByAppItem[];
   /** Short note under the list. Pass `false` to hide it. */
   explanation?: React.ReactNode | false;

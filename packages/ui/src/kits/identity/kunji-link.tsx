@@ -16,9 +16,11 @@ import { KunjiMark, KunjiSignIn } from "./kunji-sign-in";
 /* ------------------------------------------------------------------ */
 
 export interface KunjiLinkedBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
+  /** Whether the account is linked to kunji; `false` shows the not-linked state. Default true. */
   linked?: boolean;
   /** kunji `sub`, shortened in the tooltip. */
   sub?: string;
+  /** Badge size. */
   size?: "sm" | "md" | "lg";
 }
 
@@ -42,9 +44,13 @@ export const KunjiLinkedBadge = React.forwardRef<HTMLSpanElement, KunjiLinkedBad
 KunjiLinkedBadge.displayName = "KunjiLinkedBadge";
 
 export interface KunjiLinkProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Kunji client that creates the session and polls for approval. */
   client: KunjiClient;
+  /** Controlled linked state. */
   linked?: boolean;
+  /** Initial linked state when `linked` is not controlled. */
   defaultLinked?: boolean;
+  /** Called with the new state after a link or unlink succeeds. */
   onLinkedChange?: (linked: boolean) => void;
   /** Linked identity (`sub`). */
   sub?: string;
@@ -52,7 +58,9 @@ export interface KunjiLinkProps extends Omit<React.HTMLAttributes<HTMLDivElement
   onLink?: (result: KunjiPollResult) => unknown;
   /** Remove the link. Hidden when omitted. */
   onUnlink?: () => unknown;
+  /** Heading of the card. Default "kunji sign-in". */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
 }
 

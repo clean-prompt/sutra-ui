@@ -1,10 +1,15 @@
 import * as React from "react";
 import { brands, neutrals, radiusModes, themeStyles, type Brand, type Neutral, type RadiusMode, type ThemeStyle } from "../lib/tokens";
 
+/** The theme settings the document can carry: colour mode, brand, neutral, radius and visual style. */
 export interface SutraTheme {
+  /** Colour scheme: `light` or `dark`. */
   mode: "light" | "dark";
+  /** Brand palette that drives the primary colour. */
   brand: Brand;
+  /** Neutral palette used for backgrounds, borders and text. */
   neutral: Neutral;
+  /** Corner radius preset applied to controls and cards. */
   radius: RadiusMode;
   /** Visual style (`data-style`). Leave it out for the stock look; `"paper"` also needs `@sutra/ui/paper.css`. */
   style?: ThemeStyle;

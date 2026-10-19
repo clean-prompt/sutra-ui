@@ -125,9 +125,11 @@ export const PDF_CSP_SAFE_OPTIONS: Readonly<Record<string, unknown>> = Object.fr
 
 /** A PDF to open: a URL, raw bytes or a Blob (a Blob is read in place, so CSP `connect-src` needn't allow `blob:`). */
 export interface PdfSource {
+  /** Address of the PDF; fetched by pdf.js and subject to CORS. */
   url?: string;
   /** Raw bytes. Copied before pdf.js takes ownership, so the app's buffer stays usable. */
   data?: ArrayBuffer | Uint8Array;
+  /** PDF as a Blob or File, for example from a file input. */
   blob?: Blob;
 }
 
@@ -475,14 +477,17 @@ export interface PdfViewerProps
   fileName?: string;
   /** Extra pdf.js `getDocument` options (`password`, `cMapUrl`, `standardFontDataUrl`, `wasmUrl`, `httpHeaders` …). Read when a document opens. */
   documentOptions?: Record<string, unknown>;
+  /** Controlled zoom: `fit-width`, `fit-page` or a scale (1 is 100%). */
   zoom?: PdfZoom;
   /** Default `"fit-width"`. */
   defaultZoom?: PdfZoom;
+  /** Called with the zoom when the user changes it. */
   onZoomChange?: (zoom: PdfZoom) => void;
   /** Current page, 1-based (controlled). Setting it scrolls to that page. */
   page?: number;
   /** Default 1. */
   defaultPage?: number;
+  /** Called with the 1-based page number as the user scrolls or navigates. */
   onPageChange?: (page: number) => void;
   /** Selectable, searchable text over each page (pdf.js `TextLayer`). Default true. */
   textLayer?: boolean;
@@ -494,6 +499,7 @@ export interface PdfViewerProps
   overscan?: number;
   /** Waiting for the source. Shows page skeletons until a document is ready. */
   loading?: boolean;
+  /** Called with the page count once the document has opened. */
   onLoad?: (info: { numPages: number }) => void;
   /** The document couldn't be loaded. The viewer shows an error with a download link. */
   onError?: (error: Error) => void;
@@ -1002,8 +1008,11 @@ export interface PdfThumbnailProps
   loading?: boolean;
   /** Shown when the page can't be rendered. Default: a PDF file icon. */
   fallback?: React.ReactNode;
+  /** Extra pdf.js `getDocument` options (`password`, `cMapUrl` and so on); read when the document opens. */
   documentOptions?: Record<string, unknown>;
+  /** Called with the page count once the document has opened. */
   onLoad?: (info: { numPages: number }) => void;
+  /** Called with the error when the document or page cannot be loaded. */
   onError?: (error: Error) => void;
 }
 

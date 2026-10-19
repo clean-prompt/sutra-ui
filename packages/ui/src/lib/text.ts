@@ -21,6 +21,7 @@ export function graphemes(s: string): string[] {
   return Array.from(text);
 }
 
+/** Options for `matchRanges`: every occurrence or the first, case sensitivity and whole-word matching. */
 export interface MatchRangesOptions {
   /** Every occurrence (default) or only the first. */
   all?: boolean;
@@ -62,6 +63,7 @@ export function matchRanges(text: string, query: string, options: MatchRangesOpt
   return all ? merged : merged.slice(0, 1);
 }
 
+/** Options for `slugify`. */
 export interface SlugifyOptions {
   /** Keep non-Latin letters and digits (`"日本語"` stays). Default false (ASCII only, accents stripped). */
   unicode?: boolean;
@@ -90,6 +92,7 @@ export function slugify(s: string, options: SlugifyOptions = {}): string {
   return out || (options.fallback ?? "");
 }
 
+/** Options for `initials`: maximum letters, mode, single-word handling, case and fallback. */
 export interface InitialsOptions {
   /** Maximum letters. Default 2. */
   max?: number;

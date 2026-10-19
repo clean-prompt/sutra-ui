@@ -20,6 +20,7 @@ export interface DecodeTextProps extends Omit<React.HTMLAttributes<HTMLSpanEleme
   interval?: number;
   /** Characters used for the scramble. */
   charset?: string;
+  /** Called once when the text has fully resolved. */
   onComplete?: () => void;
 }
 

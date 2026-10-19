@@ -84,6 +84,7 @@ export function artifactKindLabel(kind: ArtifactKind) {
 }
 
 export interface ArtifactKindIconProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** Artifact kind (`code`, `html`, `markdown`, `svg`, `image`, `diagram`, `document` or `data`); picks the icon. */
   kind: ArtifactKind;
 }
 
@@ -137,12 +138,20 @@ function defaultDownload(title: string, kind: ArtifactKind, content: string) {
 /* ------------------------------------------------------------------ */
 
 export interface ArtifactPreviewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Artifact kind; decides how `content` is rendered (source, Markdown, SVG, image and so on). */
   kind: ArtifactKind;
+  /** The artifact body: source text, Markdown, SVG markup or an image URL, depending on `kind`. */
   content: string;
+  /** Artifact name; used for the code header filename and the accessible name. */
   title: string;
+  /**
+   * Code language for syntax highlighting (for example `tsx`); html, data and diagram artifacts default to `html`,
+   * `json` and `mermaid`.
+   */
   language?: string;
   /** Render HTML in a sandboxed iframe (scripts, forms, same-origin all blocked). Otherwise show source. */
   renderHtml?: boolean;
+  /** Maximum height of the preview before it scrolls; a number is px. */
   maxHeight?: number | string;
   /** Code fallback shows the header (filename / copy). */
   codeHeader?: boolean;
@@ -277,15 +286,24 @@ function CopyAction({ onCopy, content, disabled }: { onCopy?: () => void; conten
 /* ------------------------------------------------------------------ */
 
 export interface ArtifactCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "content" | "onCopy"> {
+  /** Artifact name, shown as the card title. */
   title: string;
+  /**
+   * Artifact kind (`code`, `html`, `markdown`, `svg`, `image`, `diagram`, `document` or `data`); picks the icon and
+   * preview.
+   */
   kind: ArtifactKind;
+  /** Code language for syntax highlighting (for example `tsx`). */
   language?: string;
   /** All versions, oldest first. Alternatively pass `content` for a single version. */
   versions?: ArtifactVersion[];
+  /** Body of a single-version artifact; use `versions` for several. */
   content?: string;
   /** Selected version index (0-based). Defaults to the latest. */
   version?: number;
+  /** Initially shown version index when `version` is not controlled. Defaults to the latest. */
   defaultVersion?: number;
+  /** Called with the version index when the user switches versions. */
   onVersionChange?: (index: number) => void;
   /** Still being generated: shimmer + "Generating…", download/share disabled. */
   streaming?: boolean;
@@ -293,9 +311,15 @@ export interface ArtifactCardProps extends Omit<React.HTMLAttributes<HTMLDivElem
   preview?: boolean;
   /** HTML artifacts: render in the sandboxed iframe instead of source (opt-in). */
   renderHtml?: boolean;
+  /** Initial value of `renderHtml` when it is not controlled. */
   defaultRenderHtml?: boolean;
+  /** Called with the new state when the user toggles between rendered HTML and source. */
   onRenderHtmlChange?: (render: boolean) => void;
+  /** Maximum height of the preview before it scrolls; a number is px. */
   previewMaxHeight?: number | string;
+  /**
+   * Called when the user opens the artifact (for example in the full viewer); the Open button is hidden when unset.
+   */
   onOpen?: () => void;
   /** Defaults to copying the content to the clipboard. */
   onCopy?: (content: string) => void;
@@ -470,25 +494,46 @@ ArtifactCard.displayName = "ArtifactCard";
 export type ArtifactViewerTab = "preview" | "code";
 
 export interface ArtifactViewerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "content" | "onCopy"> {
+  /** Artifact name, shown in the viewer header. */
   title: string;
+  /**
+   * Artifact kind (`code`, `html`, `markdown`, `svg`, `image`, `diagram`, `document` or `data`); decides which tabs
+   * apply.
+   */
   kind: ArtifactKind;
+  /** Code language for syntax highlighting (for example `tsx`). */
   language?: string;
+  /** All versions, oldest first. */
   versions: ArtifactVersion[];
+  /** Controlled selected version index (0-based). Defaults to the latest. */
   version?: number;
+  /** Initially selected version index when `version` is not controlled. */
   defaultVersion?: number;
+  /** Called with the version index when the user picks a version. */
   onVersionChange?: (index: number) => void;
+  /** Controlled active tab: `preview` or `code`. */
   tab?: ArtifactViewerTab;
+  /** Initially active tab when `tab` is not controlled. */
   defaultTab?: ArtifactViewerTab;
+  /** Called with the tab when the user switches between preview and code. */
   onTabChange?: (tab: ArtifactViewerTab) => void;
+  /** Controlled fullscreen state. */
   fullscreen?: boolean;
+  /** Initial fullscreen state when `fullscreen` is not controlled. */
   defaultFullscreen?: boolean;
+  /** Called with the new state when the user enters or leaves fullscreen. */
   onFullscreenChange?: (fullscreen: boolean) => void;
   /** Version history sidebar. Default true. */
   showHistory?: boolean;
+  /** Still being generated: shows a generating state and disables download and share. */
   streaming?: boolean;
+  /** Called when the user closes the viewer; the close button is hidden when unset. */
   onClose?: () => void;
+  /** Called with the content when the user presses Copy; defaults to copying to the clipboard. */
   onCopy?: (content: string) => void;
+  /** Called with the content when the user presses Download; defaults to saving a file locally. */
   onDownload?: (content: string) => void;
+  /** Called when the user presses Share; the button is shown only when set. */
   onShare?: () => void;
 }
 
@@ -684,20 +729,33 @@ export type ArtifactLibrarySort = "newest" | "oldest" | "title";
 export type ArtifactLibraryLayout = "grid" | "list";
 
 export interface ArtifactLibraryProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Artifacts to list, each with title, kind, dates and content. */
   artifacts: ArtifactData[];
+  /** Controlled search text. */
   query?: string;
+  /** Initial search text when `query` is not controlled. */
   defaultQuery?: string;
+  /** Called with the search text on every change. */
   onQueryChange?: (query: string) => void;
   /** Kind filter; "all" shows everything. */
   kind?: ArtifactKind | "all";
+  /** Initial kind filter when `kind` is not controlled. */
   defaultKind?: ArtifactKind | "all";
+  /** Called with the kind (or `"all"`) when the user picks a filter. */
   onKindChange?: (kind: ArtifactKind | "all") => void;
+  /** Controlled sort order: `newest`, `oldest` or `title`. */
   sort?: ArtifactLibrarySort;
+  /** Initial sort order when `sort` is not controlled. */
   defaultSort?: ArtifactLibrarySort;
+  /** Called with the sort order when the user changes it. */
   onSortChange?: (sort: ArtifactLibrarySort) => void;
+  /** Controlled layout: `grid` or `list`. */
   layout?: ArtifactLibraryLayout;
+  /** Initial layout when `layout` is not controlled. */
   defaultLayout?: ArtifactLibraryLayout;
+  /** Called with the layout when the user switches between grid and list. */
   onLayoutChange?: (layout: ArtifactLibraryLayout) => void;
+  /** Called with the artifact when the user opens one. */
   onOpenArtifact?: (artifact: ArtifactData) => void;
   /** Shown when there are no artifacts at all. */
   emptyState?: React.ReactNode;

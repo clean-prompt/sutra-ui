@@ -29,14 +29,19 @@ export interface TabDropdownItem {
 }
 
 export interface TabDropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
+  /** Tabs in order; tabs that do not fit collapse into the overflow menu. */
   items: TabDropdownItem[];
+  /** Controlled selected tab value. Use with `onValueChange`. */
   value?: string;
+  /** Initially selected tab value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the value of the tab the user picked. */
   onValueChange?: (value: string) => void;
   /** Label of the overflow trigger. Default "More". */
   moreLabel?: string;
   /** Accessible name of the tab list. */
   label?: string;
+  /** Tab height and text size. */
   size?: "sm" | "md";
 }
 

@@ -41,18 +41,23 @@ import {
 export type RegionStatusMapView = "map" | "globe";
 
 export interface RegionStatusMapProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "onSelect"> {
+  /** Regions to plot and list, each with a name, location, status, latency and load. */
   regions: readonly StatusRegion[];
   /** Replication or traffic links between regions, drawn as arcs toned by health. */
   links?: readonly RegionLink[];
 
   /** Selected region id (shows its detail and highlights its marker and row). */
   selectedId?: string | null;
+  /** Initially selected region id when `selectedId` is not controlled. */
   defaultSelectedId?: string | null;
+  /** Called with the region id (or `null`) and the region when the user selects or clears one. */
   onSelectedIdChange?: (id: string | null, region: StatusRegion | undefined) => void;
 
   /** Flat map (default) or globe. */
   view?: RegionStatusMapView;
+  /** Initial view when `view` is not controlled: `map` or `globe`. */
   defaultView?: RegionStatusMapView;
+  /** Called with the view when the user flips the map and globe toggle. */
   onViewChange?: (view: RegionStatusMapView) => void;
   /** Show the map / globe toggle. Default true. */
   viewToggle?: boolean;
@@ -63,7 +68,9 @@ export interface RegionStatusMapProps extends Omit<React.HTMLAttributes<HTMLDivE
 
   /** Table sort. Default: status, worst first. `null` keeps the order of `regions`. */
   sort?: RegionSort | null;
+  /** Initial table sort when `sort` is not controlled. */
   defaultSort?: RegionSort | null;
+  /** Called with the sort (or `null`) when the user changes it. */
   onSortChange?: (sort: RegionSort | null) => void;
 
   /** Latency (ms) at which readings turn warning / destructive. Default `{ warning: 150, danger: 300 }`. */

@@ -48,9 +48,11 @@ export interface QueuedMessage {
 }
 
 export interface QueuedMessagesProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange"> {
+  /** Messages waiting to be sent, in send order. */
   items: QueuedMessage[];
   /** Saves an inline edit. Editing is disabled when unset. */
   onEdit?: (id: string, text: string) => void;
+  /** Called with the message id when the user removes it from the queue; the button is hidden when unset. */
   onRemove?: (id: string) => void;
   /** Interrupt the agent and send this message now. */
   onSendNow?: (id: string) => void;
@@ -60,8 +62,11 @@ export interface QueuedMessagesProps extends Omit<React.HTMLAttributes<HTMLEleme
   steerHint?: React.ReactNode;
   /** Enables move up / down (buttons and Alt+↑/↓) and reports the new order. */
   onReorder?: (ids: string[]) => void;
+  /** Controlled collapsed state; collapsed shows only the count pill. */
   collapsed?: boolean;
+  /** Initial collapsed state when `collapsed` is not controlled. */
   defaultCollapsed?: boolean;
+  /** Called with the new state when the user expands or collapses the list. */
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Pill label. Default `${n} queued`. */
   formatCount?: (count: number) => string;
@@ -291,23 +296,31 @@ export interface SideThreadExchange {
 }
 
 export interface SideThreadProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Question and answer pairs, oldest first; an exchange without an answer is pending. */
   exchanges: SideThreadExchange[];
   /** Called with the question text from the side composer. */
   onAsk?: (text: string) => void;
+  /** Called when the user closes the thread; the close button is hidden when unset. */
   onClose?: () => void;
   /** Header title. Default "Side question". */
   title?: React.ReactNode;
+  /** Placeholder of the side composer. Default "Ask a quick side question…". */
   placeholder?: string;
   /** Shown when there are no exchanges yet. */
   emptyState?: React.ReactNode;
   /** Disables asking while an answer is pending. Default: any exchange is pending. */
   loading?: boolean;
-  /** @deprecated Use `loading`. */
+  /** Disables asking while an answer is pending. @deprecated Use `loading`. */
   busy?: boolean;
+  /** Controlled height of the thread in px. */
   height?: number;
+  /** Initial height in px when `height` is not controlled. */
   defaultHeight?: number;
+  /** Called with the height in px (rounded and clamped) when the user resizes the thread. */
   onHeightChange?: (height: number) => void;
+  /** Smallest height in px the user can resize to. Default 140. */
   minHeight?: number;
+  /** Largest height in px the user can resize to. Default 640. */
   maxHeight?: number;
   /** Show the top resize handle (pointer drag, ↑/↓, PageUp/PageDown, Home/End). Default true. */
   resizable?: boolean;
@@ -628,7 +641,9 @@ export interface AttachmentThumbnailItem {
 }
 
 export interface AttachmentThumbnailsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Attachments to show as thumbnails, each with a name, kind and upload status. */
   items: AttachmentThumbnailItem[];
+  /** Called with the item id when the user removes an attachment; the remove button is hidden when unset. */
   onRemove?: (id: string) => void;
   /** Shows a retry action on failed items. */
   onRetry?: (id: string) => void;

@@ -44,9 +44,13 @@ export interface StatusStackRowProps extends Omit<React.HTMLAttributes<HTMLDivEl
   actions?: React.ReactNode;
   /** Thin bar under the row. */
   progress?: { value: number; max: number; label: string };
+  /**
+   * Colour of the row and its progress bar (a `Tone`); the specialised rows pick one from their state when omitted.
+   */
   tone?: StatusStackTone;
   /** Shows a dismiss button. Inside a `StatusStack` the row is also removed from the stack. */
   onDismiss?: () => void;
+  /** Accessible name of the dismiss button. */
   dismissLabel?: string;
   /** Higher rows sort first inside a `StatusStack`. Default 0. */
   priority?: number;
@@ -126,8 +130,11 @@ StatusStackRow.displayName = "StatusStackRow";
 /* ------------------------------------------------------------------ */
 
 export interface StatusStackProps extends React.HTMLAttributes<HTMLElement> {
+  /** Controlled collapsed state; collapsed shows only the top row. */
   collapsed?: boolean;
+  /** Initial collapsed state when `collapsed` is not controlled. */
   defaultCollapsed?: boolean;
+  /** Called with the new state when the user expands or collapses the stack. */
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Accessible name. Default "Session status". */
   label?: string;
@@ -206,13 +213,19 @@ StatusStack.displayName = "StatusStack";
 /* ------------------------------------------------------------------ */
 
 export interface GoalStatusRowProps extends Omit<StatusStackRowProps, "label" | "title" | "icon" | "meta" | "progress"> {
+  /** Goal text, truncated to one line. */
   title: React.ReactNode;
+  /** Turns used so far, shown against `maxTurns`. */
   turns: number;
   /** Turn budget. */
   maxTurns: number;
+  /** Shows the goal as paused (neutral tone) and swaps Pause for Resume. */
   paused?: boolean;
+  /** Called when the user presses Pause; the button is hidden when unset. */
   onPause?: () => void;
+  /** Called when the user presses Resume on a paused goal; the button is hidden when unset. */
   onResume?: () => void;
+  /** Called when the user clears the goal; the button is hidden when unset. */
   onClear?: () => void;
 }
 
@@ -277,10 +290,15 @@ function intervalText(every: string | number | CronInterval) {
 export interface LoopStatusRowProps extends Omit<StatusStackRowProps, "label" | "icon" | "meta"> {
   /** "45m", "every 2h", an interval object or milliseconds. */
   every: string | number | CronInterval;
+  /** Number of runs completed so far. */
   runs: number;
+  /** When the next run is due; drives a live "next in" countdown, hidden when `null` or unset. */
   nextDueAt?: TimeLike | null;
+  /** Shows the loop as paused (neutral tone) and stops the countdown. */
   paused?: boolean;
+  /** Called when the user presses Run now; the button is hidden when unset. */
   onRunNow?: () => void;
+  /** Called when the user stops the loop; the button is hidden when unset. */
   onStop?: () => void;
 }
 
@@ -325,9 +343,11 @@ LoopStatusRow.displayName = "LoopStatusRow";
 /* ------------------------------------------------------------------ */
 
 export interface HeartbeatStatusRowProps extends Omit<StatusStackRowProps, "label" | "icon" | "meta"> {
+  /** Time of the last heartbeat; `null` or unset counts as stale. */
   lastBeatAt?: TimeLike | null;
   /** Expected beat period; the row turns stale after two missed beats. */
   intervalMs?: number;
+  /** Kind label of the row. Default "Heartbeat". */
   label?: React.ReactNode;
 }
 

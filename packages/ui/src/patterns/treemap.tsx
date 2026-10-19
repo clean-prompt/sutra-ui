@@ -65,6 +65,7 @@ export interface TreemapProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   depth?: number;
   /** Gap between tiles in px. Default 2. */
   gap?: number;
+  /** Formats tile values in the labels and tooltip. Default is the localized number. */
   valueFormatter?: (value: number) => string;
   /** Column header for values in the screen-reader table. Default "Value". */
   valueLabel?: string;
@@ -74,7 +75,9 @@ export interface TreemapProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   palette?: readonly string[];
   /** Drill path: child ids from the root down to the node shown. */
   path?: string[];
+  /** Initial drill path when uncontrolled (child ids from the root). */
   defaultPath?: string[];
+  /** Called with the new path when the user drills in or out. */
   onPathChange?: (path: string[]) => void;
   /** Called when a tile is clicked or activated with Enter/Space (before drilling into it). */
   onSelect?: (node: TreemapNode, path: string[]) => void;
@@ -551,6 +554,7 @@ type StorageMapTreemapProps = Pick<
 >;
 
 export interface StorageMapProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "onSelect">, StorageMapTreemapProps {
+  /** Top-level entries to size; each has a `name`, a `size` and optional category and children. */
   items: StorageMapItem[];
   /** Disk capacity in bytes. */
   capacity?: number;

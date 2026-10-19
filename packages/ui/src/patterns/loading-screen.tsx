@@ -78,11 +78,19 @@ export type LockScreenMode = "pin" | "password" | "passkey";
 export interface LockScreenProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Primary unlock method. `passkey` shows only the passkey button. */
   mode?: LockScreenMode;
+  /**
+   * Number of digits of the PIN.
+   * @default 6
+   */
   pinLength?: number;
   /** Resolve `true` to unlock, `false` for a wrong secret. Throwing counts as wrong. */
   onUnlock?: (secret: string) => Promise<boolean> | boolean;
   /** Shows "Unlock with passkey". Resolve `false` to report a failure. */
   onPasskey?: () => Promise<boolean | void> | boolean | void;
+  /**
+   * Text of the passkey button.
+   * @default "Unlock with passkey"
+   */
   passkeyLabel?: React.ReactNode;
   /** Enables the "Use recovery key" secondary mode. */
   onRecover?: (recoveryKey: string) => Promise<boolean> | boolean;
@@ -90,7 +98,9 @@ export interface LockScreenProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   appName?: React.ReactNode;
   /** App icon; defaults to the Sutra mark. */
   icon?: React.ReactNode;
+  /** Heading of the lock screen. */
   title?: React.ReactNode;
+  /** Text under the heading. */
   description?: React.ReactNode;
   /** Wrong attempts allowed before a lockout. */
   maxAttempts?: number;

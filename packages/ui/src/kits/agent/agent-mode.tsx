@@ -74,9 +74,13 @@ const modeToneClass: Record<NonNullable<PermissionModeOption["tone"]>, string> =
 
 export interface PermissionModeSwitcherProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value" | "defaultValue" | "onChange"> {
+  /** Controlled id of the active mode. */
   value?: string;
+  /** Initially active mode id when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the mode id when the user picks a mode or cycles with the shortcut. */
   onValueChange?: (mode: string) => void;
+  /** Modes to offer, each with an id, label and description; defaults to the built-in set. */
   modes?: PermissionModeOption[];
   /** Keys that cycle through the modes (fires from inputs too). `null` disables. Default "shift+tab". */
   cycleShortcut?: string | null;
@@ -90,6 +94,7 @@ export interface PermissionModeSwitcherProps
   cycleScope?: "composer" | "global";
   /** Hide the label and show only the icon. */
   iconOnly?: boolean;
+  /** Trigger size. */
   size?: "sm" | "md";
 }
 
@@ -258,6 +263,7 @@ export interface EffortGlyphProps extends React.SVGAttributes<SVGSVGElement> {
   level: number;
   /** Total levels (bars). Default 4. */
   count?: number;
+  /** Glyph width and height in px. */
   size?: number;
 }
 
@@ -292,18 +298,23 @@ EffortGlyph.displayName = "EffortGlyph";
 
 export interface EffortSliderProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange" | "children"> {
+  /** Controlled id of the selected effort level. */
   value?: string;
+  /** Initially selected level id when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the level id when the user moves the slider. */
   onValueChange?: (value: string) => void;
+  /** Levels from lowest to highest, each with an id and label; defaults to the built-in set. */
   levels?: EffortLevel[];
   /** `"normal"` (default) shows a labelled track with a legend; `"compact"` is a small pill for the composer. */
   density?: Density;
-  /** @deprecated Use `density` (`"compact"`). */
+  /** `compact` renders a small pill for the composer. @deprecated Use `density` (`"compact"`). */
   variant?: "default" | "compact";
   /** Accessible name and visible caption. Default "Effort". */
   label?: string;
   /** Tooltip text; `null` hides it. */
   tooltip?: React.ReactNode | null;
+  /** Disables the slider. */
   disabled?: boolean;
 }
 

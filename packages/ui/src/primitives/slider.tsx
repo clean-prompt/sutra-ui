@@ -18,16 +18,19 @@ export interface SliderMark {
 }
 
 export interface SliderProps extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
+  /** Track and thumb size. */
   size?: Size;
   /** Show a value bubble above the thumb on hover, focus and drag. `"always"` keeps it visible. */
   showValue?: boolean | "always";
   /** Tick marks under the track; numbers or `{ value, label }`. */
   marks?: (number | SliderMark)[];
+  /** Formats the number shown in the value bubble (see `showValue`). Default shows the raw value. */
   formatValue?: (value: number) => React.ReactNode;
   /** Accessible labels per thumb, e.g. `["Minimum", "Maximum"]`. */
   thumbLabels?: string[];
   /** Accessible value text per thumb (`aria-valuetext`), e.g. `(v) => v + "%"`. */
   getValueText?: (value: number, index: number) => string;
+  /** Marks the slider invalid: error styling on the range and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
   /** Categorical colour for the range, thumb border and active marks. Default primary. */
   accent?: Accent;

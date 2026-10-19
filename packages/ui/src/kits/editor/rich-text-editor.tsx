@@ -202,6 +202,9 @@ function FormatButtons({ editor, state, onLink, compact }: { editor: Editor; sta
 /* ------------------------------------------------------------------ */
 
 export interface RichTextToolbarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /**
+   * The TipTap editor to control (from `editorRef` or `useEditor`); the toolbar renders nothing while it is `null`.
+   */
   editor: Editor | null;
   /** Extra tools appended after the defaults. */
   children?: React.ReactNode;
@@ -356,14 +359,17 @@ export type RichTextValue = string | JSONContent;
 export interface RichTextEditorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   /** HTML string (`format="html"`) or ProseMirror JSON (`format="json"`). */
   value?: RichTextValue;
+  /** Initial content when `value` is not controlled. */
   defaultValue?: RichTextValue;
   /** Default "html". */
   format?: RichTextFormat;
   /** Called on every edit with the serialized value and the TipTap editor. */
   onValueChange?: (value: RichTextValue, editor: Editor) => void;
-  /** @deprecated Use `onValueChange`. */
+  /** Called on every edit with the serialized value and the TipTap editor. @deprecated Use `onValueChange`. */
   onChange?: (value: RichTextValue, editor: Editor) => void;
+  /** Makes the content non-editable. Default false. */
   readOnly?: boolean;
+  /** Text shown while the document is empty. Default "Start writing…". */
   placeholder?: string;
   /** "bubble" (on selection), "fixed" (above), "both" or "none". Default "bubble". */
   toolbar?: "bubble" | "fixed" | "both" | "none";
@@ -390,6 +396,7 @@ export interface RichTextEditorProps extends Omit<React.HTMLAttributes<HTMLDivEl
   size?: "sm" | "md" | "lg";
   /** Classes for the editable content area. */
   contentClassName?: string;
+  /** Focuses the editor on mount. */
   autoFocus?: boolean;
   /** Accessible name of the editable area. Default "Rich text editor". */
   label?: string;

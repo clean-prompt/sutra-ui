@@ -36,6 +36,7 @@ export interface ScatterChartProps extends Omit<React.HTMLAttributes<HTMLDivElem
   data: ChartDatum[];
   /** Key of the x value in each datum. */
   index: string;
+  /** Series to draw; each has a `key`, a `label` and an optional colour and size field. */
   series: ScatterSeries[];
   /** Formats y values. */
   valueFormatter?: (value: number, seriesKey: string) => string;
@@ -43,6 +44,7 @@ export interface ScatterChartProps extends Omit<React.HTMLAttributes<HTMLDivElem
   sizeFormatter?: (value: number, seriesKey: string) => string;
   /** Plot height in px (legend excluded). Default 280. */
   height?: number;
+  /** X-axis options (hide, domain, tick count, formatter). */
   xAxis?: ScatterXAxisOptions;
   /** Value axis. Unlike bar and area charts it fits the data: it only includes 0 when `min` says so. */
   yAxis?: ChartYAxisOptions;
@@ -58,14 +60,22 @@ export interface ScatterChartProps extends Omit<React.HTMLAttributes<HTMLDivElem
   legendInteractive?: boolean;
   /** Threshold lines: horizontal at a value, or vertical (`axis: "x"`) at an x value. */
   referenceLines?: ChartReferenceLine[];
+  /**
+   * Shows a tooltip with the hovered point.
+   * @default true
+   */
   tooltip?: boolean;
   /** CSS transitions on data changes (disabled under prefers-reduced-motion). Default true. */
   animate?: boolean;
+  /** Content shown instead of the plot when there is no data. */
   emptyState?: React.ReactNode;
   /** Accessible name. Defaults to a description built from the series. */
   label?: string;
+  /** Controlled list of hidden series keys (toggled from the legend). Use with `onHiddenSeriesChange`. */
   hiddenSeries?: string[];
+  /** Initially hidden series keys when uncontrolled. */
   defaultHiddenSeries?: string[];
+  /** Called with the hidden series keys when a legend entry is toggled. */
   onHiddenSeriesChange?: (hidden: string[]) => void;
   /** The point under the pointer or keyboard focus: its series key and index in `data`, or null. */
   onActivePointChange?: (point: { seriesKey: string; index: number } | null) => void;

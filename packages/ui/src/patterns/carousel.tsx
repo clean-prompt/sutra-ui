@@ -27,7 +27,12 @@ export interface CarouselProps extends Omit<React.HTMLAttributes<HTMLElement>, "
   children?: React.ReactNode;
   /** Index of the slide in view. */
   value?: number;
+  /**
+   * Initially visible slide index when uncontrolled.
+   * @default 0
+   */
   defaultValue?: number;
+  /** Called with the new slide index after a swipe, a button press or a dot press. */
   onValueChange?: (index: number) => void;
   /** Accessible name of the carousel. */
   label?: string;
@@ -45,11 +50,13 @@ export interface CarouselProps extends Omit<React.HTMLAttributes<HTMLElement>, "
   align?: "start" | "center";
   /** Classes for each slide: its width (`basis-4/5` to show the next slide peeking). Default `basis-full`. */
   slideClassName?: string;
+  /** Classes for the strip that holds the slides. */
   trackClassName?: string;
   /** Placeholder slide and `aria-busy` while the slides are on their way. */
   loading?: boolean;
   /** Shown when there are no slides. Default "Nothing to show". */
   emptyState?: React.ReactNode;
+  /** Overrides for the accessible texts (strip name, previous, next, play, pause, dot names). */
   labels?: CarouselLabels;
 }
 

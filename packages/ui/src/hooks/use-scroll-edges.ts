@@ -9,6 +9,7 @@ export interface ScrollEdges {
   right: boolean;
 }
 
+/** Options for `useScrollEdges`: an enabled switch and the distance from an edge that counts as at the edge. */
 export interface UseScrollEdgesOptions {
   /** Track only while true (edges read all false otherwise). Default true. */
   enabled?: boolean;

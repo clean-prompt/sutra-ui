@@ -33,15 +33,25 @@ const overlap: Record<"tight" | "normal", Record<AvatarSize, string>> = {
 };
 
 export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Avatar size for every avatar in the group. */
   size?: AvatarSize;
+  /** Avatar shape for every avatar in the group. */
   shape?: AvatarShape;
   /** Maximum avatars to show before collapsing the rest into a "+N" bubble. */
   max?: number;
   /** Override the overflow count (e.g. when only a page of users is loaded). */
   total?: number;
+  /**
+   * How much the avatars overlap: `tight` overlaps more than `normal`.
+   * @default "normal"
+   */
   spacing?: "tight" | "normal";
   /** Renders a dashed "add" button at the end. */
   onAdd?: () => void;
+  /**
+   * Accessible name of the add button.
+   * @default "Add member"
+   */
   addLabel?: string;
 }
 

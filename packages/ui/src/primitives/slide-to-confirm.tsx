@@ -16,17 +16,26 @@ export interface SlideToConfirmProps extends Omit<React.HTMLAttributes<HTMLDivEl
   onConfirm?: () => void | Promise<unknown>;
   /** The thumb is at the end. Pass `false` to slide it back after a confirmation. */
   confirmed?: boolean;
+  /** Initial confirmed state when uncontrolled. */
   defaultConfirmed?: boolean;
+  /** Called when the control reaches or leaves the confirmed state. */
   onConfirmedChange?: (confirmed: boolean) => void;
   /** Visible hint, also the slider's accessible name. Default "Slide to confirm". */
   label?: string;
+  /** Hint shown once the thumb reaches the end. */
   confirmedLabel?: string;
   /** Shown while the action runs. Default "Confirming…". */
   loadingLabel?: string;
   /** Thumb at the end with a spinner while the action runs (a promise from `onConfirm` does the same by itself). */
   loading?: boolean;
+  /** Disables dragging and the keyboard. */
   disabled?: boolean;
+  /** Colour of the thumb and the filled track. */
   tone?: ToneInput;
+  /**
+   * Control height and thumb size.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
   /** Arrow key step in percent of the track. Default 10. */
   step?: number;

@@ -18,6 +18,7 @@ export interface MorphOrigin {
   dir?: Direction;
 }
 
+/** One frame of a morph between two boxes: the transform of the moving box and the clip-path of the panel. */
 export interface MorphFrame {
   /** `transform` of the frame (the box that moves). */
   transform: string;

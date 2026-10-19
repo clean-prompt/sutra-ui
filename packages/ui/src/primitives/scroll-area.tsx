@@ -14,6 +14,7 @@ export interface ScrollAreaProps extends React.ComponentPropsWithoutRef<typeof S
   fadeEdges?: FadeEdges;
   /** Classes for the inner viewport (e.g. a max height). */
   viewportClassName?: string;
+  /** Ref to the scrolling viewport element (for `scrollTo` or scroll listeners). */
   viewportRef?: React.Ref<HTMLDivElement>;
 }
 
@@ -91,6 +92,7 @@ ScrollArea.displayName = "ScrollArea";
 
 export interface ScrollBarProps
   extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar> {
+  /** Classes for the draggable thumb. */
   thumbClassName?: string;
 }
 

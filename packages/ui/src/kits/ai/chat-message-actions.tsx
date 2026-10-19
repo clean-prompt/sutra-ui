@@ -32,7 +32,9 @@ export interface ChatMessageActionsProps extends React.HTMLAttributes<HTMLDivEle
    * above the toolbar (always visible) and the toolbar gains an add-reaction button.
    */
   reactions?: EmojiReactionItem[];
+  /** Initial reactions when `reactions` is not controlled; also turns on the reactions row. */
   defaultReactions?: EmojiReactionItem[];
+  /** Called with the new reaction list when the user adds or removes a reaction. */
   onReactionsChange?: (reactions: EmojiReactionItem[]) => void;
   /** Fired when the user adds or removes a reaction. Setting only this adds the toolbar button without a row. */
   onReact?: (emoji: string, reacted: boolean) => void;
@@ -118,7 +120,9 @@ ChatMessageAction.displayName = "ChatMessageAction";
 export interface ChatCopyActionProps extends Omit<ChatMessageActionProps, "label" | "onCopy"> {
   /** Text to copy. */
   text: string;
+  /** Accessible name and tooltip of the button. */
   label?: string;
+  /** Called with the text after it has been copied. */
   onCopy?: (text: string) => void;
 }
 
@@ -152,12 +156,15 @@ ChatCopyAction.displayName = "ChatCopyAction";
 export type ChatFeedback = "up" | "down" | null;
 
 export interface ChatFeedbackActionsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Controlled rating: `"up"`, `"down"` or `null` for none. */
   value?: ChatFeedback;
+  /** Initial rating when `value` is not controlled. */
   defaultValue?: ChatFeedback;
   /** Called with the new rating; clicking the active thumb again clears it (null). */
   onValueChange?: (value: ChatFeedback) => void;
-  /** @deprecated Use `onValueChange`. */
+  /** Called with the new rating when the user presses a thumb. @deprecated Use `onValueChange`. */
   onFeedback?: (value: ChatFeedback) => void;
+  /** Disables both thumb buttons. */
   disabled?: boolean;
 }
 
@@ -229,7 +236,9 @@ export interface ChatBranchSwitcherProps extends Omit<React.HTMLAttributes<HTMLD
   count: number;
   /** Zero-based index of the visible version. */
   value?: number;
+  /** Index of the initially visible version when `value` is not controlled. */
   defaultValue?: number;
+  /** Called with the zero-based index when the user steps to another version. */
   onValueChange?: (index: number) => void;
 }
 
@@ -306,8 +315,11 @@ function ReactionPickerPopover({ quickPicks = reactionPresets, onSelect, childre
 }
 
 export interface ChatReactionActionProps extends Omit<ChatMessageActionProps, "label" | "onSelect"> {
+  /** Accessible name and tooltip of the add-reaction button. */
   label?: string;
+  /** Emoji offered at the top of the picker. */
   quickPicks?: readonly string[];
+  /** Called with the emoji the user picks. */
   onSelect: (emoji: string) => void;
 }
 
@@ -326,7 +338,9 @@ ChatReactionAction.displayName = "ChatReactionAction";
 export interface ChatReactionsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onToggle"> {
   /** Reactions (controlled). */
   reactions?: EmojiReactionItem[];
+  /** Initial reactions when `reactions` is not controlled. */
   defaultReactions?: EmojiReactionItem[];
+  /** Called with the new reaction list when the user adds or removes a reaction. */
   onReactionsChange?: (reactions: EmojiReactionItem[]) => void;
   /** Fired when the current user adds or removes a reaction. */
   onReact?: (emoji: string, reacted: boolean) => void;
@@ -336,7 +350,9 @@ export interface ChatReactionsProps extends Omit<React.HTMLAttributes<HTMLDivEle
   quickPicks?: readonly string[];
   /** Hide the add-reaction button. */
   readOnly?: boolean;
+  /** Accessible name of the add-reaction button. Default "Add reaction". */
   addLabel?: string;
+  /** Size of the reaction pills and the add button. */
   size?: "sm" | "md";
 }
 
@@ -422,10 +438,13 @@ export function formatMessageRelativeTime(date: Date | number | string, now: Dat
 }
 
 export interface MessageTimestampHoverProps extends Omit<React.HTMLAttributes<HTMLElement>, "children"> {
+  /** Time of the message (Date, epoch ms or ISO string); shown relative, with the full date on hover. */
   date: Date | number | string;
   /** Reference "now" (mostly for tests). Defaults to the current time, refreshed every minute. */
   now?: Date | number;
+  /** Custom formatter for the relative label, given the date and the reference time in ms. */
   formatRelative?: (date: Date, now: number) => string;
+  /** Custom formatter for the full date shown in the tooltip. */
   formatFull?: (date: Date) => string;
   /** Keep visible instead of revealing on message hover/focus. */
   alwaysVisible?: boolean;

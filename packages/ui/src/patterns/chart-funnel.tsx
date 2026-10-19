@@ -23,6 +23,7 @@ export interface FunnelChartProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   index?: string;
   /** Key of the stage value. Default "value". */
   valueKey?: string;
+  /** Formats the step values in the tooltip and labels. Default is the localized number. */
   valueFormatter?: (value: number) => string;
   /**
    * The conversion rate shown beside each stage (after the first): `"previous"` is the share of the stage before
@@ -33,17 +34,24 @@ export interface FunnelChartProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   color?: string;
   /** A color per stage instead (no shading). */
   colors?: string[];
+  /** Returns a colour for a step (a token name or CSS colour), or `undefined` to use the palette colour. */
   colorFor?: (datum: ChartDatum, index: number) => string | undefined;
   /** Stages join with sloping sides (default) or are separate centered bars (`false`). */
   connected?: boolean;
   /** Plot height in px. Default 44px per stage (at least 120). */
   height?: number;
+  /**
+   * Shows a tooltip with the step value and the drop-off from the previous step.
+   * @default true
+   */
   tooltip?: boolean;
   /** CSS transitions on data changes (disabled under prefers-reduced-motion). Default true. */
   animate?: boolean;
+  /** Content shown instead of the funnel when there is no data. */
   emptyState?: React.ReactNode;
   /** Accessible name. Defaults to a description built from the stages. */
   label?: string;
+  /** Called with the hovered step index (or `null` when the pointer leaves); use it to sync other views. */
   onActiveIndexChange?: (index: number | null) => void;
   /** Data is on its way: with no data, a placeholder funnel of the same size; with data, the root is marked busy. */
   loading?: boolean;

@@ -32,8 +32,11 @@ export type UsageRange = "7" | "30" | "90";
 export interface UsageSummaryProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Daily records, oldest first. */
   days: UsageDay[];
+  /** Controlled range in days: `"7"`, `"30"` or `"90"`. */
   range?: UsageRange;
+  /** Initial range when `range` is not controlled. Default "7". */
   defaultRange?: UsageRange;
+  /** Called with the range when the user picks another one. */
   onRangeChange?: (range: UsageRange) => void;
 }
 

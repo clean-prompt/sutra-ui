@@ -41,7 +41,12 @@ const provenanceMeta: Record<CapabilityProvenance, { label: string; color: Badge
 };
 
 export interface ProvenancePillProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
+  /**
+   * Where the capability comes from (`official`, `learned`, `hub`, `community`, `local` or `bundled`); sets the pill
+   * text and icon.
+   */
   provenance: CapabilityProvenance;
+  /** Badge size of the pill. */
   size?: "sm" | "md";
   /** Hide the icon. */
   hideIcon?: boolean;
@@ -116,7 +121,11 @@ export function trustExplanation(level: CapabilityTrustLevel) {
 }
 
 export interface TrustBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
+  /**
+   * Trust level (`verified`, `trusted`, `community`, `unverified` or `flagged`); sets the label, tone and scale fill.
+   */
   level: CapabilityTrustLevel;
+  /** Badge size. */
   size?: "sm" | "md";
   /** Override the tooltip explanation. */
   explanation?: React.ReactNode;
@@ -198,11 +207,17 @@ export interface ScopeSelectorProps {
   profiles: string[];
   /** Selected profile, or `null` for all profiles. */
   value?: string | null;
+  /** Initially selected profile when `value` is not controlled; `null` means all profiles. */
   defaultValue?: string | null;
+  /** Called with the profile name, or `null` for all profiles. */
   onValueChange?: (profile: string | null) => void;
+  /** Text before the selected profile in the trigger. */
   prefix?: React.ReactNode;
+  /** Trigger size. */
   size?: "sm" | "md";
+  /** Disables the selector. */
   disabled?: boolean;
+  /** Extra classes for the trigger. */
   className?: string;
 }
 
@@ -261,11 +276,17 @@ ScopeSelector.displayName = "ScopeSelector";
 /* ------------------------------------------------------------------ */
 
 export interface CapabilityDetailHeaderProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Capability icon, shown beside the title. */
   icon?: React.ReactNode;
+  /** Capability name, shown as the heading. */
   title: React.ReactNode;
+  /** Line under the title (id, version or author). */
   subtitle?: React.ReactNode;
+  /** Longer summary under the subtitle. */
   description?: React.ReactNode;
+  /** Where the capability comes from; shows a provenance pill. */
   provenance?: CapabilityProvenance;
+  /** Trust level of the capability; shows a trust badge. */
   trust?: CapabilityTrustLevel;
   /** Extra badges after provenance/trust. */
   badges?: React.ReactNode;
@@ -327,15 +348,25 @@ export interface CapabilitiesShellTab {
 }
 
 export interface CapabilitiesShellProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "defaultValue"> {
+  /** Page heading of the shell. */
   title?: React.ReactNode;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
+  /** Tabs (skills, tools, plugins and so on), each with an id, label and content. */
   tabs: CapabilitiesShellTab[];
+  /** Controlled id of the active tab. */
   value?: string;
+  /** Initially active tab id when `value` is not controlled; defaults to the first tab. */
   defaultValue?: string;
+  /** Called with the tab id when the user switches tabs. */
   onValueChange?: (value: string) => void;
+  /** Controlled search text. */
   search?: string;
+  /** Initial search text when `search` is not controlled. */
   defaultSearch?: string;
+  /** Called with the search text on every change. */
   onSearchChange?: (q: string) => void;
+  /** Placeholder of the search field. */
   searchPlaceholder?: string;
   /** Sort control (e.g. a select) next to the search. */
   sortSlot?: React.ReactNode;
@@ -472,6 +503,7 @@ CapabilitiesShell.displayName = "CapabilitiesShell";
 /* ------------------------------------------------------------------ */
 
 export interface CapabilityMonogramProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children" | "color"> {
+  /** Capability name; the monogram tile is derived from it. */
   name: string;
 }
 

@@ -72,6 +72,7 @@ const qualityColor: Record<NonNullable<PickerModel["quality"]>, BadgeColor> = { 
 /* ------------------------------------------------------------------ */
 
 export interface ModelSelectOptionProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** The model to show (name, provider, state, description and so on). */
   model: PickerModel;
   /** Second line. Defaults to the blocked reason, then the wait hint (with `state`), then the description. */
   hint?: React.ReactNode;
@@ -141,9 +142,13 @@ export interface ModelSelectTriggerState {
 }
 
 export interface ModelSelectProps {
+  /** Models to choose from, each with an id, name, provider and optional state, rank and blocked reason. */
   models: PickerModel[];
+  /** Controlled id of the selected model. */
   value?: string;
+  /** Initially selected model id when `value` is not controlled. */
   defaultValue?: string;
+  /** Called with the model id when the user picks a model. */
   onValueChange?: (id: string) => void;
   /** Custom trigger element (or a function of the selection). It must forward its ref and props to a button. */
   trigger?: React.ReactElement | ((state: ModelSelectTriggerState) => React.ReactElement);
@@ -151,7 +156,9 @@ export interface ModelSelectProps {
   onWarmUp?: (id: string) => void;
   /** Ids currently warming (button shows a spinner). */
   warmingIds?: string[];
+  /** Trigger text shown while no model is selected. Default "Choose a model". */
   placeholder?: string;
+  /** Placeholder of the search field. Default "Search models…". */
   searchPlaceholder?: string;
   /** Show the search field. Default true. */
   searchable?: boolean;
@@ -159,12 +166,17 @@ export interface ModelSelectProps {
   ranked?: boolean;
   /** Shown when nothing matches the search. Default `No models match “query”`. */
   emptyState?: React.ReactNode;
+  /** Disables the trigger. */
   disabled?: boolean;
+  /** Extra classes for the default trigger. */
   className?: string;
+  /** Extra classes for the popover content. */
   contentClassName?: string;
   /** Popover side. Default "bottom". */
   side?: "top" | "bottom";
+  /** Alignment of the popover against the trigger. */
   align?: "start" | "center" | "end";
+  /** Accessible name of the trigger. Default "Model". */
   "aria-label"?: string;
 }
 

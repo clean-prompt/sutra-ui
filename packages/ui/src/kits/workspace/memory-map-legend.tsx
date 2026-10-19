@@ -5,7 +5,9 @@ import type { MemoryGlyph, MemoryLegendItem } from "./memory-map-model";
 import { glyphPath, SvgPath } from "./memory-map-internal";
 
 export interface MemoryGlyphIconProps extends React.SVGAttributes<SVGSVGElement> {
+  /** Shape of the marker (for example circle, square, diamond); matches the node glyph on the map. */
   glyph: MemoryGlyph;
+  /** Fill colour of the marker, any CSS colour. */
   color: string;
   /** Pixel size. Default 12. */
   size?: number;
@@ -30,7 +32,9 @@ MemoryGlyphIcon.displayName = "MemoryGlyphIcon";
 /* ------------------------------------------------------------------ */
 
 export interface MemoryMapLegendProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onToggle"> {
+  /** Legend entries, each with a kind, label, glyph and colour. */
   items: MemoryLegendItem[];
+  /** Kinds currently hidden on the map; their entries are shown dimmed. */
   hiddenKinds?: string[];
   /** Makes entries toggle buttons that filter by kind. */
   onToggleKind?: (kind: string) => void;

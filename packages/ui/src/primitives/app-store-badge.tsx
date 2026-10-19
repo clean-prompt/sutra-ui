@@ -65,10 +65,15 @@ export const appStoreBadgeVariants = cva(
   ],
   {
     variants: {
+      /** Badge colours: `dark` (black badge, for light backgrounds) or `light` (white badge). */
       theme: {
         dark: "border-[#A6A6A6] bg-black text-white hover:bg-[#111]",
         light: "border-black/80 bg-white text-black hover:bg-zinc-50",
       },
+      /**
+       * Badge height: `sm` 40px, `md` 48px or `lg` 56px.
+       * @default "md"
+       */
       size: {
         sm: "h-10 gap-1.5 px-2.5 [&_[data-slot=mark]]:size-5 [&_[data-slot=eyebrow]]:text-[8px] [&_[data-slot=name]]:text-sm",
         md: "h-12 gap-2 px-3 [&_[data-slot=mark]]:size-6 [&_[data-slot=eyebrow]]:text-[9px] [&_[data-slot=name]]:text-[17px]",
@@ -82,6 +87,7 @@ export const appStoreBadgeVariants = cva(
 export interface AppStoreBadgeProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
     VariantProps<typeof appStoreBadgeVariants> {
+  /** Store the badge links to, which picks its logo and "Download on" or "Get it on" text. */
   store: AppStore;
 }
 

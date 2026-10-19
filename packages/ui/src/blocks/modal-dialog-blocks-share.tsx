@@ -61,9 +61,16 @@ export type ShareLinkExpiry = "never" | "1h" | "1d" | "7d" | "30d" | "custom";
 export interface ShareDialogProps extends BlockDialogBaseProps {
   /** Name of the shared item. */
   itemName?: string;
+  /** The share link shown in the link field; the default is a sample URL. */
   link?: string;
+  /** Controlled who can open the item: `restricted` (invited people), `workspace` or `link` (anyone with the link). Use with `onAccessChange`. */
   access?: ShareAccess;
+  /**
+   * Initial access when uncontrolled.
+   * @default "link"
+   */
   defaultAccess?: ShareAccess;
+  /** Called with the new access level. */
   onAccessChange?: (access: ShareAccess) => void;
   /**
    * Controlled people list when paired with `onPeopleChange`. Passed alone it only seeds the
@@ -72,22 +79,37 @@ export interface ShareDialogProps extends BlockDialogBaseProps {
   people?: DialogMember[];
   /** Initial people list when uncontrolled. */
   defaultPeople?: DialogMember[];
+  /** Called with the full people list after a role change or removal. */
   onPeopleChange?: (people: DialogMember[]) => void;
   /** Called when someone is invited, with the role picked next to the email field. */
   onInvite?: (email: string, role: ShareLinkRole) => unknown;
   /** The signed-in person: their row says "(you)" and offers "Leave" unless they own the item. */
   currentUserId?: string;
+  /** Called with the person id and the new role when a role is changed. */
   onRoleChange?: (personId: string, role: ShareRole) => void;
+  /** Called with the person id when they are removed. */
   onRemovePerson?: (personId: string) => void;
+  /** Called when the current user chooses "Leave". */
   onLeave?: () => void;
   /** Role preselected for invites. Default "editor". */
   defaultInviteRole?: ShareLinkRole;
   /** Workspace name for the "Anyone at …" access option. Pass "" to hide that option. */
   workspaceName?: string;
+  /** Controlled role granted by the link (`editor`, `commenter` or `viewer`). Use with `onLinkRoleChange`. */
   linkRole?: ShareLinkRole;
+  /**
+   * Initial link role when uncontrolled.
+   * @default "viewer"
+   */
   defaultLinkRole?: ShareLinkRole;
+  /** Called with the new link role. */
   onLinkRoleChange?: (role: ShareLinkRole) => void;
+  /** Controlled link expiry: `never`, `1h`, `1d`, `7d`, `30d` or `custom`. */
   expiry?: ShareLinkExpiry;
+  /**
+   * Initial link expiry when uncontrolled.
+   * @default "7d"
+   */
   defaultExpiry?: ShareLinkExpiry;
   /** `expiresAt` is null for "never". */
   onExpiryChange?: (expiry: ShareLinkExpiry, expiresAt: Date | null) => void;
@@ -95,9 +117,16 @@ export interface ShareDialogProps extends BlockDialogBaseProps {
   expiresAt?: Date | null;
   /** Show the "Allow comments on public link" switch for public links. Default true. */
   showAllowComments?: boolean;
+  /** Controlled state of the "Allow comments on public link" switch. */
   allowComments?: boolean;
+  /**
+   * Initial state of the comments switch when uncontrolled.
+   * @default false
+   */
   defaultAllowComments?: boolean;
+  /** Called with the new state of the comments switch. */
   onAllowCommentsChange?: (allow: boolean) => void;
+  /** Called with the link after the user copies it. */
   onCopyLink?: (link: string) => void;
 }
 

@@ -84,9 +84,19 @@ export const AvatarContext = React.createContext<{
 
 export interface AvatarProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
+  /**
+   * Diameter from `xs` to `2xl`; the initials and status dot scale with it.
+   * @default "md"
+   */
   size?: AvatarSize;
+  /**
+   * Outline of the avatar: round or rounded-square.
+   * @default "circle"
+   */
   shape?: AvatarShape;
+  /** Image URL; the initials fallback shows while it loads or when it fails. */
   src?: string;
+  /** Alt text of the image. Defaults to `name`. */
   alt?: string;
   /** Used to derive initials, the fallback color and the default alt text. */
   name?: string;
@@ -100,7 +110,9 @@ export interface AvatarProps
   variant?: AvatarVariant;
   /** Options for the auto initials (e.g. `{ singleWord: 2 }` → "Ma" for "Maya"). */
   initialsOptions?: InitialsOptions;
+  /** Presence dot in the bottom corner: online, offline, busy or away. */
   status?: AvatarStatus;
+  /** Shows a verified check badge in the corner. */
   verified?: boolean;
   /** Adds a ring in the background color (useful when overlapping). */
   ring?: boolean;
@@ -244,15 +256,26 @@ const labelGroupSizes = {
 
 export interface AvatarLabelGroupProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "color"> {
+  /**
+   * Avatar size; the name and supporting text scale with it.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg" | "xl";
+  /** Primary line, also used for the avatar initials when a string. */
   name: React.ReactNode;
+  /** Secondary line under the name (email, role). */
   supportingText?: React.ReactNode;
+  /** Image URL for the avatar. */
   src?: string;
+  /** Presence dot in the avatar corner: online, offline, busy or away. */
   status?: AvatarStatus;
+  /** Shows a verified check badge on the avatar. */
   verified?: boolean;
+  /** Avatar outline: round or rounded-square. */
   shape?: AvatarShape;
   /** Pass a custom avatar element instead of the generated one. */
   avatar?: React.ReactNode;
+  /** Extra props for the generated avatar (`variant`, `colorful`, `initialsOptions`, ...); `size` follows the group. */
   avatarProps?: Omit<AvatarProps, "size">;
 }
 

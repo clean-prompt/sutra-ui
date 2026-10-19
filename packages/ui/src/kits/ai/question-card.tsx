@@ -55,22 +55,33 @@ export interface QuestionCardProps extends Omit<React.HTMLAttributes<HTMLDivElem
   onSubmitAll?: (answers: QuestionAnswers) => void;
   /** Multi-question header text. Default "N questions from the agent". */
   title?: React.ReactNode;
+  /** Label of the submit button in multi-question mode. Default "Submit answers". */
   submitAllLabel?: string;
+  /** Controlled folded state: folded shows only the header. */
   folded?: boolean;
+  /** Initial folded state when `folded` is not controlled. */
   defaultFolded?: boolean;
+  /** Called with the new state when the user folds or unfolds the card. */
   onFoldedChange?: (folded: boolean) => void;
+  /** Helper text under the question (single-question mode). */
   description?: React.ReactNode;
+  /** Answer kind in single-question mode: `single` choice, `multi` choice or free `text`. Default `single`. */
   type?: "single" | "multi" | "text";
+  /** Choices for `single` and `multi` questions, each with a label and optional description. */
   options?: QuestionOption[];
   /** Adds an "Other…" option with a text field. */
   allowOther?: boolean;
+  /** Label of the "Other" option. Default "Other…". */
   otherLabel?: string;
   /** Free-text: allow attaching files. */
   allowAttachments?: boolean;
+  /** Placeholder of the free-text and "Other" fields. Default "Type your answer…". */
   placeholder?: string;
+  /** Label of the confirm button. Default "Confirm". */
   confirmLabel?: string;
   /** A prior answer: renders the card locked. */
   answer?: QuestionAnswer | null;
+  /** Called with the answer when the user confirms it (single-question mode). */
   onAnswer?: (answer: QuestionAnswer) => void;
 }
 

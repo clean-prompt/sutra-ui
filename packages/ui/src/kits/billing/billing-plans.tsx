@@ -66,14 +66,21 @@ export function planFeatureLosses(current: BillingPlan, target: BillingPlan): Pl
 }
 
 export interface PlanPickerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Plans to compare, each with a name, price per interval, features and call to action. */
   plans: BillingPlan[];
+  /** Id of the plan the user is on; that card shows "Current plan" and plans below it ask to confirm a downgrade. */
   currentPlanId?: string;
+  /** Controlled billing interval: `monthly` or `yearly`. */
   interval?: BillingInterval;
+  /** Initial interval when `interval` is not controlled. */
   defaultInterval?: BillingInterval;
+  /** Called with the interval when the user flips the toggle. */
   onIntervalChange?: (interval: BillingInterval) => void;
   /** Called on Upgrade / Contact / Select, and after confirming a downgrade. */
   onSelect?: (plan: BillingPlan, interval: BillingInterval) => void;
+  /** ISO 4217 code used to format prices. Default "USD". */
   currency?: string;
+  /** BCP 47 locale used to format prices. */
   locale?: string;
   /** Hide the monthly/yearly toggle. */
   hideIntervalToggle?: boolean;
@@ -310,10 +317,13 @@ export interface PlanComparisonSection {
 }
 
 export interface PlanComparisonTableProps extends React.HTMLAttributes<HTMLTableElement> {
+  /** Plans to show as columns (id, name and whether recommended). */
   plans: Pick<BillingPlan, "id" | "name" | "recommended">[];
+  /** Feature groups, each with a heading and rows of per-plan values. */
   sections: PlanComparisonSection[];
   /** Max height of the scroll box; the header stays sticky. */
   maxHeight?: number | string;
+  /** Accessible table caption. */
   caption?: string;
 }
 

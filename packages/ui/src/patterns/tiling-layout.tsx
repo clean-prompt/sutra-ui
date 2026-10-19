@@ -37,12 +37,17 @@ export * from "./tiling-layout-zone-editor";
 
 export interface TilingLayoutProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "defaultValue" | "onChange"> {
+  /** Controlled layout tree: nested splits (with a direction and sizes) and tab groups holding pane ids. Use with `onLayoutChange`. */
   layout?: LayoutNode;
+  /** Initial layout tree when uncontrolled. */
   defaultLayout?: LayoutNode;
+  /** Called with the new layout after a resize, split, move, close or drop. */
   onLayoutChange?: (layout: LayoutNode) => void;
+  /** Renders the content of a pane from its pane id. */
   renderPane: (paneId: string) => React.ReactNode;
   /** Tab title (default: the pane id). */
   paneTitle?: (paneId: string) => React.ReactNode;
+  /** Icon shown before the pane's tab title. */
   paneIcon?: (paneId: string) => React.ReactNode;
   /** Plain-text name used in aria labels when `paneTitle` returns a node. */
   paneLabel?: (paneId: string) => string;
@@ -61,11 +66,13 @@ export interface TilingLayoutProps
   keepAlive?: boolean;
   /** Floating windows rendered over the layout; enables "Pop out" and "Dock". */
   floating?: FloatingPaneState[];
+  /** Called with the new list of floating windows after one is moved, resized or closed; setting it also enables "Pop out" and "Dock". */
   onFloatingChange?: (panes: FloatingPaneState[]) => void;
   /** Maximized group id (controlled). */
   maximizedGroup?: string | null;
   /** Initially maximized group id when uncontrolled. */
   defaultMaximizedGroup?: string | null;
+  /** Called with the maximized group id (or `null` when restored). */
   onMaximizedGroupChange?: (groupId: string | null) => void;
   /** Register keyboard shortcuts (mod+\, mod+shift+\, mod+w, ctrl+tab, mod+1…9). */
   shortcuts?: boolean;

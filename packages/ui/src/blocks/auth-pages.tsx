@@ -28,9 +28,11 @@ export interface AuthPageBaseProps extends React.HTMLAttributes<HTMLDivElement> 
   logo?: React.ReactNode;
   /** Where the logo links to. */
   homeHref?: string;
+  /** Links in the page footer (terms, privacy, help); each has a `label` and an `href`. */
   footerLinks?: AuthPageLink[];
   /** Copyright line. */
   copyright?: React.ReactNode;
+  /** Renders the logo and footer links in place of the default `<a>`, e.g. to use your router's Link. */
   renderLink?: BlockLinkRenderer;
 }
 
@@ -90,9 +92,14 @@ export interface AuthTestimonial {
 }
 
 export interface AuthSplitPageProps extends AuthPageBaseProps {
+  /** Quote shown on the side panel: `quote`, author name and role. */
   testimonial?: AuthTestimonial;
   /** Logos under the testimonial. Pass `[]` to hide. */
   logos?: PlaceholderLogoEntry[];
+  /**
+   * Heading above the logo row.
+   * @default "Trusted by 40,000+ people at"
+   */
   logosTitle?: React.ReactNode;
   /** Fully replace the brand panel content. */
   panel?: React.ReactNode;
@@ -235,6 +242,10 @@ AuthCenteredPage.displayName = "AuthCenteredPage";
 export interface AuthImagePageProps extends AuthPageBaseProps {
   /** Image URL for the right panel. */
   imageSrc?: string;
+  /**
+   * Alt text of the panel image; the default is empty (decorative).
+   * @default ""
+   */
   imageAlt?: string;
   /** Custom illustration/media for the right panel (overrides `imageSrc`). */
   media?: React.ReactNode;

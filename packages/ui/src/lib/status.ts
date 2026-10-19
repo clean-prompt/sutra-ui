@@ -8,6 +8,7 @@
 
 import type { Tone } from "./tone";
 
+/** Task status ids, in lifecycle order (`pending`, `running`, `succeeded`, `failed`, `canceled`). */
 export const TASK_STATUSES = ["pending", "running", "succeeded", "failed", "canceled"] as const;
 
 /** Canonical lifecycle status. */

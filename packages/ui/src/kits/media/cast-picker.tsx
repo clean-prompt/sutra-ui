@@ -86,15 +86,21 @@ export interface CastDevice {
 }
 
 export interface CastDeviceListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> {
+  /** Devices to list, each with a name, kind and connection state. */
   devices: CastDevice[];
+  /** Called with the device when the user picks one to connect to. */
   onSelect?: (device: CastDevice) => void;
+  /** Called with the device when the user disconnects the connected one. */
   onDisconnect?: (device: CastDevice) => void;
+  /** Shows placeholder rows while devices are being discovered. */
   loading?: boolean;
+  /** Message shown in place of the list when discovery fails. */
   error?: React.ReactNode;
+  /** Called when the user presses Retry on the error message; the button is hidden when unset. */
   onRetry?: () => void;
   /** Shown when there is nothing to list. Default "No other devices are available right now". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyMessage?: React.ReactNode;
   /** Accessible list name. Default "Devices". */
   label?: string;
@@ -226,16 +232,21 @@ export interface CastPickerProps extends Omit<CastDeviceListProps, "title"> {
   description?: React.ReactNode;
   /** Modal dialog (bottom sheet on phones) or an anchored popover. Default "dialog". */
   variant?: "dialog" | "popover";
+  /** Controlled open state of the picker. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the picker opens or closes. */
   onOpenChange?: (open: boolean) => void;
   /** Custom trigger element. Default: an icon button with a cast glyph. */
   trigger?: React.ReactElement;
+  /** Accessible name of the default trigger button. Default "Play on another device". */
   triggerLabel?: string;
   /** Close as soon as a device is picked. Default false (stay open to show connecting/connected). */
   closeOnSelect?: boolean;
   /** Trigger tone, e.g. on top of a video. */
   triggerTone?: "default" | "overlay";
+  /** Extra classes for the dialog or popover content. */
   contentClassName?: string;
 }
 

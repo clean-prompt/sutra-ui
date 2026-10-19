@@ -10,8 +10,11 @@ export const safeSourceHref = (href: string) => (isSafeHref(href) ? href : undef
 const safeHref = safeSourceHref;
 
 export interface ChatSourceData {
+  /** URL of the source; unsafe URLs are not linked. */
   href: string;
+  /** Source title, shown in the preview card and used in the accessible name. */
   title?: string;
+  /** Excerpt shown in the preview card. */
   snippet?: string;
   /** Icon URL for this source. Without it (and without a FaviconProvider) a local monogram is shown. */
   favicon?: string;
@@ -79,6 +82,7 @@ export function CitationHoverCard({
 export interface ChatInlineCitationProps
   extends Omit<React.HTMLAttributes<HTMLElement>, "title">,
     Partial<ChatSourceData> {
+  /** Citation number shown in the badge (1-based). */
   index: number;
 }
 

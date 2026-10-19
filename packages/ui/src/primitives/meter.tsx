@@ -54,9 +54,14 @@ const trim = (n: number) => Number(n.toFixed(n !== 0 && Math.abs(n) < 10 ? 1 : n
 const trackHeight = { sm: "h-1.5", md: "h-2", lg: "h-3" } as const;
 
 export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "color"> {
+  /** Text shown above the bar; also the accessible name of the meter. */
   label?: React.ReactNode;
   /** Current value; `null` renders an empty "no data" meter. */
   value: number | null;
+  /**
+   * Value that counts as empty (the start of the scale).
+   * @default 0
+   */
   min?: number;
   /** Default 100. */
   max?: number;
@@ -68,7 +73,7 @@ export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   thresholds?: MeterThresholds | false;
   /** Base fill tone when below thresholds (or always, if thresholds are off). Default `primary`. */
   tone?: ToneInput;
-  /** @deprecated Use `tone`. */
+  /** Legacy name of `tone`. @deprecated Use `tone`. */
   color?: MeterColor | ToneInput;
   /**
    * Categorical fill colour (a provider or metric colour). Colour order: the warning/danger threshold colours, then
@@ -77,6 +82,10 @@ export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   accent?: Accent;
   /** Secondary line under the bar, e.g. "resets in 2h". */
   caption?: React.ReactNode;
+  /**
+   * Bar height.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
   /** Render as n discrete blocks instead of a continuous bar. */
   segments?: number;
@@ -84,6 +93,7 @@ export interface MeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   showValue?: boolean;
   /** Screen-reader value text override. */
   ariaValueText?: string;
+  /** Classes for the bar track (`className` styles the whole meter). */
   barClassName?: string;
   /** Waiting for the first reading: with no `value` the bar is a muted track with no fill and a placeholder value. */
   loading?: boolean;
@@ -279,7 +289,9 @@ export interface BreakdownListItem {
 }
 
 export interface BreakdownListProps extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
+  /** Rows to list; each has a label, a value and a dot colour. */
   items: BreakdownListItem[];
+  /** Formats each row's value for display. Default is the localized number. */
   valueFormatter?: (value: number) => string;
   /** Show the value column. Default true. */
   showValue?: boolean;
@@ -291,7 +303,9 @@ export interface BreakdownListProps extends Omit<React.HTMLAttributes<HTMLUListE
   total?: number;
   /** Keys currently hidden (dimmed, struck through, left out of the default total). */
   hiddenSeries?: string[];
+  /** Initially hidden row keys when uncontrolled. */
   defaultHiddenSeries?: string[];
+  /** Called with the full list of hidden row keys when a row is toggled. */
   onHiddenSeriesChange?: (hidden: string[]) => void;
   /** Rows are toggle buttons. Defaults to true when `onHiddenSeriesChange` is set. Alt-click, Alt+Enter or double-click isolates a row. */
   interactive?: boolean;
@@ -434,10 +448,13 @@ export const BreakdownList = React.forwardRef<HTMLUListElement, BreakdownListPro
 BreakdownList.displayName = "BreakdownList";
 
 export interface StackedMeterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Text shown above the bar; also the accessible name of the meter. */
   label?: React.ReactNode;
+  /** Segments of the bar in order; each has a label, a value and an optional colour. */
   parts: StackedMeterPart[];
   /** Capacity. Defaults to the sum of parts (bar is full). */
   max?: number;
+  /** Formats the values shown in the legend. Default is the localized number. */
   valueFormatter?: (value: number) => string;
   /** Text beside the label. Defaults to "used / max" when `max` is set. */
   valueText?: React.ReactNode;
@@ -448,7 +465,12 @@ export interface StackedMeterProps extends Omit<React.HTMLAttributes<HTMLDivElem
   legend?: boolean | "inline" | "list";
   /** Show each part's percentage (of `max`, else of the total) in the legend. Default false inline, true for `"list"`. */
   showPercent?: boolean;
+  /**
+   * Bar height.
+   * @default "md"
+   */
   size?: "sm" | "md" | "lg";
+  /** Secondary line under the bar, e.g. "resets in 2h". */
   caption?: React.ReactNode;
   /** Show the label / value header. Default true. */
   showValue?: boolean;

@@ -3,8 +3,10 @@
 /** Most particles one burst may have. */
 export const BURST_MAX = 24;
 
+/** Particle shape of a burst: dots, dashes or a mix. */
 export type BurstShape = "dots" | "dashes" | "mixed";
 
+/** One burst particle: its index, end offset (dx, dy), angle, shape, size and delay. */
 export interface BurstParticle {
   index: number;
   /** Where the particle ends, in px from the centre. */

@@ -40,16 +40,20 @@ export interface SignInMapProps extends Omit<React.HTMLAttributes<HTMLDivElement
   /** The period the events cover, next to the title ("Last 7 days"). */
   windowLabel?: React.ReactNode;
 
+  /** Controlled view: `map` or `globe`. */
   view?: SignInMapView;
   /** Default `map`. */
   defaultView?: SignInMapView;
+  /** Called with the view when the user flips the map and globe switch. */
   onViewChange?: (view: SignInMapView) => void;
   /** Show the map / globe switch. Default true. */
   viewToggle?: boolean;
 
   /** Selected event id: highlighted on the map, in the flagged list and shown in the detail panel. */
   selectedId?: string | null;
+  /** Initially selected event id when `selectedId` is not controlled. */
   defaultSelectedId?: string | null;
+  /** Called with the selected event id (or `null`) and the event when the user selects or clears one. */
   onSelectedIdChange?: (id: string | null, event: SignInEvent | undefined) => void;
 
   /** Shows a "Review" action on flagged events and the selected event's details. */

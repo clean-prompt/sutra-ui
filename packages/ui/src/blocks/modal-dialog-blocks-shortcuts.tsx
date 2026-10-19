@@ -24,6 +24,10 @@ export interface KeyboardShortcutsDialogProps extends BlockDialogBaseProps {
    * registry instead (falling back to a default Sutra reference when the registry is empty).
    */
   groups?: ShortcutGroup[];
+  /**
+   * Dialog heading.
+   * @default "Keyboard shortcuts"
+   */
   title?: React.ReactNode;
 }
 

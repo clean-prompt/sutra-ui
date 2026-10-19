@@ -24,6 +24,7 @@ function listen(mql: MediaQueryList | undefined, cb: () => void): () => void {
   return () => {};
 }
 
+/** Options for `useMediaQuery`: the value to use before the query can be read (server render). */
 export interface UseMediaQueryOptions {
   /** Value on the server and where `matchMedia` is missing. Default false. */
   defaultValue?: boolean;
@@ -50,6 +51,7 @@ export function usePrefersReducedMotion(): boolean {
   return useMediaQuery(REDUCED_MOTION);
 }
 
+/** Name of a breakpoint (`xs` to `2xl`). */
 export type BreakpointName = keyof typeof breakpoints;
 
 /** True when the viewport is at least the named breakpoint's width (`min-width`, from the tokens). */

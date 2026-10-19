@@ -37,11 +37,11 @@ export interface ContextMeterProps extends Omit<React.ButtonHTMLAttributes<HTMLB
   compacting?: boolean;
   /** Default: true when `onCompact` is set. */
   canCompact?: boolean;
-  /** @deprecated Use `onCompact`. Keeps the old "Compress conversation" wording. */
+  /** Called when the user presses the compress button. @deprecated Use `onCompact`. Keeps the old "Compress conversation" wording. */
   onCompress?: () => void;
-  /** @deprecated Use `compacting`. */
+  /** Shows a spinner on the button and disables it while compressing. @deprecated Use `compacting`. */
   compressing?: boolean;
-  /** @deprecated Use `canCompact`. */
+  /** Whether compressing is available. Default true when `onCompress` is set. @deprecated Use `canCompact`. */
   canCompress?: boolean;
   /** Ring diameter in px. Default 20. */
   size?: number;

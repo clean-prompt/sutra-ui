@@ -41,8 +41,11 @@ export function useEmbedConsent() {
 export interface EmbedConsentProviderProps {
   /** Allowed provider ids (controlled). Persist them in your app (e.g. settings). */
   allowed?: readonly string[];
+  /** Initially allowed provider ids when `allowed` is not controlled. */
   defaultAllowed?: readonly string[];
+  /** Called with the full allowed list when the user picks "Always allow" on an embed. */
   onAllowedChange?: (allowed: string[]) => void;
+  /** App subtree whose `EmbedConsent` and `RichEmbed` gates read the shared list. */
   children?: React.ReactNode;
 }
 
@@ -83,6 +86,7 @@ export interface EmbedConsentProps extends Omit<React.HTMLAttributes<HTMLDivElem
   providerId?: string;
   /** Domain the embed loads from, shown in the notice (e.g. "youtube.com"). */
   domain: string;
+  /** Provider icon shown in the notice. */
   icon?: React.ReactNode;
   /** Overrides the default "This will load content from … and may set cookies." */
   description?: React.ReactNode;
@@ -90,6 +94,7 @@ export interface EmbedConsentProps extends Omit<React.HTMLAttributes<HTMLDivElem
   preview?: React.ReactNode;
   /** Controlled consent for this embed. */
   consented?: boolean;
+  /** Initial consent when `consented` is not controlled. */
   defaultConsented?: boolean;
   /** Fired when the user clicks Load (or Always allow). */
   onConsent?: () => void;
@@ -98,6 +103,7 @@ export interface EmbedConsentProps extends Omit<React.HTMLAttributes<HTMLDivElem
    * server is user-controlled (e.g. Mastodon) RichEmbed passes an origin-scoped key, `"<id>:<origin>"`.
    */
   onAllowAlways?: (providerId: string) => void;
+  /** Label of the button that loads the embed. Default "Load". */
   loadLabel?: string;
   /** Label of the "Always allow" menu action. Defaults to "Always allow {provider}". */
   allowAlwaysLabel?: string;
@@ -477,8 +483,11 @@ export function resolveEmbed(href: string, providers: readonly EmbedProvider[] =
 /* ------------------------------------------------------------------ */
 
 export interface LinkPreviewCardProps extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "title"> {
+  /** Address the card links to; unsafe schemes are not linked. */
   href: string;
+  /** Page title; the domain is used when unset. */
   title?: React.ReactNode;
+  /** Short excerpt of the page. */
   description?: React.ReactNode;
   /** Overrides the domain derived from `href`. */
   domain?: string;
@@ -486,6 +495,7 @@ export interface LinkPreviewCardProps extends Omit<React.AnchorHTMLAttributes<HT
   image?: React.ReactNode;
   /** Site icon; defaults to a local Favicon monogram. */
   icon?: React.ReactNode;
+  /** `horizontal` puts the image beside the text, `vertical` stacks it above. */
   layout?: "horizontal" | "vertical";
 }
 
@@ -540,12 +550,15 @@ LinkPreviewCard.displayName = "LinkPreviewCard";
 /* ------------------------------------------------------------------ */
 
 export interface RichEmbedProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Address to embed; matched against `providers`, and shown as a link card when no provider matches. */
   url: string;
   /** Title for the local preview, the iframe title and the link card. */
   title?: string;
+  /** Excerpt shown on the link-card fallback. */
   description?: React.ReactNode;
   /** Image slot for the link-card fallback (app-provided). */
   image?: React.ReactNode;
+  /** Embed providers to match `url` against, first match wins; defaults to the built-in list. */
   providers?: readonly EmbedProvider[];
   /**
    * Fired with the consent key when the user picks "Always allow": the provider id (e.g. `"youtube"`),
@@ -631,6 +644,7 @@ export interface SvgEmbedProps extends Omit<React.HTMLAttributes<HTMLElement>, "
   title: string;
   /** Optional caption. */
   caption?: React.ReactNode;
+  /** Extra classes for the rendered image. */
   imgClassName?: string;
 }
 

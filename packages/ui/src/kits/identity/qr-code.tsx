@@ -91,7 +91,9 @@ export interface QRCodeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>,
   size?: number;
   /** Error-correction level. Forced to `H` when a `logo` is shown. Data too long for the level falls back to a lower one (without the logo). */
   ecc?: QRCodeECC;
+  /** Shape of the data modules: `square`, `rounded` or `dots`. Default "square". */
   moduleStyle?: QRCodeModuleStyle;
+  /** Shape of the three corner finder patterns: `square`, `rounded` or `circle`. */
   finderStyle?: QRCodeFinderStyle;
   /** Module color. Defaults to `currentColor` (near-black unless you set a text color). */
   foreground?: string;
@@ -105,6 +107,7 @@ export interface QRCodeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>,
   logoSize?: number;
   /** Accessible name. Defaults to "QR code". */
   title?: string;
+  /** Extra classes for the SVG; `className` goes to the wrapper. */
   svgClassName?: string;
 }
 
@@ -260,6 +263,7 @@ QRCode.displayName = "QRCode";
 /* ------------------------------------------------------------------ */
 
 export interface QRCodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Text or URL to encode. */
   value: string;
   /** Heading above the code, e.g. "Link a device". */
   title?: React.ReactNode;
@@ -273,6 +277,7 @@ export interface QRCodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   onExpire?: () => void;
   /** Shows a refresh button on the expired overlay. */
   onRefresh?: () => void;
+  /** Label of the refresh button on the expired overlay. Default "Refresh code". */
   refreshLabel?: React.ReactNode;
   /** Forces the expired state on or off (otherwise it follows `expiresAt`). */
   expired?: boolean;
@@ -284,7 +289,9 @@ export interface QRCodeCardProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   frameClassName?: string;
   /** Extra content at the bottom of the card. */
   children?: React.ReactNode;
+  /** QR code width and height in px. Default 200. */
   size?: number;
+  /** Centered logo for the QR code: a React node or an image URL. */
   logo?: React.ReactNode;
   /** Extra props for the inner `QRCode`. */
   qrProps?: Partial<Omit<QRCodeProps, "value">>;

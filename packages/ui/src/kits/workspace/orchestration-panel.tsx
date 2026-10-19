@@ -24,16 +24,25 @@ export interface OrchestrationParticipant {
 export interface OrchestrationPanelProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange" | "title"> {
   /** Agent profiles that can orchestrate. */
   profiles: KanbanAssignee[];
+  /** Controlled id of the profile that orchestrates the task; `undefined` means none. */
   orchestratorId?: string;
+  /** Initial orchestrator when `orchestratorId` is not controlled. */
   defaultOrchestratorId?: string;
+  /** Called with the profile id (or `undefined`) when the user picks an orchestrator. */
   onOrchestratorChange?: (id: string | undefined) => void;
+  /** Controlled state of "decompose automatically"; the orchestrator splits new tasks into subtasks. */
   autoDecompose?: boolean;
+  /** Initial state when `autoDecompose` is not controlled. */
   defaultAutoDecompose?: boolean;
+  /** Called with the new state when the user flips the switch. */
   onAutoDecomposeChange?: (on: boolean) => void;
   /** Split the task into subtasks now. Shows a button when set. */
   onDecompose?: () => void;
+  /** Shows a busy state on the decompose button while the split is running. */
   decomposing?: boolean;
+  /** Agents working on the subtasks, listed with their roles and states. */
   participants?: OrchestrationParticipant[];
+  /** Heading of the panel. */
   title?: React.ReactNode;
 }
 

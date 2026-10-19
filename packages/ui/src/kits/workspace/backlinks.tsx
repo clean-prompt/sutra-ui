@@ -17,22 +17,30 @@ export interface BacklinkItem {
 }
 
 export interface BacklinksProps extends Omit<React.HTMLAttributes<HTMLElement>, "title" | "onSelect"> {
+  /** Items that link here, each with a title, app, snippet and optional date. */
   items: BacklinkItem[];
   /** Term(s) highlighted in every snippet, usually the current item's title. */
   highlight?: string | string[];
   /** Heading. Default "Linked from N items". */
   title?: React.ReactNode;
+  /** Controlled expanded state of the list. */
   open?: boolean;
+  /** Initial expanded state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called with the new state when the user expands or collapses the list. */
   onOpenChange?: (open: boolean) => void;
   /** Group rows under app headings. Default true. */
   groupByApp?: boolean;
+  /** Called with the item when the user opens a backlink. */
   onSelect?: (item: BacklinkItem) => void;
+  /** Shown when there are no backlinks. */
   emptyState?: React.ReactNode;
 }
 
 export interface BacklinkSnippetProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  /** Excerpt of the linking item. */
   text: string;
+  /** Term or terms marked inside the excerpt. */
   highlight?: string | string[];
 }
 

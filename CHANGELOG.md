@@ -55,6 +55,10 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - `useDrag`, `useSwipeDismiss`, `usePan` and `lib/gesture`: pointer capture, axis lock, offset through CSS variables (no React state per move), release velocity
   from the last 100 ms, rubber band, a release decision from named constants, instant under reduced motion. Every gesture component has a keyboard path.
 
+#### Drag code on the shared hooks
+- `useDrag` gained `scale`, `mode: "absolute"` (position-based drags with a `trackRef`, RTL-aware), `captureOnPress`, `cancel()` and `DragInfo.fx/fy`; `use-zoom-pan` (ZoomPan, PanSurface), `Lightbox` pan, `SplitPane` handle, floating tiling windows and the media seek bar now run on it with no React state per move. `ImageCropper`, the memory-map pan and the globe keep their own engines on purpose.
+- Every public prop of the library now has a description (undocumented props fell from 3996 to 11), checked by the JSDoc ratchet.
+
 #### Right-to-left
 - Logical utilities across the library (227 files, one reviewed `scripts/rtl-codemod.mjs` pass, pixel-identical in left-to-right), `DirectionProvider`, `useDirection` and the direction helpers, Radix roots receive the direction, `rtl:` partners for transforms and glyphs, direction-aware keys, scrolling and gestures, `dir="ltr"` islands for charts, code, maps and media timelines, and `test/rtl-conventions.test.ts` as a ratchet. A Direction toggle and an RTL audit pass in the playground.
 
@@ -95,6 +99,7 @@ Nothing here needs a code change unless a line says so; each is a difference you
 - **Drawer release velocity.** `Drawer` is built on `useDrag`. A flick used to be the average speed of the whole drag (more than 0.5 px/ms and more than 24 px of travel);
   it is now the speed over the last 100 ms (the same 500 px/s limit, no minimum travel). A drag that speeds up or slows down at the end is judged by
   how it ends, not by how it began; dragging past the dismiss threshold works as before. Props and look are unchanged.
+- **Lightbox, SplitPane and zoom-pan drags.** `Lightbox` starts pointer capture on the first move, so a click on a stage button without movement reaches the button, and right or middle mouse no longer pans. `SplitPane` pointer drags now follow the reading direction in RTL (they were physical). Props and look are unchanged.
 - **`ReorderableList` FLIP default.** `flip` defaults to `true`: a dropped row glides to its place (off under reduced motion). Pass `flip={false}` for the
   instant reorder of before, or `flip={{ ...options }}` to tune it. `AnimatedList` animates reordering the same way.
 - **`SutraMark` default variant.** The default `variant` is `glyph` (the bead alone, in `currentColor`, ink on paper), it was `tile` (a coloured rounded square).

@@ -26,10 +26,18 @@ export interface TabMenuLinkProps {
 }
 
 export interface TabMenuProps extends Omit<React.HTMLAttributes<HTMLElement>, "onChange" | "defaultValue"> {
+  /** Tabs in order; each has a `value`, a `label` and optional icon, badge and disabled flag. */
   items: TabMenuItem[];
+  /** Controlled selected tab value. Use with `onValueChange`. */
   value?: string;
+  /** Initially selected tab value when uncontrolled. */
   defaultValue?: string;
+  /** Called with the value of the tab the user picked. */
   onValueChange?: (value: string) => void;
+  /**
+   * Tab height and text size.
+   * @default "md"
+   */
   size?: Size;
   /** Render items with an `href` through your router's Link. Spread the given props onto it. */
   renderLink?: (props: TabMenuLinkProps, item: TabMenuItem) => React.ReactElement;

@@ -65,6 +65,10 @@ export const inputVariants = cva(
   ],
   {
     variants: {
+      /**
+       * Field height and text size.
+       * @default "md"
+       */
       size: {
         sm: [shellHeights.sm, "px-2.5 text-sm"],
         md: [shellHeights.md, "px-3 text-sm"],
@@ -105,6 +109,7 @@ export interface InputProps
     VariantProps<typeof inputVariants> {
   /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
   variant?: "outline" | "filled" | null;
+  /** Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. */
   invalid?: boolean;
   /** Icon rendered inside the field before the text. */
   leadingIcon?: React.ReactNode;
@@ -116,6 +121,7 @@ export interface InputProps
   suffix?: React.ReactNode;
   /** Shows a clear button while the field has a value. */
   clearable?: boolean;
+  /** Called after the clear button empties the field. */
   onClear?: () => void;
   /**
    * Classes for the element that renders. Without addons that is the `<input>` itself (the root).

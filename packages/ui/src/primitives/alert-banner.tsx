@@ -50,8 +50,20 @@ export const alertBannerVariants = cva(
         destructive: toneClasses.solid.destructive,
         inverse: toneClasses.solid.neutral,
       },
+      /**
+       * Fill style: `solid` (full colour) or `soft` (tinted background).
+       * @default "solid"
+       */
       appearance: { solid: "", soft: "" },
+      /**
+       * Pins the banner to the top of the scroll container.
+       * @default false
+       */
       sticky: { true: "sticky top-0", false: "" },
+      /**
+       * Horizontal alignment of the message and actions.
+       * @default "center"
+       */
       align: { center: "justify-center", start: "justify-start" },
     },
     compoundVariants: [
@@ -95,10 +107,11 @@ export interface AlertBannerProps
     Omit<VariantProps<typeof alertBannerVariants>, "variant"> {
   /** Semantic colour (default `primary`); `inverse` gives a high-contrast dark banner. */
   tone?: ToneInput | "inverse";
-  /** @deprecated Use `tone` (`brand` is now `primary`). */
+  /** Legacy name of `tone`. @deprecated Use `tone` (`brand` is now `primary`). */
   variant?: AlertBannerVariant | null;
   /** Main message. Children are used when `message` is omitted. */
   message?: React.ReactNode;
+  /** Message content when `message` is omitted. */
   children?: React.ReactNode;
   /** Custom icon; `false`/`null` hides it. */
   icon?: React.ReactNode | false;
@@ -114,10 +127,21 @@ export interface AlertBannerProps
   contentKey?: React.Key;
   /** Shows a close button. Controlled via `open`/`onOpenChange`, or uncontrolled. */
   dismissible?: boolean;
+  /** Controlled visibility. Use with `onOpenChange`. */
   open?: boolean;
+  /**
+   * Initial visibility when uncontrolled.
+   * @default true
+   */
   defaultOpen?: boolean;
+  /** Called with `false` when the banner is dismissed. */
   onOpenChange?: (open: boolean) => void;
+  /** Called when the user dismisses the banner with the close button. */
   onDismiss?: () => void;
+  /**
+   * Accessible name of the dismiss button.
+   * @default "Dismiss banner"
+   */
   dismissLabel?: string;
 }
 

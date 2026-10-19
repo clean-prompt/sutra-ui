@@ -46,6 +46,9 @@ const hintMeta: Record<ToolHint, { label: string; color: BadgeColor; icon: React
 };
 
 export interface ToolHintTagProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
+  /**
+   * Tool hint to label: `read-only`, `destructive`, `network`, `filesystem` or `costly`; sets the tag text and tone.
+   */
   hint: ToolHint;
 }
 
@@ -88,15 +91,21 @@ export interface ToolToggleItem {
 }
 
 export interface ToolToggleRowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onToggle"> {
+  /** The tool to show (name, description, hints, enabled state). */
   tool: ToolToggleItem;
   /** Controlled switch state. */
   checked?: boolean;
   /** Initial switch state when uncontrolled. Defaults to `tool.enabled`. */
   defaultChecked?: boolean;
+  /** Marks the row as changed from the saved state with an "Unsaved" dot. */
   dirty?: boolean;
+  /** Controlled expanded state of the row's details. */
   expanded?: boolean;
+  /** Initial expanded state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user expands or collapses the row. */
   onExpandedChange?: (expanded: boolean) => void;
+  /** Called with the new state when the user flips the switch. */
   onCheckedChange?: (checked: boolean) => void;
 }
 
@@ -225,19 +234,25 @@ export const ToolToggleRow = React.memo(
 ToolToggleRow.displayName = "ToolToggleRow";
 
 export interface ToolToggleListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
+  /** The tools to list, each with its saved enabled state. */
   tools: ToolToggleItem[];
   /** Called with the full enabled map and the ids that changed. May return a promise. */
   onSave?: (enabled: Record<string, boolean>, changed: string[]) => void | Promise<void>;
+  /** Called when the user discards the draft changes; the Discard button is hidden when unset. */
   onDiscard?: () => void;
   /** Fires on every draft change. */
   onDraftChange?: (enabled: Record<string, boolean>, changed: string[]) => void;
   /** Max height of the scrolling list (keeps long lists cheap to lay out). */
   maxHeight?: number | string;
+  /** Controlled "Show deprecated" state; deprecated tools are hidden when false. */
   showDeprecated?: boolean;
+  /** Initial "Show deprecated" state when `showDeprecated` is not controlled. */
   defaultShowDeprecated?: boolean;
+  /** Called with the new state when the user flips the "Show deprecated" switch. */
   onShowDeprecatedChange?: (show: boolean) => void;
   /** Hide the search + filter toolbar. */
   hideToolbar?: boolean;
+  /** Accessible name of the list. Default "Tools". */
   label?: string;
   /** Shown when no tool matches the search or filters. Default "No tools match". */
   emptyState?: React.ReactNode;
@@ -449,6 +464,7 @@ const healthMeta: Record<ToolsetHealth, { label: string; color: BadgeColor; icon
 };
 
 export interface ToolsetHealthPillProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "color"> {
+  /** Health to show: `configured`, `needs-keys` or `error`; sets the pill text, icon and tone. */
   health: ToolsetHealth;
 }
 
@@ -464,17 +480,30 @@ export const ToolsetHealthPill = React.forwardRef<HTMLSpanElement, ToolsetHealth
 ToolsetHealthPill.displayName = "ToolsetHealthPill";
 
 export interface ToolsetCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /** Toolset name, shown as the card title. */
   name: string;
+  /** Toolset icon, shown beside the name. */
   icon?: React.ReactNode;
+  /** Short summary of what the toolset provides. */
   description?: React.ReactNode;
+  /** Number of tools in the toolset, shown as a count. */
   toolCount?: number;
+  /** Controlled on/off state of the toolset switch. */
   enabled?: boolean;
+  /** Initial on/off state when `enabled` is not controlled. */
   defaultEnabled?: boolean;
+  /** Called with the new state when the user flips the switch. */
   onEnabledChange?: (enabled: boolean) => void;
+  /**
+   * Toolset health (`configured`, `needs-keys`, `error`); shows a health pill, and `error` colours `healthMessage`
+   * red.
+   */
   health?: ToolsetHealth;
   /** Error or hint shown under the description. */
   healthMessage?: React.ReactNode;
+  /** Called when the user presses Configure; the button is hidden when unset. */
   onConfigure?: () => void;
+  /** Disables the switch and the Configure button. */
   disabled?: boolean;
 }
 
@@ -577,26 +606,43 @@ export interface ToolsetProvider {
 export type ToolsetInstallStatus = "idle" | "running" | "success" | "error";
 
 export interface ToolsetProviderDrawerProps {
+  /** Controlled open state of the drawer. */
   open?: boolean;
+  /** Initial open state when `open` is not controlled. */
   defaultOpen?: boolean;
+  /** Called when the drawer opens or closes. */
   onOpenChange?: (open: boolean) => void;
+  /** Drawer heading, usually the toolset name. */
   title: string;
+  /** Helper text under the heading. */
   description?: React.ReactNode;
+  /** Controlled on/off state of the toolset switch in the drawer header. */
   enabled?: boolean;
+  /** Initial on/off state when `enabled` is not controlled. */
   defaultEnabled?: boolean;
+  /** Called with the new state when the user flips the switch. */
   onEnabledChange?: (enabled: boolean) => void;
+  /** Backends that can power the toolset, each with its credential fields and setup state. */
   providers: ToolsetProvider[];
+  /** Controlled id of the selected provider. */
   provider?: string;
+  /** Initially selected provider id when `provider` is not controlled. */
   defaultProvider?: string;
+  /** Called with the provider id when the user selects another provider. */
   onProviderChange?: (id: string) => void;
   /** Store a credential. May return a promise. */
   onSaveCredential?: (providerId: string, key: string, value: string) => void | Promise<void>;
+  /** Called with the provider id and credential key when the user clears a stored credential. */
   onClearCredential?: (providerId: string, key: string) => void;
   /** Post-setup install step (e.g. pip install). Omit to hide. */
   onInstall?: () => void;
+  /** Progress of the install step: `idle`, `running`, `success` or `error`. */
   installStatus?: ToolsetInstallStatus;
+  /** Installer output lines shown while and after the install step runs. */
   installLog?: readonly LogLine[];
+  /** Label of the install button. Default "Run setup". */
   installLabel?: React.ReactNode;
+  /** Extra classes for the drawer content. */
   className?: string;
 }
 

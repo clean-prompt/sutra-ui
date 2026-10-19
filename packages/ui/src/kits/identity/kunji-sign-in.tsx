@@ -45,6 +45,7 @@ export interface KunjiMarkProps extends Omit<React.SVGProps<SVGSVGElement>, "ref
   variant?: "tile" | "glyph";
   /** Pixel size. The brand guide asks for at least 20px for the logo; 18px is what the official button uses for the key mark. */
   size?: number;
+  /** Accessible name; when unset the mark is decorative and hidden from assistive tech. */
   title?: string;
 }
 
@@ -134,20 +135,33 @@ function StatusPanel({
 export type KunjiSignInVariant = "card" | "inline" | "compact";
 
 export interface KunjiSignInViewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onError"> {
+  /** Current sign-in state: status, QR payload, code and error, as returned by `useKunjiSignIn`. */
   state: KunjiSignInState;
   /** App name shown in the identity line. Defaults to the session's. */
   appName?: string;
   /** Domain shown in the identity line. Defaults to the session's audience. */
   audience?: string;
+  /**
+   * Layout: `card` (bordered, with heading), `inline` (no chrome) or `compact` (smaller QR, no steps). Default
+   * "card".
+   */
   variant?: KunjiSignInVariant;
   /** Heading. Pass `null` to hide the header. */
   title?: React.ReactNode;
   /** Replace the "You're signing in to … at …" line. */
   description?: React.ReactNode;
+  /** Called when the user starts sign-in (before a session exists). */
   onStart?: () => void;
+  /** Called when the user refreshes an expired QR code. */
   onRefresh?: () => void;
+  /** Called when the user retries after an error. */
   onRetry?: () => void;
+  /**
+   * Called when the user asks for a code (`codeMode="show"`); the code option is available only when set or when the
+   * session carries a code.
+   */
   onRequestCode?: () => void;
+  /** Called with the typed code (`codeMode="enter"`). */
   onSubmitCode?: (code: string) => void;
   /** `show`: the app shows a code to type in kunji (the protocol's fallback). `enter`: type a code kunji shows. */
   codeMode?: "show" | "enter" | "none";
@@ -157,12 +171,15 @@ export interface KunjiSignInViewProps extends Omit<React.HTMLAttributes<HTMLDivE
   deepLink?: "auto" | "always" | "never";
   /** Show the 1-2-3 steps. Default true except for `compact`. */
   showSteps?: boolean;
+  /** QR code width and height in px. Default 196, or 148 for the compact variant. */
   qrSize?: number;
   /** Logo on the QR plate. Defaults to the kunji mark. Pass `null` for none. */
   qrLogo?: React.ReactNode;
   /** Shown in the not-linked state. Defaults to buttons for `onLink`/`onRegister`. */
   notLinkedActions?: React.ReactNode;
+  /** Called when the user presses the link button in the not-linked state; the button shows when set. */
   onLink?: () => void;
+  /** Called when the user presses the register button in the not-linked state; the button shows when set. */
   onRegister?: () => void;
   /** Override live-region messages. */
   statusText?: Partial<Record<KunjiSignInStatus, string>>;
@@ -574,6 +591,7 @@ KunjiSignInView.displayName = "KunjiSignInView";
 export interface KunjiSignInProps
   extends Omit<KunjiSignInViewProps, "state" | "onStart" | "onRefresh" | "onRetry" | "onRequestCode" | "onSubmitCode">,
     Omit<UseKunjiSignInOptions, "client"> {
+  /** Kunji client that creates the session and polls for approval (see `createKunjiClient`). */
   client: KunjiClient;
 }
 

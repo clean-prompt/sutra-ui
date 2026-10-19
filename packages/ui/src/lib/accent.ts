@@ -23,6 +23,7 @@ export const ACCENT_COLORS = {
   slate: "#62748e",
 } as const;
 
+/** Name of a categorical accent colour (the keys of the accent palette). */
 export type AccentName = keyof typeof ACCENT_COLORS;
 
 /** Semantic tokens are accepted too, so an accent can follow the theme's primary colour. */

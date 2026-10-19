@@ -67,20 +67,29 @@ const severityText: Record<AlertSeverity, string> = {
 };
 
 export interface AlertGroupProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
+  /** Alerts to show, grouped by category and sorted by severity. */
   alerts: AlertItem[];
   /** Controlled dismissed ids (persist them via `onDismissedChange`). */
   dismissedIds?: string[];
+  /** Initially dismissed alert ids when `dismissedIds` is not controlled. */
   defaultDismissedIds?: string[];
+  /** Called with the dismissed ids when the user dismisses an alert. */
   onDismissedChange?: (ids: string[]) => void;
+  /** Controlled expanded state of the full list; collapsed shows the top alert. */
   expanded?: boolean;
+  /** Initial expanded state when `expanded` is not controlled. */
   defaultExpanded?: boolean;
+  /** Called with the new state when the user expands or collapses the list. */
   onExpandedChange?: (expanded: boolean) => void;
   /** Icons per category. */
   categoryIcons?: Record<string, React.ReactNode>;
+  /** Shows a dismiss button on each alert. Default true. */
   dismissible?: boolean;
   /** Render nothing when no alert is visible. Default true. */
   hideWhenEmpty?: boolean;
+  /** Custom formatter for each alert's time. */
   formatTime?: (time: Date) => string;
+  /** Reference time for relative labels; set it in tests and SSR for stable output. */
   now?: number;
   /** Accessible region label. Default "Alerts". */
   label?: string;

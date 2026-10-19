@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useControllableState } from "./use-controllable-state";
 
+/** Options for `useDisclosure`: controlled or initial open state and the change callback. */
 export interface UseDisclosureOptions {
   /** Controlled open state. */
   open?: boolean;
@@ -10,6 +11,7 @@ export interface UseDisclosureOptions {
   onOpenChange?: (open: boolean) => void;
 }
 
+/** What `useDisclosure` returns: the open state, the open, close, toggle and set actions, and props to spread on a trigger. */
 export interface UseDisclosureReturn {
   open: boolean;
   onOpen: () => void;

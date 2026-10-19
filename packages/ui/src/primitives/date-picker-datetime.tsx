@@ -67,6 +67,7 @@ export interface DateTimePreset {
 export interface DateTimePickerProps extends Omit<BasePickerProps, "formatOptions"> {
   /** A `Date`, or a local `"YYYY-MM-DDTHH:mm"` string (what `<input type="datetime-local">` uses). */
   value?: DateTimeInput;
+  /** Initial date and time when uncontrolled; a `Date` or a local `"YYYY-MM-DDTHH:mm"` string. */
   defaultValue?: DateTimeInput;
   /** Called with the new local date-time; `meta.localValue` is the same moment as `"YYYY-MM-DDTHH:mm"` (`""` when cleared). */
   onValueChange?: (value: Date | undefined, meta: { localValue: string }) => void;

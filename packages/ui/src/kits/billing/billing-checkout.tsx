@@ -26,9 +26,13 @@ export interface CheckoutPaymentOption {
 }
 
 export interface CheckoutStepsProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Plan being bought: name, price in minor units, interval and description. */
   plan: { name: string; price: number; interval?: BillingInterval; description?: string };
+  /** ISO 4217 code used to format the price. Default "USD". */
   currency?: string;
+  /** BCP 47 locale used to format the price. Default "en-US". */
   locale?: string;
+  /** Saved payment methods the user can choose from. */
   paymentMethods?: CheckoutPaymentOption[];
   /** Custom new-card form shown under the saved methods. */
   newPaymentSlot?: React.ReactNode;
@@ -36,8 +40,14 @@ export interface CheckoutStepsProps extends React.HTMLAttributes<HTMLDivElement>
   onConfirm?: (paymentMethodId: string | null) => Promise<CheckoutOutcome> | CheckoutOutcome;
   /** Complete the SCA challenge. Default resolves "succeeded". */
   onAuthenticate?: () => Promise<"succeeded" | "failed"> | "succeeded" | "failed";
+  /** Called when the user presses Done on the success step. */
   onDone?: () => void;
+  /**
+   * Called with the step (`plan`, `payment`, `confirm`, `authenticate`, `success` or `failure`) when the flow moves
+   * on.
+   */
   onStepChange?: (step: CheckoutStep) => void;
+  /** Step shown first. Default "plan". */
   defaultStep?: CheckoutStep;
 }
 

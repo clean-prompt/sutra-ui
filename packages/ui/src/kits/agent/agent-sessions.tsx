@@ -75,9 +75,14 @@ const statusDotPreset: Record<AgentSessionStatus, { tone: Tone; pulse?: boolean;
 };
 
 export interface AgentStatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /**
+   * Session status (`running`, `waiting`, `idle`, `unread`, `failed` or `elsewhere`); sets the dot colour and the
+   * default accessible label.
+   */
   status: AgentSessionStatus;
   /** Accessible label override. */
   label?: string;
+  /** Dot size. */
   size?: "sm" | "md";
   /** Hide from assistive tech when the status is announced elsewhere. */
   decorative?: boolean;
@@ -159,41 +164,68 @@ export interface AgentSessionGroup {
 }
 
 export interface AgentSessionListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title" | "onSelect"> {
+  /** Sessions to list, each with title, status, time and optional group. */
   sessions: AgentSession[];
+  /** Named groups that sessions can belong to; sessions are listed under their group. */
   groups?: AgentSessionGroup[];
   /** Heading. Default "Sessions". */
   title?: React.ReactNode;
+  /** Id of the session that is open; `null` or unset marks none. */
   activeId?: string | null;
+  /** Called with the session id when the user opens a session. */
   onActiveChange?: (id: string) => void;
+  /** Controlled ids of the checked sessions (checkbox mode). */
   selectedIds?: string[];
+  /** Initially checked ids when `selectedIds` is not controlled. */
   defaultSelectedIds?: string[];
+  /** Called with the checked ids when the selection changes. */
   onSelectedIdsChange?: (ids: string[]) => void;
+  /** Controlled search text. */
   query?: string;
+  /** Initial search text when `query` is not controlled. */
   defaultQuery?: string;
+  /** Called with the search text on every change. */
   onQueryChange?: (query: string) => void;
+  /** Controlled status filters (`waiting`, `running`, `unread`, `failed`); empty shows all sessions. */
   statusFilter?: AgentSessionFilter[];
+  /** Initial status filters when `statusFilter` is not controlled. */
   defaultStatusFilter?: AgentSessionFilter[];
+  /** Called with the active filters when the user toggles one. */
   onStatusFilterChange?: (filter: AgentSessionFilter[]) => void;
+  /** Controlled location tab: `local` or `remote`. */
   location?: AgentSessionLocation;
+  /** Initial location tab when `location` is not controlled. */
   defaultLocation?: AgentSessionLocation;
+  /** Called with the location when the user switches tab. */
   onLocationChange?: (location: AgentSessionLocation) => void;
   /** Show the local / remote switch. Default true. */
   showLocationTabs?: boolean;
   /** Start with selection checkboxes visible. */
   defaultCheckboxMode?: boolean;
+  /**
+   * Called when the user starts a new session, with the group id when started from a group; the button is hidden when
+   * unset.
+   */
   onNewSession?: (groupId?: string) => void;
+  /** Called when the user presses New group; the button is hidden when unset. */
   onCreateGroup?: () => void;
+  /** Called with the session id and the new title when the user renames a session. */
   onRenameSession?: (id: string, title: string) => void;
+  /** Called with the group id and the new name when the user renames a group. */
   onRenameGroup?: (id: string, name: string) => void;
+  /** Called with the ids of the chosen sessions when the user archives them. */
   onArchive?: (ids: string[]) => void;
+  /** Called with the ids of the chosen sessions when the user marks them unread. */
   onMarkUnread?: (ids: string[]) => void;
+  /** Called with the session ids and the target group id (`null` for ungrouped) when the user moves sessions. */
   onMoveToGroup?: (ids: string[], groupId: string | null) => void;
+  /** Called with the ids of the chosen sessions after the user confirms deleting them. */
   onDelete?: (ids: string[]) => void;
   /** Reference time for relative timestamps. */
   now?: number;
   /** Shown when there is nothing to list. Default "No sessions match". */
   emptyState?: React.ReactNode;
-  /** @deprecated Use `emptyState`. */
+  /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   emptyText?: React.ReactNode;
 }
 

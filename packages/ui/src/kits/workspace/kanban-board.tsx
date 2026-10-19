@@ -119,24 +119,37 @@ export interface KanbanAddCardRequest {
 }
 
 export interface KanbanBoardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
+  /** Controlled board model: columns and their cards. */
   board?: KanbanBoardModel;
+  /** Initial board when `board` is not controlled. */
   defaultBoard?: KanbanBoardModel;
   /** Called with the next board after any move (also in controlled mode). */
   onBoardChange?: (board: KanbanBoardModel) => void;
   /** Called when a card is dropped in a new place. `toIndex` is the index within the full (unfiltered) column. */
   onMove?: (move: KanbanMove) => void;
+  /** Called with the column id and its new index when a column is moved to another position. */
   onColumnMove?: (move: KanbanColumnMove) => void;
+  /** Called with the card when the user opens it. */
   onCardOpen?: (card: KanbanCardData) => void;
   /** Enables the per-column "Add card" composer. */
   onAddCard?: (request: KanbanAddCardRequest) => void;
+  /** Controlled filters (search, assignees, labels, priorities). */
   filters?: KanbanFilters;
+  /** Initial filters when `filters` is not controlled. */
   defaultFilters?: KanbanFilters;
+  /** Called with the filters when the user changes any of them. */
   onFiltersChange?: (filters: KanbanFilters) => void;
+  /** Controlled grouping into horizontal lanes: `none`, `assignee` or `priority`. */
   swimlanes?: KanbanSwimlanes;
+  /** Initial grouping when `swimlanes` is not controlled. */
   defaultSwimlanes?: KanbanSwimlanes;
+  /** Called with the grouping when the user picks another one. */
   onSwimlanesChange?: (mode: KanbanSwimlanes) => void;
+  /** Controlled ids of the collapsed columns. */
   collapsedColumns?: string[];
+  /** Initially collapsed column ids when `collapsedColumns` is not controlled. */
   defaultCollapsedColumns?: string[];
+  /** Called with the collapsed column ids when the user collapses or expands a column. */
   onCollapsedColumnsChange?: (ids: string[]) => void;
   /** Slot at the start of the toolbar (e.g. a board switcher). */
   boardSwitcher?: React.ReactNode;
@@ -146,6 +159,7 @@ export interface KanbanBoardProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   hideToolbar?: boolean;
   /** Reference time for overdue checks. */
   now?: Date | number;
+  /** BCP 47 locale used to format card dates. */
   locale?: string;
   /** Accessible name of the board. Default "Kanban board". */
   "aria-label"?: string;

@@ -23,13 +23,23 @@ import { type BlockDialogBaseProps, useDialogOpen } from "./modal-dialog-blocks-
 /* ------------------------------------------------------------------ */
 
 export interface DeleteConfirmDialogProps extends BlockDialogBaseProps {
+  /**
+   * Dialog heading.
+   * @default "Delete workspace"
+   */
   title?: React.ReactNode;
+  /** Supporting text under the heading; the default is generic, so say what is deleted. */
   description?: React.ReactNode;
   /** Text the user must type to enable the delete button. Pass "" to skip. */
   confirmText?: string;
+  /**
+   * Text of the delete button.
+   * @default "Delete workspace"
+   */
   confirmLabel?: React.ReactNode;
   /** Bullet points describing what will be lost. */
   consequences?: React.ReactNode[];
+  /** Called when the user confirms. A returned promise shows a spinner; throw to show the error message and keep the dialog open. */
   onConfirm?: () => unknown;
 }
 

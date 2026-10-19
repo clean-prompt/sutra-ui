@@ -8,6 +8,7 @@ export interface FlipRect {
   height: number;
 }
 
+/** How an element moved (dx, dy) and scaled (sx, sy) between two layouts, keyed by its id. */
 export interface FlipMove {
   key: string;
   /** Distance from where the element is now back to where it was (px). */
@@ -29,6 +30,7 @@ export function sameKeys(a: readonly string[] | null, b: readonly string[]): boo
   return !!a && a.length === b.length && a.every((key, i) => key === b[i]);
 }
 
+/** Options for `flipMoves`. */
 export interface FlipMoveOptions {
   /** Cap on the number of moves, taken in `order`. Default 40. */
   max?: number;
