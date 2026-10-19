@@ -35,7 +35,7 @@ const auditInPage = () => {
   };
   const demoOf = (el) => el.closest("section[id]")?.id ?? "(page)";
   const textOf = (el) => (el.innerText || el.getAttribute("aria-label") || "").replace(/\s+/g, " ").trim().slice(0, 50);
-  const skipTree = (el) => !!el.closest('[inert], [data-sutra-marquee], .sr-only, [class*="marquee"], [aria-hidden="true"][class*="animate"], [data-slot="animated-number"] [aria-hidden="true"]');
+  const skipTree = (el) => !!el.closest('[inert], [data-sutra-marquee], .sr-only, [class*="marquee"], [aria-hidden="true"][class*="animate"], [data-slot="animated-number"] [aria-hidden="true"], [data-slot="pan-surface"]');
   const scrolls = (s) => ["auto", "scroll"].includes(s.overflowX);
   const clips = (s) => ["hidden", "clip"].includes(s.overflowX);
   const inScroller = (el) => {
