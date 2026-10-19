@@ -2,6 +2,22 @@ import * as React from "react";
 import {
   Badge,
   Button,
+  Frame,
+  FrameAction,
+  FrameDescription,
+  FrameFooter,
+  FrameHeader,
+  FramePanel,
+  FrameTitle,
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+  Switch,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -25,6 +41,7 @@ import {
   RiFileTransferLine,
   RiImageLine,
   RiLoopLeftLine,
+  RiMailLine,
   RiQrCodeLine,
   RiScissorsCutLine,
   RiSettings4Line,
@@ -271,6 +288,224 @@ function MarqueeReverseDemo() {
   );
 }
 
+function MarqueePauseDemo() {
+  const [paused, setPaused] = React.useState(false);
+  return (
+    <Demo
+      id="marquee-pause"
+      title="Marquee: pause control"
+      description={<><InlineCode>pausable</InlineCode> adds a pause and play button at the end of the row, so touch and keyboard users can stop moving content for as long as they like (WCAG 2.2.2). Hover and focus still pause it too. The button hides under reduced motion, where the row is already still. Control it with <InlineCode>paused</InlineCode> and <InlineCode>onPausedChange</InlineCode>.</>}
+      align="start"
+    >
+      <div className="space-y-4">
+        <Marquee pausable label="Formats, pausable" duration={28} gap={12}>
+          {formats.map((format) => (
+            <span key={format} className={chipClass}>
+              {format}
+            </span>
+          ))}
+        </Marquee>
+        <Marquee pausable paused={paused} onPausedChange={setPaused} pauseLabel="Pause the customer logos" label="Customers" duration={32} gap="4rem" itemClassName="text-muted-foreground">
+          {placeholderLogos.slice(4, 12).map(({ name, Logo }) => (
+            <Logo key={name} />
+          ))}
+        </Marquee>
+        <p className="text-xs text-muted-foreground" aria-live="polite">
+          Logos are {paused ? "paused" : "moving"}.
+        </p>
+        <div className="max-w-xs">
+          <DemoLabel className="mb-2">Narrow container</DemoLabel>
+          <LogoCloud marquee pausable limit={8} duration={30} />
+        </div>
+      </div>
+    </Demo>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Item and Frame                                                      */
+/* ------------------------------------------------------------------ */
+
+const itemRows = [
+  { id: "mail", icon: <RiMailLine />, title: "Mail notifications", description: "Digest every morning at 8:00, and a message when someone replies to you." },
+  { id: "files", icon: <RiFileTextLine />, title: "A file name that is long enough to need truncating in a narrow column.pdf", description: "Shared with 4 people" },
+  { id: "images", icon: <RiImageLine />, title: "Images", description: "Compress on upload" },
+];
+
+function ItemDemo() {
+  const [on, setOn] = React.useState(true);
+  return (
+    <Demo
+      id="item"
+      title="Item"
+      description="One row: media, a title with a description, actions. Static, or a link or button (with an optional chevron). Sizes default, sm and xs; variants plain, outline and muted. ItemGroup lists rows with real list semantics."
+      align="start"
+    >
+      <div className="@container grid grid-cols-1 w-full gap-8 @2xl:grid-cols-2">
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>ItemGroup outline, divided: static, switch, link and button rows</DemoLabel>
+          <ItemGroup variant="outline" divided aria-label="Row examples">
+            <Item>
+              <ItemMedia variant="icon"><RiMailLine /></ItemMedia>
+              <ItemContent>
+                <ItemTitle>Mail notifications</ItemTitle>
+                <ItemDescription>Digest every morning at 8:00</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch checked={on} onCheckedChange={setOn} aria-label="Mail notifications" />
+              </ItemActions>
+            </Item>
+            <Item href="#/components/layout-patterns/item" chevron>
+              <ItemMedia variant="icon"><RiFileTextLine /></ItemMedia>
+              <ItemContent>
+                <ItemTitle>Link row</ItemTitle>
+                <ItemDescription>The whole row is one link</ItemDescription>
+              </ItemContent>
+            </Item>
+            <Item onClick={() => setOn((v) => !v)} chevron>
+              <ItemMedia variant="icon"><RiImageLine /></ItemMedia>
+              <ItemContent>
+                <ItemTitle>Button row</ItemTitle>
+                <ItemDescription>Toggles the switch above</ItemDescription>
+              </ItemContent>
+            </Item>
+            <Item>
+              <ItemMedia variant="avatar"><span className="text-xs font-medium">AL</span></ItemMedia>
+              <ItemContent>
+                <ItemTitle>
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="truncate">Ada Lovelace</span>
+                    <Badge color="success" size="sm" className="shrink-0">Owner</Badge>
+                  </span>
+                </ItemTitle>
+                <ItemDescription lines={2}>Two lines of description are kept, the rest is clipped after the second line of text.</ItemDescription>
+              </ItemContent>
+              <ItemActions><Button size="xs" variant="outline">Edit</Button></ItemActions>
+            </Item>
+          </ItemGroup>
+        </div>
+        <div className="min-w-0 space-y-4">
+          <DemoLabel>Sizes and variants</DemoLabel>
+          <Item variant="outline"><ItemMedia variant="icon"><RiMailLine /></ItemMedia><ItemContent><ItemTitle>default · outline</ItemTitle><ItemDescription>gap-3, px-4 py-3</ItemDescription></ItemContent></Item>
+          <Item size="sm" variant="muted"><ItemMedia><RiMailLine /></ItemMedia><ItemContent><ItemTitle>sm · muted</ItemTitle><ItemDescription>A bare icon as media</ItemDescription></ItemContent></Item>
+          <Item size="xs" variant="outline"><ItemContent><ItemTitle>xs · outline, no media</ItemTitle></ItemContent><ItemActions><Badge size="sm">3</Badge></ItemActions></Item>
+          <Item orientation="vertical" variant="outline"><ItemMedia variant="icon"><RiImageLine /></ItemMedia><ItemContent><ItemTitle>vertical</ItemTitle><ItemDescription>Media on top, text below</ItemDescription></ItemContent></Item>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Truncation: long titles keep a title tooltip</DemoLabel>
+          <ItemGroup variant="outline" divided aria-label="Long titles">
+            {itemRows.map((r) => (
+              <Item key={r.id} size="sm">
+                <ItemMedia variant="icon">{r.icon}</ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{r.title}</ItemTitle>
+                  <ItemDescription>{r.description}</ItemDescription>
+                </ItemContent>
+                <ItemActions><Badge size="sm">PDF</Badge></ItemActions>
+              </Item>
+            ))}
+          </ItemGroup>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Loading, empty, and ItemSeparator</DemoLabel>
+          <ItemGroup variant="outline" loading loadingRows={2} aria-label="Loading rows" />
+          <ItemGroup variant="outline" emptyState="No rows yet" aria-label="Empty rows" />
+          <ItemGroup variant="muted" aria-label="Separated rows">
+            <Item size="sm"><ItemContent><ItemTitle>First</ItemTitle></ItemContent></Item>
+            <ItemSeparator />
+            <Item size="sm"><ItemContent><ItemTitle>Second</ItemTitle></ItemContent></Item>
+          </ItemGroup>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Narrow container</DemoLabel>
+          <div className="max-w-56">
+            <ItemGroup variant="outline" divided aria-label="Narrow rows">
+              <Item size="sm">
+                <ItemMedia variant="icon"><RiMailLine /></ItemMedia>
+                <ItemContent>
+                  <ItemTitle>Mail notifications for the whole team</ItemTitle>
+                  <ItemDescription>Digest every morning</ItemDescription>
+                </ItemContent>
+                <ItemActions><Switch size="sm" defaultChecked aria-label="Narrow switch" /></ItemActions>
+              </Item>
+            </ItemGroup>
+          </div>
+        </div>
+      </div>
+    </Demo>
+  );
+}
+
+function FrameDemo() {
+  const rows = (
+    <>
+      <Item size="sm">
+        <ItemMedia variant="icon"><RiMailLine /></ItemMedia>
+        <ItemContent><ItemTitle>Mail</ItemTitle><ItemDescription>Digest at 8:00</ItemDescription></ItemContent>
+        <ItemActions><Badge size="sm" color="success">On</Badge></ItemActions>
+      </Item>
+      <Item size="sm" href="#/components/layout-patterns/frame" chevron>
+        <ItemMedia variant="icon"><RiFileTextLine /></ItemMedia>
+        <ItemContent><ItemTitle>Documents</ItemTitle><ItemDescription>Shared with 4 people</ItemDescription></ItemContent>
+      </Item>
+      <Item size="sm">
+        <ItemMedia variant="icon"><RiImageLine /></ItemMedia>
+        <ItemContent><ItemTitle>Images</ItemTitle><ItemDescription>Compress on upload</ItemDescription></ItemContent>
+        <ItemActions><Badge size="sm">Off</Badge></ItemActions>
+      </Item>
+    </>
+  );
+  return (
+    <Demo
+      id="frame"
+      title="Frame"
+      description="A titled tray that holds a panel of rows. Variants default (a tray with a raised panel, corners concentric), band, inset and plain. The panel takes loading and an empty state."
+      align="start"
+    >
+      <div className="@container grid grid-cols-1 w-full gap-8 @2xl:grid-cols-2">
+        {(["default", "band", "inset", "plain"] as const).map((variant) => (
+          <div key={variant} className="min-w-0 space-y-2">
+            <DemoLabel>variant="{variant}"</DemoLabel>
+            <Frame variant={variant}>
+              <FrameHeader>
+                <FrameTitle>Notifications</FrameTitle>
+                <FrameAction><Button size="xs" variant="outline">Manage</Button></FrameAction>
+                <FrameDescription>Where and when you hear from us</FrameDescription>
+              </FrameHeader>
+              <FramePanel aria-label={`${variant} notifications`}>{rows}</FramePanel>
+              <FrameFooter><span>3 channels</span><span>Updated today</span></FrameFooter>
+            </Frame>
+          </div>
+        ))}
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Loading</DemoLabel>
+          <Frame>
+            <FrameHeader><FrameTitle>Devices</FrameTitle></FrameHeader>
+            <FramePanel loading loadingRows={2} aria-label="Loading devices" />
+          </Frame>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Empty</DemoLabel>
+          <Frame>
+            <FrameHeader><FrameTitle>Devices</FrameTitle></FrameHeader>
+            <FramePanel emptyState="No devices yet" aria-label="Empty devices" />
+          </Frame>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Narrow container</DemoLabel>
+          <div className="max-w-56">
+            <Frame variant="band">
+              <FrameHeader><FrameTitle>A long frame title that must truncate</FrameTitle><FrameAction><Button size="xs" variant="outline">Add</Button></FrameAction></FrameHeader>
+              <FramePanel aria-label="Narrow frame">{rows}</FramePanel>
+              <FrameFooter>3 channels</FrameFooter>
+            </Frame>
+          </div>
+        </div>
+      </div>
+    </Demo>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* Search trigger                                                      */
 /* ------------------------------------------------------------------ */
@@ -381,6 +616,9 @@ export function LayoutPatternsPage() {
       <MarqueeChipsDemo />
       <MarqueeLogosDemo />
       <MarqueeReverseDemo />
+      <MarqueePauseDemo />
+      <ItemDemo />
+      <FrameDemo />
       <SearchTriggerDemo />
       <IdleMotionDemo />
     </PageIntro>

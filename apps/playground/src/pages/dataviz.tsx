@@ -4,14 +4,18 @@ import {
   BarChart,
   Card,
   DonutChart,
+  FunnelChart,
   Gauge,
   LineChart,
   Meter,
   MeterGroup,
+  RadarChart,
   RingMeter,
+  ScatterChart,
   StackedMeter,
   StatCard,
   StatGroup,
+  WaterfallChart,
   type ChartDatum,
 } from "@sutra/ui";
 import { RiCpuLine, RiCoinsLine, RiFlashlightLine, RiTimerLine } from "@sutra/ui/icons";
@@ -161,13 +165,106 @@ const timeSamples: ChartDatum[] = Array.from({ length: 48 }, (_, i) => timeStart
   .filter((t) => t < timeStart + 4 * 3_600_000 || t >= timeStart + 5.5 * 3_600_000)
   .map((t, i) => ({ t, used: t === timeStart + 2 * 3_600_000 ? null : Math.min(100, 8 + i * 1.6 + (i % 5) * 2) }));
 
+/* New chart types: funnel, waterfall, scatter and radar demo data. */
+const signupFunnel: ChartDatum[] = [
+  { label: "Visited", value: 12480 },
+  { label: "Viewed pricing", value: 6120 },
+  { label: "Started trial", value: 2310 },
+  { label: "Activated", value: 1480 },
+  { label: "Subscribed", value: 412 },
+];
+const longFunnel: ChartDatum[] = [
+  { label: "Impressions", value: 480000 },
+  { label: "Clicks", value: 61200 },
+  { label: "Landing views", value: 52800 },
+  { label: "Sign-up started", value: 14900 },
+  { label: "Email verified", value: 9800 },
+  { label: "Profile completed", value: 7400 },
+  { label: "First project", value: 4100 },
+  { label: "Invited a teammate", value: 1650 },
+  { label: "Upgraded to a paid plan", value: 520 },
+];
+const revenueBridge: ChartDatum[] = [
+  { label: "Jan MRR", value: 1200, type: "total" },
+  { label: "New", value: 340 },
+  { label: "Expansion", value: 180 },
+  { label: "Contraction", value: -90 },
+  { label: "Churn", value: -210 },
+  { label: "Apr MRR", type: "total" },
+];
+const cashFlow: ChartDatum[] = [
+  { label: "Opening", value: 40, type: "total" },
+  { label: "Sales", value: 120 },
+  { label: "Payroll", value: -150 },
+  { label: "Rent", value: -30 },
+  { label: "Grants", value: 25 },
+  { label: "Tax", value: -45 },
+  { label: "Loan", value: 90 },
+  { label: "Closing", type: "total" },
+];
+const weeklyNet: ChartDatum[] = (() => {
+  const r = seeded(11);
+  return Array.from({ length: 26 }, (_, i) => ({ label: `W${i + 1}`, value: Math.round((r() - 0.46) * 60) }));
+})();
+const modelRuns: ChartDatum[] = (() => {
+  const r = seeded(5);
+  return Array.from({ length: 36 }, () => {
+    const latency = Math.round(120 + r() * 880);
+    const quality = Math.round(Math.min(98, 52 + (1 - latency / 1100) * 18 + r() * 28));
+    return { latency, small: quality, large: Math.min(99, quality + 6 + Math.round(r() * 5)), cost: Math.round(2 + r() * 38), requests: Math.round(100 + r() * 4000) };
+  });
+})();
+const manyPoints: ChartDatum[] = (() => {
+  const r = seeded(21);
+  return Array.from({ length: 320 }, () => {
+    const x = r() * 100;
+    return { x: Math.round(x * 10) / 10, y: Math.round((x * 0.6 + (r() - 0.5) * 40 + 10) * 10) / 10, n: Math.round(r() * 60) };
+  });
+})();
+const negativePoints: ChartDatum[] = (() => {
+  const r = seeded(8);
+  return Array.from({ length: 40 }, () => ({ x: Math.round((r() - 0.5) * 80) / 10, y: Math.round((r() - 0.5) * 60) / 10 }));
+})();
+const incidentTimes: ChartDatum[] = (() => {
+  const r = seeded(31);
+  const start = new Date(2026, 9, 1).getTime();
+  return Array.from({ length: 28 }, () => ({ t: start + Math.round(r() * 20) * 86_400_000 + Math.round(r() * 20) * 3_600_000, minutes: Math.round(5 + r() * 85) }));
+})();
+const modelSkills: ChartDatum[] = [
+  { metric: "Reasoning", sutra: 82, baseline: 64 },
+  { metric: "Coding", sutra: 91, baseline: 72 },
+  { metric: "Speed", sutra: 58, baseline: 88 },
+  { metric: "Safety", sutra: 87, baseline: 70 },
+  { metric: "Cost", sutra: 66, baseline: 81 },
+  { metric: "Context", sutra: 94, baseline: 60 },
+];
+const longAxes: ChartDatum[] = [
+  "Reading comprehension",
+  "Mathematical reasoning",
+  "Code generation",
+  "Instruction following",
+  "Multilingual translation",
+  "Long-context retrieval",
+  "Tool use reliability",
+  "Refusal calibration",
+  "Creative writing",
+  "Summarisation faithfulness",
+].map((metric, i) => ({ metric, a: 40 + ((i * 37) % 55), b: 35 + ((i * 53) % 60) }));
+const trade: ChartDatum[] = [
+  { metric: "Revenue", delta: 24, last: -8 },
+  { metric: "Margin", delta: -12, last: 6 },
+  { metric: "Churn", delta: 9, last: -15 },
+  { metric: "NPS", delta: 14, last: 3 },
+  { metric: "Latency", delta: -6, last: -2 },
+];
+
 export function DataVizPage() {
   const ctx = useJitter(64, 18);
   return (
     <PageIntro
       eyebrow="Components"
       title="Data visualization"
-      description="A small SVG chart kit (area, line, bar, donut) with axes, crosshair tooltips, keyboard navigation and toggleable legends, plus KPI tiles, usage meters and gauges."
+      description="A small SVG chart kit (area, line, bar, donut, funnel, waterfall, scatter, radar) with axes, crosshair tooltips, keyboard navigation and toggleable legends, plus KPI tiles, usage meters and gauges."
     >
       <Demo
         id="stat-card"
@@ -327,6 +424,260 @@ export function DataVizPage() {
             centerLabel="avg latency"
             valueFormatter={(v) => `${v}%`}
           />
+        </div>
+      </Demo>
+
+      <Demo
+        id="funnel-chart"
+        title="FunnelChart"
+        description="Stages that narrow with the value, with the conversion from the stage before (or from the top). Hover a stage, or focus the chart and use the arrow keys."
+        align="start"
+      >
+        <div className="@container space-y-8">
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Default: share of the previous stage</DemoLabel>
+              <FunnelChart data={signupFunnel} valueFormatter={(v) => v.toLocaleString("en-US")} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>conversion=&quot;first&quot;, separate bars, own colors</DemoLabel>
+              <FunnelChart
+                data={signupFunnel}
+                conversion="first"
+                connected={false}
+                valueFormatter={(v) => v.toLocaleString("en-US")}
+                colors={["info", "primary", "warning", "success", "destructive"]}
+              />
+            </div>
+          </div>
+          <div className="min-w-0 space-y-2">
+            <DemoLabel>Many stages, rates hidden, formatted values</DemoLabel>
+            <FunnelChart data={longFunnel} conversion={false} valueFormatter={(v) => compact.format(v)} color="success" height={380} />
+          </div>
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-3">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Loading</DemoLabel>
+              <FunnelChart data={[]} loading />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Empty</DemoLabel>
+              <FunnelChart data={[]} emptyState="No visits this week" />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Narrow container</DemoLabel>
+              <div className="w-full max-w-[260px]">
+                <FunnelChart data={signupFunnel} valueFormatter={(v) => compact.format(v)} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Demo>
+
+      <Demo
+        id="waterfall-chart"
+        title="WaterfallChart"
+        description="A running total built from increases and decreases. Rows of type total stand on zero (with no value they show the running total). Signs and the legend carry the meaning, not just color."
+        align="start"
+      >
+        <div className="@container space-y-8">
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Monthly recurring revenue bridge</DemoLabel>
+              <WaterfallChart data={revenueBridge} valueFormatter={(v) => `$${v}k`} yAxis={{ formatter: (v) => `$${v}k` }} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Negative running total, subtotals, target line</DemoLabel>
+              <WaterfallChart
+                data={cashFlow.map((d) => (d.label === "Tax" ? { label: "Subtotal", type: "subtotal" } : d))}
+                valueFormatter={(v) => `${v}k`}
+                referenceLines={[{ value: 50, label: "Reserve", color: "warning" }]}
+                kindLabels={{ increase: "Inflow", decrease: "Outflow" }}
+              />
+            </div>
+          </div>
+          <div className="min-w-0 space-y-2">
+            <DemoLabel>Many points: weekly net change, labels thin out</DemoLabel>
+            <WaterfallChart data={weeklyNet} connectors={false} height={240} />
+          </div>
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-3">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Loading</DemoLabel>
+              <WaterfallChart data={[]} loading height={200} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Empty</DemoLabel>
+              <WaterfallChart data={[]} emptyState="No movements yet" height={200} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Narrow container</DemoLabel>
+              <div className="w-full max-w-[260px]">
+                <WaterfallChart data={revenueBridge} height={200} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Demo>
+
+      <Demo
+        id="scatter-chart"
+        title="ScatterChart"
+        description="Points on two axes that fit the data (no forced zero). A sizeKey turns points into bubbles: the area, not the radius, follows the value. Hover picks the nearest point; the keyboard steps through them in x order."
+        align="start"
+      >
+        <div className="@container space-y-8">
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Two series: latency against quality</DemoLabel>
+              <ScatterChart
+                data={modelRuns}
+                index="latency"
+                series={[
+                  { key: "small", label: "Small model" },
+                  { key: "large", label: "Large model" },
+                ]}
+                xAxis={{ label: "Latency", formatter: (v) => `${v} ms` }}
+                yAxis={{ formatter: (v) => `${v}%` }}
+                valueFormatter={(v) => `${v}%`}
+                referenceLines={[{ value: 80, label: "Target", color: "success" }]}
+              />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Bubbles: size is requests</DemoLabel>
+              <ScatterChart
+                data={modelRuns}
+                index="latency"
+                series={[{ key: "large", label: "Quality", sizeKey: "requests", sizeLabel: "Requests", color: "info" }]}
+                xAxis={{ label: "Latency", formatter: (v) => `${v} ms` }}
+                valueFormatter={(v) => `${v}%`}
+                sizeFormatter={(v) => v.toLocaleString("en-US")}
+                bubbleSize={[5, 24]}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Many points (320), small markers</DemoLabel>
+              <ScatterChart data={manyPoints} index="x" series={[{ key: "y", label: "Score" }]} pointSize={3} height={260} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Negative values on both axes</DemoLabel>
+              <ScatterChart
+                data={negativePoints}
+                index="x"
+                series={[{ key: "y", label: "Residual", color: "warning" }]}
+                referenceLines={[{ value: 0 }, { axis: "x", value: 0 }]}
+                height={260}
+              />
+            </div>
+          </div>
+          <div className="min-w-0 space-y-2">
+            <DemoLabel>Time axis: incident duration</DemoLabel>
+            <ScatterChart
+              data={incidentTimes}
+              index="t"
+              series={[{ key: "minutes", label: "Duration", color: "destructive" }]}
+              xAxis={{ type: "time", label: "Started" }}
+              valueFormatter={(v) => `${v} min`}
+              height={220}
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-3">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Loading</DemoLabel>
+              <ScatterChart data={[]} index="x" series={[{ key: "y" }, { key: "z" }]} loading height={200} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Empty</DemoLabel>
+              <ScatterChart data={[]} index="x" series={[{ key: "y" }]} emptyState="No runs recorded" height={200} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Narrow container</DemoLabel>
+              <div className="w-full max-w-[260px]">
+                <ScatterChart data={modelRuns} index="latency" series={[{ key: "large", sizeKey: "requests" }]} height={200} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Demo>
+
+      <Demo
+        id="radar-chart"
+        title="RadarChart"
+        description="Several measures on spokes from one center, one polygon per series. Hover or arrow through the spokes to read every series at once."
+        align="start"
+      >
+        <div className="@container space-y-8">
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Two models, fixed 0 to 100 domain</DemoLabel>
+              <RadarChart
+                data={modelSkills}
+                index="metric"
+                series={[
+                  { key: "sutra", label: "Sutra" },
+                  { key: "baseline", label: "Baseline" },
+                ]}
+                domain={[0, 100]}
+              />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Circle rings, no fill, no dots</DemoLabel>
+              <RadarChart
+                data={modelSkills}
+                index="metric"
+                series={[{ key: "sutra", label: "Sutra", color: "success" }]}
+                domain={[0, 100]}
+                shape="circle"
+                fill={false}
+                dots={false}
+                levels={5}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Many spokes with long names</DemoLabel>
+              <RadarChart
+                data={longAxes}
+                index="metric"
+                series={[
+                  { key: "a", label: "Run A" },
+                  { key: "b", label: "Run B" },
+                ]}
+                height={380}
+                domain={[0, 100]}
+              />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Negative values (change vs. plan)</DemoLabel>
+              <RadarChart
+                data={trade}
+                index="metric"
+                series={[
+                  { key: "delta", label: "This quarter", color: "info" },
+                  { key: "last", label: "Last quarter", color: "warning" },
+                ]}
+                valueFormatter={(v) => `${v > 0 ? "+" : ""}${v}%`}
+                height={380}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-3">
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Loading</DemoLabel>
+              <RadarChart data={[]} index="metric" series={[{ key: "a" }, { key: "b" }]} loading height={240} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Empty</DemoLabel>
+              <RadarChart data={[]} index="metric" series={[{ key: "a" }]} emptyState="Nothing to compare" height={240} />
+            </div>
+            <div className="min-w-0 space-y-2">
+              <DemoLabel>Narrow container</DemoLabel>
+              <div className="w-full max-w-[260px]">
+                <RadarChart data={longAxes.slice(0, 6)} index="metric" series={[{ key: "a", label: "Run A" }]} height={240} domain={[0, 100]} />
+              </div>
+            </div>
+          </div>
         </div>
       </Demo>
 

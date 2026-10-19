@@ -8,6 +8,9 @@ import { detectShortcutPlatform, getShortcutKeyLabels } from "../lib/shortcuts";
 
 const shellHeights: Record<Size, string> = { sm: "h-8", md: "h-9", lg: "h-10" };
 
+/** The `filled` look: a tinted surface with no visible border and no shadow (the border and surface come back on focus). */
+const filledShell = "border-transparent bg-muted shadow-none";
+
 /**
  * The bordered box shared by the text-entry controls (input, textarea, select / combobox / date triggers,
  * number, tag and time inputs, input groups, OTP slots): border, radius, surface, shadow, transition and,
@@ -37,8 +40,12 @@ export const inputShellVariants = cva(
       hover: { true: "hover:border-border-strong", false: "" },
       /** Fixed height (omit for auto-height shells). */
       size: shellHeights,
+      /** `filled` swaps the bordered box for a tinted surface with a hidden border (the surface returns to normal on focus). */
+      variant: { outline: "", filled: filledShell },
     },
     compoundVariants: [
+      { variant: "filled", focus: "control", className: "focus-visible:bg-background" },
+      { variant: "filled", focus: "within", className: "focus-within:bg-background" },
       {
         focus: "within",
         invalid: true,
@@ -46,7 +53,7 @@ export const inputShellVariants = cva(
       },
       { focus: "within", disabled: true, className: "cursor-not-allowed opacity-50" },
     ],
-    defaultVariants: { focus: "control", radius: "control" },
+    defaultVariants: { focus: "control", radius: "control", variant: "outline" },
   }
 );
 
@@ -65,8 +72,9 @@ export const inputVariants = cva(
         md: [shellHeights.md, "px-3 text-sm"],
         lg: [shellHeights.lg, "px-3.5 text-sm"],
       },
+      variant: { outline: "", filled: [filledShell, "focus-visible:bg-background"] },
     },
-    defaultVariants: { size: "md" },
+    defaultVariants: { size: "md", variant: "outline" },
   }
 );
 
@@ -80,8 +88,9 @@ const wrapperVariants = cva(
   {
     variants: {
       size: { sm: [shellHeights.sm, "text-sm"], md: [shellHeights.md, "text-sm"], lg: [shellHeights.lg, "text-sm"] },
+      variant: { outline: "", filled: [filledShell, "focus-within:bg-background"] },
     },
-    defaultVariants: { size: "md" },
+    defaultVariants: { size: "md", variant: "outline" },
   }
 );
 
@@ -96,6 +105,8 @@ function setNativeValue(el: HTMLInputElement, value: string) {
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "prefix">,
     VariantProps<typeof inputVariants> {
+  /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
+  variant?: "outline" | "filled" | null;
   invalid?: boolean;
   /** Icon rendered inside the field before the text. */
   leadingIcon?: React.ReactNode;
@@ -129,6 +140,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       className,
       wrapperClassName,
       size,
+      variant,
       invalid,
       leadingIcon,
       trailingIcon,
@@ -199,7 +211,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     };
 
     if (!hasAddons) {
-      return <input data-slot="input" {...inputProps} className={cn(inputVariants({ size }), className)} />;
+      return <input data-slot="input" {...inputProps} className={cn(inputVariants({ size, variant }), className)} />;
     }
 
     const iconSlot =
@@ -208,7 +220,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div
         data-slot="input-wrapper"
-        className={cn(wrapperVariants({ size }), wrapperClassName)}
+        className={cn(wrapperVariants({ size, variant }), wrapperClassName)}
         onMouseDown={(e) => {
           const target = e.target as HTMLElement;
           if (target === innerRef.current || target.closest("button, a")) return;

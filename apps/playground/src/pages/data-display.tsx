@@ -5,7 +5,15 @@ import {
   AvatarLabelGroup,
   Badge,
   Button,
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   DataTable,
+  EmptyState,
   FilterBar,
   FilterBarActive,
   FilterBarChip,
@@ -14,6 +22,7 @@ import {
   FilterBarToken,
   Pagination,
   Separator,
+  Skeleton,
   StatusBadge,
   Table,
   TableBody,
@@ -358,6 +367,133 @@ function DataTableStatesDemo() {
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
+function CardDemo() {
+  return (
+    <Demo
+      id="card"
+      title="Card"
+      description="A surface with composable parts: header (title, description, action), content and footer. size, as and the plain or panel footer; the old padded prop still works."
+      align="start"
+      canvasClassName="gap-8"
+    >
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Default, with action and a plain footer</DemoLabel>
+          <Card as="article" aria-labelledby="card-demo-plan">
+            <CardHeader>
+              <CardTitle as="h3" id="card-demo-plan">
+                Team plan
+              </CardTitle>
+              <CardDescription>Billed yearly, renews on 14 March.</CardDescription>
+              <CardAction>
+                <Button size="sm" variant="ghost">
+                  Edit
+                </Button>
+              </CardAction>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">12 of 15 seats used. Guests and viewers are free.</CardContent>
+            <CardFooter>
+              <Button size="sm">Add seats</Button>
+              <Button size="sm" variant="secondary">
+                View invoices
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Panel footer, size="sm"</DemoLabel>
+          <Card size="sm" as="section" aria-labelledby="card-demo-usage">
+            <CardHeader>
+              <CardTitle as="h3" id="card-demo-usage">
+                API usage
+              </CardTitle>
+              <CardDescription>This billing period</CardDescription>
+              <CardAction>
+                <Badge color="blue">Live</Badge>
+              </CardAction>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">8.2M of 10M requests.</CardContent>
+            <CardFooter variant="panel" className="justify-between">
+              <span className="text-xs text-muted-foreground">Resets in 9 days</span>
+              <Button size="xs" variant="secondary">
+                Upgrade
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Content only, and the padded prop</DemoLabel>
+          <div className="space-y-3">
+            <Card>
+              <CardContent className="text-sm text-muted-foreground">Content alone gets even padding on every side.</CardContent>
+            </Card>
+            <Card padded className="text-sm text-muted-foreground">
+              <code>padded</code> pads the card itself, as before.
+            </Card>
+          </div>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>As list items</DemoLabel>
+          <ul className="space-y-2">
+            {["Design review", "Launch checklist"].map((title) => (
+              <Card as="li" size="sm" key={title} className="list-none">
+                <CardHeader>
+                  <CardTitle>{title}</CardTitle>
+                  <CardDescription>Due Friday</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </ul>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Loading (skeleton in the real layout)</DemoLabel>
+          <Card aria-busy="true">
+            <span className="sr-only">Loading plan</span>
+            <CardHeader>
+              <Skeleton shape="text" className="w-1/3" />
+              <Skeleton shape="text" className="w-2/3" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-16 w-full" />
+            </CardContent>
+          </Card>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Empty</DemoLabel>
+          <Card>
+            <CardHeader>
+              <CardTitle as="h3">Invoices</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <EmptyState size="sm" title="No invoices yet" description="They show up after the first payment." />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      <div className="max-w-[260px] space-y-2">
+        <DemoLabel>Narrow container (260px): the header action stays beside the wrapped title</DemoLabel>
+        <Card>
+          <CardHeader>
+            <CardTitle as="h3">A long card title that has to wrap onto two lines</CardTitle>
+            <CardDescription>Supporting text stays in the first column.</CardDescription>
+            <CardAction>
+              <Button size="sm" variant="secondary">
+                Edit
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardFooter variant="panel">
+            <Button size="sm">Save</Button>
+            <Button size="sm" variant="ghost">
+              Cancel
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </Demo>
+  );
+}
+
 export function DataDisplayPage() {
   return (
     <PageIntro
@@ -598,6 +734,8 @@ export function DataDisplayPage() {
       >
         <DataTableDemo />
       </Demo>
+
+      <CardDemo />
 
       <Demo title="Data table states" description="Built-in skeleton loading and empty states." align="start">
         <DataTableStatesDemo />

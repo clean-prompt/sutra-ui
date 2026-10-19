@@ -6,6 +6,7 @@ import { accentClasses, accentColorValue, accentStyle, resolveAccent, type Accen
 import { KeyValueList } from "../primitives/key-value";
 import { Progress, Skeleton } from "../primitives/progress";
 import { Sparkline, type SparklineColor } from "./sparkline";
+import { AnimatedNumber } from "./animated-number";
 
 export type StatDeltaIntent = "positive-is-good" | "negative-is-good" | "neutral";
 /** Stat tile tone. Canonical `Tone` plus deprecated aliases (`"default"` → `neutral`). */
@@ -52,18 +53,27 @@ export interface StatValueProps extends Omit<React.HTMLAttributes<HTMLSpanElemen
   size?: "sm" | "md" | "lg" | "xl";
   /** Number face: monospaced (default) or the UI sans with tabular figures. */
   font?: "mono" | "sans";
+  /**
+   * Roll the digits when a numeric `value` changes (see `AnimatedNumber`). Opt-in: live fills and dense tables stay
+   * still. Other values (strings, nodes) render as given. A number is formatted with `format` and `locale`.
+   */
+  animate?: boolean;
+  /** `Intl.NumberFormat` options for an animated number. */
+  format?: Intl.NumberFormatOptions;
+  /** Locale for an animated number. */
+  locale?: string | string[];
 }
 
 /** The big number of a metric with its unit, shared by StatCard and MetricHero. */
 export const StatValue = React.forwardRef<HTMLSpanElement, StatValueProps>(
-  ({ value, unit, size = "md", font = "mono", className, ...props }, ref) => (
+  ({ value, unit, size = "md", font = "mono", animate = false, format, locale, className, ...props }, ref) => (
     <span
       ref={ref}
       data-slot="stat-value"
       className={cn(font === "sans" ? "font-sans" : "font-mono", "font-semibold tabular-nums tracking-tight", valueSizes[size], className)}
       {...props}
     >
-      {value}
+      {animate && typeof value === "number" ? <AnimatedNumber value={value} format={format} locale={locale} /> : value}
       {unit ? <span className={cn("ml-1 font-medium text-muted-foreground", unitSizes[size])}>{unit}</span> : null}
     </span>
   )
@@ -138,6 +148,12 @@ export interface StatCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   progressMax?: number;
   /** Number face for the value: monospaced (default) or the UI sans with tabular figures. */
   valueFont?: "mono" | "sans";
+  /** Roll the digits when a numeric `value` changes. Opt-in; strings and nodes render as given. */
+  animate?: boolean;
+  /** `Intl.NumberFormat` options for an animated `value`. */
+  valueFormat?: Intl.NumberFormatOptions;
+  /** Locale for an animated `value`. */
+  valueLocale?: string | string[];
   /** Extra body content under the value and stats (a chart, a list). */
   children?: React.ReactNode;
 }
@@ -180,6 +196,9 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
       progress,
       progressMax = 100,
       valueFont,
+      animate,
+      valueFormat,
+      valueLocale,
       children,
       className,
       style,
@@ -338,7 +357,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
               {caption ? <div data-slot="stat-caption" className="text-xs text-muted-foreground">{caption}</div> : null}
               {hasValueRow || deltaText !== null || status ? (
               <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                {hasValueRow ? <StatValue value={value} unit={unit} size={size} font={valueFont} className={toneValue[tone]} /> : null}
+                {hasValueRow ? <StatValue value={value} unit={unit} size={size} font={valueFont} animate={animate} format={valueFormat} locale={valueLocale} className={toneValue[tone]} /> : null}
                 {deltaText !== null ? (
                   <span
                     data-slot="stat-delta"

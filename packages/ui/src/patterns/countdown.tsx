@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { toneClass } from "../lib/tone";
 import { formatDuration, splitDuration as splitDurationLib } from "../lib/duration";
 import { pad2 } from "../lib/time";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
@@ -50,6 +51,8 @@ export interface CountdownProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Shown once the target has passed (defaults to zeros). */
   completeContent?: React.ReactNode;
   size?: "sm" | "md" | "lg";
+  /** Final stretch: in the last this-many milliseconds (and not yet complete) the countdown takes the warning tone and sets `data-urgent`. */
+  urgentBelow?: number;
 }
 
 const segSize = {
@@ -62,7 +65,7 @@ const segSize = {
 /** Countdown to a date with d/h/m/s segments or a compact "2h 14m" form; fires `onComplete` once. */
 export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
   (
-    { target, format = "segments", hideSeconds, flip, onComplete, completeContent, size = "md", className, ...props },
+    { target, format = "segments", hideSeconds, flip, onComplete, completeContent, size = "md", urgentBelow, className, ...props },
     ref
   ) => {
     const { remainingMs: remaining } = useCountdown(target, {
@@ -71,6 +74,7 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
     });
     const reduced = usePrefersReducedMotion();
 
+    const urgent = urgentBelow != null && remaining > 0 && remaining <= urgentBelow;
     const parts = splitDuration(remaining);
     const label = remaining > 0 ? `Time remaining: ${spokenDuration(remaining)}` : "Time is up";
 
@@ -89,7 +93,8 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
           role="timer"
           aria-label={label}
           data-complete={remaining <= 0 || undefined}
-          className={cn("inline-flex font-medium tabular-nums", className)}
+          data-urgent={urgent || undefined}
+          className={cn("inline-flex font-medium tabular-nums", urgent && toneClass("text", "warning"), className)}
           {...props}
         >
           <span aria-hidden>{formatCompactDuration(remaining)}</span>
@@ -111,6 +116,7 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
         role="timer"
         aria-label={label}
         data-complete={remaining <= 0 || undefined}
+        data-urgent={urgent || undefined}
         className={cn("inline-flex max-w-full items-start gap-1 sm:gap-2", className)}
         {...props}
       >
@@ -128,7 +134,8 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
                   className={cn(
                     "overflow-hidden rounded-box border border-border bg-card text-center font-semibold text-foreground tabular-nums shadow-xs",
                     segSize[size].box,
-                    segSize[size].text
+                    segSize[size].text,
+                    urgent && cn(toneClass("soft", "warning"), toneClass("border", "warning"))
                   )}
                 >
                   <span

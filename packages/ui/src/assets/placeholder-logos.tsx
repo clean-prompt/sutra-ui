@@ -240,6 +240,8 @@ export interface LogoCloudProps extends Omit<React.HTMLAttributes<HTMLDivElement
   duration?: number;
   reverse?: boolean;
   pauseOnHover?: boolean;
+  /** Marquee mode: show a pause and play button beside the row (see `Marquee` `pausable`). */
+  pausable?: boolean;
   /** Grid columns (non-marquee). */
   columns?: 2 | 3 | 4 | 5 | 6 | 7 | 8;
   logoSize?: PlaceholderLogoProps["size"];
@@ -259,6 +261,7 @@ export const LogoCloud = React.forwardRef<HTMLDivElement, LogoCloudProps>(
       duration = 30,
       reverse = false,
       pauseOnHover = true,
+      pausable = false,
       columns = 6,
       logoSize = "md",
       muted = true,
@@ -280,7 +283,7 @@ export const LogoCloud = React.forwardRef<HTMLDivElement, LogoCloudProps>(
           <p className="mb-6 text-center text-sm font-medium text-muted-foreground">{title}</p>
         ) : null}
         {marquee ? (
-          <Marquee duration={duration} reverse={reverse} pauseOnHover={pauseOnHover} itemClassName={itemClass}>
+          <Marquee duration={duration} reverse={reverse} pauseOnHover={pauseOnHover} pausable={pausable} itemClassName={itemClass}>
             {items.map(({ name, Logo }) => (
               <Logo key={name} size={logoSize} />
             ))}

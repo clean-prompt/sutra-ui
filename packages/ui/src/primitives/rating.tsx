@@ -16,6 +16,11 @@ export interface RatingProps
   max?: number;
   /** Allow half-star values (0.5 steps). */
   allowHalf?: boolean;
+  /**
+   * Let the user take the rating back to 0: click the selected star again, press Delete, Backspace or 0, or arrow
+   * below the first step. `false` keeps a given rating at one star or more. Default true.
+   */
+  allowClear?: boolean;
   readOnly?: boolean;
   disabled?: boolean;
   size?: Size;
@@ -43,6 +48,7 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
       onValueChange,
       max = 5,
       allowHalf = false,
+      allowClear = true,
       readOnly = false,
       disabled = false,
       size = "md",
@@ -87,11 +93,12 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
       onKeyDown?.(e);
       if (e.defaultPrevented || !interactive) return;
+      const down = () => (allowClear || value <= 0 ? value - step : Math.max(value - step, step));
       const map: Record<string, () => number> = {
         ArrowRight: () => value + step,
         ArrowUp: () => value + step,
-        ArrowLeft: () => value - step,
-        ArrowDown: () => value - step,
+        ArrowLeft: () => down(),
+        ArrowDown: () => down(),
         Home: () => step,
         End: () => max,
       };
@@ -99,7 +106,10 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
       if (fn) {
         e.preventDefault();
         commit(fn());
-      } else if (/^[0-9]$/.test(e.key) && Number(e.key) <= max) {
+      } else if (allowClear && (e.key === "Delete" || e.key === "Backspace")) {
+        e.preventDefault();
+        commit(0);
+      } else if (/^[0-9]$/.test(e.key) && Number(e.key) <= max && (allowClear || Number(e.key) > 0)) {
         e.preventDefault();
         commit(Number(e.key));
       }
@@ -163,7 +173,7 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
               onMouseMove={(e) => setHover(valueFromPointer(i, e))}
               onClick={(e) => {
                 const next = valueFromPointer(i, e);
-                commit(next === value ? 0 : next);
+                commit(allowClear && next === value ? 0 : next);
               }}
               className={cn(
                 "relative inline-flex cursor-pointer rounded-xs outline-none transition-transform duration-150",

@@ -61,15 +61,15 @@ export const nav: NavSection[] = [
       {
         id: "buttons",
         label: "Buttons & Actions",
-        items: items("Button", "Button Group", "App Store Badge", "Close Button", "Text Link", "Social Button", "Floating Action Button"),
+        items: items("Button", "Button Group", "Toggle Group", "App Store Badge", "Close Button", "Text Link", "Social Button", "Floating Action Button"),
       },
       {
         id: "forms",
         label: "Form Controls",
         items: items(
-          "Input", "Password Input", "Search Input", "Input OTP", "Textarea", "Number Input", "Tag Input",
+          "Input", "Password Input", "Search Input", "Input OTP", "Textarea", "Filled Inputs", "Number Input", "Tag Input", "Tag Input Options",
           "Checkbox", "Radio", "Switch", "Select", "Date Picker", "Date Range Picker", "Date Time Picker", "Time Picker", "Calendar",
-          "Segmented Control", "Slider", "Rating", "File Upload", "Dropzone", "Combobox",
+          "Segmented Control", "Slider", "Rating", "File Upload", "Dropzone", "Combobox", "Combobox Async",
           "Password Strength", "Field", "Input Group", "Label"
         ),
       },
@@ -77,22 +77,31 @@ export const nav: NavSection[] = [
       {
         id: "indicators",
         label: "Indicators",
-        items: items("Chip", "Badge", "Status Badge", "Spinner", "Progress", "Skeleton", "Steps"),
+        items: items("Chip", "Badge", "Status Badge", "Spinner", "Progress", "Countdown Urgency", "Skeleton", "Steps"),
       },
       {
         id: "overlays",
         label: "Overlays",
         items: items(
-          "Tooltip", "Info Tooltip", "Popover", "Hover Card", "Dialog", "Alert Dialog", "Sheet",
+          "Tooltip", "Info Tooltip", "Popover", "Hover Card", "Dialog", "Alert Dialog", "Sheet", "Sheet Options",
           "Dropdown Menu", "Context Menu", "Command Dialog", "Promise Dialogs"
         ),
       },
       {
         id: "data-display",
         label: "Data Display",
-        items: items("Avatar", "Avatar Group", "Separator", "Filter Bar", "Table", "Data Table"),
+        items: items("Avatar", "Avatar Group", "Separator", "Filter Bar", "Table", "Data Table", "Card"),
       },
-      { id: "utility", label: "Utility", items: items("Aspect Ratio", "Scroll Area") },
+      {
+        id: "utility",
+        label: "Utility",
+        items: [
+          ...items("Aspect Ratio", "Scroll Area"),
+          { id: "use-disclosure", label: "useDisclosure" },
+          { id: "use-debounced-value", label: "useDebouncedValue" },
+          { id: "use-previous", label: "usePrevious" },
+        ],
+      },
     ],
   },
   {
@@ -113,6 +122,9 @@ export const nav: NavSection[] = [
           { id: "marquee-chips", label: "Marquee Chips" },
           { id: "marquee-logos", label: "Marquee Logos" },
           { id: "marquee-reverse", label: "Marquee Reverse" },
+          { id: "marquee-pause", label: "Marquee Pause Control" },
+          { id: "item", label: "Item" },
+          { id: "frame", label: "Frame" },
           { id: "search-trigger", label: "Search Trigger" },
           { id: "idle-motion", label: "Idle Motion" },
         ],
@@ -131,9 +143,9 @@ export const nav: NavSection[] = [
       {
         id: "navigation",
         label: "Navigation",
-        items: items("Breadcrumbs", "Pagination", "Tab Menu", "Tabs", "Header Nav", "Sidebar", "Section Header", "Tree View"),
+        items: items("Breadcrumbs", "Pagination", "Pagination Status", "Tab Menu", "Tabs", "Header Nav", "Sidebar", "Section Header", "Section Rail", "Tree View"),
       },
-      { id: "content", label: "Content", items: items("Accordion", "FAQ", "Blog Content", "Code Block", "Code Block Tabs") },
+      { id: "content", label: "Content", items: items("Accordion", "Collapse", "Collapsible", "FAQ", "Blog Content", "Code Block", "Code Block Tabs") },
       {
         id: "dataviz",
         label: "Data Viz",
@@ -147,6 +159,10 @@ export const nav: NavSection[] = [
           { id: "stacked-bar", label: "Stacked Bar" },
           { id: "line-chart", label: "Line Chart" },
           { id: "donut-chart", label: "Donut Chart" },
+          { id: "funnel-chart", label: "Funnel Chart" },
+          { id: "waterfall-chart", label: "Waterfall Chart" },
+          { id: "scatter-chart", label: "Scatter Chart" },
+          { id: "radar-chart", label: "Radar Chart" },
           { id: "meter", label: "Meter" },
           { id: "stacked-meter", label: "Stacked Meter" },
           { id: "gauge", label: "Gauge" },
@@ -158,6 +174,7 @@ export const nav: NavSection[] = [
         label: "Metrics Dashboard",
         items: [
           { id: "dashboard", label: "Live Dashboard" },
+          { id: "animated-number", label: "Animated Number" },
           { id: "bar-list", label: "Bar List" },
           { id: "loading", label: "Loading States" },
           { id: "breakdown", label: "Breakdown Legends" },

@@ -3,17 +3,23 @@ import { Accordion as AccordionPrimitive } from "radix-ui";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 
-export type AccordionVariant = "default" | "bordered" | "ghost";
+export type AccordionVariant = "default" | "bordered" | "ghost" | "surface" | "separated";
 export type AccordionIcon = "chevron" | "plus";
 
-const AccordionContext = React.createContext<{ variant: AccordionVariant; icon: AccordionIcon }>({
+const AccordionContext = React.createContext<{ variant: AccordionVariant; icon: AccordionIcon; keepMounted: boolean }>({
   variant: "default",
   icon: "chevron",
+  keepMounted: false,
 });
 
 export type AccordionProps = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root> & {
-  /** default: divided list · bordered: separate cards · ghost: no chrome */
+  /**
+   * default: divided list · bordered: separate bordered cards · ghost: no chrome ·
+   * surface: one bordered panel with divided rows · separated: separate soft filled blocks
+   */
   variant?: AccordionVariant;
+  /** Keep every panel in the tree while closed (hidden), so form state and iframes survive; panels can override it. */
+  keepMounted?: boolean;
   /** Trigger indicator: rotating chevron or plus that morphs into minus. */
   icon?: AccordionIcon;
 };
@@ -22,8 +28,8 @@ export type AccordionProps = React.ComponentPropsWithoutRef<typeof AccordionPrim
 export const Accordion = React.forwardRef<
   React.ComponentRef<typeof AccordionPrimitive.Root>,
   AccordionProps
->(({ className, variant = "default", icon = "chevron", ...props }, ref) => {
-  const ctx = React.useMemo(() => ({ variant, icon }), [variant, icon]);
+>(({ className, variant = "default", icon = "chevron", keepMounted = false, ...props }, ref) => {
+  const ctx = React.useMemo(() => ({ variant, icon, keepMounted }), [variant, icon, keepMounted]);
   return (
     <AccordionContext.Provider value={ctx}>
       <AccordionPrimitive.Root
@@ -32,6 +38,8 @@ export const Accordion = React.forwardRef<
           "w-full",
           variant === "bordered" && "flex flex-col gap-3",
           variant === "ghost" && "flex flex-col gap-1",
+          variant === "separated" && "flex flex-col gap-2",
+          variant === "surface" && "overflow-hidden rounded-box border border-border bg-card shadow-xs",
           className
         )}
         {...props}
@@ -53,7 +61,8 @@ export const AccordionItem = React.forwardRef<
     <AccordionPrimitive.Item
       ref={ref}
       className={cn(
-        variant === "default" && "border-b border-border last:border-b-0",
+        (variant === "default" || variant === "surface") && "border-b border-border last:border-b-0",
+        variant === "separated" && "overflow-hidden rounded-box bg-subtle transition-colors data-[state=open]:bg-muted",
         variant === "bordered" &&
           "overflow-hidden rounded-box border border-border bg-card shadow-xs transition-shadow data-[state=open]:shadow-sm",
         variant === "ghost" && "rounded-md transition-colors data-[state=open]:bg-subtle",
@@ -98,6 +107,8 @@ export const AccordionTrigger = React.forwardRef<
           "disabled:cursor-not-allowed disabled:opacity-50",
           ctx.variant === "default" && "hover:text-foreground/80",
           ctx.variant === "bordered" && "rounded-none px-5 hover:bg-subtle",
+          ctx.variant === "surface" && "rounded-none px-5 hover:bg-subtle focus-visible:ring-inset",
+          ctx.variant === "separated" && "rounded-none px-5 focus-visible:ring-inset",
           ctx.variant === "ghost" && "px-3 py-3 hover:bg-accent data-[state=open]:hover:bg-transparent",
           focusRing,
           className
@@ -124,24 +135,32 @@ export const AccordionTrigger = React.forwardRef<
 });
 AccordionTrigger.displayName = "AccordionTrigger";
 
-export type AccordionContentProps = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>;
+export type AccordionContentProps = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content> & {
+  /** Keep this panel in the tree while closed; overrides the `Accordion` setting. */
+  keepMounted?: boolean;
+};
 
 /** Animated collapsible body. */
 export const AccordionContent = React.forwardRef<
   React.ComponentRef<typeof AccordionPrimitive.Content>,
   AccordionContentProps
->(({ className, children, ...props }, ref) => {
-  const { variant } = React.useContext(AccordionContext);
+>(({ className, children, keepMounted, forceMount, ...props }, ref) => {
+  const { variant, keepMounted: keepAll } = React.useContext(AccordionContext);
+  const keep = forceMount ?? ((keepMounted ?? keepAll) ? true : undefined);
   return (
     <AccordionPrimitive.Content
       ref={ref}
-      className="overflow-hidden text-sm text-muted-foreground data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+      forceMount={keep}
+      className={cn(
+        "overflow-hidden text-sm text-muted-foreground data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
+        keep && "data-[state=closed]:hidden"
+      )}
       {...props}
     >
       <div
         className={cn(
           "pb-4 leading-relaxed",
-          variant === "bordered" && "px-5",
+          (variant === "bordered" || variant === "surface" || variant === "separated") && "px-5",
           variant === "ghost" && "px-3 pb-3",
           className
         )}

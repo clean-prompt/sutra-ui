@@ -76,6 +76,7 @@ import {
   SimpleTooltip,
   Sheet,
   SheetBody,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -159,6 +160,7 @@ export function OverlaysPage() {
       <DialogDemo />
       <AlertDialogDemo />
       <SheetDemo />
+      <SheetOptionsDemo />
       <DropdownMenuDemo />
       <ContextMenuDemo />
       <CommandDialogDemo />
@@ -590,6 +592,166 @@ function SheetDemo() {
           </SheetContent>
         </Sheet>
       ))}
+    </Demo>
+  );
+}
+
+function SheetOptionsDemo() {
+  const sizes = ["auto", "sm", "md", "lg", "half", "full"] as const;
+  return (
+    <Demo
+      id="sheet-options"
+      title="Sheet options"
+      description="size (width for side sheets, height for top and bottom), detached, frosted blur, logical start and end sides, dismissible={false} and stacked sheets."
+      align="start"
+      canvasClassName="gap-6"
+    >
+      <div className="space-y-2">
+        <DemoLabel>Size, side sheet (width)</DemoLabel>
+        <div className="flex flex-wrap gap-2">
+          {sizes.map((size) => (
+            <Sheet key={size}>
+              <SheetTrigger asChild>
+                <Button variant="secondary" size="sm">
+                  {size}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="end" size={size}>
+                <SheetHeader>
+                  <SheetTitle>Size: {size}</SheetTitle>
+                  <SheetDescription>The panel is {size} wide; on a phone it never exceeds the screen.</SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+          ))}
+        </div>
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Size, bottom sheet (height)</DemoLabel>
+        <div className="flex flex-wrap gap-2">
+          {sizes.map((size) => (
+            <Sheet key={size}>
+              <SheetTrigger asChild>
+                <Button variant="secondary" size="sm">
+                  {size}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" size={size}>
+                <SheetHeader>
+                  <SheetTitle>Height: {size}</SheetTitle>
+                  <SheetDescription>Bottom sheets take their height from size, or from their content with auto.</SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+          ))}
+        </div>
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Logical sides, detached, blur</DemoLabel>
+        <div className="flex flex-wrap gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary" size="sm">
+                Start
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="start">
+              <SheetHeader>
+                <SheetTitle>Start side</SheetTitle>
+                <SheetDescription>Left in left-to-right documents, right when the document is right-to-left.</SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary" size="sm">
+                Detached
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" detached>
+              <SheetHeader>
+                <SheetTitle>Detached</SheetTitle>
+                <SheetDescription>Floats off the edges with every corner rounded.</SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary" size="sm">
+                Detached bottom
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" detached size="md">
+              <SheetHeader>
+                <SheetTitle>Detached bottom</SheetTitle>
+                <SheetDescription>A floating card at the bottom of the screen.</SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary" size="sm">
+                Frosted blur
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" blur detached>
+              <SheetHeader>
+                <SheetTitle>Frosted</SheetTitle>
+                <SheetDescription>The panel is translucent and blurs what is behind it.</SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Not dismissible, and stacked sheets</DemoLabel>
+        <div className="flex flex-wrap gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary" size="sm">
+                Required step
+              </Button>
+            </SheetTrigger>
+            <SheetContent dismissible={false}>
+              <SheetHeader>
+                <SheetTitle>Accept the terms</SheetTitle>
+                <SheetDescription>Escape and outside clicks do nothing and there is no close button; use the action.</SheetDescription>
+              </SheetHeader>
+              <SheetFooter>
+                <SheetClose asChild>
+                  <Button>Accept and continue</Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="secondary" size="sm">
+                Stacked
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" size="md">
+              <SheetHeader>
+                <SheetTitle>Project</SheetTitle>
+                <SheetDescription>Open a second sheet: this one steps back behind it.</SheetDescription>
+              </SheetHeader>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="self-start">
+                    Edit members
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" size="sm">
+                  <SheetHeader>
+                    <SheetTitle>Members</SheetTitle>
+                    <SheetDescription>Close this sheet to return to the project.</SheetDescription>
+                  </SheetHeader>
+                </SheetContent>
+              </Sheet>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
     </Demo>
   );
 }

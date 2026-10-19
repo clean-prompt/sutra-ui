@@ -6,6 +6,8 @@ import { useField } from "./field";
 import { inputShellVariants } from "./input";
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
+  variant?: "outline" | "filled";
   invalid?: boolean;
   /** Grow with the content between `minRows` and `maxRows`. */
   autoResize?: boolean;
@@ -23,6 +25,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     {
       className,
       wrapperClassName,
+      variant,
       invalid,
       autoResize = false,
       minRows = 3,
@@ -109,7 +112,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         style={style}
         className={cn(
           "flex w-full min-w-0 px-3 py-2 text-sm leading-6",
-          inputShellVariants({ radius: "box" }),
+          inputShellVariants({ radius: "box", variant }),
           "placeholder:text-muted-foreground scrollbar-thin read-only:bg-subtle",
           autoResize ? "resize-none" : "resize-y",
           showCount && "pb-7",

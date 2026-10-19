@@ -2,7 +2,7 @@ import * as React from "react";
 import { Slot } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn, focusRing } from "../lib/cn";
-import { Spinner } from "./spinner";
+import { Spinner, type SpinnerProps } from "./spinner";
 
 export const buttonVariants = cva(
   [
@@ -56,6 +56,8 @@ export interface ButtonProps
   asChild?: boolean;
   /** Shows a spinner and disables the button. */
   loading?: boolean;
+  /** Overrides for the loading spinner (variant, size, `label`, colour via `className`); it inherits the button text colour by default. */
+  spinnerProps?: Partial<SpinnerProps>;
   leadingIcon?: React.ReactNode;
   trailingIcon?: React.ReactNode;
 }
@@ -69,6 +71,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       fullWidth,
       asChild,
       loading,
+      spinnerProps,
       leadingIcon,
       trailingIcon,
       disabled,
@@ -101,7 +104,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               : props.onClickCapture
           }
         >
-          {loading ? <Spinner size="sm" className="text-current" /> : leadingIcon}
+          {loading ? <Spinner size="sm" {...spinnerProps} className={cn("text-current", spinnerProps?.className)} /> : leadingIcon}
           <Slot.Slottable>{children}</Slot.Slottable>
           {trailingIcon}
         </Slot.Root>
@@ -116,7 +119,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         aria-busy={loading || undefined}
         {...props}
       >
-        {loading ? <Spinner size="sm" className="text-current" /> : leadingIcon}
+        {loading ? <Spinner size="sm" {...spinnerProps} className={cn("text-current", spinnerProps?.className)} /> : leadingIcon}
         {children}
         {trailingIcon}
       </button>

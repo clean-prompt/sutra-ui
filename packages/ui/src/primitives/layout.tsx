@@ -113,14 +113,142 @@ export const HStack = React.forwardRef<HTMLDivElement, Omit<StackProps, "directi
 ));
 HStack.displayName = "HStack";
 
-/** Card surface used across components and blocks. */
-export const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { padded?: boolean }>(
-  ({ className, padded = false, ...props }, ref) => (
+export type CardElement = "div" | "section" | "article" | "aside" | "li";
+
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Adds 24px (16px at `size="sm"`) of padding on the card itself; the parts carry their own padding instead. */
+  padded?: boolean;
+  /** Element to render, so a card can sit in the page outline as an `article`, `section` or list item. */
+  as?: CardElement;
+  /** `sm` tightens the padding of the card and its parts. */
+  size?: "sm" | "md";
+}
+
+/** Card surface used across components and blocks; compose it with `CardHeader`, `CardContent` and `CardFooter`. */
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, padded = false, as, size = "md", ...props }, ref) => {
+    const Comp = (as ?? "div") as React.ElementType;
+    return (
+      <Comp
+        ref={ref}
+        data-slot="card"
+        data-size={size === "sm" ? "sm" : undefined}
+        className={cn(
+          "rounded-box border border-border bg-card text-card-foreground shadow-xs",
+          size === "sm"
+            ? "[--card-gap:0.5rem] [--card-pad:1rem] [--card-text:0.875rem] [--card-text-sm:0.75rem]"
+            : "[--card-gap:0.75rem] [--card-pad:1.5rem] [--card-text:1rem] [--card-text-sm:0.875rem]",
+          padded && "p-(--card-pad)",
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+Card.displayName = "Card";
+
+/** Title row of a card; becomes two columns when it holds a `CardAction`. */
+export const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("rounded-box border border-border bg-card text-card-foreground shadow-xs", padded && "p-6", className)}
+      data-slot="card-header"
+      className={cn(
+        "grid grid-cols-1 items-start gap-1 px-(--card-pad) pt-(--card-pad) pb-(--card-gap) last:pb-(--card-pad) has-[[data-slot=card-action]]:grid-cols-[minmax(0,1fr)_auto]",
+        className
+      )}
       {...props}
     />
   )
 );
-Card.displayName = "Card";
+CardHeader.displayName = "CardHeader";
+
+export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> {
+  /** Element to render; pick the heading level that fits the page outline. Defaults to a plain `div`. */
+  as?: "h2" | "h3" | "h4" | "div";
+}
+
+/** Card title; pass `as="h3"` (or h2, h4) to make it a heading. */
+export const CardTitle = React.forwardRef<HTMLElement, CardTitleProps>(({ className, as, ...props }, ref) => {
+  const Comp = (as ?? "div") as React.ElementType;
+  return (
+    <Comp
+      ref={ref}
+      data-slot="card-title"
+      className={cn(
+        "min-w-0 text-(length:--card-text) leading-snug font-semibold tracking-tight text-foreground",
+        className
+      )}
+      {...props}
+    />
+  );
+});
+CardTitle.displayName = "CardTitle";
+
+/** Muted supporting line under the card title. */
+export const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, ...props }, ref) => (
+    <p
+      ref={ref}
+      data-slot="card-description"
+      className={cn("min-w-0 text-(length:--card-text-sm) text-muted-foreground", className)}
+      {...props}
+    />
+  )
+);
+CardDescription.displayName = "CardDescription";
+
+/** Control placed at the end of the card header (a button, menu or badge). */
+export const CardAction = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      data-slot="card-action"
+      className={cn("col-start-2 row-span-2 row-start-1 flex shrink-0 items-center gap-2 self-start justify-self-end", className)}
+      {...props}
+    />
+  )
+);
+CardAction.displayName = "CardAction";
+
+/** Card body. */
+export const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      data-slot="card-content"
+      className={cn(
+        "min-w-0 px-(--card-pad) py-(--card-gap) first:pt-(--card-pad) last:pb-(--card-pad)",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+CardContent.displayName = "CardContent";
+
+export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** `panel` draws a muted band with a top border, flush with the card edges. */
+  variant?: "plain" | "panel";
+}
+
+/** Card footer row for actions or meta text; wraps when it cannot fit. */
+export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
+  ({ className, variant = "plain", ...props }, ref) => (
+    <div
+      ref={ref}
+      data-slot="card-footer"
+      data-variant={variant}
+      className={cn(
+        "flex flex-wrap items-center gap-2 px-(--card-pad)",
+        variant === "panel"
+          ? "rounded-b-[calc(var(--radius-box)-1px)] border-t border-border bg-subtle py-[calc(var(--card-pad)*0.75)]"
+          : "pt-(--card-gap) pb-(--card-pad)",
+        className
+      )}
+      {...props}
+    />
+  )
+);
+CardFooter.displayName = "CardFooter";

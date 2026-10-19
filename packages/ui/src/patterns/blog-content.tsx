@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { formatShortDate, safeISO, toValidDate } from "../lib/time";
 import { Eyebrow } from "../primitives/typography";
+import { SectionRail, type SectionRailProps } from "./section-rail";
 
 const proseBase = [
   "max-w-[68ch] text-pretty leading-[1.75] text-foreground/85",
@@ -159,83 +160,16 @@ export interface BlogTableOfContentsProps extends Omit<React.HTMLAttributes<HTML
   smoothScroll?: boolean;
 }
 
-/** "On this page" navigation that highlights the heading in view. */
+/** "On this page" navigation that highlights the heading in view: a `SectionRail` fed with the post's headings. */
 export const BlogTableOfContents = React.forwardRef<HTMLElement, BlogTableOfContentsProps>(
-  (
-    {
-      className,
-      headings,
-      title = "On this page",
-      activeId: activeProp,
-      rootMargin = "0px 0px -65% 0px",
-      smoothScroll = true,
-      ...props
-    },
-    ref
-  ) => {
-    const [observed, setObserved] = React.useState<string | undefined>(headings[0]?.id);
-    const ids = headings.map((h) => h.id).join("|");
-
-    React.useEffect(() => {
-      if (activeProp !== undefined || typeof IntersectionObserver === "undefined") return;
-      const order = ids ? ids.split("|") : [];
-      const elements = order
-        .map((id) => document.getElementById(id))
-        .filter((el): el is HTMLElement => el !== null);
-      if (elements.length === 0) return;
-      const visible = new Map<string, boolean>();
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) visible.set(entry.target.id, entry.isIntersecting);
-          const first = order.find((id) => visible.get(id));
-          if (first) setObserved(first);
-        },
-        { rootMargin, threshold: [0, 1] }
-      );
-      elements.forEach((el) => observer.observe(el));
-      return () => observer.disconnect();
-    }, [ids, rootMargin, activeProp]);
-
-    const active = activeProp ?? observed;
-    const minLevel = headings.reduce((m, h) => Math.min(m, h.level ?? 2), Infinity);
-
-    return (
-      <nav ref={ref} aria-label="Table of contents" className={cn("text-sm", className)} {...props}>
-        {title ? <p className="mb-3 text-xs font-semibold text-foreground">{title}</p> : null}
-        <ul className="flex flex-col border-l border-border">
-          {headings.map((h) => {
-            const isActive = h.id === active;
-            const depth = Math.max(0, (h.level ?? 2) - (Number.isFinite(minLevel) ? minLevel : 2));
-            return (
-              <li key={h.id}>
-                <a
-                  href={`#${h.id}`}
-                  aria-current={isActive ? "location" : undefined}
-                  onClick={(e) => {
-                    if (!smoothScroll) return;
-                    const el = document.getElementById(h.id);
-                    if (!el) return;
-                    e.preventDefault();
-                    el.scrollIntoView({ behavior: "smooth", block: "start" });
-                    history.replaceState(null, "", `#${h.id}`);
-                    if (activeProp === undefined) setObserved(h.id);
-                  }}
-                  className={cn(
-                    "-ml-px block border-l py-1.5 pr-2 leading-snug outline-none transition-colors focus-visible:text-foreground focus-visible:underline",
-                    isActive
-                      ? "border-primary font-medium text-foreground"
-                      : "border-transparent text-muted-foreground hover:border-border-strong hover:text-foreground"
-                  )}
-                  style={{ paddingLeft: 12 + depth * 12 }}
-                >
-                  {h.title}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    );
-  }
+  ({ headings, title, activeId, ...props }, ref) => (
+    <SectionRail
+      ref={ref}
+      sections={headings.map((h) => ({ id: h.id, label: h.title, level: h.level }))}
+      title={title}
+      value={activeId}
+      {...(props as Omit<SectionRailProps, "sections" | "title" | "value">)}
+    />
+  )
 );
 BlogTableOfContents.displayName = "BlogTableOfContents";

@@ -6,6 +6,7 @@ import {
   Card,
   Chip,
   ChipGroup,
+  Countdown,
   Progress,
   ProgressCircle,
   ProgressSegments,
@@ -325,6 +326,40 @@ function SkeletonDemo() {
   );
 }
 
+function CountdownUrgencyDemo() {
+  // A deadline relative to when the demo mounted, so the final stretch is reachable without waiting.
+  const [deadline, setDeadline] = React.useState(() => Date.now() + 25_000);
+  return (
+    <div className="@container w-full space-y-6">
+      <div className="grid grid-cols-1 gap-6 @lg:grid-cols-2">
+        <div className="space-y-2">
+          <DemoLabel>Segments · urgentBelow={"{15000}"} (warning tone in the last 15 s)</DemoLabel>
+          <Countdown target={deadline} urgentBelow={15_000} size="sm" />
+        </div>
+        <div className="space-y-2">
+          <DemoLabel>Compact · same deadline</DemoLabel>
+          <Countdown target={deadline} urgentBelow={15_000} format="compact" />
+        </div>
+        <div className="space-y-2">
+          <DemoLabel>Already inside the final stretch</DemoLabel>
+          <Countdown target={Date.now() + 3_600_000} urgentBelow={7_200_000} size="sm" hideSeconds />
+        </div>
+        <div className="space-y-2">
+          <DemoLabel>Without urgentBelow</DemoLabel>
+          <Countdown target={Date.now() + 3_600_000} size="sm" hideSeconds />
+        </div>
+      </div>
+      <Button size="sm" variant="secondary" onClick={() => setDeadline(Date.now() + 25_000)}>
+        Restart the 25 s deadline
+      </Button>
+      <div className="max-w-56 space-y-2">
+        <DemoLabel>Narrow container</DemoLabel>
+        <Countdown target={Date.now() + 90_000} urgentBelow={120_000} size="sm" />
+      </div>
+    </div>
+  );
+}
+
 export function IndicatorsPage() {
   return (
     <PageIntro
@@ -480,6 +515,10 @@ export function IndicatorsPage() {
 
       <Demo id="progress" title="Progress" description="Linear bars, circular rings and segmented bars." align="start">
         <ProgressDemo />
+      </Demo>
+
+      <Demo id="countdown-urgency" title="Countdown urgency" description="Countdown urgentBelow: in the final stretch (the given number of milliseconds) the countdown takes the warning tone and sets data-urgent. It switches back off once the time is up." align="start">
+        <CountdownUrgencyDemo />
       </Demo>
 
       <Demo id="skeleton" title="Skeleton" description="Shimmering placeholders composed to match the real layout." align="start">

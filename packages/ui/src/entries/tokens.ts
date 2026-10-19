@@ -33,3 +33,7 @@ export * from "../hooks/use-marquee-selection";
 export * from "../hooks/use-camera";
 export * from "../hooks/use-merged-refs";
 export * from "../hooks/use-object-url";
+export * from "../hooks/use-debounced-value";
+export * from "../hooks/use-previous";
+export * from "../hooks/use-disclosure";
+export * from "../hooks/use-scroll-sections";

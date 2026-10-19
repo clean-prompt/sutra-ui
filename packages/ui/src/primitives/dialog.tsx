@@ -391,39 +391,170 @@ export const sheetContentVariants = cva(
   [
     "fixed z-50 flex flex-col gap-4 bg-dialog p-6 text-foreground shadow-2xl outline-none",
     "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:duration-300 data-[state=closed]:duration-200 ease-out-quart",
+    // Stacking: a sheet that has another sheet open on top of it steps back toward its edge.
+    "transition-[scale,opacity] data-[nested]:scale-[0.96] data-[nested]:opacity-60",
   ],
   {
     variants: {
       side: {
-        left: "inset-y-0 left-0 h-full w-[85vw] max-w-sm border-r border-border data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
+        left: "inset-y-0 left-0 h-full w-[85vw] max-w-sm origin-left border-r border-border data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left",
         right:
-          "inset-y-0 right-0 h-full w-[85vw] max-w-sm border-l border-border data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
-        top: "inset-x-0 top-0 max-h-[90dvh] border-b border-border rounded-b-2xl data-[state=open]:slide-in-from-top data-[state=closed]:slide-out-to-top",
+          "inset-y-0 right-0 h-full w-[85vw] max-w-sm origin-right border-l border-border data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right",
+        top: "inset-x-0 top-0 max-h-[90dvh] origin-top border-b border-border rounded-b-2xl data-[state=open]:slide-in-from-top data-[state=closed]:slide-out-to-top",
         bottom:
-          "inset-x-0 bottom-0 max-h-[90dvh] border-t border-border rounded-t-2xl pb-[max(1.5rem,env(safe-area-inset-bottom))] data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
+          "inset-x-0 bottom-0 max-h-[90dvh] origin-bottom border-t border-border rounded-t-2xl pb-[max(1.5rem,env(safe-area-inset-bottom))] data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom",
+        start:
+          "inset-y-0 start-0 h-full w-[85vw] max-w-sm origin-left rtl:origin-right border-e border-border data-[state=open]:slide-in-from-left data-[state=closed]:slide-out-to-left rtl:data-[state=open]:slide-in-from-right rtl:data-[state=closed]:slide-out-to-right",
+        end: "inset-y-0 end-0 h-full w-[85vw] max-w-sm origin-right rtl:origin-left border-s border-border data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right rtl:data-[state=open]:slide-in-from-left rtl:data-[state=closed]:slide-out-to-left",
       },
     },
     defaultVariants: { side: "right" },
   }
 );
 
+export type SheetSide = "left" | "right" | "top" | "bottom" | "start" | "end";
+export type SheetSize = "auto" | "sm" | "md" | "lg" | "half" | "full";
+
+const sheetWidth: Record<SheetSize, string> = {
+  auto: "w-auto min-w-[min(18rem,100vw)] max-w-[90vw]",
+  sm: "w-[85vw] max-w-sm",
+  md: "w-[90vw] max-w-lg",
+  lg: "w-[92vw] max-w-2xl",
+  half: "w-[max(50vw,min(22rem,100vw))] max-w-none",
+  full: "w-screen max-w-none rounded-none border-0",
+};
+const sheetHeight: Record<SheetSize, string> = {
+  auto: "h-auto max-h-[90dvh]",
+  sm: "h-[min(20rem,90dvh)]",
+  md: "h-[min(32rem,90dvh)]",
+  lg: "h-[min(48rem,90dvh)]",
+  half: "h-[50dvh]",
+  full: "h-dvh max-h-none rounded-none border-0",
+};
+/** Detached panels float 0.5rem off the edges with every corner rounded. */
+const sheetDetached: Record<SheetSide, string> = {
+  left: "inset-y-2 left-2 h-auto max-h-[calc(100dvh-1rem)] rounded-2xl border",
+  right: "inset-y-2 right-2 h-auto max-h-[calc(100dvh-1rem)] rounded-2xl border",
+  start: "inset-y-2 start-2 h-auto max-h-[calc(100dvh-1rem)] rounded-2xl border",
+  end: "inset-y-2 end-2 h-auto max-h-[calc(100dvh-1rem)] rounded-2xl border",
+  top: "inset-x-2 top-2 rounded-2xl border",
+  bottom: "inset-x-2 bottom-2 rounded-2xl border pb-6",
+};
+
+function sheetLayoutClass(side: SheetSide, size: SheetSize | undefined, detached: boolean) {
+  const horizontal = side === "left" || side === "right" || side === "start" || side === "end";
+  const sizeClass = size ? (horizontal ? sheetWidth[size] : sheetHeight[size]) : undefined;
+  const full = size === "full";
+  return cn(
+    sizeClass,
+    detached && sheetDetached[side],
+    // A full-size detached panel keeps its 0.5rem margin.
+    detached && full && (horizontal ? "w-[calc(100vw-1rem)] max-h-[calc(100dvh-1rem)]" : "h-[calc(100dvh-1rem)] max-h-none"),
+    detached && full && "rounded-2xl border"
+  );
+}
+
+/** Rendered inside the panel only while it is mounted: tells the sheet underneath (the parent context) it has company. */
+function SheetStackRegistrar() {
+  const parent = React.useContext(SheetStackContext);
+  React.useEffect(() => parent?.register(), [parent]);
+  return null;
+}
+
+interface SheetStackValue {
+  /** Called by a nested sheet while it is mounted; returns the cleanup. */
+  register: () => () => void;
+}
+
+const SheetStackContext = React.createContext<SheetStackValue | null>(null);
+
 export interface SheetContentProps
-  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
-    VariantProps<typeof sheetContentVariants> {
+  extends Omit<React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>, "children">,
+    Omit<VariantProps<typeof sheetContentVariants>, "side"> {
+  children?: React.ReactNode;
+  /**
+   * Edge the panel slides from. `start` and `end` follow the document direction (left and right in LTR); `left` and
+   * `right` are fixed.
+   */
+  side?: SheetSide;
+  /** Panel width (left, right, start, end) or height (top, bottom). Without it: 24rem wide, or as tall as its content. */
+  size?: SheetSize;
+  /** Set to `false` to keep the sheet open on Escape and outside clicks, and to hide the built-in close button. */
+  dismissible?: boolean;
+  /** Float the panel off the screen edges with rounded corners. */
+  detached?: boolean;
+  /** Frosted panel: translucent surface with a backdrop blur, so the page shows through. */
+  blur?: boolean;
+  /** Show the close button (default: when `dismissible`). */
   showClose?: boolean;
   overlayClassName?: string;
 }
 
-/** Sheet panel sliding in from `side`. */
+/**
+ * Sheet panel sliding in from `side`. A sheet opened inside another sheet stacks on top of it: the one underneath
+ * scales down and fades (`data-nested`), and the reduced-motion net removes the movement.
+ */
 export const SheetContent = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Content>, SheetContentProps>(
-  ({ className, side = "right", showClose = true, overlayClassName, children, onOpenAutoFocus, onCloseAutoFocus, ...props }, ref) => {
+  (
+    {
+      className,
+      side = "right",
+      size,
+      dismissible = true,
+      detached = false,
+      blur = false,
+      showClose,
+      overlayClassName,
+      children,
+      onOpenAutoFocus,
+      onCloseAutoFocus,
+      onEscapeKeyDown,
+      onInteractOutside,
+      ...props
+    },
+    ref
+  ) => {
     const returnFocus = useReturnFocus({ onOpenAutoFocus, onCloseAutoFocus });
+    const [nested, setNested] = React.useState(0);
+    const stack = React.useMemo<SheetStackValue>(
+      () => ({
+        register: () => {
+          setNested((n) => n + 1);
+          return () => setNested((n) => Math.max(0, n - 1));
+        },
+      }),
+      []
+    );
+    const guard =
+      <E extends Event>(handler?: (event: E) => void) =>
+      (event: E) => {
+        handler?.(event);
+        if (!dismissible && !event.defaultPrevented) event.preventDefault();
+      };
+    const closeVisible = showClose ?? dismissible;
     return (
       <DialogPrimitive.Portal>
         <DialogOverlay className={overlayClassName} />
-        <DialogPrimitive.Content ref={ref} className={cn(sheetContentVariants({ side }), className)} {...props} {...returnFocus}>
-          {children}
-          {showClose && (
+        <DialogPrimitive.Content
+          ref={ref}
+          data-slot="sheet-content"
+          data-side={side}
+          data-detached={detached ? "" : undefined}
+          data-nested={nested > 0 ? "" : undefined}
+          className={cn(
+            sheetContentVariants({ side }),
+            sheetLayoutClass(side, size, detached),
+            blur && "bg-dialog/75 backdrop-blur-xl backdrop-saturate-150",
+            className
+          )}
+          {...props}
+          {...returnFocus}
+          onEscapeKeyDown={guard(onEscapeKeyDown)}
+          onInteractOutside={guard(onInteractOutside)}
+        >
+          <SheetStackRegistrar />
+          <SheetStackContext.Provider value={stack}>{children}</SheetStackContext.Provider>
+          {closeVisible && (
             <DialogPrimitive.Close asChild>
               <Button variant="ghost" size="icon-sm" className={cn(closeButtonClass, focusRing)} aria-label="Close">
                 <RiCloseLine aria-hidden />

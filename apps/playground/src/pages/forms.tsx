@@ -795,6 +795,10 @@ function RatingDemo() {
         <Rating icon={RiHeartFill} activeClassName="text-destructive" defaultValue={3} max={5} aria-label="Hearts" />
         <Rating readOnly value={4.5} allowHalf aria-label="Average rating" />
         <Rating disabled defaultValue={2} aria-label="Disabled rating" />
+        <DemoLabel>allowClear (default: click the selected star, Delete or 0 clears)</DemoLabel>
+        <Rating defaultValue={3} aria-label="Clearable rating" />
+        <DemoLabel>allowClear=false keeps a given rating</DemoLabel>
+        <Rating defaultValue={3} allowClear={false} aria-label="Sticky rating" />
       </div>
       <div className="space-y-3">
         <DemoLabel>RatingSummary</DemoLabel>
@@ -953,6 +957,175 @@ function ComboboxDemo() {
         <Combobox size="sm" options={countries} placeholder="Small" aria-label="Small combobox" />
         <Combobox invalid options={countries} placeholder="Required" aria-label="Invalid combobox" />
         <Combobox disabled options={countries} defaultValue="de" aria-label="Disabled combobox" />
+      </div>
+    </div>
+  );
+}
+
+const cityNames = [
+  "Amsterdam", "Athens", "Auckland", "Bangkok", "Barcelona", "Beijing", "Berlin", "Bogota", "Boston", "Brussels", "Budapest",
+  "Cairo", "Cape Town", "Chicago", "Copenhagen", "Dublin", "Edinburgh", "Helsinki", "Hong Kong", "Istanbul", "Jakarta",
+  "Lagos", "Lima", "Lisbon", "London", "Madrid", "Melbourne", "Mexico City", "Mumbai", "Nairobi", "Oslo", "Paris", "Prague",
+  "Reykjavik", "Rome", "Seoul", "Singapore", "Stockholm", "Sydney", "Tokyo", "Toronto", "Vienna", "Warsaw", "Zurich",
+];
+
+/** A fake search endpoint: results for a query after a delay, so the demo shows the loading state. */
+function useFakeSearch(query: string, delay: number, hold: boolean) {
+  const [state, setState] = React.useState<{ options: ComboboxOption[]; loading: boolean }>({ options: [], loading: false });
+  React.useEffect(() => {
+    if (!query.trim()) {
+      setState({ options: [], loading: false });
+      return;
+    }
+    setState((prev) => ({ ...prev, loading: true }));
+    const id = setTimeout(() => {
+      const q = query.trim().toLowerCase();
+      const options = cityNames.filter((c) => c.toLowerCase().includes(q)).slice(0, 8).map((c) => ({ value: c.toLowerCase().replace(/\s+/g, "-"), label: c }));
+      setState({ options, loading: false });
+    }, delay);
+    return () => clearTimeout(id);
+  }, [query, delay]);
+  return { options: state.options, loading: state.loading || hold };
+}
+
+function ComboboxAsyncDemo() {
+  const [city, setCity] = React.useState("");
+  const [query, setQuery] = React.useState("");
+  const [hold, setHold] = React.useState(false);
+  const [trip, setTrip] = React.useState<string[]>(["tokyo", "paris"]);
+  const [tripQuery, setTripQuery] = React.useState("");
+  const single = useFakeSearch(query, 600, hold);
+  const multi = useFakeSearch(tripQuery, 400, false);
+  return (
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
+      <div className="space-y-2">
+        <DemoLabel>Server search: filter={"{false}"}, inputValue, loading, clearable, openOnFocus</DemoLabel>
+        <Combobox
+          options={single.options}
+          filter={false}
+          inputValue={query}
+          onInputValueChange={setQuery}
+          loading={single.loading}
+          loadingState="Searching cities…"
+          emptyState={query.trim() ? "No city matches" : "Type to search cities"}
+          value={city}
+          onValueChange={setCity}
+          clearable
+          openOnFocus
+          placeholder="Search a city"
+          searchPlaceholder="Type a city…"
+          aria-label="City"
+        />
+        <Value>{city || "none"}</Value>
+        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Switch size="sm" checked={hold} onCheckedChange={setHold} aria-label="Keep the loading state on" />
+          Keep the loading state on
+        </label>
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Multiple, two-step Backspace, labels kept after the results change</DemoLabel>
+        <Combobox
+          multiple
+          options={multi.options}
+          filter={false}
+          inputValue={tripQuery}
+          onInputValueChange={setTripQuery}
+          loading={multi.loading}
+          value={trip}
+          onValueChange={setTrip}
+          clearable
+          clearLabel="Clear all cities"
+          confirmBackspace
+          maxChips={3}
+          placeholder="Add cities"
+          aria-label="Trip cities"
+        />
+        <Value>{JSON.stringify(trip)}</Value>
+        <p className="text-xs text-muted-foreground">Focus the field and press Backspace: the last chip is marked, a second press removes it.</p>
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Custom filter function (starts with)</DemoLabel>
+        <Combobox
+          options={countries}
+          filter={(option, q) => option.label.toLowerCase().startsWith(q.trim().toLowerCase())}
+          clearable
+          placeholder="Starts with…"
+          aria-label="Country, starts with"
+        />
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Loading and empty (no data yet), narrow</DemoLabel>
+        <div className="max-w-56 space-y-2">
+          <Combobox options={[]} filter={false} loading placeholder="Loading options" aria-label="Loading combobox" />
+          <Combobox options={[]} emptyState="Nothing to pick yet" placeholder="No options" aria-label="Empty combobox" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TagInputOptionsDemo() {
+  const [tags, setTags] = React.useState(["alpha", "beta", "gamma"]);
+  return (
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
+      <div className="space-y-2">
+        <DemoLabel>confirmBackspace and showCount (max 6)</DemoLabel>
+        <TagInput value={tags} onValueChange={setTags} confirmBackspace showCount max={6} placeholder="Add a tag…" aria-label="Release tags" />
+        <p className="text-xs text-muted-foreground">Empty the field, then press Backspace: the last tag is marked, a second press removes it. Typing or leaving clears the mark.</p>
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>renderTag (a leading dot)</DemoLabel>
+        <TagInput
+          defaultValue={["ok", "warn", "fail"]}
+          renderTag={(tag) => (
+            <span className="inline-flex items-center gap-1.5">
+              <span aria-hidden className={tag === "ok" ? "size-1.5 rounded-full bg-success" : tag === "warn" ? "size-1.5 rounded-full bg-warning" : "size-1.5 rounded-full bg-destructive"} />
+              {tag}
+            </span>
+          )}
+          aria-label="Statuses"
+        />
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>readOnly</DemoLabel>
+        <TagInput readOnly defaultValue={["archived", "2024", "finance"]} showCount aria-label="Read-only tags" />
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Narrow container</DemoLabel>
+        <div className="max-w-48">
+          <TagInput defaultValue={["a-long-tag-name", "another-long-tag"]} showCount max={4} confirmBackspace aria-label="Narrow tags" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FilledInputsDemo() {
+  return (
+    <div className="grid grid-cols-1 w-full gap-8 lg:grid-cols-2">
+      <div className="space-y-3">
+        <DemoLabel>variant="filled" · Input, with an icon, a prefix and a clear button</DemoLabel>
+        <Input variant="filled" placeholder="Filled input" aria-label="Filled input" />
+        <Input variant="filled" leadingIcon={<RiMailLine />} placeholder="With an icon" aria-label="Filled with icon" />
+        <Input variant="filled" prefix="https://" placeholder="example.com" clearable defaultValue="sutra.dev" aria-label="Filled with prefix" />
+        <PasswordInput variant="filled" placeholder="Password" aria-label="Filled password" />
+        <DemoLabel>Sizes</DemoLabel>
+        <div className="space-y-2">
+          <Input variant="filled" size="sm" placeholder="sm" aria-label="Filled small" />
+          <Input variant="filled" size="lg" placeholder="lg" aria-label="Filled large" />
+        </div>
+      </div>
+      <div className="space-y-3">
+        <DemoLabel>Textarea, NumberInput, TagInput</DemoLabel>
+        <Textarea variant="filled" placeholder="Filled textarea" aria-label="Filled textarea" />
+        <NumberInput variant="filled" defaultValue={4} min={0} max={10} aria-label="Filled number" />
+        <TagInput variant="filled" defaultValue={["design", "react"]} placeholder="Add a tag…" aria-label="Filled tags" />
+        <DemoLabel>Invalid, disabled, narrow</DemoLabel>
+        <Input variant="filled" invalid defaultValue="not an email" aria-label="Filled invalid" />
+        <Input variant="filled" disabled defaultValue="Disabled" aria-label="Filled disabled" />
+        <div className="max-w-40">
+          <Input variant="filled" leadingIcon={<RiUserLine />} placeholder="Narrow" aria-label="Filled narrow" />
+        </div>
       </div>
     </div>
   );
@@ -1174,8 +1347,16 @@ export function FormsPage() {
         <NumberInputDemo />
       </Demo>
 
+      <Demo id="filled-inputs" title="Filled inputs" description="variant=filled on Input, PasswordInput, Textarea, NumberInput and TagInput: a tinted surface with a hidden border that returns to the normal surface on focus. The paper style follows through the same tokens." align="start">
+        <FilledInputsDemo />
+      </Demo>
+
       <Demo id="tag-input" title="Tag input" description="Free-form tags with validation, limits and suggestions." align="start">
         <TagInputDemo />
+      </Demo>
+
+      <Demo id="tag-input-options" title="Tag input: options" description="Two-step Backspace (confirmBackspace), a tag counter (showCount), custom tag content (renderTag) and a read-only list." align="start">
+        <TagInputOptionsDemo />
       </Demo>
 
       <Demo id="checkbox" title="Checkbox" description="Checkbox, CheckboxField, CheckboxGroup with select-all, and CheckboxCard." align="start">
@@ -1228,6 +1409,15 @@ export function FormsPage() {
 
       <Demo id="combobox" title="Combobox" description="Searchable select: single, multiple with chips, and creatable." align="start">
         <ComboboxDemo />
+      </Demo>
+
+      <Demo
+        id="combobox-async"
+        title="Combobox: async search and options"
+        description="Hand the combobox server results: filter={false} turns the built-in matching off, inputValue and onInputValueChange expose the search text, loading shows a loading row (or a spinner while results stay on screen), clearable adds a clear button, openOnFocus opens the list on keyboard focus and confirmBackspace makes the last chip need two presses."
+        align="start"
+      >
+        <ComboboxAsyncDemo />
       </Demo>
 
       <Demo id="password-strength" title="Password strength" description="Live meter and checklist wired to a password input." align="start">

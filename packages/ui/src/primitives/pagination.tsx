@@ -5,8 +5,10 @@ import { Button } from "./button";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { clamp } from "../lib/math";
 import { usePagination } from "../hooks/use-pagination";
+import { getPageWindow, type PageWindow } from "../lib/pagination";
+import { Skeleton } from "./progress";
 
-export { getPaginationRange, type PaginationRangeItem, type UsePaginationOptions } from "../lib/pagination";
+export { getPaginationRange, type PaginationRangeItem, type UsePaginationOptions, type PageWindow } from "../lib/pagination";
 export { usePagination } from "../hooks/use-pagination";
 
 const itemSize: Record<Size, string> = {
@@ -302,3 +304,59 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
   }
 );
 Pagination.displayName = "Pagination";
+
+export interface PaginationStatusProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Current page (1-based). */
+  page: number;
+  pageSize: number;
+  /** Total number of rows. */
+  total: number;
+  /** Custom text from the row window, e.g. `({ from, to, total }) => \`Rows ${from} to ${to} of ${total}\``. */
+  format?: (window: PageWindow) => React.ReactNode;
+  /** Locale for the numbers. */
+  locale?: string | string[];
+  /** Shown when there are no rows. Default "No results". */
+  emptyState?: React.ReactNode;
+  /** Rows are being fetched: a placeholder while the total is 0, otherwise the numbers stay and the line is marked busy. */
+  loading?: boolean;
+}
+
+/** "1–10 of 245": which rows the current page shows. Announced politely when the page changes. */
+export const PaginationStatus = React.forwardRef<HTMLDivElement, PaginationStatusProps>(
+  ({ page, pageSize, total, format, locale, emptyState, loading = false, className, ...props }, ref) => {
+    const window = getPageWindow(page, pageSize, total);
+    const number = (n: number) => {
+      try {
+        return new Intl.NumberFormat(locale).format(n);
+      } catch {
+        return String(n);
+      }
+    };
+    let content: React.ReactNode;
+    if (window.total === 0) {
+      content = loading ? (
+        <>
+          <Skeleton shape="text" className="inline-block h-3.5 w-24 align-middle" />
+          <span className="sr-only">Loading…</span>
+        </>
+      ) : (
+        (emptyState ?? "No results")
+      );
+    } else {
+      content = format ? format(window) : `${number(window.from)}–${number(window.to)} of ${number(window.total)}`;
+    }
+    return (
+      <div
+        ref={ref}
+        data-slot="pagination-status"
+        aria-live="polite"
+        aria-busy={loading || undefined}
+        className={cn("text-sm tabular-nums text-muted-foreground", className)}
+        {...props}
+      >
+        {content}
+      </div>
+    );
+  }
+);
+PaginationStatus.displayName = "PaginationStatus";

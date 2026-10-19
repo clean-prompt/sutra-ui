@@ -6,6 +6,9 @@ import {
   ButtonGroupItem,
   ButtonGroupSeparator,
   CloseButton,
+  ToggleButton,
+  ToggleGroup,
+  ToggleGroupItem,
   FloatingActionButton,
   SocialButton,
   TextLink,
@@ -71,6 +74,83 @@ const providers: SocialProvider[] = [
   "figma",
   "gitlab",
 ];
+
+function ToggleDemo() {
+  const [format, setFormat] = React.useState<string[]>(["bold"]);
+  const [align, setAlign] = React.useState("left");
+  return (
+    <Demo
+      id="toggle-group"
+      title="Toggle button and toggle group"
+      description="Buttons that stay pressed (aria-pressed): single or multiple selection, roving focus (one tab stop, arrow keys), default, outline and soft looks."
+      align="start"
+      canvasClassName="gap-6"
+    >
+      <Row label="Toggle button">
+        <ToggleButton aria-label="Pin" defaultPressed>
+          <RiHeartLine />
+        </ToggleButton>
+        <ToggleButton variant="outline">Mute notifications</ToggleButton>
+        <ToggleButton variant="soft" size="lg">
+          Subscribed
+        </ToggleButton>
+        <ToggleButton disabled>Disabled</ToggleButton>
+      </Row>
+      <Row label="Multiple (controlled)">
+        <ToggleGroup type="multiple" aria-label="Text format" value={format} onValueChange={setFormat}>
+          <ToggleGroupItem value="bold" aria-label="Bold">
+            <RiBold />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="italic" aria-label="Italic">
+            <RiItalic />
+          </ToggleGroupItem>
+          <ToggleGroupItem value="underline" aria-label="Underline">
+            <RiUnderline />
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <span className="text-sm text-muted-foreground">Pressed: {format.length ? format.join(", ") : "none"}</span>
+      </Row>
+      <Row label="Single (press again to clear)">
+        <ToggleGroup aria-label="Alignment" variant="outline" value={align} onValueChange={setAlign}>
+          <ToggleGroupItem value="left">
+            Left
+          </ToggleGroupItem>
+          <ToggleGroupItem value="center">Center</ToggleGroupItem>
+          <ToggleGroupItem value="right">Right</ToggleGroupItem>
+        </ToggleGroup>
+        <span className="text-sm text-muted-foreground">Value: {align || "(none)"}</span>
+      </Row>
+      <Row label="Soft, sizes">
+        {(["sm", "md", "lg"] as const).map((size) => (
+          <ToggleGroup key={size} aria-label={`Size ${size}`} variant="soft" size={size} defaultValue="b">
+            <ToggleGroupItem value="a">A</ToggleGroupItem>
+            <ToggleGroupItem value="b">B</ToggleGroupItem>
+            <ToggleGroupItem value="c">C</ToggleGroupItem>
+          </ToggleGroup>
+        ))}
+      </Row>
+      <Row label="Vertical, with a disabled item">
+        <ToggleGroup aria-label="Density" orientation="vertical" className="flex-col items-stretch" defaultValue="comfortable">
+          <ToggleGroupItem value="compact">Compact</ToggleGroupItem>
+          <ToggleGroupItem value="comfortable">Comfortable</ToggleGroupItem>
+          <ToggleGroupItem value="spacious" disabled>
+            Spacious
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </Row>
+      <div className="max-w-[260px] space-y-2">
+        <DemoLabel>Narrow container (260px): wraps</DemoLabel>
+        <ToggleGroup type="multiple" aria-label="Days" variant="outline" defaultValue={["mon", "wed"]}>
+          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
+            <ToggleGroupItem key={d} value={d.toLowerCase()}>
+              {d}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </div>
+    </Demo>
+  );
+}
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -179,6 +259,20 @@ export function ButtonsPage() {
             Disabled
           </Button>
         </Row>
+        <Row label="Spinner options (spinnerProps)">
+          <Button loading spinnerProps={{ variant: "dots" }}>
+            Dots
+          </Button>
+          <Button variant="secondary" loading spinnerProps={{ variant: "bars", label: "Syncing" }}>
+            Bars
+          </Button>
+          <Button variant="outline" loading spinnerProps={{ variant: "pulse", className: "text-primary" }}>
+            Primary pulse
+          </Button>
+          <Button variant="tertiary" size="lg" loading spinnerProps={{ size: "md" }}>
+            Larger spinner
+          </Button>
+        </Row>
         <Row label="As link (asChild)">
           <Button asChild variant="outline">
             <a href="#button">
@@ -276,6 +370,8 @@ export function ButtonsPage() {
           </ButtonGroup>
         </Row>
       </Demo>
+
+      <ToggleDemo />
 
       <Demo
         id="app-store-badge"

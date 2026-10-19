@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -5,10 +6,18 @@ import {
   AccordionTrigger,
   BlogContent,
   BlogPostHeader,
+  Button,
   CodeBlock,
   CodeBlockTabs,
+  Collapse,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
   FAQ,
   InlineCopy,
+  Input,
+  Skeleton,
+  ToggleButton,
   type AccordionVariant,
   type FAQEntry,
 } from "@sutra/ui";
@@ -34,6 +43,159 @@ const accordionItems = [
 ];
 
 const accordionVariants: AccordionVariant[] = ["default", "bordered", "ghost"];
+const accordionPanelVariants: AccordionVariant[] = ["surface", "separated"];
+
+/** A short text field inside a closed-by-default panel, to show that keepMounted keeps what was typed. */
+function KeepMountedFields({ keepMounted }: { keepMounted: boolean }) {
+  return (
+    <Accordion type="single" collapsible variant="surface" keepMounted={keepMounted} defaultValue="draft">
+      <AccordionItem value="draft">
+        <AccordionTrigger>Draft reply</AccordionTrigger>
+        <AccordionContent>
+          <Input aria-label={keepMounted ? "Draft (kept)" : "Draft (unmounted)"} placeholder="Type, close, reopen" />
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="other">
+        <AccordionTrigger>Other section</AccordionTrigger>
+        <AccordionContent>Open this one to close the draft.</AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
+function CollapseDemo() {
+  const [open, setOpen] = useState(true);
+  const [fade, setFade] = useState(true);
+  const [unmount, setUnmount] = useState(false);
+  const [filters, setFilters] = useState(false);
+  return (
+    <Demo
+      id="collapse"
+      title="Collapse"
+      description="Height-auto open and close from 0fr to 1fr, with a fade. Closed content is inert; unmountOnExit removes it after the transition."
+      align="start"
+      canvasClassName="gap-6"
+    >
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div className="space-y-3">
+          <DemoLabel>Default</DemoLabel>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button size="sm" variant="secondary" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
+              {open ? "Hide details" : "Show details"}
+            </Button>
+            <ToggleButton size="sm" variant="outline" pressed={fade} onPressedChange={setFade}>
+              Fade
+            </ToggleButton>
+            <ToggleButton size="sm" variant="outline" pressed={unmount} onPressedChange={setUnmount}>
+              Unmount on exit
+            </ToggleButton>
+          </div>
+          <Collapse open={open} fade={fade} unmountOnExit={unmount} className="rounded-box border border-border bg-card">
+            <div className="space-y-2 p-4 text-sm text-muted-foreground">
+              <p>The panel animates to the height of its content, whatever it is.</p>
+              <p>Padding lives on a child, so the closed height is exactly zero.</p>
+            </div>
+          </Collapse>
+        </div>
+        <div className="space-y-3">
+          <DemoLabel>Filter row (form state survives)</DemoLabel>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-sm font-medium">Messages</span>
+            <Button size="sm" variant="ghost" onClick={() => setFilters((v) => !v)} aria-expanded={filters}>
+              {filters ? "Hide filters" : "Filters"}
+            </Button>
+          </div>
+          <Collapse open={filters}>
+            <div className="grid grid-cols-1 gap-2 pb-1 sm:grid-cols-2">
+              <Input aria-label="From" placeholder="From" />
+              <Input aria-label="Subject" placeholder="Subject" />
+            </div>
+          </Collapse>
+        </div>
+      </div>
+      <div className="max-w-[260px] space-y-2">
+        <DemoLabel>Narrow container (260px)</DemoLabel>
+        <Collapse open>
+          <p className="rounded-box border border-border bg-card p-3 text-sm text-muted-foreground">
+            A long unbroken string such as supercalifragilisticexpialidocious-and-more wraps inside the panel.
+          </p>
+        </Collapse>
+      </div>
+    </Demo>
+  );
+}
+
+function CollapsibleDemo() {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  return (
+    <Demo
+      id="collapsible"
+      title="Collapsible"
+      description="A show/hide section with aria-expanded wiring: bare, surface and ghost looks, controlled or not, optional keepMounted."
+      align="start"
+      canvasClassName="gap-8"
+    >
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        {(["default", "surface", "ghost"] as const).map((variant) => (
+          <div key={variant} className="min-w-0 space-y-2">
+            <DemoLabel className="capitalize">{variant}</DemoLabel>
+            <Collapsible variant={variant} defaultOpen={variant === "surface"}>
+              <CollapsibleTrigger>Release notes</CollapsibleTrigger>
+              <CollapsibleContent>Faster search, a new sidebar and fewer layout shifts when images load.</CollapsibleContent>
+            </Collapsible>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Controlled with a custom trigger</DemoLabel>
+          <Collapsible open={open} onOpenChange={setOpen}>
+            <CollapsibleTrigger asChild>
+              <Button size="sm" variant="secondary">
+                {open ? "Hide" : "Show"} advanced options
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-3">Retry count, timeout and a custom user agent.</CollapsibleContent>
+          </Collapsible>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>keepMounted keeps field state</DemoLabel>
+          <Collapsible variant="surface" keepMounted>
+            <CollapsibleTrigger>Shipping note</CollapsibleTrigger>
+            <CollapsibleContent>
+              <Input aria-label="Shipping note" placeholder="Type, close, reopen" />
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Disabled · loading content</DemoLabel>
+          <Collapsible variant="surface" disabled>
+            <CollapsibleTrigger>Locked section</CollapsibleTrigger>
+            <CollapsibleContent>Hidden.</CollapsibleContent>
+          </Collapsible>
+          <Collapsible variant="surface" open={loading} onOpenChange={setLoading}>
+            <CollapsibleTrigger>Comments</CollapsibleTrigger>
+            <CollapsibleContent>
+              <div aria-busy="true" className="space-y-2">
+                <span className="sr-only">Loading comments</span>
+                <Skeleton shape="text" className="w-3/4" />
+                <Skeleton shape="text" className="w-1/2" />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      </div>
+      <div className="max-w-[260px] space-y-2">
+        <DemoLabel>Narrow container (260px)</DemoLabel>
+        <Collapsible variant="surface" defaultOpen>
+          <CollapsibleTrigger>Shipping and returns</CollapsibleTrigger>
+          <CollapsibleContent>Content wraps inside the box and the chevron stays on the right, even for a long unbroken-word-sequence-like-this.</CollapsibleContent>
+        </Collapsible>
+      </div>
+    </Demo>
+  );
+}
 
 const faqItems: FAQEntry[] = [
   {
@@ -139,7 +301,7 @@ export function ContentPage() {
       <Demo
         id="accordion"
         title="Accordion"
-        description="Default, bordered and ghost variants with chevron or plus indicators."
+        description="Default, bordered, ghost, surface and separated variants with chevron or plus indicators; keepMounted keeps closed panels in the tree."
         align="start"
         canvasClassName="gap-8"
       >
@@ -186,7 +348,46 @@ export function ContentPage() {
             </Accordion>
           </div>
         </div>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {accordionPanelVariants.map((variant) => (
+            <div key={variant} className="min-w-0 space-y-2">
+              <DemoLabel className="capitalize">{variant}</DemoLabel>
+              <Accordion type="single" collapsible defaultValue="shipping" variant={variant}>
+                {accordionItems.map((item) => (
+                  <AccordionItem key={item.value} value={item.value}>
+                    <AccordionTrigger>{item.title}</AccordionTrigger>
+                    <AccordionContent>{item.body}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          <div className="min-w-0 space-y-2">
+            <DemoLabel>Default: closed panels unmount (the draft is lost)</DemoLabel>
+            <KeepMountedFields keepMounted={false} />
+          </div>
+          <div className="min-w-0 space-y-2">
+            <DemoLabel>keepMounted: the draft survives</DemoLabel>
+            <KeepMountedFields keepMounted />
+          </div>
+        </div>
+        <div className="max-w-[260px] space-y-2">
+          <DemoLabel>Narrow container (260px)</DemoLabel>
+          <Accordion type="single" collapsible variant="separated" defaultValue="returns">
+            {accordionItems.map((item) => (
+              <AccordionItem key={item.value} value={item.value}>
+                <AccordionTrigger>{item.title}</AccordionTrigger>
+                <AccordionContent>{item.body}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
       </Demo>
+
+      <CollapseDemo />
+      <CollapsibleDemo />
 
       <Demo
         id="faq"

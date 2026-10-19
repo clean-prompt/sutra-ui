@@ -1,6 +1,8 @@
 import * as React from "react";
 import {
   Badge,
+  SectionRail,
+  PaginationStatus,
   Breadcrumb,
   BreadcrumbEllipsis,
   BreadcrumbItem,
@@ -162,6 +164,52 @@ const projectTabs: TabMenuItem[] = [
   { value: "audit", label: "Audit log", icon: <RiShieldCheckLine />, disabled: true },
   { value: "settings", label: "Settings", icon: <RiSettings3Line /> },
 ];
+
+function PaginationStatusDemo() {
+  const [page, setPage] = React.useState(3);
+  const [pageSize, setPageSize] = React.useState(10);
+  const total = 245;
+  return (
+    <div className="@container grid grid-cols-1 w-full gap-6">
+      <div className="space-y-2">
+        <DemoLabel>PaginationStatus beside Pagination (page {page}, {pageSize} per page)</DemoLabel>
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <PaginationStatus page={page} pageSize={pageSize} total={total} locale="en-US" />
+          <Pagination
+            page={page}
+            totalPages={Math.ceil(total / pageSize)}
+            onPageChange={setPage}
+            variant="simple"
+            pageSize={pageSize}
+            pageSizeOptions={[10, 25, 50]}
+            onPageSizeChange={(n) => {
+              setPageSize(n);
+              setPage(1);
+            }}
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 @lg:grid-cols-3">
+        <div className="space-y-1">
+          <DemoLabel>Custom format</DemoLabel>
+          <PaginationStatus page={2} pageSize={25} total={61} format={({ from, to, total: t }) => `Showing ${from} to ${to} of ${t} invoices`} />
+        </div>
+        <div className="space-y-1">
+          <DemoLabel>Loading, no rows yet</DemoLabel>
+          <PaginationStatus page={1} pageSize={25} total={0} loading />
+        </div>
+        <div className="space-y-1">
+          <DemoLabel>Empty</DemoLabel>
+          <PaginationStatus page={1} pageSize={25} total={0} emptyState="No invoices" />
+        </div>
+      </div>
+      <div className="max-w-40 space-y-1">
+        <DemoLabel>Narrow container</DemoLabel>
+        <PaginationStatus page={1} pageSize={10} total={1000000} locale="en-US" />
+      </div>
+    </div>
+  );
+}
 
 function TabMenuDemo() {
   const [tab, setTab] = React.useState("issues");
@@ -398,6 +446,88 @@ function TreeViewDemo() {
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
+const railSections = [
+  { id: "overview", label: "Overview", body: "A rail lists the sections of a long page and highlights the one in view. It is a nav landmark of real links, so it works without scripting and with a keyboard." },
+  { id: "install", label: "Installation", body: "Give every section an id and pass the same ids to the rail. The sections can live in the page or in any scrolling element: pass that element as root." },
+  { id: "usage", label: "Usage", level: 3, body: "A click scrolls the section to the top of its scroller and highlights it at once. With reduced motion on, the page jumps instead of gliding." },
+  { id: "options", label: "Options", level: 3, body: "offset moves the trigger line below a fixed header, value and onValueChange let you drive the highlight, and getHref points the links at a router URL." },
+  { id: "notes", label: "Notes", body: "The rail stays on the last section it saw while none is in the observed band, so scrolling past the last heading keeps it lit." },
+];
+
+function RailDemo({ prefix, orientation, controlled = false }: { prefix: string; orientation: "vertical" | "horizontal"; controlled?: boolean }) {
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const [picked, setPicked] = React.useState(`${prefix}-overview`);
+  const sections = railSections.map((s) => ({ id: `${prefix}-${s.id}`, label: s.label, level: s.level }));
+  const [last, setLast] = React.useState<string>();
+  const rail = (
+    <SectionRail
+      sections={sections}
+      root={rootRef}
+      orientation={orientation}
+      getHref={(id) => `#/components/navigation/${id}`}
+      label={orientation === "vertical" ? "Page sections" : "Sections, tabs"}
+      value={controlled ? picked : undefined}
+      onValueChange={(id) => {
+        setLast(id);
+        setPicked(id);
+      }}
+      className={orientation === "vertical" ? "@xl:sticky @xl:top-0 @xl:self-start" : undefined}
+    />
+  );
+  return (
+    <div className="@container w-full space-y-2">
+      <div className={orientation === "vertical" ? "grid grid-cols-1 gap-4 @xl:grid-cols-[11rem_minmax(0,1fr)]" : "space-y-3"}>
+        {rail}
+        <div ref={rootRef} className="scrollbar-thin h-64 min-w-0 space-y-6 overflow-y-auto rounded-box border border-border p-4">
+          {railSections.map((s, i) => (
+            <section key={s.id} id={`${prefix}-${s.id}`} className="scroll-mt-2 space-y-2">
+              <h3 className="text-sm font-semibold">{s.label}</h3>
+              <p className="text-sm text-muted-foreground">{s.body}</p>
+              {i < railSections.length - 1 ? <p className="text-sm text-muted-foreground">Scroll this box: the rail follows. {s.body}</p> : <div className="h-48" aria-hidden />}
+            </section>
+          ))}
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground">onValueChange last called with: <span className="font-mono text-foreground">{last ?? "nothing yet"}</span></p>
+    </div>
+  );
+}
+
+function SectionRailDemo() {
+  return (
+    <div className="grid grid-cols-1 w-full gap-8">
+      <div className="space-y-2">
+        <DemoLabel>Vertical, tracking a scroll container (root)</DemoLabel>
+        <RailDemo prefix="rv" orientation="vertical" />
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Horizontal tabs</DemoLabel>
+        <RailDemo prefix="rh" orientation="horizontal" />
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Controlled: value and onValueChange drive the highlight (no tracking, a click picks)</DemoLabel>
+        <RailDemo prefix="rc" orientation="vertical" controlled />
+      </div>
+      <div className="grid grid-cols-1 gap-8 @container sm:grid-cols-2">
+        <div className="space-y-2">
+          <DemoLabel>Loading</DemoLabel>
+          <SectionRail loading sections={[]} label="Loading rail" />
+        </div>
+        <div className="space-y-2">
+          <DemoLabel>Empty</DemoLabel>
+          <SectionRail sections={[]} emptyState="No headings on this page" label="Empty rail" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <DemoLabel>Narrow container</DemoLabel>
+        <div className="max-w-48">
+          <SectionRail orientation="horizontal" label="Narrow rail" sections={railSections.map((s) => ({ id: `rn-${s.id}`, label: s.label }))} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function NavigationPage() {
   return (
     <PageIntro
@@ -453,6 +583,10 @@ export function NavigationPage() {
 
       <Demo id="pagination" title="Pagination" description="Numbered, simple, dots and load-more variants, with an optional page-size selector." align="start">
         <PaginationDemo />
+      </Demo>
+
+      <Demo id="pagination-status" title="Pagination status" description="PaginationStatus: the rows the current page shows (1–10 of 245), announced politely when the page changes, with a custom format, a loading placeholder and an empty state." align="start">
+        <PaginationStatusDemo />
       </Demo>
 
       <Demo id="tab-menu" title="Tab menu" description="Navigation-style tabs with a sliding underline. Pass href + renderLink for router links." align="start">
@@ -663,6 +797,15 @@ export function NavigationPage() {
             </div>
           </div>
         </div>
+      </Demo>
+
+      <Demo
+        id="section-rail"
+        title="Section rail"
+        description="Section navigation that highlights the section in view: an On this page column or a row of tabs. It tracks sections with useScrollSections, in the viewport or in a scroll container, and BlogTableOfContents is a preset of it."
+        align="start"
+      >
+        <SectionRailDemo />
       </Demo>
 
       <Demo id="tree-view" title="Tree view" description="Keyboard-navigable file tree with selection, tri-state checkboxes and type-ahead." align="start">

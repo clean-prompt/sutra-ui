@@ -28,6 +28,8 @@ export interface NumberInputProps
   /** `split` renders − value +, `stacked` renders chevrons on the right. */
   layout?: "split" | "stacked";
   size?: Size;
+  /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
+  variant?: "outline" | "filled";
   invalid?: boolean;
   /** Clamp typed values to min/max on blur. */
   clampOnBlur?: boolean;
@@ -64,6 +66,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       locale,
       layout = "split",
       size = "md",
+      variant,
       invalid,
       clampOnBlur = true,
       className,
@@ -346,7 +349,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
         data-layout={layout}
         className={cn(
           "group/number relative flex w-full min-w-0 items-stretch overflow-hidden",
-          inputShellVariants({ focus: "within", invalid: field.invalid, disabled: field.disabled, size }),
+          inputShellVariants({ focus: "within", invalid: field.invalid, disabled: field.disabled, size, variant }),
           wrapperClassName
         )}
       >

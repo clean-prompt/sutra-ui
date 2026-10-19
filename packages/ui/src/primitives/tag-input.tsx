@@ -3,11 +3,21 @@ import { Popover as PopoverPrimitive } from "radix-ui";
 import { cn, type Size } from "../lib/cn";
 import { escapeRegExp, matchRanges } from "../lib/text";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { usePendingRemoval } from "../hooks/use-pending-removal";
 import { useField } from "./field";
 import { CloseButton } from "./close-button";
 import { inputShellVariants } from "./input";
 
 export type TagRejectReason = "duplicate" | "invalid" | "max";
+
+export interface TagRenderState {
+  index: number;
+  /** The tag can be removed (not disabled or read-only). */
+  interactive: boolean;
+  /** The tag is marked for removal by the next Backspace (see `confirmBackspace`). */
+  pending: boolean;
+  remove: () => void;
+}
 
 export interface TagInputProps
   extends Omit<
@@ -35,7 +45,19 @@ export interface TagInputProps
   restrictToSuggestions?: boolean;
   /** Commit the pending text when the input loses focus. */
   addOnBlur?: boolean;
+  /**
+   * Backspace on an empty field first marks the last tag (announced politely: "Press Backspace again to remove …") and a
+   * second press removes it. Typing, blur or any other key clears the mark, and a held key never confirms. Default false:
+   * Backspace removes the last tag at once.
+   */
+  confirmBackspace?: boolean;
+  /** Custom content for a tag, in place of its text. The chip frame, remove button and pending mark stay. */
+  renderTag?: (tag: string, state: TagRenderState) => React.ReactNode;
+  /** Show the number of tags (and the limit, with `max`) after the tags. */
+  showCount?: boolean;
   size?: Size;
+  /** `outline` (default) is the bordered box; `filled` is a tinted surface with a hidden border. */
+  variant?: "outline" | "filled";
   invalid?: boolean;
   /** Class for the outer container. */
   wrapperClassName?: string;
@@ -67,7 +89,11 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       suggestions,
       restrictToSuggestions = false,
       addOnBlur = false,
+      confirmBackspace = false,
+      renderTag,
+      showCount = false,
       size = "md",
+      variant,
       invalid,
       className,
       wrapperClassName,
@@ -107,6 +133,8 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       onChange: onValueChange,
     });
     const [text, setText] = React.useState("");
+    const removal = usePendingRemoval(confirmBackspace ? tags.length : 0);
+    const countId = React.useId();
     const [open, setOpen] = React.useState(false);
     const [active, setActive] = React.useState(-1);
 
@@ -178,6 +206,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       onKeyDown?.(e);
       if (e.defaultPrevented || !interactive || e.nativeEvent.isComposing) return;
+      if (e.key !== "Backspace") removal.clear();
 
       if (showList && filtered.length > 0) {
         if (e.key === "ArrowDown") {
@@ -230,11 +259,12 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
       }
       if (e.key === "Backspace" && text === "" && tags.length > 0) {
         e.preventDefault();
-        setTags(tags.slice(0, -1));
+        if (!confirmBackspace || removal.press(e.repeat)) setTags(tags.slice(0, -1));
       }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      removal.clear();
       const v = e.target.value;
       const splitter = separatorPattern(separators);
       const parts = splitter ? v.split(splitter) : [v];
@@ -279,24 +309,30 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             }}
             className={cn(
               "flex w-full min-w-0 cursor-text flex-wrap items-center gap-1.5 px-2 py-1 text-sm",
-              inputShellVariants({ focus: "within", radius: "box", invalid: field.invalid, disabled: field.disabled }),
+              inputShellVariants({ focus: "within", radius: "box", invalid: field.invalid, disabled: field.disabled, variant }),
               minHeights[size],
               wrapperClassName
             )}
           >
-            {tags.map((tag, i) => (
+            {tags.map((tag, i) => {
+              const pending = removal.pending && i === tags.length - 1;
+              return (
               <span
                 key={`${tag}-${i}`}
                 data-slot="tag-input-tag"
+                data-pending-remove={pending ? "true" : undefined}
                 className={cn(
                   "inline-flex max-w-full items-center gap-1 rounded-control border border-border bg-secondary pl-2 font-medium text-secondary-foreground",
                   "animate-in fade-in-0 zoom-in-95 duration-150",
+                  "data-[pending-remove=true]:border-destructive data-[pending-remove=true]:bg-destructive-soft data-[pending-remove=true]:text-destructive-soft-foreground",
                   interactive ? "pr-0.5" : "pr-2",
                   tagHeights[size],
                   tagClassName
                 )}
               >
-                <span className="truncate">{tag}</span>
+                <span className="truncate">
+                  {renderTag ? renderTag(tag, { index: i, interactive, pending, remove: () => removeAt(i) }) : tag}
+                </span>
                 {interactive && (
                   <CloseButton
                     shape="pill"
@@ -308,7 +344,8 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                   />
                 )}
               </span>
-            ))}
+              );
+            })}
             <input
               ref={innerRef}
               data-slot="tag-input-field"
@@ -320,7 +357,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
               readOnly={readOnly || atMax}
               aria-required={field.required}
               aria-invalid={field["aria-invalid"]}
-              aria-describedby={field["aria-describedby"]}
+              aria-describedby={[field["aria-describedby"], showCount ? countId : undefined].filter(Boolean).join(" ") || undefined}
               role={suggestions?.length ? "combobox" : undefined}
               aria-expanded={suggestions?.length ? showList : undefined}
               aria-controls={showList ? listboxId : undefined}
@@ -336,6 +373,7 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                 onFocus?.(e);
               }}
               onBlur={(e) => {
+                removal.clear();
                 setOpen(false);
                 setActive(-1);
                 if (addOnBlur) commitText();
@@ -347,6 +385,18 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
                 className
               )}
             />
+            {showCount && (
+              <span id={countId} data-slot="tag-input-count" className="ml-auto shrink-0 pl-1 text-xs tabular-nums text-muted-foreground">
+                {tags.length}
+                {max != null ? ` / ${max}` : ""}
+                <span className="sr-only">{max != null ? " tags" : tags.length === 1 ? " tag" : " tags"}</span>
+              </span>
+            )}
+            {confirmBackspace && (
+              <span data-slot="tag-input-announcer" aria-live="polite" className="sr-only">
+                {removal.pending ? `Press Backspace again to remove ${tags[tags.length - 1]}` : ""}
+              </span>
+            )}
             {name && tags.map((tag, i) => <input key={`h-${i}`} type="hidden" name={name} value={tag} />)}
           </div>
         </PopoverPrimitive.Anchor>

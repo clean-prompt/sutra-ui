@@ -1,7 +1,9 @@
 import * as React from "react";
 import {
   ACCENT_COLORS,
+  AnimatedNumber,
   AreaChart,
+  Button,
   Treemap,
   BarList,
   DonutChart,
@@ -547,6 +549,63 @@ function Dashboard() {
   );
 }
 
+const randomBelow = (max: number) => Math.round(Math.random() * max * 100) / 100;
+
+function AnimatedNumberDemo() {
+  const [n, setN] = React.useState(1280);
+  const [revenue, setRevenue] = React.useState(48250.75);
+  const [share, setShare] = React.useState(0.372);
+  const [animate, setAnimate] = React.useState(true);
+  const shuffle = () => {
+    setN(Math.round(Math.random() * 20000));
+    setRevenue(randomBelow(250000));
+    setShare(Math.random());
+  };
+  return (
+    <div className="@container w-full space-y-8">
+      <div className="space-y-3">
+        <p className="text-xs font-medium text-muted-foreground">Counter: digits roll to the new value, nothing moves on first render</p>
+        <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <AnimatedNumber value={n} locale="en-US" animate={animate} className="font-mono text-display-lg font-semibold" aria-live="polite" />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" variant="secondary" onClick={() => setN((v) => v + 1)}>+1</Button>
+          <Button size="sm" variant="secondary" onClick={() => setN((v) => v + 100)}>+100</Button>
+          <Button size="sm" variant="secondary" onClick={() => setN((v) => Math.max(0, v - 1))}>-1</Button>
+          <Button size="sm" variant="secondary" onClick={() => setN(99)}>Set 99</Button>
+          <Button size="sm" variant="secondary" onClick={() => setN(100)}>Set 100</Button>
+          <Button size="sm" variant="outline" onClick={shuffle}>Randomize all</Button>
+          <Button size="sm" variant="ghost" aria-pressed={!animate} onClick={() => setAnimate((a) => !a)}>
+            {animate ? "Turn animation off" : "Turn animation on"}
+          </Button>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 @lg:grid-cols-2 @3xl:grid-cols-4">
+        <StatCard label="Revenue" animate value={revenue} valueLocale="en-US" valueFormat={{ style: "currency", currency: "USD" }} hint="StatCard animate, currency" />
+        <StatCard label="Share" animate value={share} valueLocale="en-US" valueFormat={{ style: "percent", maximumFractionDigits: 1 }} hint="Percent, one decimal" />
+        <StatCard label="Visitors" animate value={n * 37} valueLocale="en-US" valueFormat={{ notation: "compact", maximumFractionDigits: 1 }} hint="Compact notation" />
+        <StatCard label="Delta" animate value={n - 1280} valueLocale="en-US" valueFormat={{ signDisplay: "always" }} hint="Signed integer" />
+      </div>
+      <div className="grid grid-cols-1 gap-4 @lg:grid-cols-3">
+        {[
+          { locale: "de-DE", label: "de-DE", format: { style: "currency", currency: "EUR" } as Intl.NumberFormatOptions },
+          { locale: "ar-EG", label: "ar-EG digits", format: undefined },
+          { locale: "hi-IN", label: "hi-IN grouping", format: undefined },
+        ].map((c) => (
+          <div key={c.label} className="min-w-0 rounded-box border border-border p-3">
+            <p className="text-xs text-muted-foreground">{c.label}</p>
+            <AnimatedNumber value={revenue * 100} locale={c.locale} format={c.format} className="text-lg font-semibold" />
+          </div>
+        ))}
+      </div>
+      <div className="max-w-52 space-y-1">
+        <p className="text-xs font-medium text-muted-foreground">Narrow container</p>
+        <StatCard label="Narrow" animate value={revenue} valueLocale="en-US" valueFormat={{ style: "currency", currency: "USD" }} />
+      </div>
+    </div>
+  );
+}
+
 export function MetricsPage() {
   return (
     <PageIntro
@@ -561,6 +620,14 @@ export function MetricsPage() {
         align="start"
       >
         <Dashboard />
+      </Demo>
+      <Demo
+        id="animated-number"
+        title="Animated number"
+        description={<>Each digit is a column of 0 to 9 slid with a CSS transition on the fill-speed token; a value that gains a digit (99 to 100) adds a column. <code className="font-mono text-xs">StatCard</code> takes <code className="font-mono text-xs">animate</code> as an opt-in. Screen readers get the formatted text once; add <code className="font-mono text-xs">aria-live</code> to announce changes. With reduced motion on, changes show at once.</>}
+        align="start"
+      >
+        <AnimatedNumberDemo />
       </Demo>
       <Demo
         id="loading"

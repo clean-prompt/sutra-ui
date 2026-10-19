@@ -9,16 +9,20 @@ export * from "./hooks/use-async-action";
 export * from "./hooks/use-camera";
 export * from "./hooks/use-controllable-state";
 export * from "./hooks/use-copy";
+export * from "./hooks/use-debounced-value";
+export * from "./hooks/use-disclosure";
 export * from "./hooks/use-iso-layout-effect";
 export * from "./hooks/use-marquee-selection";
 export * from "./hooks/use-media-query";
 export * from "./hooks/use-merged-refs";
 export * from "./hooks/use-now";
 export * from "./hooks/use-object-url";
+export * from "./hooks/use-previous";
 export * from "./hooks/use-resize-observer";
 export * from "./hooks/use-rolling-series";
 export * from "./hooks/use-safe-id";
 export * from "./hooks/use-scroll-edges";
+export * from "./hooks/use-scroll-sections";
 export * from "./hooks/use-theme";
 export * from "./lib/accent";
 export * from "./lib/breakdown";
@@ -55,6 +59,7 @@ export * from "./assets/placeholder-logos";
 export * from "./assets/qr-placeholder";
 
 /* Primitives: src/primitives */
+// not exported: primitives/item-internal (internal: private helpers shared by sibling modules)
 export * from "./primitives/accordion";
 export * from "./primitives/alert-banner";
 export * from "./primitives/app-store-badge";
@@ -70,6 +75,8 @@ export * from "./primitives/calendar";
 export * from "./primitives/checkbox";
 export * from "./primitives/chip";
 export * from "./primitives/close-button";
+export * from "./primitives/collapse";
+export * from "./primitives/collapsible";
 export * from "./primitives/combobox";
 export * from "./primitives/confirm";
 export * from "./primitives/context-menu";
@@ -83,6 +90,7 @@ export * from "./primitives/empty-state";
 export * from "./primitives/fab";
 export * from "./primitives/favicon";
 export * from "./primitives/field";
+export * from "./primitives/frame";
 export * from "./primitives/glyph-spinner";
 export * from "./primitives/info-tooltip";
 export * from "./primitives/inline-alert";
@@ -90,6 +98,7 @@ export * from "./primitives/inline-edit-text";
 export * from "./primitives/input";
 export * from "./primitives/input-group";
 export * from "./primitives/input-otp";
+export * from "./primitives/item";
 export * from "./primitives/key-value";
 export * from "./primitives/label";
 export * from "./primitives/layout";
@@ -125,6 +134,7 @@ export * from "./primitives/text-shimmer";
 export * from "./primitives/textarea";
 export * from "./primitives/time-picker";
 export * from "./primitives/toast";
+export * from "./primitives/toggle-group";
 export * from "./primitives/tooltip";
 export * from "./primitives/typography";
 export * from "./primitives/volume-slider";
@@ -132,12 +142,14 @@ export * from "./primitives/volume-slider";
 /* Patterns: src/patterns */
 // not exported: patterns/chart (back-compat barrel, all targets exported)
 // not exported: patterns/chart-cartesian-internal (internal: private helpers shared by sibling modules)
+// not exported: patterns/chart-extra-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/chart-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/counters (back-compat barrel, all targets exported)
 // not exported: patterns/inline-citation (internal: helpers; public names come from kits/ai/chat-source)
 // not exported: patterns/tiling-layout-group-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/tiling-layout-internal (internal: private helpers shared by sibling modules)
 export * from "./patterns/agent-avatar";
+export * from "./patterns/animated-number";
 export * from "./patterns/bar-list";
 export * from "./patterns/blog-content";
 export * from "./patterns/bottom-tab-bar";
@@ -145,8 +157,12 @@ export * from "./patterns/camera-capture";
 export * from "./patterns/chart-cartesian";
 export * from "./patterns/chart-container";
 export * from "./patterns/chart-donut";
+export * from "./patterns/chart-funnel";
+export * from "./patterns/chart-radar";
 export * from "./patterns/chart-scale";
+export * from "./patterns/chart-scatter";
 export * from "./patterns/chart-types";
+export * from "./patterns/chart-waterfall";
 export * from "./patterns/coachmarks";
 export * from "./patterns/code-block";
 export * from "./patterns/command-menu";
@@ -180,6 +196,7 @@ export * from "./patterns/reorderable-list";
 export * from "./patterns/schema-form";
 export * from "./patterns/search-trigger";
 export * from "./patterns/section-header";
+export * from "./patterns/section-rail";
 export * from "./patterns/selection-area";
 export * from "./patterns/settings";
 export * from "./patterns/shortcuts";

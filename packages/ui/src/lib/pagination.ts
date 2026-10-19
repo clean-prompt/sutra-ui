@@ -52,3 +52,24 @@ export function getPaginationRange({
   items.push(...endPages);
   return items;
 }
+
+export interface PageWindow {
+  /** The page used, clamped into 1..pageCount (1 when there are no rows). */
+  page: number;
+  pageCount: number;
+  /** 1-based number of the first row on the page; 0 when there are no rows. */
+  from: number;
+  /** 1-based number of the last row on the page; 0 when there are no rows. */
+  to: number;
+  total: number;
+}
+
+/** Which rows a page covers: `getPageWindow(2, 10, 45)` is rows 11 to 20 of 45. Pure; bad input gives an empty window. */
+export function getPageWindow(page: number, pageSize: number, total: number): PageWindow {
+  const rows = Number.isFinite(total) ? Math.max(0, Math.floor(total)) : 0;
+  const size = Number.isFinite(pageSize) ? Math.max(1, Math.floor(pageSize)) : 1;
+  const pageCount = Math.ceil(rows / size);
+  if (rows === 0) return { page: 1, pageCount: 0, from: 0, to: 0, total: 0 };
+  const current = Math.min(Math.max(1, Number.isFinite(page) ? Math.floor(page) : 1), pageCount);
+  return { page: current, pageCount, from: (current - 1) * size + 1, to: Math.min(rows, current * size), total: rows };
+}

@@ -1,4 +1,16 @@
-import { AspectRatio, ScrollArea, Separator, type AspectRatioPreset } from "@sutra/ui";
+import * as React from "react";
+import {
+  AspectRatio,
+  Button,
+  Collapse,
+  Input,
+  ScrollArea,
+  Separator,
+  useDebouncedValue,
+  useDisclosure,
+  usePrevious,
+  type AspectRatioPreset,
+} from "@sutra/ui";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 const gradients: { ratio: AspectRatioPreset; className: string }[] = [
@@ -23,6 +35,109 @@ const artworks = [
 ];
 
 const unsplash = (id: string, w = 800) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+
+function DisclosureDemo() {
+  const disclosure = useDisclosure();
+  const [count, setCount] = React.useState(0);
+  const controlled = useDisclosure({ open: count % 2 === 1, onOpenChange: () => setCount((c) => c + 1) });
+  return (
+    <Demo
+      id="use-disclosure"
+      title="useDisclosure"
+      description="Open state for any overlay or section, controlled or not, with stable handlers and a props object to spread onto Dialog, Sheet, Popover or Collapse."
+      align="start"
+      canvasClassName="gap-6"
+    >
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Uncontrolled</DemoLabel>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" onClick={disclosure.onOpen}>
+              Open
+            </Button>
+            <Button size="sm" variant="secondary" onClick={disclosure.onClose}>
+              Close
+            </Button>
+            <Button size="sm" variant="ghost" onClick={disclosure.toggle}>
+              Toggle
+            </Button>
+          </div>
+          <Collapse open={disclosure.open}>
+            <p className="rounded-box border border-border bg-card p-3 text-sm text-muted-foreground">
+              open is {String(disclosure.open)}.
+            </p>
+          </Collapse>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <DemoLabel>Controlled by the parent (every request flips a counter)</DemoLabel>
+          <Button size="sm" variant="secondary" onClick={controlled.toggle}>
+            Request toggle ({count})
+          </Button>
+          <p className="text-sm text-muted-foreground">open is {String(controlled.open)}.</p>
+        </div>
+      </div>
+    </Demo>
+  );
+}
+
+function DebouncedDemo() {
+  const [text, setText] = React.useState("");
+  const debounced = useDebouncedValue(text, 400);
+  const results = ["Alpine", "Aspen", "Birch", "Cedar", "Cypress", "Elm", "Maple", "Oak", "Pine", "Spruce"].filter((t) =>
+    t.toLowerCase().includes(debounced.trim().toLowerCase())
+  );
+  return (
+    <Demo
+      id="use-debounced-value"
+      title="useDebouncedValue"
+      description="A copy of a value that follows it after it has stopped changing (400 ms here). Filter or fetch on the debounced one."
+      align="start"
+    >
+      <div className="w-full max-w-sm space-y-3">
+        <Input aria-label="Search trees" placeholder="Type to search trees" value={text} onChange={(e) => setText(e.target.value)} />
+        <p className="text-xs text-muted-foreground">
+          typed: <code>{text || "(empty)"}</code> · debounced: <code>{debounced || "(empty)"}</code>
+        </p>
+        {results.length ? (
+          <ul className="flex flex-wrap gap-2 text-sm">
+            {results.map((r) => (
+              <li key={r} className="rounded-control bg-muted px-2 py-1">
+                {r}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-muted-foreground">No matches</p>
+        )}
+      </div>
+    </Demo>
+  );
+}
+
+function PreviousDemo() {
+  const [n, setN] = React.useState(5);
+  const previous = usePrevious(n);
+  return (
+    <Demo
+      id="use-previous"
+      title="usePrevious"
+      description="The last different value, kept across unrelated re-renders: use it for direction (up or down) or for a from-to caption."
+      align="start"
+    >
+      <div className="flex flex-wrap items-center gap-3">
+        <Button size="sm" variant="secondary" onClick={() => setN((v) => v - 1)}>
+          Decrease
+        </Button>
+        <span className="text-sm tabular-nums">
+          {previous === undefined ? `Value ${n}` : `${previous} → ${n} (${n > previous ? "up" : "down"})`}
+        </span>
+        <Button size="sm" variant="secondary" onClick={() => setN((v) => v + 1)}>
+          Increase
+        </Button>
+      </div>
+    </Demo>
+  );
+}
 
 export function UtilityPage() {
   return (
@@ -113,6 +228,11 @@ export function UtilityPage() {
           </div>
         </div>
       </Demo>
+      <DisclosureDemo />
+
+      <DebouncedDemo />
+
+      <PreviousDemo />
     </PageIntro>
   );
 }
