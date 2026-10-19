@@ -9,6 +9,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { Skeleton } from "./progress";
 
 /** Table row density: the shared `Density`, plus the legacy `"comfortable"` (→ `relaxed`). */
 export type TableDensity = Density | "comfortable";
@@ -322,7 +323,7 @@ export const TableCheckbox = React.forwardRef<HTMLInputElement, TableCheckboxPro
       />
       <RiCheckLine
         aria-hidden
-        className="pointer-events-none absolute inset-0 m-auto size-3 scale-50 text-primary-foreground opacity-0 transition-[opacity,transform] duration-150 peer-checked:scale-100 peer-checked:opacity-100"
+        className="pointer-events-none absolute inset-0 m-auto size-3 scale-50 text-primary-foreground opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-150 peer-checked:scale-100 peer-checked:opacity-100"
       />
       <RiSubtractLine
         aria-hidden
@@ -518,14 +519,15 @@ export function DataTable<T>({
             <TableRow key={`skeleton-${i}`} className="hover:bg-transparent">
               {selectable ? (
                 <TableCell>
-                  <span className="block size-4 animate-pulse rounded-[4px] bg-muted" />
+                  <Skeleton shape="rect" className="size-4 rounded-[4px]" />
                 </TableCell>
               ) : null}
               {columns.map((column, c) => (
                 <TableCell key={column.key} align={column.align}>
-                  <span
+                  <Skeleton
+                    shape="rect"
                     className={cn(
-                      "inline-block h-3.5 animate-pulse rounded-xs bg-muted align-middle",
+                      "inline-block h-3.5 rounded-xs align-middle",
                       (i + c) % 3 === 0 ? "w-3/5" : (i + c) % 3 === 1 ? "w-4/5" : "w-2/5"
                     )}
                   />

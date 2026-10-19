@@ -58,7 +58,12 @@ export const ChatConversationContent = React.forwardRef<HTMLDivElement, ChatConv
       >
         <div
           ref={contentRef}
-          className={cn("mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-6", className)}
+          className={cn(
+            "mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-6",
+            // The newest message rises in; earlier ones stay put. motion-safe because the global reduced-motion net acts on the element that carries the class, not on the child this variant reaches. A decorative last child (a Skeleton is aria-hidden) keeps its own loop.
+            "motion-safe:[&>:last-child:not([aria-hidden])]:animate-fade-up",
+            className
+          )}
           {...props}
         />
       </div>
@@ -88,7 +93,7 @@ export const ChatScrollButton = React.forwardRef<HTMLButtonElement, ChatScrollBu
           if (!e.defaultPrevented) scrollToBottom("smooth");
         }}
         className={cn(
-          "absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-background/90 shadow-md backdrop-blur-sm transition-[opacity,transform,background-color] duration-200",
+          "absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-background/90 shadow-md backdrop-blur-sm transition-[opacity,transform,translate,scale,rotate,background-color] duration-200",
           "data-[state=hidden]:pointer-events-none data-[state=hidden]:translate-y-2 data-[state=hidden]:opacity-0",
           className
         )}

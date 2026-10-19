@@ -355,7 +355,7 @@ export const ModelSelect = React.forwardRef<HTMLButtonElement, ModelSelectProps>
               onClick={() => setShowUntagged((s) => !s)}
               className={cn("mt-1 flex w-full items-center gap-1 rounded-sm px-2 py-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
             >
-              <RiArrowRightSLine aria-hidden="true" className={cn("size-4 transition-transform", showUntagged && "rotate-90")} />
+              <RiArrowRightSLine aria-hidden="true" className={cn("size-4 chevron-turn", showUntagged && "rotate-90")} />
               {showUntagged ? `Hide ${untagged.length} untagged` : `Show ${untagged.length} untagged`}
             </button>
           ) : null}

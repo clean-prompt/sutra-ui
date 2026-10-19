@@ -9,6 +9,7 @@ import {
   RiSearchLine,
 } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
+import { useAddedKeys } from "../hooks/use-added-keys";
 import { useField, useFieldContext } from "./field";
 import { CloseButton } from "./close-button";
 import { inputShellVariants } from "./input";
@@ -210,6 +211,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
     (v) => byValue.get(v) ?? ({ value: v, label: v } as ComboboxOption)
   );
   const single = !multiple ? selectedOptions[0] : undefined;
+  const addedValues = useAddedKeys(selected);
   const visibleChips = selectedOptions.slice(0, maxChips);
   const hiddenCount = selectedOptions.length - visibleChips.length;
 
@@ -248,7 +250,11 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
               {visibleChips.map((option) => (
                 <span
                   key={option.value}
-                  className="inline-flex h-6 max-w-40 items-center gap-1 rounded-control border border-border bg-muted pl-2 pr-0.5 text-xs font-medium text-foreground"
+                  className={cn(
+                    "inline-flex h-6 max-w-40 items-center gap-1 rounded-control border border-border bg-muted pl-2 pr-0.5 text-xs font-medium text-foreground",
+                    // A chip the user just added eases in (not at all under reduced motion); chips there on mount do not.
+                    addedValues.has(option.value) && "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-150"
+                  )}
                 >
                   {option.icon && <span className="flex [&_svg]:size-3.5">{option.icon}</span>}
                   <span className="truncate">{option.label}</span>

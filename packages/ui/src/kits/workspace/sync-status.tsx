@@ -10,6 +10,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { formatRelativeTime } from "../../lib/relative-time";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useOnlineStatus } from "../../hooks/use-online-status";
 import { useNow } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
@@ -68,6 +69,8 @@ export const SyncStatus = React.forwardRef<HTMLButtonElement, SyncStatusProps>(
   ) => {
     const label = syncStateLabels[status];
     const Icon = stateIcon[status];
+    // The check pops in when a sync finishes, never on the first render.
+    const iconKey = useChangeKey(status);
     const showsLast = lastSyncedAt != null && status !== "conflict" && !(status === "error" && onRetry);
     const current = useNow({ active: showsLast && now === undefined, interval: 30_000, fixed: now });
     const pending = pendingChanges > 0 ? `${pendingChanges} ${pendingChanges === 1 ? "change" : "changes"}` : undefined;
@@ -108,7 +111,11 @@ export const SyncStatus = React.forwardRef<HTMLButtonElement, SyncStatusProps>(
               {...props}
             >
               {status === "synced" || status === "syncing" ? (
-                <Icon aria-hidden className={cn("size-4", status === "syncing" && "animate-spin", status === "synced" && "text-success")} />
+                <Icon
+                  key={iconKey}
+                  aria-hidden
+                  className={cn("size-4", status === "syncing" && "animate-spin", status === "synced" && cn("text-success", iconKey > 0 && "animate-pop"))}
+                />
               ) : (
                 <Icon aria-hidden className="size-4" />
               )}
@@ -116,7 +123,7 @@ export const SyncStatus = React.forwardRef<HTMLButtonElement, SyncStatusProps>(
               {showLabel && pendingChanges > 0 && status !== "synced" && (
                 <span className="rounded-full bg-muted px-1.5 text-2xs tabular-nums text-muted-foreground">{pendingChanges}</span>
               )}
-              <span aria-hidden className={cn("size-1.5 rounded-full", stateStyle[status].dot, showLabel && "hidden")} />
+              <span aria-hidden className={cn("size-1.5 rounded-full transition-colors", stateStyle[status].dot, showLabel && "hidden")} />
             </button>
           </SimpleTooltip>
         </span>

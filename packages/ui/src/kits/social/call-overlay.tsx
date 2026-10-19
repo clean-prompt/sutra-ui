@@ -216,7 +216,7 @@ const CallRoundAction = React.forwardRef<
       type="button"
       aria-label={label}
       className={cn(
-        "flex size-14 items-center justify-center rounded-full shadow-md transition-[background-color,transform] active:scale-95 [&_svg]:size-6",
+        "flex size-14 items-center justify-center rounded-full shadow-md transition-[background-color,scale] active:scale-95 [&_svg]:size-6",
         roundTone[tone],
         focusRing,
         className
@@ -466,7 +466,7 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
             onKeyDown={onPipKeyDown}
             className={cn(
               "absolute z-10 aspect-[3/4] w-24 cursor-grab touch-none overflow-hidden rounded-xl border border-white/20 bg-neutral-800 shadow-xl sm:w-32",
-              "transition-[top,left,right,bottom] duration-300 ease-out",
+              "transition-[top,left,right,bottom] duration-300 ease-out-quart",
               drag && "cursor-grabbing transition-none",
               pipCornerClass[corner],
               focusRing
@@ -512,7 +512,7 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
             aria-label="End call"
             onClick={onEndCall}
             className={cn(
-              "flex h-12 w-16 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-lg transition-[background-color,transform] hover:bg-destructive-hover active:scale-95 [&_svg]:size-6",
+              "flex h-12 w-16 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-lg transition-[background-color,scale] hover:bg-destructive-hover active:scale-95 [&_svg]:size-6",
               focusRing
             )}
           >
@@ -543,7 +543,7 @@ function CallControl({
       aria-pressed={pressed}
       onClick={onClick}
       className={cn(
-        "flex size-12 items-center justify-center rounded-full backdrop-blur-md transition-[background-color,transform] active:scale-95 [&_svg]:size-5",
+        "flex size-12 items-center justify-center rounded-full backdrop-blur-md transition-[background-color,scale] active:scale-95 [&_svg]:size-5",
         pressed ? "bg-white text-neutral-900 hover:bg-white/90" : "bg-white/15 text-white hover:bg-white/25",
         focusRing
       )}

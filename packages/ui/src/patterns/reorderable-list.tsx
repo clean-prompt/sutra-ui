@@ -276,7 +276,7 @@ export function ReorderableList<T>({
       {active?.mode === "pointer" && pointer && activeItem !== undefined ? (
         <div
           aria-hidden
-          className="pointer-events-none fixed z-50 flex items-center gap-1.5 rounded-control border border-border bg-background shadow-xl ring-1 ring-ring/30"
+          className="pointer-events-none fixed z-50 flex animate-in items-center gap-1.5 rounded-control border border-border bg-background shadow-xl ring-1 ring-ring/30 fade-in-0 zoom-in-95"
           style={{ top: pointer.y - pointer.offsetY, left: pointer.left, width: pointer.width, minHeight: pointer.height }}
         >
           {handle ? (

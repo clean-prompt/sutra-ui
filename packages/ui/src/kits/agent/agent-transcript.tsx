@@ -238,7 +238,7 @@ export const TranscriptSystemRow = React.forwardRef<HTMLDivElement, TranscriptSy
                 className={cn("inline-flex items-center gap-0.5 rounded-xs text-primary hover:underline", focusRing)}
               >
                 {expanded ? "Hide summary" : "Show summary"}
-                <RiArrowDownSLine aria-hidden className={cn("transition-transform", expanded && "rotate-180")} />
+                <RiArrowDownSLine aria-hidden className={cn("chevron-turn", expanded && "rotate-180")} />
               </button>
             )}
             <span aria-hidden className="h-px flex-1 bg-border" />
@@ -608,7 +608,7 @@ export const ContextBanner = React.forwardRef<HTMLDivElement, ContextBannerProps
                   className={cn("inline-flex items-center gap-0.5 rounded-xs text-xs font-medium underline-offset-2 hover:underline", focusRing)}
                 >
                   {expanded ? `Hide ${outputLabel}` : `Show ${outputLabel}`}
-                  <RiArrowDownSLine aria-hidden className={cn("size-3.5 transition-transform", expanded && "rotate-180")} />
+                  <RiArrowDownSLine aria-hidden className={cn("size-3.5 chevron-turn", expanded && "rotate-180")} />
                 </button>
               )}
               {action && (

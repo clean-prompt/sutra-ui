@@ -12,7 +12,7 @@ export const closeButtonVariants = cva("inline-flex shrink-0 items-center justif
     shape: {
       control: [
         "select-none rounded-control",
-        "transition-[color,background-color,transform] duration-150 active:scale-95",
+        "transition-[color,background-color,transform,translate,scale,rotate] duration-150 active:scale-95",
         "disabled:pointer-events-none disabled:opacity-50",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0",
         focusRing,

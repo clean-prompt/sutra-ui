@@ -401,7 +401,7 @@ export type MediaTone = "default" | "overlay";
 
 export const mediaButtonVariants = cva(
   [
-    "relative inline-flex shrink-0 select-none items-center justify-center rounded-full transition-[color,background-color,transform] duration-150 active:scale-95",
+    "relative inline-flex shrink-0 select-none items-center justify-center rounded-full transition-[color,background-color,scale] duration-150 active:scale-95",
     "disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg]:shrink-0",
     focusRing,
   ],
@@ -437,7 +437,7 @@ type MediaButtonBaseProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 
 
 const playPauseVariants = cva(
   [
-    "relative inline-flex shrink-0 select-none items-center justify-center rounded-full transition-[color,background-color,transform,opacity] duration-150 active:scale-95",
+    "relative inline-flex shrink-0 select-none items-center justify-center rounded-full transition-[color,background-color,scale,opacity] duration-150 active:scale-95",
     "disabled:pointer-events-none disabled:opacity-40",
     focusRing,
   ],
@@ -485,14 +485,14 @@ export const PlayPauseButton = React.forwardRef<HTMLButtonElement, PlayPauseButt
       <RiPlayFill
         aria-hidden
         className={cn(
-          "absolute translate-x-[6%] transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none",
+          "absolute translate-x-[6%] transition-[opacity,scale,rotate] duration-200 ease-out-quart motion-reduce:transition-none",
           playing ? "rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100"
         )}
       />
       <RiPauseFill
         aria-hidden
         className={cn(
-          "absolute transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none",
+          "absolute transition-[opacity,scale,rotate] duration-200 ease-out-quart motion-reduce:transition-none",
           playing ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-50 opacity-0"
         )}
       />
@@ -944,7 +944,7 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
             <div
               data-slot="volume-popover"
               className={cn(
-                "absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 transition-[opacity,transform] duration-150",
+                "absolute bottom-full left-1/2 z-20 -translate-x-1/2 pb-2 transition-[opacity,translate] duration-150",
                 "pointer-events-none translate-y-1 opacity-0",
                 "group-hover/volume:pointer-events-auto group-hover/volume:translate-y-0 group-hover/volume:opacity-100",
                 "group-focus-within/volume:pointer-events-auto group-focus-within/volume:translate-y-0 group-focus-within/volume:opacity-100"
@@ -963,7 +963,7 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
             <div
               data-slot="volume-slider-reveal"
               className={cn(
-                "flex items-center overflow-hidden transition-[width,opacity] duration-200 ease-out",
+                "flex items-center overflow-hidden transition-[width,opacity] duration-200 ease-out-quart",
                 expand === "always"
                   ? "w-24 pl-1 pr-1.5 opacity-100"
                   : "w-0 opacity-0 group-hover/volume:w-24 group-hover/volume:pl-1 group-hover/volume:pr-1.5 group-hover/volume:opacity-100 group-focus-within/volume:w-24 group-focus-within/volume:pl-1 group-focus-within/volume:pr-1.5 group-focus-within/volume:opacity-100"

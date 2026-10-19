@@ -17,6 +17,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { EmojiPicker, EmojiReaction } from "../../assets/emoji-reactions";
 import { Avatar, type AvatarStatus } from "../../primitives/avatar";
@@ -190,12 +191,17 @@ export interface MessageStatusIconProps extends Omit<React.HTMLAttributes<HTMLSp
 export const MessageStatusIcon = React.forwardRef<HTMLSpanElement, MessageStatusIconProps>(({ status, className, ...props }, ref) => {
   const Icon =
     status === "sending" ? RiTimeLine : status === "sent" ? RiCheckLine : status === "failed" ? RiErrorWarningLine : RiCheckDoubleLine;
+  // The glyph pops in when the state changes it (clock, tick, double tick), never on the first render. Delivered to read keeps
+  // the glyph and only fades its colour.
+  const glyph = useChangeKey(Icon);
   return (
     <span ref={ref} data-status={status} className={cn("inline-flex items-center", className)} {...props}>
       <Icon
+        key={glyph}
         aria-hidden
         className={cn(
-          "size-3.5",
+          "size-3.5 transition-colors",
+          glyph > 0 && "animate-pop",
           status === "read" && "text-info",
           status === "failed" && "text-destructive",
           status === "sending" && "opacity-70"
@@ -406,7 +412,13 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
         aria-live="polite"
         aria-label={props["aria-label"] ?? "Messages"}
         tabIndex={0}
-        className={cn("flex flex-col overflow-y-auto px-3 py-4 scrollbar-thin", focusRing, className)}
+        className={cn(
+          "flex flex-col overflow-y-auto px-3 py-4 scrollbar-thin",
+          // The newest bubble rises in; earlier ones stay put. motion-safe rather than the global reduced-motion net, which matches .animate-fade-up itself and not this variant.
+          "motion-safe:[&>[data-group]:last-child>:last-child]:animate-fade-up",
+          focusRing,
+          className
+        )}
         onScroll={(e) => {
           const el = e.currentTarget;
           pinnedRef.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 48;

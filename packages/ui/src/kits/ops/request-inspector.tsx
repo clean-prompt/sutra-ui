@@ -202,7 +202,7 @@ function MessageBlock({ message }: { message: RequestLogMessage }) {
         {reasoning ? (
           <details className="group/reason rounded-md bg-subtle text-xs">
             <summary className={cn("flex cursor-pointer list-none items-center gap-1 rounded-md px-2 py-1 font-medium text-muted-foreground [&::-webkit-details-marker]:hidden", focusRing)}>
-              <RiArrowRightSLine aria-hidden className="size-3.5 transition-transform group-open/reason:rotate-90" />
+              <RiArrowRightSLine aria-hidden className="size-3.5 chevron-turn group-open/reason:rotate-90" />
               Reasoning <span className="font-normal tabular-nums">({reasoning.length.toLocaleString()} chars)</span>
             </summary>
             <div className="whitespace-pre-wrap break-words px-2 pb-2 text-muted-foreground">{reasoning}</div>
@@ -511,7 +511,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
                           }}
                           className={cn("inline-flex size-6 items-center justify-center rounded-control text-muted-foreground hover:bg-accent hover:text-foreground", focusRing)}
                         >
-                          <RiArrowRightSLine aria-hidden className={cn("size-4 transition-transform", open && "rotate-90")} />
+                          <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn", open && "rotate-90")} />
                         </button>
                       </TableCell>
                       <TableCell className="whitespace-nowrap font-mono text-xs tabular-nums text-muted-foreground">

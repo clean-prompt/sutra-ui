@@ -52,7 +52,7 @@ Every color, radius and shadow is a CSS variable (`src/styles/sutra.css`). Set t
 | `data-brand` | `indigo` (default), `blue`, `sky`, `cyan`, `violet`, `rose`, `lime`, `green`, `yellow`, `orange`, `red` |
 | `data-neutral` | `zinc` (default), `slate`, `gray`, `stone` |
 | `data-radius` | `rounded` (default), `pill`, `square` |
-| `data-style` | `paper`: a calm, monochrome style (warm paper and ink, pure black in dark mode, hairline borders, flat, system font, tight headlines). Needs `@import "@sutra/ui/paper.css";` after the base styles. The ink is the accent, so `data-brand` and `data-app` have no effect in it; status colors keep their hues |
+| `data-style` | `paper`: a calm, monochrome style (warm paper and ink, pure black in dark mode, hairline borders, flat, system font, tight headlines). Needs `@import "@sutra/ui/paper.css";` after the base styles. The ink is the accent, so `data-brand` and `data-app` have no effect in it; status colors keep their hues. Set it on `<html>` to reach portaled layers (dialogs, popovers, menus) too |
 | `data-app` | `notes`, `tasks`, `calendar`, `mail`, `files`, `journal`, `finance`, `habits`: retunes the brand scale to that app's accent (exposes `--app-from` / `--app-to`) |
 
 `useTheme()` reads and sets mode, brand, neutral, radius and style on `<html>` (`style: "paper"` sets `data-style`). Tokens are Tailwind utilities (`bg-primary`, `text-muted-foreground`, `rounded-control`, `rounded-box`, `shadow-lg` …) and JS values (`colors`, `chartColors`, `typography`, `spacing`, `radii`, `shadows`, `breakpoints`, `grid`).

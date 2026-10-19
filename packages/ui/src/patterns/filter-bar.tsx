@@ -312,7 +312,7 @@ export const FilterBarChip = React.forwardRef<HTMLButtonElement, FilterBarChipPr
                         )}
                       >
                         <RiCheckLine aria-hidden
-                          className={cn("size-3 transition-[opacity,transform] duration-150", checked ? "scale-100 opacity-100" : "scale-50 opacity-0")}
+                          className={cn("size-3 transition-[opacity,transform,translate,scale,rotate] duration-150", checked ? "scale-100 opacity-100" : "scale-50 opacity-0")}
                         />
                       </span>
                       {o.icon ? (

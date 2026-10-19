@@ -154,7 +154,7 @@ export const FanMenu = React.forwardRef<HTMLDivElement, FanMenuProps>(
             }
           }}
           className={cn(
-            "relative z-10 inline-flex size-full items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md shadow-inner-highlight transition-[transform,background-color] duration-200 hover:bg-primary-hover motion-reduce:transition-none [&_svg]:size-5",
+            "relative z-10 inline-flex size-full items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md shadow-inner-highlight transition-[transform,translate,scale,rotate,background-color] duration-200 hover:bg-primary-hover motion-reduce:transition-none [&_svg]:size-5",
             open && "scale-95",
             focusRing
           )}
@@ -213,7 +213,7 @@ export const FanMenu = React.forwardRef<HTMLDivElement, FanMenuProps>(
                   className={cn(
                     "group/fan pointer-events-auto absolute left-1/2 top-1/2 inline-flex items-center justify-center rounded-full border border-border bg-popover text-foreground shadow-lg transition-colors hover:bg-accent disabled:opacity-50 [&_svg]:size-[18px]",
                     "data-[active]:border-primary data-[active]:bg-primary-soft data-[active]:text-primary-soft-foreground",
-                    !reduced && "animate-in fade-in-0 zoom-in-50 duration-200 ease-out",
+                    !reduced && "animate-in fade-in-0 zoom-in-50 duration-200 ease-out-quart",
                     focusRing
                   )}
                   style={

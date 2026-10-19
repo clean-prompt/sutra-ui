@@ -130,7 +130,7 @@ export const ChatTool = React.forwardRef<HTMLDivElement, ChatToolProps>(
           {hasBody && (
             <RiArrowDownSLine
               aria-hidden
-              className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]/tool:rotate-180"
+              className="size-4 shrink-0 text-muted-foreground chevron-turn group-data-[state=open]/tool:rotate-180"
             />
           )}
         </Collapsible.Trigger>

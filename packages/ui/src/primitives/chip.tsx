@@ -50,7 +50,7 @@ const filledCompounds = (Object.keys(toneForColor) as ChipColor[]).flatMap((colo
 export const chipVariants = cva(
   [
     "relative inline-flex max-w-full shrink-0 select-none items-center rounded-control border font-medium",
-    "transition-[color,background-color,border-color,box-shadow,transform] duration-150",
+    "transition-[color,background-color,border-color,box-shadow,transform,translate,scale,rotate] duration-150",
     "has-[>button:first-child:active]:scale-[0.97]",
     "has-[>button:focus-visible]:ring-[3px] has-[>button:focus-visible]:ring-ring/35",
     "has-[>button:disabled]:pointer-events-none has-[>button:disabled]:opacity-50",

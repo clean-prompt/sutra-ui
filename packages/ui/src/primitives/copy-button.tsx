@@ -69,14 +69,14 @@ export const CopyButton = React.forwardRef<HTMLButtonElement, CopyButtonProps>(
         <RiFileCopyLine
           aria-hidden
           className={cn(
-            "absolute size-full transition-[opacity,transform] duration-200",
+            "absolute size-full transition-[opacity,transform,translate,scale,rotate] duration-200",
             copied ? "scale-50 opacity-0" : "scale-100 opacity-100"
           )}
         />
         <RiCheckLine
           aria-hidden
           className={cn(
-            "absolute size-full text-success transition-[opacity,transform] duration-200",
+            "absolute size-full text-success transition-[opacity,transform,translate,scale,rotate] duration-200",
             copied ? "scale-100 opacity-100" : "scale-50 opacity-0"
           )}
         />

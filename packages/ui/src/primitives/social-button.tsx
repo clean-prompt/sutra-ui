@@ -158,7 +158,7 @@ export const socialProviders: Record<SocialProvider, SocialProviderMeta> = {
 export const socialButtonVariants = cva(
   [
     "relative inline-flex shrink-0 select-none items-center justify-center gap-2.5 whitespace-nowrap rounded-control font-medium",
-    "transition-[color,background-color,border-color,box-shadow,transform] duration-150 active:scale-[0.98]",
+    "transition-[color,background-color,border-color,box-shadow,transform,translate,scale,rotate] duration-150 active:scale-[0.98]",
     "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",
     focusRing,

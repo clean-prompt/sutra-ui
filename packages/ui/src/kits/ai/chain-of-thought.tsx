@@ -3,6 +3,7 @@ import { Collapsible } from "radix-ui";
 import { RiArrowDownSLine, RiBrainLine, RiCheckLine, RiCloseLine, RiExpandUpDownLine } from "@remixicon/react";
 import { Favicon, domainOf } from "../../primitives/favicon";
 import { cn, focusRing } from "../../lib/cn";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useNow } from "../../hooks/use-now";
 import { formatDuration } from "../../lib/duration";
@@ -210,7 +211,7 @@ export const ChainOfThought = React.forwardRef<HTMLDivElement, ChainOfThoughtPro
           )}
           <RiArrowDownSLine
             aria-hidden
-            className="size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/cot:rotate-180"
+            className="size-4 shrink-0 chevron-turn group-data-[state=open]/cot:rotate-180"
           />
         </Collapsible.Trigger>
         {summary != null && !open && (
@@ -258,11 +259,14 @@ export const ChainOfThoughtStep = React.forwardRef<HTMLDivElement, ChainOfThough
   ({ label, description, status: statusProp = "complete", icon, className, children, ...props }, ref) => {
     const lifecycle = normalizeTaskStatus(statusProp, "succeeded");
     const status = lifecycle === "running" ? "active" : lifecycle === "succeeded" ? "complete" : lifecycle === "failed" ? "failed" : "pending";
+    // The check and cross pop in when a step finishes or fails, not when a finished timeline first renders.
+    const changes = useChangeKey(status);
+    const pop = changes > 0 ? "animate-pop" : undefined;
     let dot: React.ReactNode;
     if (status === "active") dot = <Spinner aria-hidden role="presentation" size="xs" className="text-primary" />;
     else if (icon) dot = icon;
-    else if (status === "complete") dot = <RiCheckLine aria-hidden />;
-    else if (status === "failed") dot = <RiCloseLine aria-hidden />;
+    else if (status === "complete") dot = <RiCheckLine key={changes} aria-hidden className={pop} />;
+    else if (status === "failed") dot = <RiCloseLine key={changes} aria-hidden className={pop} />;
     else dot = <span className="size-1.5 rounded-full bg-current" />;
 
     return (
@@ -279,7 +283,7 @@ export const ChainOfThoughtStep = React.forwardRef<HTMLDivElement, ChainOfThough
         <span
           aria-hidden
           className={cn(
-            "relative z-[1] mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border bg-background [&_svg]:size-3",
+            "relative z-[1] mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border bg-background transition-colors duration-200 [&_svg]:size-3",
             status === "complete" && "border-border text-muted-foreground",
             status === "active" && "border-primary/40 bg-primary-soft text-primary",
             status === "failed" && "border-destructive/40 text-destructive",

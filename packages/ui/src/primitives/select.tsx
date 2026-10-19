@@ -55,7 +55,7 @@ export const SelectTrigger = React.forwardRef<
     {leadingIcon && <span className="flex text-muted-foreground">{leadingIcon}</span>}
     <span className="flex min-w-0 flex-1 items-center gap-2 truncate [&>span]:truncate">{children}</span>
     <SelectPrimitive.Icon asChild>
-      <RiArrowDownSLine aria-hidden className="text-muted-foreground transition-transform duration-200 group-data-[state=open]/select-trigger:rotate-180" />
+      <RiArrowDownSLine aria-hidden className="text-muted-foreground chevron-turn group-data-[state=open]/select-trigger:rotate-180" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));

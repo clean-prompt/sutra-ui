@@ -105,7 +105,7 @@ export const AgentMessageNotice = React.forwardRef<HTMLDivElement, AgentMessageN
               </>
             )}
           </span>
-          <RiArrowDownSLine aria-hidden className={cn("size-4 shrink-0 transition-transform", expanded && "rotate-180")} />
+          <RiArrowDownSLine aria-hidden className={cn("size-4 shrink-0 chevron-turn", expanded && "rotate-180")} />
         </button>
         {expanded && (
           <div id={bodyId} className="ml-8 mt-1 whitespace-pre-wrap rounded-lg border border-border bg-subtle px-3 py-2 font-mono text-xs text-foreground">

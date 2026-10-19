@@ -402,7 +402,7 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
             >
               <RiFileList3Line aria-hidden className="size-4 text-muted-foreground" />
               Paste JSON config
-              <RiArrowDownSLine aria-hidden className={cn("ml-auto size-4 text-muted-foreground transition-transform", pasteOpen && "rotate-180")} />
+              <RiArrowDownSLine aria-hidden className={cn("ml-auto size-4 text-muted-foreground chevron-turn", pasteOpen && "rotate-180")} />
             </button>
             {pasteOpen && (
               <div className="mt-3 space-y-2">
@@ -1206,7 +1206,7 @@ export const ConnectorAccounts = React.forwardRef<HTMLDivElement, ConnectorAccou
               onClick={() => setShowRetired((s) => !s)}
               className={cn("flex w-full items-center gap-1.5 px-3 py-2 text-left text-xs font-medium text-muted-foreground hover:text-foreground", focusRing)}
             >
-              <RiArrowDownSLine aria-hidden className={cn("size-4 transition-transform", !showRetired && "-rotate-90")} />
+              <RiArrowDownSLine aria-hidden className={cn("size-4 chevron-turn", !showRetired && "-rotate-90")} />
               Retired accounts ({retired.length})
             </button>
             {showRetired && (

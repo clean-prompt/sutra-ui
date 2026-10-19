@@ -17,6 +17,7 @@ import { clamp } from "../../lib/math";
 import { formatRelative as formatRelativeLib, safeISO, toValidDate, type FormatRelativeOptions } from "../../lib/time";
 import { useNow } from "../../hooks/use-now";
 import { Button, type ButtonProps } from "../../primitives/button";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useCopy } from "../../hooks/use-copy";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Popover, PopoverContent, PopoverTrigger } from "../../primitives/popover";
@@ -138,7 +139,7 @@ export const ChatCopyAction = React.forwardRef<HTMLButtonElement, ChatCopyAction
       >
         {children ??
           (copied ? (
-            <RiCheckLine aria-hidden key="check" className="animate-in zoom-in-50 duration-200" />
+            <RiCheckLine aria-hidden key="check" className="animate-pop" />
           ) : (
             <RiFileCopyLine aria-hidden key="copy" />
           ))}
@@ -172,6 +173,9 @@ export const ChatFeedbackActions = React.forwardRef<HTMLDivElement, ChatFeedback
       },
     });
     const toggle = (next: "up" | "down") => setFeedback(feedback === next ? null : next);
+    // The filled thumb pops when a rating is given, not when a message that was already rated first renders.
+    const changes = useChangeKey(feedback);
+    const pop = changes > 0 ? "animate-pop" : undefined;
     return (
       <div ref={ref} role="group" aria-label="Rate this response" className={cn("flex items-center gap-0.5", className)} {...props}>
         <ChatMessageAction
@@ -180,7 +184,7 @@ export const ChatFeedbackActions = React.forwardRef<HTMLDivElement, ChatFeedback
           disabled={disabled}
           onClick={() => toggle("up")}
         >
-          {feedback === "up" ? <RiThumbUpFill aria-hidden className="animate-in zoom-in-75 duration-200" /> : <RiThumbUpLine aria-hidden />}
+          {feedback === "up" ? <RiThumbUpFill key={changes} aria-hidden className={pop} /> : <RiThumbUpLine aria-hidden />}
         </ChatMessageAction>
         <ChatMessageAction
           label="Bad response"
@@ -188,7 +192,7 @@ export const ChatFeedbackActions = React.forwardRef<HTMLDivElement, ChatFeedback
           disabled={disabled}
           onClick={() => toggle("down")}
         >
-          {feedback === "down" ? <RiThumbDownFill aria-hidden className="animate-in zoom-in-75 duration-200" /> : <RiThumbDownLine aria-hidden />}
+          {feedback === "down" ? <RiThumbDownFill key={changes} aria-hidden className={pop} /> : <RiThumbDownLine aria-hidden />}
         </ChatMessageAction>
       </div>
     );

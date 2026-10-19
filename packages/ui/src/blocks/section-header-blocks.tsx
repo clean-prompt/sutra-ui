@@ -708,14 +708,14 @@ export const HeroHeader = React.forwardRef<HTMLElement, HeroHeaderProps>(
               <div className={cn("flex w-full flex-col gap-3 sm:w-auto sm:flex-row", centered && "justify-center")}>
                 {primaryAction ? (
                   primaryAction.href ? (
-                    <Button asChild size="xl">
+                    <Button asChild size="xl" className="group/cta">
                       <a href={primaryAction.href} onClick={primaryAction.onClick}>
                         {primaryAction.label}
-                        <RiArrowRightLine aria-hidden />
+                        <RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5" />
                       </a>
                     </Button>
                   ) : (
-                    <Button size="xl" trailingIcon={<RiArrowRightLine aria-hidden />} onClick={primaryAction.onClick}>
+                    <Button size="xl" className="group/cta" trailingIcon={<RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5" />} onClick={primaryAction.onClick}>
                       {primaryAction.label}
                     </Button>
                   )

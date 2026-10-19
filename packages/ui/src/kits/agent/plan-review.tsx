@@ -215,7 +215,7 @@ export const PlanReviewCard = React.forwardRef<HTMLDivElement, PlanReviewCardPro
             aria-label={expanded ? "Collapse plan" : "Expand plan"}
             onClick={() => setExpanded(!expanded)}
           >
-            <RiArrowDownSLine aria-hidden className={cn("transition-transform", !expanded && "-rotate-90")} />
+            <RiArrowDownSLine aria-hidden className={cn("chevron-turn", !expanded && "-rotate-90")} />
           </Button>
         </div>
 

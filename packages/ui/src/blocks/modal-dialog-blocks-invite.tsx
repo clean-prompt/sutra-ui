@@ -103,7 +103,7 @@ function MemberList({
       <h3 className="text-sm font-medium text-foreground">{title}</h3>
       <ul className="-mx-2 flex flex-col">
         {members.map((m) => (
-          <li key={m.id} className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-accent/50">
+          <li key={m.id} className="flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50">
             <Avatar name={m.name} src={m.avatarSrc} size="sm" />
             <div className="min-w-0 flex-1 leading-tight">
               <div className="truncate text-sm font-medium text-foreground">{m.name}</div>
@@ -236,7 +236,7 @@ export function InviteMembersDialog({
         <DialogFooter bordered className="sm:justify-between">
           <Button
             variant="ghost"
-            leadingIcon={copied ? <RiCheckLine aria-hidden className="text-success" /> : <RiLinkM aria-hidden />}
+            leadingIcon={copied ? <RiCheckLine aria-hidden className="text-success animate-pop" /> : <RiLinkM aria-hidden />}
             onClick={() => void copy(inviteLink)}
           >
             {copied ? "Link copied" : "Copy invite link"}

@@ -385,7 +385,7 @@ export const QuotaBars = React.forwardRef<HTMLUListElement, QuotaBarsProps>(({ q
       ? Array.from({ length: Math.max(1, loadingRows) }, (_, i) => (
           <li key={i} data-slot="quota-bars-skeleton" className="flex min-w-0 flex-1 items-center gap-2">
             <Skeleton shape="circle" className="size-5" />
-            <span aria-hidden className="block h-1 min-w-0 flex-1 animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
+            <Skeleton shape="rect" className="h-1 min-w-0 flex-1 rounded-full" />
             {i === 0 ? <span className="sr-only">Loading quotas…</span> : null}
           </li>
         ))

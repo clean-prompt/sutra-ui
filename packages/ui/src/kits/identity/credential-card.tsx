@@ -136,7 +136,7 @@ export const CredentialCard = React.forwardRef<HTMLElement, CredentialCardProps>
           {...shared}
           className={cn(
             "flex w-full items-center gap-3 rounded-box px-3 py-3 text-left",
-            interactive && cn("transition-colors hover:bg-accent", focusRing),
+            interactive && cn("group/credential transition-colors hover:bg-accent", focusRing),
             className
           )}
         >
@@ -158,7 +158,7 @@ export const CredentialCard = React.forwardRef<HTMLElement, CredentialCardProps>
               </span>
             )}
           </span>
-          {interactive && <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground" />}
+          {interactive && <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/credential:translate-x-0.5" />}
         </Comp>
       );
     }

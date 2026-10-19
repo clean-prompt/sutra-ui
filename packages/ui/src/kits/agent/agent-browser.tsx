@@ -457,7 +457,7 @@ export const BrowserConsole = React.forwardRef<HTMLDivElement, BrowserConsolePro
               focusRing
             )}
           >
-            <RiArrowDownSLine aria-hidden className={cn("transition-transform", !open && "-rotate-90")} />
+            <RiArrowDownSLine aria-hidden className={cn("chevron-turn", !open && "-rotate-90")} />
             <RiTerminalBoxLine aria-hidden />
             Console
           </button>

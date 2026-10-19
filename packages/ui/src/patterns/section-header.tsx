@@ -111,20 +111,23 @@ export interface PageHeaderProps extends Omit<SectionHeaderProps, "as" | "align"
   backLabel?: string;
 }
 
+/** The back arrow nudges left when its button (`group/back`) is hovered. */
+const backArrow = "transition-transform group-hover/back:-translate-x-0.5";
+
 /** Page-level header: breadcrumbs, back button, h1 title, actions and tabs. */
 export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
   ({ breadcrumbs, onBack, backHref, backLabel = "Back", size = "lg", leading, className, ...props }, ref) => {
     const back =
       onBack || backHref ? (
         backHref ? (
-          <Button asChild variant="secondary" size="icon-sm" aria-label={backLabel}>
+          <Button asChild variant="secondary" size="icon-sm" aria-label={backLabel} className="group/back">
             <a href={backHref} onClick={onBack}>
-              <RiArrowLeftLine aria-hidden />
+              <RiArrowLeftLine aria-hidden className={backArrow} />
             </a>
           </Button>
         ) : (
-          <Button variant="secondary" size="icon-sm" aria-label={backLabel} onClick={onBack}>
-            <RiArrowLeftLine aria-hidden />
+          <Button variant="secondary" size="icon-sm" aria-label={backLabel} onClick={onBack} className="group/back">
+            <RiArrowLeftLine aria-hidden className={backArrow} />
           </Button>
         )
       ) : null;

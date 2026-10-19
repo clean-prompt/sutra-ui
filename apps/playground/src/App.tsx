@@ -33,6 +33,7 @@ import {
   RiPaletteLine,
   RiShadowLine,
   RiSpace,
+  RiSpeedLine,
   RiCheckboxBlankLine,
 } from "@sutra/ui/icons";
 import { nav, findPage, routeOf } from "./nav";
@@ -52,6 +53,7 @@ const pages: Record<string, React.ComponentType> = {
   "foundations/shadows": lazyPage(foundations, "ShadowsPage"),
   "foundations/radius": lazyPage(foundations, "RadiusPage"),
   "foundations/spacing": lazyPage(foundations, "SpacingPage"),
+  "foundations/motion": lazyPage(foundations, "MotionPage"),
   "components/buttons": lazyPage(() => import("./pages/buttons"), "ButtonsPage"),
   "components/feedback": lazyPage(() => import("./pages/feedback"), "FeedbackPage"),
   "components/utility": lazyPage(() => import("./pages/utility"), "UtilityPage"),
@@ -112,6 +114,7 @@ const foundationIcons: Record<string, React.ReactNode> = {
   shadows: <RiShadowLine />,
   radius: <RiCheckboxBlankLine />,
   spacing: <RiSpace />,
+  motion: <RiSpeedLine />,
 };
 
 function AppSidebar({ section, page, anchor }: { section: string; page: string; anchor?: string }) {

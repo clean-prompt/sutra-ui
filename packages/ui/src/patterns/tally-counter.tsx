@@ -3,6 +3,7 @@ import { RiAddLine, RiArrowGoBackLine, RiSubtractLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { formatClockTime } from "../lib/time";
 import { clamp } from "../lib/math";
+import { useChangeKey } from "../hooks/use-change-key";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "../primitives/button";
 
@@ -132,6 +133,10 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
       setLog(rest);
     };
 
+    // The number slides up when it changes (never on first render), but not while a hold repeats every 90ms.
+    const valueChanges = useChangeKey(value);
+    const ticks = valueChanges > 0 && !press.current.repeated;
+
     const ringSize = 168;
     const stroke = 8;
     const r = (ringSize - stroke) / 2;
@@ -159,7 +164,9 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
           ) : null}
           <div className="flex flex-col items-center">
             <output aria-live="polite" aria-label={label} className="text-display-lg font-semibold tabular-nums text-foreground" data-tally-value>
-              {value}
+              <span key={valueChanges} className={cn("inline-block", ticks && "animate-tick")}>
+                {value}
+              </span>
             </output>
             {goal ? <span className="text-xs text-muted-foreground tabular-nums">of {goal}</span> : null}
           </div>

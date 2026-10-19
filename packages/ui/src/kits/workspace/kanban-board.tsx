@@ -36,6 +36,7 @@ import {
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useMergedRefs } from "../../hooks/use-merged-refs";
+import { usePrefersReducedMotion } from "../../hooks/use-media-query";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
 import { Input } from "../../primitives/input";
@@ -218,6 +219,7 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
       setPreviewState(b);
     }, []);
     const [active, setActive] = React.useState<ActiveDrag | null>(null);
+    const reducedMotion = usePrefersReducedMotion();
     const activeRef = React.useRef<ActiveDrag | null>(null);
     const announceRef = React.useRef<string | undefined>(undefined);
     const justDraggedRef = React.useRef(false);
@@ -689,7 +691,8 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
               ))}
             </div>
           </section>
-          <DragOverlay dropAnimation={null}>
+          {/* A dropped card settles into its slot (dnd-kit's drop animation, 200 ms); with reduced motion it lands at once. */}
+          <DragOverlay dropAnimation={reducedMotion ? null : { duration: 200 }}>
             {activeCard ? (
               <KanbanCard
                 card={activeCard}

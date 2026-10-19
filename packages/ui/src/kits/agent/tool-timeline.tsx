@@ -330,7 +330,7 @@ export const ToolTimelineItem = React.forwardRef<HTMLLIElement, ToolTimelineItem
               {row}
               <RiArrowRightSLine
                 aria-hidden
-                className="size-4 shrink-0 text-muted-foreground transition-transform duration-150 group-data-[state=open]/tli:rotate-90"
+                className="size-4 shrink-0 text-muted-foreground chevron-turn group-data-[state=open]/tli:rotate-90"
               />
             </Collapsible.Trigger>
             <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
@@ -467,7 +467,7 @@ export const ToolGroup = React.forwardRef<HTMLLIElement, ToolGroupProps>(
             <span className="flex-1" />
             <RiArrowRightSLine
               aria-hidden
-              className="size-4 shrink-0 text-muted-foreground transition-transform duration-150 group-data-[state=open]/tg:rotate-90"
+              className="size-4 shrink-0 text-muted-foreground chevron-turn group-data-[state=open]/tg:rotate-90"
             />
           </Collapsible.Trigger>
           <Collapsible.Content
@@ -565,7 +565,7 @@ export const ExpandableContent = React.forwardRef<HTMLDivElement, ExpandableCont
               focusRing
             )}
           >
-            <RiArrowDownSLine aria-hidden className={cn("size-3.5 transition-transform", expanded && "rotate-180")} />
+            <RiArrowDownSLine aria-hidden className={cn("size-3.5 chevron-turn", expanded && "rotate-180")} />
             {expanded ? lessLabel : moreLabel}
           </button>
         )}

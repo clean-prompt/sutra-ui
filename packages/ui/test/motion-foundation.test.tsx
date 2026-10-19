@@ -79,14 +79,20 @@ describe("keyframes and utilities", () => {
 
   it("chevron-turn reads the shared tokens", () => {
     const body = blockAfter(sutraCss, "@utility chevron-turn");
-    expect(body).toContain("transition-property: transform");
+    // Tailwind v4 rotate-90 / scale-* set the individual properties, so all of them must transition.
+    expect(body).toMatch(/transition-property:\s*transform,\s*translate,\s*scale,\s*rotate/);
     expect(body).toContain("var(--sutra-duration)");
     expect(body).toContain("var(--sutra-ease)");
   });
 });
 
 describe("reduced motion net", () => {
-  const covered = new Set([...net.matchAll(/\.animate-([\w-]+)/g)].map((m) => m[1]!));
+  const covered = new Set([...net.matchAll(/(?:\.animate-|\[class\*="animate-)([\w-]+)/g)].map((m) => m[1]!));
+
+  it("matches variant-prefixed classes too (data-[state=open]:animate-accordion-down)", () => {
+    expect(net).toContain('[class*="animate-accordion-down"]');
+    expect(net).not.toMatch(/(^|[\s,{])\.animate-/);
+  });
 
   it("stops decorative loops and entrances, and keeps animate-spin", () => {
     for (const name of ["pop", "tick", "flash", "fade-up", "bob", "ring", "pulse", "ping", "caret-blink", "dot-bounce", "bar-scale", "mesh"]) {
@@ -102,7 +108,7 @@ describe("reduced motion net", () => {
     }
     expect(net).not.toMatch(/--tw-enter-opacity/);
     // collapsibles end at once but still fire animationend
-    expect(net).toMatch(/\.animate-collapsible-up\s*\{\s*animation-duration:\s*1ms/);
+    expect(net).toMatch(/\[class\*="animate-collapsible-up"\]\s*\{\s*animation-duration:\s*1ms/);
   });
 
   it("covers every looping utility (the ones that guard themselves are listed)", () => {

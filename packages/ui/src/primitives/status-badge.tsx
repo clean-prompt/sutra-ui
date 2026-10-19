@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
+import { useChangeKey } from "../hooks/use-change-key";
 import { Spinner } from "./spinner";
 
 export type StatusBadgeStatus =
@@ -103,7 +104,7 @@ export const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
           {halo}
           <span
             className={cn(
-              "relative inline-flex size-full rounded-full",
+              "relative inline-flex size-full rounded-full transition-colors",
               variant === "solid" ? dot : cn("border-[1.5px] bg-transparent", ringBorder[resolved], variant === "dashed" && "border-dashed")
             )}
           />
@@ -116,7 +117,7 @@ export const StatusDot = React.forwardRef<HTMLSpanElement, StatusDotProps>(
         ref={ref}
         {...a11y}
         className={cn(
-          "relative inline-flex shrink-0 items-center justify-center rounded-full",
+          "relative inline-flex shrink-0 items-center justify-center rounded-full transition-colors",
           glyphSize[size],
           variant === "solid" && cn(toneClasses.soft[resolved], toneClasses.text[resolved]),
           variant === "hollow" && toneClasses.text[resolved],
@@ -153,6 +154,8 @@ export const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
   ({ className, status, tone, label, pulse, variant = "soft", size = "md", icon = "dot", children, ...props }, ref) => {
     const resolved = resolveTone(status, tone);
     const iconClass = size === "lg" ? iconSize.lg : iconSize.md;
+    // The custom icon pops when the status changes, never on the first render.
+    const changed = useChangeKey(`${status ?? ""}|${resolved}`);
     let indicator: React.ReactNode;
     if (icon === "dot") {
       indicator = <StatusDot status={status} tone={resolved} pulse={pulse} size={size === "lg" ? "md" : "sm"} label="" />;
@@ -162,7 +165,11 @@ export const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
       indicator = null;
     } else {
       indicator = (
-        <span aria-hidden className={cn("inline-flex shrink-0", size === "lg" ? "[&_svg]:size-3.5" : "[&_svg]:size-3")}>
+        <span
+          key={changed}
+          aria-hidden
+          className={cn("inline-flex shrink-0", size === "lg" ? "[&_svg]:size-3.5" : "[&_svg]:size-3", changed > 0 && "animate-pop")}
+        >
           {icon}
         </span>
       );
@@ -171,7 +178,7 @@ export const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
       <span
         ref={ref}
         className={cn(
-          "inline-flex shrink-0 items-center whitespace-nowrap font-medium leading-none",
+          "inline-flex shrink-0 items-center whitespace-nowrap font-medium leading-none transition-colors",
           variant !== "plain" && "rounded-control border",
           variant === "soft" && cn("border-transparent", toneClasses.soft[resolved]),
           variant === "outline" && "border-border bg-background text-foreground shadow-xs",

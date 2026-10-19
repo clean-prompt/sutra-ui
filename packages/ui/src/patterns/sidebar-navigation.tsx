@@ -319,7 +319,7 @@ SidebarMenuItem.displayName = "SidebarMenuItem";
 export const sidebarMenuButtonVariants = cva(
   [
     "peer/menu-button relative flex w-full items-center gap-2.5 overflow-hidden rounded-control px-2 text-left text-sm text-foreground/80 outline-none",
-    "transition-[width,height,padding,background-color,color] duration-150",
+    "transition-[width,height,padding,background-color,color,box-shadow] duration-150",
     "hover:bg-accent hover:text-foreground active:bg-accent",
     "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
     "data-[active=true]:bg-background data-[active=true]:font-medium data-[active=true]:text-foreground data-[active=true]:shadow-xs data-[active=true]:ring-1 data-[active=true]:ring-border",
@@ -433,7 +433,7 @@ export const SidebarMenuSub = React.forwardRef<HTMLDivElement, SidebarMenuSubPro
               )}
               <RiArrowRightSLine
                 aria-hidden
-                className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-out-quart group-data-[state=open]/menu-sub:rotate-90"
+                className="chevron-turn size-4 shrink-0 text-muted-foreground group-data-[state=open]/menu-sub:rotate-90"
               />
             </span>
           </SidebarMenuButton>

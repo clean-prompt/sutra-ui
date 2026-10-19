@@ -185,7 +185,7 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
           "group/card relative rounded-box border border-border bg-card p-3 text-left shadow-xs transition-[box-shadow,border-color,opacity]",
           "hover:border-border-strong hover:shadow-sm",
           placeholder && "opacity-40",
-          overlay && "rotate-1 cursor-grabbing shadow-xl ring-2 ring-primary/30",
+          overlay && "rotate-1 cursor-grabbing shadow-xl ring-2 ring-primary/30 animate-in fade-in-0 zoom-in-95 duration-150",
           card.runStatus && normalizeTaskStatus(card.runStatus) === "failed" && "border-destructive/40",
           className
         )}

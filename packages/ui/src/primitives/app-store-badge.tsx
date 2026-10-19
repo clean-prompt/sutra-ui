@@ -60,7 +60,7 @@ const storeMeta: Record<AppStore, { eyebrow: string; name: string; Mark: React.C
 export const appStoreBadgeVariants = cva(
   [
     "inline-flex shrink-0 select-none items-center rounded-lg border font-sans no-underline",
-    "transition-[transform,box-shadow,background-color] duration-150 hover:-translate-y-px hover:shadow-md active:translate-y-0 active:scale-[0.98]",
+    "transition-[transform,translate,scale,rotate,box-shadow,background-color] duration-150 hover:-translate-y-px hover:shadow-md active:translate-y-0 active:scale-[0.98]",
     focusRing,
   ],
   {

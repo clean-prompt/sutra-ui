@@ -82,7 +82,7 @@ export const ChatSourceList = React.forwardRef<HTMLDivElement, ChatSourceListPro
           <span>{label ?? `${sources.length} ${pluralize(sources.length, "source")}`}</span>
           <RiArrowDownSLine
             aria-hidden
-            className="size-4 transition-transform duration-200 group-data-[state=open]/sources:rotate-180"
+            className="size-4 chevron-turn group-data-[state=open]/sources:rotate-180"
           />
         </Collapsible.Trigger>
         <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">

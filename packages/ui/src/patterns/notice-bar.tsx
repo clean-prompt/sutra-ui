@@ -238,7 +238,7 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
                     <span
                       aria-hidden
                       className={cn(
-                        "block h-1.5 rounded-full bg-current transition-all",
+                        "block h-1.5 rounded-full bg-current transition-[width,opacity]",
                         i === safeIndex ? "w-3 opacity-90" : "w-1.5 opacity-35"
                       )}
                     />

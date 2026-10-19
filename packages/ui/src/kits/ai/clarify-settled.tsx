@@ -45,7 +45,7 @@ export const ClarifySettled = React.forwardRef<HTMLDivElement, ClarifySettledPro
         >
           <RiCheckboxCircleFill aria-hidden className="size-4 shrink-0 text-success" />
           <span className="min-w-0 flex-1 truncate font-medium text-foreground">{summary}</span>
-          <RiArrowRightSLine aria-hidden className={cn("size-4 shrink-0 transition-transform motion-reduce:transition-none", open && "rotate-90")} />
+          <RiArrowRightSLine aria-hidden className={cn("size-4 shrink-0 chevron-turn", open && "rotate-90")} />
         </button>
         {open && (
           <ol id={listId} className="flex flex-col gap-2 border-t border-border px-3 py-2.5">

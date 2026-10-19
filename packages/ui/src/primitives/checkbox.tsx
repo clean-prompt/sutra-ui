@@ -14,7 +14,7 @@ function joinIds(...ids: Array<string | undefined>) {
 export const checkboxVariants = cva(
   [
     "peer group/checkbox relative inline-flex shrink-0 items-center justify-center rounded-xs border border-border-strong bg-background text-primary-foreground shadow-xs",
-    "transition-[background-color,border-color,box-shadow,transform] duration-150 active:scale-90",
+    "transition-[background-color,border-color,box-shadow,transform,translate,scale,rotate] duration-150 active:scale-90",
     "hover:border-primary/60",
     "data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary",
     "disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100",

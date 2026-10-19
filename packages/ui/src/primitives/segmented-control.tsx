@@ -110,7 +110,7 @@ export const SegmentedControl = React.forwardRef<
               aria-hidden
               className={cn(
                 "pointer-events-none absolute inset-y-0.5 left-0 -z-10 rounded-control bg-background shadow-sm ring-1 ring-border/60",
-                animate && "transition-[transform,width] duration-300 ease-out-quart"
+                animate && "transition-[transform,translate,scale,rotate,width] duration-300 ease-out-quart"
               )}
               style={{ width: thumb.width, transform: `translateX(${thumb.left}px)` }}
             />

@@ -2,6 +2,7 @@
 import * as React from "react";
 import { RiAlertLine, RiCheckLine, RiCloseLine, RiSubtractLine } from "@remixicon/react";
 import { cn } from "../../lib/cn";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Badge } from "../../primitives/badge";
 import { Button } from "../../primitives/button";
@@ -84,6 +85,16 @@ const featureIcon: Record<PlanFeatureState, React.ReactNode> = {
   excluded: <RiCloseLine aria-hidden className="size-4 text-muted-foreground/70" />,
 };
 const featureSr: Record<PlanFeatureState, string> = { included: "Included", limited: "Limited", excluded: "Not included" };
+
+/** The per-month price. It slides up when the shown amount changes (the billing interval), never on the first render. */
+function PlanPriceAmount({ text }: { text: string }) {
+  const n = useChangeKey(text);
+  return (
+    <span key={n} className={cn("text-display-xs font-semibold tracking-tight text-foreground tabular-nums", n > 0 && "animate-tick")}>
+      {text}
+    </span>
+  );
+}
 
 /** Tiered plan cards with a monthly/yearly toggle, feature checklists, per-plan CTAs and a downgrade preview. */
 export const PlanPicker = React.forwardRef<HTMLDivElement, PlanPickerProps>(
@@ -187,9 +198,7 @@ export const PlanPicker = React.forwardRef<HTMLDivElement, PlanPickerProps>(
                     <span className="text-display-xs font-semibold tracking-tight text-foreground">{plan.priceLabel ?? "Custom"}</span>
                   ) : (
                     <span className="flex items-baseline gap-1">
-                      <span className="text-display-xs font-semibold tracking-tight text-foreground tabular-nums">
-                        {formatPrice(perMonth, currency, locale)}
-                      </span>
+                      <PlanPriceAmount text={formatPrice(perMonth, currency, locale)} />
                       <span className="text-sm text-muted-foreground">/mo</span>
                     </span>
                   )}

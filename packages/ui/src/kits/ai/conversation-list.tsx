@@ -424,7 +424,7 @@ export const ConversationGroupHeader = React.forwardRef<HTMLDivElement, Conversa
             >
               <RiArrowRightSLine
                 aria-hidden
-                className={cn("size-4 shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none", expanded && "rotate-90")}
+                className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", expanded && "rotate-90")}
               />
               {icon}
               <span className="truncate font-medium">{name}</span>
@@ -692,7 +692,7 @@ export const ConversationList = React.forwardRef<HTMLDivElement, ConversationLis
                       focusRing
                     )}
                   >
-                    <RiArrowRightSLine aria-hidden className={cn("size-4 transition-transform motion-reduce:transition-none", archivedOpen && "rotate-90")} />
+                    <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn", archivedOpen && "rotate-90")} />
                     <RiArchiveLine aria-hidden className="size-4" />
                     Archived
                     <span className="ml-auto tabular-nums">{archived.length}</span>

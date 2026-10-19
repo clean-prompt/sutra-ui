@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { formatBadgeCount } from "../lib/format";
+import { useChangeKey } from "../hooks/use-change-key";
 import { useControllableState } from "../hooks/use-controllable-state";
 
 /* ------------------------------------------------------------------ */
@@ -56,26 +57,49 @@ function badgeLabel(badge: number | boolean | undefined) {
   return `${badge} new`;
 }
 
+/** The badge pops when its value changes (a new count, a dot appearing), never when the bar first renders. */
 function TabBadge({ badge }: { badge: number | boolean | undefined }) {
+  const changes = useChangeKey(badge);
+  const pop = changes > 0 && "animate-pop";
   if (badge === undefined || badge === false || badge === 0) return null;
   if (badge === true) {
     return (
       <span
+        key={changes}
         aria-hidden
         data-slot="badge-dot"
-        className="absolute right-2 top-0.5 size-2 rounded-full bg-destructive ring-2 ring-background"
+        className={cn("absolute right-2 top-0.5 size-2 rounded-full bg-destructive ring-2 ring-background", pop)}
       />
     );
   }
   return (
     <span
+      key={changes}
       aria-hidden
       data-slot="badge-count"
-      className="absolute -top-1 left-[calc(50%+4px)] flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none tabular-nums text-destructive-foreground ring-2 ring-background"
+      className={cn(
+        "absolute -top-1 left-[calc(50%+4px)] flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold leading-none tabular-nums text-destructive-foreground ring-2 ring-background",
+        pop
+      )}
     >
       {formatBadgeCount(badge)}
     </span>
   );
+}
+
+/** The badge of an inline (non-bar) tab; same rule as `TabBadge`. */
+function InlineTabBadge({ badge }: { badge: number | boolean | undefined }) {
+  const changes = useChangeKey(badge);
+  const pop = changes > 0 && "animate-pop";
+  if (typeof badge === "number" && badge > 0) {
+    return (
+      <span key={changes} aria-hidden className={cn("rounded-full bg-primary-soft px-1.5 text-2xs font-semibold tabular-nums text-primary-soft-foreground", pop)}>
+        {formatBadgeCount(badge)}
+      </span>
+    );
+  }
+  if (badge === true) return <span key={changes} aria-hidden className={cn("size-1.5 rounded-full bg-destructive", pop)} />;
+  return null;
 }
 
 const itemClass = cn(
@@ -160,7 +184,7 @@ export const BottomTabBar = React.forwardRef<HTMLElement, BottomTabBarProps>(
             data-slot="primary-action"
             className={cn(
               "-mt-5 inline-flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-background",
-              "transition-[transform,background-color] duration-150 hover:bg-primary-hover active:scale-95 [&_svg]:size-6",
+              "transition-[transform,translate,scale,rotate,background-color] duration-150 hover:bg-primary-hover active:scale-95 [&_svg]:size-6",
               focusRing
             )}
           >
@@ -226,7 +250,7 @@ export const BottomTabBarItem = React.forwardRef<HTMLElement, BottomTabBarItemPr
           <span
             aria-hidden
             data-slot="indicator"
-            className="absolute inset-0 scale-x-50 rounded-full bg-primary-soft opacity-0 transition-[transform,opacity] duration-200 ease-out group-data-[state=active]/tab:scale-x-100 group-data-[state=active]/tab:opacity-100"
+            className="absolute inset-0 scale-x-50 rounded-full bg-primary-soft opacity-0 transition-[transform,translate,scale,rotate,opacity] duration-200 ease-out-quart group-data-[state=active]/tab:scale-x-100 group-data-[state=active]/tab:opacity-100"
           />
           <span className="relative flex">{active && activeIcon ? activeIcon : icon}</span>
           <TabBadge badge={badge} />
@@ -378,13 +402,7 @@ export const AdaptiveTabs = React.forwardRef<HTMLDivElement, AdaptiveTabsProps>(
                 <>
                   {item.icon}
                   {item.label}
-                  {typeof item.badge === "number" && item.badge > 0 ? (
-                    <span aria-hidden className="rounded-full bg-primary-soft px-1.5 text-2xs font-semibold tabular-nums text-primary-soft-foreground">
-                      {formatBadgeCount(item.badge)}
-                    </span>
-                  ) : item.badge === true ? (
-                    <span aria-hidden className="size-1.5 rounded-full bg-destructive" />
-                  ) : null}
+                  <InlineTabBadge badge={item.badge} />
                   {extra ? <span className="sr-only">({extra})</span> : null}
                 </>
               );

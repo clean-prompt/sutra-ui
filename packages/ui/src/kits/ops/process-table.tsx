@@ -745,7 +745,7 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
                 >
                   <RiArrowRightSLine
                     aria-hidden
-                    className={cn("size-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-90")}
+                    className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", open && "rotate-90")}
                   />
                   {group.icon != null ? (
                     <span aria-hidden className="inline-flex size-6 shrink-0 items-center justify-center [&>img]:size-full [&>svg]:size-5">

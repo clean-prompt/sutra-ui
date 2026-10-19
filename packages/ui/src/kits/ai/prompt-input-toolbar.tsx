@@ -2,6 +2,7 @@
 import * as React from "react";
 import { RiArrowUpLine, RiAttachment2, RiStopFill } from "@remixicon/react";
 import { cn } from "../../lib/cn";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { Button, type ButtonProps } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { usePromptInput } from "./prompt-input-internal";
@@ -111,6 +112,9 @@ export const PromptInputSubmit = React.forwardRef<HTMLButtonElement, PromptInput
     const { loading: isLoading, canSubmit, onStop } = usePromptInput();
     const stopping = isLoading && !!onStop;
     const label = isLoading ? stopLabel : submitLabel;
+    // The icon pops when it swaps between send, spinner and stop, not when the composer first renders.
+    const changes = useChangeKey(stopping ? "stop" : isLoading ? "spin" : "send");
+    const pop = changes > 0 ? "animate-pop" : undefined;
     return (
       <Button
         ref={ref}
@@ -133,11 +137,11 @@ export const PromptInputSubmit = React.forwardRef<HTMLButtonElement, PromptInput
       >
         {children ??
           (stopping ? (
-            <RiStopFill aria-hidden key="stop" className="size-3.5 animate-in zoom-in-50 duration-150" />
+            <RiStopFill aria-hidden key="stop" className={cn("size-3.5", pop)} />
           ) : isLoading ? (
             <Spinner key="spin" aria-hidden role="presentation" size="sm" className="text-current" />
           ) : (
-            <RiArrowUpLine aria-hidden key="send" className="animate-in zoom-in-75 duration-150" />
+            <RiArrowUpLine aria-hidden key="send" className={pop} />
           ))}
       </Button>
     );

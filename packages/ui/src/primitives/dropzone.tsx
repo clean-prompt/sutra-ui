@@ -388,7 +388,7 @@ export const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
             aria-hidden
             className={cn(
               "flex shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-xs ring-4 ring-muted",
-              "transition-[color,transform,box-shadow] duration-200 group-hover/dropzone:text-foreground",
+              "transition-[color,transform,translate,scale,rotate,box-shadow] duration-200 group-hover/dropzone:text-foreground",
               "group-data-[drag=accept]/dropzone:-translate-y-0.5 group-data-[drag=accept]/dropzone:text-primary group-data-[drag=accept]/dropzone:ring-primary-soft",
               "group-data-[drag=reject]/dropzone:text-destructive group-data-[drag=reject]/dropzone:ring-destructive-soft",
               compact ? "size-9 [&_svg]:size-4" : "size-11 [&_svg]:size-5"

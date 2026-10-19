@@ -203,7 +203,7 @@ function SaveStatus({ status }: { status?: SchemaFieldSaveStatus }) {
       )}
       {status === "saved" && (
         <>
-          <RiCheckLine aria-hidden className="size-3 text-success" /> Saved
+          <RiCheckLine aria-hidden className="size-3 animate-pop text-success" /> Saved
         </>
       )}
       {status === "error" && (

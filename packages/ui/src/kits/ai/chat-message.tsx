@@ -30,7 +30,7 @@ const caretClass =
 
 /** Appends a blinking caret to the last rendered markdown block. */
 const caretAfterLast =
-  "[&>:last-child]:after:ml-0.5 [&>:last-child]:after:inline-block [&>:last-child]:after:h-[1.1em] [&>:last-child]:after:w-[0.45em] [&>:last-child]:after:translate-y-[0.2em] [&>:last-child]:after:rounded-[1px] [&>:last-child]:after:bg-foreground [&>:last-child]:after:animate-caret-blink [&>:last-child]:after:content-['']";
+  "[&>:last-child]:after:ml-0.5 [&>:last-child]:after:inline-block [&>:last-child]:after:h-[1.1em] [&>:last-child]:after:w-[0.45em] [&>:last-child]:after:translate-y-[0.2em] [&>:last-child]:after:rounded-[1px] [&>:last-child]:after:bg-foreground [&>:last-child]:after:animate-caret-blink motion-reduce:[&>:last-child]:after:animate-none [&>:last-child]:after:content-['']";
 
 export interface ChatMessageProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "role"> {
   role?: ChatMessageRole;

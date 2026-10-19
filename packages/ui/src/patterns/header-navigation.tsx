@@ -138,7 +138,7 @@ export const HeaderNavTrigger = React.forwardRef<
     {children}
     <RiArrowDownSLine
       aria-hidden
-      className="relative top-px size-4 opacity-70 transition-transform duration-200 ease-out-quart group-data-[state=open]/nav:rotate-180"
+      className="chevron-turn relative top-px size-4 opacity-70 group-data-[state=open]/nav:rotate-180"
     />
   </NavigationMenuPrimitive.Trigger>
 ));
@@ -316,7 +316,7 @@ export const HeaderNavMobile = React.forwardRef<HTMLButtonElement, HeaderNavMobi
             <span className="flex min-w-0 items-center gap-3">{content}</span>
             <RiArrowDownSLine
               aria-hidden
-              className="transition-transform duration-200 ease-out-quart group-data-[state=open]/mobile-section:rotate-180"
+              className="chevron-turn group-data-[state=open]/mobile-section:rotate-180"
             />
           </CollapsiblePrimitive.Trigger>
           <CollapsiblePrimitive.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">

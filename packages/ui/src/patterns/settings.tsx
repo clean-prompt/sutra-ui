@@ -162,7 +162,7 @@ export const SettingsShell = React.forwardRef<HTMLDivElement, SettingsShellProps
                       type="button"
                       onClick={() => setSection(s.id)}
                       className={cn(
-                        "flex w-full items-center gap-3 rounded-box px-3 py-3 text-left transition-colors hover:bg-accent",
+                        "group/row flex w-full items-center gap-3 rounded-box px-3 py-3 text-left transition-colors hover:bg-accent",
                         focusRing
                       )}
                     >
@@ -177,7 +177,10 @@ export const SettingsShell = React.forwardRef<HTMLDivElement, SettingsShellProps
                           <span className="truncate text-xs text-muted-foreground">{s.description}</span>
                         )}
                       </span>
-                      <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+                      <RiArrowRightSLine
+                        aria-hidden
+                        className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/row:translate-x-0.5"
+                      />
                     </button>
                   </li>
                 ))}
@@ -437,12 +440,15 @@ export const SettingsRow = React.forwardRef<HTMLElement, SettingsRowProps>(funct
       <>
         {text}
         {value != null && <span className="max-w-[40%] shrink-0 truncate text-sm text-muted-foreground">{value}</span>}
-        <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+        <RiArrowRightSLine
+          aria-hidden
+          className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/row:translate-x-0.5"
+        />
       </>
     );
     const cls = cn(
       rowBase,
-      "transition-colors hover:bg-accent",
+      "group/row transition-colors hover:bg-accent",
       disabled && "pointer-events-none opacity-60",
       focusRing,
       "focus-visible:ring-inset",

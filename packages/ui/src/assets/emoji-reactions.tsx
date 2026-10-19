@@ -186,7 +186,7 @@ export const EmojiReaction = React.forwardRef<HTMLButtonElement, EmojiReactionPr
         data-state={reacted ? "on" : "off"}
         className={cn(
           "inline-flex shrink-0 select-none items-center gap-1 rounded-full border font-medium tabular-nums",
-          "transition-[background-color,border-color,color,transform] duration-150 active:scale-95",
+          "transition-[background-color,border-color,color,transform,translate,scale,rotate] duration-150 active:scale-95",
           "disabled:pointer-events-none disabled:opacity-50",
           size === "sm" ? "h-6 px-2 text-xs" : "h-7 px-2.5 text-xs",
           reacted
@@ -209,7 +209,7 @@ export const EmojiReaction = React.forwardRef<HTMLButtonElement, EmojiReactionPr
           className={cn(
             "inline-block leading-none",
             size === "sm" ? "text-sm" : "text-base",
-            popKey > 0 && "animate-in zoom-in-50 duration-300 ease-[var(--ease-spring)]"
+            popKey > 0 && "animate-pop"
           )}
         >
           {emoji}

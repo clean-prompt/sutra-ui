@@ -5,6 +5,7 @@ import { RiArrowRightSLine, RiCloseLine, RiLightbulbFlashLine } from "@remixicon
 import { cn, focusRing } from "../lib/cn";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { clamp } from "../lib/math";
+import { useChangeKey } from "../hooks/use-change-key";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { prefersReducedMotion } from "../hooks/use-media-query";
 import { useSafeId } from "../hooks/use-safe-id";
@@ -157,6 +158,9 @@ export function CoachmarkTour({
   const count = steps.length;
   const index = clamp(stepState, 0, Math.max(0, count - 1));
   const current = steps[index];
+  // The title and body fade in when the step changes (not when the tour opens); the card itself already glides.
+  const stepChanges = useChangeKey(index);
+  const stepFade = stepChanges > 0 ? "animate-fade-in" : undefined;
   const [rect, setRect] = React.useState<Rect | null>(null);
   const [cardSize, setCardSize] = React.useState({ width: 0, height: 0 });
   const cardRef = React.useRef<HTMLDivElement>(null);
@@ -305,12 +309,12 @@ export function CoachmarkTour({
         data-step={index}
         className={cn(
           "absolute w-80 max-w-[calc(100vw-1rem)] rounded-box border border-border bg-popover p-4 text-popover-foreground shadow-2xl outline-none",
-          "transition-[top,left] duration-200 ease-out motion-reduce:transition-none"
+          "transition-[top,left] duration-200 ease-out-quart motion-reduce:transition-none"
         )}
         style={{ top: pos.top, left: pos.left }}
       >
         <div className="mb-1 flex items-start gap-2">
-          <h2 id={titleId} className="min-w-0 flex-1 text-sm font-semibold text-foreground">
+          <h2 key={`title-${stepChanges}`} id={titleId} className={cn("min-w-0 flex-1 text-sm font-semibold text-foreground", stepFade)}>
             {current.title}
           </h2>
           <button
@@ -323,7 +327,7 @@ export function CoachmarkTour({
           </button>
         </div>
         {current.body && (
-          <div id={bodyId} className="text-sm text-muted-foreground">
+          <div key={`body-${stepChanges}`} id={bodyId} className={cn("text-sm text-muted-foreground", stepFade)}>
             {current.body}
           </div>
         )}

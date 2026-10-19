@@ -285,7 +285,7 @@ function JsonNode({ name, value, segs, depth, ancestors, last }: JsonNodeProps) 
             aria-controls={groupId}
             className={cn("inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground", focusRing)}
           >
-            <RiArrowRightSLine aria-hidden className={cn("size-3.5 transition-transform", expanded && "rotate-90")} />
+            <RiArrowRightSLine aria-hidden className={cn("chevron-turn size-3.5", expanded && "rotate-90")} />
           </button>
         ) : (
           <span className="inline-block w-4 shrink-0" />

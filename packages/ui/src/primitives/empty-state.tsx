@@ -75,7 +75,7 @@ export const EmptyState = React.forwardRef<HTMLElement, EmptyStateProps>(
         data-slot="empty-state"
         data-variant={variant}
         className={cn(
-          "flex w-full flex-col items-center text-center",
+          "flex w-full animate-fade-up flex-col items-center text-center",
           welcome ? "mx-auto max-w-2xl justify-center gap-4 px-4 py-12" : s.root,
           variant === "dashed" && "rounded-box border-2 border-dashed border-border bg-subtle/50",
           className

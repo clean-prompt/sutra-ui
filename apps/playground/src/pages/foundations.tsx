@@ -10,19 +10,29 @@ import {
   typography,
   cn,
   useCopy,
+  usePrefersReducedMotion,
+  Avatar,
   Badge,
   Button,
   Card,
+  CodeBlock,
+  Combobox,
   Container,
+  EmptyState,
   Eyebrow,
   Grid,
   GridItem,
   Heading,
+  InlineAlert,
+  InlineAlertDescription,
+  InlineAlertTitle,
   InlineCode,
   Input,
   Kbd,
+  StatusBadge,
   Text,
 } from "@sutra/ui";
+import { RiAddLine, RiArrowDownSLine, RiCheckLine, RiCloseLine, RiRefreshLine } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */
@@ -360,6 +370,365 @@ export function SpacingPage() {
               <span className="h-4 rounded-xs bg-primary" style={{ width: px }} />
             </div>
           ))}
+      </Demo>
+    </PageIntro>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion                                                              */
+/* ------------------------------------------------------------------ */
+
+/** A custom property of the root, kept live: a style (`data-style`) or theme change retunes the value. */
+function useRootVar(name: string) {
+  const [value, setValue] = React.useState("");
+  React.useEffect(() => {
+    const root = document.documentElement;
+    const read = () => setValue(getComputedStyle(root).getPropertyValue(name).trim());
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(root, { attributes: true });
+    return () => observer.disconnect();
+  }, [name]);
+  return value;
+}
+
+/** The same pattern as @sutra/ui's internal `useChangeKey`: 0 until `value` changes, then +1 per change. */
+function useChangeKey(value: unknown) {
+  const [state, setState] = React.useState({ value, key: 0 });
+  if (!Object.is(state.value, value)) {
+    const key = state.key + 1;
+    setState({ value, key });
+    return key;
+  }
+  return state.key;
+}
+
+/** A `cubic-bezier(x1, y1, x2, y2)` drawn as a curve, so a style's retuned ease is visible. */
+function EaseCurve({ name }: { name: string }) {
+  const value = useRootVar(name);
+  const n = /cubic-bezier\(\s*([-\d.]+)\s*,\s*([-\d.]+)\s*,\s*([-\d.]+)\s*,\s*([-\d.]+)\s*\)/.exec(value)?.slice(1).map(Number);
+  return (
+    <svg viewBox="-10 -60 120 180" className="h-24 w-16 shrink-0 text-primary" aria-hidden>
+      <rect x="0" y="0" width="100" height="100" className="fill-none stroke-border" strokeDasharray="3 3" />
+      {n && <path d={`M0,100 C${n[0]! * 100},${100 - n[1]! * 100} ${n[2]! * 100},${100 - n[3]! * 100} 100,0`} className="fill-none stroke-current" strokeWidth="4" strokeLinecap="round" />}
+    </svg>
+  );
+}
+
+const speedTokens = [
+  { name: "--sutra-duration-fast", use: "hover, press, colour, icon swap" },
+  { name: "--sutra-duration", use: "chevrons, overlays, collapsibles" },
+  { name: "--sutra-duration-slow", use: "sliding indicators, entrances" },
+  { name: "--sutra-duration-fill", use: "value fills, rings" },
+] as const;
+
+function SpeedRow({ name, use, on }: { name: string; use: string; on: boolean }) {
+  const value = useRootVar(name);
+  return (
+    <div className="grid grid-cols-[minmax(0,13rem)_4rem_minmax(0,1fr)] items-center gap-4 text-xs">
+      <div className="min-w-0">
+        <div className="truncate font-mono font-medium">{name}</div>
+        <div className="truncate text-muted-foreground">{use}</div>
+      </div>
+      <span className="font-mono tabular-nums text-muted-foreground">{value}</span>
+      <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full origin-left rounded-full bg-primary"
+          style={{
+            transform: on ? "scaleX(1)" : "scaleX(0.04)",
+            transitionProperty: "transform",
+            transitionDuration: `var(${name})`,
+            transitionTimingFunction: "var(--sutra-ease)",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function EaseRow({ name, label }: { name: string; label: string }) {
+  const value = useRootVar(name);
+  return (
+    <div className="flex items-center gap-4 text-xs">
+      <EaseCurve name={name} />
+      <div className="min-w-0 space-y-1">
+        <div className="font-mono font-medium">{name}</div>
+        <div className="text-muted-foreground">{label}</div>
+        <div className="truncate font-mono text-muted-foreground">{value}</div>
+      </div>
+    </div>
+  );
+}
+
+/** A Replay button above a stage that is re-created (so its entrance plays again). */
+function Replayable({ name, note, children }: { name: string; note: string; children: (run: number) => React.ReactNode }) {
+  const [run, setRun] = React.useState(0);
+  return (
+    <div className="flex flex-col gap-3 rounded-box border border-border bg-card p-4">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="truncate font-mono text-sm font-medium">{name}</div>
+          <div className="text-xs text-muted-foreground">{note}</div>
+        </div>
+        <Button size="xs" variant="outline" leadingIcon={<RiRefreshLine />} onClick={() => setRun((r) => r + 1)}>
+          Replay
+        </Button>
+      </div>
+      <div className="grid min-h-16 place-items-center rounded-control bg-subtle p-3">{children(run)}</div>
+    </div>
+  );
+}
+
+function MotionSpeeds() {
+  const [on, setOn] = React.useState(false);
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-3">
+        <Text size="sm" tone="neutral">
+          Each bar fills with its own token and the shared ease.
+        </Text>
+        <Button size="sm" variant="outline" onClick={() => setOn((v) => !v)}>
+          {on ? "Reset" : "Play"}
+        </Button>
+      </div>
+      <div className="space-y-4">
+        {speedTokens.map((t) => (
+          <SpeedRow key={t.name} {...t} on={on} />
+        ))}
+      </div>
+      <div className="grid gap-6 border-t border-border pt-6 sm:grid-cols-2">
+        <EaseRow name="--sutra-ease" label="the one ease: entrances, fills, chevrons, hover" />
+        <EaseRow name="--sutra-ease-spring" label="springy: pops, switch and radio thumbs" />
+      </div>
+    </div>
+  );
+}
+
+function MotionChevron() {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <button
+      type="button"
+      aria-expanded={open}
+      onClick={() => setOpen((v) => !v)}
+      className="inline-flex items-center gap-2 rounded-control border border-border bg-background px-3 py-1.5 text-sm font-medium shadow-xs"
+    >
+      Details
+      <RiArrowDownSLine className={cn("size-4 chevron-turn", open && "rotate-180")} aria-hidden />
+    </button>
+  );
+}
+
+function MotionUtilities() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <Replayable name="animate-pop" note="springy scale-in: icon swaps, ticks, badges">
+        {(run) => (
+          <span key={run} className="grid size-10 animate-pop place-items-center rounded-full bg-primary-soft text-primary-soft-foreground">
+            <RiCheckLine className="size-5" aria-hidden />
+          </span>
+        )}
+      </Replayable>
+      <Replayable name="animate-tick" note="a changed value slides up into place">
+        {(run) => (
+          <span key={run} className="inline-block animate-tick text-2xl font-semibold tabular-nums">
+            1,284
+          </span>
+        )}
+      </Replayable>
+      <Replayable name="animate-flash" note="colour highlight for a value that just changed">
+        {(run) => (
+          <span key={run} className="animate-flash rounded-control px-3 py-1 text-sm font-medium">
+            Saved 12:04
+          </span>
+        )}
+      </Replayable>
+      <Replayable name="animate-fade-in" note="300 ms fade">
+        {(run) => (
+          <Card key={run} padded className="w-40 animate-fade-in text-sm">
+            Fades in
+          </Card>
+        )}
+      </Replayable>
+      <Replayable name="animate-fade-up" note="300 ms fade with a 6 px rise: the newest message, page heads">
+        {(run) => (
+          <Card key={run} padded className="w-40 animate-fade-up text-sm">
+            Rises in
+          </Card>
+        )}
+      </Replayable>
+      <Replayable name="animate-pop-in" note="200 ms rise from 98.5%: popovers and cards">
+        {(run) => (
+          <Card key={run} padded className="w-40 animate-pop-in text-sm">
+            Settles in
+          </Card>
+        )}
+      </Replayable>
+      <div className="flex flex-col gap-3 rounded-box border border-border bg-card p-4 sm:col-span-2 lg:col-span-1">
+        <div>
+          <div className="font-mono text-sm font-medium">chevron-turn</div>
+          <div className="text-xs text-muted-foreground">disclosure rotation; pair with rotate-180 or rotate-90</div>
+        </div>
+        <div className="grid min-h-16 place-items-center rounded-control bg-subtle p-3">
+          <MotionChevron />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const motionFruits = [
+  { value: "apple", label: "Apple" },
+  { value: "banana", label: "Banana" },
+  { value: "cherry", label: "Cherry" },
+  { value: "mango", label: "Mango" },
+];
+const statusCycle = ["pending", "success", "error"] as const;
+
+/** The stage owns the state, so remounting it starts from first render again. */
+function MotionOnChangeStage() {
+  const [count, setCount] = React.useState(1284);
+  const countKey = useChangeKey(count);
+  const [status, setStatus] = React.useState<(typeof statusCycle)[number]>("pending");
+  return (
+    <div className="grid gap-4 md:grid-cols-3">
+      <div className="space-y-3 rounded-box border border-border bg-card p-4">
+        <DemoLabel>Number: key + animate-tick</DemoLabel>
+        <div className="flex items-center gap-3">
+          <span key={countKey} className={cn("inline-block min-w-16 text-2xl font-semibold tabular-nums", countKey > 0 && "animate-tick")}>
+            {count.toLocaleString("en-US")}
+          </span>
+          <Button size="sm" variant="outline" leadingIcon={<RiAddLine />} onClick={() => setCount((c) => c + 7)}>
+            Add 7
+          </Button>
+        </div>
+      </div>
+      <div className="space-y-3 rounded-box border border-border bg-card p-4">
+        <DemoLabel>StatusBadge: colour fade, icon pops on change</DemoLabel>
+        <div className="flex items-center gap-3">
+          <StatusBadge status={status} icon={status === "error" ? <RiCloseLine /> : <RiCheckLine />} />
+          <Button size="sm" variant="outline" onClick={() => setStatus((s) => statusCycle[(statusCycle.indexOf(s) + 1) % statusCycle.length]!)}>
+            Next status
+          </Button>
+        </div>
+      </div>
+      <div className="space-y-3 rounded-box border border-border bg-card p-4">
+        <DemoLabel>Combobox: only a chip you add eases in</DemoLabel>
+        <Combobox multiple aria-label="Fruit" options={motionFruits} defaultValue={["apple", "banana"]} placeholder="Pick fruit" />
+      </div>
+    </div>
+  );
+}
+
+function MotionOnChange() {
+  const [mount, setMount] = React.useState(0);
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between gap-3">
+        <Text size="sm" tone="neutral">
+          Nothing below moves on first render. Change a value and only that value animates. Remount to check.
+        </Text>
+        <Button size="sm" variant="outline" leadingIcon={<RiRefreshLine />} onClick={() => setMount((m) => m + 1)}>
+          Remount
+        </Button>
+      </div>
+      <MotionOnChangeStage key={mount} />
+      <CodeBlock
+        language="tsx"
+        filename="useChangeKey.tsx"
+        copyable={false}
+        code={`const n = useChangeKey(status);            // 0 until status changes, then +1 per change
+<span key={n} className={n > 0 ? "animate-pop" : undefined}>{icon}</span>`}
+      />
+    </div>
+  );
+}
+
+function MotionEntrances() {
+  const [run, setRun] = React.useState(0);
+  const image =
+    "data:image/svg+xml;utf8," +
+    encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#615fff"/><circle cx="32" cy="26" r="11" fill="#fff"/><path d="M10 64c2-16 12-22 22-22s20 6 22 22z" fill="#fff"/></svg>');
+  return (
+    <div className="space-y-5">
+      <div className="flex justify-end">
+        <Button size="sm" variant="outline" leadingIcon={<RiRefreshLine />} onClick={() => setRun((r) => r + 1)}>
+          Replay
+        </Button>
+      </div>
+      <div key={run} className="grid items-start gap-6 md:grid-cols-[auto_1fr]">
+        <div className="space-y-2">
+          <DemoLabel>Avatar image: fades in once loaded</DemoLabel>
+          <Avatar src={image} name="Ada Lovelace" size="xl" />
+        </div>
+        <div className="space-y-2">
+          <DemoLabel>EmptyState: rises in</DemoLabel>
+          <EmptyState size="sm" title="Nothing here yet" description="Results show up as soon as there are some." />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReducedMotionNote() {
+  const reduced = usePrefersReducedMotion();
+  return (
+    <div className="space-y-4">
+      <InlineAlert tone={reduced ? "success" : "info"}>
+        <InlineAlertTitle>{reduced ? "Reduced motion is on" : "Reduced motion is off"}</InlineAlertTitle>
+        <InlineAlertDescription>
+          {reduced
+            ? "Your system asks for less motion, so everything on this page is already still."
+            : "To try it, turn on Reduce motion in your system settings, or emulate prefers-reduced-motion in the browser's rendering tools."}
+        </InlineAlertDescription>
+      </InlineAlert>
+      <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
+        <li>Decorative loops and entrances stop: the pulse, ping, dots, bars, caret, mesh, bob and ring, and every entrance utility above.</li>
+        <li>
+          Every transition ends in <InlineCode>1ms</InlineCode>, so state changes still land and <InlineCode>transitionend</InlineCode> still fires.
+        </li>
+        <li>Overlays keep their fade and lose their movement. Collapsibles end in 1 ms, so Radix still unmounts them on <InlineCode>animationend</InlineCode>.</li>
+        <li>
+          <InlineCode>animate-spin</InlineCode> keeps turning: it is a progress indicator, not decoration. Indeterminate bars slow down to 3 s.
+        </li>
+        <li>
+          Never put <InlineCode>animation: none</InlineCode> on something that unmounts on <InlineCode>animationend</InlineCode>: use a 1 ms duration.
+        </li>
+      </ul>
+      <Text size="sm" tone="neutral">
+        <InlineCode>test/motion-guard.test.ts</InlineCode> keeps this honest: every looping animation is covered by the net or guarded on the site, durations stay on the scale, and curves come from the shared ease.
+      </Text>
+    </div>
+  );
+}
+
+export function MotionPage() {
+  return (
+    <PageIntro
+      eyebrow="Foundations"
+      title="Motion"
+      description="One ease and four speeds, set as tokens a style can retune. Everything is CSS: transform, opacity and colour, 150 to 300 ms, and still under reduced motion."
+    >
+      <Demo
+        id="tokens"
+        title="Tokens"
+        description="--sutra-ease and four speeds on :root. Bare transitions follow them. Switch to the paper style in the top bar and the values and curves change."
+        align="start"
+      >
+        <MotionSpeeds />
+      </Demo>
+      <Demo id="utilities" title="Utilities" description="Pick the utility by what changed. All of them stand still under reduced motion." align="start">
+        <MotionUtilities />
+      </Demo>
+      <Demo id="change" title="Animate on change, not on mount" description="useChangeKey gives a key that only moves when the value does. Lists and history never animate on first paint." align="start">
+        <MotionOnChange />
+      </Demo>
+      <Demo id="entrances" title="Entrances" description="Avatar images fade in once loaded; empty states rise in. A chat only animates its newest message." align="start">
+        <MotionEntrances />
+      </Demo>
+      <Demo id="reduced" title="Reduced motion" description="One net in sutra.css covers every utility and transition." align="start">
+        <ReducedMotionNote />
       </Demo>
     </PageIntro>
   );

@@ -596,7 +596,7 @@ export const SystemResourcesBar = React.forwardRef<HTMLDivElement, SystemResourc
             >
               <span className="font-medium text-muted-foreground">{r.label}</span>
               <span aria-hidden className="relative h-1.5 w-12 overflow-hidden rounded-full bg-muted">
-                <span className={cn("absolute inset-y-0 left-0 rounded-full transition-[width]", levelBar[level])} style={{ width: `${pct}%` }} />
+                <span className={cn("absolute inset-y-0 left-0 rounded-full transition-[width] duration-500 ease-out-quart motion-reduce:transition-none", levelBar[level])} style={{ width: `${pct}%` }} />
               </span>
               <span className={cn("font-mono tabular-nums", level === "ok" ? "text-foreground" : toneClasses.text[meterLevelTone(level)!])}>{text}</span>
             </div>

@@ -388,7 +388,7 @@ export const UptimeBar = React.forwardRef<HTMLDivElement, UptimeBarProps>(
                   setHover({ i, x: box ? r.left - box.left + r.width / 2 : 0 });
                 }}
                 className={cn(
-                  "min-w-[2px] flex-1 rounded-[2px] transition-[opacity,transform] hover:opacity-80",
+                  "min-w-[2px] flex-1 rounded-[2px] transition-[opacity,transform,translate,scale,rotate] hover:opacity-80",
                   uptimeClass[b.status],
                   hover?.i === i && "scale-y-110"
                 )}

@@ -546,7 +546,7 @@ function LightboxImage({
       onDoubleClick={onDoubleClick}
       onError={() => setFailed(true)}
       data-zoom={zoom}
-      className="max-h-full max-w-full select-none object-contain transition-transform duration-150 ease-out will-change-transform"
+      className="max-h-full max-w-full select-none object-contain transition-transform duration-150 ease-out-quart will-change-transform"
       style={{ transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)` }}
     />
   );

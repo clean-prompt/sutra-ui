@@ -114,7 +114,7 @@ export const StatusCycle = React.forwardRef<HTMLDivElement, StatusCycleProps>(
             }
           }}
           className={cn(
-            "inline-flex select-none items-center gap-1.5 px-3 font-medium transition-[background-color,transform] active:scale-[0.97]",
+            "inline-flex select-none items-center gap-1.5 px-3 font-medium transition-[background-color,transform,translate,scale,rotate] active:scale-[0.97]",
             "disabled:pointer-events-none disabled:opacity-50",
             showMenu ? "rounded-l-control pr-2" : "rounded-control",
             height,

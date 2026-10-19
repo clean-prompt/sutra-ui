@@ -72,7 +72,7 @@ export const PromptSuggestion = React.forwardRef<HTMLButtonElement, PromptSugges
           <span className="min-w-0 flex-1 truncate">{content}</span>
           <RiArrowRightUpLine
             aria-hidden
-            className="text-muted-foreground opacity-0 transition-[opacity,transform] duration-150 group-hover/suggestion:translate-x-0.5 group-hover/suggestion:-translate-y-0.5 group-hover/suggestion:opacity-100 group-focus-visible/suggestion:opacity-100"
+            className="text-muted-foreground opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-150 group-hover/suggestion:translate-x-0.5 group-hover/suggestion:-translate-y-0.5 group-hover/suggestion:opacity-100 group-focus-visible/suggestion:opacity-100"
           />
         </button>
       );
@@ -84,7 +84,7 @@ export const PromptSuggestion = React.forwardRef<HTMLButtonElement, PromptSugges
         type={type ?? "button"}
         className={cn(
           "inline-flex h-9 max-w-full items-center gap-2 rounded-control border border-border bg-background px-3.5 text-sm text-foreground shadow-xs",
-          "transition-[background-color,border-color,transform] duration-150 hover:border-border-strong hover:bg-accent active:scale-[0.98]",
+          "transition-[background-color,border-color,transform,translate,scale,rotate] duration-150 hover:border-border-strong hover:bg-accent active:scale-[0.98]",
           "disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-muted-foreground",
           focusRing,
           className

@@ -162,7 +162,7 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
               </span>
               <RiArrowDownSLine
                 aria-hidden
-                className={cn("ml-auto size-4 shrink-0 text-muted-foreground transition-transform duration-200", expanded && "rotate-180")}
+                className={cn("ml-auto size-4 shrink-0 text-muted-foreground chevron-turn", expanded && "rotate-180")}
               />
               <span className="sr-only">{expanded ? "Collapse alerts" : "Expand alerts"}</span>
             </CollapsiblePrimitive.Trigger>

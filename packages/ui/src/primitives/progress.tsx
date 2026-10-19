@@ -98,7 +98,7 @@ export const Progress = React.forwardRef<
             barColor[tone],
             isIndeterminate
               ? "origin-left animate-indeterminate"
-              : "transition-transform duration-500 ease-out-quart",
+              : "transition-transform duration-500 ease-out-quart motion-reduce:transition-none",
             indicatorClassName
           )}
           style={isIndeterminate ? undefined : { transform: `translateX(-${100 - pct}%)` }}
@@ -272,7 +272,7 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
           size={size}
           strokeWidth={strokeWidth}
           fillStroke={gradient ? `url(#${gradientId})` : undefined}
-          fillClassName={cn("duration-700", !gradient && strokeColor[tone])}
+          fillClassName={cn(!gradient && strokeColor[tone])}
           defs={
             gradient ? (
               <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -366,7 +366,7 @@ export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
 const skeletonBase =
   "block bg-muted motion-reduce:animate-none";
 const skeletonShimmer =
-  "animate-shimmer bg-[linear-gradient(90deg,var(--muted)_25%,color-mix(in_oklab,var(--muted),var(--foreground)_7%)_50%,var(--muted)_75%)] bg-[length:200%_100%]";
+  "animate-shimmer motion-reduce:animate-none bg-[linear-gradient(90deg,var(--muted)_25%,color-mix(in_oklab,var(--muted),var(--foreground)_7%)_50%,var(--muted)_75%)] bg-[length:200%_100%]";
 
 /** Loading placeholder with a shimmer. */
 export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(

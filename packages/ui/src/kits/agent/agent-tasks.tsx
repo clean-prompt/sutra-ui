@@ -14,6 +14,7 @@ import { Progress } from "../../primitives/progress";
 import { toneClasses, type Tone } from "../../lib/tone";
 import { normalizeTaskStatus, type TaskStatus, type TaskStatusInput } from "../../lib/status";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useNow } from "../../hooks/use-now";
 import { formatDuration, type FormatDurationOptions } from "../../lib/duration";
 import { formatAgentTokens } from "../../lib/token-count";
@@ -68,12 +69,17 @@ const todoStatusLabel: Record<TaskStatus, string> = {
   canceled: "Canceled",
 };
 
-/** Status glyph: empty circle, spinning ring or check. */
+/** Status glyph: empty circle, spinning ring or check. The check pops in when a task is completed, not when the list first renders. */
 function TodoGlyph({ status, compact }: { status: TaskStatus; compact?: boolean }) {
   const size = compact ? "size-3.5" : "size-4";
+  const changes = useChangeKey(status);
   if (status === "succeeded") {
     return (
-      <span aria-hidden className={cn("flex shrink-0 items-center justify-center rounded-full bg-success text-success-foreground", size)}>
+      <span
+        key={changes}
+        aria-hidden
+        className={cn("flex shrink-0 items-center justify-center rounded-full bg-success text-success-foreground", size, changes > 0 && "animate-pop")}
+      >
         <RiCheckLine aria-hidden className="size-[80%]" />
       </span>
     );
@@ -147,7 +153,7 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
         {collapsible && (
           <RiArrowDownSLine
             aria-hidden
-            className={cn("size-4 shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none", !open && "-rotate-90")}
+            className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", !open && "-rotate-90")}
           />
         )}
       </>

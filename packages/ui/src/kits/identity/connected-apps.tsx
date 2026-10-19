@@ -205,7 +205,7 @@ export const SecurityActivityFeed = React.forwardRef<HTMLDivElement, SecurityAct
                           {Number.isFinite(toMs(e.at)) ? formatRelativeDate(e.at, now) : "—"}
                         </time>
                         {!onEventClick && (
-                          <RiArrowDownSLine aria-hidden className={cn("mt-0.5 size-4 shrink-0 text-muted-foreground transition-transform", expanded && "rotate-180")} />
+                          <RiArrowDownSLine aria-hidden className={cn("mt-0.5 size-4 shrink-0 text-muted-foreground chevron-turn", expanded && "rotate-180")} />
                         )}
                       </button>
                       {expanded && !onEventClick && (
@@ -287,7 +287,7 @@ export const ConnectedAppRow = React.forwardRef<HTMLButtonElement, ConnectedAppR
         data-slot="connected-app-row"
         data-app={app.id}
         onClick={() => onOpen?.(app)}
-        className={cn("flex w-full items-center gap-3 rounded-box px-3 py-3 text-left transition-colors hover:bg-accent", focusRing, className)}
+        className={cn("group/app-row flex w-full items-center gap-3 rounded-box px-3 py-3 text-left transition-colors hover:bg-accent", focusRing, className)}
         {...props}
       >
         {app.icon ?? <Favicon domain={app.domain ?? app.name} shape="square" className="size-9 rounded-md" />}
@@ -307,7 +307,7 @@ export const ConnectedAppRow = React.forwardRef<HTMLButtonElement, ConnectedAppR
           </span>
           <span className="block truncate text-xs text-muted-foreground">{meta.join(" · ")}</span>
         </span>
-        <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+        <RiArrowRightSLine aria-hidden className="size-4 shrink-0 text-muted-foreground transition-transform group-hover/app-row:translate-x-0.5" />
       </button>
     );
   }

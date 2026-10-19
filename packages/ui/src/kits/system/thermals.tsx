@@ -196,7 +196,7 @@ export const TemperatureReading = React.forwardRef<HTMLDivElement, TemperatureRe
             ariaValueText={ariaText}
           />
           {status ? (
-            <span data-slot="temperature-reading-status" aria-hidden className={cn("text-xs font-medium capitalize", levelTextClass[level])}>
+            <span data-slot="temperature-reading-status" aria-hidden className={cn("text-xs font-medium capitalize transition-colors duration-300", levelTextClass[level])}>
               {status}
             </span>
           ) : caption ? (
@@ -234,7 +234,7 @@ export const TemperatureReading = React.forwardRef<HTMLDivElement, TemperatureRe
           tone={level === "normal" ? undefined : tone}
           accent={accent}
           valueText={
-            <span className={levelTextClass[level]}>
+            <span className={cn("transition-colors duration-300", levelTextClass[level])}>
               {text}
               {status ? <span className="ml-1.5 font-sans text-xs font-medium capitalize">{status}</span> : null}
             </span>

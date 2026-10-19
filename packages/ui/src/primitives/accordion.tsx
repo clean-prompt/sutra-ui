@@ -69,7 +69,7 @@ function PlusMinus() {
   return (
     <span aria-hidden className="relative size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground">
       <span className="absolute left-0.5 right-0.5 top-1/2 h-[1.5px] -translate-y-1/2 rounded-full bg-current" />
-      <span className="absolute bottom-0.5 left-1/2 top-0.5 w-[1.5px] -translate-x-1/2 rounded-full bg-current transition-transform duration-200 ease-out-quart group-data-[state=open]:rotate-90 group-data-[state=open]:scale-y-0" />
+      <span className="absolute bottom-0.5 left-1/2 top-0.5 w-[1.5px] -translate-x-1/2 rounded-full bg-current chevron-turn group-data-[state=open]:rotate-90 group-data-[state=open]:scale-y-0" />
     </span>
   );
 }
@@ -113,7 +113,7 @@ export const AccordionTrigger = React.forwardRef<
         {icon === "chevron" ? (
           <RiArrowDownSLine
             aria-hidden
-            className="size-[18px] shrink-0 text-muted-foreground transition-transform duration-200 ease-out-quart group-hover:text-foreground group-data-[state=open]:rotate-180"
+            className="size-[18px] shrink-0 text-muted-foreground chevron-turn group-hover:text-foreground group-data-[state=open]:rotate-180"
           />
         ) : icon === "plus" ? (
           <PlusMinus />

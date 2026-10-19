@@ -568,7 +568,7 @@ export const DocsSidebar = React.forwardRef<HTMLElement, DocsSidebarProps>(
                   {section.label}
                   <RiArrowRightSLine
                     aria-hidden
-                    className="size-4 transition-transform duration-200 group-data-[state=open]/docs-section:rotate-90"
+                    className="size-4 chevron-turn group-data-[state=open]/docs-section:rotate-90"
                   />
                 </CollapsiblePrimitive.Trigger>
                 <CollapsiblePrimitive.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">

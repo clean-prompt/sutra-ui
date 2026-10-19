@@ -40,6 +40,9 @@ const StatValueSkeletonContext = React.createContext<React.ReactNode>(null);
 
 const valueSizes = { sm: "text-xl", md: "text-display-xs", lg: "text-display-sm", xl: "text-display-md" } as const;
 const unitSizes = { sm: "text-sm", md: "text-sm", lg: "text-base", xl: "text-xl" } as const;
+/** The trailing chevron of an interactive card; it nudges right when the card (`group/stat`) is hovered. */
+const chevronClass = (extra?: string) =>
+  cn("size-4 shrink-0 text-muted-foreground transition-transform group-hover/stat:translate-x-0.5", extra);
 
 export interface StatValueProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   value: React.ReactNode;
@@ -227,7 +230,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
       accentLabel ? cn("font-medium", accentClasses.text) : "text-muted-foreground"
     );
     const chevronEl = showChevron ? (
-      <RiArrowRightSLine aria-hidden data-slot="stat-chevron" className="ml-auto size-4 shrink-0 text-muted-foreground" />
+      <RiArrowRightSLine aria-hidden data-slot="stat-chevron" className={chevronClass("ml-auto")} />
     ) : null;
     const stretched = cn(
       "flex min-w-0 flex-1 items-center gap-2 text-left outline-none",
@@ -283,7 +286,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
           "flex min-w-0 flex-col gap-1",
           group === "divided" ? "bg-card px-4 py-3.5" : "rounded-box border border-border bg-card p-4 text-card-foreground shadow-xs",
           size === "lg" && group !== "divided" && "p-5",
-          interactive && "relative transition-colors hover:bg-muted/40",
+          interactive && "group/stat relative transition-colors hover:bg-muted/40",
           className
         )}
         {...props}
@@ -452,7 +455,7 @@ export const TopItemCard = React.forwardRef<HTMLDivElement, TopItemCardProps>(
           value !== undefined || showChevron ? (
             <span className="flex items-center justify-between gap-2 text-sm font-medium tabular-nums text-foreground">
               <span>{value}</span>
-              {showChevron ? <RiArrowRightSLine aria-hidden data-slot="stat-chevron" className="size-4 shrink-0 text-muted-foreground" /> : null}
+              {showChevron ? <RiArrowRightSLine aria-hidden data-slot="stat-chevron" className={chevronClass()} /> : null}
             </span>
           ) : undefined
         }

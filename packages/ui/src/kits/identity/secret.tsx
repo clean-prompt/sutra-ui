@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RiAlertLine, RiDownloadLine, RiEyeLine, RiEyeOffLine, RiKey2Line } from "@remixicon/react";
 import { cn } from "../../lib/cn";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
 import { Badge, type BadgeColor } from "../../primitives/badge";
@@ -181,6 +182,8 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
       defaultValue: defaultRevealed,
       onChange: onRevealedChange,
     });
+    // The eye swaps with a pop when the value is shown or hidden, never on the first render.
+    const eyeKey = useChangeKey(revealed);
     const [clearNote, setClearNote] = React.useState(false);
     // Only hides the "Clipboard clears in…" note; the clear itself is scheduled at module level.
     const noteTimer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -249,7 +252,11 @@ export const SecretText = React.forwardRef<HTMLDivElement, SecretTextProps>(
               onClick={() => setRevealed(!revealed)}
               className="text-muted-foreground hover:text-foreground"
             >
-              {revealed ? <RiEyeOffLine aria-hidden /> : <RiEyeLine aria-hidden />}
+              {revealed ? (
+                <RiEyeOffLine key={eyeKey} aria-hidden className={eyeKey > 0 ? "animate-pop" : undefined} />
+              ) : (
+                <RiEyeLine key={eyeKey} aria-hidden className={eyeKey > 0 ? "animate-pop" : undefined} />
+              )}
             </Button>
           )}
           {copyable && (

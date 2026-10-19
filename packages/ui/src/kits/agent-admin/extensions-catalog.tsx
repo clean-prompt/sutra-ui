@@ -595,7 +595,7 @@ export function ExtensionInstallDialog({
                 onClick={() => setAdvanced((a) => !a)}
                 className={cn("flex w-full items-center gap-1.5 px-3 py-2 text-left text-sm font-medium text-foreground", focusRing)}
               >
-                <RiArrowDownSLine aria-hidden className={cn("size-4 text-muted-foreground transition-transform", !advanced && "-rotate-90")} />
+                <RiArrowDownSLine aria-hidden className={cn("size-4 text-muted-foreground chevron-turn", !advanced && "-rotate-90")} />
                 Advanced details
               </button>
               {advanced && (

@@ -380,7 +380,7 @@ export const AgentProcessCard = React.forwardRef<HTMLElement, AgentProcessCardPr
                   )}
                 >
                   {startedLabel}
-                  <RiArrowDownSLine aria-hidden className={cn("size-4 transition-transform", !expanded && "-rotate-90")} />
+                  <RiArrowDownSLine aria-hidden className={cn("size-4 chevron-turn", !expanded && "-rotate-90")} />
                 </button>
               ) : (
                 <span className="text-sm font-medium text-muted-foreground">{startedLabel}</span>

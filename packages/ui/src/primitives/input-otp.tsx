@@ -113,7 +113,7 @@ export const InputOTPSlot = React.forwardRef<HTMLDivElement, InputOTPSlotProps>(
       className={cn(
         inputShellVariants({ focus: "none" }),
         "relative flex items-center justify-center font-medium tabular-nums",
-        "transition-[color,box-shadow,border-color,transform]",
+        "transition-[color,box-shadow,border-color,transform,translate,scale,rotate]",
         slotSize[size],
         char && "animate-in zoom-in-90 fade-in-0 duration-150",
         isActive && "z-10 border-ring ring-[3px] ring-ring/35",

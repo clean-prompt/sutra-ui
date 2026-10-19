@@ -295,7 +295,7 @@ export const ChangedFilesCard = React.forwardRef<HTMLDivElement, ChangedFilesCar
             )}
           >
             {expanded ? "Show less" : `Show ${hidden} more`}
-            <RiArrowDownSLine aria-hidden className={cn("size-3.5 transition-transform", expanded && "rotate-180")} />
+            <RiArrowDownSLine aria-hidden className={cn("size-3.5 chevron-turn", expanded && "rotate-180")} />
           </button>
         )}
       </div>

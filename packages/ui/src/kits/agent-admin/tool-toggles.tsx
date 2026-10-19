@@ -160,7 +160,7 @@ export const ToolToggleRow = React.memo(
               <RiArrowRightSLine
                 aria-hidden
                 className={cn(
-                  "size-4 shrink-0 text-muted-foreground transition-transform",
+                  "size-4 shrink-0 text-muted-foreground chevron-turn",
                   expanded && "rotate-90",
                   !expandable && "invisible"
                 )}

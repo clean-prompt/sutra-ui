@@ -5,6 +5,7 @@ import { formatBadgeCount } from "../../lib/format";
 import { clamp } from "../../lib/math";
 import { initials } from "../../lib/text";
 import { SutraAppIcon, type SutraApp } from "../../assets/brand";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
 import { SearchInput } from "../../primitives/input";
@@ -76,9 +77,11 @@ interface TileProps {
 const AppLauncherTile = ({ item, iconSize, tabIndex, hideLabel, compact, onActivate, onFocusTile, tileRef }: TileProps) => {
   const icon = item.icon ?? (item.app ? <SutraAppIcon app={item.app} size={iconSize} shape="squircle" /> : null);
   const name = item.badge ? `${item.label}, ${item.badge} new` : item.label;
+  // The badge pops when its count changes or it first shows up on a tile that was already there, never on the first render.
+  const badgeKey = useChangeKey(item.badge);
   const className = cn(
     "group/tile relative flex w-full flex-col items-center gap-1.5 rounded-box p-2 text-center",
-    "transition-[background-color,transform] duration-150 hover:bg-primary-soft active:scale-95",
+    "transition-[background-color,scale] duration-150 hover:bg-primary-soft active:scale-95",
     "aria-disabled:pointer-events-none aria-disabled:opacity-50",
     compact && "p-1.5",
     focusRing
@@ -97,8 +100,12 @@ const AppLauncherTile = ({ item, iconSize, tabIndex, hideLabel, compact, onActiv
         )}
         {item.badge ? (
           <span
+            key={badgeKey}
             aria-hidden
-            className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-2xs font-semibold text-destructive-foreground tabular-nums ring-2 ring-background"
+            className={cn(
+              "absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-2xs font-semibold text-destructive-foreground tabular-nums ring-2 ring-background",
+              badgeKey > 0 && "animate-pop"
+            )}
           >
             {formatBadgeCount(item.badge)}
           </span>

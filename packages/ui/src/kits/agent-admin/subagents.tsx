@@ -394,7 +394,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                     onClick={() => toggle(n.id)}
                     className="-ml-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground"
                   >
-                    <RiArrowRightSLine aria-hidden className={cn("size-4 transition-transform", open && "rotate-90")} />
+                    <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn", open && "rotate-90")} />
                   </button>
                 ) : (
                   <span className="size-4 shrink-0" aria-hidden />
@@ -614,7 +614,7 @@ export const RunTicker = React.forwardRef<HTMLDivElement, RunTickerProps>(
           <span className="shrink-0 rounded-full bg-muted px-1.5 text-2xs font-medium tabular-nums text-muted-foreground">
             {activities.length} {activities.length === 1 ? "activity" : "activities"}
           </span>
-          <RiArrowRightSLine aria-hidden className={cn("size-4 shrink-0 text-muted-foreground transition-transform", expanded && "rotate-90")} />
+          <RiArrowRightSLine aria-hidden className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", expanded && "rotate-90")} />
         </button>
         {expanded && (
           <ol id={listId} aria-label="All activity" className="scrollbar-thin max-h-60 overflow-y-auto border-t border-border px-3 py-2">

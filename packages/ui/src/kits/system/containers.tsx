@@ -310,7 +310,7 @@ export const ContainerList = React.forwardRef<HTMLDivElement, ContainerListProps
                         </span>
                         <RiArrowDownSLine
                           aria-hidden
-                          className={cn("size-4 shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none", !open && "-rotate-90")}
+                          className={cn("size-4 shrink-0 text-muted-foreground chevron-turn", !open && "-rotate-90")}
                         />
                       </button>
                       <span data-slot="container-group-description" className="truncate text-xs text-muted-foreground">

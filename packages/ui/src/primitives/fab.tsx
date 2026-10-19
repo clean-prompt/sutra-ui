@@ -47,7 +47,7 @@ function fabContainerClass(position: FabPosition, strategy: keyof typeof fabStra
 export const fabVariants = cva(
   [
     "group/fab relative inline-flex shrink-0 select-none items-center justify-center gap-2 font-medium",
-    "shadow-lg shadow-inner-highlight transition-[background-color,box-shadow,transform,width] duration-200 ease-out-quart",
+    "shadow-lg shadow-inner-highlight transition-[background-color,box-shadow,transform,translate,scale,rotate,width] duration-200 ease-out-quart",
     "hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-95",
     "disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
     focusRing,
@@ -265,7 +265,7 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
                 aria-hidden
                 className={cn(
                   "inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-md",
-                  "transition-[background-color,box-shadow,transform] duration-150 group-hover/fab-action:bg-muted group-hover/fab-action:scale-105",
+                  "transition-[background-color,box-shadow,transform,translate,scale,rotate] duration-150 group-hover/fab-action:bg-muted group-hover/fab-action:scale-105",
                   "group-focus-visible/fab-action:ring-[3px] group-focus-visible/fab-action:ring-ring/35 [&_svg]:size-[18px]"
                 )}
               >
@@ -286,7 +286,7 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
               key={`${action.label}-${i}`}
               role="none"
               className={cn(
-                "transition-[opacity,transform] duration-200 ease-out-quart",
+                "transition-[opacity,transform,translate,scale,rotate] duration-200 ease-out-quart",
                 isOpen ? "translate-y-0 scale-100 opacity-100" : cn("scale-90 opacity-0", isTop ? "-translate-y-2" : "translate-y-2")
               )}
               style={{ transitionDelay: `${(isOpen ? i : actions!.length - 1 - i) * 30}ms` }}

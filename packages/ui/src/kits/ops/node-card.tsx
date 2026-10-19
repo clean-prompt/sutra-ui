@@ -13,6 +13,7 @@ import { Button } from "../../primitives/button";
 import { CopyButton } from "../../primitives/copy-button";
 import { toneClasses } from "../../lib/tone";
 import { Meter, meterLevel, meterLevelTone, type MeterThresholds } from "../../primitives/meter";
+import { Skeleton } from "../../primitives/progress";
 import { Gauge } from "../../patterns/gauge";
 import { Sparkline, type SparklineColor } from "../../patterns/sparkline";
 import { StatusDot, type StatusBadgeStatus } from "../../primitives/status-badge";
@@ -294,7 +295,7 @@ export const NodeCard = React.forwardRef<HTMLDivElement, NodeCardProps>(
           <div className="grid grid-cols-2 gap-2 px-4 pb-4" data-node-skeleton="">
             <span className="sr-only">Connecting to node…</span>
             {Array.from({ length: Math.max(metrics.length, 4) }, (_, i) => (
-              <div key={i} aria-hidden className="h-[58px] animate-pulse rounded-md bg-muted" />
+              <Skeleton key={i} className="h-[58px] rounded-md" />
             ))}
           </div>
         ) : (

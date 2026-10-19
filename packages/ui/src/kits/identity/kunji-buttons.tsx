@@ -24,7 +24,7 @@ import { KunjiMark, KunjiSignIn, type KunjiSignInProps } from "./kunji-sign-in";
 
 export const kunjiButtonVariants = cva(
   [
-    "inline-flex select-none items-center justify-center gap-2.5 whitespace-nowrap rounded-control font-medium shadow-xs transition-[background-color,box-shadow,transform] active:scale-[0.98]",
+    "inline-flex select-none items-center justify-center gap-2.5 whitespace-nowrap rounded-control font-medium shadow-xs transition-[background-color,box-shadow,scale] active:scale-[0.98]",
     "disabled:pointer-events-none disabled:opacity-50",
     focusRing,
   ],

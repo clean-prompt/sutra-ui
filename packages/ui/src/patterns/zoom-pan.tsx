@@ -75,7 +75,7 @@ export const ZoomPan = React.forwardRef<HTMLDivElement, ZoomPanProps>(
         >
           <div
             data-slot="zoom-pan-content"
-            className={cn("flex size-full items-center justify-center will-change-transform", !zp.dragging && "transition-transform duration-150 ease-out motion-reduce:transition-none", contentClassName)}
+            className={cn("flex size-full items-center justify-center will-change-transform", !zp.dragging && "transition-transform duration-150 ease-out-quart motion-reduce:transition-none", contentClassName)}
             style={zp.contentStyle}
           >
             {children}

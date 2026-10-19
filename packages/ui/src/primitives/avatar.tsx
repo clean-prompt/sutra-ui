@@ -210,7 +210,7 @@ export const AvatarImage = React.forwardRef<HTMLImageElement, AvatarImageProps>(
   ({ className, ...props }, ref) => (
     <AvatarPrimitive.Image
       ref={ref}
-      className={cn("aspect-square size-full object-cover", className)}
+      className={cn("aspect-square size-full animate-fade-in object-cover", className)}
       {...props}
     />
   )

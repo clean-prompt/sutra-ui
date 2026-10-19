@@ -10,6 +10,7 @@ import {
 import { cn } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
 import { formatRelative } from "../../lib/time";
+import { useChangeKey } from "../../hooks/use-change-key";
 import { useNow } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
 import { SimpleTooltip } from "../../primitives/tooltip";
@@ -127,18 +128,21 @@ export const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
     const savedTitle = savedAt != null ? new Date(savedAt).toLocaleString() : undefined;
     const btn = size === "sm" ? "xs" : "sm";
 
+    // The icon pops in when the status changes, never on the first render. The spinner keeps its own animation.
+    const changes = useChangeKey(status);
+    const pop = changes > 0 && "animate-pop";
     const icon = {
-      saved: <RiCheckLine aria-hidden className="size-3.5 text-success" />,
-      dirty: <RiPencilLine aria-hidden className="size-3.5" />,
+      saved: <RiCheckLine key={changes} aria-hidden className={cn("size-3.5 text-success", pop)} />,
+      dirty: <RiPencilLine key={changes} aria-hidden className={cn("size-3.5", pop)} />,
       saving: <RiLoader4Line aria-hidden className="size-3.5 animate-spin" />,
-      error: <RiErrorWarningLine aria-hidden className="size-3.5" />,
-      conflict: <RiGitMergeLine aria-hidden className="size-3.5" />,
+      error: <RiErrorWarningLine key={changes} aria-hidden className={cn("size-3.5", pop)} />,
+      conflict: <RiGitMergeLine key={changes} aria-hidden className={cn("size-3.5", pop)} />,
     }[status];
 
     const body = (
       <span
         className={cn(
-          "inline-flex items-center gap-1.5 whitespace-nowrap",
+          "inline-flex items-center gap-1.5 whitespace-nowrap transition-colors",
           status === "error" && "text-destructive",
           status === "conflict" && "text-warning-soft-foreground"
         )}

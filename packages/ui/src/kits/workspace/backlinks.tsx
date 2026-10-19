@@ -121,7 +121,7 @@ export const Backlinks = React.forwardRef<HTMLElement, BacklinksProps>(
               <span className="flex-1">{heading}</span>
               <RiArrowRightSLine
                 aria-hidden
-                className="size-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]/backlinks:rotate-90"
+                className="size-4 text-muted-foreground chevron-turn group-data-[state=open]/backlinks:rotate-90"
               />
             </CollapsiblePrimitive.Trigger>
           </h2>

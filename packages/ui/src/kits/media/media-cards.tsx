@@ -189,7 +189,7 @@ function MediaFrame({
         src={image}
         alt={imageAlt ?? ""}
         className={cn(
-          "absolute inset-0 size-full transition-[transform,filter] duration-300 [@media(hover:hover)]:group-hover/media:scale-[1.03]",
+          "absolute inset-0 size-full transition-[scale,filter] duration-300 [@media(hover:hover)]:group-hover/media:scale-[1.03]",
           disabled && "opacity-70 saturate-50"
         )}
         fallback={
@@ -515,7 +515,7 @@ function CollectionCard({
             aria-label={playing ? `Pause ${title}` : `Play ${title}`}
             onClick={onPlay}
             className={cn(
-              "absolute bottom-2 right-2 z-20 grid size-11 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg transition-[opacity,transform,background-color] duration-200 hover:scale-105 hover:bg-primary-hover",
+              "absolute bottom-2 right-2 z-20 grid size-11 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg transition-[opacity,scale,background-color] duration-200 hover:scale-105 hover:bg-primary-hover",
               focusRing,
               playing
                 ? "translate-y-0 opacity-100"

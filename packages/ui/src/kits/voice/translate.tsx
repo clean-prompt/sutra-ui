@@ -396,7 +396,7 @@ export const SwapButton = React.forwardRef<HTMLButtonElement, SwapButtonProps>((
     >
       <RiArrowLeftRightLine
         aria-hidden="true"
-        className="transition-transform duration-300 ease-out motion-reduce:transition-none"
+        className="transition-transform duration-300 ease-out-quart motion-reduce:transition-none"
         style={{ transform: `rotate(${turns * 180}deg)` }}
       />
     </Button>
@@ -459,7 +459,7 @@ function LanguageSide({ side, value, onChange, recent, list, detected }: Languag
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button type="button" variant="ghost" size="icon-sm" aria-label={isSource ? "More source languages" : "More target languages"} className="shrink-0">
-            <RiArrowDownSLine aria-hidden className={cn("transition-transform", open && "rotate-180")} />
+            <RiArrowDownSLine aria-hidden className={cn("chevron-turn", open && "rotate-180")} />
           </Button>
         </PopoverTrigger>
         <PopoverContent padded={false} size="md" align={isSource ? "start" : "end"} aria-label={isSource ? "Source language" : "Target language"}>
@@ -686,7 +686,7 @@ export const TargetPane = React.forwardRef<HTMLElement, TargetPaneProps>(
         {senses.length && !streaming ? (
           <div className="px-4 pb-2">
             <button type="button" aria-expanded={showSenses} aria-controls={sensesId} onClick={() => setShowSenses((s) => !s)} className={cn("inline-flex items-center gap-1 rounded-sm text-xs font-medium text-primary", focusRing)}>
-              <RiArrowDownSLine aria-hidden="true" className={cn("size-4 transition-transform", showSenses && "rotate-180")} />
+              <RiArrowDownSLine aria-hidden="true" className={cn("size-4 chevron-turn", showSenses && "rotate-180")} />
               {showSenses ? "Hide meanings" : `Show ${senses.reduce((n, s) => n + s.terms.length, 0)} meanings`}
             </button>
             {showSenses ? (

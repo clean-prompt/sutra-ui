@@ -482,7 +482,7 @@ function TreeViewItem({
           onClick={(e) => ctx.onRowClick(e, node)}
           style={{ paddingLeft: padLeft }}
           className={cn(
-            "relative flex cursor-pointer items-center gap-1.5 rounded-sm pr-2 text-foreground transition-colors duration-100",
+            "relative flex cursor-pointer items-center gap-1.5 rounded-sm pr-2 text-foreground transition-colors duration-150",
             rowHeight,
             "hover:bg-accent",
             "data-[selected]:bg-primary-soft data-[selected]:text-primary-soft-foreground data-[selected]:hover:bg-primary-soft",
@@ -502,7 +502,7 @@ function TreeViewItem({
               style={{ width: CHEVRON, height: CHEVRON }}
             >
               <RiArrowRightSLine aria-hidden
-                className={cn("size-4 transition-transform duration-200 ease-out-quart", isOpen && "rotate-90")}
+                className={cn("chevron-turn size-4", isOpen && "rotate-90")}
               />
             </span>
           ) : (

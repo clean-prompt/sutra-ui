@@ -131,7 +131,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
               aria-valuetext={getValueText?.(v, i)}
               className={cn(
                 "group/thumb relative block rounded-full border-2 bg-background shadow-sm",
-                "transition-[box-shadow,transform] duration-150 hover:ring-[3px] active:scale-110",
+                "transition-[box-shadow,transform,translate,scale,rotate] duration-150 hover:ring-[3px] active:scale-110",
                 accented
                   ? "border-[var(--sutra-accent,var(--primary))] hover:ring-[color-mix(in_oklab,var(--sutra-accent,var(--primary))_15%,transparent)]"
                   : "border-primary hover:ring-primary/15",
@@ -147,7 +147,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(
                   className={cn(
                     "pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-inverse px-1.5 py-0.5 text-xs font-medium text-inverse-foreground tabular-nums shadow-md",
                     "after:absolute after:left-1/2 after:top-full after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-inverse after:content-['']",
-                    "transition-[opacity,transform] duration-150",
+                    "transition-[opacity,transform,translate,scale,rotate] duration-150",
                     showValue === "always"
                       ? "opacity-100"
                       : cn(

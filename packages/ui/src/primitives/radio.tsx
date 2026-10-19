@@ -48,7 +48,7 @@ RadioGroup.displayName = "RadioGroup";
 export const radioItemVariants = cva(
   [
     "peer group/radio relative inline-flex shrink-0 items-center justify-center rounded-full border border-border-strong bg-background shadow-xs",
-    "transition-[background-color,border-color,box-shadow,transform] duration-150 active:scale-90",
+    "transition-[background-color,border-color,box-shadow,transform,translate,scale,rotate] duration-150 active:scale-90",
     "hover:border-primary/60 data-[state=checked]:border-primary data-[state=checked]:bg-primary",
     "disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100",
     "group-aria-invalid/radio-group:border-destructive aria-invalid:border-destructive",

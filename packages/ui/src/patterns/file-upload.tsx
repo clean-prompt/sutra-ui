@@ -12,6 +12,7 @@ import { formatBytes as formatBytesLib } from "../lib/format";
 import { clamp } from "../lib/math";
 import { normalizeTaskStatus, type TaskStatusInput } from "../lib/status";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
+import { useChangeKey } from "../hooks/use-change-key";
 import { Button, type ButtonProps } from "../primitives/button";
 import {
   DIRECTORY_UNSUPPORTED_REASON,
@@ -396,6 +397,8 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
     const ctx = React.useContext(FileUploadContext);
     const { file, progress, status = "idle", error } = item;
     const phase = status === "uploading" ? "running" : normalizeTaskStatus(status);
+    // The tick pops when a file finishes uploading, not when an already-complete row is first shown.
+    const phaseChanges = useChangeKey(phase);
     const pct = clamp(progress ?? 0, 0, 100);
     const showProgress = phase === "running" || (progress !== undefined && phase !== "succeeded" && phase !== "failed");
     const isError = phase === "failed";
@@ -421,7 +424,10 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
               {label}
             </span>
             {phase === "succeeded" && (
-              <RiCheckboxCircleFill aria-label="Uploaded" className="size-4 shrink-0 text-success" />
+              <RiCheckboxCircleFill
+                aria-label="Uploaded"
+                className={cn("size-4 shrink-0 text-success", phaseChanges > 0 && "animate-pop")}
+              />
             )}
             {isError && <RiErrorWarningFill aria-label="Failed" className="size-4 shrink-0 text-destructive" />}
           </div>

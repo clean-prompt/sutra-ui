@@ -202,7 +202,7 @@ function RatingStar({ Icon, fill, sizeClass, activeClassName, inactiveClassName 
       <Icon className={cn("size-full", inactiveClassName)} />
       {fill > 0 && (
         <span
-          className="absolute inset-y-0 start-0 overflow-hidden transition-[width] duration-100"
+          className="absolute inset-y-0 start-0 overflow-hidden transition-[width] duration-150"
           style={{ width: `${fill * 100}%` }}
         >
           <Icon className={cn("h-full", sizeClass, "max-w-none", activeClassName)} />

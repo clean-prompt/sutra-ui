@@ -17,6 +17,7 @@ import { Badge } from "../../primitives/badge";
 import { Button } from "../../primitives/button";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { EmptyState } from "../../primitives/empty-state";
+import { Skeleton } from "../../primitives/progress";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */
@@ -260,11 +261,11 @@ export const DeviceSessionList = React.forwardRef<HTMLDivElement, DeviceSessionL
           <ul aria-busy="true" aria-labelledby={headingId} className="divide-y divide-border">
             {[0, 1, 2].map((i) => (
               <li key={i} className="flex items-center gap-3 px-4 py-3.5">
-                <span className="size-10 shrink-0 animate-pulse rounded-xl bg-muted" />
-                <span className="flex flex-1 flex-col gap-2">
-                  <span className="h-3 w-40 animate-pulse rounded bg-muted" />
-                  <span className="h-2.5 w-24 animate-pulse rounded bg-muted" />
-                </span>
+                <Skeleton className="size-10 shrink-0 rounded-xl" />
+                <div className="flex flex-1 flex-col gap-2">
+                  <Skeleton className="h-3 w-40 rounded" />
+                  <Skeleton className="h-2.5 w-24 rounded" />
+                </div>
               </li>
             ))}
           </ul>

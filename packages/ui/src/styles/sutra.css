@@ -548,31 +548,33 @@
  * once (animationend still fires, which AlertBanner and Radix Presence rely on), every transition ends in 1ms, and the
  * enter/exit animations of overlays keep their fade but lose their movement. animate-spin stays: it is a progress
  * indicator, not decoration. test/motion-guard.test.ts checks that every looping utility is covered here.
+ * The selectors are class-substring matches so they also catch variant-prefixed uses such as
+ * `data-[state=open]:animate-accordion-down` (Radix) and `group-data-[state=open]:animate-pop`.
  */
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-in,
-  .animate-fade-up,
-  .animate-pop-in,
-  .animate-pop,
-  .animate-tick,
-  .animate-flash,
-  .animate-bob,
-  .animate-ring,
-  .animate-mesh,
-  .animate-dot-bounce,
-  .animate-bar-scale,
-  .animate-caret-blink,
-  .animate-pulse,
-  .animate-ping {
+  [class*="animate-fade-in"],
+  [class*="animate-fade-up"],
+  [class*="animate-pop-in"],
+  [class*="animate-pop"],
+  [class*="animate-tick"],
+  [class*="animate-flash"],
+  [class*="animate-bob"],
+  [class*="animate-ring"],
+  [class*="animate-mesh"],
+  [class*="animate-dot-bounce"],
+  [class*="animate-bar-scale"],
+  [class*="animate-caret-blink"],
+  [class*="animate-pulse"],
+  [class*="animate-ping"] {
     animation: none;
   }
-  .animate-indeterminate {
+  [class*="animate-indeterminate"] {
     animation-duration: 3s;
   }
-  .animate-accordion-down,
-  .animate-accordion-up,
-  .animate-collapsible-down,
-  .animate-collapsible-up {
+  [class*="animate-accordion-down"],
+  [class*="animate-accordion-up"],
+  [class*="animate-collapsible-down"],
+  [class*="animate-collapsible-up"] {
     animation-duration: 1ms;
   }
   *,
@@ -593,7 +595,7 @@
 
 /* Rotate a disclosure chevron with the shared speed and ease. Pair it with a state class (rotate-90, group-data-[state=open]:rotate-180). */
 @utility chevron-turn {
-  transition-property: transform;
+  transition-property: transform, translate, scale, rotate; /* Tailwind v4 rotate-90 sets `rotate`, not `transform` */
   transition-duration: var(--sutra-duration);
   transition-timing-function: var(--sutra-ease);
 }

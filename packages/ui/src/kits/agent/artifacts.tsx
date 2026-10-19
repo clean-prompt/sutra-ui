@@ -453,7 +453,7 @@ export const ArtifactCard = React.forwardRef<HTMLDivElement, ArtifactCardProps>(
               />
             )}
             {streaming && content && (
-              <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-10 animate-shimmer bg-gradient-to-t from-card to-transparent" />
+              <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-card to-transparent" />
             )}
           </div>
         )}

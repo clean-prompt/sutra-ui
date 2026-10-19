@@ -202,7 +202,8 @@ export const LockScreen = React.forwardRef<HTMLDivElement, LockScreenProps>(
           { transform: "translateX(4px)" },
           { transform: "translateX(0)" },
         ],
-        { duration: 420, easing: "ease-out" }
+        // WAAPI cannot take var(); read the shared ease so a style that retunes it reaches the shake too.
+        { duration: 420, easing: getComputedStyle(el).getPropertyValue("--sutra-ease").trim() || "ease" }
       );
     };
 

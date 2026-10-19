@@ -189,9 +189,9 @@ export const MarketingHeader = React.forwardRef<HTMLElement, MarketingHeaderProp
                   <p className="text-xs leading-snug text-white/75">All {apps.length} apps, one thread, one subscription.</p>
                   <NavigationMenuPrimitive.Link
                     href={signupHref}
-                    className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-white hover:underline"
+                    className="group/cta mt-1 inline-flex items-center gap-1 text-xs font-semibold text-white hover:underline"
                   >
-                    Try it free <RiArrowRightLine aria-hidden className="size-3.5" />
+                    Try it free <RiArrowRightLine aria-hidden className="size-3.5 transition-transform group-hover/cta:translate-x-0.5" />
                   </NavigationMenuPrimitive.Link>
                 </MeshGradient>
               </div>
@@ -454,7 +454,7 @@ export const CenteredHeader = React.forwardRef<HTMLElement, CenteredHeaderProps>
           {cta !== null && (
             <div className="ml-2 hidden sm:block">
               {cta ?? (
-                <Button size="sm" variant="inverse" trailingIcon={<RiArrowRightLine aria-hidden />}>
+                <Button size="sm" variant="inverse" className="group/cta" trailingIcon={<RiArrowRightLine aria-hidden className="transition-transform group-hover/cta:translate-x-0.5" />}>
                   Start free
                 </Button>
               )}
