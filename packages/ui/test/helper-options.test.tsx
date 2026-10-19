@@ -2,7 +2,9 @@ import * as React from "react";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { formatDuration } from "../src/lib/duration";
-import { resolveColorToken } from "../src/lib/tone";
+import { rampColor, resolveColorToken } from "../src/lib/tone";
+import { heatmapColor } from "../src/patterns/heatmap";
+import { geoColorScale } from "../src/kits/geo/geo-model";
 import { useActiveIndicator } from "../src/hooks/use-active-indicator";
 import { BreakdownList } from "../src/primitives/meter";
 
@@ -33,6 +35,17 @@ describe("resolveColorToken (lib/tone)", () => {
     expect(styles.some((s) => s.includes("var(--muted-foreground)"))).toBe(true);
     // A prototype key is passed through as a (bogus) colour, never resolved to a function body.
     expect(styles.some((s) => s.includes("function"))).toBe(false);
+  });
+});
+
+describe("rampColor", () => {
+  it("runs from 30% to full colour and is shared by heatmaps and geo maps", () => {
+    expect(rampColor("red", 0, 5)).toBe("color-mix(in oklab, red 30%, var(--muted))");
+    expect(rampColor("red", 2, 5, "white")).toBe("color-mix(in oklab, red 65%, white)");
+    expect(rampColor("red", 4, 5)).toBe("red");
+    expect(rampColor("red", 0, 1)).toBe("red");
+    expect(heatmapColor(50, { steps: 4 })).toBe(rampColor("var(--primary)", 1, 4));
+    expect(geoColorScale([0, 100], { steps: 4 }).colors).toEqual([0, 1, 2, 3].map((i) => rampColor("var(--primary)", i, 4)));
   });
 });
 

@@ -561,6 +561,25 @@ export const nav: NavSection[] = [
     ],
   },
   {
+    id: "geo",
+    label: "Geo",
+    route: "components",
+    pages: [
+      {
+        id: "geo",
+        label: "World Map",
+        items: [
+          { id: "traffic-by-country", label: "Traffic by Country" },
+          { id: "live-visitors", label: "Live Visitors" },
+          { id: "attack-origins", label: "Attack Origins" },
+          { id: "projections", label: "Projections" },
+          { id: "loading", label: "Loading" },
+          { id: "narrow", label: "Narrow Width" },
+        ],
+      },
+    ],
+  },
+  {
     id: "media",
     label: "Media",
     route: "components",

@@ -97,6 +97,7 @@ Subpath entries, generated from `src/entries/*.ts` (one barrel per subpath; modu
 | `@sutra/ui/editor` | Code and rich-text editors (need the optional @codemirror/* and @tiptap/* peers), plus toolbar, outline, status, diff, history and comments | `code-editor`, `rich-text-editor`, `editor-toolbar`, `document-outline`, `editor-status`, `diff-viewer`, `version-history`, `comments` |
 | `@sutra/ui/terminal` | xterm.js terminal (needs the optional @xterm/xterm and @xterm/addon-fit peers) | `terminal` |
 | `@sutra/ui/pdf` | PDF viewer, thumbnail and a `FileViewer` renderer (optional peer: `pdfjs-dist`) | `pdf-viewer` |
+| `@sutra/ui/geo` | World maps from bundled Natural Earth outlines (no tiles, no network): choropleth with a stepped legend, marker buttons with clustering, great-circle arcs, plus the projection, clustering, colour-scale and country-code helpers | `world-map`, `geo-marker-layer`, `geo-model`, `world-data` |
 
 Markdown math (`<Markdown math>`) needs the KaTeX stylesheet: `import "katex/dist/katex.min.css"`.
 

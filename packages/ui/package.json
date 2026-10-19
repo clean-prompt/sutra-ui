@@ -105,6 +105,11 @@
       "import": "./dist/entries/pdf.js",
       "default": "./dist/entries/pdf.js"
     },
+    "./geo": {
+      "types": "./dist/entries/geo.d.ts",
+      "import": "./dist/entries/geo.js",
+      "default": "./dist/entries/geo.js"
+    },
     "./voice": {
       "types": "./dist/entries/voice.d.ts",
       "import": "./dist/entries/voice.js",
@@ -1361,7 +1366,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "tsc --noEmit && node scripts/gen-index.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs"
+    "verify": "tsc --noEmit && node scripts/gen-index.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs",
+    "gen:world": "node scripts/gen-world.mjs"
   },
   "peerDependencies": {
     "@codemirror/commands": "^6",
@@ -1431,10 +1437,15 @@
     "@dnd-kit/sortable": "^10",
     "@dnd-kit/utilities": "^3",
     "@remixicon/react": "^4.6.0",
+    "@types/d3-force": "^3",
+    "@types/d3-geo": "^3",
+    "@types/geojson": "^7946.0.16",
+    "@types/topojson-specification": "^1.0.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "d3-force": "^3",
+    "d3-geo": "^3",
     "diff": "^8.0.0",
     "input-otp": "^1.4.2",
     "jsqr": "^1.4.0",
@@ -1447,6 +1458,7 @@
     "remark-math": "^6.0.0",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.0",
+    "topojson-client": "^3",
     "tw-animate-css": "^1.3.4",
     "uqr": "^0.1.3"
   },
@@ -1466,12 +1478,13 @@
     "@tiptap/pm": "^3",
     "@tiptap/react": "^3",
     "@tiptap/starter-kit": "^3",
-    "@types/d3-force": "^3",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@types/topojson-client": "^3",
     "@xterm/addon-fit": "^0.10",
     "@xterm/xterm": "^5",
     "axe-core": "4",
+    "i18n-iso-countries": "^7",
     "jsdom": "26",
     "pdfjs-dist": "^5.6.205",
     "react": "^19.1.0",
@@ -1479,6 +1492,7 @@
     "tailwindcss": "^4.1.10",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
-    "vitest": "3"
+    "vitest": "3",
+    "world-atlas": "^2"
   }
 }

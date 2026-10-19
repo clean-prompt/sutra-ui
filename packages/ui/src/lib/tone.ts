@@ -119,3 +119,12 @@ export const COLOR_TOKENS: Readonly<Record<Tone | "muted" | "foreground", string
 export function resolveColorToken(color: string): string {
   return Object.hasOwn(COLOR_TOKENS, color) ? COLOR_TOKENS[color as keyof typeof COLOR_TOKENS] : color;
 }
+
+/**
+ * Step `index` (0-based) of a `steps`-long colour ramp: the first step is 30% `color`, the last 100%, mixed in oklab
+ * toward `empty` (default the muted fill). Heatmaps and choropleth maps shade with it so they read alike.
+ */
+export function rampColor(color: string, index: number, steps: number, empty = "var(--muted)"): string {
+  const pct = steps <= 1 ? 100 : Math.round(30 + (70 * index) / (steps - 1));
+  return pct >= 100 ? color : `color-mix(in oklab, ${color} ${pct}%, ${empty})`;
+}

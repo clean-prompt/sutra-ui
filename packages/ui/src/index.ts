@@ -300,6 +300,13 @@ export * from "./kits/editor/editor-status";
 export * from "./kits/editor/editor-toolbar";
 export * from "./kits/editor/version-history";
 
+/* Kit: geo (src/kits/geo) */
+// not exported: kits/geo/world-map-internal (internal: private helpers shared by sibling modules)
+export * from "./kits/geo/geo-marker-layer";
+export * from "./kits/geo/geo-model";
+export * from "./kits/geo/world-data";
+export * from "./kits/geo/world-map";
+
 /* Kit: identity (src/kits/identity) */
 // not exported: kits/identity/kunji (back-compat barrel, all targets exported)
 export * from "./kits/identity/api-keys";

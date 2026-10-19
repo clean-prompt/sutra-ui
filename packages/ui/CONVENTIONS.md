@@ -12,7 +12,7 @@ Everything lives in `src/`, one component family per kebab-case file. Pick the l
 | `assets/` | Brand marks, logos, flags, icon wrappers, illustrations | `lib`, `hooks`, `assets` |
 | `primitives/` | Basic controls with no domain knowledge (Button, Input, Dialog, Badge, StatusBadge …) | `lib`, `hooks`, `assets`, `styles`, `primitives` |
 | `patterns/` | Composed, domain-neutral views (Markdown, DiffViewer, TilingLayout, SchemaForm …) | the above + `patterns` |
-| `kits/<domain>/` | Domain features: `ai`, `agent`, `agent-admin`, `identity`, `billing`, `workspace`, `ops`, `media`, `voice`, `social`, `editor`, `terminal` | the above + `patterns`, the same kit, and the kits listed for it in `KIT_DEPS` |
+| `kits/<domain>/` | Domain features: `ai`, `agent`, `agent-admin`, `identity`, `billing`, `workspace`, `ops`, `media`, `voice`, `social`, `editor`, `terminal`, `geo` | the above + `patterns`, the same kit, and the kits listed for it in `KIT_DEPS` |
 | `blocks/` | Composed sections and pages; `registry.tsx` + `demo-data.ts` are the demo registry (`@sutra/ui/blocks/registry`) | anything |
 | `entries/` | One barrel per public subpath (`@sutra/ui/<name>`) | anything |
 
@@ -157,3 +157,4 @@ Before writing a new pill, list, banner or picker, check this table. A domain co
 | Temperatures | `lib/temperature` (store °C, convert for display) | ThermalSensors, FanControl, alert rules |
 | Attachment tile | `ChatAttachment` (`status`, `progress`, `onRetry`, `onPreview`) | AttachmentThumbnails |
 | Bottom or side panel | `Dialog` (centred, sheet on mobile), `Sheet` (edge panel), `Drawer` (gesture bottom sheet; shares Sheet's parts) | — |
+| Maps and locations | `WorldMap` (`@sutra/ui/geo`: choropleth, markers, arcs); `GeoMarkerLayer` for marker buttons over any projection; pure helpers in `kits/geo/geo-model` (`createProjection` (returns `null` from `project` for hidden points), `clusterPoints`, `geoColorScale` (shades like `heatmapColor`), `greatCircleArc`, `normalizeCountryCode`, `countryName`). Outlines are bundled (`pnpm gen:world` regenerates `world-data.ts`); never fetch tiles | — |

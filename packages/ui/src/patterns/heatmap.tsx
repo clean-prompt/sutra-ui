@@ -2,7 +2,7 @@ import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { toPercent } from "../lib/math";
-import { resolveColorToken } from "../lib/tone";
+import { rampColor, resolveColorToken } from "../lib/tone";
 import { addDays, dateKey, formatShortDate, toValidDate } from "../lib/time";
 import { meterLevel, type MeterThresholds } from "../primitives/meter";
 
@@ -42,11 +42,8 @@ export function heatmapLevel(value: number | null | undefined, min = 0, max = 10
   return Math.min(steps, Math.max(1, Math.ceil(t * steps)));
 }
 
-const mix = (color: string, pct: number) =>
-  pct >= 100 ? color : `color-mix(in oklab, ${color} ${pct}%, ${EMPTY_COLOR})`;
-
-const levelPct = (level: number, steps: number) =>
-  steps <= 1 ? 100 : Math.round(30 + (70 * (level - 1)) / (steps - 1));
+/** Colour of a level (1…steps) on the token ramp shared with the geo maps. */
+const levelColor = (color: string, level: number, steps: number) => rampColor(color, level - 1, steps, EMPTY_COLOR);
 
 /** Resolve a value to a CSS color using a token scale, thresholds or custom stops. */
 export function heatmapColor(value: number | null | undefined, options: HeatmapColorOptions = {}): string {
@@ -64,9 +61,9 @@ export function heatmapColor(value: number | null | undefined, options: HeatmapC
     const pct = max <= min ? 100 : ((value - min) / (max - min)) * 100;
     const lv = meterLevel(pct, thresholds);
     const base = lv === "danger" ? "var(--destructive)" : lv === "warn" ? "var(--warning)" : "var(--primary)";
-    return lv === "ok" ? mix(base, levelPct(level, steps)) : base;
+    return lv === "ok" ? levelColor(base, level, steps) : base;
   }
-  return mix(resolveColorToken(scale), levelPct(level, steps));
+  return levelColor(resolveColorToken(scale), level, steps);
 }
 
 /* ------------------------------------------------------------------ */
