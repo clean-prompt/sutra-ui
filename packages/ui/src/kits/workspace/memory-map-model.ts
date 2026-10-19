@@ -1,5 +1,5 @@
 /* Memory-map model: node and legend types, kind legend, time buckets and layout options (pure, no React). */
-import { chartColors } from "../../lib/tokens";
+import { chartColorVars } from "../../lib/tokens";
 import { toMs, type TimeInput } from "../../lib/time";
 
 /* ------------------------------------------------------------------ */
@@ -32,13 +32,13 @@ export interface MemoryLegendItem {
 export type MemoryLegendOverrides = Record<string, Partial<Pick<MemoryLegendItem, "label" | "color" | "glyph">>>;
 
 const knownKinds: { kind: string; label: string; color: string; glyph: MemoryGlyph }[] = [
-  { kind: "memory", label: "Memory", color: chartColors[0], glyph: "circle" },
-  { kind: "skill", label: "Skill", color: chartColors[1], glyph: "diamond" },
-  { kind: "fact", label: "Fact", color: chartColors[2], glyph: "square" },
-  { kind: "person", label: "Person", color: chartColors[3], glyph: "hexagon" },
-  { kind: "project", label: "Project", color: chartColors[4], glyph: "star" },
-  { kind: "document", label: "Document", color: chartColors[5], glyph: "triangle" },
-  { kind: "event", label: "Event", color: chartColors[6], glyph: "circle" },
+  { kind: "memory", label: "Memory", color: chartColorVars[0]!, glyph: "circle" },
+  { kind: "skill", label: "Skill", color: chartColorVars[1]!, glyph: "diamond" },
+  { kind: "fact", label: "Fact", color: chartColorVars[2]!, glyph: "square" },
+  { kind: "person", label: "Person", color: chartColorVars[3]!, glyph: "hexagon" },
+  { kind: "project", label: "Project", color: chartColorVars[4]!, glyph: "star" },
+  { kind: "document", label: "Document", color: chartColorVars[5]!, glyph: "triangle" },
+  { kind: "event", label: "Event", color: chartColorVars[6]!, glyph: "circle" },
 ];
 const glyphCycle: MemoryGlyph[] = ["circle", "square", "diamond", "triangle", "hexagon", "star"];
 
@@ -58,7 +58,7 @@ export function memoryMapLegend(source: readonly MemoryNode[] | readonly string[
     ...unknown.map((kind, i) => ({
       kind,
       label: titleCase(kind),
-      color: chartColors[(7 + i) % chartColors.length]!,
+      color: chartColorVars[(7 + i) % chartColorVars.length]!,
       glyph: glyphCycle[i % glyphCycle.length]!,
       count: counts.get(kind)!,
     })),

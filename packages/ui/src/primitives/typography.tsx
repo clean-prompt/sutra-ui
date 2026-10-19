@@ -7,6 +7,7 @@ import { toneClasses } from "../lib/tone";
 export const headingVariants = cva("font-semibold text-foreground text-balance", {
   variants: {
     size: {
+      "display-3xl": "text-display-lg sm:text-display-xl md:text-display-2xl lg:text-display-3xl",
       "display-2xl": "text-display-lg md:text-display-2xl",
       "display-xl": "text-display-md md:text-display-xl",
       "display-lg": "text-display-sm md:text-display-lg",

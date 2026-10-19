@@ -3,7 +3,7 @@ import path from "node:path";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { useTheme } from "../src/hooks/use-theme";
-import { themeStyles } from "../src/lib/tokens";
+import { chartColors, chartColorVars, themeStyles } from "../src/lib/tokens";
 
 const STYLES = path.resolve(__dirname, "../src/styles");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -134,7 +134,7 @@ describe.each([
   ["dark", dark],
 ] as const)("paper.css contrast (%s)", (_mode, tokens) => {
   const color = (t: string) => parseColor(tokens.get(`--${t}`)!);
-  const surfaces = ["background", "card", "popover", "subtle", "muted", "secondary"];
+  const surfaces = ["background", "card", "popover", "dialog", "subtle", "muted", "secondary"];
   /** Opaque stand-ins for the translucent hover fill over each page/card surface. */
   const accentOver = (base: string) => over(color("accent"), color(base));
   const min = (fg: RGBA, bgs: RGBA[]) => Math.min(...bgs.map((bg) => ratio(fg, bg)));
@@ -194,6 +194,30 @@ describe.each([
     expect(r).toBeGreaterThan(1.05);
     expect(r).toBeLessThan(1.6);
   });
+});
+
+describe.each([
+  ["light", light],
+  ["dark", dark],
+] as const)("paper chart palette (%s)", (_mode, tokens) => {
+  const palette = Array.from({ length: 8 }, (_, i) => tokens.get(`--chart-${i + 1}`)!);
+
+  it("has eight distinct colours", () => {
+    expect(palette.every(Boolean)).toBe(true);
+    expect(new Set(palette).size).toBe(8);
+  });
+
+  it("every colour is visible (3:1) on the page and on cards", () => {
+    const surfaces = ["background", "card"].map((n) => parseColor(tokens.get(`--${n}`)!));
+    for (const c of palette) for (const s of surfaces) expect(ratio(parseColor(c), s), c).toBeGreaterThanOrEqual(3);
+  });
+});
+
+it("the stock --chart-N variables are exactly the chartColors list (charts read the variables, canvas the hex)", () => {
+  const stock = new Map<string, string>();
+  for (const r of rulesOf(sutraCss).filter((r) => r.selector === ":root")) for (const [k, v] of r.decls) stock.set(k, v);
+  chartColors.forEach((hex, i) => expect(stock.get(`--chart-${i + 1}`), `--chart-${i + 1}`).toBe(hex));
+  expect(chartColorVars).toEqual(chartColors.map((hex, i) => `var(--chart-${i + 1}, ${hex})`));
 });
 
 it("white on the brand ramp's mid step passes AA (gradients and tiles use it)", () => {

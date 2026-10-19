@@ -1,6 +1,8 @@
 /* Private canvas renderer for MemoryMap: time rings, links, glyph nodes and labels. */
 import type { MemoryLegendItem, MemoryMapZoom, MemoryNode, MemoryPoint } from "./memory-map-model";
 import { glyphPath } from "./memory-map-internal";
+import { resolveCssColor } from "../../lib/css-color";
+import { resolveColorToken } from "../../lib/tone";
 
 export interface MemoryMapDrawInput {
   width: number;
@@ -42,6 +44,8 @@ export function drawMemoryMap(
   const muted = v("--muted-foreground", "#71717a");
   const border = v("--border", "#e4e4e7");
   const bg = v("--background", "#ffffff");
+  // Node colours can be var() references (the chart palette) or token names; canvas needs concrete colours.
+  const nodeColor = (c: string | undefined) => (c ? resolveCssColor(resolveColorToken(c), css) : muted);
   const primary = v("--primary", "#615fff");
   const z = zoom;
   const s = baseScale * z.k;
@@ -102,7 +106,7 @@ export function drawMemoryMap(
     ctx.globalAlpha = dim ? 0.3 : 1;
     ctx.beginPath();
     glyphPath(ctx, item?.glyph ?? "circle", p.x, p.y, r);
-    ctx.fillStyle = item?.color ?? muted;
+    ctx.fillStyle = nodeColor(item?.color);
     ctx.fill();
     ctx.lineWidth = 1.5 * px;
     ctx.strokeStyle = bg;

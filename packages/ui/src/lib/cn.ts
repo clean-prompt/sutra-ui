@@ -9,8 +9,8 @@ import { extendTailwindMerge } from "tailwind-merge";
 const twMerge = extendTailwindMerge({
   extend: {
     theme: {
-      text: ["2xs", "display-xs", "display-sm", "display-md", "display-lg", "display-xl", "display-2xl"],
-      radius: ["control", "box"],
+      text: ["2xs", "display-xs", "display-sm", "display-md", "display-lg", "display-xl", "display-2xl", "display-3xl"],
+      radius: ["control", "box", "action"],
     },
   },
 });

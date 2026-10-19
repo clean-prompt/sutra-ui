@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
-import { chartColors } from "../lib/tokens";
+import { chartColorVars } from "../lib/tokens";
 import { toPercent } from "../lib/math";
 import { breakdownValue, formatShare } from "../lib/breakdown";
 import { useControllableState } from "../hooks/use-controllable-state";
@@ -494,7 +494,7 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
     const resolved = parts.map((p, i) => ({
       ...p,
       key: p.key ?? p.label,
-      color: p.color ? resolveColorToken(p.color) : chartColors[i % chartColors.length]!,
+      color: p.color ? resolveColorToken(p.color) : chartColorVars[i % chartColorVars.length]!,
       pct: capacity > 0 ? (Math.max(0, p.value) / capacity) * 100 : 0,
     }));
     const text = valueText ?? (max !== undefined ? `${valueFormatter(used)} / ${valueFormatter(max)}` : valueFormatter(used));

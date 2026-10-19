@@ -17,7 +17,7 @@ const overlayClass =
 
 export const dialogContentVariants = cva(
   [
-    "fixed z-50 flex flex-col gap-4 border border-border bg-background p-6 text-foreground shadow-2xl outline-none duration-200",
+    "fixed z-50 flex flex-col gap-4 border border-border bg-dialog p-6 text-foreground shadow-2xl outline-none duration-200",
     // Mobile: bottom sheet
     "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-2xl pb-[max(1.5rem,env(safe-area-inset-bottom))]",
     // Desktop: centered modal
@@ -382,7 +382,7 @@ export const SheetClose = DialogPrimitive.Close;
 
 export const sheetContentVariants = cva(
   [
-    "fixed z-50 flex flex-col gap-4 bg-background p-6 text-foreground shadow-2xl outline-none",
+    "fixed z-50 flex flex-col gap-4 bg-dialog p-6 text-foreground shadow-2xl outline-none",
     "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:duration-300 data-[state=closed]:duration-200 ease-out-quart",
   ],
   {

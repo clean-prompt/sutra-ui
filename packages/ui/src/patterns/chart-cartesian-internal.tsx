@@ -1,7 +1,7 @@
 /** Private cartesian chart base shared by AreaChart, LineChart and BarChart. */
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
-import { chartColors } from "../lib/tokens";
+import { chartColorVars } from "../lib/tokens";
 import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
@@ -183,7 +183,7 @@ export const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternal
     const resolved: ResolvedSeries[] = series.map((s, i) => ({
       ...s,
       label: s.label ?? s.key,
-      color: resolveChartColor(s.color ?? chartColors[i % chartColors.length]!),
+      color: resolveChartColor(s.color ?? chartColorVars[i % chartColorVars.length]!),
       order: i,
     }));
     const visible = resolved.filter((s) => !hidden.includes(s.key));

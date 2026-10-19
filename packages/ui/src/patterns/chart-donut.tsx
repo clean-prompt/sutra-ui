@@ -1,7 +1,7 @@
 /** DonutChart: ring segments with a center label, toggleable legend and tooltip. */
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
-import { chartColors } from "../lib/tokens";
+import { chartColorVars } from "../lib/tokens";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { BreakdownList } from "../primitives/meter";
 import { Skeleton } from "../primitives/progress";
@@ -20,7 +20,7 @@ export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   index: string;
   /** Key of the segment value. Default "value". */
   valueKey?: string;
-  /** Colors in segment order (defaults to chartColors). */
+  /** Colors in segment order (defaults to the chart palette). */
   colors?: string[];
   colorFor?: (datum: ChartDatum, index: number) => string | undefined;
   valueFormatter?: (value: number) => string;
@@ -107,7 +107,7 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
     });
     const [active, setActive] = React.useState<number | null>(null);
     const [announce, setAnnounce] = React.useState("");
-    const palette = colors ?? chartColors;
+    const palette = colors ?? chartColorVars;
     const usedKeys = new Set<string>();
     const items = data.map((d, i) => {
       // Duplicate labels still need distinct keys (React keys, legend toggles); the first keeps the plain label.

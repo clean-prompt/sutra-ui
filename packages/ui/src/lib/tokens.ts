@@ -50,10 +50,18 @@ export const colors = {
 /** Categorical palette for charts, avatars and tags. */
 export const chartColors = ["#615fff", "#00b8db", "#f0b100", "#ff2056", "#00c950", "#8e51ff", "#ff6900", "#62748e"] as const;
 
+/**
+ * The same palette as CSS variables (`--chart-1` … `--chart-8`, the hex as fallback). Charts, meters and the memory
+ * map use these so a style (paper) can retune them; `chartColors` stays the plain hex list for code that needs a
+ * concrete colour (canvas, seeds, avatars).
+ */
+export const chartColorVars: readonly string[] = chartColors.map((c, i) => `var(--chart-${i + 1}, ${c})`);
+
 export const typography = {
   fontSans: "var(--font-sans)",
   fontMono: "var(--font-mono)",
   scale: {
+    "display-3xl": { size: "6.875rem", lineHeight: 0.95, tracking: "-0.04em" },
     "display-2xl": { size: "4.5rem", lineHeight: 1.05, tracking: "-0.035em" },
     "display-xl": { size: "3.75rem", lineHeight: 1.08, tracking: "-0.03em" },
     "display-lg": { size: "3rem", lineHeight: 1.1, tracking: "-0.025em" },
@@ -77,7 +85,7 @@ export const spacing = {
 
 export const radii = {
   xs: "var(--radius-xs)", sm: "var(--radius-sm)", md: "var(--radius-md)", lg: "var(--radius-lg)",
-  xl: "var(--radius-xl)", "2xl": "var(--radius-2xl)", control: "var(--radius-control)", box: "var(--radius-box)",
+  xl: "var(--radius-xl)", "2xl": "var(--radius-2xl)", control: "var(--radius-control)", action: "var(--radius-action)", box: "var(--radius-box)",
   full: "9999px",
 } as const;
 

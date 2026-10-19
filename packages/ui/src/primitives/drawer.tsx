@@ -355,7 +355,7 @@ export const DrawerContent = React.forwardRef<React.ElementRef<typeof DialogPrim
           data-dragging={dragging || undefined}
           data-snap={snapPoints ? currentSnap : undefined}
           className={cn(
-            "fixed inset-x-0 bottom-0 z-50 mx-auto flex w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl border border-b-0 border-border bg-background text-foreground shadow-2xl outline-none",
+            "fixed inset-x-0 bottom-0 z-50 mx-auto flex w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl border border-b-0 border-border bg-dialog text-foreground shadow-2xl outline-none",
             "pb-[env(safe-area-inset-bottom)] select-none sm:select-auto",
             !snapPoints && "max-h-[calc(100dvh-1.5rem)]",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom data-[state=open]:duration-300 data-[state=closed]:duration-200 ease-out-quart",

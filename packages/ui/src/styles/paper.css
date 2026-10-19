@@ -35,6 +35,7 @@
   --card-foreground: #1c1915;
   --popover: #fcfbf9;
   --popover-foreground: #1c1915;
+  --dialog: #fcfbf9; /* dialogs, sheets and drawers sit on the lighter card paper */
   --subtle: #f9f8f5;
   --muted: #f2f0eb; /* wells, tracks */
   --muted-foreground: #625f5c;
@@ -74,6 +75,16 @@
   --scrollbar: rgb(28 25 21 / 0.2);
   --scrollbar-hover: rgb(28 25 21 / 0.32);
 
+  /* Chart palette: the first series is ink, the rest are muted earth tones that stay apart from each other. */
+  --chart-1: #1c1915;
+  --chart-2: #3b6ea5;
+  --chart-3: #c2562f;
+  --chart-4: #4f8a5b;
+  --chart-5: #a97a08;
+  --chart-6: #7d4e7a;
+  --chart-7: #2f8f8f;
+  --chart-8: #7a7774;
+
   /* Brand scale (gradients, illustrations): a warm grey ramp that reads on both paper and black. */
   --b-50: #f2f0eb;
   --b-100: #e6e3dd;
@@ -102,12 +113,16 @@
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --text-display-3xl--letter-spacing: -0.055em;
   --text-display-2xl--letter-spacing: -0.05em;
   --text-display-xl--letter-spacing: -0.045em;
   --text-display-lg--letter-spacing: -0.04em;
   --text-display-md--letter-spacing: -0.035em;
   --text-display-sm--letter-spacing: -0.03em;
   --text-display-xs--letter-spacing: -0.02em;
+
+  /* Shape: large primary actions (Button size xl) are pills; everything else keeps the control radius. */
+  --sutra-radius-action: 9999px;
 
   /* Motion: one ease, three speeds. */
   --ease-out-quart: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -134,6 +149,7 @@
   --card-foreground: #ffffff;
   --popover: #0b0b0b;
   --popover-foreground: #ffffff;
+  --dialog: #0b0b0b;
   --subtle: #060606;
   --muted: #111111;
   --muted-foreground: #a1a1a1; /* as bright as the stock dark muted text, so opacity-80 labels still pass */
@@ -170,9 +186,54 @@
   --scrollbar: rgb(255 255 255 / 0.2);
   --scrollbar-hover: rgb(255 255 255 / 0.32);
 
+  --chart-1: #ffffff;
+  --chart-2: #6aa3e0;
+  --chart-3: #e8825c;
+  --chart-4: #7bbf8a;
+  --chart-5: #e0b34a;
+  --chart-6: #b583b0;
+  --chart-7: #4fc3c3;
+  --chart-8: #a1a1a1;
+
   --paper-float: 0 24px 80px rgb(0 0 0 / 0.65), 0 2px 8px rgb(0 0 0 / 0.5);
   --sutra-shadow-lg: var(--paper-float);
   --sutra-shadow-xl: var(--paper-float);
   --sutra-shadow-2xl: var(--paper-float);
   --sutra-shadow-3xl: var(--paper-float);
+}
+
+/* ------------------------------------------------------------------ */
+/* Overlay motion                                                      */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Menus, popovers, dialogs and tooltips animate with tw-animate-css utilities (animate-in, zoom-in-95,
+ * slide-in-from-top-2 ...), which read these variables. Overriding the variables here (unlayered, so it wins
+ * over the layered utilities) retunes every overlay at once: a quicker ease, 200ms, a 98.5% scale and a 6px
+ * slide. Elements that set their own duration or ease class (sheets, the camera countdown) keep it. The slide
+ * rules name the side, so a popover opening upward keeps its upward offset.
+ */
+[data-style="paper"] :is([class*="animate-in"], [class*="animate-out"]):not([class*="ease-"]) {
+  --tw-ease: var(--sutra-ease);
+}
+[data-style="paper"] :is([class*="animate-in"], [class*="animate-out"]):not([class*="duration-"]) {
+  --tw-duration: var(--sutra-duration);
+}
+[data-style="paper"] [class*="zoom-in-95"] {
+  --tw-enter-scale: 0.985;
+}
+[data-style="paper"] [class*="zoom-out-95"] {
+  --tw-exit-scale: 0.985;
+}
+[data-style="paper"] [data-side="bottom"][class*="slide-in-from-top-2"] {
+  --tw-enter-translate-y: -6px;
+}
+[data-style="paper"] [data-side="top"][class*="slide-in-from-bottom-2"] {
+  --tw-enter-translate-y: 6px;
+}
+[data-style="paper"] [data-side="right"][class*="slide-in-from-left-2"] {
+  --tw-enter-translate-x: -6px;
+}
+[data-style="paper"] [data-side="left"][class*="slide-in-from-right-2"] {
+  --tw-enter-translate-x: 6px;
 }
