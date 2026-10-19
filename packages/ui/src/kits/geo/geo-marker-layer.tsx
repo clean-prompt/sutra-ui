@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn, focusRing } from "../../lib/cn";
-import { clamp } from "../../lib/math";
+import { clamp, roundTo } from "../../lib/math";
 import { formatList } from "../../lib/format";
 import { COLOR_TOKENS, normalizeTone, resolveColorToken, type ToneInput } from "../../lib/tone";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -45,7 +45,7 @@ export interface GeoMarker {
 }
 
 export interface GeoMarkerClusterOptions {
-  /** Markers closer than this (px) merge into one bubble. Default 36. */
+  /** Markers closer than this (px) merge into one bubble. Default 36 (48 in compact mode). */
   radius?: number;
 }
 
@@ -68,6 +68,15 @@ export interface GeoMarkerLayerProps extends Omit<React.HTMLAttributes<HTMLDivEl
   sizeRange?: [number, number];
   /** Show a tooltip for the hovered or focused marker. Default true. */
   tooltip?: boolean;
+  /**
+   * Smaller markers (about 70%) and a wider default cluster radius, for small maps where avatars would crowd.
+   * Default: on when `width` is under 480 px.
+   */
+  compact?: boolean;
+  /** Opacity per marker, 0–1 (the globe fades markers near its edge). Markers at 0 are not rendered. */
+  markerOpacity?: (marker: GeoMarker) => number;
+  /** A marker to show as active from outside (tooltip and ring), e.g. while a list row for it has focus. */
+  activeId?: string | null;
 }
 
 /* ------------------------------------------------------------------------------------------------
@@ -76,6 +85,10 @@ export interface GeoMarkerLayerProps extends Omit<React.HTMLAttributes<HTMLDivEl
 
 const MIN_TARGET = 24;
 const DEFAULT_CLUSTER_RADIUS = 36;
+const COMPACT_CLUSTER_RADIUS = 48;
+/** Below this width (px) the layer switches to compact markers unless told otherwise. */
+const COMPACT_BELOW = 480;
+const COMPACT_SCALE = 0.7;
 
 /** The CSS colour of a marker or arc: `color` (token or CSS) first, then `tone`, then primary. */
 export function geoItemColor(item: { color?: string; tone?: ToneInput }): string {
@@ -103,7 +116,12 @@ interface Placed {
   key: string;
   x: number;
   y: number;
+  /** Drawn size in px (after the compact scale). */
   size: number;
+  /** Size the custom content is laid out at before scaling (`size / scale`). */
+  baseSize: number;
+  scale: number;
+  opacity: number;
   marker?: GeoMarker;
   cluster?: GeoCluster<GeoMarker>;
 }
@@ -130,6 +148,9 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
       onClusterSelect,
       sizeRange = [8, 28],
       tooltip = true,
+      compact: compactProp,
+      markerOpacity,
+      activeId = null,
       className,
       ...props
     },
@@ -143,12 +164,29 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
     const [hoverKey, setHoverKey] = React.useState<string | null>(null);
     const [focusKey, setFocusKey] = React.useState<string | null>(null);
     const [lo, hi] = sizeRange;
-    const radius = cluster ? (typeof cluster === "object" && Number.isFinite(cluster.radius) ? cluster.radius! : DEFAULT_CLUSTER_RADIUS) : 0;
+    const compact = compactProp ?? (Number.isFinite(width) && width > 0 && width < COMPACT_BELOW);
+    const k = compact ? COMPACT_SCALE : 1;
+    const radius = cluster
+      ? typeof cluster === "object" && Number.isFinite(cluster.radius)
+        ? cluster.radius!
+        : compact
+          ? COMPACT_CLUSTER_RADIUS
+          : DEFAULT_CLUSTER_RADIUS
+      : 0;
 
     const placed = React.useMemo<Placed[]>(() => {
       const sizeOf = markerSizer(markers, [lo, hi]);
-      const at = (m: GeoMarker) => project(m.point);
-      const single = (m: GeoMarker, xy: readonly [number, number]): Placed => ({ key: `m:${m.id}`, x: xy[0], y: xy[1], size: sizeOf(m), marker: m });
+      const alpha = (m: GeoMarker) => {
+        const a = markerOpacity ? markerOpacity(m) : 1;
+        return Number.isFinite(a) ? clamp(a, 0, 1) : 1;
+      };
+      const at = (m: GeoMarker) => (alpha(m) > 0 ? project(m.point) : null);
+      const single = (m: GeoMarker, xy: readonly [number, number]): Placed => {
+        const base = sizeOf(m);
+        // Custom content keeps its layout size and is scaled down; plain dots are simply drawn smaller.
+        const size = m.render ? base * k : Math.max(6, Math.round(base * k));
+        return { key: `m:${m.id}`, x: xy[0], y: xy[1], size, baseSize: m.render ? base : size, scale: m.render ? k : 1, opacity: alpha(m), marker: m };
+      };
       if (!radius) {
         return markers.flatMap((m) => {
           const xy = at(m);
@@ -163,25 +201,28 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
       );
       const out = groups.map((g): Placed => {
         if (g.count === 1) return single(g.members[0]!, [g.x, g.y]);
-        return { key: g.id, x: g.x, y: g.y, size: Math.round(26 + Math.min(18, 4 * Math.log2(g.count))), cluster: g };
+        const size = Math.round((26 + Math.min(18, 4 * Math.log2(g.count))) * (compact ? 0.85 : 1));
+        return { key: g.id, x: g.x, y: g.y, size, baseSize: size, scale: 1, opacity: Math.max(...g.members.map(alpha)), cluster: g };
       });
       const selectedXY = selected ? at(selected) : null;
       if (selected && selectedXY) out.push(single(selected, selectedXY));
       return out;
-    }, [markers, project, radius, selectedId, lo, hi]);
+    }, [markers, project, radius, selectedId, lo, hi, k, compact, markerOpacity]);
 
     const activate = (m: GeoMarker) => {
       m.onSelect?.(m);
       setSelectedId(selectedId === m.id ? null : m.id);
     };
 
-    const shownKey = hoverKey ?? focusKey;
+    const activeKey = activeId != null ? `m:${activeId}` : null;
+    const shownKey = hoverKey ?? focusKey ?? activeKey;
     const shown = tooltip ? placed.find((p) => p.key === shownKey) : undefined;
 
     return (
       <div
         ref={ref}
         data-slot="geo-marker-layer"
+        data-compact={compact || undefined}
         className={cn("pointer-events-none absolute inset-0", className)}
         onPointerLeave={() => setHoverKey(null)}
         {...props}
@@ -203,10 +244,15 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
               key={p.key}
               data-slot="geo-marker-item"
               className={cn(
-                "absolute flex items-center justify-center",
+                "absolute top-0 left-0 flex items-center justify-center",
                 p.key === shownKey ? "z-20" : p.marker && p.marker.id === selectedId ? "z-10" : undefined
               )}
-              style={{ left: p.x - box / 2, top: p.y - box / 2, width: box, height: box }}
+              style={{
+                transform: `translate(${roundTo(p.x - box / 2, 1)}px, ${roundTo(p.y - box / 2, 1)}px)`,
+                width: box,
+                height: box,
+                opacity: p.opacity < 1 ? roundTo(p.opacity, 2) : undefined,
+              }}
             >
               {visual}
               {button}
@@ -242,7 +288,7 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
           const m = p.marker!;
           const selected = m.id === selectedId;
           const color = geoItemColor(m);
-          const custom = typeof m.render === "function" ? m.render({ selected, size: p.size }) : m.render;
+          const custom = typeof m.render === "function" ? m.render({ selected, size: p.baseSize }) : m.render;
           return item(
             <>
               {m.pulse ? (
@@ -258,9 +304,16 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
                 className={cn(
                   "relative flex shrink-0 items-center justify-center rounded-full",
                   !custom && "border-2 border-background text-white shadow-sm",
-                  selected && "ring-2 ring-foreground ring-offset-2 ring-offset-background"
+                  selected
+                    ? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
+                    : p.key === activeKey && "ring-2 ring-ring ring-offset-2 ring-offset-background"
                 )}
-                style={{ width: p.size, height: p.size, backgroundColor: custom ? undefined : color }}
+                style={{
+                  width: p.baseSize,
+                  height: p.baseSize,
+                  backgroundColor: custom ? undefined : color,
+                  transform: p.scale !== 1 ? `scale(${p.scale})` : undefined,
+                }}
               >
                 {custom ?? (m.icon ? <span className="flex items-center justify-center [&_svg]:size-[70%]">{m.icon}</span> : null)}
                 {m.badge ? (
@@ -287,6 +340,7 @@ export const GeoMarkerLayer = React.forwardRef<HTMLDivElement, GeoMarkerLayerPro
   }
 );
 GeoMarkerLayer.displayName = "GeoMarkerLayer";
+
 
 function GeoMarkerTooltip({ placed, width, height }: { placed: Placed; width: number; height: number }) {
   const tipW = 200;

@@ -77,6 +77,7 @@ const pages: Record<string, React.ComponentType> = {
   "components/kunji": lazyPage(() => import("./pages/kunji"), "KunjiPage"),
   "components/monitoring": lazyPage(() => import("./pages/monitoring"), "MonitoringPage"),
   "components/geo": lazyPage(() => import("./pages/geo"), "GeoPage"),
+  "components/globe": lazyPage(() => import("./pages/globe"), "GlobePage"),
   "components/media-player": lazyPage(() => import("./pages/media-player"), "MediaPlayerPage"),
   "components/agent-timeline": lazyPage(() => import("./pages/agent-timeline"), "AgentTimelinePage"),
   "components/agent-permissions": lazyPage(() => import("./pages/agent-permissions"), "AgentPermissionsPage"),

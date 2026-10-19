@@ -577,6 +577,18 @@ export const nav: NavSection[] = [
           { id: "narrow", label: "Narrow Width" },
         ],
       },
+      {
+        id: "globe",
+        label: "Globe",
+        items: [
+          { id: "live-visitors-globe", label: "Live Visitors" },
+          { id: "attack-globe", label: "Attack Origins" },
+          { id: "choropleth-globe", label: "Choropleth" },
+          { id: "controlled-globe", label: "Controlled" },
+          { id: "loading-globe", label: "Loading" },
+          { id: "narrow-globe", label: "Narrow Width" },
+        ],
+      },
     ],
   },
   {

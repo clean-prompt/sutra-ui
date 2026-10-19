@@ -8,6 +8,7 @@ import {
   geoInterpolate,
   geoMercator,
   geoNaturalEarth1,
+  geoOrthographic,
   geoPath,
   type GeoPermissibleObjects,
   type GeoProjection,
@@ -172,7 +173,7 @@ export const toLngLat = (p: GeoPoint): [number, number] => [p.lng, p.lat];
 export function formatGeoPoint(point: GeoPointInput | null | undefined, digits = 2): string {
   const p = toGeoPoint(point);
   if (!p) return "—";
-  const lng = ((((p.lng + 180) % 360) + 360) % 360) - 180;
+  const lng = wrapLongitude(p.lng);
   const part = (v: number, pos: string, neg: string) => `${Math.abs(v).toFixed(digits)}° ${v < 0 ? neg : pos}`;
   return `${part(p.lat, "N", "S")}, ${part(lng, "E", "W")}`;
 }
@@ -188,8 +189,11 @@ export function geoDistanceKm(a: GeoPointInput, b: GeoPointInput): number {
  * Projections
  * ----------------------------------------------------------------------------------------------*/
 
-/** Flat world projections. Equal Earth keeps areas true, which suits choropleths. */
-export type GeoProjectionKind = "equalEarth" | "naturalEarth" | "mercator" | "equirectangular";
+/**
+ * World projections. The flat ones: Equal Earth keeps areas true, which suits choropleths. `orthographic` is a globe
+ * seen from space: only the hemisphere facing the viewer is drawn, and `project` returns `null` for the far side.
+ */
+export type GeoProjectionKind = "equalEarth" | "naturalEarth" | "mercator" | "equirectangular" | "orthographic";
 
 export interface GeoProjectionOptions {
   /** Width of the drawing in px. */
@@ -200,8 +204,13 @@ export interface GeoProjectionOptions {
   padding?: number;
   /** Fit to the land without Antarctica (and clip what falls outside the box). Default false. */
   hideAntarctica?: boolean;
-  /** Rotation `[λ, φ, γ]` in degrees applied before fitting (e.g. `[-150, 0]` centres the Pacific). */
-  rotate?: [number, number] | [number, number, number];
+  /**
+   * Rotation `[λ, φ, γ]` in degrees applied before fitting (e.g. `[-150, 0]` centres the Pacific). On a globe it picks
+   * the side that faces the viewer: `rotationToCenter(point)` puts a point in the middle.
+   */
+  rotate?: GeoRotationInput;
+  /** Scale multiplier applied after fitting (1 = fitted). The view stays centred and what grows past the box is clipped. */
+  zoom?: number;
 }
 
 /** A fitted projection with screen helpers. Build one with `createProjection`. */
@@ -226,10 +235,12 @@ const FACTORIES: Record<GeoProjectionKind, () => GeoProjection> = {
   naturalEarth: geoNaturalEarth1,
   mercator: geoMercator,
   equirectangular: geoEquirectangular,
+  orthographic: geoOrthographic,
 };
 
 let landWithoutAntarctica: GeoJSON.FeatureCollection | undefined;
 function fitTarget(kind: GeoProjectionKind, hideAntarctica: boolean): GeoPermissibleObjects {
+  if (kind === "orthographic") return { type: "Sphere" };
   if (hideAntarctica) {
     landWithoutAntarctica ??= { type: "FeatureCollection", features: worldCountries().features.filter((f) => !isAntarctica(f)) };
     return landWithoutAntarctica;
@@ -247,11 +258,17 @@ function fitTarget(kind: GeoProjectionKind, hideAntarctica: boolean): GeoPermiss
 
 /**
  * A d3-geo projection fitted inside `width × height` (minus `padding`): to the whole sphere, or to the land
- * without Antarctica when `hideAntarctica` is set. Mercator is cut at ±85°. Everything outside the box is clipped,
- * so `project` returns `null` for points that would fall off the map.
+ * without Antarctica when `hideAntarctica` is set (ignored by `orthographic`, which always fits the globe).
+ * Mercator is cut at ±85°. Everything outside the box is clipped, so `project` returns `null` for points that
+ * would fall off the map (or sit on a globe's far side).
+ *
+ * The returned helpers read the d3 projection live, so code that animates a globe may change `d3.rotate()` and
+ * `d3.scale()` between frames instead of building a new projection.
  */
 export function createProjection(kind: GeoProjectionKind = "equalEarth", options: GeoProjectionOptions): GeoMapProjection {
-  const { padding = 0, hideAntarctica = false, rotate } = options;
+  const { padding = 0, hideAntarctica = false } = options;
+  const rotate = options.rotate ? normalizeRotationInput(options.rotate) : undefined;
+  const zoom = Number.isFinite(options.zoom) && options.zoom! > 0 ? options.zoom! : 1;
   const width = Math.max(1, Number.isFinite(options.width) ? options.width : 1);
   const factory = Object.hasOwn(FACTORIES, kind) ? FACTORIES[kind] : FACTORIES.equalEarth;
   const projection = factory();
@@ -280,6 +297,7 @@ export function createProjection(kind: GeoProjectionKind = "equalEarth", options
       target
     );
   }
+  if (zoom !== 1) projection.scale(projection.scale() * zoom);
   projection.clipExtent([
     [0, 0],
     [width, height],
@@ -297,7 +315,6 @@ export function createProjection(kind: GeoProjectionKind = "equalEarth", options
     polygonEnd() {},
     sphere() {},
   };
-  const stream = projection.stream(sink);
 
   return {
     kind: Object.hasOwn(FACTORIES, kind) ? kind : "equalEarth",
@@ -307,7 +324,8 @@ export function createProjection(kind: GeoProjectionKind = "equalEarth", options
       const p = toGeoPoint(point);
       if (!p) return null;
       hit = null;
-      stream.point(p.lng, p.lat);
+      // d3 caches the stream until the projection changes, so this stays cheap and follows rotate/scale updates.
+      projection.stream(sink).point(p.lng, p.lat);
       const out = hit as [number, number] | null;
       return out && Number.isFinite(out[0]) && Number.isFinite(out[1]) ? out : null;
     },
@@ -318,6 +336,72 @@ export function createProjection(kind: GeoProjectionKind = "equalEarth", options
     path: (object) => pathGen(object) ?? "",
     d3: projection,
   };
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * Globe rotation
+ * ----------------------------------------------------------------------------------------------*/
+
+/** A d3 rotation `[λ, φ, γ]` in degrees: yaw (spin about the poles), pitch (tilt) and roll. */
+export type GeoRotation = [lambda: number, phi: number, gamma: number];
+
+/** A rotation as `[λ, φ]` or `[λ, φ, γ]`. */
+export type GeoRotationInput = readonly [number, number] | readonly [number, number, number];
+
+/** A longitude (or any angle) wrapped into `[-180, 180)`. */
+export function wrapLongitude(degrees: number): number {
+  return Number.isFinite(degrees) ? ((((degrees + 180) % 360) + 360) % 360) - 180 : 0;
+}
+
+function normalizeRotationInput(rotation: GeoRotationInput): GeoRotation {
+  const [l, p, g = 0] = rotation;
+  return [Number.isFinite(l) ? l : 0, Number.isFinite(p) ? p : 0, Number.isFinite(g) ? g : 0];
+}
+
+/**
+ * A rotation with finite parts, λ and γ wrapped into `[-180, 180)` and φ clamped to `±maxPitch` (default 90), so a
+ * globe never turns upside down. Missing or invalid parts become 0.
+ */
+export function normalizeGeoRotation(rotation: GeoRotationInput | null | undefined, maxPitch = 90): GeoRotation {
+  if (!rotation) return [0, 0, 0];
+  const [l, p, g] = normalizeRotationInput(rotation);
+  const limit = Math.max(0, Math.min(90, Number.isFinite(maxPitch) ? maxPitch : 90));
+  return [wrapLongitude(l), Math.max(-limit, Math.min(limit, p)), wrapLongitude(g)];
+}
+
+/** The rotation that puts `point` in the middle of an orthographic globe (`[-lng, -lat, γ]`); `undefined` for an invalid point. */
+export function rotationToCenter(point: GeoPointInput | null | undefined, gamma = 0): GeoRotation | undefined {
+  const p = toGeoPoint(point);
+  return p ? [wrapLongitude(-p.lng), 0 - p.lat, Number.isFinite(gamma) ? gamma : 0] : undefined;
+}
+
+/** The point in the middle of an orthographic globe under `rotation` (the inverse of `rotationToCenter`). */
+export function rotationCenter(rotation: GeoRotationInput): GeoPoint {
+  const [l, p] = normalizeRotationInput(rotation);
+  return { lng: wrapLongitude(-l), lat: Math.max(-90, Math.min(90, 0 - p)) };
+}
+
+/**
+ * Interpolates between two rotations for a fly-to, taking the short way round for λ and γ (from 170° to -170° turns
+ * 20°, not 340°). The result starts exactly at `from` (λ may leave `[-180, 180)` on the way; d3 doesn't mind).
+ */
+export function interpolateRotation(from: GeoRotationInput, to: GeoRotationInput): (t: number) => GeoRotation {
+  const a = normalizeRotationInput(from);
+  const b = normalizeRotationInput(to);
+  const dl = wrapLongitude(b[0] - a[0]);
+  const dp = b[1] - a[1];
+  const dg = wrapLongitude(b[2] - a[2]);
+  return (t) => {
+    const k = Number.isFinite(t) ? t : 1;
+    return [a[0] + dl * k, a[1] + dp * k, a[2] + dg * k];
+  };
+}
+
+/** Angle between two points seen from the Earth's centre, in degrees (0–180); `NaN` for an invalid point. */
+export function geoAngularDistance(a: GeoPointInput, b: GeoPointInput): number {
+  const pa = toGeoPoint(a);
+  const pb = toGeoPoint(b);
+  return pa && pb ? (geoDistance(toLngLat(pa), toLngLat(pb)) * 180) / Math.PI : NaN;
 }
 
 /** Standard 10° graticule lines. */

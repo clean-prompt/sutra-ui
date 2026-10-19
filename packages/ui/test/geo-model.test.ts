@@ -3,11 +3,17 @@ import {
   countryName,
   createProjection,
   formatGeoPoint,
+  geoAngularDistance,
   geoColorScale,
   geoDistanceKm,
   greatCircleArc,
+  interpolateRotation,
   normalizeCountryCode,
+  normalizeGeoRotation,
+  rotationCenter,
+  rotationToCenter,
   toGeoPoint,
+  wrapLongitude,
   worldBorders,
   worldCountries,
   worldLand,
@@ -112,6 +118,80 @@ describe("geo-model: projections", () => {
     const proj = createProjection("bogus" as GeoProjectionKind, { width: 400 });
     expect(proj.kind).toBe("equalEarth");
     expect(proj.project([NaN, 0])).toBeNull();
+  });
+});
+
+describe("geo-model: orthographic globe", () => {
+  it("fits the sphere, hides the far side and follows the rotation", () => {
+    const proj = createProjection("orthographic", { width: 400, padding: 10, rotate: rotationToCenter({ lat: 20, lng: 10 }) });
+    expect(proj.kind).toBe("orthographic");
+    expect(proj.height).toBe(400);
+    expect(proj.d3.scale()).toBeCloseTo(190);
+    const centre = proj.project({ lat: 20, lng: 10 })!;
+    expect(centre[0]).toBeCloseTo(200);
+    expect(centre[1]).toBeCloseTo(200);
+    expect(proj.project({ lat: 51.5, lng: -0.13 })).not.toBeNull();
+    expect(proj.project({ lat: -33.87, lng: 151.21 })).toBeNull();
+    // The helpers read the projection live, so a rotation applied later moves points.
+    proj.d3.rotate([-151.21, 33.87, 0]);
+    expect(proj.project({ lat: -33.87, lng: 151.21 })![0]).toBeCloseTo(200);
+    expect(proj.project({ lat: 51.5, lng: -0.13 })).toBeNull();
+    expect(proj.path(worldLand())).toMatch(/^M/);
+  });
+
+  it("zooms as a scale multiplier around the centre and clips to the box", () => {
+    const base = createProjection("orthographic", { width: 300, height: 300 });
+    const zoomed = createProjection("orthographic", { width: 300, height: 300, zoom: 2 });
+    expect(zoomed.d3.scale()).toBeCloseTo(base.d3.scale() * 2);
+    expect(zoomed.project({ lat: 0, lng: 0 })![0]).toBeCloseTo(150);
+    // 60° east is on the visible hemisphere but falls outside the zoomed box.
+    expect(base.project({ lat: 0, lng: 60 })).not.toBeNull();
+    expect(zoomed.project({ lat: 0, lng: 60 })).toBeNull();
+    expect(createProjection("orthographic", { width: 300, zoom: -1 }).d3.scale()).toBeCloseTo(base.d3.scale());
+  });
+
+  it("ignores hideAntarctica on a globe", () => {
+    expect(createProjection("orthographic", { width: 300, hideAntarctica: true }).height).toBe(300);
+  });
+});
+
+describe("geo-model: rotation helpers", () => {
+  it("wraps longitudes and normalises rotations", () => {
+    expect(wrapLongitude(190)).toBe(-170);
+    expect(wrapLongitude(-180)).toBe(-180);
+    expect(wrapLongitude(540)).toBe(-180);
+    expect(wrapLongitude(NaN)).toBe(0);
+    expect(normalizeGeoRotation([370, 120])).toEqual([10, 90, 0]);
+    expect(normalizeGeoRotation([0, -95, 200], 80)).toEqual([0, -80, -160]);
+    expect(normalizeGeoRotation([NaN, 5, Infinity])).toEqual([0, 5, 0]);
+    expect(normalizeGeoRotation(undefined)).toEqual([0, 0, 0]);
+  });
+
+  it("centres a point and reads the centre back", () => {
+    expect(rotationToCenter({ lat: 37.5, lng: 127 })).toEqual([-127, -37.5, 0]);
+    expect(rotationToCenter([-170, 10], 15)).toEqual([170, -10, 15]);
+    expect(rotationToCenter(null)).toBeUndefined();
+    expect(rotationCenter([-127, -37.5, 30])).toEqual({ lng: 127, lat: 37.5 });
+    expect(rotationCenter([200, 0])).toEqual({ lng: 160, lat: 0 });
+  });
+
+  it("interpolates the short way round", () => {
+    const step = interpolateRotation([170, 0, 0], [-170, 20, 0]);
+    expect(step(0)).toEqual([170, 0, 0]);
+    expect(step(0.5)).toEqual([180, 10, 0]);
+    expect(step(1)).toEqual([190, 20, 0]);
+    expect(wrapLongitude(step(1)[0])).toBe(-170);
+    const back = interpolateRotation([-170, 0], [170, 0]);
+    expect(back(1)[0]).toBe(-190);
+    expect(interpolateRotation([0, 0, 170], [0, 0, -170])(0.5)[2]).toBe(180);
+    expect(interpolateRotation([0, 0], [90, 0])(NaN)).toEqual([90, 0, 0]);
+  });
+
+  it("measures angular distance in degrees", () => {
+    expect(geoAngularDistance({ lat: 0, lng: 0 }, { lat: 0, lng: 90 })).toBeCloseTo(90);
+    expect(geoAngularDistance([0, 90], [0, -90])).toBeCloseTo(180);
+    expect(geoAngularDistance([10, 10], [10, 10])).toBe(0);
+    expect(geoAngularDistance([NaN, 0], [0, 0])).toBeNaN();
   });
 });
 
