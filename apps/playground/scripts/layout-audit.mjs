@@ -3,8 +3,9 @@
 // targets under 24px. It is a lead list for review, not a verdict: intentional patterns (negative-margin hover bleeds, SVG
 // labels, absolutely positioned overlays, scrollers) are filtered, but scrolled-out rows and decorative clipping still show.
 //
-// Setup once:   pnpm add -D playwright --filter playground && npx playwright install chromium
+// Setup once:   pnpm install && pnpm --filter playground exec playwright install chromium   (playwright is a dev dependency)
 // Serve:        pnpm --filter playground build && pnpm --filter playground exec vite preview --port 5195
+// Whole release audit (build, serve, three passes, ratchet against an earlier run): pnpm audit:all (scripts/audit-all.mjs)
 // Run:          node scripts/layout-audit.mjs <tag> <stock|paper> <dark 0|1> <widths, e.g. 360,768,1280> [routeSubstring]
 //               (AUDIT_BASE=http://localhost:<port>/ to audit another server, e.g. vite dev)
 // Output:       audit/<tag>.json and audit/<tag>/ (screenshots of flagged demos); summarise with
