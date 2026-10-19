@@ -26,19 +26,40 @@ const THREAD_BEAD = { cx: 21.6, cy: 10.2, r: 1.6 };
 /* SutraMark                                                           */
 /* ------------------------------------------------------------------ */
 
-export type SutraMarkVariant = "tile" | "glyph" | "outline";
+export type SutraMarkVariant = "tile" | "glyph" | "outline" | "solid" | "badge";
 
 export interface SutraMarkProps extends SvgBaseProps {
-  /** `tile` gradient tile with a white thread, `glyph` thread only, `outline` stroked tile. */
+  /**
+   * `tile` gradient tile with a white thread, `glyph` thread only, `outline` stroked tile,
+   * `solid` flat `--primary` tile with a `--primary-foreground` thread (follows the theme and the paper style),
+   * `badge` heavy monochrome frame in `currentColor` around a bold thread.
+   */
   variant?: SutraMarkVariant;
 }
+
+/** Thread stroke width and scale about the centre of the 32 box, per variant. */
+const THREAD_LOOK: Record<SutraMarkVariant, { width: number; scale?: number }> = {
+  tile: { width: 2.2 },
+  outline: { width: 2.2 },
+  glyph: { width: 2.6, scale: 1.22 },
+  solid: { width: 2.4, scale: 1.06 },
+  badge: { width: 2.7, scale: 1.1 },
+};
+
+/** Thread colour per variant; `solid` reads the theme's `--primary-foreground`. */
+const THREAD_PAINT: Partial<Record<SutraMarkVariant, string>> = {
+  tile: "#ffffff",
+  solid: "var(--primary-foreground, #ffffff)",
+};
 
 /** The Sutra logomark: a single thread tied into a flowing "S". */
 export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
   ({ variant = "tile", size = 32, title, className, ...props }, ref) => {
     const id = useSafeId("sutra-mark");
     const titleId = `${id}-title`;
-    const threadColor = variant === "tile" ? "#ffffff" : "currentColor";
+    const threadColor = THREAD_PAINT[variant] ?? "currentColor";
+    const { width, scale } = THREAD_LOOK[variant] ?? THREAD_LOOK.tile;
+    const threadTransform = scale ? `translate(16 16) scale(${scale}) translate(-16 -16)` : undefined;
     return (
       <svg
         ref={ref}
@@ -69,24 +90,24 @@ export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
             <rect x="0.5" y="0.5" width="31" height="31" rx="7.5" stroke="#ffffff" strokeOpacity="0.18" />
           </>
         ) : null}
+        {variant === "solid" ? <rect width="32" height="32" rx="8" fill="var(--primary, #4f39f6)" /> : null}
         {variant === "outline" ? (
           <rect x="1" y="1" width="30" height="30" rx="7.5" stroke="currentColor" strokeWidth="1.75" />
         ) : null}
+        {variant === "badge" ? (
+          <rect x="1.5" y="1.5" width="29" height="29" rx="7.5" stroke="currentColor" strokeWidth="3" />
+        ) : null}
         <g
           stroke={threadColor}
-          strokeWidth={variant === "glyph" ? 2.6 : 2.2}
+          strokeWidth={width}
           strokeLinecap="round"
           strokeLinejoin="round"
-          transform={variant === "glyph" ? "translate(16 16) scale(1.22) translate(-16 -16)" : undefined}
+          transform={threadTransform}
         >
           <path d={THREAD_PATH} />
           <path d={THREAD_LOOP} />
         </g>
-        <circle
-          {...THREAD_BEAD}
-          fill={threadColor}
-          transform={variant === "glyph" ? "translate(16 16) scale(1.22) translate(-16 -16)" : undefined}
-        />
+        <circle {...THREAD_BEAD} fill={threadColor} transform={threadTransform} />
       </svg>
     );
   }
@@ -141,6 +162,7 @@ SutraWordmark.displayName = "SutraWordmark";
 export interface SutraLogoProps extends React.HTMLAttributes<HTMLSpanElement> {
   layout?: "horizontal" | "stacked";
   size?: SutraLogoSize;
+  /** Which `SutraMark` variant leads the lockup. Default `tile`. */
   markVariant?: SutraMarkVariant;
   /** Hide the wordmark and show only the mark. */
   markOnly?: boolean;

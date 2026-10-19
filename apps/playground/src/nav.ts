@@ -40,6 +40,7 @@ export const nav: NavSection[] = [
       { id: "shadows", label: "Shadows & Effects" },
       { id: "radius", label: "Corner Radius" },
       { id: "spacing", label: "Spacing" },
+      { id: "paper", label: "Paper Showcase" },
       {
         id: "assets",
         route: "components",
@@ -98,6 +99,34 @@ export const nav: NavSection[] = [
     label: "Patterns",
     route: "components",
     pages: [
+      {
+        id: "layout-patterns",
+        label: "Grids & Search",
+        items: [
+          { id: "tool-grid", label: "Tool Grid" },
+          { id: "grid-four-columns", label: "Four Columns" },
+          { id: "grid-odd-count", label: "Odd Item Count" },
+          { id: "grid-loading", label: "Grid Loading" },
+          { id: "grid-empty", label: "Grid Empty" },
+          { id: "grid-narrow", label: "Grid Narrow Width" },
+          { id: "marquee-chips", label: "Marquee Chips" },
+          { id: "marquee-logos", label: "Marquee Logos" },
+          { id: "marquee-reverse", label: "Marquee Reverse" },
+          { id: "search-trigger", label: "Search Trigger" },
+          { id: "idle-motion", label: "Idle Motion" },
+        ],
+      },
+      {
+        id: "statement-hero",
+        label: "Statement Hero",
+        items: [
+          { id: "landing", label: "Landing Statement" },
+          { id: "start-aligned", label: "Start-aligned" },
+          { id: "dropzone", label: "With a Dropzone" },
+          { id: "compact", label: "Compact" },
+          { id: "motion", label: "Motion" },
+        ],
+      },
       {
         id: "navigation",
         label: "Navigation",

@@ -11,7 +11,6 @@ import {
   RiGithubFill,
   RiHome5Line,
   RiMoonLine,
-  RiSearchLine,
   RiSettings3Line,
   RiStickyNoteLine,
   RiSunLine,
@@ -21,7 +20,6 @@ import { cn, focusRing } from "../lib/cn";
 import { isSafeHref } from "../lib/validate";
 import { Button } from "../primitives/button";
 import { Badge } from "../primitives/badge";
-import { Kbd } from "../primitives/typography";
 import { Separator } from "../primitives/separator";
 import {
   HeaderNav,
@@ -37,6 +35,7 @@ import {
 } from "../patterns/header-navigation";
 import { Breadcrumbs, type BreadcrumbCrumb } from "../primitives/breadcrumbs";
 import { SidebarTrigger } from "../patterns/sidebar-navigation";
+import { SearchTrigger } from "../patterns/search-trigger";
 import {
   CommandDialog,
   CommandEmpty,
@@ -65,43 +64,6 @@ import { demoUser } from "./demo-data";
 export interface HeaderLink {
   label: React.ReactNode;
   href: string;
-}
-
-/** Search field look-alike that opens a command palette. */
-function SearchTrigger({
-  onClick,
-  placeholder = "Search…",
-  className,
-}: {
-  onClick: () => void;
-  placeholder?: string;
-  className?: string;
-}) {
-  return (
-    <>
-      <button
-        type="button"
-        onClick={onClick}
-        aria-label="Search (⌘K)"
-        aria-keyshortcuts="Meta+K Control+K"
-        className={cn(
-          "hidden h-9 w-full max-w-72 items-center gap-2 rounded-control border border-input bg-background pl-3 pr-1.5 text-sm text-muted-foreground shadow-xs transition-colors hover:border-border-strong hover:text-foreground sm:flex",
-          focusRing,
-          className
-        )}
-      >
-        <RiSearchLine aria-hidden className="size-4 shrink-0" />
-        <span className="flex-1 truncate text-left">{placeholder}</span>
-        <span className="flex items-center gap-0.5" aria-hidden>
-          <Kbd>⌘</Kbd>
-          <Kbd>K</Kbd>
-        </span>
-      </button>
-      <Button variant="ghost" size="icon" aria-label="Search" onClick={onClick} className="sm:hidden">
-        <RiSearchLine aria-hidden />
-      </Button>
-    </>
-  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -383,7 +345,7 @@ export const AppHeader = React.forwardRef<HTMLElement, AppHeaderProps>(
           className="min-w-0 flex-1 [&_ol]:flex-nowrap [&_li]:min-w-0 [&_li]:truncate max-sm:[&_li:not(:last-child)]:hidden @max-3xl:[&_li:not(:last-child)]:hidden"
         />
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-          <SearchTrigger onClick={() => setOpen(true)} placeholder={searchPlaceholder} className="w-60 lg:w-72" />
+          <SearchTrigger collapseBelow="sm" onClick={() => setOpen(true)} placeholder={searchPlaceholder} className="w-60 lg:w-72" />
           {actions}
           <NotificationsMenu notifications={notifications} />
           <UserAccountMenu user={user} onSignOut={onSignOut} onSelect={onAccountSelect} />
@@ -645,7 +607,7 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-1 sm:gap-2">
-          <SearchTrigger onClick={() => setOpen(true)} placeholder="Search docs…" className="w-56 lg:w-64" />
+          <SearchTrigger collapseBelow="sm" onClick={() => setOpen(true)} placeholder="Search docs…" className="w-56 lg:w-64" />
           <SimpleTooltip content="GitHub">
             <Button asChild variant="ghost" size="icon">
               <a href={githubHref} target="_blank" rel="noreferrer noopener" aria-label="GitHub repository">

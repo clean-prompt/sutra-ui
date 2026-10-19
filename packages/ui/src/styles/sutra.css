@@ -395,6 +395,9 @@
   --animate-fade-in: sutra-fade-in 300ms var(--ease-out-quart) both;
   --animate-fade-up: sutra-fade-up 300ms var(--ease-out-quart) both;
   --animate-pop-in: sutra-pop-in 200ms var(--ease-out-quart) both;
+  --animate-bob: sutra-bob 3.2s ease-in-out infinite;
+  --animate-ring: sutra-ring 2.2s var(--ease-out-quart) infinite;
+  --animate-marquee: sutra-marquee 30s linear infinite;
   --animate-shimmer: sutra-shimmer 2s linear infinite;
   --animate-accordion-down: sutra-accordion-down 200ms var(--ease-out-quart);
   --animate-accordion-up: sutra-accordion-up 200ms var(--ease-out-quart);
@@ -414,6 +417,19 @@
   }
   @keyframes sutra-pop-in {
     from { opacity: 0; transform: translateY(6px) scale(0.985); }
+  }
+  @keyframes sutra-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes sutra-ring {
+    from { transform: scale(1); opacity: 0.55; }
+    to { transform: scale(1.7); opacity: 0; }
+  }
+  /* One loop = one copy of the items: the track holds `--sutra-marquee-copies` of them. The duration is set per instance. */
+  @keyframes sutra-marquee {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(calc(-100% / var(--sutra-marquee-copies, 2)), 0, 0); }
   }
   @keyframes sutra-shimmer {
     from { background-position: 200% 0; }
@@ -488,11 +504,13 @@
 /* Utilities                                                           */
 /* ------------------------------------------------------------------ */
 
-/* The entrance utilities (animate-fade-in, animate-fade-up, animate-pop-in) stand still for people who ask for less motion. */
+/* The entrance and idle utilities (animate-fade-in, animate-fade-up, animate-pop-in, animate-bob, animate-ring) stand still for people who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-fade-up,
-  .animate-pop-in {
+  .animate-pop-in,
+  .animate-bob,
+  .animate-ring {
     animation: none;
   }
 }

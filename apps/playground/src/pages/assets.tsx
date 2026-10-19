@@ -92,7 +92,25 @@ import { Demo, DemoLabel, PageIntro } from "../components/demo";
 /* ------------------------------------------------------------------ */
 
 const logoSizes: SutraLogoSize[] = ["xs", "sm", "md", "lg", "xl"];
-const markVariants: SutraMarkVariant[] = ["tile", "glyph", "outline"];
+const markVariants: SutraMarkVariant[] = ["tile", "glyph", "outline", "solid", "badge"];
+const markSizes = [16, 32, 96, 160];
+
+/** Every mark variant at 16, 32, 96 and 160 px, on the page theme or on a panel pinned to dark. */
+function MarkSizesPanel({ mode }: { mode: "page" | "dark" }) {
+  return (
+    <div data-theme={mode === "dark" ? "dark" : undefined} className="space-y-4 overflow-x-auto rounded-box border border-border bg-background p-4 text-foreground">
+      <p className="text-xs font-medium text-muted-foreground">{mode === "dark" ? "Dark (pinned)" : "Page theme"}</p>
+      {markVariants.map((variant) => (
+        <div key={variant} className="flex min-w-max items-end gap-5">
+          <span className="w-14 shrink-0 pb-1 text-xs text-muted-foreground">{variant}</span>
+          {markSizes.map((px) => (
+            <SutraMark key={px} variant={variant} size={px} title={`Sutra mark (${variant}, ${px}px, ${mode})`} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function LogoDemo() {
   return (
@@ -130,6 +148,8 @@ function LogoDemo() {
           <SutraLogo size="md" product="notes" />
           <SutraLogo size="md" product="tasks" markVariant="outline" />
           <SutraLogo size="md" product="calendar" markVariant="glyph" />
+          <SutraLogo size="md" product="files" markVariant="solid" />
+          <SutraLogo size="md" product="vault" markVariant="badge" />
         </div>
       </div>
 
@@ -146,6 +166,22 @@ function LogoDemo() {
             <SutraMark variant="glyph" size={48} className="text-primary" />
             <span className="text-xs text-muted-foreground">glyph, tinted</span>
           </div>
+          <div className="flex flex-col items-center gap-2">
+            <SutraMark variant="badge" size={48} className="text-primary" />
+            <span className="text-xs text-muted-foreground">badge, tinted</span>
+          </div>
+        </div>
+        <p className="max-w-2xl text-xs text-muted-foreground">
+          solid reads --primary and --primary-foreground (brand colour in the stock theme, ink on paper in paper light, white in
+          paper dark). badge is a heavy frame in currentColor, so it takes any text colour.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        <DemoLabel>Sizes and colour modes</DemoLabel>
+        <div className="grid gap-4">
+          <MarkSizesPanel mode="page" />
+          <MarkSizesPanel mode="dark" />
         </div>
       </div>
 

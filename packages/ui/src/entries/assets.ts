@@ -6,3 +6,4 @@ export * from "../assets/country-flags";
 export * from "../assets/emoji-reactions";
 export * from "../assets/file-format";
 export * from "../assets/misc";
+export * from "../assets/marquee";

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { Marquee } from "./marquee";
 
 export interface PlaceholderLogoProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Height-driven size of the lockup. */
@@ -216,13 +217,6 @@ export const placeholderLogos: PlaceholderLogoEntry[] = [
 /* LogoCloud                                                           */
 /* ------------------------------------------------------------------ */
 
-const MARQUEE_CSS = `
-@keyframes sutra-logo-marquee { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
-@keyframes sutra-logo-marquee-reverse { from { transform: translate3d(-50%,0,0); } to { transform: translate3d(0,0,0); } }
-[data-sutra-marquee][data-pause-on-hover="true"]:hover [data-sutra-marquee-track] { animation-play-state: paused !important; }
-@media (prefers-reduced-motion: reduce) { [data-sutra-marquee-track] { animation: none !important; } }
-`;
-
 const gridCols: Record<number, string> = {
   2: "grid-cols-2",
   3: "grid-cols-2 sm:grid-cols-3",
@@ -284,38 +278,11 @@ export const LogoCloud = React.forwardRef<HTMLDivElement, LogoCloudProps>(
           <p className="mb-6 text-center text-sm font-medium text-muted-foreground">{title}</p>
         ) : null}
         {marquee ? (
-          <div
-            data-sutra-marquee=""
-            data-pause-on-hover={pauseOnHover ? "true" : "false"}
-            className="relative flex overflow-hidden"
-            style={{
-              maskImage: "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)",
-              WebkitMaskImage: "linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)",
-            }}
-          >
-            <style>{MARQUEE_CSS}</style>
-            <div
-              data-sutra-marquee-track=""
-              className="flex w-max shrink-0 items-center"
-              style={{
-                animation: `${reverse ? "sutra-logo-marquee-reverse" : "sutra-logo-marquee"} ${duration}s linear infinite`,
-              }}
-            >
-              {[0, 1].map((copy) => (
-                <ul
-                  key={copy}
-                  aria-hidden={copy === 1 ? true : undefined}
-                  className="flex shrink-0 items-center gap-12 pr-12"
-                >
-                  {items.map(({ name, Logo }) => (
-                    <li key={name} className={itemClass}>
-                      <Logo size={logoSize} />
-                    </li>
-                  ))}
-                </ul>
-              ))}
-            </div>
-          </div>
+          <Marquee duration={duration} reverse={reverse} pauseOnHover={pauseOnHover} itemClassName={itemClass}>
+            {items.map(({ name, Logo }) => (
+              <Logo key={name} size={logoSize} />
+            ))}
+          </Marquee>
         ) : (
           <ul className={cn("grid items-center gap-x-8 gap-y-8", gridCols[columns])}>
             {items.map(({ name, Logo }) => (
