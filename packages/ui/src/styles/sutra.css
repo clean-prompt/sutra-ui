@@ -1002,6 +1002,20 @@
     block-size: var(--orb-size, 4rem);
     max-inline-size: 100%;
   }
+  /* The ink looks (canvas): the round ones are square boxes; the string is a 3:1 bar, square in its compact form. */
+  [data-slot="assistant-orb"]:is([data-variant="mala"], [data-variant="ink"], [data-variant="rings"], [data-variant="graph"], [data-variant="halftone"]) {
+    inline-size: var(--orb-size, 8rem);
+    max-inline-size: 100%;
+    aspect-ratio: 1;
+  }
+  [data-slot="assistant-orb"][data-variant="string"] {
+    inline-size: calc(var(--orb-size, 4rem) * 3);
+    block-size: var(--orb-size, 4rem);
+    max-inline-size: 100%;
+  }
+  [data-slot="assistant-orb"][data-variant="string"][data-form="square"] {
+    inline-size: var(--orb-size, 2rem);
+  }
   [data-slot="assistant-orb"] [data-part="canvas"] {
     position: absolute;
     inset: 0;

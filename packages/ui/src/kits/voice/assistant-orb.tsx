@@ -1,19 +1,34 @@
 import * as React from "react";
 import {
+  ORB_STRING_SQUARE_BELOW,
   assistantOrbLabels,
+  defaultOrbSize,
+  isOrbArtVariant,
   normalizeOrbState,
+  normalizeOrbVariant,
   orbParams,
   resolveOrbState,
   type AssistantOrbFlags,
   type AssistantOrbState,
+  type AssistantOrbVariant,
+  type OrbArtVariant,
 } from "../../lib/orb";
 import { useDirection } from "../../hooks/use-direction";
 import { usePrefersReducedMotion } from "../../hooks/use-media-query";
 import { useMergedRefs } from "../../hooks/use-merged-refs";
+import { useOrbArtCanvas } from "./assistant-orb-art-internal";
 import { useWaveformCanvas } from "./assistant-orb-canvas-internal";
 import { useOrbLevel, useOrbVisible } from "./assistant-orb-internal";
 
-export { assistantOrbStates, assistantOrbLabels, type AssistantOrbFlags, type AssistantOrbState } from "../../lib/orb";
+export {
+  assistantOrbStates,
+  assistantOrbLabels,
+  assistantOrbVariants,
+  assistantOrbVariantLabels,
+  type AssistantOrbFlags,
+  type AssistantOrbState,
+  type AssistantOrbVariant,
+} from "../../lib/orb";
 
 /** Props of `AssistantOrb`. */
 export interface AssistantOrbProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
@@ -30,12 +45,20 @@ export interface AssistantOrbProps extends Omit<React.HTMLAttributes<HTMLDivElem
    * States that do not follow the level (idle, error, muted) ignore it. Default 0.
    */
   level?: number;
-  /** `orb` is a radial glass orb of blurred colour layers; `waveform` is a canvas of layered sine waves. Default "orb". */
-  variant?: "orb" | "waveform";
   /**
-   * Size in px (a number) or any CSS length. For the orb it is the width and height. For the waveform it is the height; the
-   * width is three times that, and `className="w-full"` stretches it (the canvas follows its box). Default 128 (orb) or 64
-   * (waveform).
+   * The look. `orb` is a radial glass orb of blurred colour layers; `waveform` is a canvas of layered sine waves. The ink
+   * looks are drawn on a canvas in flat ink (one ink in the paper style, the primary and chart hues in colour): `mala`
+   * (beads on a closed thread, the Sutra bead at the top), `string` (the Sutra bead on a vibrating thread: a 3:1 bar, the
+   * square logo below 48 px), `ink` (a drop of ink), `rings` (thick thread loops), `graph` (dots on a turning sphere
+   * joined around a hub) and `halftone` (a sphere of whole dots around a centre dot). `assistantOrbVariants` lists them in
+   * picker order and `assistantOrbVariantLabels` names them. Default "orb".
+   */
+  variant?: AssistantOrbVariant;
+  /**
+   * Size in px (a number) or any CSS length. For the round looks (orb, mala, ink, rings, graph, halftone) it is the width and
+   * height. For the bars (waveform, string) it is the height; the width is three times that, and `className="w-full"`
+   * stretches it (the canvas follows its box). A numeric size under 48 gives `string` a square box, drawn as the compact
+   * form (the logo); any `string` box under 1.8:1 draws that form. Default 128 (round looks) or 64 (bars).
    */
   size?: number | string;
   /**
@@ -143,13 +166,49 @@ const WaveformView = React.forwardRef<HTMLDivElement, AssistantOrbProps>(
 );
 WaveformView.displayName = "WaveformView";
 
-/**
- * The voice assistant's face: a radial glass orb or a layered waveform that shows what the assistant is doing (idle, listening,
- * thinking, speaking) and follows a live `level`. Colours come from the theme (primary and chart hues, ink in the paper style).
- */
-export const AssistantOrb = React.forwardRef<HTMLDivElement, AssistantOrbProps>(({ variant = "orb", ...props }, ref) =>
-  variant === "waveform" ? <WaveformView ref={ref} {...props} /> : <OrbView ref={ref} {...props} />
+const ArtView = React.forwardRef<HTMLDivElement, Omit<AssistantOrbProps, "variant"> & { variant: OrbArtVariant }>(
+  ({ variant, state: stateProp, level, size, label, paused = false, className, style, ...props }, ref) => {
+    const state = normalizeOrbState(stateProp);
+    const rootRef = React.useRef<HTMLDivElement>(null);
+    const canvasRef = React.useRef<HTMLCanvasElement>(null);
+    const setRef = useMergedRefs<HTMLDivElement>(ref, rootRef);
+    const reduced = usePrefersReducedMotion();
+    const rtl = useDirection(rootRef) === "rtl";
+    const visible = useOrbVisible(rootRef);
+    useOrbArtCanvas(rootRef, canvasRef, { variant, state, level, paused, reduced, rtl, visible });
+    const box = size ?? defaultOrbSize(variant);
+    const form = variant === "string" ? (typeof box === "number" && box < ORB_STRING_SQUARE_BELOW ? "square" : "bar") : undefined;
+    return (
+      <div
+        data-slot="assistant-orb"
+        data-variant={variant}
+        data-form={form}
+        {...rootAria(label ?? assistantOrbLabels[state])}
+        data-paused={paused ? "" : undefined}
+        {...props}
+        ref={setRef}
+        data-state={state}
+        className={className}
+        style={orbStyle(state, box, style)}
+      >
+        <canvas ref={canvasRef} data-part="canvas" aria-hidden="true" />
+      </div>
+    );
+  }
 );
+ArtView.displayName = "OrbArtView";
+
+/**
+ * The voice assistant's face: one of several looks (`variant`: a glass orb, a waveform, or an ink look such as the Sutra
+ * string or the mala) that shows what the assistant is doing (idle, listening, thinking, speaking, error, muted) and follows
+ * a live `level`. Colours come from the theme (primary and chart hues, one ink in the paper style).
+ */
+export const AssistantOrb = React.forwardRef<HTMLDivElement, AssistantOrbProps>(({ variant: variantProp, ...props }, ref) => {
+  const variant = normalizeOrbVariant(variantProp);
+  if (variant === "waveform") return <WaveformView ref={ref} {...props} />;
+  if (isOrbArtVariant(variant)) return <ArtView ref={ref} variant={variant} {...props} />;
+  return <OrbView ref={ref} {...props} />;
+});
 AssistantOrb.displayName = "AssistantOrb";
 
 /**

@@ -467,6 +467,7 @@ export * from "./kits/system/volume-mixer";
 // not exported: kits/terminal/terminal (imports optional peer @xterm/xterm)
 
 /* Kit: voice (src/kits/voice) */
+// not exported: kits/voice/assistant-orb-art-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/voice/assistant-orb-canvas-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/voice/assistant-orb-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/voice/assistant-orb";

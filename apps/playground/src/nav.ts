@@ -804,6 +804,8 @@ export const nav: NavSection[] = [
           { id: "speak-button", label: "Speak Button" },
           { id: "audio-level", label: "Audio Level" },
           { id: "assistant-orb", label: "Assistant Orb", ...fresh },
+          { id: "assistant-orb-picker", label: "Choose your orb", ...fresh },
+          { id: "assistant-orb-looks", label: "Orb looks", ...fresh },
         ],
       },
     ],

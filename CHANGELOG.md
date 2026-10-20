@@ -77,6 +77,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 #### Picks of the October design review
 - `SutraMascot` `character`: eight characters (`bead`, `pendant`, `mala`, `bindu`, `knot-pendant`, `bow`, `bun`, `sutradhar`) with every state and shape,
   `mascotCharacters` and `mascotCharacterLabels` for a picker; `SutradharSting` (`mark`, `astra`) for the brand moments.
+- `AssistantOrb` looks: `mala`, `string`, `ink`, `rings`, `graph` and `halftone` next to `orb` and `waveform`; `assistantOrbVariants` and `assistantOrbVariantLabels`.
 - `intro` on `SutraMark` and `SutraLogo`.
 
 #### Small fixes from the open-items review

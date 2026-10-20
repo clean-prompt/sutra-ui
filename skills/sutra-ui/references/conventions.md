@@ -1,4 +1,4 @@
-<!-- conventions-hash: ca70ecb23fb8 -->
+<!-- conventions-hash: c0e52dc2d5df -->
 # Sutra UI conventions digest
 
 A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or extend the library. When the two disagree, CONVENTIONS.md wins; re-read it when the hash above no longer matches (`node packages/ui/scripts/gen-llms.mjs --update-conventions-hash` records the new one after you update this file).

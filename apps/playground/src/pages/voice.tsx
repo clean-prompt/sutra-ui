@@ -17,7 +17,16 @@ import {
   type ConversationTurn,
 } from "@sutra/ui";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
-import { AssistantBarDemo, AssistantOrbDemo, AssistantOrbMicDemo, AssistantOrbSizesDemo, AssistantOrbThemesDemo } from "./voice-orb-demos";
+import {
+  AssistantBarDemo,
+  AssistantOrbDemo,
+  AssistantOrbLookSizesDemo,
+  AssistantOrbLooksDemo,
+  AssistantOrbMicDemo,
+  AssistantOrbPickerDemo,
+  AssistantOrbSizesDemo,
+  AssistantOrbThemesDemo,
+} from "./voice-orb-demos";
 
 /** Anchor ids of the demos on this page. */
 export const voiceAnchors = [
@@ -47,7 +56,10 @@ export function VoicePage() {
       <VoiceInputDemo />
       <SpeakButtonDemo />
       <AudioLevelDemo />
+      <AssistantOrbPickerDemo />
       <AssistantOrbDemo />
+      <AssistantOrbLooksDemo />
+      <AssistantOrbLookSizesDemo />
       <AssistantOrbSizesDemo />
       <AssistantOrbMicDemo />
       <AssistantOrbThemesDemo />

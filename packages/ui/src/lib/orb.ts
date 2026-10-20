@@ -215,3 +215,56 @@ export function waveY(x: number, t: number, layer: WaveLayer, amplitude: number,
   const wave = 0.82 * Math.sin(angle) + 0.18 * Math.sin(angle * 0.5 + layer.phase * 1.3 + time * 0.3);
   return clamp(amplitude, 0, 1) * layer.amplitude * envelope * focus * wave;
 }
+
+/* ------------------------------------------------------------------ */
+/* Variants                                                            */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The looks of the orb, in picker order. `orb` is the glass orb (CSS) and `waveform` the layered sine waves; the rest are
+ * ink looks drawn on a canvas: `mala` (beads on a closed thread with the Sutra bead at the top), `string` (the Sutra bead
+ * on a vibrating thread: a 3:1 bar, a square at small sizes), `ink` (a drop of ink), `rings` (thick thread loops), `graph`
+ * (dots on a turning sphere joined by a sparse graph around a hub) and `halftone` (a sphere of whole dots around a centre dot).
+ */
+export const assistantOrbVariants = ["orb", "waveform", "mala", "string", "ink", "rings", "graph", "halftone"] as const;
+
+/** One of `assistantOrbVariants`. */
+export type AssistantOrbVariant = (typeof assistantOrbVariants)[number];
+
+/** The variants drawn on a canvas by the ink renderer (everything but `orb` and `waveform`). */
+export type OrbArtVariant = Exclude<AssistantOrbVariant, "orb" | "waveform">;
+
+/** Names for a style picker, one per variant. */
+export const assistantOrbVariantLabels: Record<AssistantOrbVariant, string> = {
+  orb: "Glass orb",
+  waveform: "Waveform",
+  mala: "Mala ring",
+  string: "Sutra string",
+  ink: "Ink drop",
+  rings: "Thread rings",
+  graph: "Dot graph",
+  halftone: "Halftone",
+};
+
+/** Anything that is not a known variant reads as `orb`. */
+export function normalizeOrbVariant(variant: unknown): AssistantOrbVariant {
+  return (assistantOrbVariants as readonly unknown[]).includes(variant) ? (variant as AssistantOrbVariant) : "orb";
+}
+
+/** Whether a variant is drawn on a canvas by the ink renderer. */
+export function isOrbArtVariant(variant: AssistantOrbVariant): variant is OrbArtVariant {
+  return variant !== "orb" && variant !== "waveform";
+}
+
+/** Default `size` of a variant in px: the box of the round looks (128), the height of the bars (`waveform`, `string`: 64). */
+export function defaultOrbSize(variant: AssistantOrbVariant): number {
+  return variant === "waveform" || variant === "string" ? 64 : 128;
+}
+
+/** A numeric `size` below this many px gives the `string` variant a square box, drawn as the compact form (the logo). */
+export const ORB_STRING_SQUARE_BELOW = 48;
+
+/** The form the `string` variant draws in a box: a bar when the box is at least 1.8 times as wide as it is tall, else the square. */
+export function orbStringForm(width: number, height: number): "bar" | "square" {
+  return height > 0 && width / height >= 1.8 ? "bar" : "square";
+}

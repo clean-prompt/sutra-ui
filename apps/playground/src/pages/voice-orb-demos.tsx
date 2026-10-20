@@ -2,17 +2,22 @@ import * as React from "react";
 import {
   AssistantOrb,
   Button,
+  RadioCard,
+  RadioGroup,
   SegmentedControl,
   Slider,
   Switch,
   assistantOrbLabels,
   assistantOrbStates,
+  assistantOrbVariantLabels,
+  assistantOrbVariants,
   cn,
   useAssistantOrbState,
   useAudioLevel,
   type AssistantOrbState,
+  type AssistantOrbVariant,
 } from "@sutra/ui";
-import { RiMicLine, RiMicOffLine, RiStopFill } from "@sutra/ui/icons";
+import { RiArrowUpLine, RiMicLine, RiMicOffLine, RiStopFill } from "@sutra/ui/icons";
 import { Demo, DemoLabel } from "../components/demo";
 
 const FOUR = ["idle", "listening", "thinking", "speaking"] as const satisfies readonly AssistantOrbState[];
@@ -416,6 +421,246 @@ export function AssistantBarDemo() {
           </Button>
         </div>
         <AssistantOrb variant="waveform" state={state} level={level} size={28} label="" className="mt-2 w-full" />
+      </div>
+    </Demo>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Choose your orb: every look as a user setting                       */
+/* ------------------------------------------------------------------ */
+
+/** A look in a small slot: the round looks at `size`, the bars (waveform, string) as a short 3:1 bar of the same width. */
+function OrbSwatch({ variant, state, level, size }: { variant: AssistantOrbVariant; state: AssistantOrbState; level: number; size: number }) {
+  if (variant === "waveform" || variant === "string") {
+    return <AssistantOrb variant={variant} state={state} level={level} size={Math.round(size * 0.55)} style={{ width: Math.round(size * 1.65) }} label="" />;
+  }
+  return <AssistantOrb variant={variant} state={state} level={level} size={size} label="" />;
+}
+
+const voiceCopy: Record<AssistantOrbState, { bar: string; line: string }> = {
+  idle: { bar: "Ask Sutra anything", line: "Start talking, or tap to type." },
+  listening: { bar: "Listening…", line: "“Move my three o’clock with Asha to tomorrow”" },
+  thinking: { bar: "Thinking…", line: "Looking at both calendars" },
+  speaking: { bar: "Speaking…", line: "Ten tomorrow works for both of you." },
+  error: { bar: "Could not reach Sutra", line: "Check the network, then try again." },
+  muted: { bar: "Microphone is off", line: "Unmute to keep talking." },
+};
+
+/** A voice mode card and a composer bar with the chosen look: 160 px (the string as a bar) and 28 px inline. */
+function VoicePreview({ variant, state, level }: { variant: AssistantOrbVariant; state: AssistantOrbState; level: number }) {
+  const bar = variant === "waveform" || variant === "string";
+  return (
+    <div className="space-y-3">
+      <div className="grid justify-items-center gap-3 rounded-box border border-border bg-card px-4 py-5 text-center text-card-foreground">
+        <div className="grid h-44 w-full place-items-center">
+          {bar ? (
+            <AssistantOrb variant={variant} state={state} level={level} size={72} className="max-w-full" label="" />
+          ) : (
+            <AssistantOrb variant={variant} state={state} level={level} size={160} label="" />
+          )}
+        </div>
+        <p className="text-sm font-semibold">{captions[state]}</p>
+        <p className="min-h-10 max-w-[30ch] text-sm text-muted-foreground">{voiceCopy[state].line}</p>
+        <div className="flex items-center gap-2">
+          <Button size="icon-sm" variant="outline" aria-label={state === "muted" ? "Unmute" : "Mute"}>
+            {state === "muted" ? <RiMicOffLine /> : <RiMicLine />}
+          </Button>
+          <Button size="sm" variant="secondary" leadingIcon={<RiStopFill />}>
+            Stop
+          </Button>
+        </div>
+      </div>
+      <div className="flex min-h-12 items-center gap-3 rounded-full border border-border bg-card ps-3 pe-1.5 text-card-foreground">
+        <AssistantOrb variant={variant === "waveform" ? "orb" : variant} state={state} level={level} size={28} label="" />
+        <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground" role="status">
+          {voiceCopy[state].bar}
+        </span>
+        <Button size="icon-sm" aria-label="Send" className="rounded-full">
+          <RiArrowUpLine />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+const looks = [
+  { id: "stock", label: "Colour" },
+  { id: "paper", label: "Paper" },
+] as const;
+
+export function AssistantOrbPickerDemo() {
+  const [variant, setVariant] = React.useState<AssistantOrbVariant>("string");
+  const [state, setState] = React.useState<AssistantOrbState>("listening");
+  const level = useFakeLevel(state);
+  const swatchLevel = useFakeLevel("listening");
+  return (
+    <Demo
+      id="assistant-orb-picker"
+      title="Choose your orb"
+      description="Every look as a user setting. Pick one and the voice card and the composer switch to it; the arrow keys move through the styles. Every look takes the same props (state, level, size, label, paused). The waveform shows as the glass orb in the 28 px composer."
+      align="start"
+      canvasClassName="@container space-y-6"
+    >
+      <RadioGroup
+        aria-label="Orb style"
+        orientation="horizontal"
+        value={variant}
+        onValueChange={(v) => setVariant(v as AssistantOrbVariant)}
+        className="grid grid-cols-2 gap-3 @xl:grid-cols-4"
+      >
+        {assistantOrbVariants.map((v) => (
+          <RadioCard
+            key={v}
+            value={v}
+            className="p-3"
+            label={
+              <span className="grid justify-items-center gap-2 text-center">
+                <span className="grid h-14 place-items-center" aria-hidden="true">
+                  <OrbSwatch variant={v} state="listening" level={swatchLevel} size={48} />
+                </span>
+                {assistantOrbVariantLabels[v]}
+              </span>
+            }
+          />
+        ))}
+      </RadioGroup>
+      <SegmentedControl
+        size="sm"
+        aria-label="State"
+        value={state}
+        onValueChange={(v) => setState(v as AssistantOrbState)}
+        options={assistantOrbStates.map((x) => ({ value: x, label: captions[x] }))}
+      />
+      <div className="grid grid-cols-1 gap-4 @container lg:grid-cols-2">
+        {looks.map((look) => (
+          <div
+            key={look.id}
+            data-style={look.id === "paper" ? "paper" : undefined}
+            className="min-w-0 space-y-3 rounded-box border border-border bg-background p-4 text-foreground"
+          >
+            <DemoLabel>{look.label}</DemoLabel>
+            <VoicePreview variant={variant} state={state} level={level} />
+          </div>
+        ))}
+      </div>
+    </Demo>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Every look in every state                                           */
+/* ------------------------------------------------------------------ */
+
+export function AssistantOrbLooksDemo() {
+  const [look, setLook] = React.useState<"stock" | "paper">("paper");
+  const listening = useFakeLevel("listening");
+  const speaking = useFakeLevel("speaking");
+  return (
+    <Demo
+      id="assistant-orb-looks"
+      title="Every look in every state"
+      description="Each state has its own shape in every look, so it reads without motion and at a glance: compare a row. Error and muted are still poses. The level plays along for listening and speaking."
+      align="start"
+      canvasClassName="space-y-4"
+    >
+      <SegmentedControl
+        size="sm"
+        aria-label="Look"
+        value={look}
+        onValueChange={(v) => setLook(v as "stock" | "paper")}
+        options={looks.map((l) => ({ value: l.id, label: l.label }))}
+      />
+      <div data-style={look === "paper" ? "paper" : undefined} className="overflow-x-auto rounded-box border border-border bg-background p-4 text-foreground">
+        <table className="w-full min-w-[640px] border-collapse text-xs">
+          <thead>
+            <tr>
+              <th scope="col" className="pb-3 text-start font-medium text-muted-foreground">
+                Look
+              </th>
+              {assistantOrbStates.map((x) => (
+                <th key={x} scope="col" className="pb-3 font-medium text-muted-foreground">
+                  {captions[x]}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {assistantOrbVariants.map((v) => (
+              <tr key={v} className="border-t border-border">
+                <th scope="row" className="py-3 pe-3 text-start font-medium">
+                  {assistantOrbVariantLabels[v]}
+                </th>
+                {assistantOrbStates.map((x) => (
+                  <td key={x} className="py-3 text-center">
+                    <span className="inline-grid h-16 place-items-center">
+                      <OrbSwatch variant={v} state={x} level={x === "listening" ? listening : x === "speaking" ? speaking : 0} size={56} />
+                    </span>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Demo>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Sizes 32 to 240, paper and colour                                   */
+/* ------------------------------------------------------------------ */
+
+const LOOK_SIZES = [32, 48, 64, 96, 160, 240] as const;
+/** The bars take their height as the size (three times as wide), so they stop at 96. */
+const BAR_SIZES = [24, 32, 48, 64, 96] as const;
+
+export function AssistantOrbLookSizesDemo() {
+  const [variant, setVariant] = React.useState<AssistantOrbVariant>("string");
+  const [state, setState] = React.useState<AssistantOrbState>("listening");
+  const level = useFakeLevel(state);
+  return (
+    <Demo
+      id="assistant-orb-look-sizes"
+      title="Every look from 32 to 240 px"
+      description="The ink looks keep their state shapes at 32 px: the mala drops to eight larger beads, the rings to two loops, the halftone to a coarse screen, and the string turns into the square logo below 48 px. The bars (waveform, string) take the size as their height, so they stop at 96."
+      align="start"
+      canvasClassName="space-y-4"
+    >
+      <div className="flex flex-wrap items-center gap-3">
+        <SegmentedControl
+          size="sm"
+          aria-label="Look"
+          value={variant}
+          onValueChange={(v) => setVariant(v as AssistantOrbVariant)}
+          options={assistantOrbVariants.map((v) => ({ value: v, label: assistantOrbVariantLabels[v] }))}
+        />
+        <SegmentedControl
+          size="sm"
+          aria-label="State"
+          value={state}
+          onValueChange={(v) => setState(v as AssistantOrbState)}
+          options={assistantOrbStates.map((x) => ({ value: x, label: captions[x] }))}
+        />
+      </div>
+      <div className="grid grid-cols-1 gap-4">
+        {looks.map((look) => (
+          <div
+            key={look.id}
+            data-style={look.id === "paper" ? "paper" : undefined}
+            className="min-w-0 space-y-3 overflow-x-auto rounded-box border border-border bg-background p-4 text-foreground"
+          >
+            <DemoLabel>{look.label}</DemoLabel>
+            <div className="flex items-end gap-6">
+              {(variant === "waveform" || variant === "string" ? BAR_SIZES : LOOK_SIZES).map((size) => (
+                <figure key={size} className="m-0 grid shrink-0 justify-items-center gap-2">
+                  <AssistantOrb variant={variant} state={state} level={level} size={size} />
+                  <figcaption className="font-mono text-xs text-muted-foreground">{size}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </Demo>
   );
