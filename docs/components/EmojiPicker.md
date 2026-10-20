@@ -66,7 +66,7 @@ Server render: same markup as the client. The markup is the same on the server a
 ### Gotchas
 
 - Every emoji sits in `span[data-slot="emoji"]` (see `EmojiGlyph`) with `data-part="glyph"` and, for emoji with art, `data-part="ink"`: style those, not the text. Ink follows the style: in `[data-style="paper"]` everything is ink, elsewhere colour. `ink` on the pill, the bar or the picker forces it (`true`) or keeps colour in the paper style (`false`), the same as `FileFormatIcon mono`.
-- An emoji with hand-drawn art (`hasInkEmoji`: the eight presets and twelve more) shows the drawing in the ink; any other emoji (a fox, a pizza) shows the colour glyph filtered to one ink, so fine detail goes soft at small sizes. Ink on a black background is inverted to light, so set `data-style` on `<html>` for portaled popovers.
+- An emoji with hand-drawn art (`hasInkEmoji`: every emoji of the built-in picker set) shows the drawing in the ink; any emoji outside the set (a dinosaur, a flag) shows the colour glyph filtered to one ink, so fine detail goes soft at small sizes. Ink on a black background is inverted to light, so set `data-style` on `<html>` for portaled popovers.
 - The glyph is wrapped in a `span` (`inline-block`, `leading-none`, the size class), so a test that looked for the emoji as a bare text node of the button should look in the glyph part. Text-only searches such as `getByText("👍")` still work.
 - Reaction state is controlled with `reacted` or uncontrolled with `defaultReacted`; the bar owns the counts, and a count that falls to 0 removes the pill.
 

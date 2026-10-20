@@ -722,7 +722,7 @@ One line per component family (parts such as `DialogContent` live in the family'
 - `GridBeams` (assets): A faint grid with light beams traveling along its lines. Content renders above it.
 - `HalcyonLogo` (assets): Halcyon — fictional placeholder logo.
 - `Icon` (assets): Sized, toned wrapper around any icon component.
-- `InkEmoji` (assets): An original hand-drawn monoline version of a common emoji, drawn in `currentColor`;…
+- `InkEmoji` (assets): An original hand-drawn monoline version of an emoji of the built-in set, drawn in…
 - `KiteLogo` (assets): Kite — fictional placeholder logo.
 - `LogoCloud` (assets): A grid or marquee row of company logos.
 - `LumenLogo` (assets): Lumen — fictional placeholder logo.

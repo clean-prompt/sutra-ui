@@ -16,7 +16,7 @@
 
 ## Notes
 
-**When to use:** Twenty original hand-drawn monoline emoji (the common reactions) as an svg in currentColor, readable at 16px, plus EmojiGlyph, the wrapper that makes any emoji read as ink on paper in the paper style.
+**When to use:** Original hand-drawn monoline art for every emoji of the built-in picker set (198 across smileys, people, nature, food, activities, travel, objects and symbols) as an svg in currentColor, readable at 16px, plus EmojiGlyph, the wrapper that makes any emoji read as ink on paper in the paper style.
 
 **Use instead when:**
 - `EmojiReaction`: a reaction pill with a count

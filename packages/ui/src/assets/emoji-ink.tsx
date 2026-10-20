@@ -68,7 +68,7 @@ export interface InkEmojiProps extends Omit<React.SVGAttributes<SVGSVGElement>, 
   fallback?: boolean;
 }
 
-/** An original hand-drawn monoline version of a common emoji, drawn in `currentColor`; renders nothing for an emoji without art unless `fallback` is set. */
+/** An original hand-drawn monoline version of an emoji of the built-in set, drawn in `currentColor`; renders nothing for an emoji without art unless `fallback` is set. */
 export const InkEmoji = React.forwardRef<SVGSVGElement, InkEmojiProps>(
   ({ emoji, size = "1em", title, fallback = false, className, style, ...props }, ref) => {
     const art = hasInkEmoji(emoji) ? inkArt[normalizeEmoji(emoji)] : undefined;

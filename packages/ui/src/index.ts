@@ -67,7 +67,16 @@ export * from "./lib/validate";
 export * from "./lib/wheel";
 
 /* Assets: src/assets */
+// not exported: assets/emoji-ink-activities-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-food-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-nature-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-objects-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-parts-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-people-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-smileys-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-symbols-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-travel-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/mascot-art-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/misc (back-compat barrel, all targets exported)
 export * from "./assets/backgrounds";

@@ -11,7 +11,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { EmojiGlyph, InkEmoji, hasInkEmoji, inkEmojiNames, inkEmojiSet } from "../src/assets/emoji-ink";
-import { EmojiPicker, EmojiReaction, EmojiReactionBar, reactionPresets } from "../src/assets/emoji-reactions";
+import { EmojiPicker, EmojiReaction, EmojiReactionBar, emojiCategories, reactionPresets } from "../src/assets/emoji-reactions";
 import { DirectionProvider } from "../src/primitives/direction-provider";
 import { CommentThread } from "../src/patterns/comments";
 import { axeViolations } from "./a11y";
@@ -21,8 +21,11 @@ const section = css.slice(css.indexOf("Emoji (assets/emoji-reactions): ink on pa
 const strip = (emoji: string) => emoji.replace(/[︎️]/g, "");
 
 describe("InkEmoji art", () => {
-  it("covers the eight reaction presets and twelve more", () => {
-    expect(inkEmojiSet).toHaveLength(20);
+  it("covers the eight reaction presets, twelve more and every emoji of the built-in picker set", () => {
+    const picker = emojiCategories.flatMap((category) => category.emojis.map((entry) => entry.emoji));
+    expect(picker.length).toBeGreaterThan(190);
+    for (const emoji of picker) expect(hasInkEmoji(emoji), `${emoji} has no ink art`).toBe(true);
+    expect(inkEmojiSet.length).toBeGreaterThanOrEqual(picker.length);
     for (const preset of reactionPresets) expect(inkEmojiSet.map(strip)).toContain(strip(preset));
     for (const emoji of ["🙏", "👏", "😍", "🤔", "✅", "🚀", "💯", "👎", "😡", "⭐", "💡", "✨"]) expect(hasInkEmoji(emoji)).toBe(true);
     expect(new Set(inkEmojiSet.map(strip)).size).toBe(inkEmojiSet.length);
@@ -33,7 +36,7 @@ describe("InkEmoji art", () => {
     expect(hasInkEmoji("❤")).toBe(true);
     expect(hasInkEmoji("❤️")).toBe(true);
     expect(hasInkEmoji("⭐️")).toBe(true);
-    expect(hasInkEmoji("🦊")).toBe(false);
+    expect(hasInkEmoji("🦖")).toBe(false); // outside the built-in set
     expect(hasInkEmoji("")).toBe(false);
     expect(hasInkEmoji("toString")).toBe(false);
   });
@@ -80,18 +83,18 @@ describe("InkEmoji art", () => {
   });
 
   it("renders nothing for an emoji without art unless fallback is set, then the glyph as ink text", () => {
-    const { container, rerender } = render(<InkEmoji emoji="🦊" />);
+    const { container, rerender } = render(<InkEmoji emoji="🦖" />);
     expect(container).toBeEmptyDOMElement();
-    rerender(<InkEmoji emoji="🦊" fallback size={20} />);
+    rerender(<InkEmoji emoji="🦖" fallback size={20} />);
     const wrapper = container.querySelector('[data-slot="emoji"]')!;
     expect(wrapper).toHaveAttribute("data-ink", "true");
     expect(wrapper).toHaveAttribute("aria-hidden", "true");
-    expect(wrapper).toHaveTextContent("🦊");
-    expect(wrapper.querySelector('[data-part="glyph"]')).toHaveTextContent("🦊");
+    expect(wrapper).toHaveTextContent("🦖");
+    expect(wrapper.querySelector('[data-part="glyph"]')).toHaveTextContent("🦖");
     expect((wrapper as HTMLElement).style.fontSize).toBe("20px");
     expect(container.querySelector("svg")).not.toBeInTheDocument();
-    rerender(<InkEmoji emoji="🦊" fallback title="Fox" />);
-    expect(screen.getByRole("img", { name: "Fox" })).toBeInTheDocument();
+    rerender(<InkEmoji emoji="🦖" fallback title="Dinosaur" />);
+    expect(screen.getByRole("img", { name: "Dinosaur" })).toBeInTheDocument();
     rerender(<InkEmoji emoji="👍" fallback />);
     expect(container.querySelector("svg")).toBeInTheDocument();
     expect(container.querySelector('[data-slot="emoji"]')).not.toBeInTheDocument();
@@ -108,13 +111,13 @@ describe("InkEmoji art", () => {
 
 describe("EmojiGlyph", () => {
   it("wraps the character in a glyph part and keeps it as text", () => {
-    const { container } = render(<EmojiGlyph emoji="🦊" />);
+    const { container } = render(<EmojiGlyph emoji="🦖" />);
     const wrapper = container.querySelector('[data-slot="emoji"]')!;
     expect(wrapper).not.toHaveAttribute("data-ink");
     expect(wrapper).not.toHaveAttribute("data-art");
-    expect(wrapper.querySelector('[data-part="glyph"]')).toHaveTextContent("🦊");
+    expect(wrapper.querySelector('[data-part="glyph"]')).toHaveTextContent("🦖");
     expect(wrapper.querySelector('[data-part="ink"]')).not.toBeInTheDocument();
-    expect(wrapper.textContent).toBe("🦊");
+    expect(wrapper.textContent).toBe("🦖");
   });
 
   it("adds the hand-drawn art as an aria-hidden svg part when there is one, and the text stays the same", () => {
@@ -139,7 +142,7 @@ describe("EmojiGlyph", () => {
   it("defines the SVG filter once per document, however many glyphs there are", () => {
     render(
       <div>
-        <EmojiGlyph emoji="🦊" />
+        <EmojiGlyph emoji="🦖" />
         <EmojiGlyph emoji="🐼" />
         <EmojiGlyph emoji="👍" ink />
       </div>
@@ -163,7 +166,7 @@ describe("EmojiReaction and the picker use the glyph parts", () => {
     expect(wrapper.querySelector('[data-part="glyph"]')).toHaveTextContent("👍");
     expect(button.textContent).toBe("👍2");
 
-    rerender(<EmojiReaction emoji="🦊" count={1} ink={false} size="sm" />);
+    rerender(<EmojiReaction emoji="🦖" count={1} ink={false} size="sm" />);
     const fox = container.querySelector('[data-slot="emoji"]')!;
     expect(fox).toHaveAttribute("data-ink", "false");
     expect(fox).not.toHaveAttribute("data-art");
@@ -252,9 +255,9 @@ describe("EmojiReaction and the picker use the glyph parts", () => {
     const { container } = render(
       <DirectionProvider dir="rtl">
         <div dir="rtl">
-          <EmojiReactionBar defaultReactions={[{ emoji: "👍", count: 3, reacted: true }, { emoji: "🦊", count: 1 }]} />
+          <EmojiReactionBar defaultReactions={[{ emoji: "👍", count: 3, reacted: true }, { emoji: "🦖", count: 1 }]} />
           <InkEmoji emoji="🚀" title="Rocket" />
-          <InkEmoji emoji="🦊" fallback />
+          <InkEmoji emoji="🦖" fallback />
           <EmojiGlyph emoji="💯" ink />
           <EmojiPicker />
         </div>

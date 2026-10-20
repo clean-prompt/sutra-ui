@@ -2,7 +2,7 @@
 component: InkEmoji
 module: assets/emoji-ink
 covers: EmojiGlyph
-use: Twenty original hand-drawn monoline emoji (the common reactions) as an svg in currentColor, readable at 16px, plus EmojiGlyph, the wrapper that makes any emoji read as ink on paper in the paper style.
+use: Original hand-drawn monoline art for every emoji of the built-in picker set (198 across smileys, people, nature, food, activities, travel, objects and symbols) as an svg in currentColor, readable at 16px, plus EmojiGlyph, the wrapper that makes any emoji read as ink on paper in the paper style.
 instead: EmojiReaction = a reaction pill with a count; Icon = a user interface icon, not a character; FileFormatIcon = a document icon; SutraMascot = a character with states, not an emoji
 server: ssr-safe
 ---

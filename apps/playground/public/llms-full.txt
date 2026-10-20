@@ -10182,7 +10182,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `HeroHeader` (`@sutra/ui/blocks`): Marketing hero: eyebrow pill, display heading, subtext, CTAs on a mesh gradient.
 - `Icon` (`@sutra/ui/assets`): Sized, toned wrapper around any icon component.
 - `IncomingCall` (`@sutra/ui/social`): Ringing incoming call card with pulsing avatar rings and Accept / Decline / Message actions.
-- `InkEmoji` (`@sutra/ui/assets`): An original hand-drawn monoline version of a common emoji, drawn in `currentColor`; renders nothing for an emoji without art unless…
+- `InkEmoji` (`@sutra/ui/assets`): An original hand-drawn monoline version of an emoji of the built-in set, drawn in `currentColor`; renders nothing for an emoji without art…
 - `InstallButton` (`@sutra/ui/social`): Install-the-app button. Hidden when not installable or already installed; shows Add to Home Screen steps on iOS.
 - `InstalledExtensionCard` (`@sutra/ui/agent-admin`): Installed plugin row: source, version, runtime status, auth, enable / update (consent) / open / hide / remove, slots and setup.
 - `InstallSnippet` (`@sutra/ui/blocks`): Tabbed install commands per platform or package manager, each copyable.

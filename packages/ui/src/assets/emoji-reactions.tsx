@@ -177,7 +177,7 @@ export interface EmojiReactionProps
   size?: "sm" | "md";
   /**
    * Draw the emoji as ink: `true` in every style, `false` keeps the colour glyph in the paper style; unset follows the style
-   * (ink in the paper style). Common reactions use the hand-drawn `InkEmoji` art, any other emoji is filtered to one ink.
+   * (ink in the paper style). Every emoji of the built-in set uses the hand-drawn `InkEmoji` art, any emoji outside it is filtered to one ink.
    */
   ink?: boolean;
 }

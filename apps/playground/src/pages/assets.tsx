@@ -5,6 +5,7 @@ import {
   CountryFlag,
   DeviceFrame,
   EmojiPicker,
+  emojiCategories,
   EmojiReactionBar,
   EmptyStateIllustration,
   FeaturedIcon,
@@ -568,7 +569,7 @@ function EmojiReactionsDemo() {
             ink
             defaultReactions={[
               { emoji: "👍", count: 4, reacted: true },
-              { emoji: "🦊", count: 2 },
+              { emoji: "🦖", count: 2 },
               { emoji: "🔥", count: 7 },
             ]}
           />
@@ -577,14 +578,13 @@ function EmojiReactionsDemo() {
             ink={false}
             defaultReactions={[
               { emoji: "👍", count: 4, reacted: true },
-              { emoji: "🦊", count: 2 },
+              { emoji: "🦖", count: 2 },
               { emoji: "🔥", count: 7 },
             ]}
           />
         </div>
         <p className="max-w-2xl text-xs text-muted-foreground">
-          ink forces the ink version in any style (left), ink={"{false}"} keeps the colour glyphs in the paper style (right). Emoji with hand-drawn
-          art (below) show the drawing, any other emoji (the fox) is filtered to one ink.
+          ink forces the ink version in any style (left), ink={"{false}"} keeps the colour glyphs in the paper style (right). Every emoji of the built-in set has hand-drawn          art and shows the drawing (see Ink emoji below); any emoji outside the set (the dinosaur) is filtered to one ink.
         </p>
       </div>
 
@@ -621,38 +621,47 @@ function EmojiReactionsDemo() {
 /* ------------------------------------------------------------------ */
 
 function InkEmojiDemo() {
+  const strip = (emoji: string) => emoji.replace(/[\uFE0E\uFE0F]/g, "");
+  const listed = new Set(emojiCategories.flatMap((category) => category.emojis.map((entry) => strip(entry.emoji))));
+  const other = inkEmojiSet.filter((emoji) => !listed.has(strip(emoji)));
+  const groups = [
+    ...emojiCategories.map((category) => ({ id: category.id, label: category.label, emojis: category.emojis.map((entry) => entry.emoji) })),
+    ...(other.length ? [{ id: "other", label: "Other", emojis: other }] : []),
+  ];
   return (
     <Demo
       id="ink-emoji"
       title="Ink emoji"
-      description={`InkEmoji: ${inkEmojiSet.length} original hand-drawn monoline emoji in currentColor, readable at 16px. Shown here forced as ink so they look the same in every style, next to the colour glyph.`}
+      description={`InkEmoji: ${inkEmojiSet.length} original hand-drawn monoline emoji in currentColor, the whole built-in picker set, readable at 16px. Shown here forced as ink so they look the same in every style, next to the colour glyph.`}
       align="start"
-      canvasClassName="gap-6"
+      canvasClassName="gap-8"
     >
-      <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {inkEmojiSet.map((emoji) => (
-          <div key={emoji} className="flex min-w-0 flex-col gap-3 rounded-box border border-border bg-card p-3">
-            <div className="flex items-end gap-3">
-              <span aria-hidden className="text-[40px] leading-none">
-                {emoji}
-              </span>
-              <span className="h-10 w-px shrink-0 bg-border" />
-              <InkEmoji emoji={emoji} size={16} />
-              <InkEmoji emoji={emoji} size={24} />
-              <InkEmoji emoji={emoji} size={40} />
-            </div>
-            <div className="min-w-0">
-              <div className="truncate text-xs font-medium">{emoji}</div>
-              <div className="truncate text-xs text-muted-foreground">
-                {inkEmojiNames[emoji]}
+      {groups.map((group) => (
+        <div key={group.id} className="w-full space-y-3">
+          <DemoLabel>
+            {group.label} ({group.emojis.length})
+          </DemoLabel>
+          <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(10.5rem,1fr))] gap-2">
+            {group.emojis.map((emoji) => (
+              <div
+                key={emoji}
+                title={`${emoji} ${inkEmojiNames[emoji] ?? ""}`.trim()}
+                className="flex min-w-0 items-center gap-2 rounded-box border border-border bg-card p-2"
+              >
+                <span aria-hidden className="text-[28px] leading-none">
+                  {emoji}
+                </span>
+                <InkEmoji emoji={emoji} size={28} />
+                <InkEmoji emoji={emoji} size={16} />
+                <span className="min-w-0 flex-1 truncate text-[11px] leading-tight text-muted-foreground">{inkEmojiNames[emoji]}</span>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
       <p className="max-w-2xl text-xs text-muted-foreground">
-        The paper style switches the reactions and the emoji picker to ink automatically: these drawings for the emoji in this set, and a
-        one-ink filter of the colour glyph for every other emoji. Use <code>EmojiGlyph</code> for emoji you render yourself, or{" "}
+        The paper style switches the reactions and the emoji picker to ink automatically: these drawings for every emoji of the built-in set, and
+        a one-ink filter of the colour glyph for any emoji outside it. Use <code>EmojiGlyph</code> for emoji you render yourself, or{" "}
         <code>InkEmoji</code> with <code>fallback</code> to draw the same way anywhere.
       </p>
     </Demo>

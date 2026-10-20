@@ -14,7 +14,7 @@
 | `emoji` (required) | `string` |  | The emoji shown on the chip. |
 | `count` | `number` | `0` | How many people reacted; shown beside the emoji, hidden at 0. |
 | `defaultReacted` | `boolean` | `false` | Initial reacted state when uncontrolled. |
-| `ink` | `boolean` |  | Draw the emoji as ink: `true` in every style, `false` keeps the colour glyph in the paper style; unset follows the style (ink in the paper style). Common reactions use the hand-drawn `InkEmoji` art, any other emoji is filtered to one ink. |
+| `ink` | `boolean` |  | Draw the emoji as ink: `true` in every style, `false` keeps the colour glyph in the paper style; unset follows the style (ink in the paper style). Every emoji of the built-in set uses the hand-drawn `InkEmoji` art, any emoji outside it is filtered to one ink. |
 | `onToggle` | `(reacted: boolean) => void` |  | Called with the new reacted state when the chip is toggled. |
 | `reacted` | `boolean` |  | Whether the current user has reacted (controlled). |
 | `size` | `"sm" \| "md"` | `"md"` | Chip height and text size. |
@@ -79,7 +79,7 @@ Server render: same markup as the client. The markup is the same on the server a
 ### Gotchas
 
 - Every emoji sits in `span[data-slot="emoji"]` (see `EmojiGlyph`) with `data-part="glyph"` and, for emoji with art, `data-part="ink"`: style those, not the text. Ink follows the style: in `[data-style="paper"]` everything is ink, elsewhere colour. `ink` on the pill, the bar or the picker forces it (`true`) or keeps colour in the paper style (`false`), the same as `FileFormatIcon mono`.
-- An emoji with hand-drawn art (`hasInkEmoji`: the eight presets and twelve more) shows the drawing in the ink; any other emoji (a fox, a pizza) shows the colour glyph filtered to one ink, so fine detail goes soft at small sizes. Ink on a black background is inverted to light, so set `data-style` on `<html>` for portaled popovers.
+- An emoji with hand-drawn art (`hasInkEmoji`: every emoji of the built-in picker set) shows the drawing in the ink; any emoji outside the set (a dinosaur, a flag) shows the colour glyph filtered to one ink, so fine detail goes soft at small sizes. Ink on a black background is inverted to light, so set `data-style` on `<html>` for portaled popovers.
 - The glyph is wrapped in a `span` (`inline-block`, `leading-none`, the size class), so a test that looked for the emoji as a bare text node of the button should look in the glyph part. Text-only searches such as `getByText("👍")` still work.
 - Reaction state is controlled with `reacted` or uncontrolled with `defaultReacted`; the bar owns the counts, and a count that falls to 0 removes the pill.
 

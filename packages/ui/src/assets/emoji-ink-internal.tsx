@@ -1,49 +1,23 @@
 import * as React from "react";
+import { dot, heartEye, starPath, Face, thumb, normalizeEmoji } from "./emoji-ink-parts-internal";
+import { smileyInkArt, smileyInkNames } from "./emoji-ink-smileys-internal";
+import { peopleInkArt, peopleInkNames } from "./emoji-ink-people-internal";
+import { natureInkArt, natureInkNames } from "./emoji-ink-nature-internal";
+import { foodInkArt, foodInkNames } from "./emoji-ink-food-internal";
+import { activityInkArt, activityInkNames } from "./emoji-ink-activities-internal";
+import { travelInkArt, travelInkNames } from "./emoji-ink-travel-internal";
+import { objectInkArt, objectInkNames } from "./emoji-ink-objects-internal";
+import { symbolInkArt, symbolInkNames } from "./emoji-ink-symbols-internal";
+
+export { normalizeEmoji };
 
 /*
- * Original monoline drawings for the most common emoji (24 box, drawn with the stroke of the parent svg: 1.75, round caps
- * and joins, `currentColor`, flat). Small solid accents (pupils, tears, sparks) use `fill="currentColor" stroke="none"`.
- * Nothing here is traced from an emoji font or an icon set.
+ * Original monoline drawings for the emoji of the built-in set. The first twenty (the reaction presets and a dozen common
+ * ones) are drawn here; the categories live in their own files and are merged below. Shared parts: emoji-ink-parts-internal.
  */
 
-/** Strips variation selectors so that "❤" and "❤️" match. */
-export function normalizeEmoji(emoji: string): string {
-  return emoji.replace(/[︎️]/g, "");
-}
-
-const dot = (cx: number, cy: number, r = 1.1) => <circle cx={cx} cy={cy} r={r} fill="currentColor" stroke="none" />;
-
-const Face = () => <circle cx="12" cy="12" r="9.5" />;
-
-/** A five-point star as a polygon path around (cx, cy). */
-function starPath(cx: number, cy: number, outer: number, inner: number): string {
-  const points: string[] = [];
-  for (let i = 0; i < 10; i += 1) {
-    const radius = i % 2 === 0 ? outer : inner;
-    const angle = (-90 + i * 36) * (Math.PI / 180);
-    points.push(`${(cx + radius * Math.cos(angle)).toFixed(2)} ${(cy + radius * Math.sin(angle)).toFixed(2)}`);
-  }
-  return `M${points.join("L")}z`;
-}
-
-const thumb = (
-  <>
-    <rect x="3" y="11" width="4" height="9" rx="1" />
-    <path d="M7 11.6l3.4-7a1.6 1.6 0 0 1 3 1.1L13 9.6h5.9a2 2 0 0 1 1.95 2.45l-1.4 6.5A2 2 0 0 1 17.5 20H7" />
-  </>
-);
-
-const heartEye = (cx: number, cy: number) => (
-  <path
-    transform={`translate(${cx} ${cy})`}
-    d="M0 2.6C-1.6 1.6-3 .4-3-1.1a1.6 1.6 0 0 1 3-.7 1.6 1.6 0 0 1 3 .7C3 .4 1.6 1.6 0 2.6z"
-    fill="currentColor"
-    strokeWidth="1"
-  />
-);
-
 /** Art by emoji (variation selectors removed). */
-export const inkArt: Record<string, React.ReactNode> = {
+const baseArt: Record<string, React.ReactNode> = {
   "👍": thumb,
   "👎": <g transform="matrix(1 0 0 -1 0 24)">{thumb}</g>,
   "❤": <path d="M12 20.3C7 17.2 3 13.6 3 9a4.6 4.6 0 0 1 9-1.6A4.6 4.6 0 0 1 21 9c0 4.6-4 8.2-9 11.3z" />,
@@ -174,7 +148,7 @@ export const inkArt: Record<string, React.ReactNode> = {
 };
 
 /** Short names of the drawn emoji, used as the default `title` and in the demo. */
-export const inkEmojiNames: Record<string, string> = {
+const baseNames: Record<string, string> = {
   "👍": "Thumbs up",
   "👎": "Thumbs down",
   "❤️": "Heart",
@@ -195,4 +169,30 @@ export const inkEmojiNames: Record<string, string> = {
   "⭐": "Star",
   "💡": "Light bulb",
   "✨": "Sparkles",
+};
+
+/** Art by emoji (variation selectors removed): the base set plus every category file. */
+export const inkArt: Record<string, React.ReactNode> = {
+  ...baseArt,
+  ...smileyInkArt,
+  ...peopleInkArt,
+  ...natureInkArt,
+  ...foodInkArt,
+  ...activityInkArt,
+  ...travelInkArt,
+  ...objectInkArt,
+  ...symbolInkArt,
+};
+
+/** Short names of the drawn emoji, used as the default `title` and in the demo. */
+export const inkEmojiNames: Record<string, string> = {
+  ...baseNames,
+  ...smileyInkNames,
+  ...peopleInkNames,
+  ...natureInkNames,
+  ...foodInkNames,
+  ...activityInkNames,
+  ...travelInkNames,
+  ...objectInkNames,
+  ...symbolInkNames,
 };
