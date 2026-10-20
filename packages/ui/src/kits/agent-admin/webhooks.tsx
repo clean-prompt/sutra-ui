@@ -16,6 +16,7 @@ import { formatScheduleRelative } from "../../patterns/cron";
 import { DeliveryTargetPicker, formatDeliveryTarget } from "./agent-jobs-delivery";
 import { NameCheckboxPicker, type NameCheckboxOption } from "./agent-jobs-form";
 import type { DeliveryPlatform, DeliveryPlatformStatus, DeliveryTarget } from "./agent-jobs-model";
+import { FlowArrow } from "../../primitives/flow-arrow-internal";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -153,7 +154,7 @@ export const WebhookRouteList = React.forwardRef<HTMLDivElement, WebhookRouteLis
                   <span>
                     {r.events.length} {r.events.length === 1 ? "event" : "events"}
                   </span>
-                  <span>→ {formatDeliveryTarget(r.delivery, deliveryStatus)}</span>
+                  <span><FlowArrow /> {formatDeliveryTarget(r.delivery, deliveryStatus)}</span>
                   {last && toValidDate(last.at) ? <span>last {formatScheduleRelative(last.at)}</span> : null}
                 </div>
               </li>

@@ -421,7 +421,7 @@ function TabDropdownDemo() {
   const items = ["Overview", "Files", "Activity", "Pull requests", "Issues", "Settings", "Billing"].map((l) => ({ value: l.toLowerCase().replace(/\s/g, "-"), label: l }));
   return (
     <Demo id="tab-dropdown" title="Tab dropdown" description="Tabs that don't fit collapse into a More menu (ResizeObserver). Drag the slider to resize." align="start" canvasClassName="flex-col items-stretch gap-3">
-      <input type="range" min={30} max={100} value={width} onChange={(e) => setWidth(Number(e.target.value))} aria-label="Container width" className="w-48" />
+      <input type="range" min={30} max={100} value={width} onChange={(e) => setWidth(Number(e.target.value))} aria-label="Container width" className="h-6 w-48" />
       <div style={{ width: `${width}%` }} className="rounded-box border border-dashed border-border p-2">
         <TabDropdown items={items} value={value} onValueChange={setValue} label="Repository" />
       </div>

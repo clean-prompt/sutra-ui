@@ -62,6 +62,12 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 #### Open items closed
 - `data-motion="reduce" | "full"` in-app motion switch (CSS net twin, `prefersReducedMotion` and the hook read it; a System / Reduce / Full control on the Motion page); `TimePicker wheel` (`true` or `"touch"`) opens the `WheelPicker` group; the Paper showcase has scroll reveals; every public prop now has a description (0 gaps); `Tooltip`, `Popover` and `HoverCard` accept `side="start" | "end"`; numeric runs are isolated with `<bdi dir="ltr">`; login/logout, back and sidebar-toggle icons mirror in RTL; small tap targets at 360 px fell from 149 to about 18; raw colour literals, palette classes and `dark:` prefixes that were real debt became tokens (`light-dark()`, `--chart-N`, `accentClasses.chip`; the lint allowlists shrank: 549 to 530 literals, 168 to 114 palette classes, 49 to 30 `dark:`); `media-cards` `statusTone.primary` used a colour that does not exist (`text-brand-300`) and now reads `text-primary-soft-foreground`.
 
+#### Small fixes from the open-items review
+- `FileFormatIcon` shows readable short labels for the long extensions (`numbers` NUM, `sketch` SKTCH, `sqlite` SQLT, `svelte` SVLT) instead of cutting them at five letters ("NUMBE", "SKETC"); other extensions are still cut at five.
+- Solid `Avatar` / `Monogram` initials take white or dark ink, whichever contrasts more with the seed colour (cyan, yellow, green and orange used to fail AA with white; violet reaches 4.4:1, the best either ink can do).
+- Text arrows in `Extensions catalog`, `Webhooks`, `RequestInspector`, `VersionHistory` and `TallyCounter` mirror in RTL, and the `ApprovalStack` previous/next tooltips name the arrow key that matches the reading direction.
+- The recurrence picker, subagent filter and reload cap checkboxes have 24 px labels; the layout audit counts a wrapping label as the target and exempts the typeable `NumberInput` steppers and the OTP overlay input (small taps at 360 px: 15, almost all demo-only controls, which got 24 px heights).
+
 #### Agent-readable docs
 - A note per component in `docs/notes` (128 notes covering every primitive and 32 patterns: when to use, keyboard table, screen reader behaviour, reduced motion, SSR, slots, gotchas, a type-checked example) shown as a Notes panel under each demo; generated `llms.txt` and `llms-full.txt`, one markdown page per component and hook (`docs/components`, `docs/hooks`), and a Claude skill (`skills/sutra-ui`); playground pages Styling Hooks, Sizing and Form Recipes.
 

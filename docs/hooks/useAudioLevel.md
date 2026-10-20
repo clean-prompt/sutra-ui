@@ -35,10 +35,10 @@ function AudioLevelDemo() {
       <AudioLevelMeter level={level} />
       <AudioLevelMeter level={level} size="lg" bars={7} tone="success" />
       <AudioLevelMeter level={level} orientation="vertical" bars={8} className="h-16" />
-      <label className="flex items-center gap-2 text-xs text-muted-foreground">
+      <label className="flex min-h-6 items-center gap-2 text-xs text-muted-foreground">
         <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} /> Animate
       </label>
-      <input type="range" min={0} max={1} step={0.01} value={level} aria-label="Level" onChange={(e) => { setAuto(false); setLevel(Number(e.target.value)); }} />
+      <input type="range" min={0} max={1} step={0.01} value={level} aria-label="Level" className="h-6" onChange={(e) => { setAuto(false); setLevel(Number(e.target.value)); }} />
     </>
   );
 }

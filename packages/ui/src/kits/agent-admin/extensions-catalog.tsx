@@ -54,6 +54,7 @@ import { StatusBadge, type StatusBadgeStatus } from "../../primitives/status-bad
 import { Switch } from "../../primitives/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../primitives/tabs";
 import { CapabilityMonogram, ProvenancePill, TrustBadge, type CapabilityProvenance, type CapabilityTrustLevel } from "./capabilities";
+import { FlowArrow } from "../../primitives/flow-arrow-internal";
 
 function ExternalLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -1167,7 +1168,7 @@ export const SyncReceiptCard = React.forwardRef<HTMLElement, SyncReceiptCardProp
               {(u.from || u.to) && (
                 <span className="text-muted-foreground">
                   {" "}
-                  {u.from} → {u.to}
+                  {u.from} <FlowArrow /> {u.to}
                 </span>
               )}
             </li>
@@ -1193,7 +1194,7 @@ export const SyncReceiptCard = React.forwardRef<HTMLElement, SyncReceiptCardProp
           {availableUpdates.map((u) => (
             <li key={u.name} className="font-mono text-xs">
               {u.name}
-              {u.to && <span className="text-muted-foreground"> → {u.to}</span>}
+              {u.to && <span className="text-muted-foreground"> <FlowArrow /> {u.to}</span>}
             </li>
           ))}
         </ReceiptSection>

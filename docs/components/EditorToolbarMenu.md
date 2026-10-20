@@ -50,7 +50,7 @@ function ToolbarOverflowDemo() {
     <div className="w-full space-y-3">
       <label className="flex items-center gap-3 text-sm text-muted-foreground">
         Width
-        <input type="range" min={160} max={720} value={width} onChange={(e) => setWidth(Number(e.target.value))} aria-label="Toolbar width" />
+        <input type="range" min={160} max={720} value={width} onChange={(e) => setWidth(Number(e.target.value))} aria-label="Toolbar width" className="h-6" />
         <span className="tabular-nums">{width}px</span>
       </label>
       <div style={{ width }} className="max-w-full overflow-hidden rounded-box border border-border">

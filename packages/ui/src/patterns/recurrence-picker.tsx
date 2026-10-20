@@ -199,7 +199,7 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
 
         {rule.freq === "monthly" ? (
           <div role="radiogroup" aria-label="Monthly on" className="flex flex-col gap-2 text-sm">
-            <label className="flex items-center gap-2">
+            <label className="flex min-h-6 items-center gap-2">
               <input
                 type="radio"
                 name={`${id}-monthly`}
@@ -219,7 +219,7 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
               />
             </label>
             <div className="flex flex-wrap items-center gap-2">
-              <label className="flex items-center gap-2">
+              <label className="flex min-h-6 items-center gap-2">
                 <input
                   type="radio"
                   name={`${id}-monthly`}
@@ -275,7 +275,7 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
         {repeating ? (
           <div role="radiogroup" aria-label="Ends" className="flex flex-col gap-2 text-sm">
             <span className="text-xs font-medium text-muted-foreground">Ends</span>
-            <label className="flex items-center gap-2">
+            <label className="flex min-h-6 items-center gap-2">
               <input
                 type="radio"
                 name={`${id}-end`}
@@ -286,7 +286,7 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
               Never
             </label>
             <div className="flex items-center gap-2">
-              <label className="flex items-center gap-2">
+              <label className="flex min-h-6 items-center gap-2">
                 <input
                   type="radio"
                   name={`${id}-end`}
@@ -309,7 +309,7 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
               />
             </div>
             <div className="flex items-center gap-2">
-              <label className="flex items-center gap-2">
+              <label className="flex min-h-6 items-center gap-2">
                 <input
                   type="radio"
                   name={`${id}-end`}

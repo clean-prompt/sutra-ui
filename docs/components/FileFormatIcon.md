@@ -12,7 +12,7 @@
 |---|---|---|---|
 | `ext` (required) | `string` |  | Extension or filename (e.g. `"pdf"` or `"Q3 report.pdf"`). |
 | `color` | `string` |  | Override the format color. |
-| `label` | `string` |  | Override the label text (defaults to the uppercased extension). |
+| `label` | `string` |  | Override the label text (defaults to the uppercased extension; the long ones `numbers`, `sketch`, `sqlite` and `svelte` use a short form, other extensions are cut at five letters). |
 | `size` | `FileFormatIconSize \| number` | `"md"` | Size token or height in pixels. |
 | `title` | `string` |  | Accessible name; when set the icon is exposed as an image, otherwise it is decorative. |
 | `variant` | `"default" \| "solid" \| "minimal"` | `"default"` | `default` white sheet with a colored label, `solid` colored sheet, `minimal` outline with colored text. |

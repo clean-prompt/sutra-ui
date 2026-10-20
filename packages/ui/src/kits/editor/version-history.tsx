@@ -10,6 +10,7 @@ import { SegmentedControl } from "../../primitives/segmented-control";
 import { SimpleTooltip } from "../../primitives/tooltip";
 import { colorForSeed } from "../../lib/hash";
 import { DiffViewer, type DiffAuthor, type DiffMode, computeDiff } from "../../patterns/diff-viewer";
+import { FlowArrow } from "../../primitives/flow-arrow-internal";
 
 /* ------------------------------------------------------------------ */
 /* Types & helpers                                                     */
@@ -220,7 +221,11 @@ export const VersionHistory = React.forwardRef<HTMLDivElement, VersionHistoryPro
       ? "No version selected"
       : single
         ? target.label ?? formatDateTime(target.createdAt)
-        : `${formatDateTime(older!.createdAt)} → ${formatDateTime(target.createdAt)}`;
+        : (
+            <>
+              {formatDateTime(older!.createdAt)} <FlowArrow /> {formatDateTime(target.createdAt)}
+            </>
+          );
     const canRestore = onRestore && target && single && lo > 0;
 
     return (

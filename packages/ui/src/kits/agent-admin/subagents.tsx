@@ -522,7 +522,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                 </button>
               ))}
             </div>
-            <label className="ms-auto inline-flex cursor-pointer items-center gap-1.5 text-muted-foreground">
+            <label className="ms-auto inline-flex min-h-6 cursor-pointer items-center gap-1.5 text-muted-foreground">
               <input
                 type="checkbox"
                 checked={runningOnly}

@@ -10,13 +10,38 @@ import { initials, type InitialsOptions } from "../lib/text";
 export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type AvatarShape = "circle" | "square";
 export type AvatarStatus = "online" | "offline" | "busy" | "away";
-/** `soft`: tinted background with coloured initials (default) · `solid`: full colour with white initials. */
+/** `soft`: tinted background with coloured initials (default) · `solid`: full colour with the initials in white or dark ink, whichever reads better on it (WCAG contrast). */
 export type AvatarVariant = "soft" | "solid";
+
+const SOLID_INK = "#18181b";
+
+function channelLuminance(v: number) {
+  const c = v / 255;
+  return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+}
+
+/** WCAG relative luminance of a `#rgb` / `#rrggbb` colour, or `null` for anything else (a `var()`, `oklch()`, a name). */
+function hexLuminance(color: string): number | null {
+  const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color.trim());
+  if (!m) return null;
+  const h = m[1]!.length === 3 ? m[1]!.replace(/(.)/g, "$1$1") : m[1]!;
+  const n = parseInt(h, 16);
+  return 0.2126 * channelLuminance((n >> 16) & 255) + 0.7152 * channelLuminance((n >> 8) & 255) + 0.0722 * channelLuminance(n & 255);
+}
+
+/** The initials colour for a solid fill: white, or dark ink when that contrasts more (cyan, yellow, green and orange fail AA with white). Colours that are not hex keep white. */
+function solidInk(color: string): string {
+  const l = hexLuminance(color);
+  if (l == null) return "#ffffff";
+  const white = 1.05 / (l + 0.05);
+  const ink = (l + 0.05) / ((hexLuminance(SOLID_INK) ?? 0) + 0.05);
+  return ink > white ? SOLID_INK : "#ffffff";
+}
 
 /** Inline style for a seed colour: a soft tint or a solid fill. Shared by `Avatar` and `Monogram`. */
 export function seedColorStyle(color: string, variant: AvatarVariant = "soft"): React.CSSProperties {
   return variant === "solid"
-    ? { backgroundColor: color, color: "#ffffff" }
+    ? { backgroundColor: color, color: solidInk(color) }
     : {
         backgroundColor: `color-mix(in oklab, ${color} 16%, var(--background))`,
         // light needs more of the foreground (yellow, cyan and green initials are under 4.5:1 at 78%); dark keeps the vivid 78%

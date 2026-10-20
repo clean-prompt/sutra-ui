@@ -23,7 +23,7 @@ Without `src` the initials render in the server HTML. With `src` the server outp
 
 ## Gotchas
 - Initials come from `initials(name, initialsOptions)`: first and last word by default, so "Maya" gives "M". Pass `initialsOptions={{ singleWord: 2 }}` for "MA".
-- The fallback colour is derived from `name` with `colorForSeed`, so one person has one colour everywhere. `color` overrides it, `colorful={false}` turns it off, and a custom `fallback` node also skips the seed colour. `variant="solid"` uses white initials on the full colour.
+- The fallback colour is derived from `name` with `colorForSeed`, so one person has one colour everywhere. `color` overrides it, `colorful={false}` turns it off, and a custom `fallback` node also skips the seed colour. `variant="solid"` fills with the full colour and sets the initials in white or dark ink, whichever contrasts more (about 4.5:1 or better; colours that are not hex keep white).
 - Passing `children` replaces the built-in image and fallback entirely: compose `AvatarImage` and `AvatarFallback` yourself, then `src`, `name`, `fallback` and `color` are ignored.
 - Inside an `AvatarGroup`, `size`, `shape` and `ring` come from the group, but a prop set on the avatar wins. The status dot and verified badge sit at the logical end corner, so they flip in RTL.
 

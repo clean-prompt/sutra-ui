@@ -316,7 +316,7 @@ function ToolbarOverflowDemo() {
     <div className="w-full space-y-3">
       <label className="flex items-center gap-3 text-sm text-muted-foreground">
         Width
-        <input type="range" min={160} max={720} value={width} onChange={(e) => setWidth(Number(e.target.value))} aria-label="Toolbar width" />
+        <input type="range" min={160} max={720} value={width} onChange={(e) => setWidth(Number(e.target.value))} aria-label="Toolbar width" className="h-6" />
         <span className="tabular-nums">{width}px</span>
       </label>
       <div style={{ width }} className="max-w-full overflow-hidden rounded-box border border-border">
@@ -367,7 +367,7 @@ function RichTextDemo() {
         <RichTextEditor value={html} onValueChange={(v) => setHtml(v as string)} toolbar="both" className="max-h-96" contentClassName="px-4" />
       </div>
       <details className="text-xs text-muted-foreground">
-        <summary className="cursor-pointer">HTML output</summary>
+        <summary className="cursor-pointer py-1">HTML output</summary>
         <pre className="mt-2 whitespace-pre-wrap break-all rounded-box bg-subtle p-3 font-mono">{html}</pre>
       </details>
     </div>

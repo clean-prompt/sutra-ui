@@ -5,6 +5,7 @@ import { logicalArrow } from "../../lib/direction";
 import { clamp } from "../../lib/math";
 import { Button } from "../../primitives/button";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useDirection } from "../../hooks/use-direction";
 
 export interface ApprovalStackRenderState {
   index: number;
@@ -61,6 +62,7 @@ function ApprovalStackInner<T>(
   ref: React.ForwardedRef<HTMLElement>
 ) {
   const [rawIndex, setIndex] = useControllableState<number>({ value: indexProp, defaultValue: defaultIndex, onChange: onIndexChange });
+  const dir = useDirection();
   const total = items.length;
   if (total === 0) return <>{emptyState ?? empty ?? null}</>;
   const index = clamp(rawIndex, 0, total - 1);
@@ -120,7 +122,7 @@ function ApprovalStackInner<T>(
               <button
                 type="button"
                 aria-label="Previous approval"
-                title="Previous (←)"
+                title={`Previous (${dir === "rtl" ? "→" : "←"})`}
                 disabled={index <= 0}
                 onClick={() => go(index - 1)}
                 className={cn(
@@ -133,7 +135,7 @@ function ApprovalStackInner<T>(
               <button
                 type="button"
                 aria-label="Next approval"
-                title="Next (→)"
+                title={`Next (${dir === "rtl" ? "←" : "→"})`}
                 disabled={index >= total - 1}
                 onClick={() => go(index + 1)}
                 className={cn(

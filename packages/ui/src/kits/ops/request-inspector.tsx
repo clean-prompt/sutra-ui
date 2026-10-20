@@ -14,6 +14,7 @@ import { SimpleSelect } from "../../primitives/select";
 import { SimpleTooltip } from "../../primitives/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../primitives/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../primitives/table";
+import { FlowArrow } from "../../primitives/flow-arrow-internal";
 
 /* ------------------------------------------------------------------ */
 /* Types & helpers                                                     */
@@ -258,7 +259,14 @@ export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspecto
     }
     if (info.finishReason) chips.push({ k: "finish_reason", v: info.finishReason });
     if (info.tokensIn != null || info.tokensOut != null)
-      chips.push({ k: "tokens", v: `${info.tokensIn?.toLocaleString(locale) ?? "?"} → ${info.tokensOut?.toLocaleString(locale) ?? "?"}` });
+      chips.push({
+        k: "tokens",
+        v: (
+          <>
+            {info.tokensIn?.toLocaleString(locale) ?? "?"} <FlowArrow /> {info.tokensOut?.toLocaleString(locale) ?? "?"}
+          </>
+        ),
+      });
 
     return (
       <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>

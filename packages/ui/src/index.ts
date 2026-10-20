@@ -84,6 +84,7 @@ export * from "./assets/qr-placeholder";
 /* Primitives: src/primitives */
 // not exported: primitives/date-picker-internal (internal: private helpers shared by sibling modules)
 // not exported: primitives/floating-side-internal (internal: private helpers shared by sibling modules)
+// not exported: primitives/flow-arrow-internal (internal: private helpers shared by sibling modules)
 // not exported: primitives/input-internal (internal: private helpers shared by sibling modules)
 // not exported: primitives/item-internal (internal: private helpers shared by sibling modules)
 // not exported: primitives/numeric-internal (internal: private helpers shared by sibling modules)

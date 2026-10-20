@@ -6,6 +6,7 @@ import { clamp } from "../lib/math";
 import { useChangeKey } from "../hooks/use-change-key";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Button } from "../primitives/button";
+import { FlowArrow } from "../primitives/flow-arrow-internal";
 
 /* ------------------------------------------------------------------ */
 /* TallyCounter                                                        */
@@ -232,7 +233,7 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
                       {entry.delta > 0 ? `+${entry.delta}` : entry.delta}
                     </span>
                     <span className="text-muted-foreground">
-                      → {entry.value} ·{" "}
+                      <FlowArrow /> {entry.value} ·{" "}
                       <time dateTime={entry.at.toISOString()}>
                         {formatClockTime(entry.at)}
                       </time>

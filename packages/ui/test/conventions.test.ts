@@ -69,7 +69,7 @@ const COLOR_ALLOW: Allow = {
   "kits/editor/code-editor.tsx": [9, "match keys: CodeMirror's default highlight colours, looked up so the theme can swap each for a token"],
   // debt that is left on purpose (listed so the count can only fall)
   "kits/identity/secret.tsx": [1, "debt (kits/identity): canvas fallback ink"],
-  "primitives/avatar.tsx": [1, "debt: white initials on a solid fill are pinned by test/merge-identity.test.tsx (fails AA on cyan, yellow, green, orange)"],
+  "primitives/avatar.tsx": [3, "solid fills take white or dark ink initials, whichever contrasts more (fixed inks, not theme colours)"],
 };
 
 /* ---- 1b. Tailwind palette classes instead of tokens -------------------------------------------------------- */

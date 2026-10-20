@@ -135,6 +135,9 @@ const formats: Record<string, { color: string; category: FileCategory }> = {
   woff2: { color: "#475569", category: "font" },
 };
 
+/** Short label for extensions longer than the five letters the badge holds (cutting them off would read "NUMBE", "SKETC"). */
+const formatLabels: Record<string, string> = { numbers: "NUM", sketch: "SKTCH", sqlite: "SQLT", svelte: "SVLT" };
+
 /** Brand color for every known extension. */
 export const fileFormatColors: Record<string, string> = Object.fromEntries(
   Object.entries(formats).map(([ext, f]) => [ext, f.color])
@@ -180,7 +183,7 @@ export interface FileFormatIconProps extends Omit<React.ComponentPropsWithoutRef
   variant?: "default" | "solid" | "minimal";
   /** Size token or height in pixels. */
   size?: FileFormatIconSize | number;
-  /** Override the label text (defaults to the uppercased extension). */
+  /** Override the label text (defaults to the uppercased extension; the long ones `numbers`, `sketch`, `sqlite` and `svelte` use a short form, other extensions are cut at five letters). */
   label?: string;
   /** Override the format color. */
   color?: string;
@@ -196,7 +199,7 @@ export const FileFormatIcon = React.forwardRef<SVGSVGElement, FileFormatIconProp
   ({ ext, variant = "default", size = "md", label, color, title, className, ...props }, ref) => {
     const extension = getFileExtension(ext);
     const tint = color ?? getFormatColor(extension);
-    const text = (label ?? (extension || "file")).toUpperCase().slice(0, 5);
+    const text = (label ?? formatLabels[extension] ?? (extension || "file")).toUpperCase().slice(0, 5);
     const height = typeof size === "number" ? size : fileHeights[size];
     const width = (height * 32) / 40;
     const fontSize = text.length > 4 ? 5.4 : text.length > 3 ? 6 : 6.8;

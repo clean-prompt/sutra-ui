@@ -615,11 +615,11 @@ export function DataDisplayPage() {
           <div className="space-y-3">
             <DemoLabel>Vertical</DemoLabel>
             <div className="flex h-6 items-center gap-4 text-sm">
-              <a href="#separator" className="hover:underline">Docs</a>
+              <a href="#separator" className="flex min-h-6 items-center hover:underline">Docs</a>
               <Separator orientation="vertical" />
-              <a href="#separator" className="hover:underline">Changelog</a>
+              <a href="#separator" className="flex min-h-6 items-center hover:underline">Changelog</a>
               <Separator orientation="vertical" />
-              <a href="#separator" className="hover:underline">Support</a>
+              <a href="#separator" className="flex min-h-6 items-center hover:underline">Support</a>
             </div>
           </div>
         </div>

@@ -46,7 +46,7 @@ function RichTextDemo() {
         <RichTextEditor value={html} onValueChange={(v) => setHtml(v as string)} toolbar="both" className="max-h-96" contentClassName="px-4" />
       </div>
       <details className="text-xs text-muted-foreground">
-        <summary className="cursor-pointer">HTML output</summary>
+        <summary className="cursor-pointer py-1">HTML output</summary>
         <pre className="mt-2 whitespace-pre-wrap break-all rounded-box bg-subtle p-3 font-mono">{html}</pre>
       </details>
     </div>
