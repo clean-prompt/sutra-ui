@@ -72,7 +72,10 @@ export const ChatConversationContent = React.forwardRef<HTMLDivElement, ChatConv
 );
 ChatConversationContent.displayName = "ChatConversationContent";
 
-export type ChatScrollButtonProps = Omit<ButtonProps, "children"> & { label?: string };
+export interface ChatScrollButtonProps extends Omit<ButtonProps, "children"> {
+  /** Accessible name and tooltip of the button. Default "Scroll to bottom". */
+  label?: string;
+}
 
 /** Floating "jump to latest" button, shown when the viewport is scrolled away from the bottom. */
 export const ChatScrollButton = React.forwardRef<HTMLButtonElement, ChatScrollButtonProps>(

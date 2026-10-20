@@ -38,7 +38,7 @@ export const monogramVariants = cva(
         solid: "text-white shadow-inner-highlight",
         soft: "",
         brand:
-          "border border-border bg-gradient-to-br from-brand-50 to-brand-100 text-brand-700 dark:from-brand-900 dark:to-brand-950 dark:text-brand-200",
+          "border border-border bg-gradient-to-br from-[color:light-dark(var(--b-50),var(--b-900))] to-[color:light-dark(var(--b-100),var(--b-950))] text-[color:light-dark(var(--b-700),var(--b-200))]",
       },
     },
     defaultVariants: { size: "md", variant: "solid" },

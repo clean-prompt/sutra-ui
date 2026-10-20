@@ -14,6 +14,7 @@
 | `arrow` | `boolean` |  | Render the pointing arrow. |
 | `disablePortal` | `boolean` |  | Skip the portal (e.g. inside a dialog with its own stacking). |
 | `padded` | `boolean` | `true` | Adds inner padding; turn it off for content that supplies its own (lists, menus). |
+| `side` | `FloatingSide` | `"bottom"` | Side of the trigger the panel opens on. `start` and `end` follow the reading direction (left and right in LTR, swapped in RTL, read from `DirectionProvider` or `<html dir>`); `left` and `right` stay physical. It flips when there is no room. |
 | `size` | `"sm" \| "md" \| "lg" \| "auto"` | `"md"` | Panel width: `sm` 14rem, `md` 18rem, `lg` 24rem or `auto` (content width). |
 
 ## Variants

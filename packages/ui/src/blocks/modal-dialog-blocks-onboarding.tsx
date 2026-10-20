@@ -186,7 +186,7 @@ export function OnboardingDialog({
         </DialogBody>
         <DialogFooter bordered className="sm:justify-between">
           <span className="hidden text-sm text-muted-foreground sm:block">
-            Step {index + 1} of {steps.length}
+            <bdi dir="ltr">Step {index + 1} of {steps.length}</bdi>
           </span>
           <div className="flex flex-col-reverse gap-2 sm:flex-row">
             {index > 0 ? (

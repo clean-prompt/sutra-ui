@@ -2,6 +2,7 @@ import * as React from "react";
 import { Popover as PopoverPrimitive, HoverCard as HoverCardPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/cn";
+import { useFloatingSide, type FloatingSide } from "./floating-side-internal";
 
 const floatingMotion = [
   "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
@@ -51,8 +52,14 @@ export const popoverContentVariants = cva(
 );
 
 export interface PopoverContentProps
-  extends React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>,
+  extends Omit<React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>, "side">,
     VariantProps<typeof popoverContentVariants> {
+  /**
+   * Side of the trigger the panel opens on. `start` and `end` follow the reading direction (left and right in LTR, swapped in
+   * RTL, read from `DirectionProvider` or `<html dir>`); `left` and `right` stay physical. It flips when there is no room.
+   * @default "bottom"
+   */
+  side?: FloatingSide;
   /** Render the pointing arrow. */
   arrow?: boolean;
   /** Skip the portal (e.g. inside a dialog with its own stacking). */
@@ -61,7 +68,8 @@ export interface PopoverContentProps
 
 /** Floating panel. Sizes sm/md/lg set the width; set `padded={false}` when composing Header/Body/Footer. */
 export const PopoverContent = React.forwardRef<React.ElementRef<typeof PopoverPrimitive.Content>, PopoverContentProps>(
-  ({ className, size, padded, align = "center", sideOffset = 6, arrow, disablePortal, children, ...props }, ref) => {
+  ({ className, size, padded, side, align = "center", sideOffset = 6, arrow, disablePortal, children, ...props }, ref) => {
+    const physicalSide = useFloatingSide(side);
     const baseId = React.useId();
     const [titleId, setTitle] = React.useState<string | null>(null);
     const [descriptionId, setDescription] = React.useState<string | null>(null);
@@ -76,6 +84,7 @@ export const PopoverContent = React.forwardRef<React.ElementRef<typeof PopoverPr
         sideOffset={sideOffset}
         className={cn(popoverContentVariants({ size, padded }), className)}
         {...props}
+        side={physicalSide}
         // A mounted PopoverTitle / PopoverDescription name the dialog unless the caller already did.
         aria-labelledby={props["aria-labelledby"] ?? (props["aria-label"] ? undefined : (titleId ?? undefined))}
         aria-describedby={props["aria-describedby"] ?? descriptionId ?? undefined}
@@ -172,37 +181,47 @@ HoverCard.displayName = "HoverCard";
 export const HoverCardTrigger = HoverCardPrimitive.Trigger;
 
 export interface HoverCardContentProps
-  extends React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content>,
+  extends Omit<React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content>, "side">,
     VariantProps<typeof popoverContentVariants> {
+  /**
+   * Side of the trigger the panel opens on. `start` and `end` follow the reading direction (left and right in LTR, swapped in
+   * RTL, read from `DirectionProvider` or `<html dir>`); `left` and `right` stay physical. It flips when there is no room.
+   * @default "bottom"
+   */
+  side?: FloatingSide;
   /** Renders the pointing arrow. */
   arrow?: boolean;
 }
 
 /** Hover card panel. */
 export const HoverCardContent = React.forwardRef<React.ElementRef<typeof HoverCardPrimitive.Content>, HoverCardContentProps>(
-  ({ className, size, padded, align = "center", sideOffset = 6, arrow, children, ...props }, ref) => (
-    <HoverCardPrimitive.Portal>
-      <HoverCardPrimitive.Content
-        ref={ref}
-        align={align}
-        sideOffset={sideOffset}
-        className={cn(
-          popoverContentVariants({ size, padded }),
-          "origin-(--radix-hover-card-content-transform-origin)",
-          className
-        )}
-        {...props}
-      >
-        {children}
-        {arrow && (
-          <HoverCardPrimitive.Arrow
-            width={12}
-            height={6}
-            className="fill-popover drop-shadow-[0_1px_0_var(--border)]"
-          />
-        )}
-      </HoverCardPrimitive.Content>
-    </HoverCardPrimitive.Portal>
-  )
+  ({ className, size, padded, side, align = "center", sideOffset = 6, arrow, children, ...props }, ref) => {
+    const physicalSide = useFloatingSide(side);
+    return (
+      <HoverCardPrimitive.Portal>
+        <HoverCardPrimitive.Content
+          ref={ref}
+          align={align}
+          sideOffset={sideOffset}
+          className={cn(
+            popoverContentVariants({ size, padded }),
+            "origin-(--radix-hover-card-content-transform-origin)",
+            className
+          )}
+          {...props}
+          side={physicalSide}
+        >
+          {children}
+          {arrow && (
+            <HoverCardPrimitive.Arrow
+              width={12}
+              height={6}
+              className="fill-popover drop-shadow-[0_1px_0_var(--border)]"
+            />
+          )}
+        </HoverCardPrimitive.Content>
+      </HoverCardPrimitive.Portal>
+    );
+  }
 );
 HoverCardContent.displayName = "HoverCardContent";

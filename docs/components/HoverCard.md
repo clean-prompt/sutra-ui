@@ -21,6 +21,7 @@ Hover card panel.
 |---|---|---|---|
 | `arrow` | `boolean` |  | Renders the pointing arrow. |
 | `padded` | `boolean` | `true` | Adds inner padding; turn it off for content that supplies its own (lists, menus). |
+| `side` | `FloatingSide` | `"bottom"` | Side of the trigger the panel opens on. `start` and `end` follow the reading direction (left and right in LTR, swapped in RTL, read from `DirectionProvider` or `<html dir>`); `left` and `right` stay physical. It flips when there is no room. |
 | `size` | `"sm" \| "md" \| "lg" \| "auto"` | `"md"` | Panel width: `sm` 14rem, `md` 18rem, `lg` 24rem or `auto` (content width). |
 
 ## Notes
@@ -39,7 +40,7 @@ Hover card panel.
 | Tab / Shift+Tab | Focusing the trigger opens the card after `openDelay`; moving focus away closes it after `closeDelay` |
 | Escape | Close the card |
 
-The trigger is an `<a>`, so it is a tab stop only when it has an `href` (or `tabIndex`). Radix sets `tabindex="-1"` on every focusable element inside the card, so keyboard users cannot reach links or buttons in it. There are no arrow keys, so RTL changes nothing.
+The trigger is an `<a>`, so it is a tab stop only when it has an `href` (or `tabIndex`). Radix sets `tabindex="-1"` on every focusable element inside the card, so keyboard users cannot reach links or buttons in it. There are no arrow keys, so RTL changes nothing for keys. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `bottom`, `left` and `right` stay physical, and Radix still flips the card on a collision.
 
 ### Screen readers
 

@@ -40,7 +40,7 @@
 | Tab / Shift+Tab | Focusing the trigger opens the tooltip after the delay; moving focus away closes it |
 | Escape | Close the tooltip while its trigger has focus |
 
-The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. Pressing the trigger (click, Enter or Space) also closes the tooltip.
+The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `top`, `left` and `right` stay physical, and Radix still flips the bubble on a collision. Pressing the trigger (click, Enter or Space) also closes the tooltip.
 
 ### Screen readers
 

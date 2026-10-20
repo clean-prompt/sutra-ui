@@ -83,8 +83,11 @@ export * from "./assets/qr-placeholder";
 
 /* Primitives: src/primitives */
 // not exported: primitives/date-picker-internal (internal: private helpers shared by sibling modules)
+// not exported: primitives/floating-side-internal (internal: private helpers shared by sibling modules)
 // not exported: primitives/input-internal (internal: private helpers shared by sibling modules)
 // not exported: primitives/item-internal (internal: private helpers shared by sibling modules)
+// not exported: primitives/numeric-internal (internal: private helpers shared by sibling modules)
+// not exported: primitives/time-picker-wheel-internal (internal: private helpers shared by sibling modules)
 export * from "./primitives/accordion";
 export * from "./primitives/alert-banner";
 export * from "./primitives/app-store-badge";

@@ -169,7 +169,7 @@ export const RemoteScreenViewer = React.forwardRef<HTMLDivElement, RemoteScreenV
         </div>
 
         <div
-          className={cn("relative min-h-0 flex-1 bg-neutral-950", fit ? "overflow-hidden" : "scrollbar-thin overflow-auto")}
+          className={cn("relative min-h-0 flex-1 bg-code", fit ? "overflow-hidden" : "scrollbar-thin overflow-auto")}
           style={fit ? { aspectRatio: `${screenWidth} / ${screenHeight}` } : { maxHeight: fullscreen ? undefined : 480 }}
         >
           <div
@@ -187,7 +187,7 @@ export const RemoteScreenViewer = React.forwardRef<HTMLDivElement, RemoteScreenV
             {children ?? (frameSrc ? <img src={frameSrc} alt="" draggable={false} /> : null)}
           </div>
           {state !== "live" && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-neutral-950/60 text-sm text-white">
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-code/60 text-sm text-white">
               {state === "connecting" && (
                 <>
                   <Spinner label="" />

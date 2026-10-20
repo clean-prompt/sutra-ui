@@ -589,6 +589,64 @@
  * `data-[state=open]:animate-accordion-down` (Radix) and `group-data-[state=open]:animate-pop`.
  */
 @media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) {
+    --sutra-stagger: 0ms;
+  }
+  :where(:root:not([data-motion="full"])) {
+    [class*="animate-fade-in"],
+    [class*="animate-fade-up"],
+    [class*="animate-pop-in"],
+    [class*="animate-pop"],
+    [class*="animate-tick"],
+    [class*="animate-flash"],
+    [class*="animate-bob"],
+    [class*="animate-ring"],
+    [class*="animate-mesh"],
+    [class*="animate-dot-bounce"],
+    [class*="animate-bar-scale"],
+    [class*="animate-caret-blink"],
+    [class*="animate-pulse"],
+    [class*="animate-ping"] {
+      animation: none;
+    }
+    [class*="animate-indeterminate"] {
+      animation-duration: 3s;
+    }
+    [class*="animate-accordion-down"],
+    [class*="animate-accordion-up"],
+    [class*="animate-collapsible-down"],
+    [class*="animate-collapsible-up"] {
+      animation-duration: 1ms;
+    }
+    /* Presence and AnimatedList unmount on animationend (or a timer), so the way out ends in 1ms instead of stopping. */
+    [class*="animate-fade-out"] {
+      animation-duration: 1ms;
+    }
+    &,
+    & *,
+    &::before,
+    & ::before,
+    &::after,
+    & ::after {
+      transition-duration: 1ms !important;
+      transition-delay: 0s !important;
+      --tw-enter-translate-x: 0 !important;
+      --tw-enter-translate-y: 0 !important;
+      --tw-enter-scale: 1 !important;
+      --tw-enter-rotate: 0 !important;
+      --tw-exit-translate-x: 0 !important;
+      --tw-exit-translate-y: 0 !important;
+      --tw-exit-scale: 1 !important;
+      --tw-exit-rotate: 0 !important;
+    }
+  }
+}
+/* The same net for `<html data-motion="reduce">` (an in-app switch), whatever the system says. `:where()` keeps the
+   selectors as light as the class-substring matches above; the two bodies must stay identical (test/motion-attribute.test.ts). */
+:root[data-motion="reduce"] {
+  --sutra-stagger: 0ms;
+}
+:where(:root[data-motion="reduce"]) {
   [class*="animate-fade-in"],
   [class*="animate-fade-up"],
   [class*="animate-pop-in"],
@@ -618,12 +676,12 @@
   [class*="animate-fade-out"] {
     animation-duration: 1ms;
   }
-  :root {
-    --sutra-stagger: 0ms;
-  }
-  *,
-  ::before,
-  ::after {
+  &,
+  & *,
+  &::before,
+  & ::before,
+  &::after,
+  & ::after {
     transition-duration: 1ms !important;
     transition-delay: 0s !important;
     --tw-enter-translate-x: 0 !important;
@@ -634,6 +692,35 @@
     --tw-exit-translate-y: 0 !important;
     --tw-exit-scale: 1 !important;
     --tw-exit-rotate: 0 !important;
+  }
+}
+
+/*
+ * The in-app motion setting, `<html data-motion="reduce" | "full">`; no attribute (or any other value) follows the system.
+ * "reduce" applies the net above even where the system asks for nothing. "full" switches it off where the system asks for
+ * reduced motion: an app-level override of an accessibility setting, so offer it only as an explicit user choice (a
+ * settings page), never as a default. usePrefersReducedMotion / prefersReducedMotion read the same attribute.
+ * Tailwind's `motion-reduce:` and `motion-safe:` are redefined to follow it too (they are used all over the components).
+ * They sit after the net on purpose: test/motion-guard.test.ts reads the first reduced-motion media block as the net.
+ */
+@custom-variant motion-reduce {
+  @media (prefers-reduced-motion: reduce) {
+    &:not(:where(:root[data-motion="full"], :root[data-motion="full"] *)) {
+      @slot;
+    }
+  }
+  &:where(:root[data-motion="reduce"], :root[data-motion="reduce"] *) {
+    @slot;
+  }
+}
+@custom-variant motion-safe {
+  @media (prefers-reduced-motion: no-preference) {
+    &:not(:where(:root[data-motion="reduce"], :root[data-motion="reduce"] *)) {
+      @slot;
+    }
+  }
+  &:where(:root[data-motion="full"], :root[data-motion="full"] *) {
+    @slot;
   }
 }
 
@@ -842,14 +929,22 @@
 /* Reduced motion: useViewTransition already skips the transition; this covers one started by hand. The old snapshot is
    hidden so the two images are not blended on top of each other for the one frame that is left. */
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
+  :root:not([data-motion="full"])::view-transition-group(*),
+  :root:not([data-motion="full"])::view-transition-old(*),
+  :root:not([data-motion="full"])::view-transition-new(*) {
     animation: none !important;
   }
-  ::view-transition-old(*) {
+  :root:not([data-motion="full"])::view-transition-old(*) {
     display: none;
   }
+}
+:root[data-motion="reduce"]::view-transition-group(*),
+:root[data-motion="reduce"]::view-transition-old(*),
+:root[data-motion="reduce"]::view-transition-new(*) {
+  animation: none !important;
+}
+:root[data-motion="reduce"]::view-transition-old(*) {
+  display: none;
 }
 
 /* ------------------------------------------------------------------ */
@@ -949,10 +1044,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [class*="scroll-reveal"],
-  [class*="scroll-progress-bar"] {
+  :where(:root:not([data-motion="full"])) [class*="scroll-reveal"],
+  :where(:root:not([data-motion="full"])) [class*="scroll-progress-bar"] {
     animation: none;
   }
+}
+:where(:root[data-motion="reduce"]) [class*="scroll-reveal"],
+:where(:root[data-motion="reduce"]) [class*="scroll-progress-bar"] {
+  animation: none;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1007,8 +1106,8 @@
   transition-duration: var(--sutra-spring-snappy-duration);
   transition-timing-function: var(--sutra-spring-snappy);
   @media (prefers-reduced-motion: no-preference) {
-    &[data-pointer="active"],
-    :where([data-pointer="active"]) & {
+    &[data-pointer="active"]:where(:root:not([data-motion="reduce"]) *),
+    :where(:root:not([data-motion="reduce"]) [data-pointer="active"]) & {
       transform: perspective(900px) rotateX(calc(var(--ty, 0) * var(--sutra-tilt-max) * -1)) rotateY(calc(var(--tx, 0) * var(--sutra-tilt-max)));
       will-change: transform;
     }
@@ -1022,10 +1121,28 @@
   transition-duration: var(--sutra-spring-snappy-duration);
   transition-timing-function: var(--sutra-spring-snappy);
   @media (prefers-reduced-motion: no-preference) {
-    &[data-pointer="active"],
-    :where([data-pointer="active"]) & {
+    &[data-pointer="active"]:where(:root:not([data-motion="reduce"]) *),
+    :where(:root:not([data-motion="reduce"]) [data-pointer="active"]) & {
       translate: calc(var(--pull-x, 0) * var(--sutra-magnetic-scale) * 1px) calc(var(--pull-y, 0) * var(--sutra-magnetic-scale) * 1px);
       will-change: translate;
     }
+  }
+}
+
+/*
+ * `<html data-motion="full">` where the system asks for less motion: the moving rules of tilt and magnetic sit inside a
+ * no-preference media query (above), so the override repeats them here. Keep the two in step. The hook writes
+ * `data-pointer` under "full" because it reads the same attribute.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-motion="full"] .tilt[data-pointer="active"],
+  :root[data-motion="full"] [data-pointer="active"] .tilt {
+    transform: perspective(900px) rotateX(calc(var(--ty, 0) * var(--sutra-tilt-max) * -1)) rotateY(calc(var(--tx, 0) * var(--sutra-tilt-max)));
+    will-change: transform;
+  }
+  :root[data-motion="full"] .magnetic[data-pointer="active"],
+  :root[data-motion="full"] [data-pointer="active"] .magnetic {
+    translate: calc(var(--pull-x, 0) * var(--sutra-magnetic-scale) * 1px) calc(var(--pull-y, 0) * var(--sutra-magnetic-scale) * 1px);
+    will-change: translate;
   }
 }

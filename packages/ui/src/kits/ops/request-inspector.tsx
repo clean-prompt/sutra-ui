@@ -571,7 +571,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
         {totalPages > 1 ? (
           <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
             <span className="font-mono tabular-nums">
-              {(current - 1) * pageSize + 1}–{Math.min(current * pageSize, filtered.length)} of {filtered.length}
+              <bdi dir="ltr">{(current - 1) * pageSize + 1}–{Math.min(current * pageSize, filtered.length)} of {filtered.length}</bdi>
             </span>
             <Pagination page={current} totalPages={totalPages} onPageChange={setPage} variant="simple" size="sm" />
           </div>

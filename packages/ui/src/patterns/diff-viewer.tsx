@@ -647,7 +647,7 @@ export const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
               {changeCount > 0 && (
                 <>
                   <span aria-live="polite" className="px-1 tabular-nums">
-                    {active >= 0 ? `${active + 1} of ${changeCount}` : ""}
+                    {active >= 0 ? <bdi dir="ltr">{`${active + 1} of ${changeCount}`}</bdi> : ""}
                   </span>
                   <Button size="icon-xs" variant="ghost" aria-label="Previous change" onClick={() => go(-1)}>
                     <RiArrowUpSLine aria-hidden />

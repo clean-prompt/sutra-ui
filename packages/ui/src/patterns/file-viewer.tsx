@@ -792,7 +792,7 @@ export const FileViewer = React.forwardRef<HTMLDivElement, FileViewerProps>(
             <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
           </button>
           <span aria-hidden data-slot="file-viewer-position" className="whitespace-nowrap px-1 text-xs tabular-nums text-muted-foreground">
-            {`${index + 1} of ${count}`}
+            <bdi dir="ltr">{`${index + 1} of ${count}`}</bdi>
           </span>
           <button type="button" className={navAction} aria-label="Next file" aria-disabled={!canNext || undefined} onClick={() => go(1)}>
             <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />

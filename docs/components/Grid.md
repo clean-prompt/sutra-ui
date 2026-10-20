@@ -11,7 +11,7 @@
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `gap` | `"sm" \| "md" \| "lg"` | `"md"` |  |
+| `gap` | `"sm" \| "md" \| "lg"` | `"md"` | Space between the cells: `sm` 12px, `md` 16px (24px from the tablet width up) or `lg` 24px (32px from the tablet width up). |
 
 ## Part props
 

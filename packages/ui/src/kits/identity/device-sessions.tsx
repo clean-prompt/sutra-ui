@@ -388,7 +388,7 @@ export const AccountPanel = React.forwardRef<HTMLDivElement, AccountPanelProps>(
         {(onSignOut || onSignOutEverywhere) && (
           <div className="flex flex-col gap-2 border-t border-border pt-4 sm:flex-row">
             {onSignOut && (
-              <Button variant="primary" className="flex-1" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} loading={signingOut} onClick={() => void signOut()}>
+              <Button variant="primary" className="sm:flex-1" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} loading={signingOut} onClick={() => void signOut()}>
                 Sign out
               </Button>
             )}
@@ -400,7 +400,7 @@ export const AccountPanel = React.forwardRef<HTMLDivElement, AccountPanelProps>(
                 confirmLabel="Sign out everywhere"
                 onConfirm={onSignOutEverywhere}
                 trigger={
-                  <Button variant="destructive-soft" className="flex-1">
+                  <Button variant="destructive-soft" className="sm:flex-1">
                     Sign out everywhere
                   </Button>
                 }

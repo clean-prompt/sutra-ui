@@ -4,8 +4,8 @@ import { cn } from "../lib/cn";
 const defaultColors = [
   "var(--color-brand-400)",
   "var(--color-brand-600)",
-  "#00b8db",
-  "#8e51ff",
+  "var(--chart-2)",
+  "var(--chart-6)",
   "var(--color-brand-200)",
 ];
 

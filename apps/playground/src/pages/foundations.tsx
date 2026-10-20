@@ -34,6 +34,7 @@ import {
 } from "@sutra/ui";
 import { RiAddLine, RiArrowDownSLine, RiCheckLine, RiCloseLine, RiRefreshLine } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
+import { MotionSettingControl } from "../components/motion-setting";
 import { MotionLists, MotionPresence, MotionSprings, MotionText } from "./motion-demos";
 import { MotionPointer, MotionScroll, MotionViewTransitions } from "./motion-nav-demos";
 
@@ -681,10 +682,15 @@ function ReducedMotionNote() {
         <InlineAlertTitle>{reduced ? "Reduced motion is on" : "Reduced motion is off"}</InlineAlertTitle>
         <InlineAlertDescription>
           {reduced
-            ? "Your system asks for less motion, so everything on this page is already still."
-            : "To try it, turn on Reduce motion in your system settings, or emulate prefers-reduced-motion in the browser's rendering tools."}
+            ? "Everything on this page is still: the system asks for less motion, or the setting below says Reduce."
+            : "Try it with the setting below, or turn on Reduce motion in your system settings (or emulate prefers-reduced-motion in the browser's rendering tools)."}
         </InlineAlertDescription>
       </InlineAlert>
+      <MotionSettingControl />
+      <p className="max-w-prose text-sm text-muted-foreground">
+        The setting is <InlineCode>&lt;html data-motion="reduce" | "full"&gt;</InlineCode>: the CSS net, Tailwind's <InlineCode>motion-reduce:</InlineCode> and{" "}
+        <InlineCode>motion-safe:</InlineCode>, <InlineCode>usePrefersReducedMotion()</InlineCode> and every hook that reads it follow it. Remove the attribute to follow the system again.
+      </p>
       <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
         <li>Decorative loops and entrances stop: the pulse, ping, dots, bars, caret, mesh, bob and ring, and every entrance utility above.</li>
         <li>

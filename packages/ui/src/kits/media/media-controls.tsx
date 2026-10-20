@@ -10,7 +10,7 @@ import {
   RiShuffleLine,
   RiTranslate2,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { useDrag } from "../../hooks/use-drag";
@@ -51,8 +51,15 @@ export function formatMediaTime(seconds: number, options: FormatMediaTimeOptions
 
 const MediaPortalContext = React.createContext<HTMLElement | null>(null);
 
+export interface MediaPortalProviderProps {
+  /** The element the media menus portal into (the player root, so they stay visible in fullscreen); `null` uses `document.body`. */
+  container: HTMLElement | null;
+  /** The media controls that read the container. */
+  children?: React.ReactNode;
+}
+
 /** Menus rendered by media controls portal into this element (needed while a player is fullscreen). */
-export function MediaPortalProvider({ container, children }: { container: HTMLElement | null; children?: React.ReactNode }) {
+export function MediaPortalProvider({ container, children }: MediaPortalProviderProps) {
   return <MediaPortalContext.Provider value={container}>{children}</MediaPortalContext.Provider>;
 }
 MediaPortalProvider.displayName = "MediaPortalProvider";
@@ -744,6 +751,7 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
     const currentChapter = chapterAt(shown);
 
     const timeClass = cn(
+      hitArea,
       "shrink-0 font-mono text-xs tabular-nums",
       overlay ? "text-white/80" : "text-muted-foreground"
     );
@@ -781,6 +789,7 @@ export const SeekBar = React.forwardRef<HTMLDivElement, SeekBarProps>(
         onLostPointerCapture={drag.handlers.onLostPointerCapture}
         onPointerLeave={() => setHover(null)}
         className={cn(
+          hitArea,
           "group/seek relative flex min-w-0 flex-1 cursor-pointer touch-none select-none items-center outline-none",
           size === "sm" ? "h-4" : "h-5",
           (disabled || !finite) && "cursor-default opacity-60"
@@ -970,7 +979,7 @@ export const VolumeControl = React.forwardRef<HTMLDivElement, VolumeControlProps
         muteToggle="label"
         muteLabel="Mute"
         unmuteLabel="Unmute"
-        accent={overlay ? "#fff" : undefined}
+        accent={overlay ? "white" : undefined}
         muteButtonClassName={mediaButtonVariants({ tone, size })}
         sliderClassName={cn(overlay && "[&_.bg-muted]:bg-white/25", vertical && "h-24 w-auto")}
         renderSlider={(slider) =>

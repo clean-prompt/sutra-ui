@@ -8,7 +8,7 @@ import {
   RiInformationLine,
   RiMegaphoneLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/tone";
 import { CloseButton } from "./close-button";
 
@@ -207,6 +207,7 @@ export const AlertBanner = React.forwardRef<HTMLDivElement, AlertBannerProps>(
     };
 
     const actionClass = cn(
+      hitArea,
       "group/banner-action inline-flex shrink-0 items-center gap-1 rounded-xs font-semibold underline-offset-4 hover:underline",
       "[&_svg]:size-4 [&_svg]:transition-transform [&_svg]:duration-150 hover:[&_svg]:translate-x-0.5 rtl:hover:[&_svg]:-translate-x-0.5",
       focusRing,

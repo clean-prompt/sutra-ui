@@ -1,7 +1,7 @@
 /* KunjiButton (brand button that opens the sign-in dialog) and KunjiRpSignIn (the opt-in hosted rp.js widget). */
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitAreaTouch } from "../../lib/cn";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { errorMessage as messageOf } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -49,7 +49,7 @@ export const kunjiButtonVariants = cva(
        * @default "md"
        */
       size: {
-        sm: "h-8 px-3 text-sm [&_svg]:size-4",
+        sm: ["h-8 px-3 text-sm [&_svg]:size-4", hitAreaTouch],
         md: "h-10 px-5 text-[15px] [&_svg]:size-[18px]",
         lg: "h-12 px-5 text-base [&_svg]:size-5",
       },

@@ -94,6 +94,8 @@ export const Progress = React.forwardRef<
       formatValue && !isIndeterminate && !props.getValueLabel && (typeof valueText === "string" || typeof valueText === "number")
         ? String(valueText)
         : undefined;
+    // The generated percentage is isolated so a sign or a neighbour cannot reorder it in right-to-left; a custom formatter owns its text.
+    const valueNode = valueText !== null && !formatValue ? <bdi dir="ltr">{valueText}</bdi> : valueText;
     const position = showValue === true ? (label ? "top" : "right") : showValue || null;
     const labelId = React.useId();
 
@@ -139,7 +141,7 @@ export const Progress = React.forwardRef<
               <span />
             )}
             {position === "top" && valueText !== null ? (
-              <span className="tabular-nums text-muted-foreground">{valueText}</span>
+              <span className="tabular-nums text-muted-foreground">{valueNode}</span>
             ) : null}
           </div>
         ) : null}
@@ -147,7 +149,7 @@ export const Progress = React.forwardRef<
           {bar}
           {position === "right" && valueText !== null ? (
             <span className="min-w-9 shrink-0 text-end text-sm font-medium tabular-nums text-foreground">
-              {valueText}
+              {valueNode}
             </span>
           ) : null}
         </div>
@@ -319,7 +321,7 @@ export const ProgressCircle = React.forwardRef<HTMLDivElement, ProgressCirclePro
             size < 48 ? "text-2xs" : size < 80 ? "text-sm" : size < 128 ? "text-lg" : "text-display-xs"
           )}
         >
-          {children ?? (showValue ? `${Math.round(pct)}%` : null)}
+          {children ?? (showValue ? <bdi dir="ltr">{`${Math.round(pct)}%`}</bdi> : null)}
         </span>
       </div>
     );

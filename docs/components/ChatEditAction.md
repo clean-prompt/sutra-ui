@@ -12,7 +12,7 @@
 |---|---|---|---|
 | `asChild` | `boolean` |  | Render as the child element (e.g. a link) while keeping button styles. |
 | `fullWidth` | `boolean \| null` |  | Stretches the button to the width of its container. |
-| `label` | `string` | `"Edit"` |  |
+| `label` | `string` | `"Edit"` | Accessible name and tooltip of the button. Default "Edit". |
 | `leadingIcon` | `React.ReactNode` |  | Icon before the label. |
 | `loading` | `boolean` |  | Shows a spinner and disables the button. |
 | `pressed` | `boolean` |  | Marks the action as a toggled-on state (aria-pressed). |

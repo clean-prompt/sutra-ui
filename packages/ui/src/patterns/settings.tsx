@@ -383,9 +383,18 @@ export interface SettingsStaticRowProps extends SettingsRowCommon {
 }
 
 export type SettingsRowProps =
-  | ({ type: "toggle" } & SettingsToggleRowProps)
-  | ({ type: "nav" } & SettingsNavRowProps)
-  | ({ type?: "static" } & SettingsStaticRowProps);
+  | ({
+      /** `"toggle"` renders a switch at the end of the row. */
+      type: "toggle";
+    } & SettingsToggleRowProps)
+  | ({
+      /** `"nav"` renders a button or link row with the current value and a chevron. */
+      type: "nav";
+    } & SettingsNavRowProps)
+  | ({
+      /** `"static"` (the default) renders a plain row with `children` as its control. */
+      type?: "static";
+    } & SettingsStaticRowProps);
 
 const rowBase = "flex w-full items-center gap-3 px-4 py-3 text-start";
 

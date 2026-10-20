@@ -9,7 +9,7 @@ import {
   RiTerminalBoxLine,
 } from "@remixicon/react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { useDirection } from "../../hooks/use-direction";
 import type { Tone } from "../../lib/tone";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -222,6 +222,7 @@ export const BackendPicker = React.forwardRef<HTMLDivElement, BackendPickerProps
                     id={itemId}
                     value={b.id}
                     className={cn(
+                      hitArea,
                       "relative z-10 mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border border-input bg-background shadow-xs",
                       "data-[state=checked]:border-primary data-[state=checked]:bg-primary",
                       focusRing,

@@ -1489,11 +1489,13 @@ export function FormsPage() {
       <Demo id="label" title="Label" description="Form label with required marker and muted hint." align="start">
         <LabelDemo />
       </Demo>
-      <Demo id="time-picker" title="Time Picker" description="Hour and minute segments that follow the locale (12/24-hour, order), with arrows, typing, step, min/max and clear." align="start">
+      <Demo id="time-picker" title="Time Picker" description="Hour and minute segments that follow the locale (12/24-hour, order), with arrows, typing, step, min/max and clear. wheel adds scrolling wheels in a popover: always with wheel, on touch screens only with wheel=&quot;touch&quot;." align="start">
         <div className="flex flex-wrap gap-4">
           <TimePicker defaultValue="09:30" aria-label="Start time" />
           <TimePicker defaultValue="18:45" hourCycle={24} step={15} clearable aria-label="End time" />
           <TimePicker granularity="second" defaultValue="07:05:30" aria-label="Alarm" />
+          <TimePicker defaultValue="14:15" wheel step={5} min="08:00" max="20:00" aria-label="Meeting time, with wheels" />
+          <TimePicker defaultValue="07:30" wheel="touch" hourCycle={24} aria-label="Wake-up time, wheels on touch screens" />
         </div>
       </Demo>
       <WheelPickerDemo />

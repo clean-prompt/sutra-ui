@@ -111,7 +111,7 @@ The root is a `<nav>` labelled "Pagination" (override with `aria-label`). Page b
 
 ### Reduced motion
 
-Mostly static. The `dots` indicator grows with a width transition and the button states fade; both end in 1 ms under reduced motion. The `loading` spinner on the load-more button keeps turning.
+Mostly static. The `dots` indicator (each dot has a 24px hit area; neighbours are 14px apart, so the boxes overlap and the later dot wins the overlap) grows with a width transition and the button states fade; both end in 1 ms under reduced motion. The `loading` spinner on the load-more button keeps turning.
 
 ### Server rendering
 

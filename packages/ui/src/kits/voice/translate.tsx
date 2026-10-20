@@ -12,7 +12,7 @@ import {
   RiTranslate2,
   RiVolumeUpLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { formatDuration } from "../../lib/duration";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
@@ -625,7 +625,7 @@ export const SourcePane = React.forwardRef<HTMLTextAreaElement, SourcePaneProps>
         {suggestion ? (
           <p className="px-4 pb-1 text-sm text-muted-foreground" data-slot="did-you-mean">
             Did you mean:{" "}
-            <button type="button" onClick={() => onAcceptSuggestion?.(suggestion)} className={cn("rounded-sm font-medium italic text-primary underline-offset-2 hover:underline", focusRing)}>
+            <button type="button" onClick={() => onAcceptSuggestion?.(suggestion)} className={cn(hitArea, "rounded-sm font-medium italic text-primary underline-offset-2 hover:underline", focusRing)}>
               {suggestion}
             </button>
           </p>
@@ -635,7 +635,7 @@ export const SourcePane = React.forwardRef<HTMLTextAreaElement, SourcePaneProps>
           {speak ?? <SpeakButton text={value} lang={lang && lang !== DETECT_LANGUAGE ? lang : undefined} />}
           {tools}
           <span className={cn("ms-auto pe-2 text-xs tabular-nums", over ? "text-destructive" : "text-muted-foreground")}>
-            {value.length.toLocaleString("en-US")} / {maxLength.toLocaleString("en-US")}
+            <bdi dir="ltr">{value.length.toLocaleString("en-US")} / {maxLength.toLocaleString("en-US")}</bdi>
             <span className="sr-only"> characters</span>
           </span>
         </div>

@@ -65,7 +65,7 @@ Header cell, optionally sortable.
 |---|---|
 | Tab / Shift+Tab | Moves to sort buttons in headers, checkboxes and any control in a cell |
 | Enter, Space | On a sortable header, calls its `onSort` (native `<button>`) |
-| Space | On a `TableCheckbox`, toggles it (native checkbox) |
+| Space | On a `TableCheckbox`, toggles it (native checkbox with a 24px hit area) |
 
 There is no arrow-key navigation between cells and rows are not focusable; this is a plain table (only the scroll box around it takes focus, and only while the table is wider or taller than it). No key depends on direction, but `align` is logical: `left` and `right` mean start and end, so they flip in RTL.
 

@@ -5,6 +5,7 @@ import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/to
 import { accentClasses, accentColorValue, accentStyle, resolveAccent, type Accent } from "../lib/accent";
 import { KeyValueList } from "../primitives/key-value";
 import { Progress, Skeleton } from "../primitives/progress";
+import { isolateNumeric } from "../primitives/numeric-internal";
 import { Sparkline, type SparklineColor } from "./sparkline";
 import { AnimatedNumber } from "./animated-number";
 
@@ -43,7 +44,7 @@ const valueSizes = { sm: "text-xl", md: "text-display-xs", lg: "text-display-sm"
 const unitSizes = { sm: "text-sm", md: "text-sm", lg: "text-base", xl: "text-xl" } as const;
 /** The trailing chevron of an interactive card; it nudges right when the card (`group/stat`) is hovered. */
 const chevronClass = (extra?: string) =>
-  cn("size-4 shrink-0 text-muted-foreground transition-transform group-hover/stat:translate-x-0.5 rtl:group-hover/stat:-translate-x-0.5", extra);
+  cn("size-4 shrink-0 text-muted-foreground transition-transform rtl:-scale-x-100 group-hover/stat:translate-x-0.5 rtl:group-hover/stat:-translate-x-0.5", extra);
 
 export interface StatValueProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
   /** The number or text to show. */
@@ -74,7 +75,7 @@ export const StatValue = React.forwardRef<HTMLSpanElement, StatValueProps>(
       className={cn(font === "sans" ? "font-sans" : "font-mono", "font-semibold tabular-nums tracking-tight", valueSizes[size], className)}
       {...props}
     >
-      {animate && typeof value === "number" ? <AnimatedNumber value={value} format={format} locale={locale} /> : value}
+      {animate && typeof value === "number" ? <bdi dir="ltr"><AnimatedNumber value={value} format={format} locale={locale} /></bdi> : isolateNumeric(value)}
       {unit ? <span className={cn("ms-1 font-medium text-muted-foreground", unitSizes[size])}>{unit}</span> : null}
     </span>
   )
@@ -267,7 +268,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
       accentLabel ? cn("font-medium", accentClasses.text) : "text-muted-foreground"
     );
     const chevronEl = showChevron ? (
-      <RiArrowRightSLine aria-hidden data-slot="stat-chevron" className={chevronClass("ms-auto rtl:-scale-x-100")} />
+      <RiArrowRightSLine aria-hidden data-slot="stat-chevron" className={chevronClass("ms-auto")} />
     ) : null;
     const stretched = cn(
       "flex min-w-0 flex-1 items-center gap-2 text-start outline-none",
@@ -388,7 +389,7 @@ export const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
                   >
                     <DeltaIcon aria-hidden className="size-3.5" />
                     <span className="sr-only">{direction === "up" ? "Increased" : direction === "down" ? "Decreased" : "Unchanged"}</span>
-                    {deltaText}
+                    {isolateNumeric(deltaText)}
                     {deltaLabel ? <span className="ms-1 font-normal text-muted-foreground">{deltaLabel}</span> : null}
                   </span>
                 ) : null}

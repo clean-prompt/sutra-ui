@@ -13,7 +13,7 @@ server: ssr-safe
 | Tab / Shift+Tab | Focusing the trigger opens the tooltip after the delay; moving focus away closes it |
 | Escape | Close the tooltip while its trigger has focus |
 
-The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. Pressing the trigger (click, Enter or Space) also closes the tooltip.
+The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `top`, `left` and `right` stay physical, and Radix still flips the bubble on a collision. Pressing the trigger (click, Enter or Space) also closes the tooltip.
 
 ## Screen readers
 The content is `role="tooltip"` and, while open, the trigger gets `aria-describedby` pointing at it, so it is read as the trigger's description, not its name. Give icon-only triggers an `aria-label`: the tooltip alone does not name them. If you pass `aria-label` to `TooltipContent`, Radix hides the visual content from assistive technology and exposes that label in a visually hidden `role="tooltip"` copy. The arrow is decoration. Keep tooltip text short and plain; no links or buttons.

@@ -38,8 +38,16 @@ export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
 );
 Container.displayName = "Container";
 
+export interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Space between the cells: `sm` 12px, `md` 16px (24px from the tablet width up) or `lg` 24px (32px from the tablet width up).
+   * @default "md"
+   */
+  gap?: "sm" | "md" | "lg";
+}
+
 /** 12-column responsive grid (4 → 8 → 12 columns). Use `GridItem span` to size children. */
-export const Grid = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { gap?: "sm" | "md" | "lg" }>(
+export const Grid = React.forwardRef<HTMLDivElement, GridProps>(
   ({ className, gap = "md", ...props }, ref) => (
     <div
       ref={ref}

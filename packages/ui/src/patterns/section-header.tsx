@@ -127,7 +127,7 @@ export interface PageHeaderProps extends Omit<SectionHeaderProps, "as" | "align"
 }
 
 /** The back arrow nudges left when its button (`group/back`) is hovered. */
-const backArrow = "transition-transform group-hover/back:-translate-x-0.5 rtl:group-hover/back:translate-x-0.5";
+const backArrow = "transition-transform rtl:-scale-x-100 group-hover/back:-translate-x-0.5 rtl:group-hover/back:translate-x-0.5";
 
 /** Page-level header: breadcrumbs, back button, h1 title, actions and tabs. */
 export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(

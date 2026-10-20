@@ -2,7 +2,10 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ShortcutProvider, TooltipProvider } from "@sutra/ui";
 import { App } from "./App";
+import { applyStoredMotion } from "./components/motion-setting";
 import "./index.css";
+
+applyStoredMotion();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

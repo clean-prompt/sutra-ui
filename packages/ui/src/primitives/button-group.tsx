@@ -61,9 +61,21 @@ interface ButtonGroupOwnProps {
 }
 
 export type ButtonGroupProps =
-  | (ButtonGroupOwnProps & React.HTMLAttributes<HTMLDivElement> & { type?: undefined })
-  | (ButtonGroupOwnProps & Omit<ToggleGroupPrimitive.ToggleGroupSingleProps, "orientation">)
-  | (ButtonGroupOwnProps & Omit<ToggleGroupPrimitive.ToggleGroupMultipleProps, "orientation">);
+  | (ButtonGroupOwnProps &
+      React.HTMLAttributes<HTMLDivElement> & {
+        /** Leave it out for a plain attached row of buttons; `"single"` or `"multiple"` turns the group into toggle buttons. */
+        type?: undefined;
+      })
+  | (ButtonGroupOwnProps &
+      Omit<ToggleGroupPrimitive.ToggleGroupSingleProps, "orientation" | "type"> & {
+        /** Toggle mode: at most one item is pressed (radio roles); `ButtonGroupItem` then needs a `value`. */
+        type: "single";
+      })
+  | (ButtonGroupOwnProps &
+      Omit<ToggleGroupPrimitive.ToggleGroupMultipleProps, "orientation" | "type"> & {
+        /** Toggle mode: any number of items can be pressed (`aria-pressed`); `ButtonGroupItem` then needs a `value`. */
+        type: "multiple";
+      });
 
 function omitOwn<T extends ButtonGroupOwnProps>(props: T): Omit<T, keyof ButtonGroupOwnProps> {
   const { orientation: _o, size: _s, attached: _a, className: _c, ...rest } = props;

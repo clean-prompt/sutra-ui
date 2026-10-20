@@ -21,7 +21,7 @@ There are no arrow-key shortcuts, so keys do not swap in RTL; the row flows in r
 The root is a `<nav>` labelled "Pagination" (override with `aria-label`). Page buttons are named "Page 3" and the current one has `aria-current="page"`; previous and next are named "Previous page" and "Next page" whatever their visible text (pass your own `aria-label` if you change `children`). A plain ellipsis is `aria-hidden`; with `onJump` it is a button named "Jump to a page" (`jumpLabel`), and the field it opens is named "Go to page, 1 to N". In narrow containers the page list is replaced by "Page x of y" in an `aria-live="polite"` region. `PaginationStatus` is a polite live region too (`aria-busy` while `loading`, with an sr-only "Loading…" placeholder), so it announces the new row window after a page change.
 
 ## Reduced motion
-Mostly static. The `dots` indicator grows with a width transition and the button states fade; both end in 1 ms under reduced motion. The `loading` spinner on the load-more button keeps turning.
+Mostly static. The `dots` indicator (each dot has a 24px hit area; neighbours are 14px apart, so the boxes overlap and the later dot wins the overlap) grows with a width transition and the button states fade; both end in 1 ms under reduced motion. The `loading` spinner on the load-more button keeps turning.
 
 ## Server rendering
 The pager renders plain markup on the server. Whether the page list or the "Page x of y" label shows depends on a container query (`@lg`) in CSS, not on JavaScript. `PaginationStatus` formats numbers with `Intl.NumberFormat`: without `locale` the server and the browser may use different default locales and print "1,245" and "1.245", so pass `locale` when rendering on a server.

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn, focusRing, hitAreaTouch } from "../lib/cn";
+import { cn, focusRing, hitArea, hitAreaTouch } from "../lib/cn";
 import { Spinner, type SpinnerProps } from "./spinner";
 
 export const buttonVariants = cva(
@@ -33,7 +33,7 @@ export const buttonVariants = cva(
         "destructive-soft":
           "bg-destructive-soft text-destructive-soft-foreground hover:bg-destructive-soft/70",
         inverse: "bg-inverse text-inverse-foreground hover:bg-inverse/90",
-        link: "h-auto px-0 text-primary underline-offset-4 hover:underline active:scale-100",
+        link: ["h-auto px-0 text-primary underline-offset-4 hover:underline active:scale-100", hitArea],
       },
       /**
        * Button height and padding; `icon-*` sizes are square.

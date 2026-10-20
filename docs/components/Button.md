@@ -64,7 +64,7 @@ Server render: same markup as the client. Renders plain markup with no browser A
 - `loading` replaces `leadingIcon` with the spinner but keeps `trailingIcon`, and it also disables the button: do not combine it with your own `disabled` state expecting a different look.
 - `type` defaults to `"button"`, not the browser's `"submit"`: pass `type="submit"` for form submit buttons.
 - Use `asChild` for links (`<Button asChild><a href>`); it makes the link look and act inert while disabled or loading, but it is still an anchor, not a button.
-- `variant="link"` drops the height and padding (`h-auto px-0`); size classes then only change the text.
+- `variant="link"` drops the height and padding (`h-auto px-0`); size classes then only change the text. It keeps a 24px-tall hit area (an invisible `::after`), so a stand-alone link button is still a valid tap target.
 
 ## Example
 

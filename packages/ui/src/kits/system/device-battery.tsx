@@ -11,7 +11,7 @@ import {
   RiSpeakerLine,
   type RemixiconComponentType,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { clamp } from "../../lib/math";
 import { formatList } from "../../lib/format";
 import { accentClasses, accentStyle, type Accent } from "../../lib/accent";
@@ -219,6 +219,7 @@ export const DeviceBatteryList = React.forwardRef<HTMLDivElement, DeviceBatteryL
     const lowest = computed.lowest;
 
     const settingsClass = cn(
+      hitArea,
       "inline-flex items-center gap-0.5 whitespace-nowrap rounded-xs font-medium underline-offset-4 hover:underline [&_svg]:size-4",
       accentClasses.text,
       focusRing

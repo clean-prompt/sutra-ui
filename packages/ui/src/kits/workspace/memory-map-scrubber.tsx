@@ -217,7 +217,7 @@ export const TimeScrubber = React.forwardRef<HTMLDivElement, TimeScrubberProps>(
             {fmt(value[0])} – {fmt(value[1])}
           </span>
           <span className="ms-auto tabular-nums" aria-live="polite" aria-atomic>
-            {playing ? "" : `${inRange} of ${nodes.length} in range`}
+            {playing ? "" : <bdi dir="ltr">{`${inRange} of ${nodes.length} in range`}</bdi>}
           </span>
         </div>
       </div>

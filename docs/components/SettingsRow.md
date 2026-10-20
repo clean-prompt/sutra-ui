@@ -22,5 +22,5 @@
 | `icon` | `React.ReactNode` |  | Icon at the start of the row. |
 | `onCheckedChange` | `(checked: boolean) => void` |  | Called with the new state when the switch is toggled. |
 | `onClick` | `(event: React.MouseEvent<HTMLElement>) => void` |  | Called when the row is clicked; makes the row a button. |
-| `type` | `"toggle" \| "nav" \| "static"` |  |  |
+| `type` | `"toggle" \| "nav" \| "static"` |  | `"toggle"` renders a switch at the end of the row. `"nav"` renders a button or link row with the current value and a chevron. `"static"` (the default) renders a plain row with `children` as its control. |
 | `value` | `React.ReactNode` |  | Current value shown before the chevron, e.g. "System" or "3". |

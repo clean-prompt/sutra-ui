@@ -223,6 +223,8 @@ export const FloatingPanes = React.forwardRef<HTMLDivElement, FloatingPanesProps
                 data-slot="floating-pane-resize"
                 className={cn(
                   "absolute end-0 bottom-0 size-4 cursor-nwse-resize touch-none rounded-ss-xs",
+                  // The 24px hit area stays inside the pane corner: the pane clips what hangs outside it.
+                  "after:absolute after:end-0 after:bottom-0 after:size-6 after:content-['']",
                   "bg-[linear-gradient(135deg,transparent_55%,var(--color-border-strong)_55%,var(--color-border-strong)_65%,transparent_65%,transparent_75%,var(--color-border-strong)_75%,var(--color-border-strong)_85%,transparent_85%)]",
                   focusRing
                 )}

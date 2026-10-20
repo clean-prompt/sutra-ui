@@ -65,52 +65,30 @@ const COLOR_ALLOW: Allow = {
   "patterns/fade-text.tsx": [2, "mask stops"],
   "primitives/scroll-area.tsx": [8, "mask stops"],
   "kits/media/media-cards.tsx": [4, "mask stops"],
-  // debt: should move to tokens
-  "blocks/auth-pages.tsx": [3, "debt: demo hero gradient and white-alpha grid"],
-  "blocks/section-header-blocks.tsx": [1, "debt: white-alpha grid on a dark hero"],
-  "kits/editor/code-editor.tsx": [10, "debt: CodeMirror theme literals and a shadow"],
-  "kits/geo/globe.tsx": [3, "debt: white highlight stops of the sphere shading"],
-  "kits/identity/secret.tsx": [1, "debt: canvas fallback ink"],
-  "kits/media/media-controls.tsx": [1, "debt: white accent over video"],
-  "patterns/image-cropper.tsx": [8, "debt: white-alpha guide lines over the image"],
-  "primitives/avatar.tsx": [1, "debt: white initials on solid fills (fails AA on cyan, yellow, green, orange)"],
-  "primitives/mesh-gradient.tsx": [2, "debt: default decorative hues"],
+  // match keys, not applied colours
+  "kits/editor/code-editor.tsx": [9, "match keys: CodeMirror's default highlight colours, looked up so the theme can swap each for a token"],
+  // debt that is left on purpose (listed so the count can only fall)
+  "kits/identity/secret.tsx": [1, "debt (kits/identity): canvas fallback ink"],
+  "primitives/avatar.tsx": [1, "debt: white initials on a solid fill are pinned by test/merge-identity.test.tsx (fails AA on cyan, yellow, green, orange)"],
 };
 
 /* ---- 1b. Tailwind palette classes instead of tokens -------------------------------------------------------- */
 
 const PALETTE_ALLOW: Allow = {
-  "primitives/badge.tsx": [50, "categorical colour palette (gray, blue, purple ...)"],
-  "patterns/log-viewer.tsx": [30, "fixed dark log surface"],
-  "patterns/code-block.tsx": [27, "syntax palette on the fixed code surface"],
-  "kits/agent-admin/agent-jobs-delivery.tsx": [18, "provider tints"],
-  "blocks/marketing-blocks.tsx": [12, "debt: marketing art"],
-  "kits/agent/tool-timeline.tsx": [8, "debt: stderr text on the code surface"],
-  "kits/social/call-overlay.tsx": [5, "debt: call controls over video"],
-  "kits/media/media-cards.tsx": [4, "debt: overlays on artwork"],
-  "kits/billing/payment-card.tsx": [3, "card art"],
+  "primitives/badge.tsx": [50, "Badge colour=gray|blue|purple|pink|orange: a fixed categorical palette whose names are the API (CONVENTIONS: categorical palettes stay on color)"],
+  "patterns/log-viewer.tsx": [30, "the ANSI SGR colour map (16 foregrounds and backgrounds) on the fixed dark log surface"],
+  "patterns/code-block.tsx": [27, "syntax palettes: a fixed dark-surface set and a light set that carries its own dark: steps"],
+  "kits/billing/payment-card.tsx": [3, "card chip and network art"],
   "kits/identity/qr-scanner.tsx": [3, "debt: scanner overlay"],
-  "kits/agent-admin/remote-screen.tsx": [2, "debt"],
-  "patterns/file-upload.tsx": [2, "debt: file-type tints"],
-  "blocks/auth-pages.tsx": [1, "debt"],
-  "kits/workspace/today-timeline.tsx": [1, "debt"],
-  "patterns/camera-capture.tsx": [1, "debt"],
   "primitives/app-store-badge.tsx": [1, "store badge art"],
 };
 
 /* ---- 2. dark: prefixes ------------------------------------------------------------------------------------- */
 
 const DARK_ALLOW: Allow = {
-  "primitives/badge.tsx": [20, "categorical palette needs its own dark steps"],
-  "patterns/code-block.tsx": [9, "light and dark syntax palettes"],
-  "kits/agent-admin/agent-jobs-delivery.tsx": [6, "provider tints"],
-  "blocks/marketing-blocks.tsx": [4, "marketing art"],
-  "assets/icons.tsx": [3, "glass icon tiles"],
-  "primitives/monogram.tsx": [3, "brand-scale gradient tile"],
-  "assets/backgrounds.tsx": [1, "blend mode"],
-  "assets/country-flags.tsx": [1, "flag edge ring"],
-  "assets/device-frame.tsx": [1, "device ring"],
-  "kits/agent-admin/local-models.tsx": [1, "debt: brand-scale gradient"],
+  "primitives/badge.tsx": [20, "Badge's categorical palette needs its own dark steps (a hue has no token pair)"],
+  "patterns/code-block.tsx": [9, "syntax palettes: a light set and a dark set per token type"],
+  "assets/backgrounds.tsx": [1, "mix-blend-mode is not a colour, so no light-dark() token can carry it"],
 };
 
 /* ---- 3. legacy tone aliases -------------------------------------------------------------------------------- */

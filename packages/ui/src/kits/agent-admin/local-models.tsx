@@ -260,7 +260,7 @@ export const StagedSetupHero = React.forwardRef<HTMLDivElement, StagedSetupHeroP
     const eta = download && download.bytesPerSecond ? (download.totalBytes - download.receivedBytes) / download.bytesPerSecond : null;
     return (
       <div ref={ref} data-slot="staged-setup-hero" className={cn("w-full overflow-hidden rounded-box border border-border bg-card shadow-xs", className)} {...props}>
-        <div className="bg-gradient-to-br from-brand-50 to-transparent px-5 pb-4 pt-5 dark:from-brand-950/40">
+        <div className="bg-gradient-to-br from-[color:light-dark(var(--b-50),color-mix(in_oklab,var(--b-950)_40%,transparent))] to-transparent px-5 pb-4 pt-5">
           <h3 className="text-base font-semibold text-foreground">{title}</h3>
           {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
         </div>
@@ -328,7 +328,7 @@ export const StagedSetupHero = React.forwardRef<HTMLDivElement, StagedSetupHeroP
                   <Progress value={pct} size="sm" aria-label={`Downloading ${download.label ?? "model"}`} />
                   <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-2xs tabular-nums text-muted-foreground">
                     <span>
-                      {formatBytes(download.receivedBytes)} / {formatBytes(download.totalBytes)}
+                      <bdi dir="ltr">{formatBytes(download.receivedBytes)} / {formatBytes(download.totalBytes)}</bdi>
                     </span>
                     <span>
                       {formatSpeed(download.bytesPerSecond)} · {formatEta(eta)} left

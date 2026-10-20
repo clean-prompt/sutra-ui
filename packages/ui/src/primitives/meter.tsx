@@ -182,7 +182,7 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
               <Skeleton shape="text" data-slot="meter-value-skeleton" className="w-10 shrink-0 self-center" />
             ) : showValue ? (
               <span data-slot="meter-value" className={cn("shrink-0 font-mono font-semibold tabular-nums", empty ? "text-muted-foreground" : levelText[level])}>
-                {text}
+                {valueText === undefined && !empty ? <bdi dir="ltr">{text}</bdi> : text}
               </span>
             ) : null}
           </div>
@@ -587,7 +587,7 @@ export const StackedMeter = React.forwardRef<HTMLDivElement, StackedMeterProps>(
             ) : (
               <span />
             )}
-            <span className="font-mono font-semibold tabular-nums text-foreground">{text}</span>
+            <span className="font-mono font-semibold tabular-nums text-foreground">{valueText === undefined && max !== undefined ? <bdi dir="ltr">{text}</bdi> : text}</span>
           </div>
         ) : null}
         <div

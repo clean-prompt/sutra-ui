@@ -20,6 +20,7 @@ Floating tooltip bubble (dark inverse by default).
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `arrow` | `boolean` | `true` | Show the pointing arrow. Default true. |
+| `side` | `FloatingSide` | `"top"` | Side of the trigger the tooltip opens on. `start` and `end` follow the reading direction (left and right in LTR, swapped in RTL, read from `DirectionProvider` or `<html dir>`); `left` and `right` stay physical. It flips when there is no room. |
 | `variant` | `"inverse" \| "light"` | `"inverse"` | Look of the bubble: `inverse` (dark, default) or `light` (bordered popover surface). |
 
 ## Notes
@@ -39,7 +40,7 @@ Floating tooltip bubble (dark inverse by default).
 | Tab / Shift+Tab | Focusing the trigger opens the tooltip after the delay; moving focus away closes it |
 | Escape | Close the tooltip while its trigger has focus |
 
-The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. Pressing the trigger (click, Enter or Space) also closes the tooltip.
+The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `top`, `left` and `right` stay physical, and Radix still flips the bubble on a collision. Pressing the trigger (click, Enter or Space) also closes the tooltip.
 
 ### Screen readers
 

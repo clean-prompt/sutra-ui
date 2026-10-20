@@ -102,7 +102,7 @@ export const DeviceFrame = React.forwardRef<HTMLDivElement, DeviceFrameProps>(
         ref={ref}
         data-variant={variant}
         className={cn(
-          "relative mx-auto max-w-full shadow-2xl ring-1 ring-black/10 dark:ring-white/15",
+          "relative mx-auto max-w-full shadow-2xl ring-1 ring-[color:light-dark(color-mix(in_oklab,black_10%,transparent),color-mix(in_oklab,white_15%,transparent))]",
           isPhone ? "w-72 rounded-[3rem] p-2.5" : "w-[36rem] rounded-[2rem] p-3",
           className
         )}

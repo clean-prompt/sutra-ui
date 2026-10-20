@@ -14,7 +14,6 @@ import { isEditableTarget, matchesShortcut } from "../lib/shortcuts";
 import { useHasShortcutProvider } from "../hooks/use-shortcut-manager";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useShortcut } from "./shortcuts";
-import { useDirection } from "../hooks/use-direction";
 
 /** Below the `md` breakpoint the sidebar becomes a sheet. */
 const MOBILE_QUERY = `(max-width: ${breakpoints.md - 1}px)`;
@@ -292,11 +291,13 @@ export const SidebarGroup = React.forwardRef<HTMLDivElement, React.HTMLAttribute
 );
 SidebarGroup.displayName = "SidebarGroup";
 
+export interface SidebarGroupLabelProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Render the label as its child element (a heading, a link) instead of a `div`, merging the label's classes and props into it. */
+  asChild?: boolean;
+}
+
 /** Group heading; fades out in icon mode. */
-export const SidebarGroupLabel = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
->(({ className, asChild, ...props }, ref) => {
+export const SidebarGroupLabel = React.forwardRef<HTMLDivElement, SidebarGroupLabelProps>(({ className, asChild, ...props }, ref) => {
   const Comp: React.ElementType = asChild ? Slot.Root : "div";
   return (
     <Comp
@@ -394,7 +395,6 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
       ) : null;
 
     // The tooltip opens towards the content, the inline end of a sidebar that sits at the start.
-    const tipSide = useDirection() === "rtl" ? "left" : "right";
     const button = (
       <Comp
         ref={ref}
@@ -416,7 +416,7 @@ export const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenu
     return (
       <Tooltip delayDuration={0}>
         <TooltipPrimitive.Trigger asChild>{button}</TooltipPrimitive.Trigger>
-        <TooltipContent side={tipSide} align="center" hidden={!collapsed || isMobile}>
+        <TooltipContent side="end" align="center" hidden={!collapsed || isMobile}>
           {tip}
         </TooltipContent>
       </Tooltip>
@@ -542,7 +542,7 @@ export const SidebarTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
         }}
         {...props}
       >
-        {children ?? <RiLayoutLeftLine aria-hidden />}
+        {children ?? <RiLayoutLeftLine aria-hidden className="rtl:-scale-x-100" />}
       </Button>
     );
   }

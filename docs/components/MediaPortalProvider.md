@@ -9,5 +9,5 @@
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `container` (required) | `HTMLElement \| null` |  |  |
-| `children` | `React.ReactNode` |  |  |
+| `container` (required) | `HTMLElement \| null` |  | The element the media menus portal into (the player root, so they stay visible in fullscreen); `null` uses `document.body`. |
+| `children` | `React.ReactNode` |  | The media controls that read the container. |

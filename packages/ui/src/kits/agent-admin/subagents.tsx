@@ -9,7 +9,7 @@ import {
   RiStopFill,
   RiTimeLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { formatDuration, type FormatDurationOptions } from "../../lib/duration";
 import { formatCost, formatTokens } from "../../lib/format";
 import { normalizeTaskStatus, type TaskStatusInput } from "../../lib/status";
@@ -404,7 +404,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                     tabIndex={-1}
                     aria-hidden
                     onClick={() => toggle(n.id)}
-                    className="-ms-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground"
+                    className={cn(hitArea, "-ms-0.5 inline-flex size-4 shrink-0 items-center justify-center rounded-xs text-muted-foreground hover:text-foreground")}
                   >
                     <RiArrowRightSLine aria-hidden className={cn("size-4 chevron-turn rtl:-scale-x-100", open && "rotate-90 rtl:-rotate-90")} />
                   </button>
@@ -414,7 +414,7 @@ export const SubagentTree = React.forwardRef<HTMLDivElement, SubagentTreeProps>(
                 <SubagentStatusGlyph status={n.status} />
                 {n.batch && (
                   <span className="font-mono text-2xs tabular-nums text-muted-foreground">
-                    [{n.batch.index}/{n.batch.total}]
+                    <bdi dir="ltr">[{n.batch.index}/{n.batch.total}]</bdi>
                   </span>
                 )}
                 <span className="min-w-0 max-w-full truncate text-sm font-medium text-foreground">{n.name}</span>
@@ -694,7 +694,7 @@ export const DelegateToolBody = React.forwardRef<HTMLDivElement, DelegateToolBod
               <div className="min-w-0 flex-1">
                 <p className="flex items-center gap-1.5 text-sm text-foreground">
                   <span className="font-mono text-2xs tabular-nums text-muted-foreground">
-                    [{i + 1}/{tasks.length}]
+                    <bdi dir="ltr">[{i + 1}/{tasks.length}]</bdi>
                   </span>
                   <span className="truncate">{t.title}</span>
                 </p>

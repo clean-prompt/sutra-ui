@@ -1,10 +1,14 @@
 import * as React from "react";
 import { RiCloseCircleFill, RiTimeLine } from "@remixicon/react";
-import { cn, focusRing, type Size } from "../lib/cn";
+import { cn, focusRing, hitArea, hitAreaTouch, type Size } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { pad2 } from "../lib/time";
+import { useMediaQuery } from "../hooks/use-media-query";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useField, useFieldContext } from "./field";
 import { inputShellVariants } from "./input";
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "./popover";
+import { TimeWheels } from "./time-picker-wheel-internal";
 
 /* ---------------------------------------------------------------- */
 /* Time value helpers                                                */
@@ -137,6 +141,10 @@ export interface TimePickerLabels {
   clear?: string;
   /** Spoken value of an empty segment. */
   empty?: string;
+  /** Name of the button (and of the panel) that opens the wheels when `wheel` is on. */
+  wheel?: string;
+  /** Label of the button that closes the wheels. */
+  done?: string;
 }
 
 const defaultLabels: Required<TimePickerLabels> = {
@@ -146,6 +154,8 @@ const defaultLabels: Required<TimePickerLabels> = {
   dayPeriod: "AM/PM",
   clear: "Clear time",
   empty: "Empty",
+  wheel: "Choose time",
+  done: "Done",
 };
 
 export interface TimePickerProps
@@ -184,8 +194,16 @@ export interface TimePickerProps
   name?: string;
   /** Override the segment names and the clear button label (i18n). */
   labels?: TimePickerLabels;
-  /** Show the leading clock icon. Default true. */
+  /** Show the leading clock icon. Default true. With `wheel` on it is the button that opens the wheels, so it stays. */
   icon?: boolean;
+  /**
+   * Offer scrolling wheels (hours, minutes, optional seconds and AM/PM, in the locale's order) in a popover, for touch. `true`
+   * adds a clock button that opens them on any device; `"touch"` does so only where the primary pointer is coarse, and there a tap
+   * on the field opens them and the segments stop raising the on-screen keyboard. The wheels keep `step`, `min`, `max` and
+   * `granularity`, change the value as they scroll, and Done closes them. The segments and their keys work as before.
+   * @default false
+   */
+  wheel?: boolean | "touch";
 }
 
 const wrapperClass = cn(
@@ -202,7 +220,7 @@ const sizeClass: Record<Size, string> = {
 };
 
 const segmentClass = cn(
-  "h-6 min-w-0 rounded-xs bg-transparent px-0.5 text-center tabular-nums caret-transparent outline-none",
+  "h-6 min-w-6 rounded-xs bg-transparent px-0.5 text-center tabular-nums caret-transparent outline-none",
   "selection:bg-transparent focus:bg-primary-soft focus:text-primary-soft-foreground",
   "disabled:cursor-not-allowed read-only:cursor-default"
 );
@@ -231,9 +249,11 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
     name,
     labels: labelsProp,
     icon = true,
+    wheel,
     id,
     className,
     onMouseDown,
+    onClick,
     onBlur,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
@@ -243,6 +263,10 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
   } = props;
 
   const fieldCtx = useFieldContext();
+  const coarse = useMediaQuery("(pointer: coarse)");
+  const [wheelOpen, setWheelOpen] = React.useState(false);
+  const fieldRef = React.useRef<HTMLDivElement | null>(null);
+  const mergedRef = useMergedRefs(ref, fieldRef);
   const field = useField({
     id,
     disabled: disabledProp,
@@ -252,6 +276,10 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
     "aria-invalid": ariaInvalid,
   });
   const disabled = !!field.disabled;
+  /** The wheels are on and usable now: opted in, and (for `"touch"`) on a coarse pointer. */
+  const wheelActive = !!wheel && !disabled && !readOnly && (wheel === true || coarse);
+  /** On a coarse pointer with wheels, a tap opens them: the segments must not raise the keyboard as well. */
+  const wheelTap = wheelActive && coarse;
   const labels = { ...defaultLabels, ...labelsProp };
   const step = clamp(Math.round(stepProp) || 1, 1, 59);
 
@@ -432,9 +460,9 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
   const showClear = clearable && hasAny && !disabled && !readOnly;
   const labelledBy = ariaLabelledBy ?? (fieldCtx && !ariaLabel ? fieldCtx.labelId : undefined);
 
-  return (
+  const body = (
     <div
-      ref={ref}
+      ref={mergedRef}
       role="group"
       id={field.id}
       aria-label={ariaLabel}
@@ -445,6 +473,10 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
       data-invalid={field.invalid || undefined}
       data-disabled={disabled || undefined}
       className={cn(wrapperClass, sizeClass[size], showClear && "pe-9", className)}
+      onClick={(e) => {
+        onClick?.(e);
+        if (wheelTap && !e.defaultPrevented && !(e.target as HTMLElement).closest("button")) setWheelOpen(true);
+      }}
       onMouseDown={(e) => {
         onMouseDown?.(e);
         const target = e.target as HTMLElement;
@@ -459,7 +491,23 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
       }}
       {...rest}
     >
-      {icon && <RiTimeLine aria-hidden className="text-muted-foreground" />}
+      {wheelActive ? (
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            aria-label={labels.wheel}
+            className={cn(
+              hitAreaTouch,
+              "inline-flex shrink-0 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:text-foreground",
+              focusRing
+            )}
+          >
+            <RiTimeLine aria-hidden />
+          </button>
+        </PopoverTrigger>
+      ) : (
+        icon && <RiTimeLine aria-hidden className="text-muted-foreground" />
+      )}
       <div className="flex min-w-0 flex-1 items-center" dir="ltr">
         {layout.map(({ type, before }) => {
           const v = segValue(segs, type);
@@ -478,7 +526,7 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
                 }}
                 type="text"
                 role="spinbutton"
-                inputMode={type === "dayPeriod" ? "text" : "numeric"}
+                inputMode={wheelTap ? "none" : type === "dayPeriod" ? "text" : "numeric"}
                 autoComplete="off"
                 autoCorrect="off"
                 spellCheck={false}
@@ -514,6 +562,7 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
           aria-label={labels.clear}
           onClick={clear}
           className={cn(
+            hitArea,
             "absolute top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground",
             size === "sm" ? "end-2" : size === "lg" ? "end-3" : "end-2.5",
             focusRing
@@ -524,6 +573,39 @@ export const TimePicker = React.forwardRef<HTMLDivElement, TimePickerProps>((pro
       )}
       {name && <input type="hidden" name={name} value={value ?? ""} />}
     </div>
+  );
+
+  if (!wheel) return body;
+  return (
+    <Popover open={wheelActive && wheelOpen} onOpenChange={setWheelOpen}>
+      <PopoverAnchor asChild>{body}</PopoverAnchor>
+      <PopoverContent
+        size="auto"
+        align="start"
+        aria-label={labels.wheel}
+        // Pressing the field itself (not the trigger) keeps the panel open, like pressing the trigger does.
+        onInteractOutside={(e) => {
+          if (fieldRef.current?.contains(e.target as Node)) e.preventDefault();
+        }}
+      >
+        <TimeWheels
+          total={valueTotal}
+          order={order}
+          is12={is12}
+          seconds={granularity === "second"}
+          step={step}
+          min={minTotal}
+          max={maxTotal}
+          periods={periods}
+          labels={{ hour: labels.hour, minute: labels.minute, second: labels.second, dayPeriod: labels.dayPeriod, done: labels.done }}
+          onChange={(total) => {
+            // Report it like a typed time; the segments follow the value (a controlled parent can refuse it).
+            pending.current = null;
+            emit(formatTime(total, granularity));
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   );
 });
 TimePicker.displayName = "TimePicker";

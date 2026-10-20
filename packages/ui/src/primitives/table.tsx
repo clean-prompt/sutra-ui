@@ -335,6 +335,7 @@ export const TableCheckbox = React.forwardRef<HTMLInputElement, TableCheckboxPro
         onChange={(e) => setChecked(e.target.checked)}
         onClick={(e) => e.stopPropagation()}
         className={cn(
+          hitArea,
           "peer size-4 cursor-pointer appearance-none rounded-[4px] border border-border-strong bg-background shadow-xs transition-colors",
           "checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary",
           "disabled:cursor-not-allowed disabled:opacity-50",

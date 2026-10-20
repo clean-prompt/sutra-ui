@@ -137,7 +137,7 @@ export const WebhookRouteList = React.forwardRef<HTMLDivElement, WebhookRouteLis
                     type="button"
                     aria-pressed={onSelect ? selected : undefined}
                     onClick={() => onSelect?.(r)}
-                    className={cn("min-w-0 flex-1 truncate rounded-md text-start text-sm font-medium", focusRing)}
+                    className={cn("-my-0.5 min-w-0 flex-1 truncate rounded-md py-0.5 text-start text-sm font-medium", focusRing)}
                   >
                     {r.name}
                   </button>

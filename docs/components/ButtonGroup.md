@@ -16,7 +16,7 @@
 | `className` | `string \| string` |  | Classes for the group container. |
 | `orientation` | `ButtonGroupOrientation` | `"horizontal"` | Lays the buttons out in a row or a column. |
 | `size` | `Size` | `"md"` | Size applied to every `ButtonGroupItem`. |
-| `type` | `undefined \| typeof ToggleGroupType.Single \| typeof ToggleGroupType.Multiple` |  |  |
+| `type` | `undefined \| "single" \| "multiple"` |  | Leave it out for a plain attached row of buttons; `"single"` or `"multiple"` turns the group into toggle buttons. Toggle mode: at most one item is pressed (radio roles); `ButtonGroupItem` then needs a `value`. Toggle mode: any number of items can be pressed (`aria-pressed`); `ButtonGroupItem` then needs a `value`. |
 
 ## Variants
 

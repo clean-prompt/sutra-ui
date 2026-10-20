@@ -26,6 +26,7 @@ import {
   RiToolsLine,
   RiVerifiedBadgeFill,
 } from "@remixicon/react";
+import { accentClasses } from "../lib/accent";
 import { cn, focusRing, hitArea, normalizeDensity, type Density } from "../lib/cn";
 import { formatCompact } from "../lib/format";
 import { useSafeId } from "../hooks/use-safe-id";
@@ -877,12 +878,12 @@ export interface Testimonial {
 
 const sourceMeta: Record<TestimonialSource, { label: string; className: string }> = {
   x: { label: "X", className: "bg-foreground text-background" },
-  reddit: { label: "Reddit", className: "bg-orange-500/15 text-orange-700 dark:text-orange-300" },
-  discord: { label: "Discord", className: "bg-indigo-500/15 text-indigo-700 dark:text-indigo-300" },
+  reddit: { label: "Reddit", className: `${accentClasses.chip} [--sutra-accent:var(--chart-7)]` },
+  discord: { label: "Discord", className: `${accentClasses.chip} [--sutra-accent:var(--chart-1)]` },
   blog: { label: "Blog", className: "bg-muted text-foreground" },
   github: { label: "GitHub", className: "bg-inverse text-inverse-foreground" },
-  hn: { label: "Hacker News", className: "bg-amber-500/15 text-amber-800 dark:text-amber-300" },
-  youtube: { label: "YouTube", className: "bg-red-500/15 text-red-700 dark:text-red-300" },
+  hn: { label: "Hacker News", className: `${accentClasses.chip} [--sutra-accent:var(--chart-3)]` },
+  youtube: { label: "YouTube", className: `${accentClasses.chip} [--sutra-accent:var(--chart-4)]` },
 };
 
 export interface TestimonialWallProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {

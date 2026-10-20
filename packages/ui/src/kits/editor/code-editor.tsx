@@ -104,7 +104,7 @@ export const sutraEditorTheme = EditorView.theme({
     color: "var(--popover-foreground)",
     border: "1px solid var(--border)",
     borderRadius: "8px",
-    boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
+    boxShadow: "var(--shadow-lg)",
   },
   ".cm-tooltip-autocomplete > ul > li[aria-selected]": { backgroundColor: "var(--accent)", color: "var(--accent-foreground)" },
   ".cm-foldPlaceholder": { backgroundColor: "var(--muted)", border: "none", color: "var(--muted-foreground)" },

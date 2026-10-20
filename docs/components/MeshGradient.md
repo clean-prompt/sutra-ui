@@ -46,7 +46,7 @@ Server render: same markup as the client. Plain markup with inline styles and no
 
 ### Gotchas
 
-- At most five colours are used (one per blob); fewer repeat, and an empty array falls back to the brand palette. `colors` take any CSS colour, including `var(--color-brand-500)`.
+- At most five colours are used (one per blob); fewer repeat, and an empty array falls back to the default palette (three brand shades plus the `--chart-2` cyan and `--chart-6` violet, so a style such as paper retunes it). `colors` take any CSS colour, including `var(--color-brand-500)`.
 - `speed` multiplies the loop (1 is about 18 s, and each blob runs a little slower), `blur` is in px, `intensity` is blob opacity from 0 to 1 (default 0.7), and `grain` with `grainOpacity` adds the noise overlay.
 - The root is `relative isolate overflow-hidden`, and the layer sits at `-z-10` inside it: give the root a size (`className="h-64"`) and your own padding, since the layer is absolute. `layerClassName` styles the layer.
 - Large blurred areas cost paint time on low-end devices: a big `blur` over a full screen is the expensive combination.

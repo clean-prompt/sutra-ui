@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { useScrollable } from "../hooks/use-scrollable";
 import { useCopy } from "../hooks/use-copy";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
@@ -101,7 +101,7 @@ function MarkdownCitation({ n }: { n: number }) {
         title={source?.title ?? `Source ${n}`}
         aria-label={`Source ${n}${source?.title ? `: ${source.title}` : ""}`}
         onClick={() => onCite(n)}
-        className={cn(citePill, focusRing)}
+        className={cn(hitArea, citePill, focusRing)}
       >
         {n}
       </button>

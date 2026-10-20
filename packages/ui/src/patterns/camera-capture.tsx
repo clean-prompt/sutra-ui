@@ -502,7 +502,7 @@ export const CameraCapture = React.forwardRef<HTMLDivElement, CameraCaptureProps
           <div
             data-slot="camera-capture-viewport"
             className={cn(
-              "relative aspect-[4/3] w-full max-w-md overflow-hidden rounded-box bg-zinc-950 text-white shadow-lg",
+              "relative aspect-[4/3] w-full max-w-md overflow-hidden rounded-box bg-code text-white shadow-lg",
               viewportClassName
             )}
           >

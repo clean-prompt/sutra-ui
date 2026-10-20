@@ -207,7 +207,10 @@ export const ChatFeedbackActions = React.forwardRef<HTMLDivElement, ChatFeedback
 );
 ChatFeedbackActions.displayName = "ChatFeedbackActions";
 
-export type ChatRegenerateActionProps = Omit<ChatMessageActionProps, "label"> & { label?: string };
+export interface ChatRegenerateActionProps extends Omit<ChatMessageActionProps, "label"> {
+  /** Accessible name and tooltip of the button. Default "Regenerate". */
+  label?: string;
+}
 
 /** Regenerate the response. */
 export const ChatRegenerateAction = React.forwardRef<HTMLButtonElement, ChatRegenerateActionProps>(
@@ -219,7 +222,10 @@ export const ChatRegenerateAction = React.forwardRef<HTMLButtonElement, ChatRege
 );
 ChatRegenerateAction.displayName = "ChatRegenerateAction";
 
-export type ChatEditActionProps = Omit<ChatMessageActionProps, "label"> & { label?: string };
+export interface ChatEditActionProps extends Omit<ChatMessageActionProps, "label"> {
+  /** Accessible name and tooltip of the button. Default "Edit". */
+  label?: string;
+}
 
 /** Edit the message. */
 export const ChatEditAction = React.forwardRef<HTMLButtonElement, ChatEditActionProps>(
@@ -260,7 +266,7 @@ export const ChatBranchSwitcher = React.forwardRef<HTMLDivElement, ChatBranchSwi
           <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
         </ChatMessageAction>
         <span className="min-w-8 text-center font-medium tabular-nums" aria-live="polite">
-          {current + 1}/{count}
+          <bdi dir="ltr">{current + 1}/{count}</bdi>
         </span>
         <ChatMessageAction label="Next version" disabled={current >= count - 1} onClick={() => setIndex(current + 1)}>
           <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />

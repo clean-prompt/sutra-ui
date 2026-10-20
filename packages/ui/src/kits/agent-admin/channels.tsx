@@ -8,7 +8,7 @@ import {
   RiSettings3Line,
   RiShieldUserLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { toneClasses } from "../../lib/tone";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { errorMessage, useAsyncAction } from "../../hooks/use-async-action";
@@ -649,7 +649,7 @@ export const PlatformConnectorList = React.forwardRef<HTMLElement, PlatformConne
               {title}
             </h2>
             <p className="text-sm text-muted-foreground" data-slot="connector-count">
-              {configured} of {connectors.length} configured
+              <bdi dir="ltr">{configured} of {connectors.length} configured</bdi>
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -985,7 +985,7 @@ export const GuidedSetupSteps = React.forwardRef<HTMLOListElement, GuidedSetupSt
                         href={s.href}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className={cn("inline-flex items-center gap-1 rounded-xs text-sm font-medium text-primary hover:underline", focusRing)}
+                        className={cn(hitArea, "inline-flex items-center gap-1 rounded-xs text-sm font-medium text-primary hover:underline", focusRing)}
                       >
                         {s.linkLabel ?? "Open"}
                         <RiExternalLinkLine aria-hidden className="size-3.5" />

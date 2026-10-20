@@ -137,7 +137,8 @@ Spotlight.displayName = "Spotlight";
 const BEAM_CSS = `
 @keyframes sutra-beam-y { 0% { transform: translateY(-100%); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(calc(var(--sutra-beam-travel, 600px))); opacity: 0; } }
 @keyframes sutra-beam-x { 0% { transform: translateX(-100%); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateX(calc(var(--sutra-beam-travel, 1200px))); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { [data-sutra-beam] { animation: none !important; opacity: 0 !important; } }
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion="full"]) [data-sutra-beam] { animation: none !important; opacity: 0 !important; } }
+:root[data-motion="reduce"] [data-sutra-beam] { animation: none !important; opacity: 0 !important; }
 `;
 
 export interface GridBeamsProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -630,13 +630,13 @@ function TruncatedOutput({
   return (
     <div className="relative" data-slot={tone === "error" ? "bash-stderr" : "bash-output"}>
       {label && (
-        <div className="px-3 pt-2 font-sans text-2xs font-semibold uppercase tracking-[0.08em] text-red-300/80">{label}</div>
+        <div className="px-3 pt-2 font-sans text-2xs font-semibold uppercase tracking-[0.08em] text-destructive-soft-foreground/80">{label}</div>
       )}
       <pre
         id={id}
         className={cn(
           "overflow-x-auto scrollbar-thin whitespace-pre px-3 py-2 font-mono text-xs leading-5",
-          tone === "error" ? "text-red-300" : "text-code-foreground/90"
+          tone === "error" ? "text-destructive-soft-foreground" : "text-code-foreground/90"
         )}
       >
         <code>
@@ -690,14 +690,14 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
         ref={ref}
         data-slot="bash-tool-body"
         className={cn(
-          "overflow-hidden rounded-box border border-code-border bg-code text-code-foreground [color-scheme:dark]",
+          "dark overflow-hidden rounded-box border border-code-border bg-code text-code-foreground [color-scheme:dark]",
           className
         )}
         {...props}
       >
         <div className="flex items-start gap-2 border-b border-white/10 bg-white/[0.03] py-1.5 ps-3 pe-1.5">
           <code className="min-w-0 flex-1 whitespace-pre-wrap break-all py-0.5 font-mono text-xs leading-5">
-            <span aria-hidden className="select-none text-emerald-400">
+            <span aria-hidden className="select-none text-success-soft-foreground">
               ${" "}
             </span>
             {command}
@@ -707,7 +707,7 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
               data-slot="bash-exit-code"
               className={cn(
                 "mt-0.5 shrink-0 rounded-sm px-1.5 py-px font-mono text-2xs",
-                exitCode === 0 ? "bg-emerald-500/15 text-emerald-300" : "bg-red-500/20 text-red-300"
+                exitCode === 0 ? "bg-success-soft text-success-soft-foreground" : "bg-destructive/20 text-destructive-soft-foreground"
               )}
             >
               exit {exitCode}
@@ -728,7 +728,7 @@ export const BashToolBody = React.forwardRef<HTMLDivElement, BashToolBodyProps>(
           </div>
         )}
         {stderr ? (
-          <div className="border-t border-white/10 bg-red-500/[0.06]">
+          <div className="border-t border-white/10 bg-destructive/[0.06]">
             <TruncatedOutput text={stderr} maxLines={maxLines} tone="error" label="Error output" />
           </div>
         ) : null}
@@ -909,7 +909,7 @@ export const WebToolBody = React.forwardRef<HTMLDivElement, WebToolBodyProps>(
           href={isSafeHref(url) ? url : undefined}
           target="_blank"
           rel="noopener noreferrer"
-          className={cn("truncate text-sm font-medium text-foreground hover:underline", focusRing)}
+          className={cn("-my-0.5 truncate py-0.5 text-sm font-medium text-foreground hover:underline", focusRing)}
         >
           {title ?? url}
         </a>

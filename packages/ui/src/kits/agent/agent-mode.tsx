@@ -7,7 +7,7 @@ import {
   RiPencilLine,
   RiAlarmWarningLine,
 } from "@remixicon/react";
-import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density, hitArea } from "../../lib/cn";
 import { logicalArrow } from "../../lib/direction";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useMergedRefs } from "../../hooks/use-merged-refs";
@@ -410,6 +410,7 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
           }
         }}
         className={cn(
+          hitArea,
           "relative flex touch-none select-none items-end",
           compact ? "h-4 gap-0.5" : "h-8 gap-1",
           disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
@@ -475,7 +476,7 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
               tabIndex={-1}
               disabled={disabled}
               onClick={() => setIndex(i)}
-              className={cn("inline-flex flex-1 items-center justify-center gap-1", i === index && "text-foreground")}
+              className={cn(hitArea, "inline-flex flex-1 items-center justify-center gap-1", i === index && "text-foreground")}
             >
               <EffortGlyph level={i} count={levels.length} size={12} />
               {l.label}

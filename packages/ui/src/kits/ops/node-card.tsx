@@ -553,7 +553,7 @@ export const ResourceHero = React.forwardRef<HTMLDivElement, ResourceHeroProps>(
             {ready ? (
               <div className="flex items-baseline gap-1.5" data-ready="">
                 <span className={cn("font-mono font-semibold tabular-nums", allReady ? "text-success" : "text-warning-soft-foreground")}>
-                  {ready.ready} of {ready.total}
+                  <bdi dir="ltr">{ready.ready} of {ready.total}</bdi>
                 </span>
                 <span className="text-xs text-muted-foreground">{ready.noun ?? "ready"}</span>
               </div>

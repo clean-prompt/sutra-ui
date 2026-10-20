@@ -393,8 +393,10 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
             />
             {showCount && (
               <span id={countId} data-slot="tag-input-count" className="ms-auto shrink-0 ps-1 text-xs tabular-nums text-muted-foreground">
-                {tags.length}
-                {max != null ? ` / ${max}` : ""}
+                <bdi dir="ltr">
+                  {tags.length}
+                  {max != null ? ` / ${max}` : ""}
+                </bdi>
                 <span className="sr-only">{max != null ? " tags" : tags.length === 1 ? " tag" : " tags"}</span>
               </span>
             )}

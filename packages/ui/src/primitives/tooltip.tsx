@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/cn";
 import { Kbd } from "./typography";
 import { ShortcutKeys, isShortcutKeys } from "./shortcut-keys";
+import { useFloatingSide, type FloatingSide } from "./floating-side-internal";
 
 const TooltipProviderPresence = React.createContext(false);
 
@@ -65,37 +66,47 @@ export const tooltipContentVariants = cva(
 );
 
 export interface TooltipContentProps
-  extends React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>,
+  extends Omit<React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>, "side">,
     VariantProps<typeof tooltipContentVariants> {
   /** Show the pointing arrow. Default true. */
   arrow?: boolean;
+  /**
+   * Side of the trigger the tooltip opens on. `start` and `end` follow the reading direction (left and right in LTR, swapped in
+   * RTL, read from `DirectionProvider` or `<html dir>`); `left` and `right` stay physical. It flips when there is no room.
+   * @default "top"
+   */
+  side?: FloatingSide;
 }
 
 /** Floating tooltip bubble (dark inverse by default). */
 export const TooltipContent = React.forwardRef<React.ElementRef<typeof TooltipPrimitive.Content>, TooltipContentProps>(
-  ({ className, variant, sideOffset = 6, arrow = true, children, ...props }, ref) => (
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
-        ref={ref}
-        sideOffset={sideOffset}
-        className={cn(tooltipContentVariants({ variant }), className)}
-        {...props}
-      >
-        {children}
-        {arrow && (
-          <TooltipPrimitive.Arrow
-            width={10}
-            height={5}
-            className={cn(
-              variant === "light"
-                ? "fill-popover drop-shadow-[0_1px_0_var(--border)]"
-                : "fill-inverse"
-            )}
-          />
-        )}
-      </TooltipPrimitive.Content>
-    </TooltipPrimitive.Portal>
-  )
+  ({ className, variant, side, sideOffset = 6, arrow = true, children, ...props }, ref) => {
+    const physicalSide = useFloatingSide(side);
+    return (
+      <TooltipPrimitive.Portal>
+        <TooltipPrimitive.Content
+          ref={ref}
+          sideOffset={sideOffset}
+          className={cn(tooltipContentVariants({ variant }), className)}
+          {...props}
+          side={physicalSide}
+        >
+          {children}
+          {arrow && (
+            <TooltipPrimitive.Arrow
+              width={10}
+              height={5}
+              className={cn(
+                variant === "light"
+                  ? "fill-popover drop-shadow-[0_1px_0_var(--border)]"
+                  : "fill-inverse"
+              )}
+            />
+          )}
+        </TooltipPrimitive.Content>
+      </TooltipPrimitive.Portal>
+    );
+  }
 );
 TooltipContent.displayName = "TooltipContent";
 

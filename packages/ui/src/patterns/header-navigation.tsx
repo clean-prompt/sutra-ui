@@ -87,11 +87,13 @@ export const HeaderNavBrand = React.forwardRef<HTMLAnchorElement, HeaderNavBrand
 );
 HeaderNavBrand.displayName = "HeaderNavBrand";
 
+export interface HeaderNavMenuProps extends React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root> {
+  /** Classes for the `ul` that holds the menu items (the root keeps `className`). */
+  listClassName?: string;
+}
+
 /** Desktop navigation menu (Radix NavigationMenu) with an animated mega-menu viewport. */
-export const HeaderNavMenu = React.forwardRef<
-  React.ElementRef<typeof NavigationMenuPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root> & { listClassName?: string }
->(({ className, listClassName, children, delayDuration = 120, ...props }, ref) => (
+export const HeaderNavMenu = React.forwardRef<React.ElementRef<typeof NavigationMenuPrimitive.Root>, HeaderNavMenuProps>(({ className, listClassName, children, delayDuration = 120, ...props }, ref) => (
   <NavigationMenuPrimitive.Root
     ref={ref}
     dir={useDirection()}

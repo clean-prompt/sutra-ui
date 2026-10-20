@@ -580,7 +580,7 @@ export const ModelVisibilityManager = React.forwardRef<HTMLDivElement, ModelVisi
             className="w-48"
           />
           <span className="text-xs text-muted-foreground" data-slot="visibility-count">
-            {visibleCount} of {rows.length} visible
+            <bdi dir="ltr">{visibleCount} of {rows.length} visible</bdi>
           </span>
           <Button variant="ghost" size="sm" className="ms-auto" leadingIcon={<RiRestartLine aria-hidden />} disabled={!dirty} onClick={reset}>
             Reset

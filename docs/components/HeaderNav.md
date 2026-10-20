@@ -51,7 +51,7 @@ Desktop navigation menu (Radix NavigationMenu) with an animated mega-menu viewpo
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `listClassName` | `string` |  |  |
+| `listClassName` | `string` |  | Classes for the `ul` that holds the menu items (the root keeps `className`). |
 
 ### HeaderNavMobile
 

@@ -137,7 +137,7 @@ const auditInPage = () => {
       }
       return false;
     };
-    if (W <= 480 && el.matches(interactiveSel) && !scaledDown() && !(el.tagName === "A" && (s.display === "inline" || el.closest("p") || [...(el.parentElement?.childNodes ?? [])].some((n) => n.nodeType === 3 && n.textContent.trim()))) && !(el.tagName === "INPUT" && /checkbox|radio/.test(el.type) && r.width <= 1)) {
+    if (W <= 480 && el.matches(interactiveSel) && !scaledDown() && !(el.tagName === "A" && (s.display === "inline" || el.closest("p") || [...(el.parentElement?.childNodes ?? [])].some((n) => n.nodeType === 3 && n.textContent.trim()))) && !(el.tagName === "INPUT" && /checkbox|radio/.test(el.type) && r.width <= 1) && !(el.tagName === "SELECT" && r.width <= 1) && !el.matches(':disabled, [aria-disabled="true"], [data-disabled]')) {
       let w = r.width;
       let h = r.height;
       for (const pseudo of ["::before", "::after"]) {
@@ -147,7 +147,8 @@ const auditInPage = () => {
           h = Math.max(h, parseFloat(p.height) || 0);
         }
       }
-      if (w < 24 || h < 24) add("tap-target-small", el, { size: `${Math.round(w)}x${Math.round(h)}` });
+      // Half a pixel of slack: a 24px box under a fractional transform measures 23.99.
+      if (w < 23.5 || h < 23.5) add("tap-target-small", el, { size: `${Math.round(w)}x${Math.round(h)}` });
     }
   }
 

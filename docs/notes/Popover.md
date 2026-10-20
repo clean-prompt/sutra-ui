@@ -14,7 +14,7 @@ server: ssr-safe
 | Tab / Shift+Tab | Move through the panel; focus is not trapped, and moving it outside the panel closes it |
 | Escape | Close and return focus to the trigger |
 
-Focus moves into the panel when it opens and goes back to the trigger on close (not after a click outside). There are no arrow-key or direction-dependent keys, so RTL changes nothing.
+Focus moves into the panel when it opens and goes back to the trigger on close (not after a click outside). There are no arrow-key or direction-dependent keys, so RTL changes nothing. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `bottom`, `left` and `right` stay physical, and Radix still flips the panel on a collision.
 
 ## Screen readers
 The trigger gets `aria-haspopup="dialog"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="dialog"`. `PopoverTitle` and `PopoverDescription` (an `h3` and a `p`) name and describe the dialog: inside `PopoverContent` they get ids and the content sets `aria-labelledby` / `aria-describedby` while they are mounted. An `aria-label`, `aria-labelledby` or `aria-describedby` you pass to `PopoverContent` wins, and a popover without a title stays unnamed, so give it an `aria-label`. The arrow is decoration. An icon-only trigger needs `aria-label`.

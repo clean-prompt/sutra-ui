@@ -10,7 +10,7 @@ import {
   RiServerLine,
   RiShieldKeyholeLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { formatCountdown, formatDuration } from "../../lib/duration";
 import { pluralize } from "../../lib/format";
 import { clamp } from "../../lib/math";
@@ -643,7 +643,7 @@ function ApiKeyPanel({
               href={getKeyUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className={cn("inline-flex items-center gap-1 rounded-xs text-xs font-medium text-primary hover:underline", focusRing)}
+              className={cn(hitArea, "inline-flex items-center gap-1 rounded-xs text-xs font-medium text-primary hover:underline", focusRing)}
             >
               Get a key
               <RiExternalLinkLine aria-hidden className="size-3" />
@@ -1079,10 +1079,10 @@ export const ProviderKeysGroups = React.forwardRef<HTMLDivElement, ProviderKeysG
                   {g.name}
                 </h3>
                 <Badge size="sm" color={setCount > 0 ? "success" : "neutral"}>
-                  {setCount}/{g.keys.length} set
+                  <bdi dir="ltr">{setCount}/{g.keys.length} set</bdi>
                 </Badge>
                 {g.docsUrl && isSafeHref(g.docsUrl) && (
-                  <a href={g.docsUrl} target="_blank" rel="noreferrer noopener" className={cn("inline-flex items-center gap-1 rounded-xs text-xs font-medium text-primary hover:underline", focusRing)}>
+                  <a href={g.docsUrl} target="_blank" rel="noreferrer noopener" className={cn(hitArea, "inline-flex items-center gap-1 rounded-xs text-xs font-medium text-primary hover:underline", focusRing)}>
                     Get a key
                     <RiExternalLinkLine aria-hidden className="size-3" />
                   </a>

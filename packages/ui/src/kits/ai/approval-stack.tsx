@@ -36,6 +36,8 @@ export interface ApprovalStackProps<T> extends Omit<React.HTMLAttributes<HTMLEle
   emptyState?: React.ReactNode;
   /** Content shown when there is nothing to list. @deprecated Use `emptyState`. */
   empty?: React.ReactNode;
+  /** Ref to the root `<section>` element. */
+  ref?: React.Ref<HTMLElement>;
 }
 
 function ApprovalStackInner<T>(
@@ -176,7 +178,7 @@ function ApprovalStackInner<T>(
 }
 
 /** A stacked queue of pending approvals: the top card is interactive, the rest peek out behind with a "+n more" count. */
-export const ApprovalStack = React.forwardRef(ApprovalStackInner) as (<T>(
-  props: ApprovalStackProps<T> & { ref?: React.Ref<HTMLElement> }
-) => React.ReactElement | null) & { displayName?: string };
+export const ApprovalStack = React.forwardRef(ApprovalStackInner) as (<T>(props: ApprovalStackProps<T>) => React.ReactElement | null) & {
+  displayName?: string;
+};
 ApprovalStack.displayName = "ApprovalStack";

@@ -12,6 +12,7 @@ import {
   RiWebhookLine,
   RiWhatsappFill,
 } from "@remixicon/react";
+import { accentClasses } from "../../lib/accent";
 import { cn } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
@@ -33,13 +34,13 @@ interface PlatformMeta {
 
 export const deliveryPlatformMeta: Record<DeliveryPlatform, PlatformMeta> = {
   local: { label: "Inbox", icon: RiInboxLine, tint: "bg-muted text-foreground", home: false },
-  telegram: { label: "Telegram", icon: RiTelegramFill, tint: "bg-sky-500/15 text-sky-600 dark:text-sky-400", field: { label: "Chat ID", placeholder: "-1001234567890" }, home: true },
-  discord: { label: "Discord", icon: RiDiscordFill, tint: "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400", field: { label: "Channel ID", placeholder: "112233445566778899" }, home: true },
-  slack: { label: "Slack", icon: RiSlackFill, tint: "bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-400", field: { label: "Channel", placeholder: "#general" }, home: true },
-  whatsapp: { label: "WhatsApp", icon: RiWhatsappFill, tint: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400", field: { label: "Phone number", placeholder: "+15551234567", type: "tel" }, home: true },
-  email: { label: "Email", icon: RiMailLine, tint: "bg-amber-500/15 text-amber-700 dark:text-amber-400", field: { label: "Email address", placeholder: "me@example.com", type: "email" }, home: true },
+  telegram: { label: "Telegram", icon: RiTelegramFill, tint: `${accentClasses.chip} [--sutra-accent:var(--chart-2)]`, field: { label: "Chat ID", placeholder: "-1001234567890" }, home: true },
+  discord: { label: "Discord", icon: RiDiscordFill, tint: `${accentClasses.chip} [--sutra-accent:var(--chart-1)]`, field: { label: "Channel ID", placeholder: "112233445566778899" }, home: true },
+  slack: { label: "Slack", icon: RiSlackFill, tint: `${accentClasses.chip} [--sutra-accent:var(--chart-6)]`, field: { label: "Channel", placeholder: "#general" }, home: true },
+  whatsapp: { label: "WhatsApp", icon: RiWhatsappFill, tint: `${accentClasses.chip} [--sutra-accent:var(--chart-5)]`, field: { label: "Phone number", placeholder: "+15551234567", type: "tel" }, home: true },
+  email: { label: "Email", icon: RiMailLine, tint: `${accentClasses.chip} [--sutra-accent:var(--chart-3)]`, field: { label: "Email address", placeholder: "me@example.com", type: "email" }, home: true },
   github: { label: "GitHub comment", icon: RiGithubFill, tint: "bg-muted text-foreground", field: { label: "Issue or PR", placeholder: "owner/repo#123" }, home: true },
-  webhook: { label: "Webhook", icon: RiWebhookLine, tint: "bg-rose-500/15 text-rose-700 dark:text-rose-400", field: { label: "URL", placeholder: "https://example.com/hook", type: "url" }, home: false },
+  webhook: { label: "Webhook", icon: RiWebhookLine, tint: `${accentClasses.chip} [--sutra-accent:var(--chart-4)]`, field: { label: "URL", placeholder: "https://example.com/hook", type: "url" }, home: false },
 };
 
 const ALL_PLATFORMS: DeliveryPlatform[] = ["local", "telegram", "discord", "slack", "whatsapp", "email", "github", "webhook"];

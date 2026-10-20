@@ -421,7 +421,7 @@ export function Lightbox({
             <DialogPrimitive.Title className="sr-only">{label}</DialogPrimitive.Title>
             <div className="flex shrink-0 items-center gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
               <span className="px-2 text-sm font-medium tabular-nums text-white/85" aria-live="polite" data-slot="lightbox-counter">
-                {counter}
+                <bdi dir="ltr">{counter}</bdi>
               </span>
               <span className="min-w-0 flex-1" />
               {!isVideo && (

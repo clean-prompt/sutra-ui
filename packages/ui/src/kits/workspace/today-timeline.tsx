@@ -113,7 +113,7 @@ const minutesOf = (d: Date) => d.getHours() * 60 + d.getMinutes();
 function Streak({ days }: { days: number }) {
   return (
     <span className="inline-flex shrink-0 items-center gap-0.5 text-xs font-semibold text-warning-soft-foreground">
-      <RiFireFill aria-hidden className="size-3.5 text-orange-500" />
+      <RiFireFill aria-hidden className="size-3.5 text-[var(--chart-7)]" />
       {days}
       <span className="sr-only"> day streak</span>
     </span>

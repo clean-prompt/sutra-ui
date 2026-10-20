@@ -22,6 +22,7 @@ Floating panel. Sizes sm/md/lg set the width; set `padded={false}` when composin
 | `arrow` | `boolean` |  | Render the pointing arrow. |
 | `disablePortal` | `boolean` |  | Skip the portal (e.g. inside a dialog with its own stacking). |
 | `padded` | `boolean` | `true` | Adds inner padding; turn it off for content that supplies its own (lists, menus). |
+| `side` | `FloatingSide` | `"bottom"` | Side of the trigger the panel opens on. `start` and `end` follow the reading direction (left and right in LTR, swapped in RTL, read from `DirectionProvider` or `<html dir>`); `left` and `right` stay physical. It flips when there is no room. |
 | `size` | `"sm" \| "md" \| "lg" \| "auto"` | `"md"` | Panel width: `sm` 14rem, `md` 18rem, `lg` 24rem or `auto` (content width). |
 
 ## Notes
@@ -43,7 +44,7 @@ Floating panel. Sizes sm/md/lg set the width; set `padded={false}` when composin
 | Tab / Shift+Tab | Move through the panel; focus is not trapped, and moving it outside the panel closes it |
 | Escape | Close and return focus to the trigger |
 
-Focus moves into the panel when it opens and goes back to the trigger on close (not after a click outside). There are no arrow-key or direction-dependent keys, so RTL changes nothing.
+Focus moves into the panel when it opens and goes back to the trigger on close (not after a click outside). There are no arrow-key or direction-dependent keys, so RTL changes nothing. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `bottom`, `left` and `right` stay physical, and Radix still flips the panel on a collision.
 
 ### Screen readers
 

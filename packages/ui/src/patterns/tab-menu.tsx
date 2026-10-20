@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn, focusRing, type Size } from "../lib/cn";
+import { cn, focusRing, type Size, hitArea } from "../lib/cn";
 import { useActiveIndicator } from "../hooks/use-active-indicator";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useScrollEdges } from "../hooks/use-scroll-edges";
@@ -125,6 +125,7 @@ export const TabMenu = React.forwardRef<HTMLElement, TabMenuProps>(
             {items.map((item) => {
               const active = item.value === value;
               const className = cn(
+                hitArea,
                 "group/tab-menu relative inline-flex select-none items-center gap-2 whitespace-nowrap rounded-xs font-medium transition-colors duration-150",
                 "[&_svg]:size-4 [&_svg]:shrink-0",
                 active ? "text-foreground" : "text-muted-foreground hover:text-foreground",

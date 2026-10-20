@@ -175,7 +175,7 @@ export const BatteryLevel = React.forwardRef<HTMLSpanElement, BatteryLevelProps>
         ) : null}
         {charging ? <RiFlashlightFill aria-hidden className={cn("-mx-0.5 shrink-0 text-success", s.bolt)} /> : null}
         {showValue || variant === "text" ? (
-          <span className={cn("font-medium tabular-nums", textSize[size], state === "unknown" ? "text-muted-foreground" : valueTone)}>
+          <span dir="ltr" className={cn("font-medium tabular-nums", textSize[size], state === "unknown" ? "text-muted-foreground" : valueTone)}>
             {state === "unknown" ? "—" : `${pct}%`}
           </span>
         ) : null}

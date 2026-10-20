@@ -376,12 +376,12 @@ export const KunjiSignInPage = React.forwardRef<HTMLDivElement, KunjiSignInPageP
                       <Separator label="Other ways to sign in" />
                       <div className="flex flex-col gap-2 sm:flex-row">
                         {otherMethods.includes("password") && (
-                          <Button variant="secondary" className="flex-1" leadingIcon={<RiLockPasswordLine aria-hidden />} onClick={() => setMethod("password")}>
+                          <Button variant="secondary" className="sm:flex-1" leadingIcon={<RiLockPasswordLine aria-hidden />} onClick={() => setMethod("password")}>
                             Password
                           </Button>
                         )}
                         {otherMethods.includes("token") && (
-                          <Button variant="secondary" className="flex-1" leadingIcon={<RiKey2Line aria-hidden />} onClick={() => setMethod("token")}>
+                          <Button variant="secondary" className="sm:flex-1" leadingIcon={<RiKey2Line aria-hidden />} onClick={() => setMethod("token")}>
                             Access token
                           </Button>
                         )}
@@ -518,12 +518,12 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
           )}
           <div className="flex w-full flex-col gap-2 sm:flex-row">
             {onCheck && (
-              <Button variant="secondary" className="flex-1" leadingIcon={<RiRefreshLine aria-hidden />} loading={checking} onClick={() => void check()}>
+              <Button variant="secondary" className="sm:flex-1" leadingIcon={<RiRefreshLine aria-hidden />} loading={checking} onClick={() => void check()}>
                 Check now
               </Button>
             )}
             {onSignOut && (
-              <Button variant="ghost" className="flex-1" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} onClick={onSignOut}>
+              <Button variant="ghost" className="sm:flex-1" leadingIcon={<RiLogoutBoxRLine className="rtl:-scale-x-100" aria-hidden />} onClick={onSignOut}>
                 Sign out
               </Button>
             )}
@@ -1005,10 +1005,10 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
             ))}
           </div>
           <div className="flex w-full flex-col gap-2 sm:flex-row">
-            <Button variant="secondary" className="flex-1" onClick={() => void decide(false)}>
+            <Button variant="secondary" className="sm:flex-1" onClick={() => void decide(false)}>
               They don&apos;t match
             </Button>
-            <Button className="flex-1" leadingIcon={<RiCheckLine aria-hidden />} onClick={() => void decide(true)}>
+            <Button className="sm:flex-1" leadingIcon={<RiCheckLine aria-hidden />} onClick={() => void decide(true)}>
               They match
             </Button>
           </div>

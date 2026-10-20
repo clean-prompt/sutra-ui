@@ -804,7 +804,7 @@ function KanbanColumnHeader({ column, wip, visibleCount, collapsed, onToggleColl
           wip.over && "bg-warning-soft font-semibold text-warning-soft-foreground"
         )}
       >
-        <span aria-hidden>{filteredOut && !collapsed ? `${visibleCount} of ${countText}` : countText}</span>
+        <span aria-hidden>{filteredOut && !collapsed ? <bdi dir="ltr">{`${visibleCount} of ${countText}`}</bdi> : countText}</span>
         <span className="sr-only">
           {wip.count} cards{wip.limit != null ? `, WIP limit ${wip.limit}` : ""}
           {filteredOut ? `, ${visibleCount} shown` : ""}

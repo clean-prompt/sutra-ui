@@ -10,7 +10,7 @@ import {
   RiTempHotLine,
   RiUpload2Line,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { accentClasses, accentStyle, type Accent } from "../../lib/accent";
 import { topWithOther } from "../../lib/breakdown";
 import { pluralize } from "../../lib/format";
@@ -310,7 +310,7 @@ export const ContainerList = React.forwardRef<HTMLDivElement, ContainerListProps
                         aria-expanded={open}
                         aria-controls={listId}
                         onClick={() => toggle(entry.name)}
-                        className={cn("group/toggle inline-flex min-w-0 max-w-full items-center gap-1 self-start rounded-xs text-start", focusRing)}
+                        className={cn(hitArea, "group/toggle inline-flex min-w-0 max-w-full items-center gap-1 self-start rounded-xs text-start", focusRing)}
                       >
                         <span className="truncate">
                           <span className="font-medium text-foreground">{entry.name}</span>

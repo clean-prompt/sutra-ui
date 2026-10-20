@@ -285,7 +285,7 @@ export const AgentBrowserPane = React.forwardRef<HTMLDivElement, AgentBrowserPan
                     (e.target as HTMLInputElement).blur();
                   }
                 }}
-                className="min-w-0 flex-1 truncate bg-transparent font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground"
+                className="h-6 min-w-0 flex-1 truncate bg-transparent font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground"
               />
             </div>
           </form>
@@ -825,7 +825,7 @@ export const AnnotationLayer = React.forwardRef<HTMLDivElement, AnnotationLayerP
                 <button
                   type="button"
                   onClick={() => openEditor(a)}
-                  className={cn("min-w-0 flex-1 truncate rounded-xs text-start hover:underline", !a.comment && "italic text-muted-foreground", focusRing)}
+                  className={cn("-my-0.5 min-w-0 flex-1 truncate rounded-xs py-0.5 text-start hover:underline", !a.comment && "italic text-muted-foreground", focusRing)}
                 >
                   {a.comment || "Empty note"}
                 </button>

@@ -152,7 +152,7 @@ export const AgentTodoList = React.forwardRef<HTMLDivElement, AgentTodoListProps
           {title}
         </span>
         <span data-slot="todo-progress-text" className={cn("ms-auto tabular-nums text-muted-foreground", compact ? "text-2xs" : "text-xs")}>
-          {done} of {total} done
+          <bdi dir="ltr">{done} of {total} done</bdi>
         </span>
         {collapsible && (
           <RiArrowDownSLine

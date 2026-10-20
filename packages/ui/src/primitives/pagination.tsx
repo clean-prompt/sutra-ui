@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiArrowLeftLine, RiArrowRightLine, RiMoreLine } from "@remixicon/react";
-import { cn, focusRing, type Size } from "../lib/cn";
+import { cn, focusRing, hitArea, type Size } from "../lib/cn";
 import { Button } from "./button";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { clamp } from "../lib/math";
@@ -347,8 +347,10 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
 
     const pageLabel = (
       <span className="whitespace-nowrap text-sm text-muted-foreground" aria-live="polite">
-        Page <span className="font-medium text-foreground tabular-nums">{page}</span> of{" "}
-        <span className="font-medium text-foreground tabular-nums">{total}</span>
+        <bdi dir="ltr">
+          Page <span className="font-medium text-foreground tabular-nums">{page}</span> of{" "}
+          <span className="font-medium text-foreground tabular-nums">{total}</span>
+        </bdi>
       </span>
     );
 
@@ -366,7 +368,9 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
             {loadMoreLabel}
           </Button>
           <span className="text-xs text-muted-foreground tabular-nums">
-            {page} of {total} pages loaded
+            <bdi dir="ltr">
+              {page} of {total} pages loaded
+            </bdi>
           </span>
         </div>
       );
@@ -392,6 +396,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
                 disabled={disabled}
                 onClick={() => go(p)}
                 className={cn(
+                  hitArea,
                   "h-2 rounded-full transition-all duration-300 ease-out-quart",
                   p === page ? "w-6 bg-primary" : "w-2 bg-border-strong hover:bg-muted-foreground",
                   focusRing
@@ -507,7 +512,11 @@ export const PaginationStatus = React.forwardRef<HTMLDivElement, PaginationStatu
         (emptyState ?? "No results")
       );
     } else {
-      content = format ? format(window) : `${number(window.from)}–${number(window.to)} of ${number(window.total)}`;
+      content = format ? (
+        format(window)
+      ) : (
+        <bdi dir="ltr">{`${number(window.from)}–${number(window.to)} of ${number(window.total)}`}</bdi>
+      );
     }
     return (
       <div

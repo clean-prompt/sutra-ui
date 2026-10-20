@@ -2,7 +2,7 @@ import * as React from "react";
 import { cva } from "class-variance-authority";
 import type { DateRange, Matcher } from "react-day-picker";
 import { RiCloseCircleFill } from "@remixicon/react";
-import { cn, focusRing, type Size } from "../lib/cn";
+import { cn, focusRing, hitArea, type Size } from "../lib/cn";
 import { addDays, calendarDayDiff, startOfDay } from "../lib/time";
 import { inputShellVariants } from "./input";
 import { filledTrigger } from "./input-internal";
@@ -133,6 +133,7 @@ export function ClearButton({ onClear, size }: ClearButtonProps) {
       aria-label="Clear date"
       onClick={onClear}
       className={cn(
+        hitArea,
         "absolute top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground",
         size === "sm" ? "end-2" : size === "lg" ? "end-3" : "end-2.5",
         focusRing

@@ -102,7 +102,7 @@ export const featuredIconVariants = cva(
         solid: "shadow-xs shadow-inner-highlight",
         "outline-ring": "",
         glass:
-          "border border-white/50 bg-gradient-to-b from-white/70 to-white/30 shadow-sm shadow-inner-highlight backdrop-blur-md dark:border-white/10 dark:from-white/10 dark:to-white/[0.03]",
+          "border border-[color:light-dark(color-mix(in_oklab,white_50%,transparent),color-mix(in_oklab,white_10%,transparent))] bg-gradient-to-b from-[color:light-dark(color-mix(in_oklab,white_70%,transparent),color-mix(in_oklab,white_10%,transparent))] to-[color:light-dark(color-mix(in_oklab,white_30%,transparent),color-mix(in_oklab,white_3%,transparent))] shadow-sm shadow-inner-highlight backdrop-blur-md",
       },
       color: {
         brand: "",

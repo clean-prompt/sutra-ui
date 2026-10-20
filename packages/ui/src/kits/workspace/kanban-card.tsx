@@ -259,7 +259,7 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
               >
                 <RiCheckboxMultipleLine aria-hidden className="size-3.5" />
                 <span className="sr-only">Subtasks</span>
-                {card.subtasks.done}/{card.subtasks.total}
+                <bdi dir="ltr">{card.subtasks.done}/{card.subtasks.total}</bdi>
               </span>
             )}
             {!!card.commentCount && (

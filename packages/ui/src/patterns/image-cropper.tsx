@@ -629,7 +629,7 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
                     data-slot="image-cropper-box"
                     data-dragging={dragging ?? undefined}
                     className={cn(
-                      "absolute touch-none outline outline-1 outline-white/90 shadow-[0_0_0_1px_rgb(0_0_0/0.35)]",
+                      "absolute touch-none outline outline-1 outline-white/90 shadow-[0_0_0_1px_color-mix(in_oklab,black_35%,transparent)]",
                       dragging === "move" ? "cursor-grabbing" : "cursor-move",
                       focusRing
                     )}
@@ -650,7 +650,7 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
                       aria-hidden
                       className={cn(
                         "pointer-events-none absolute inset-0 transition-opacity",
-                        "bg-[linear-gradient(to_right,transparent_33.2%,rgb(255_255_255/0.4)_33.2%,rgb(255_255_255/0.4)_33.5%,transparent_33.5%,transparent_66.5%,rgb(255_255_255/0.4)_66.5%,rgb(255_255_255/0.4)_66.8%,transparent_66.8%),linear-gradient(to_bottom,transparent_33.2%,rgb(255_255_255/0.4)_33.2%,rgb(255_255_255/0.4)_33.5%,transparent_33.5%,transparent_66.5%,rgb(255_255_255/0.4)_66.5%,rgb(255_255_255/0.4)_66.8%,transparent_66.8%)]",
+                        "bg-[linear-gradient(to_right,transparent_33.2%,color-mix(in_oklab,white_40%,transparent)_33.2%,color-mix(in_oklab,white_40%,transparent)_33.5%,transparent_33.5%,transparent_66.5%,color-mix(in_oklab,white_40%,transparent)_66.5%,color-mix(in_oklab,white_40%,transparent)_66.8%,transparent_66.8%),linear-gradient(to_bottom,transparent_33.2%,color-mix(in_oklab,white_40%,transparent)_33.2%,color-mix(in_oklab,white_40%,transparent)_33.5%,transparent_33.5%,transparent_66.5%,color-mix(in_oklab,white_40%,transparent)_66.5%,color-mix(in_oklab,white_40%,transparent)_66.8%,transparent_66.8%)]",
                         dragging ? "opacity-100" : "opacity-0"
                       )}
                     />

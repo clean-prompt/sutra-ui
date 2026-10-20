@@ -19,7 +19,7 @@ import {
   RiUserFollowLine,
   RiLinkM,
 } from "@remixicon/react";
-import { cn } from "../lib/cn";
+import { cn, hitArea } from "../lib/cn";
 import { Button } from "../primitives/button";
 import { Badge } from "../primitives/badge";
 import { Avatar } from "../primitives/avatar";
@@ -600,7 +600,7 @@ export const ProfileHeader = React.forwardRef<HTMLDivElement, ProfileHeaderProps
           <img src={coverSrc} alt="" className="h-36 w-full object-cover sm:h-48" />
         ) : (
           <MeshGradient grain intensity={0.9} className="h-36 bg-brand-200 sm:h-48" aria-hidden>
-            <BackgroundPattern variant="grid" fade="top" color="rgb(255 255 255 / 0.18)" />
+            <BackgroundPattern variant="grid" fade="top" color="color-mix(in oklab, white 18%, transparent)" />
           </MeshGradient>
         )}
         <div className="px-5 pb-5 sm:px-8 sm:pb-6">
@@ -656,7 +656,7 @@ export const ProfileHeader = React.forwardRef<HTMLDivElement, ProfileHeaderProps
                 <li key={i} className="flex items-center gap-1.5 [&_svg]:size-4">
                   {m.icon}
                   {m.href ? (
-                    <a href={m.href} className="font-medium text-primary hover:underline">
+                    <a href={m.href} className={cn(hitArea, "font-medium text-primary hover:underline")}>
                       {m.label}
                     </a>
                   ) : (

@@ -1,15 +1,4 @@
 {
- "total": 11,
- "components": {
-  "ApprovalStack": 1,
-  "ButtonGroup": 1,
-  "ChatEditAction": 1,
-  "ChatRegenerateAction": 1,
-  "ChatScrollButton": 1,
-  "Grid": 1,
-  "HeaderNavMenu": 1,
-  "MediaPortalProvider": 2,
-  "SettingsRow": 1,
-  "SidebarGroupLabel": 1
- }
+ "total": 0,
+ "components": {}
 }

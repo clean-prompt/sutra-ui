@@ -20,7 +20,7 @@ import {
   RiThumbUpLine,
   RiToolsLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { errorMessage, useAsyncAction } from "../../hooks/use-async-action";
@@ -414,7 +414,7 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
               type="button"
               aria-expanded={pasteOpen}
               onClick={() => setPasteOpen((o) => !o)}
-              className={cn("flex w-full items-center gap-2 rounded-sm text-start text-sm font-medium text-foreground", focusRing)}
+              className={cn(hitArea, "flex w-full items-center gap-2 rounded-sm text-start text-sm font-medium text-foreground", focusRing)}
             >
               <RiFileList3Line aria-hidden className="size-4 text-muted-foreground" />
               Paste JSON config

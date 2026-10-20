@@ -7,7 +7,7 @@ import {
   RiMore2Line,
   RiRefreshLine,
 } from "@remixicon/react";
-import { cn } from "../../lib/cn";
+import { cn, hitArea } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { DAY_MS, MINUTE_MS, formatRelative, formatShortDate, toMs, type TimeInput } from "../../lib/time";
@@ -146,7 +146,7 @@ function ScopeChips({ scopes, max, keyName }: { scopes: string[]; max: number; k
             <button
               type="button"
               aria-label={`Show ${rest.length} more scopes for ${keyName}`}
-              className="h-5 rounded-control px-1.5 text-2xs font-medium text-primary hover:bg-primary-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+              className={cn(hitArea, "h-5 rounded-control px-1.5 text-2xs font-medium text-primary hover:bg-primary-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40")}
             >
               +{rest.length} more
             </button>

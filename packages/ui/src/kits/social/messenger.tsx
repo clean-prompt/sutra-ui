@@ -15,7 +15,7 @@ import {
   RiUserAddLine,
   RiVideoOnLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
 import { useChangeKey } from "../../hooks/use-change-key";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -324,7 +324,7 @@ export const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps
               <RiErrorWarningLine aria-hidden className="size-3.5" />
               <span>Not delivered</span>
               {onRetry ? (
-                <button type="button" onClick={onRetry} className={cn("rounded-xs font-medium underline-offset-2 hover:underline", focusRing)}>
+                <button type="button" onClick={onRetry} className={cn(hitArea, "rounded-xs font-medium underline-offset-2 hover:underline", focusRing)}>
                   Retry
                 </button>
               ) : null}

@@ -449,7 +449,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
               onClick={() => setEditing({ id: item.id, text: item.text })}
               aria-label={`Edit ${item.text}`}
               className={cn(
-                "min-w-0 flex-1 truncate rounded-xs text-start text-sm",
+                "-my-0.5 min-w-0 flex-1 truncate rounded-xs py-0.5 text-start text-sm",
                 item.done ? "text-muted-foreground line-through" : "text-foreground",
                 focusRing
               )}
@@ -481,7 +481,9 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
               {label}
             </span>
             <span className="text-xs text-muted-foreground tabular-nums" data-checklist-count>
-              {done}/{items.length}
+              <bdi dir="ltr">
+                {done}/{items.length}
+              </bdi>
             </span>
           </div>
           {done > 0 ? (

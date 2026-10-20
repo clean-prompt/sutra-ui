@@ -70,6 +70,12 @@ export const accentClasses = {
   solid: "bg-[var(--sutra-accent,var(--primary))]",
   /** Faint accent wash: chart tracks, the strip behind a footer sparkline. */
   track: "bg-[color-mix(in_oklab,var(--sutra-accent,var(--primary))_8%,transparent)]",
+  /**
+   * Soft chip for a hue with no meaning of its own (a provider, a source): a 15% tint of the accent with text mixed toward the
+   * foreground until it passes AA in both themes (the recipe of the soft `Avatar`). Where there is no `style` prop, add the accent
+   * as a class: `${accentClasses.chip} [--sutra-accent:var(--chart-2)]`.
+   */
+  chip: "bg-[color-mix(in_oklab,var(--sutra-accent,var(--primary))_15%,transparent)] text-[color:light-dark(color-mix(in_oklab,var(--sutra-accent,var(--primary))_55%,var(--foreground)),color-mix(in_oklab,var(--sutra-accent,var(--primary))_78%,var(--foreground)))]",
   /** Accent border. */
   border: "border-[var(--sutra-accent,var(--primary))]",
 } as const;

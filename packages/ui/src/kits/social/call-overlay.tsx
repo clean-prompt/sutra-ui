@@ -448,7 +448,7 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
         ref={ref}
         role="region"
         aria-label={`Call with ${name}`}
-        className={cn("relative isolate flex min-h-96 w-full flex-col overflow-hidden rounded-box bg-neutral-950 text-white", className)}
+        className={cn("relative isolate flex min-h-96 w-full flex-col overflow-hidden rounded-box bg-code text-white", className)}
         {...props}
       >
         <div ref={stageRef} className="absolute inset-0 -z-10">
@@ -458,7 +458,7 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
             <video ref={remoteRef} autoPlay playsInline className="size-full object-cover" aria-label={`${name}'s video`} />
           ) : null}
           {!showRemoteVideo ? (
-            <div className="flex size-full items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-950">
+            <div className="flex size-full items-center justify-center bg-gradient-to-br from-code-border to-code">
               <Avatar size="2xl" name={name} src={avatarSrc} className="size-28 text-3xl" />
             </div>
           ) : null}
@@ -492,7 +492,7 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
             onPointerCancel={() => setDrag(null)}
             onKeyDown={onPipKeyDown}
             className={cn(
-              "absolute z-10 aspect-[3/4] w-24 cursor-grab touch-none overflow-hidden rounded-xl border border-white/20 bg-neutral-800 shadow-xl sm:w-32",
+              "absolute z-10 aspect-[3/4] w-24 cursor-grab touch-none overflow-hidden rounded-xl border border-white/20 bg-code-border shadow-xl sm:w-32",
               "transition-[top,left,right,bottom] duration-300 ease-out-quart",
               drag && "cursor-grabbing transition-none",
               pipCornerClass[corner],
@@ -571,7 +571,7 @@ function CallControl({
       onClick={onClick}
       className={cn(
         "flex size-12 items-center justify-center rounded-full backdrop-blur-md transition-[background-color,scale] active:scale-95 [&_svg]:size-5",
-        pressed ? "bg-white text-neutral-900 hover:bg-white/90" : "bg-white/15 text-white hover:bg-white/25",
+        pressed ? "bg-white text-code hover:bg-white/90" : "bg-white/15 text-white hover:bg-white/25",
         focusRing
       )}
     >

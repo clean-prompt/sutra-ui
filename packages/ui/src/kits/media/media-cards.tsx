@@ -48,14 +48,14 @@ export interface MediaBusyState {
   progress?: number;
 }
 
-/** Light text for the dark image scrim (theme tokens would be too dark here). */
+/** Light text for the dark image scrim: the badge sits in a `dark` scope, so the soft-foreground tokens are the light ones. */
 const statusTone: Record<Tone, string> = {
   neutral: "text-white/90",
-  primary: "text-brand-300",
-  info: "text-sky-300",
-  success: "text-emerald-300",
-  warning: "text-amber-300",
-  destructive: "text-red-300",
+  primary: "text-primary-soft-foreground",
+  info: "text-info-soft-foreground",
+  success: "text-success-soft-foreground",
+  warning: "text-warning-soft-foreground",
+  destructive: "text-destructive-soft-foreground",
 };
 
 function StatusBadge({ status }: { status: MediaStatus }) {
@@ -63,7 +63,7 @@ function StatusBadge({ status }: { status: MediaStatus }) {
     <span
       data-slot="media-status"
       className={cn(
-        "pointer-events-none absolute start-2 top-2 z-20 inline-flex max-w-[calc(100%-1rem)] items-center gap-1 rounded-sm border border-white/10 bg-black/65 px-1.5 py-0.5 text-[10px] font-medium leading-4 backdrop-blur-sm [&_svg]:size-3 [&_svg]:shrink-0",
+        "dark pointer-events-none absolute start-2 top-2 z-20 inline-flex max-w-[calc(100%-1rem)] items-center gap-1 rounded-sm border border-white/10 bg-black/65 px-1.5 py-0.5 text-[10px] font-medium leading-4 backdrop-blur-sm [&_svg]:size-3 [&_svg]:shrink-0",
         statusTone[normalizeTone(status.tone)],
         status.pulse && "animate-pulse motion-reduce:animate-none"
       )}

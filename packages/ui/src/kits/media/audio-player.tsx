@@ -554,7 +554,7 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
       <div className="order-2 flex min-w-0 items-center justify-end gap-1 @2xl:order-none">
         {queuePosition && (
           <span className="me-1 whitespace-nowrap text-xs text-muted-foreground tabular-nums @max-5xl:hidden">
-            {queuePosition.index + 1} of {queuePosition.total}
+            <bdi dir="ltr">{queuePosition.index + 1} of {queuePosition.total}</bdi>
           </span>
         )}
         {onVolumeChange && (

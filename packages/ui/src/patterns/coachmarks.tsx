@@ -353,7 +353,9 @@ export function CoachmarkTour({
         )}
         <div className="mt-4 flex items-center gap-2">
           <span className="text-xs tabular-nums text-muted-foreground" aria-live="polite">
-            Step {index + 1} of {count}
+            <bdi dir="ltr">
+              Step {index + 1} of {count}
+            </bdi>
           </span>
           <div className="ms-auto flex items-center gap-1.5">
             {current.action && (
@@ -547,7 +549,9 @@ export function TipBubble({
               {count > 1 && (
                 <>
                   <span className="ms-auto text-xs tabular-nums text-muted-foreground">
-                    {(((indexState % count) + count) % count) + 1}/{count}
+                    <bdi dir="ltr">
+                      {(((indexState % count) + count) % count) + 1}/{count}
+                    </bdi>
                   </span>
                   <Button size="xs" variant="soft" trailingIcon={<RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />} onClick={() => setIndex((indexState + 1) % count)}>
                     Next tip

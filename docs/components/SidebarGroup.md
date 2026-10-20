@@ -20,4 +20,4 @@ Group heading; fades out in icon mode.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `asChild` | `boolean` |  |  |
+| `asChild` | `boolean` |  | Render the label as its child element (a heading, a link) instead of a `div`, merging the label's classes and props into it. |

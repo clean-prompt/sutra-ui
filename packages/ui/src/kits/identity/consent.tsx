@@ -71,6 +71,10 @@ export interface FormattedScope {
   locked: boolean;
 }
 
+/** Glyphs that point at a door: they flip in right-to-left. */
+const mirroredIcons: ReadonlySet<unknown> = new Set([RiLoginBoxLine]);
+const mirrorIcon = (icon: unknown) => (mirroredIcons.has(icon) ? "rtl:-scale-x-100" : undefined);
+
 const humanize = (s?: string) => (s ?? "").replace(/[._-]+/g, " ").replace(/\s+/g, " ").trim();
 
 /**
@@ -251,7 +255,7 @@ export const ScopeList = React.forwardRef<HTMLUListElement, ScopeListProps>(
           return (
             <li key={f.id} data-scope={f.id} data-risk={f.risk} className="flex items-center gap-3 py-3">
               <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-md [&_svg]:size-4", riskTile[f.risk])}>
-                <Icon aria-hidden />
+                <Icon aria-hidden className={mirrorIcon(f.icon)} />
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -694,7 +698,7 @@ export const ScopeMatrix = React.forwardRef<HTMLDivElement, ScopeMatrixProps>(
                 return (
                   <TableHead key={f.id} className="text-center" title={f.id}>
                     <span className="inline-flex flex-col items-center gap-0.5">
-                      <Icon aria-hidden className="size-3.5" />
+                      <Icon aria-hidden className={cn("size-3.5", mirrorIcon(f.icon))} />
                       <span className="whitespace-nowrap text-2xs">{f.label}</span>
                     </span>
                   </TableHead>
@@ -786,6 +790,6 @@ export const ScopeIcon = React.forwardRef<SVGSVGElement, ScopeIconProps>(({ scop
   const Icon = formatScope(scope, { definitions }).icon as React.ComponentType<
     React.ComponentProps<IconComponent> & { ref?: React.Ref<SVGSVGElement> }
   >;
-  return <Icon ref={ref} aria-hidden className={cn("size-4", className)} />;
+  return <Icon ref={ref} aria-hidden className={cn("size-4", mirrorIcon(Icon), className)} />;
 });
 ScopeIcon.displayName = "ScopeIcon";

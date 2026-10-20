@@ -142,13 +142,15 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         >
           {maxLength != null ? (
             <>
-              {length}
-              <span className="text-muted-foreground/60">/{maxLength}</span>
+              <bdi dir="ltr">
+                {length}
+                <span className="text-muted-foreground/60">/{maxLength}</span>
+              </bdi>
               <span className="sr-only"> characters used</span>
             </>
           ) : (
             <>
-              {length}
+              <bdi dir="ltr">{length}</bdi>
               <span className="sr-only"> characters</span>
             </>
           )}

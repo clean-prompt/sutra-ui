@@ -12,7 +12,7 @@
 |---|---|---|---|
 | `asChild` | `boolean` |  | Render as the child element (e.g. a link) while keeping button styles. |
 | `fullWidth` | `boolean \| null` |  | Stretches the button to the width of its container. |
-| `label` | `string` | `"Scroll to bottom"` |  |
+| `label` | `string` | `"Scroll to bottom"` | Accessible name and tooltip of the button. Default "Scroll to bottom". |
 | `leadingIcon` | `React.ReactNode` |  | Icon before the label. |
 | `loading` | `boolean` |  | Shows a spinner and disables the button. |
 | `size` | `"icon" \| "sm" \| "md" \| "lg" \| "xs" \| "xl" \| "icon-xs" \| "icon-sm" \| "icon-lg" \| "icon-xl" \| null` | `"md"` | Button height and padding; `icon-*` sizes are square. |

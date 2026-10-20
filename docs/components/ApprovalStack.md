@@ -23,7 +23,7 @@
 | `onApproveAll` | `() => void` |  | Shows "Approve all" when set. |
 | `onDenyAll` | `() => void` |  | Shows "Deny all" when set. |
 | `onIndexChange` | `(index: number) => void` |  | Called with the index of the new top card when the user steps through the stack. |
-| `ref` | `React.Ref<HTMLElement>` |  |  |
+| `ref` | `React.Ref<HTMLElement>` |  | Ref to the root `<section>` element. |
 
 ## Example (live: `#/components/chat-extras/approval-stack` in the playground)
 

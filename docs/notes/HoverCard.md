@@ -13,7 +13,7 @@ server: ssr-safe
 | Tab / Shift+Tab | Focusing the trigger opens the card after `openDelay`; moving focus away closes it after `closeDelay` |
 | Escape | Close the card |
 
-The trigger is an `<a>`, so it is a tab stop only when it has an `href` (or `tabIndex`). Radix sets `tabindex="-1"` on every focusable element inside the card, so keyboard users cannot reach links or buttons in it. There are no arrow keys, so RTL changes nothing.
+The trigger is an `<a>`, so it is a tab stop only when it has an `href` (or `tabIndex`). Radix sets `tabindex="-1"` on every focusable element inside the card, so keyboard users cannot reach links or buttons in it. There are no arrow keys, so RTL changes nothing for keys. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `bottom`, `left` and `right` stay physical, and Radix still flips the card on a collision.
 
 ## Screen readers
 The card has no role, no label and no `aria-describedby` link to its trigger, and it is portalled to the end of `<body>`: a screen reader user may not find it, and it does not announce when it opens. Treat its content as a duplicate of something reachable elsewhere (the linked page, a profile), never as the only place for information or actions.

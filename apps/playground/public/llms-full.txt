@@ -29,6 +29,7 @@ A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or
 - Brand `bg-primary hover:bg-primary-hover text-primary-foreground`, `bg-primary-soft text-primary-soft-foreground`. Status `success | warning | destructive | info`, each with `-foreground`, `-soft`, `-soft-foreground`.
 - Radius `rounded-control` (buttons, inputs, chips) and `rounded-box` (cards, panels, popovers); `rounded-full` only for things that are always round. Shadows `shadow-xs ... shadow-3xl`.
 - Never write a palette class (`bg-zinc-500`), a hex colour or a `dark:` override: dark mode and the paper style (`data-style="paper"`) retune the tokens. Charts read `--chart-1` ... `--chart-8` (`chartColorVars`).
+- Fixed on-media colours use the `white` / `black` keywords or `color-mix(white N%)`; a fixed dark surface takes the `dark` class; use `light-dark()` instead of `dark:` pairs; categorical chips use `accentClasses.chip`. Literal colours that stay (brand and store art, ANSI and syntax palettes, mask stops, Badge colour names) are listed with a reason in `test/conventions.test.ts`.
 - Control heights: sm `h-8`, md `h-9`, lg `h-10` (Button also has `xs`, `xl` and `icon-*` sizes).
 
 ## Vocabulary (one spelling per concept)
@@ -52,11 +53,13 @@ A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or
 - Anything that is direction itself gets an `rtl:` partner: `translate-x-N` with `rtl:-translate-x-N`, `origin-left` with `rtl:origin-right`, directional glyphs (chevrons, arrows) with `rtl:-scale-x-100`. Media transport, undo and enter-key glyphs are not mirrored.
 - Read direction with `useDirection()` (hooks) or `directionOf(el)` / `logicalArrow(event)` (lib); never `document.dir` ad hoc. Horizontal arrow keys follow the reading order. `DirectionProvider` forces or follows the document direction (also for portalled layers).
 - Charts, code viewers, maps, QR codes and the media seek bar are deliberate `dir="ltr"` islands.
+- Numeric runs inside text ("0 / 500", "3 of 12", percentages, deltas) go in `<bdi dir="ltr">`. `Tooltip`, `Popover` and `HoverCard` take `side="start" | "end"`; `Sheet` takes `start` / `end` sides.
 
 ## Motion
 - Motion is CSS first; there is no animation library. One ease and four speeds are tokens on `:root`: `--sutra-ease`, `--sutra-duration-fast` (150 ms), `--sutra-duration` (200), `--sutra-duration-slow` (300), `--sutra-duration-fill` (500); springs `--sutra-spring-gentle | snappy | bouncy` drive `transition-spring*` for transform properties.
 - Utilities: `animate-fade-in | fade-up | pop-in`, `animate-pop`, `animate-tick`, `animate-flash`, `chevron-turn`, `animate-in/out` (tw-animate-css), `scroll-reveal`, `spotlight`, `tilt`, `magnetic`. Animate a value only when it changes (key the element on the changed value), never on first render; in lists only newly added items animate in (`AnimatedList` and `Presence` do this).
 - Reduced motion has one net in `sutra.css`: decorative loops and entrances stop, transitions end in 1 ms, overlay movement is stripped, `animate-spin` stays. Do not animate dense tables, log or code viewers, live data fills or anything with its own engine. Presence (`usePresence`, `Presence`, `AnimatedList`), `useFlip`, `useDrag`, `useViewTransition` are the building blocks; gesture components always have a keyboard path.
+- In-app motion switch: `<html data-motion="reduce" | "full">` (none follows the system); `prefersReducedMotion()` / `usePrefersReducedMotion()` read it, so JS and CSS agree.
 - In Tailwind v4 `translate-*`, `scale-*`, `rotate-*` set individual properties: use bare `transition-transform` (or name all four in an arbitrary list).
 
 ## Accessibility
@@ -847,7 +850,7 @@ Server render: same markup as the client. Renders plain markup with no browser A
 - `loading` replaces `leadingIcon` with the spinner but keeps `trailingIcon`, and it also disables the button: do not combine it with your own `disabled` state expecting a different look.
 - `type` defaults to `"button"`, not the browser's `"submit"`: pass `type="submit"` for form submit buttons.
 - Use `asChild` for links (`<Button asChild><a href>`); it makes the link look and act inert while disabled or loading, but it is still an anchor, not a button.
-- `variant="link"` drops the height and padding (`h-auto px-0`); size classes then only change the text.
+- `variant="link"` drops the height and padding (`h-auto px-0`); size classes then only change the text. It keeps a 24px-tall hit area (an invisible `::after`), so a stand-alone link button is still a valid tap target.
 
 ## ButtonGroup
 
@@ -867,7 +870,7 @@ Server render: same markup as the client. Renders plain markup with no browser A
 | `className` | `string \| string` |  | Classes for the group container. |
 | `orientation` | `ButtonGroupOrientation` | `"horizontal"` | Lays the buttons out in a row or a column. |
 | `size` | `Size` | `"md"` | Size applied to every `ButtonGroupItem`. |
-| `type` | `undefined \| typeof ToggleGroupType.Single \| typeof ToggleGroupType.Multiple` |  |  |
+| `type` | `undefined \| "single" \| "multiple"` |  | Leave it out for a plain attached row of buttons; `"single"` or `"multiple"` turns the group into toggle buttons. Toggle mode: at most one item is pressed (radio roles); `ButtonGroupItem` then needs a `value`. Toggle mode: any number of items can be pressed (`aria-pressed`); `ButtonGroupItem` then needs a `value`. |
 
 ### Variants
 
@@ -3016,7 +3019,7 @@ Server render: same markup as the client. Always renders frame 0 first: the pref
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `gap` | `"sm" \| "md" \| "lg"` | `"md"` |  |
+| `gap` | `"sm" \| "md" \| "lg"` | `"md"` | Space between the cells: `sm` 12px, `md` 16px (24px from the tablet width up) or `lg` 24px (32px from the tablet width up). |
 
 ### Part props
 
@@ -3141,7 +3144,7 @@ Props of `HoverCardContent`: see [the full page](md/HoverCard.md).
 | Tab / Shift+Tab | Focusing the trigger opens the card after `openDelay`; moving focus away closes it after `closeDelay` |
 | Escape | Close the card |
 
-The trigger is an `<a>`, so it is a tab stop only when it has an `href` (or `tabIndex`). Radix sets `tabindex="-1"` on every focusable element inside the card, so keyboard users cannot reach links or buttons in it. There are no arrow keys, so RTL changes nothing.
+The trigger is an `<a>`, so it is a tab stop only when it has an `href` (or `tabIndex`). Radix sets `tabindex="-1"` on every focusable element inside the card, so keyboard users cannot reach links or buttons in it. There are no arrow keys, so RTL changes nothing for keys. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `bottom`, `left` and `right` stay physical, and Radix still flips the card on a collision.
 
 #### Screen readers
 
@@ -3982,7 +3985,7 @@ Server render: same markup as the client. Plain markup with inline styles and no
 
 #### Gotchas
 
-- At most five colours are used (one per blob); fewer repeat, and an empty array falls back to the brand palette. `colors` take any CSS colour, including `var(--color-brand-500)`.
+- At most five colours are used (one per blob); fewer repeat, and an empty array falls back to the default palette (three brand shades plus the `--chart-2` cyan and `--chart-6` violet, so a style such as paper retunes it). `colors` take any CSS colour, including `var(--color-brand-500)`.
 - `speed` multiplies the loop (1 is about 18 s, and each blob runs a little slower), `blur` is in px, `intensity` is blob opacity from 0 to 1 (default 0.7), and `grain` with `grainOpacity` adds the noise overlay.
 - The root is `relative isolate overflow-hidden`, and the layer sits at `-z-10` inside it: give the root a size (`className="h-64"`) and your own padding, since the layer is absolute. `layerClassName` styles the layer.
 - Large blurred areas cost paint time on low-end devices: a big `blur` over a full screen is the expensive combination.
@@ -4481,7 +4484,7 @@ The root is a `<nav>` labelled "Pagination" (override with `aria-label`). Page b
 
 #### Reduced motion
 
-Mostly static. The `dots` indicator grows with a width transition and the button states fade; both end in 1 ms under reduced motion. The `loading` spinner on the load-more button keeps turning.
+Mostly static. The `dots` indicator (each dot has a 24px hit area; neighbours are 14px apart, so the boxes overlap and the later dot wins the overlap) grows with a width transition and the button states fade; both end in 1 ms under reduced motion. The `loading` spinner on the load-more button keeps turning.
 
 #### Server rendering
 
@@ -4609,7 +4612,7 @@ Props of `PopoverContent`: see [the full page](md/Popover.md).
 | Tab / Shift+Tab | Move through the panel; focus is not trapped, and moving it outside the panel closes it |
 | Escape | Close and return focus to the trigger |
 
-Focus moves into the panel when it opens and goes back to the trigger on close (not after a click outside). There are no arrow-key or direction-dependent keys, so RTL changes nothing.
+Focus moves into the panel when it opens and goes back to the trigger on close (not after a click outside). There are no arrow-key or direction-dependent keys, so RTL changes nothing. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `bottom`, `left` and `right` stay physical, and Radix still flips the panel on a collision.
 
 #### Screen readers
 
@@ -5700,7 +5703,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 | Tab / Shift+Tab | Focusing the trigger opens the tooltip after the delay; moving focus away closes it |
 | Escape | Close the tooltip while its trigger has focus |
 
-The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. Pressing the trigger (click, Enter or Space) also closes the tooltip.
+The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `top`, `left` and `right` stay physical, and Radix still flips the bubble on a collision. Pressing the trigger (click, Enter or Space) also closes the tooltip.
 
 #### Screen readers
 
@@ -6689,7 +6692,7 @@ Props of `TableCell`, `TableCheckbox`, `TableHead`: see [the full page](md/Table
 |---|---|
 | Tab / Shift+Tab | Moves to sort buttons in headers, checkboxes and any control in a cell |
 | Enter, Space | On a sortable header, calls its `onSort` (native `<button>`) |
-| Space | On a `TableCheckbox`, toggles it (native checkbox) |
+| Space | On a `TableCheckbox`, toggles it (native checkbox with a 24px hit area) |
 
 There is no arrow-key navigation between cells and rows are not focusable; this is a plain table (only the scroll box around it takes focus, and only while the table is wider or taller than it). No key depends on direction, but `align` is logical: `left` and `right` mean start and end, so they flip in RTL.
 
@@ -7114,7 +7117,7 @@ Server render: same markup as the client. Plain markup and inline CSS variables,
 | `disabled` | `boolean` |  | Disables every segment. |
 | `granularity` | `TimeGranularity` | `"minute"` | Show a seconds segment. Default `"minute"`. |
 | `hourCycle` | `12 \| 24` |  | Force a 12- or 24-hour clock. Defaults to the locale's convention. |
-| `icon` | `boolean` | `true` | Show the leading clock icon. Default true. |
+| `icon` | `boolean` | `true` | Show the leading clock icon. Default true. With `wheel` on it is the button that opens the wheels, so it stays. |
 | `invalid` | `boolean` |  | Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
 | `labels` | `TimePickerLabels` |  | Override the segment names and the clear button label (i18n). |
 | `locale` | `string` |  | BCP 47 locale for the clock convention, segment order and AM/PM labels. |
@@ -7127,6 +7130,7 @@ Server render: same markup as the client. Plain markup and inline CSS variables,
 | `size` | `Size` | `"md"` | Field height and text size. |
 | `step` | `number` | `1` | Minutes moved by the minute segment's arrow keys (snaps to multiples). Default 1. |
 | `value` | `string` |  | Time as `"HH:mm"` (24-hour), or `"HH:mm:ss"` with `granularity="second"`. `undefined` means empty. |
+| `wheel` | `boolean \| "touch"` | `false` | Offer scrolling wheels (hours, minutes, optional seconds and AM/PM, in the locale's order) in a popover, for touch. `true` adds a clock button that opens them on any device; `"touch"` does so only where the primary pointer is coarse, and there a tap on the field opens them and the segments stop raising the on-screen keyboard. The wheels keep `step`, `min`, `max` and `granularity`, change the value as they scroll, and Done closes them. The segments and their keys work as before. |
 
 ### Notes
 
@@ -7134,7 +7138,7 @@ Server render: same markup as the client. Plain markup and inline CSS variables,
 
 **Use instead when:**
 - `DateTimePicker`: a day and a time
-- `WheelPicker`: a touch-first scrolling picker
+- `WheelPicker`: a touch-first scrolling picker (`TimePicker wheel` puts those wheels in a popover)
 - `Input`: a native `type="time"` field
 - `NumberInput`: a plain number
 
@@ -7142,7 +7146,7 @@ Server render: same markup as the client. Plain markup and inline CSS variables,
 
 | Key | Action |
 |---|---|
-| Tab / Shift+Tab | Moves between the segments, then the clear button |
+| Tab / Shift+Tab | Moves between the segments, then the clear button (with `wheel` on, the clock button comes first) |
 | ArrowLeft, ArrowRight | Previous or next segment (unfinished digits are committed first) |
 | ArrowUp, ArrowDown | Step the segment by 1, wrapping at the ends without carrying into the next segment; the minute segment moves by `step` and snaps to its multiples; AM/PM toggles |
 | Home, End | Set the segment to its lowest or highest value |
@@ -7150,17 +7154,17 @@ Server render: same markup as the client. Plain markup and inline CSS variables,
 | A, P | In the AM/PM segment (or from the hour or minute on a 12-hour clock): set AM or PM |
 | Backspace, Delete | Clear an hour, minute or second segment (AM/PM stays) |
 
-Focusing a segment selects its text. Ctrl, Meta and Alt chords are left to the browser. The segments sit in a `dir="ltr"` row in any reading direction, so Left and Right keep their physical meaning and nothing swaps in RTL.
+Focusing a segment selects its text. With `wheel` the clock button opens the wheels: each is a listbox (arrows, Page keys, Home, End, type-ahead), Tab reaches Done, Escape closes and returns focus to the button. Ctrl, Meta and Alt chords are left to the browser. The segments sit in a `dir="ltr"` row in any reading direction, so Left and Right keep their physical meaning and nothing swaps in RTL.
 
 #### Screen readers
 
 - The wrapper is a `role="group"` named by `aria-label`, `aria-labelledby` or a surrounding `FieldLabel`. Each segment is a text input with `role="spinbutton"`, a name ("Hour", "Minute", "Second", "AM/PM"), `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and `aria-valuetext` ("Empty" when unset).
 - `labels` replaces the segment names, the clear button ("Clear time") and the spoken empty value, for translation.
-- `invalid`, `required` and `readOnly` set `aria-invalid`, `aria-required` and `aria-readonly` on each segment; `disabled` also sets `aria-disabled` on the group. The clock icon and the separators are `aria-hidden`.
+- `invalid`, `required` and `readOnly` set `aria-invalid`, `aria-required` and `aria-readonly` on each segment; `disabled` also sets `aria-disabled` on the group. The clock icon and the separators are `aria-hidden`. With `wheel` the clock icon becomes a button named "Choose time" (`aria-haspopup="dialog"`) that opens a dialog of that name with one listbox per wheel (named like the segments) and Done; `labels.wheel` and `labels.done` translate them. On a coarse pointer the segments use `inputmode="none"`, so a tap opens the wheels, not the keyboard.
 
 #### Reduced motion
 
-Nothing moves; only the border and focus colours transition, which the net ends in 1 ms.
+Without `wheel` nothing moves; only the border and focus colours transition, which the net ends in 1 ms. With it the panel fades in like a popover, and a wheel glides to a row it was sent to (a click, an arrow key), which becomes a jump under reduced motion.
 
 #### Server rendering
 
@@ -7172,10 +7176,10 @@ Server render: part of it fills in after mount. Without `hourCycle` and `locale`
 
 #### Gotchas
 
-- `onValueChange` receives `undefined` whenever the time is incomplete, for example after clearing one segment; typing a digit that can still grow ("3" in the minute) waits until focus leaves or another digit completes it.
-- `min` and `max` clamp the value when it is committed (typed, stepped or blurred) rather than blocking keys, and they are `"HH:mm"` strings.
-- With `value` and no `onValueChange` the segments show what was typed but nothing is committed upstream.
-- `name` posts the 24-hour value through a hidden input (empty when incomplete). `step` applies to minutes only and is rounded and limited to 1 to 59.
+- `onValueChange` receives `undefined` whenever the time is incomplete, for example after clearing one segment; typing a digit that can still grow ("3" in the minute) waits until focus leaves or another digit completes it. `min` and `max` clamp the value when it is committed rather than blocking keys, and they are `"HH:mm"` strings.
+- With `value` and no `onValueChange` the segments show what was typed but nothing is committed upstream. `name` posts the 24-hour value through a hidden input (empty when incomplete). `step` applies to minutes only and is rounded and limited to 1 to 59.
+- `wheel` is opt-in: `true` adds the clock button everywhere, `"touch"` only on a coarse primary pointer. The wheels list every hour, minutes in multiples of `step` (a typed minute that is not one stays while it is the value), seconds with `granularity="second"` and AM/PM on a 12-hour clock, in the locale's order but always left to right; rows that `min` and `max` rule out are disabled. `readOnly` and `disabled` turn them off, and `DateTimePicker` does not take `wheel`.
+- The wheels report through `onValueChange` as they move, like a typed time; a controlled parent that refuses a time keeps the old one. An empty field starts the wheels at `min` (or midnight) and stays empty until a wheel moves or Done is pressed.
 
 ## Toaster
 
@@ -7414,7 +7418,7 @@ Props of `TooltipContent`: see [the full page](md/Tooltip.md).
 | Tab / Shift+Tab | Focusing the trigger opens the tooltip after the delay; moving focus away closes it |
 | Escape | Close the tooltip while its trigger has focus |
 
-The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. Pressing the trigger (click, Enter or Space) also closes the tooltip.
+The tooltip has no focusable content and the trigger keeps its own keyboard behaviour. There are no arrow keys, so RTL changes nothing. In RTL, `side="start"` and `side="end"` swap left and right (read through `useDirection()`: a `DirectionProvider` with a `dir`, else `<html dir>`; a plain `dir` attribute on a container is not seen); the default is `top`, `left` and `right` stay physical, and Radix still flips the bubble on a collision. Pressing the trigger (click, Enter or Space) also closes the tooltip.
 
 #### Screen readers
 
@@ -10517,7 +10521,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `usePan` (`@sutra/ui/tokens`): Drag with inertia: a release keeps its velocity and slows down with time-based friction; past the bounds it springs back.
 - `usePlayerQueue` (`@sutra/ui/media`): Queue state for a player: current item, play order and next/previous with repeat & shuffle semantics.
 - `usePointerVars` (`@sutra/ui/tokens`): Publishes the pointer over an element as CSS variables, for the `spotlight`, `tilt` and `magnetic` utilities.
-- `usePrefersReducedMotion` (`@sutra/ui/tokens`): Live `prefers-reduced-motion: reduce` preference.
+- `usePrefersReducedMotion` (`@sutra/ui/tokens`): Live reduced-motion preference: `<html data-motion="reduce" | "full">` wins over `prefers-reduced-motion: reduce`.
 - `usePresence` (`@sutra/ui/tokens`): Keeps removed items for a moment (state `"exit"`) so they can animate out, and marks new ones `"enter"`.
 - `usePrevious` (`@sutra/ui/tokens`): The last value that `value` had before its current one (`undefined`, or `initial`, until it first changes).
 - `usePromptInput` (`@sutra/ui/ai`): Access the enclosing PromptInput state.

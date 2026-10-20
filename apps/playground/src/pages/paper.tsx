@@ -26,6 +26,7 @@ import {
   FileUploadTrigger,
   Heading,
   Marquee,
+  ScrollReveal,
   SearchTrigger,
   StatementHero,
   SutraLogo,
@@ -354,6 +355,14 @@ function SiteFooter() {
   );
 }
 
+/**
+ * The demo frame clips with `overflow-hidden`, which makes it a scroll container: a native scroll timeline (the
+ * `scroll-reveal` utility) binds to the nearest one and never moves, even with an `overflow-clip` wrapper inside. On this
+ * page only, the frame clips with `overflow-clip` instead (same look, no scroll container), so the reveals below follow the
+ * page scroll in Chrome and Safari; browsers without `animation-timeline` use the script fallback, which finds the page.
+ */
+const clipFrame = "[&>div.overflow-hidden]:overflow-clip";
+
 function LandingDemo() {
   const [dragging, setDragging] = React.useState(false);
   const depth = React.useRef(0);
@@ -371,6 +380,7 @@ function LandingDemo() {
   return (
     <Demo
       id="landing"
+      className={clipFrame}
       title="Home"
       description="A top bar, one statement, a strip of formats, a numbered grid of tools and a calm footer. Press / for the search, or drop a file anywhere on the page."
       align="start"
@@ -441,13 +451,15 @@ function LandingDemo() {
         </section>
 
         <section id="tools" aria-labelledby="tools-title" className="mx-auto w-full max-w-5xl scroll-mt-20 px-4 py-16 md:px-6 md:py-24">
-          <Heading id="tools-title" as="h2" size="display-md">
-            Every file, handled.
-          </Heading>
-          <p className="mt-3 max-w-xl text-pretty text-base text-muted-foreground">
-            Convert, compress, resize and trim photos, video and audio. One file or a hundred at a time, all on your own
-            machine.
-          </p>
+          <ScrollReveal distance={16}>
+            <Heading id="tools-title" as="h2" size="display-md">
+              Every file, handled.
+            </Heading>
+            <p className="mt-3 max-w-xl text-pretty text-base text-muted-foreground">
+              Convert, compress, resize and trim photos, video and audio. One file or a hundred at a time, all on your own
+              machine.
+            </p>
+          </ScrollReveal>
           <DividedGrid
             label="Tools"
             className="mt-8"
@@ -463,7 +475,9 @@ function LandingDemo() {
           </div>
         </section>
 
-        <SiteFooter />
+        <ScrollReveal from="fade">
+          <SiteFooter />
+        </ScrollReveal>
       </div>
     </Demo>
   );
@@ -486,6 +500,7 @@ function ToolPageDemo() {
   return (
     <Demo
       id="tool"
+      className={clipFrame}
       title="Tool page"
       description="I have, I want: a dashed dropzone, a big output format and one ink button. Choose or drop images, then change the format."
       align="start"
@@ -498,14 +513,14 @@ function ToolPageDemo() {
             All tools
           </TextLink>
         </div>
-        <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center text-center">
+        <ScrollReveal distance={16} className="mx-auto mt-6 flex max-w-2xl flex-col items-center text-center">
           <Heading as="h2" size="display-xl">
             Image converter
           </Heading>
           <p className="mt-5 max-w-xl text-balance text-base text-muted-foreground md:text-lg">
             Convert to and from JPG, PNG, WEBP, AVIF, GIF, TIFF, BMP, ICO, HEIC and more.
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="mx-auto mt-10 w-full max-w-3xl rounded-box border border-border bg-card p-2.5 sm:p-3 md:mt-14">
           <div className="grid grid-cols-1 gap-3 @xl:grid-cols-[1fr_auto_1fr] @xl:items-stretch">
@@ -658,12 +673,13 @@ function DetailsDemo() {
   return (
     <Demo
       id="details"
+      className={clipFrame}
       title="Details"
       description="The small things of the style on their own: the pill action beside regular buttons, the card-surface dialog, a toast, the chart palette and the entrance."
       align="start"
       canvasClassName="gap-10"
     >
-      <div className="space-y-3">
+      <ScrollReveal distance={16} className="space-y-3">
         <DemoLabel>Buttons: the pill is for the one big action</DemoLabel>
         <div className="flex flex-wrap items-center gap-3">
           <Button size="xl" leadingIcon={<RiAddLine aria-hidden />}>
@@ -673,9 +689,9 @@ function DetailsDemo() {
           <Button variant="secondary">Compress</Button>
           <Button variant="ghost">Cancel</Button>
         </div>
-      </div>
+      </ScrollReveal>
 
-      <div className="space-y-3">
+      <ScrollReveal distance={16} className="space-y-3">
         <DemoLabel>Dialog and toast</DemoLabel>
         <div className="flex flex-wrap items-center gap-3">
           <ChipInDialog>
@@ -690,9 +706,9 @@ function DetailsDemo() {
             Show a toast
           </Button>
         </div>
-      </div>
+      </ScrollReveal>
 
-      <div className="space-y-4">
+      <ScrollReveal distance={16} className="space-y-4">
         <DemoLabel>Chart palette: ink first, then muted earth tones</DemoLabel>
         <div aria-hidden className="flex items-center gap-2">
           {chartColorVars.map((color, i) => (
@@ -722,9 +738,9 @@ function DetailsDemo() {
             label="Files converted by format"
           />
         </div>
-      </div>
+      </ScrollReveal>
 
-      <div className="space-y-3">
+      <ScrollReveal distance={16} className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
           <DemoLabel>Entrance: animate-fade-up, staggered, still under reduced motion</DemoLabel>
           <Button size="xs" variant="secondary" onClick={() => setRun((n) => n + 1)}>
@@ -743,7 +759,7 @@ function DetailsDemo() {
             </li>
           ))}
         </ul>
-      </div>
+      </ScrollReveal>
     </Demo>
   );
 }

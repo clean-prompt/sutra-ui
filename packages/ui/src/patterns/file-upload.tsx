@@ -370,10 +370,10 @@ const extColors: [RegExp, string][] = [
   [/^pdf$/, "bg-destructive text-destructive-foreground"],
   [/^(docx?|rtf|odt|pages|txt|md)$/, "bg-info text-info-foreground"],
   [/^(xlsx?|csv|ods|numbers|tsv)$/, "bg-success text-success-foreground"],
-  [/^(pptx?|key|odp)$/, "bg-orange-500 text-white"],
+  [/^(pptx?|key|odp)$/, "bg-[var(--chart-7)] text-white"],
   [/^(zip|rar|7z|tar|gz)$/, "bg-warning text-warning-foreground"],
   [/^(png|jpe?g|gif|webp|svg|avif|heic|bmp|ico)$/, "bg-primary text-primary-foreground"],
-  [/^(mp4|mov|webm|avi|mkv|mp3|wav|ogg|flac|m4a)$/, "bg-fuchsia-500 text-white"],
+  [/^(mp4|mov|webm|avi|mkv|mp3|wav|ogg|flac|m4a)$/, "bg-[var(--chart-6)] text-white"],
   [/^(js|jsx|ts|tsx|json|html|css|py|go|rs|java|rb|sh|yml|yaml)$/, "bg-inverse text-inverse-foreground"],
 ];
 

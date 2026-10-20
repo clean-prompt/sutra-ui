@@ -292,9 +292,9 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | KunjiButton | sm | h 32px | x 12px | sm (14px) | 16px |  |
 | KunjiButton | md (default) | h 40px | x 20px | 15px | 18px |  |
 | KunjiButton | lg | h 48px | x 20px | base (16px) | 20px |  |
-| NowPlayingBars | sm (default) | 12px square |  |  |  | under 24px |
-| NowPlayingBars | md | 16px square |  |  |  | under 24px |
-| NowPlayingBars | lg | 20px square |  |  |  | under 24px |
+| NowPlayingBars | sm (default) | 12px square |  |  |  | under 24px, hit area extended |
+| NowPlayingBars | md | 16px square |  |  |  | under 24px, hit area extended |
+| NowPlayingBars | lg | 20px square |  |  |  | under 24px, hit area extended |
 | PaymentCard | sm | see source |  |  |  |  |
 | PaymentCard | md (default) | see source |  |  |  |  |
 | PaymentCard | lg | see source |  |  |  |  |
@@ -318,8 +318,8 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | RepeatButton | lg | 44px square |  |  | 24px |  |
 | SaveStatus | sm (default) |  |  | xs (12px) |  |  |
 | SaveStatus | md |  |  | sm (14px) |  |  |
-| SeekBar | sm | h 16px, w 12px |  |  |  | under 24px |
-| SeekBar | md (default) | h 20px, w 14px |  |  |  | under 24px |
+| SeekBar | sm | h 16px, w 12px |  |  |  | under 24px, hit area extended |
+| SeekBar | md (default) | h 20px, w 14px |  |  |  | under 24px, hit area extended |
 | ShuffleButton | sm | 32px square |  |  | 16px |  |
 | ShuffleButton | md (default) | 36px square |  |  | 18px |  |
 | ShuffleButton | lg | 44px square |  |  | 24px |  |

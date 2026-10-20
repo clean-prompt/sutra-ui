@@ -9,7 +9,7 @@ import {
   RiReplyLine,
   RiArrowGoBackLine,
 } from "@remixicon/react";
-import { cn, focusRing, normalizeDensity, type Density } from "../lib/cn";
+import { cn, focusRing, normalizeDensity, type Density, hitArea } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { Avatar } from "../primitives/avatar";
 import { Button } from "../primitives/button";
@@ -402,6 +402,7 @@ export const CommentThread = React.forwardRef<HTMLElement, CommentThreadProps>(
               onClick={() => onFocusAnchor(thread)}
               title="Find in the text"
               className={cn(
+                hitArea,
                 "line-clamp-2 rounded-xs border-s-2 border-warning bg-warning-soft/40 py-0.5 ps-2 pe-1 text-start text-xs italic text-muted-foreground transition-colors hover:bg-warning-soft hover:text-foreground",
                 focusRing
               )}

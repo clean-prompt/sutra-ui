@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiDoubleQuotesL, RiStarFill } from "@remixicon/react";
-import { cn } from "../lib/cn";
+import { cn, hitArea } from "../lib/cn";
 import { Avatar } from "../primitives/avatar";
 import { MeshGradient } from "../primitives/mesh-gradient";
 import { SutraLogo, SutraMark, SutraAppIcon, sutraApps } from "../assets/brand";
@@ -57,7 +57,7 @@ function AuthPageFooter({
               key={l.href}
               href={l.href}
               renderLink={renderLink}
-              className="rounded-xs transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+              className={cn(hitArea, "rounded-xs transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40")}
             >
               {l.label}
             </BlockLink>
@@ -146,7 +146,7 @@ export const AuthSplitPage = React.forwardRef<HTMLDivElement, AuthSplitPageProps
         <MeshGradient
           grain
           intensity={0.85}
-          colors={["var(--color-brand-500)", "var(--color-brand-700)", "#8e51ff", "#00b8db", "var(--color-brand-400)"]}
+          colors={["var(--color-brand-500)", "var(--color-brand-700)", "var(--chart-6)", "var(--chart-2)", "var(--color-brand-400)"]}
           className="dark flex h-full min-h-[640px] flex-col justify-between rounded-2xl bg-brand-950 p-10 text-white shadow-inner-highlight xl:p-14"
         >
           {panel ?? (
@@ -157,7 +157,7 @@ export const AuthSplitPage = React.forwardRef<HTMLDivElement, AuthSplitPageProps
               </div>
               <figure className="max-w-lg">
                 <RiDoubleQuotesL aria-hidden className="mb-4 size-9 text-white/40" />
-                <div className="mb-4 flex gap-0.5 text-amber-300" role="img" aria-label="5 out of 5 stars">
+                <div className="mb-4 flex gap-0.5 text-warning-soft-foreground" role="img" aria-label="5 out of 5 stars">
                   {[0, 1, 2, 3, 4].map((i) => (
                     <RiStarFill key={i} aria-hidden className="size-4" />
                   ))}
@@ -331,7 +331,7 @@ export const AuthImagePage = React.forwardRef<HTMLDivElement, AuthImagePageProps
             <img src={imageSrc} alt={imageAlt} className="absolute inset-0 size-full object-cover" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-400 via-brand-600 to-brand-900 p-12">
-              <BackgroundPattern variant="grid" fade="radial" color="rgb(255 255 255 / 0.12)" />
+              <BackgroundPattern variant="grid" fade="radial" color="color-mix(in oklab, white 12%, transparent)" />
               <AuthAppPreview />
             </div>
           ))}

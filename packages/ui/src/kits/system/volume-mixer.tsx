@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RiArrowDownSLine, RiVolumeUpLine } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { clamp } from "../../lib/math";
 import { accentClasses, accentStyle, type Accent } from "../../lib/accent";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -171,6 +171,7 @@ export const VolumeMixer = React.forwardRef<HTMLDivElement, VolumeMixerProps>(
                     <button
                       type="button"
                       className={cn(
+                        hitArea,
                         "-mx-1 inline-flex max-w-full items-center gap-1 rounded-xs px-1 text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50",
                         focusRing
                       )}

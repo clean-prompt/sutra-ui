@@ -1,7 +1,7 @@
 import * as React from "react";
 import { HoverCard } from "radix-ui";
 import { RiExternalLinkLine } from "@remixicon/react";
-import { cn, focusRing } from "../lib/cn";
+import { cn, focusRing, hitArea } from "../lib/cn";
 import { isSafeHref } from "../lib/validate";
 import { Favicon, domainOf } from "../primitives/favicon";
 
@@ -90,6 +90,7 @@ export interface ChatInlineCitationProps
 export const ChatInlineCitation = React.forwardRef<HTMLElement, ChatInlineCitationProps>(
   ({ index, href, title, snippet, className, ...props }, ref) => {
     const pill = cn(
+      hitArea,
       "mx-0.5 inline-flex h-4 min-w-4 -translate-y-px items-center justify-center rounded-full bg-muted px-1 align-super text-[10px] font-medium leading-none tabular-nums text-muted-foreground no-underline transition-colors hover:bg-primary-soft hover:text-primary-soft-foreground",
       focusRing,
       className

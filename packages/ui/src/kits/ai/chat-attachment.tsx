@@ -14,7 +14,7 @@ import {
   RiImageLine,
   RiRefreshLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { formatBytes, pluralize, type FormatBytesOptions } from "../../lib/format";
 import { ProgressCircle } from "../../primitives/progress";
 import { Spinner } from "../../primitives/spinner";
@@ -170,6 +170,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
         aria-label={`Remove ${name}`}
         title="Remove"
         className={cn(
+          hitArea,
           "flex items-center justify-center rounded-full transition-[opacity,background-color,color]",
           small
             ? "size-5 text-muted-foreground hover:bg-accent hover:text-foreground"
@@ -318,7 +319,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
                 type="button"
                 onClick={onRetry}
                 aria-label={retryLabel}
-                className={cn("shrink-0 rounded-xs font-medium text-foreground underline-offset-2 hover:underline", focusRing)}
+                className={cn(hitArea, "shrink-0 rounded-xs font-medium text-foreground underline-offset-2 hover:underline", focusRing)}
               >
                 Retry
               </button>

@@ -457,9 +457,9 @@ export const Globe = React.forwardRef<HTMLDivElement, GlobeProps>(
                   <stop offset="100%" style={{ stopColor: "var(--primary)", stopOpacity: 0 }} />
                 </radialGradient>
                 <radialGradient id={`${ids}-shade`} cx="38%" cy="32%" r="72%">
-                  <stop offset="0%" style={{ stopColor: "#fff", stopOpacity: 0.12 }} />
-                  <stop offset="55%" style={{ stopColor: "#fff", stopOpacity: 0 }} />
-                  <stop offset="100%" style={{ stopColor: "#000", stopOpacity: 0.28 }} />
+                  <stop offset="0%" style={{ stopColor: "white", stopOpacity: 0.12 }} />
+                  <stop offset="55%" style={{ stopColor: "white", stopOpacity: 0 }} />
+                  <stop offset="100%" style={{ stopColor: "black", stopOpacity: 0.28 }} />
                 </radialGradient>
               </defs>
             ) : null}

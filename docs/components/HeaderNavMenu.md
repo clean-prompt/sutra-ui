@@ -11,7 +11,7 @@
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `listClassName` | `string` |  |  |
+| `listClassName` | `string` |  | Classes for the `ul` that holds the menu items (the root keeps `className`). |
 
 ## Example (live: `#/components/navigation/header-nav` in the playground)
 

@@ -66,7 +66,7 @@ export const OnboardingChecklist = React.forwardRef<HTMLDivElement, OnboardingCh
             {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
           </div>
           <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-            {done} of {items.length}
+            <bdi dir="ltr">{done} of {items.length}</bdi>
           </span>
           {onDismiss && (
             <Button variant="ghost" size="icon-xs" aria-label="Dismiss checklist" onClick={onDismiss} className="-me-1 -mt-1">

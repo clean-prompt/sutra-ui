@@ -11,7 +11,7 @@ import {
   RiTerminalBoxLine,
   RiTimeLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
 import {
@@ -148,6 +148,7 @@ export const RuleScopePicker = React.forwardRef<HTMLSpanElement, RuleScopePicker
           aria-label="Save rule to"
           data-value={value}
           className={cn(
+            hitArea,
             "inline-flex items-center gap-0.5 rounded-xs font-medium text-primary underline decoration-primary/40 decoration-dotted underline-offset-4 hover:decoration-primary disabled:opacity-50",
             focusRing
           )}

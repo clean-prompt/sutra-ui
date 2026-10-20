@@ -487,7 +487,7 @@ export const CountryFlag = React.forwardRef<HTMLSpanElement, CountryFlagProps>(
         data-code={upper}
         className={cn(
           "relative inline-flex shrink-0 items-center justify-center overflow-hidden align-middle",
-          "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-black/10 dark:after:ring-white/15",
+          "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-[color:light-dark(color-mix(in_oklab,black_10%,transparent),color-mix(in_oklab,white_15%,transparent))]",
           shape === "circle" ? "rounded-full" : height >= 24 ? "rounded-[3px]" : "rounded-[2px]",
           className
         )}

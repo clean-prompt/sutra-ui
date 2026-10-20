@@ -12,6 +12,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `arrow` | `boolean` | `true` | Show the pointing arrow. Default true. |
+| `side` | `FloatingSide` | `"top"` | Side of the trigger the tooltip opens on. `start` and `end` follow the reading direction (left and right in LTR, swapped in RTL, read from `DirectionProvider` or `<html dir>`); `left` and `right` stay physical. It flips when there is no room. |
 | `variant` | `"inverse" \| "light"` | `"inverse"` | Look of the bubble: `inverse` (dark, default) or `light` (bordered popover surface). |
 
 ## Variants

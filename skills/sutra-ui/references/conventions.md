@@ -1,4 +1,4 @@
-<!-- conventions-hash: 7b57ff6a73b2 -->
+<!-- conventions-hash: 25c77953d965 -->
 # Sutra UI conventions digest
 
 A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or extend the library. When the two disagree, CONVENTIONS.md wins; re-read it when the hash above no longer matches (`node packages/ui/scripts/gen-llms.mjs --update-conventions-hash` records the new one after you update this file).
@@ -13,6 +13,7 @@ A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or
 - Brand `bg-primary hover:bg-primary-hover text-primary-foreground`, `bg-primary-soft text-primary-soft-foreground`. Status `success | warning | destructive | info`, each with `-foreground`, `-soft`, `-soft-foreground`.
 - Radius `rounded-control` (buttons, inputs, chips) and `rounded-box` (cards, panels, popovers); `rounded-full` only for things that are always round. Shadows `shadow-xs ... shadow-3xl`.
 - Never write a palette class (`bg-zinc-500`), a hex colour or a `dark:` override: dark mode and the paper style (`data-style="paper"`) retune the tokens. Charts read `--chart-1` ... `--chart-8` (`chartColorVars`).
+- Fixed on-media colours use the `white` / `black` keywords or `color-mix(white N%)`; a fixed dark surface takes the `dark` class; use `light-dark()` instead of `dark:` pairs; categorical chips use `accentClasses.chip`. Literal colours that stay (brand and store art, ANSI and syntax palettes, mask stops, Badge colour names) are listed with a reason in `test/conventions.test.ts`.
 - Control heights: sm `h-8`, md `h-9`, lg `h-10` (Button also has `xs`, `xl` and `icon-*` sizes).
 
 ## Vocabulary (one spelling per concept)
@@ -36,11 +37,13 @@ A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or
 - Anything that is direction itself gets an `rtl:` partner: `translate-x-N` with `rtl:-translate-x-N`, `origin-left` with `rtl:origin-right`, directional glyphs (chevrons, arrows) with `rtl:-scale-x-100`. Media transport, undo and enter-key glyphs are not mirrored.
 - Read direction with `useDirection()` (hooks) or `directionOf(el)` / `logicalArrow(event)` (lib); never `document.dir` ad hoc. Horizontal arrow keys follow the reading order. `DirectionProvider` forces or follows the document direction (also for portalled layers).
 - Charts, code viewers, maps, QR codes and the media seek bar are deliberate `dir="ltr"` islands.
+- Numeric runs inside text ("0 / 500", "3 of 12", percentages, deltas) go in `<bdi dir="ltr">`. `Tooltip`, `Popover` and `HoverCard` take `side="start" | "end"`; `Sheet` takes `start` / `end` sides.
 
 ## Motion
 - Motion is CSS first; there is no animation library. One ease and four speeds are tokens on `:root`: `--sutra-ease`, `--sutra-duration-fast` (150 ms), `--sutra-duration` (200), `--sutra-duration-slow` (300), `--sutra-duration-fill` (500); springs `--sutra-spring-gentle | snappy | bouncy` drive `transition-spring*` for transform properties.
 - Utilities: `animate-fade-in | fade-up | pop-in`, `animate-pop`, `animate-tick`, `animate-flash`, `chevron-turn`, `animate-in/out` (tw-animate-css), `scroll-reveal`, `spotlight`, `tilt`, `magnetic`. Animate a value only when it changes (key the element on the changed value), never on first render; in lists only newly added items animate in (`AnimatedList` and `Presence` do this).
 - Reduced motion has one net in `sutra.css`: decorative loops and entrances stop, transitions end in 1 ms, overlay movement is stripped, `animate-spin` stays. Do not animate dense tables, log or code viewers, live data fills or anything with its own engine. Presence (`usePresence`, `Presence`, `AnimatedList`), `useFlip`, `useDrag`, `useViewTransition` are the building blocks; gesture components always have a keyboard path.
+- In-app motion switch: `<html data-motion="reduce" | "full">` (none follows the system); `prefersReducedMotion()` / `usePrefersReducedMotion()` read it, so JS and CSS agree.
 - In Tailwind v4 `translate-*`, `scale-*`, `rotate-*` set individual properties: use bare `transition-transform` (or name all four in an arbitrary list).
 
 ## Accessibility

@@ -71,9 +71,10 @@ export interface SecurityEvent {
 
 type IconType = React.ComponentType<{ className?: string; "aria-hidden"?: React.AriaAttributes["aria-hidden"] }>;
 
-const eventIcon: Record<string, { icon: IconType; tone: Tone }> = {
-  sign_in: { icon: RiLoginBoxLine, tone: "info" },
-  sign_out: { icon: RiLogoutBoxRLine, tone: "neutral" },
+/** `mirror`: the glyph points at a door, so it flips in right-to-left. */
+const eventIcon: Record<string, { icon: IconType; tone: Tone; mirror?: boolean }> = {
+  sign_in: { icon: RiLoginBoxLine, tone: "info", mirror: true },
+  sign_out: { icon: RiLogoutBoxRLine, tone: "neutral", mirror: true },
   sign_in_failed: { icon: RiUserForbidLine, tone: "destructive" },
   approved: { icon: RiCheckboxCircleLine, tone: "success" },
   denied: { icon: RiCloseCircleLine, tone: "neutral" },
@@ -197,7 +198,7 @@ export const SecurityActivityFeed = React.forwardRef<HTMLDivElement, SecurityAct
                         )}
                       >
                         <span className={cn("mt-0.5 flex shrink-0 items-center justify-center rounded-full", compact ? "size-6 [&_svg]:size-3.5" : "size-8 [&_svg]:size-4", toneClasses.soft[meta.tone])}>
-                          <Icon aria-hidden />
+                          <Icon aria-hidden className={meta.mirror ? "rtl:-scale-x-100" : undefined} />
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block text-sm text-foreground">{e.description}</span>

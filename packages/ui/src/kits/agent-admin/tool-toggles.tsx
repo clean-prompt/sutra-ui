@@ -13,7 +13,7 @@ import {
   RiSettings3Line,
   RiToolsLine,
 } from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { cn, focusRing, hitArea } from "../../lib/cn";
 import { useAsyncAction } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Badge, type BadgeColor } from "../../primitives/badge";
@@ -162,6 +162,7 @@ export const ToolToggleRow = React.memo(
               disabled={!expandable}
               onClick={() => setExpanded(!expanded)}
               className={cn(
+                hitArea,
                 "flex min-w-0 flex-1 items-center gap-2 rounded-sm text-start disabled:cursor-default",
                 focusRing
               )}
@@ -387,7 +388,7 @@ export const ToolToggleList = React.forwardRef<HTMLDivElement, ToolToggleListPro
                 </div>
               )}
               <span className="ms-auto text-xs text-muted-foreground tabular-nums">
-                {enabledCount} of {tools.length} enabled
+                <bdi dir="ltr">{enabledCount} of {tools.length} enabled</bdi>
               </span>
               {deprecatedCount > 0 && (
                 <label className="flex items-center gap-1.5 text-xs text-muted-foreground">

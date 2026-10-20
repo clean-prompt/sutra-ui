@@ -83,7 +83,7 @@ export const NameCheckboxPicker = React.forwardRef<HTMLFieldSetElement, NameChec
         </legend>
         <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
           <span aria-live="polite">
-            {value.length} of {all.length} selected
+            <bdi dir="ltr">{value.length} of {all.length} selected</bdi>
           </span>
           <span className="flex items-center gap-2">
             <Checkbox

@@ -193,7 +193,7 @@ export const VolumeSlider = React.forwardRef<HTMLDivElement, VolumeSliderProps>(
               levelClassName
             )}
           >
-            {levelText}
+            {muted ? levelText : <bdi dir="ltr">{levelText}</bdi>}
           </span>
         ) : null}
       </div>
