@@ -10,7 +10,6 @@ import {
   type FileWithPath,
 } from "../src/primitives/dropzone";
 import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger } from "../src/patterns/file-upload";
-import { IdentityMark } from "../src/patterns/identity-mark";
 import { axeViolations } from "./a11y";
 
 /* ------------------------------------------------------------------ */
@@ -299,54 +298,6 @@ describe("FileUpload folders", () => {
     // A loose file's path is its own name, so it reads the same as before.
     expect(screen.getByText("loose.png")).toBeInTheDocument();
     expect(screen.getByRole("alert")).toHaveTextContent("notes.txt isn't a supported file type.");
-  });
-});
-
-/* ------------------------------------------------------------------ */
-/* IdentityMark picture                                                */
-/* ------------------------------------------------------------------ */
-
-describe("IdentityMark picture", () => {
-  it("renders the same markup without a picture", () => {
-    const plain = render(<IdentityMark seed="user:alice" state="live" />).container.innerHTML;
-    const nulled = render(<IdentityMark seed="user:alice" state="live" picture={null} />).container.innerHTML;
-    expect(nulled).toBe(plain);
-    expect(plain).not.toContain("<img");
-    expect(plain).not.toContain("data-picture");
-  });
-
-  it("shows the picture inside the core, framed by the dial, named by the label", async () => {
-    const { container } = render(<IdentityMark seed="user:alice" label="Alice" picture="https://example.com/a.jpg" />);
-    const mark = screen.getByRole("img", { name: "Alice" });
-    expect(mark).toHaveAttribute("data-picture");
-    const img = container.querySelector<HTMLImageElement>('img[data-slot="picture"]')!;
-    expect(img).toHaveAttribute("src", "https://example.com/a.jpg");
-    expect(img).toHaveAttribute("alt", "");
-    expect(img.style.borderRadius).toBe("50%");
-    // The tick dial stays as the frame.
-    expect(container.querySelectorAll("line")).toHaveLength(12);
-    expect(await axeViolations(container)).toEqual([]);
-  });
-
-  it("falls back to the generated mark when the image fails, and retries a new URL", () => {
-    const { container, rerender } = render(<IdentityMark seed="user:alice" picture="/missing.png" />);
-    fireEvent.error(container.querySelector("img")!);
-    expect(container.querySelector("img")).toBeNull();
-    expect(container.querySelector("[data-picture]")).toBeNull();
-    expect(container.querySelector("text")).toHaveTextContent("A");
-    rerender(<IdentityMark seed="user:alice" picture="/other.png" />);
-    expect(container.querySelector("img")).toHaveAttribute("src", "/other.png");
-  });
-
-  it("ignores unsafe URLs and fits other kinds' shapes", () => {
-    const { container, rerender } = render(<IdentityMark seed="u" picture="javascript:alert(1)" />);
-    expect(container.querySelector("img")).toBeNull();
-    rerender(<IdentityMark seed="app:x" kind="app" picture="data:image/png;base64,AAAA" />);
-    const img = container.querySelector("img")!;
-    expect(img.style.borderRadius).not.toBe("50%");
-    rerender(<IdentityMark seed="app:x" kind="app" picture="blob:https://example.com/1" decorative />);
-    expect(container.querySelector("img")).toHaveAttribute("src", "blob:https://example.com/1");
-    expect(container.firstElementChild).toHaveAttribute("aria-hidden", "true");
   });
 });
 

@@ -5,7 +5,7 @@
 **Deprecated:** Use `TextLink`: `<TextLink onClick={…} variant="subtle">` (or `as="button"`) for the button form, `<TextLink href>` for the link form. `tone` maps to `variant`: default → subtle, muted → muted, destructive → destructive.
 
 - Import: `import { TextButton } from "@sutra/ui"` (or from `@sutra/ui/social`)
-- Source: `packages/ui/src/patterns/identity-mark` (patterns)
+- Source: `packages/ui/src/patterns/text-button` (patterns)
 - Also accepts the props of HTMLAttributes
 
 ## Props

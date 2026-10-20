@@ -9,7 +9,6 @@ import {
   ContextMenuItem,
   Countdown,
   GroupInfoPanel,
-  IdentityMark,
   IncomingCall,
   InstallButton,
   MessageComposer,
@@ -39,6 +38,7 @@ import {
   RiTerminalBoxLine,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
+import { IdentityAvatarDemo } from "./identity-avatar-demos";
 
 /* ------------------------------------------------------------------ */
 /* Launcher                                                            */
@@ -103,55 +103,6 @@ function LauncherDemo() {
             <DemoLabel>Dock</DemoLabel>
             <AppLauncher variant="dock" items={launcherItems.slice(0, 5)} onSelect={(item) => setLast(item.label)} label="Dock" />
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Identity marks                                                      */
-/* ------------------------------------------------------------------ */
-
-const people = ["user:alice", "user:bob", "user:chandra", "user:dmitri", "user:esi", "user:farah"];
-const machines = ["node:gpu-01", "node:nas", "node:pi-kitchen", "lab:3dprinter", "node:router", "node:backup"];
-
-function IdentityDemo() {
-  const states = ["live", "busy", "offline", null] as const;
-  return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <DemoLabel>People (the same id always draws the same dial)</DemoLabel>
-        <div className="flex flex-wrap items-center gap-4">
-          {people.map((p, i) => (
-            <div key={p} className="flex flex-col items-center gap-1.5">
-              <IdentityMark seed={p} size="lg" state={states[i % states.length]} />
-              <span className="font-mono text-2xs text-muted-foreground">{p}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="space-y-2">
-        <DemoLabel>Machines</DemoLabel>
-        <div className="flex flex-wrap items-center gap-4">
-          {machines.map((m, i) => (
-            <div key={m} className="flex flex-col items-center gap-1.5">
-              <IdentityMark seed={m} kind="machine" size="lg" state={i < 3 ? "live" : i === 3 ? "busy" : "offline"} />
-              <span className="font-mono text-2xs text-muted-foreground">{m}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="space-y-2">
-        <DemoLabel>Sizes · apps · currentColor</DemoLabel>
-        <div className="flex flex-wrap items-end gap-4">
-          {(["xs", "sm", "md", "lg", "xl"] as const).map((s) => (
-            <IdentityMark key={s} seed="user:alice" size={s} />
-          ))}
-          <IdentityMark seed="app:notes" kind="app" size="xl" />
-          <span className="text-primary">
-            <IdentityMark seed="user:alice" size="xl" color="current" state="live" />
-          </span>
         </div>
       </div>
     </div>
@@ -458,14 +409,14 @@ export function SocialPage() {
     <PageIntro
       eyebrow="Components"
       title="Apps & Social"
-      description="Launchers, identity marks, install prompts, calls, messaging, reordering, counters, status pills and repeat rules."
+      description="Launchers, identity avatars, install prompts, calls, messaging, reordering, counters, status pills and repeat rules."
     >
       <Demo id="app-launcher" title="App Launcher" description="Home-screen grid with badges, search, arrow-key navigation, a context menu slot, a dock and a waffle menu. Each tile adopts its app's accent via data-app." align="start">
         <LauncherDemo />
       </Demo>
 
-      <Demo id="identity-mark" title="Identity Mark" description="A procedural glyph for people and machines: twelve ticks, five lit by a hash of the id. Live marks pulse (static with reduced motion)." align="start">
-        <IdentityDemo />
+      <Demo id="identity-avatar" title="Identity Avatar" description="One family for a room: people are a photo or drawn initials, agents and machines wear a Sutra mascot whose face follows their presence, apps are their Bead tiles. Presence is a shaped mark (solid, barred, half, hollow) or a bead on a thread round the face. Ink in the paper style, the seed tint in the stock style." align="start">
+        <IdentityAvatarDemo />
       </Demo>
 
       <Demo id="text-button" title="Text Button" description="TextLink as an inline action: a button with onClick and no href, a link when given an href. (TextButton is a deprecated alias.)">

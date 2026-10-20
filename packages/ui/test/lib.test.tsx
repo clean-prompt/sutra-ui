@@ -43,7 +43,6 @@ import { useSafeId } from "../src/hooks/use-safe-id";
 import { useCopy } from "../src/hooks/use-copy";
 import { useAsyncAction as useBlockAsyncAction, isEmail as blockIsEmail } from "../src/blocks/block-utils";
 import { CopyButton, CopyField } from "../src/primitives/copy-button";
-import { identityHash } from "../src/patterns/identity-mark";
 import { base32Decode as totpBase32Decode } from "../src/kits/identity/totp";
 import { kunjiBase64Url } from "../src/kits/identity/kunji-client";
 import { axeViolations } from "./a11y";
@@ -443,7 +442,6 @@ describe("lib/hash", () => {
     expect(hashString("")).toBe(0x811c9dc5);
     expect(hashString("a")).toBe(0xe40c292c);
     expect(hashString("foobar")).toBe(0xbf9cf968);
-    for (const s of ["alice", "user:bob", "😀"]) expect(hashString(s)).toBe(identityHash(s));
   });
 
   it("seededRandom is deterministic and in [0, 1)", () => {

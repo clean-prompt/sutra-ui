@@ -204,6 +204,7 @@ export * from "./primitives/wheel-picker";
 // not exported: patterns/chart-extra-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/chart-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/counters (back-compat barrel, all targets exported)
+// not exported: patterns/identity-avatar-glyphs-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/inline-citation (internal: helpers; public names come from kits/ai/chat-source)
 // not exported: patterns/tiling-layout-group-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/tiling-layout-internal (internal: private helpers shared by sibling modules)
@@ -242,7 +243,7 @@ export * from "./patterns/filter-bar";
 export * from "./patterns/gauge";
 export * from "./patterns/header-navigation";
 export * from "./patterns/heatmap";
-export * from "./patterns/identity-mark";
+export * from "./patterns/identity-avatar";
 export * from "./patterns/image-cropper";
 export * from "./patterns/json-viewer";
 export * from "./patterns/keybind-editor";
@@ -283,6 +284,7 @@ export * from "./patterns/swipe-deck";
 export * from "./patterns/swipe-row";
 export * from "./patterns/tab-menu";
 export * from "./patterns/tally-counter";
+export * from "./patterns/text-button";
 export * from "./patterns/theme-toggle";
 export * from "./patterns/tiling-layout";
 export * from "./patterns/tiling-layout-floating";

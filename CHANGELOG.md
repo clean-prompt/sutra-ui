@@ -79,6 +79,9 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
   `mascotCharacters` and `mascotCharacterLabels` for a picker; `SutradharSting` (`mark`, `astra`) for the brand moments.
 - `AssistantOrb` looks: `mala`, `string`, `ink`, `rings`, `graph` and `halftone` next to `orb` and `waveform`; `assistantOrbVariants` and `assistantOrbVariantLabels`.
 - `intro` on `SutraMark` and `SutraLogo`; `playInkEmoji`, `InkEmojiVariant` and `InkEmojiAnimate`.
+- `IdentityAvatar` (`@sutra/ui/social`) for people, agents, machines and apps: a photo or drawn initials, a mascot face for agents and machines, the Bead
+  app tile for apps, and presence (`online`, `busy`, `away`, `offline`) as a shaped ink mark (`presenceStyle="mark"`, default) or a bead on a thread ring
+  (`"bead"`). It replaces `IdentityMark` (see Migration notes).
 
 #### Small fixes from the open-items review
 - `FileFormatIcon` shows readable short labels for the long extensions (`numbers` NUM, `sketch` SKTCH, `sqlite` SQLT, `svelte` SVLT) instead of cutting them at five letters ("NUMBE", "SKETC"); other extensions are still cut at five.
@@ -133,10 +136,18 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - Right-to-left and server rendering: `Steps`, `TreeView`, `SectionRail` indents and the `Sparkline` end dot follow the reading direction; `ThemeToggle`, `SplitPane`, `useShortcutPlatform` and the editor toolbar shortcuts render the server default first and restore the browser value after hydration (no hydration mismatch).
 - `text-shimmer` keeps its class next to a text colour; `Dropzone` and `FileUpload` keep the picked files on the hidden input when a `name` is given, so native form posts carry them; `Progress formatValue` feeds `aria-valuetext`; `Item asChild` renders `chevron`; `GlyphSpinner` has a `size`; the date pickers pass `locale` to the calendar; JSDoc that disagreed with the code (`VolumeSlider muted`, `ToggleGroup orientation`, `DonutChart animate`, `HeatmapGrid onCellClick`, `Steps`, `NumberInput`) now matches it.
 
+### Removed
+- `IdentityMark` and its types and helpers (`IdentityMarkProps`, `IdentityMarkKind`, `IdentityMarkState`, `IdentityMarkSize`, `identityHash`,
+  `identitySegments`, `identityColor`, `identityInitial`), replaced by `IdentityAvatar`.
+
 ### Migration notes
 
 Nothing here needs a code change unless a line says so; each is a difference you can see.
 
+- **`IdentityMark` → `IdentityAvatar` (a code change).** `seed` and `kind` (`person`, `machine`, `app`) carry over; `agent` is new. `state` became `presence`
+  (`live` → `online`, `busy` → `busy`, `offline` → `offline`; `away` is new); `picture` became `src`; sizes keep their names. The procedural tick dial is
+  gone: people show a photo or initials, agents and machines a mascot face, apps their app tile. `TextButton` moved to `patterns/text-button` (the old
+  `@sutra/ui/components/identity-mark` path now points there and exports only `TextButton`).
 - **Drawer release velocity.** `Drawer` is built on `useDrag`. A flick used to be the average speed of the whole drag (more than 0.5 px/ms and more than 24 px of travel);
   it is now the speed over the last 100 ms (the same 500 px/s limit, no minimum travel). A drag that speeds up or slows down at the end is judged by
   how it ends, not by how it began; dragging past the dismiss threshold works as before. Props and look are unchanged.

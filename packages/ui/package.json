@@ -671,9 +671,9 @@
       "default": "./dist/patterns/heatmap.js"
     },
     "./components/identity-mark": {
-      "types": "./dist/patterns/identity-mark.d.ts",
-      "import": "./dist/patterns/identity-mark.js",
-      "default": "./dist/patterns/identity-mark.js"
+      "types": "./dist/patterns/text-button.d.ts",
+      "import": "./dist/patterns/text-button.js",
+      "default": "./dist/patterns/text-button.js"
     },
     "./components/info-tooltip": {
       "types": "./dist/primitives/info-tooltip.d.ts",

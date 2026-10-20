@@ -201,11 +201,11 @@ authenticator codes, secrets, recovery keys, consent, API keys, credentials, pay
 
 ## `@sutra/ui/social`
 
-app launcher, identity marks, PWA install, calls, messenger, lists, counters, recurrence.
+app launcher, identity avatars, PWA install, calls, messenger, lists, counters, recurrence.
 
 21 components, 3 hooks.
 
-`AppLauncher`, `CallQualityIndicator`, `CallScreen`, `ChatHeader`, `Checklist`, `Countdown`, `GroupInfoPanel`, `IdentityMark`, `IncomingCall`, `InstallButton`, `MessageBubble`, `MessageComposer`, `MessageList`, `MessageStatusIcon`, `MessengerHeader`, `RecurrencePicker`, `ReorderableList`, `StatusCycle`, `Stopwatch`, `TallyCounter`, `TextButton`
+`AppLauncher`, `CallQualityIndicator`, `CallScreen`, `ChatHeader`, `Checklist`, `Countdown`, `GroupInfoPanel`, `IdentityAvatar`, `IncomingCall`, `InstallButton`, `MessageBubble`, `MessageComposer`, `MessageList`, `MessageStatusIcon`, `MessengerHeader`, `RecurrencePicker`, `ReorderableList`, `StatusCycle`, `Stopwatch`, `TallyCounter`, `TextButton`
 
 Hooks: `useInstallPrompt`, `useReorder`, `useStopwatch`
 

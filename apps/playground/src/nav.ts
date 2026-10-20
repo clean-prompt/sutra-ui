@@ -819,7 +819,7 @@ export const nav: NavSection[] = [
         id: "social",
         label: "Apps & Social",
         items: items(
-          "App Launcher", "Identity Mark", "Text Button", "Install Button", "Incoming Call", "Call Screen",
+          "App Launcher", "Identity Avatar", "Text Button", "Install Button", "Incoming Call", "Call Screen",
           "Messenger", "Group Info Panel", "Reorderable List", "Checklist", "Countdown", "Stopwatch",
           "Tally Counter", "Status Cycle", "Recurrence Picker", "Pinned Note"
         ),

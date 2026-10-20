@@ -54,7 +54,6 @@ const COLOR_ALLOW: Allow = {
   "primitives/app-store-badge.tsx": [12, "store badge art"],
   "primitives/social-button.tsx": [46, "provider brand colours"],
   "patterns/agent-avatar.tsx": [5, "generated face art"],
-  "patterns/identity-mark.tsx": [1, "white stroke on the brand tile"],
   "blocks/marketing-blocks.tsx": [3, "generated hue gradients (oklch)"],
   // palettes and canvas code that cannot read CSS variables
   "lib/accent.ts": [17, "the named accent palette"],

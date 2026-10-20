@@ -13,8 +13,8 @@ import {
 import { cn, focusRing } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { escapeRegExp } from "../../lib/text";
-import { IdentityMark, identityColor } from "../../patterns/identity-mark";
-import { Avatar } from "../../primitives/avatar";
+import { colorForSeed } from "../../lib/hash";
+import { IdentityAvatar } from "../../patterns/identity-avatar";
 import { Button } from "../../primitives/button";
 
 /* ------------------------------------------------------------------ */
@@ -56,7 +56,8 @@ export interface AgentRoomMessage {
   notice?: AgentRoomNotice;
 }
 
-const memberColor = (m: AgentRoomMember) => m.color ?? (m.kind === "agent" ? identityColor(m.id) : undefined);
+/* An agent's colour: its own, or one picked from its id (the same pick the room has always used). */
+const memberColor = (m: AgentRoomMember) => m.color ?? (m.kind === "agent" ? colorForSeed(`${m.id}#color`) : undefined);
 
 /* ------------------------------------------------------------------ */
 /* AgentMessageNotice                                                  */
@@ -145,16 +146,20 @@ export function parseAgentMentions(text: string, members: AgentRoomMember[]): Ar
   return out;
 }
 
-function MemberAvatar({ member, size = "sm" }: { member: AgentRoomMember; size?: "xs" | "sm" }) {
-  if (member.kind === "human") return <Avatar size={size} src={member.avatarUrl} name={member.name} aria-hidden />;
+/** People and agents in one family: a photo or drawn initials, or a Sutra mascot head whose face shows when it is busy. */
+function MemberAvatar({ member, size = "md" }: { member: AgentRoomMember; size?: "sm" | "md" }) {
+  if (member.kind === "human") {
+    return <IdentityAvatar kind="person" size={size} src={member.avatarUrl} name={member.name} decorative />;
+  }
   return (
-    <IdentityMark
-      seed={member.id}
-      kind="machine"
+    <IdentityAvatar
+      kind="agent"
       size={size}
+      name={member.name}
+      seed={member.id}
       color={memberColor(member)}
       decorative
-      state={member.status === "thinking" || member.status === "typing" ? "busy" : undefined}
+      presence={member.status === "thinking" || member.status === "typing" ? "busy" : undefined}
     />
   );
 }
@@ -358,7 +363,7 @@ export const AgentRoom = React.forwardRef<HTMLDivElement, AgentRoomProps>(
               <ul className="flex flex-col gap-2">
                 {members.map((m) => (
                   <li key={m.id} data-member={m.id} data-status={m.status ?? "idle"} className="flex items-start gap-2">
-                    <MemberAvatar member={m} size="xs" />
+                    <MemberAvatar member={m} size="sm" />
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-1 truncate text-xs font-medium text-foreground">
                         {m.name}
@@ -451,7 +456,7 @@ export const AgentRoomMembers = React.forwardRef<HTMLDivElement, AgentRoomMember
               className={cn("flex items-center gap-2 px-3 py-2 outline-none focus-visible:bg-accent", m.muted && "opacity-60")}
             >
               <span className="w-4 text-center text-2xs tabular-nums text-muted-foreground">{i + 1}</span>
-              <MemberAvatar member={m} size="xs" />
+              <MemberAvatar member={m} size="sm" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-foreground">{m.name}</p>
                 {m.role && <p className="truncate text-xs text-muted-foreground">{m.role}</p>}

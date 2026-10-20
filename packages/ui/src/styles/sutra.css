@@ -1231,6 +1231,73 @@
 }
 
 /* ================================================================== */
+/* Identity avatar (patterns/identity-avatar)                         */
+/*                                                                    */
+/* The drawing names its parts (data-part) and paints them with       */
+/* currentColor; these rules set the colour of each part. Stock: the  */
+/* seed tint (--sutra-ia-seed, set by the component) and the status   */
+/* hues. Paper: one ink. A busy agent's bead slides on its thread     */
+/* only when the avatar is animated; the twin blocks stop it.         */
+/* ================================================================== */
+[data-slot="identity-avatar"] {
+  --sutra-ia-tint: color-mix(in oklab, var(--sutra-ia-seed) 16%, var(--background));
+  --sutra-ia-ink: light-dark(
+    color-mix(in oklab, var(--sutra-ia-seed) 55%, var(--foreground)),
+    color-mix(in oklab, var(--sutra-ia-seed) 78%, var(--foreground))
+  );
+  --sutra-ia-thread: light-dark(
+    color-mix(in oklab, var(--sutra-ia-seed) 75%, var(--foreground)),
+    color-mix(in oklab, var(--sutra-ia-seed) 88%, var(--foreground))
+  );
+  --sutra-ia-disc: var(--background);
+  --sutra-ia-hair: var(--border-strong);
+  --sutra-ia-online: var(--success);
+  --sutra-ia-busy: var(--destructive);
+  --sutra-ia-away: color-mix(in oklab, var(--warning) 80%, var(--foreground));
+  --sutra-ia-offline: var(--muted-foreground);
+}
+[data-style="paper"] [data-slot="identity-avatar"] {
+  --sutra-ia-tint: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --sutra-ia-ink: var(--foreground);
+  --sutra-ia-thread: var(--foreground);
+  --sutra-ia-hair: color-mix(in srgb, var(--foreground) 30%, transparent);
+  --sutra-ia-online: var(--foreground);
+  --sutra-ia-busy: var(--foreground);
+  --sutra-ia-away: var(--foreground);
+  --sutra-ia-offline: var(--foreground);
+}
+[data-slot="identity-avatar"] [data-part="frame"] { color: var(--sutra-ia-tint); }
+[data-slot="identity-avatar"] [data-part="disc"] { color: var(--sutra-ia-disc); }
+[data-slot="identity-avatar"] [data-part="hairline"] { color: var(--sutra-ia-hair); }
+[data-slot="identity-avatar"] :is([data-part="monogram"], [data-part="mascot"]) { color: var(--sutra-ia-ink); }
+[data-slot="identity-avatar"][data-presence="offline"] [data-part="mascot"] { opacity: 0.5; }
+[data-slot="identity-avatar"] :is([data-part="thread"], [data-part="bead"]) { color: var(--sutra-ia-thread); }
+[data-slot="identity-avatar"] [data-part="presence"] { color: var(--sutra-ia-online); }
+[data-slot="identity-avatar"][data-presence="busy"] [data-part="presence"] { color: var(--sutra-ia-busy); }
+[data-slot="identity-avatar"][data-presence="away"] [data-part="presence"] { color: var(--sutra-ia-away); }
+[data-slot="identity-avatar"][data-presence="offline"] [data-part="presence"] { color: var(--sutra-ia-offline); }
+
+/* The busy bead and the gap it cuts move together (transform-origin is set inline: the centre, or a square's corner). */
+[data-slot="identity-avatar"] [data-slide] {
+  transform-box: view-box;
+  animation: sutra-identity-bead-slide calc(var(--sutra-duration-fill) * 6.4) ease-in-out infinite alternate;
+}
+@keyframes sutra-identity-bead-slide {
+  0%, 18% { transform: rotate(0deg); }
+  82%, 100% { transform: rotate(var(--sutra-ia-slide, -26deg)); }
+}
+
+/* Reduced motion, system and in-app twin (same rules, see test/motion-attribute.test.tsx): the bead stays at its place. */
+@media (prefers-reduced-motion: reduce) {
+  :where(:root:not([data-motion="full"])) [data-slot="identity-avatar"] [data-slide] {
+    animation: none;
+  }
+}
+:where(:root[data-motion="reduce"]) [data-slot="identity-avatar"] [data-slide] {
+  animation: none;
+}
+
+/* ================================================================== */
 /* Motion II: view transitions, scroll-driven effects, pointer effects */
 /*                                                                     */
 /* Everything below is CSS first, on the motion tokens above. A style  */

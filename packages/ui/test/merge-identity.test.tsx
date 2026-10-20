@@ -10,7 +10,7 @@ import { SidebarUserCard } from "../src/patterns/sidebar-navigation";
 import { EmptyState } from "../src/primitives/empty-state";
 import { ChatEmptyState } from "../src/kits/ai/chat-conversation";
 import { TextLink } from "../src/primitives/text-link";
-import { TextButton } from "../src/patterns/identity-mark";
+import { TextButton } from "../src/patterns/text-button";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "../src/primitives/dialog";
 import {
   Drawer,

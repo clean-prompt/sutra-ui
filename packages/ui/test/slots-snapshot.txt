@@ -120,7 +120,7 @@
 "patterns/divided-grid": ["divided-grid","divided-grid-badge","divided-grid-cell","divided-grid-description","divided-grid-empty","divided-grid-icon","divided-grid-meta","divided-grid-number","divided-grid-skeleton"]
 "patterns/file-viewer": ["file-viewer","file-viewer-actions","file-viewer-nav","file-viewer-panel","file-viewer-position","file-viewer-thumbnails"]
 "patterns/gauge": ["gauge-fill","gauge-value","ring-value"]
-"patterns/identity-mark": ["picture","pulse","state-ring"]
+"patterns/identity-avatar": ["identity-avatar"]
 "patterns/image-cropper": ["image-cropper","image-cropper-box","image-cropper-frame","image-cropper-stage","image-cropper-toolbar"]
 "patterns/lightbox": ["image","image-skeleton","lightbox","lightbox-counter","lightbox-stage"]
 "patterns/loading-screen": ["boot-screen","lock-screen","lock-screen-pin-slot"]

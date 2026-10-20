@@ -12,7 +12,7 @@ import { CalendarHeatmap } from "../src/patterns/heatmap";
 import { DonutChart, LineChart, niceTicks } from "../src/patterns/chart";
 import { useCommandMenuShortcut } from "../src/patterns/command-menu";
 import { FilterBarSearch } from "../src/patterns/filter-bar";
-import { TextButton } from "../src/patterns/identity-mark";
+import { TextButton } from "../src/patterns/text-button";
 import { LockScreen } from "../src/patterns/loading-screen";
 import { RecurrencePicker } from "../src/patterns/recurrence-picker";
 import type { RecurrenceRule } from "../src/lib/rrule";

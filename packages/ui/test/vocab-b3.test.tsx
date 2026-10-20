@@ -7,7 +7,7 @@ import { Gauge, RingMeter } from "../src/patterns/gauge";
 import { KanbanRunBadge, TaskDetailDialog, type KanbanBoardModel } from "../src/kits/workspace/kanban";
 import { TrackCycleChip } from "../src/kits/media/media-controls";
 import { PaginationItem } from "../src/primitives/pagination";
-import { TextButton } from "../src/patterns/identity-mark";
+import { TextButton } from "../src/patterns/text-button";
 import { LogViewer } from "../src/patterns/log-viewer";
 import { HardwareFitHint } from "../src/kits/agent-admin/local-models";
 

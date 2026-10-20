@@ -1,7 +1,7 @@
 import * as React from "react";
 import { act, fireEvent, render, renderHook, screen, within } from "@testing-library/react";
 import { AppLauncher, filterLauncherItems, type AppLauncherItem } from "../src/kits/workspace/app-launcher";
-import { IdentityMark, TextButton, identitySegments } from "../src/patterns/identity-mark";
+import { TextButton } from "../src/patterns/text-button";
 import { InstallButton, useInstallPrompt } from "../src/kits/workspace/install-prompt";
 import { CallScreen, IncomingCall, formatCallDuration } from "../src/kits/social/call-overlay";
 import {
@@ -75,40 +75,10 @@ describe("AppLauncher", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/* IdentityMark                                                        */
+/* TextButton                                                          */
 /* ------------------------------------------------------------------ */
 
-describe("identitySegments / IdentityMark", () => {
-  it("is deterministic and lights exactly 5 distinct ticks of 12", () => {
-    for (const seed of ["user:alice", "user:bob", "node:gpu", "app:notes", ""]) {
-      const a = identitySegments(seed);
-      expect(a).toEqual(identitySegments(seed));
-      expect(a).toHaveLength(5);
-      expect(new Set(a).size).toBe(5);
-      expect(a.every((i) => i >= 0 && i < 12)).toBe(true);
-      expect([...a].sort((x, y) => x - y)).toEqual(a);
-    }
-    const patterns = new Set(["a", "b", "c", "d", "e", "f"].map((s) => identitySegments(`user:${s}`).join()));
-    expect(patterns.size).toBeGreaterThan(3);
-  });
-
-  it("renders lit ticks and state rings", () => {
-    const { rerender, container } = render(<IdentityMark seed="user:alice" state="live" />);
-    const mark = screen.getByRole("img", { name: "user:alice, live" });
-    expect(mark).toHaveAttribute("data-state", "live");
-    expect(container.querySelectorAll("line[data-lit]")).toHaveLength(5);
-    expect(container.querySelector('[data-slot="pulse"]')).toBeInTheDocument();
-    expect(mark).toHaveTextContent("A");
-    rerender(<IdentityMark seed="user:alice" state="busy" label="Alice" />);
-    expect(screen.getByRole("img", { name: "Alice, busy" })).toBeInTheDocument();
-    expect(container.querySelector('[data-slot="pulse"]')).toBeNull();
-    expect(container.querySelector('[data-slot="state-ring"]')).toBeInTheDocument();
-    rerender(<IdentityMark seed="user:alice" />);
-    expect(container.querySelector('[data-slot="state-ring"]')).toBeNull();
-    rerender(<IdentityMark seed="user:alice" size="xs" />);
-    expect(container.querySelectorAll("line")).toHaveLength(0);
-  });
-
+describe("TextButton", () => {
   it("TextButton renders a button or a link", async () => {
     const onClick = vi.fn();
     const { container } = render(
@@ -120,17 +90,6 @@ describe("identitySegments / IdentityMark", () => {
     expect(onClick).toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "start over" })).toHaveAttribute("type", "button");
     expect(screen.getByRole("link", { name: "settings" })).toHaveAttribute("href", "/settings");
-    expect(await axeViolations(container)).toEqual([]);
-  });
-
-  it("marks gallery has no axe violations", async () => {
-    const { container } = render(
-      <div>
-        <IdentityMark seed="user:alice" state="live" />
-        <IdentityMark seed="node:gpu" kind="machine" state="offline" />
-        <IdentityMark seed="app:notes" kind="app" size="lg" />
-      </div>
-    );
     expect(await axeViolations(container)).toEqual([]);
   });
 });

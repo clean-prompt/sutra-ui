@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { isFileAccepted, validateFiles } from "../src/primitives/dropzone";
 import { Button } from "../src/primitives/button";
 import { TextLink } from "../src/primitives/text-link";
-import { TextButton } from "../src/patterns/identity-mark";
+import { TextButton } from "../src/patterns/text-button";
 import { FloatingActionButton } from "../src/primitives/fab";
 import { Field, FieldDescription, FieldError, FieldHint, FieldLabel } from "../src/primitives/field";
 import { Input, SearchInput } from "../src/primitives/input";
