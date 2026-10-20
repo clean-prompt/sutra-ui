@@ -53,7 +53,7 @@ describe.each(groups)("ink emoji: $id", ({ id, art, names }) => {
 
   it("renders an svg through InkEmoji in currentColor only, with no colour literals", () => {
     for (const emoji of own) {
-      const { container, unmount } = render(<InkEmoji emoji={emoji} size={24} title />);
+      const { container, unmount } = render(<InkEmoji emoji={emoji} size={24} title variant="outline" />);
       const svg = container.querySelector("svg");
       expect(svg, emoji).not.toBeNull();
       expect(svg!.getAttribute("stroke")).toBe("currentColor");

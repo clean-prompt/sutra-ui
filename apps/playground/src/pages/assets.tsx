@@ -14,6 +14,7 @@ import {
   Icon,
   InkEmoji,
   LogoCloud,
+  SegmentedControl,
   SutraAppIcon,
   SutraLogo,
   SutraMark,
@@ -30,6 +31,8 @@ import {
   useCopy,
   type BackgroundPatternVariant,
   type EmojiReactionItem,
+  type InkEmojiAnimate,
+  type InkEmojiVariant,
   type EmptyStateIllustrationVariant,
   type Tone,
   type FeaturedIconVariant,
@@ -562,15 +565,41 @@ function EmojiReactionsDemo() {
     { emoji: "❤️", count: 1 },
   ]);
   const [picked, setPicked] = React.useState<string | null>(null);
+  const [inkVariant, setInkVariant] = React.useState<InkEmojiVariant>("solid");
+  const [inkMotion, setInkMotion] = React.useState(true);
 
   return (
     <Demo
       id="emoji-reactions"
       title="Emoji reactions"
-      description="A reaction bar with a picker for adding new reactions, and the standalone EmojiPicker. In the paper style the reactions and the picker switch to ink on their own."
+      description="A reaction bar with a picker for adding new reactions, and the standalone EmojiPicker. In the paper style (or with ink) the reactions and the picker switch to the solid ink drawings on their own: they move on hover, and a new reaction pops and plays."
       align="start"
       canvasClassName="gap-8"
     >
+      <div className="flex flex-wrap items-center gap-3">
+        <SegmentedControl
+          size="sm"
+          aria-label="Ink variant"
+          value={inkVariant}
+          onValueChange={(v) => v && setInkVariant(v as InkEmojiVariant)}
+          options={[
+            { value: "solid", label: "Solid" },
+            { value: "tint", label: "Tint" },
+            { value: "outline", label: "Outline" },
+          ]}
+        />
+        <SegmentedControl
+          size="sm"
+          aria-label="Ink motion"
+          value={inkMotion ? "on" : "off"}
+          onValueChange={(v) => v && setInkMotion(v === "on")}
+          options={[
+            { value: "on", label: "Motion on" },
+            { value: "off", label: "Motion off" },
+          ]}
+        />
+      </div>
+
       <div className="max-w-md space-y-3 rounded-box border border-border bg-card p-4">
         <div className="space-y-1">
           <Text size="sm" weight="semibold">
@@ -580,7 +609,7 @@ function EmojiReactionsDemo() {
             The new onboarding flow shipped to everyone this morning. Activation is up 18% in the first cohort.
           </Text>
         </div>
-        <EmojiReactionBar reactions={reactions} onReactionsChange={setReactions} />
+        <EmojiReactionBar reactions={reactions} onReactionsChange={setReactions} inkVariant={inkVariant} inkMotion={inkMotion} />
       </div>
 
       <div className="space-y-3">
@@ -589,6 +618,8 @@ function EmojiReactionsDemo() {
           <EmojiReactionBar
             readOnly
             ink
+            inkVariant={inkVariant}
+            inkMotion={inkMotion}
             defaultReactions={[
               { emoji: "👍", count: 4, reacted: true },
               { emoji: "🦖", count: 2 },
@@ -606,7 +637,7 @@ function EmojiReactionsDemo() {
           />
         </div>
         <p className="max-w-2xl text-xs text-muted-foreground">
-          ink forces the ink version in any style (left), ink={"{false}"} keeps the colour glyphs in the paper style (right). Every emoji of the built-in set has hand-drawn          art and shows the drawing (see Ink emoji below); any emoji outside the set (the dinosaur) is filtered to one ink.
+          ink forces the ink version in any style (left), ink={"{false}"} keeps the colour glyphs in the paper style (right). Every emoji of the built-in set has hand-drawn art in three variants (inkVariant: solid, tint, outline; see Ink emoji below) and moves on hover (inkMotion); any emoji outside the set (the dinosaur) is filtered to one ink.
         </p>
       </div>
 
@@ -615,6 +646,8 @@ function EmojiReactionsDemo() {
         <EmojiReactionBar
           size="sm"
           readOnly
+          inkVariant={inkVariant}
+          inkMotion={inkMotion}
           defaultReactions={[
             { emoji: "🔥", count: 24 },
             { emoji: "😂", count: 9 },
@@ -623,7 +656,7 @@ function EmojiReactionsDemo() {
       </div>
 
       <div className="flex flex-wrap items-start gap-6">
-        <EmojiPicker onSelect={(emoji) => setPicked(emoji)} />
+        <EmojiPicker onSelect={(emoji) => setPicked(emoji)} inkVariant={inkVariant} inkMotion={inkMotion} />
         <Text size="sm" tone="neutral">
           {picked ? (
             <>
@@ -643,6 +676,9 @@ function EmojiReactionsDemo() {
 /* ------------------------------------------------------------------ */
 
 function InkEmojiDemo() {
+  const [variant, setVariant] = React.useState<InkEmojiVariant>("solid");
+  const [animate, setAnimate] = React.useState<Exclude<InkEmojiAnimate, false> | "off">("hover");
+  const motion: InkEmojiAnimate = animate === "off" ? false : animate;
   const strip = (emoji: string) => emoji.replace(/[\uFE0E\uFE0F]/g, "");
   const listed = new Set(emojiCategories.flatMap((category) => category.emojis.map((entry) => strip(entry.emoji))));
   const other = inkEmojiSet.filter((emoji) => !listed.has(strip(emoji)));
@@ -654,10 +690,34 @@ function InkEmojiDemo() {
     <Demo
       id="ink-emoji"
       title="Ink emoji"
-      description={`InkEmoji: ${inkEmojiSet.length} original hand-drawn monoline emoji in currentColor, the whole built-in picker set, readable at 16px. Shown here forced as ink so they look the same in every style, next to the colour glyph.`}
+      description={`InkEmoji: ${inkEmojiSet.length} original hand-drawn emoji in currentColor, the whole built-in picker set, readable at 16px, in three variants: solid (filled, features cut out as real holes; the default), tint (solid plus a tint of the ink for the secondary parts) and outline (monoline). Named parts move: hover a card, or set Loop. Shown forced as ink, next to the colour glyph.`}
       align="start"
       canvasClassName="gap-8"
     >
+      <div className="flex flex-wrap items-center gap-3">
+        <SegmentedControl
+          size="sm"
+          aria-label="Variant"
+          value={variant}
+          onValueChange={(v) => v && setVariant(v as InkEmojiVariant)}
+          options={[
+            { value: "solid", label: "Solid" },
+            { value: "tint", label: "Tint" },
+            { value: "outline", label: "Outline" },
+          ]}
+        />
+        <SegmentedControl
+          size="sm"
+          aria-label="Motion"
+          value={animate}
+          onValueChange={(v) => v && setAnimate(v as "hover" | "loop" | "off")}
+          options={[
+            { value: "off", label: "Still" },
+            { value: "hover", label: "Hover" },
+            { value: "loop", label: "Loop" },
+          ]}
+        />
+      </div>
       {groups.map((group) => (
         <div key={group.id} className="w-full space-y-3">
           <DemoLabel>
@@ -673,8 +733,8 @@ function InkEmojiDemo() {
                 <span aria-hidden className="text-[28px] leading-none">
                   {emoji}
                 </span>
-                <InkEmoji emoji={emoji} size={28} />
-                <InkEmoji emoji={emoji} size={16} />
+                <InkEmoji emoji={emoji} size={28} variant={variant} animate={motion} />
+                <InkEmoji emoji={emoji} size={16} variant={variant} animate={motion} />
                 <span className="min-w-0 flex-1 truncate text-[11px] leading-tight text-muted-foreground">{inkEmojiNames[emoji]}</span>
               </div>
             ))}
@@ -684,7 +744,9 @@ function InkEmojiDemo() {
       <p className="max-w-2xl text-xs text-muted-foreground">
         The paper style switches the reactions and the emoji picker to ink automatically: these drawings for every emoji of the built-in set, and
         a one-ink filter of the colour glyph for any emoji outside it. Use <code>EmojiGlyph</code> for emoji you render yourself, or{" "}
-        <code>InkEmoji</code> with <code>fallback</code> to draw the same way anywhere.
+        <code>InkEmoji</code> with <code>fallback</code> to draw the same way anywhere. <code>animate="hover"</code> plays once when the
+        nearest button or link is hovered or focused, <code>playKey</code> replays it (the reaction chips do this when a reaction is added), and
+        reduced motion keeps the still drawing.
       </p>
     </Demo>
   );

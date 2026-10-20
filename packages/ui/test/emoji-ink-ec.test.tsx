@@ -47,7 +47,7 @@ describe.each(groups)("ink art of the $id category", ({ id, art, names }) => {
 
   it("renders each drawing as a 24 box svg that only uses currentColor", () => {
     for (const emoji of emojis) {
-      const { container, unmount } = render(<InkEmoji emoji={emoji} />);
+      const { container, unmount } = render(<InkEmoji emoji={emoji} variant="outline" />);
       const svg = container.querySelector("svg")!;
       expect(svg, emoji).toHaveAttribute("viewBox", "0 0 24 24");
       expect(svg.querySelector("path, circle, ellipse, rect, line, polyline"), emoji).toBeInTheDocument();
@@ -63,7 +63,7 @@ describe.each(groups)("ink art of the $id category", ({ id, art, names }) => {
   it("draws every emoji differently, also from the other categories", () => {
     const seen = new Map<string, string>();
     for (const emoji of emojis) {
-      const markup = render(<InkEmoji emoji={emoji} />).container.querySelector("svg")!.innerHTML;
+      const markup = render(<InkEmoji emoji={emoji} variant="outline" />).container.querySelector("svg")!.innerHTML;
       expect(seen.get(markup), `${emoji} is the same as ${seen.get(markup)}`).toBeUndefined();
       seen.set(markup, emoji);
     }

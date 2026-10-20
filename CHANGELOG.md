@@ -78,7 +78,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - `SutraMascot` `character`: eight characters (`bead`, `pendant`, `mala`, `bindu`, `knot-pendant`, `bow`, `bun`, `sutradhar`) with every state and shape,
   `mascotCharacters` and `mascotCharacterLabels` for a picker; `SutradharSting` (`mark`, `astra`) for the brand moments.
 - `AssistantOrb` looks: `mala`, `string`, `ink`, `rings`, `graph` and `halftone` next to `orb` and `waveform`; `assistantOrbVariants` and `assistantOrbVariantLabels`.
-- `intro` on `SutraMark` and `SutraLogo`.
+- `intro` on `SutraMark` and `SutraLogo`; `playInkEmoji`, `InkEmojiVariant` and `InkEmojiAnimate`.
 
 #### Small fixes from the open-items review
 - `FileFormatIcon` shows readable short labels for the long extensions (`numbers` NUM, `sketch` SKTCH, `sqlite` SQLT, `svelte` SVLT) instead of cutting them at five letters ("NUMBE", "SKETC"); other extensions are still cut at five.
@@ -108,6 +108,10 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - Touch targets: `hitArea` and `hitAreaTouch` give small controls a 24 px hit area without a visual change (small taps at a 360 px viewport fell from 825 to 147).
 - Colour contrast: Dropzone title, soft avatar tints and the dark-mode destructive button now meet AA.
 - The playground layout was audited (overflow, clipping, wrapping, overlap, phone widths) and fixed on every page; the audit is repo tooling (`pnpm audit:all`, Playwright is a dev dependency).
+- **Ink emoji are solid by default.** `InkEmoji` gained `variant` (`"solid"` default, `"tint"`, `"outline"` for the first monoline drawings),
+  `animate` (`false`, `"hover"`, `"loop"`) and `playKey`; all 198 emoji of the built-in set have solid and tint drawings with named moving parts. The reactions and the
+  picker (`EmojiReaction`, `EmojiReactionBar`, `EmojiPicker`, `EmojiGlyph`) show the solid set, play on hover and pop when a reaction is added
+  (`inkVariant`, `inkMotion`; `EmojiReaction` `playKey`). Pass `inkVariant="outline"` for the look of before.
 - **Logo: the crescent mark.** `SutraMark` now draws a crescent bead on an upright thread (chosen 2026-10-21 from the design review, option L10): the bead is a disc with an oval bite
   that breaks through its top, so it has two sharp horns, and the thread comes down through the opening, behind the base and on below. Same variants and props;
   the glyph fills the height of its box, the tile variants use a heavier cut. `design/brand` (marks, lockups, favicon, suite icon) and the playground favicon are

@@ -42,7 +42,7 @@ describe("InkEmoji art", () => {
   });
 
   it.each(inkEmojiSet)("%s renders a 24 box svg that only uses currentColor", (emoji) => {
-    const { container } = render(<InkEmoji emoji={emoji} />);
+    const { container } = render(<InkEmoji emoji={emoji} variant="outline" />);
     const svg = container.querySelector("svg")!;
     expect(svg).toHaveAttribute("viewBox", "0 0 24 24");
     expect(svg).toHaveAttribute("data-slot", "ink-emoji");
@@ -60,7 +60,7 @@ describe("InkEmoji art", () => {
   });
 
   it("draws every emoji differently", () => {
-    const drawings = inkEmojiSet.map((emoji) => render(<InkEmoji emoji={emoji} />).container.querySelector("svg")!.innerHTML);
+    const drawings = inkEmojiSet.map((emoji) => render(<InkEmoji emoji={emoji} variant="outline" />).container.querySelector("svg")!.innerHTML);
     expect(new Set(drawings).size).toBe(inkEmojiSet.length);
   });
 

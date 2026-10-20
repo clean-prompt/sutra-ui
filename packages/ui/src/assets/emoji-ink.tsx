@@ -1,15 +1,38 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
-import { inkArt, inkEmojiNames, normalizeEmoji } from "./emoji-ink-internal";
+import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useSafeId } from "../hooks/use-safe-id";
+import { prefersReducedMotion } from "../hooks/use-media-query";
+import { inkArt, inkEmojiNames, normalizeEmoji, solidInkArt } from "./emoji-ink-internal";
+import { renderSolid } from "./emoji-ink-solid-internal";
 
 /** The emoji that have a hand-drawn ink version (`InkEmoji`), the eight reaction presets first. */
 export const inkEmojiSet: readonly string[] = Object.keys(inkEmojiNames);
 
 export { inkEmojiNames };
 
-/** True when `emoji` has hand-drawn ink art (a trailing variation selector does not matter). */
-export function hasInkEmoji(emoji: string): boolean {
-  return Object.prototype.hasOwnProperty.call(inkArt, normalizeEmoji(emoji));
+/** How the ink is laid down: filled with cut-out features (the default), filled plus a tint for the secondary parts, or the monoline outline. */
+export type InkEmojiVariant = "solid" | "tint" | "outline";
+/** When the drawing moves: never, once on hover or focus of the nearest interactive parent, or on a loop. */
+export type InkEmojiAnimate = false | "hover" | "loop";
+
+const has = (map: object, emoji: string) => Object.prototype.hasOwnProperty.call(map, normalizeEmoji(emoji));
+
+/** True when `emoji` has hand-drawn ink art in `variant` (any variant when unset); a trailing variation selector does not matter. */
+export function hasInkEmoji(emoji: string, variant?: InkEmojiVariant): boolean {
+  if (variant === "solid" || variant === "tint") return has(solidInkArt, emoji);
+  return has(inkArt, emoji);
+}
+
+/** Interactive ancestors whose hover or focus plays an `animate="hover"` drawing. */
+const INTERACTIVE = 'button, a[href], summary, label, [role="button"], [role="option"], [role="menuitem"], [role="tab"], [tabindex]';
+
+/** Plays the drawing's motion once from the start (a reflow between removing and setting the attribute restarts the keyframes). */
+export function playInkEmoji(svg: SVGSVGElement | null): void {
+  if (!svg || svg.getAttribute("data-play") === "loop" || prefersReducedMotion()) return;
+  svg.removeAttribute("data-play");
+  void svg.getBoundingClientRect();
+  svg.setAttribute("data-play", "once");
 }
 
 const nameOf = (emoji: string) => inkEmojiNames[emoji] ?? inkEmojiNames[`${normalizeEmoji(emoji)}️`] ?? inkEmojiNames[normalizeEmoji(emoji)];
@@ -66,15 +89,53 @@ export interface InkEmojiProps extends Omit<React.SVGAttributes<SVGSVGElement>, 
   title?: string | boolean;
   /** Draws the colour glyph as ink (the filtered glyph the paper style uses) for an emoji that has no drawing, instead of rendering nothing. */
   fallback?: boolean;
+  /**
+   * How the ink is laid down: `solid` fills the shapes and cuts the features out as holes, `tint` adds a light tint of the ink for
+   * the secondary parts (tears, blush, cuffs, the core of a flame), `outline` is the monoline drawing.
+   * @default "solid"
+   */
+  variant?: InkEmojiVariant;
+  /**
+   * Moves the named parts of a solid or tint drawing (eyes blink, the heart beats, hands clap): `hover` plays once when the nearest
+   * interactive parent (a button, link or option) is hovered or focused, `loop` repeats. Reduced motion shows the still drawing.
+   * @default false
+   */
+  animate?: InkEmojiAnimate;
+  /** Plays the motion once whenever it changes to a truthy value (also on mount), e.g. a counter bumped when a reaction is added. */
+  playKey?: number | string;
 }
 
 /** An original hand-drawn monoline version of an emoji of the built-in set, drawn in `currentColor`; renders nothing for an emoji without art unless `fallback` is set. */
 export const InkEmoji = React.forwardRef<SVGSVGElement, InkEmojiProps>(
-  ({ emoji, size = "1em", title, fallback = false, className, style, ...props }, ref) => {
-    const art = hasInkEmoji(emoji) ? inkArt[normalizeEmoji(emoji)] : undefined;
+  ({ emoji, size = "1em", title, fallback = false, variant = "solid", animate = false, playKey, className, style, ...props }, ref) => {
+    const key = normalizeEmoji(emoji);
+    const geo = variant === "outline" ? undefined : solidInkArt[key];
+    const art = has(inkArt, emoji) ? inkArt[key] : undefined;
+    const id = useSafeId("sutra-emoji");
+    const own = React.useRef<SVGSVGElement>(null);
+    const refs = useMergedRefs(ref, own);
+    const moving = Boolean(geo) && animate !== false;
     React.useEffect(() => {
       if (!art && fallback) ensureInkFilter();
     }, [art, fallback]);
+    /* hover: the nearest interactive parent (or the parent element) plays the drawing once on pointer enter and focus */
+    React.useEffect(() => {
+      const svg = own.current;
+      if (!moving || animate !== "hover" || !svg) return;
+      const host = (svg.parentElement?.closest(INTERACTIVE) as HTMLElement | null) ?? svg.parentElement;
+      if (!host) return;
+      const play = () => playInkEmoji(svg);
+      host.addEventListener("pointerenter", play);
+      host.addEventListener("focusin", play);
+      return () => {
+        host.removeEventListener("pointerenter", play);
+        host.removeEventListener("focusin", play);
+      };
+    }, [moving, animate]);
+    /* playKey: once per truthy value (a remount with a new value plays too) */
+    React.useEffect(() => {
+      if (geo && playKey) playInkEmoji(own.current);
+    }, [geo, playKey]);
     if (!art) {
       if (!fallback) return null;
       return (
@@ -93,11 +154,35 @@ export const InkEmoji = React.forwardRef<SVGSVGElement, InkEmojiProps>(
     }
     const label = title === true ? nameOf(emoji) : title || undefined;
     const length = typeof size === "number" ? `${size}px` : size;
+    if (geo) {
+      return (
+        <svg
+          ref={refs}
+          data-slot="ink-emoji"
+          data-emoji={emoji}
+          data-variant={variant}
+          data-animate={moving ? animate : undefined}
+          data-play={moving && animate === "loop" ? "loop" : undefined}
+          viewBox="0 0 24 24"
+          fill="none"
+          role={label ? "img" : undefined}
+          aria-hidden={label ? undefined : true}
+          focusable="false"
+          className={cn("inline-block shrink-0", className)}
+          style={{ width: length, height: length, ...style }}
+          {...props}
+        >
+          {label ? <title>{label}</title> : null}
+          {renderSolid(geo, id, variant === "tint")}
+        </svg>
+      );
+    }
     return (
       <svg
-        ref={ref}
+        ref={refs}
         data-slot="ink-emoji"
         data-emoji={emoji}
+        data-variant="outline"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -131,10 +216,24 @@ export interface EmojiGlyphProps extends Omit<React.HTMLAttributes<HTMLSpanEleme
    * An emoji with hand-drawn art (`hasInkEmoji`) shows the drawing, any other is filtered to one ink.
    */
   ink?: boolean;
+  /**
+   * Which ink drawing shows when the ink does: `solid` (filled, features cut out), `tint` (solid plus a tint for secondary parts) or `outline`.
+   * @default "solid"
+   */
+  inkVariant?: InkEmojiVariant;
+  /**
+   * Plays the drawing's motion once when the nearest interactive parent (the chip, the picker cell) is hovered or focused.
+   * Reduced motion keeps it still; `outline` never moves.
+   * @default true
+   */
+  inkMotion?: boolean;
+  /** Plays the drawing's motion once whenever it changes to a truthy value (also on mount), e.g. when a reaction is added. */
+  inkPlayKey?: number | string;
 }
 
 /** An emoji as text that reads as ink on paper in the paper style: the hand-drawn art when there is one, otherwise the glyph filtered to one ink. */
-export const EmojiGlyph = React.forwardRef<HTMLSpanElement, EmojiGlyphProps>(({ emoji, ink, className, ...props }, ref) => {
+export const EmojiGlyph = React.forwardRef<HTMLSpanElement, EmojiGlyphProps>(
+  ({ emoji, ink, inkVariant = "solid", inkMotion = true, inkPlayKey, className, ...props }, ref) => {
   const art = hasInkEmoji(emoji);
   React.useEffect(() => {
     if (ink !== false) ensureInkFilter();
@@ -149,8 +248,9 @@ export const EmojiGlyph = React.forwardRef<HTMLSpanElement, EmojiGlyphProps>(({ 
       {...props}
     >
       <span data-part="glyph">{emoji}</span>
-      {art ? <InkEmoji emoji={emoji} size="1em" data-part="ink" /> : null}
+      {art ? <InkEmoji emoji={emoji} size="1em" data-part="ink" variant={inkVariant} animate={inkMotion ? "hover" : false} playKey={inkPlayKey} /> : null}
     </span>
   );
-});
+  }
+);
 EmojiGlyph.displayName = "EmojiGlyph";

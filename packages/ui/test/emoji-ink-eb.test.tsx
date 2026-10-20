@@ -51,7 +51,7 @@ describe.each(groups)("ink emoji: $id", ({ id, art, names }) => {
   });
 
   it.each(own)("%s renders a 24 box svg that only uses currentColor", (emoji) => {
-    const { container } = render(<InkEmoji emoji={emoji} />);
+    const { container } = render(<InkEmoji emoji={emoji} variant="outline" />);
     const svg = container.querySelector("svg")!;
     expect(svg).toHaveAttribute("viewBox", "0 0 24 24");
     expect(svg).toHaveAttribute("stroke", "currentColor");
@@ -66,7 +66,7 @@ describe.each(groups)("ink emoji: $id", ({ id, art, names }) => {
   });
 
   it("draws every emoji differently", () => {
-    const drawings = own.map((emoji) => render(<InkEmoji emoji={emoji} />).container.querySelector("svg")!.innerHTML);
+    const drawings = own.map((emoji) => render(<InkEmoji emoji={emoji} variant="outline" />).container.querySelector("svg")!.innerHTML);
     expect(new Set(drawings).size).toBe(drawings.length);
   });
 });

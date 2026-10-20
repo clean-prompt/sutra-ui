@@ -17,6 +17,8 @@
 | `columns` | `number` | `8` | Number of grid columns. |
 | `defaultRecent` | `string[]` | `[]` | Initial recently used emoji when uncontrolled. |
 | `ink` | `boolean` |  | Draw the emoji as ink: `true` in every style, `false` keeps the colour glyphs in the paper style; unset follows the style (ink in the paper style). |
+| `inkMotion` | `boolean` | `true` | Plays an ink emoji's motion once when its cell is hovered or focused. Reduced motion keeps them still. |
+| `inkVariant` | `InkEmojiVariant` | `"solid"` | Which drawing the ink emoji show: `solid` (filled, features cut out), `tint` (solid plus a tint) or `outline` (monoline). |
 | `maxRecent` | `number` | `16` | Maximum number of recent emoji kept. |
 | `onRecentChange` | `(recent: string[]) => void` |  | Called with the new recent list after a pick. |
 | `onSelect` | `(emoji: string, entry: EmojiEntry) => void` |  | Called with the picked emoji and its dictionary entry. |
@@ -26,7 +28,7 @@
 
 ## Notes
 
-**When to use:** A reaction pill (emoji and count, pressed when you reacted), a bar of them with an add-reaction picker, and the standalone searchable emoji picker. In the paper style every emoji reads as ink on paper, with hand-drawn art for the common reactions.
+**When to use:** A reaction pill (emoji and count, pressed when you reacted), a bar of them with an add-reaction picker, and the standalone searchable emoji picker. In the paper style every emoji reads as ink on paper: the solid hand-drawn art of the built-in set (or its tint or outline variant), which moves on hover and pops and plays when a reaction is added.
 
 **Use instead when:**
 - `InkEmoji`: draw a hand-drawn emoji anywhere, in any style
@@ -53,7 +55,7 @@ Type in the search field to filter by name; the grid then shows only the results
 
 ### Reduced motion
 
-A new reaction pops once (`animate-pop`), which the reduced-motion net shortens to 1 ms. Switching to ink is not animated. The picker hover scale is a transform transition and also ends under reduced motion.
+A new reaction pops once (`animate-pop`), which the reduced-motion net shortens to 1 ms. With the ink drawings, a pill's emoji also plays its motion once on hover and focus and when the reaction is added (also from the picker), and a picker cell plays on hover and focus; reduced motion keeps the still drawing (`inkMotion={false}` turns it off everywhere). Switching to ink is not animated. The picker hover scale is a transform transition and also ends under reduced motion.
 
 ### Server rendering
 
@@ -66,7 +68,7 @@ Server render: same markup as the client. The markup is the same on the server a
 ### Gotchas
 
 - Every emoji sits in `span[data-slot="emoji"]` (see `EmojiGlyph`) with `data-part="glyph"` and, for emoji with art, `data-part="ink"`: style those, not the text. Ink follows the style: in `[data-style="paper"]` everything is ink, elsewhere colour. `ink` on the pill, the bar or the picker forces it (`true`) or keeps colour in the paper style (`false`), the same as `FileFormatIcon mono`.
-- An emoji with hand-drawn art (`hasInkEmoji`: every emoji of the built-in picker set) shows the drawing in the ink; any emoji outside the set (a dinosaur, a flag) shows the colour glyph filtered to one ink, so fine detail goes soft at small sizes. Ink on a black background is inverted to light, so set `data-style` on `<html>` for portaled popovers.
+- `inkVariant` picks the drawing the ink shows on the pill, the bar and the picker: `solid` (the default, filled with the features cut out), `tint` (solid plus a tint for the secondary parts) or `outline` (monoline). `inkMotion` (default on) moves it; `EmojiReaction playKey` pops and plays from outside, which the bar uses for a reaction added from the picker. An emoji with hand-drawn art (`hasInkEmoji`: every emoji of the built-in picker set) shows the drawing in the ink; any emoji outside the set (a dinosaur, a flag) shows the colour glyph filtered to one ink, so fine detail goes soft at small sizes. Ink on a black background is inverted to light, so set `data-style` on `<html>` for portaled popovers.
 - The glyph is wrapped in a `span` (`inline-block`, `leading-none`, the size class), so a test that looked for the emoji as a bare text node of the button should look in the glyph part. Text-only searches such as `getByText("👍")` still work.
 - Reaction state is controlled with `reacted` or uncontrolled with `defaultReacted`; the bar owns the counts, and a count that falls to 0 removes the pill.
 
@@ -83,6 +85,7 @@ export function Example() {
         { emoji: "🎉", count: 5 },
         { emoji: "🦊", count: 1 },
       ]}
+      inkVariant="solid"
       onReact={(emoji, reacted) => console.log(emoji, reacted)}
     />
   );

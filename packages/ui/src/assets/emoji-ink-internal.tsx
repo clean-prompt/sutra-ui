@@ -1,13 +1,40 @@
 import * as React from "react";
 import { dot, heartEye, starPath, Face, thumb, normalizeEmoji } from "./emoji-ink-parts-internal";
-import { smileyInkArt, smileyInkNames } from "./emoji-ink-smileys-internal";
-import { peopleInkArt, peopleInkNames } from "./emoji-ink-people-internal";
-import { natureInkArt, natureInkNames } from "./emoji-ink-nature-internal";
-import { foodInkArt, foodInkNames } from "./emoji-ink-food-internal";
-import { activityInkArt, activityInkNames } from "./emoji-ink-activities-internal";
-import { travelInkArt, travelInkNames } from "./emoji-ink-travel-internal";
-import { objectInkArt, objectInkNames } from "./emoji-ink-objects-internal";
-import { symbolInkArt, symbolInkNames } from "./emoji-ink-symbols-internal";
+import { smileyInkArt, smileyInkNames, smileySolidArt } from "./emoji-ink-smileys-internal";
+import { peopleInkArt, peopleInkNames, peopleSolidArt } from "./emoji-ink-people-internal";
+import { natureInkArt, natureInkNames, natureSolidArt } from "./emoji-ink-nature-internal";
+import { foodInkArt, foodInkNames, foodSolidArt } from "./emoji-ink-food-internal";
+import { activityInkArt, activityInkNames, activitySolidArt } from "./emoji-ink-activities-internal";
+import { travelInkArt, travelInkNames, travelSolidArt } from "./emoji-ink-travel-internal";
+import { objectInkArt, objectInkNames, objectSolidArt } from "./emoji-ink-objects-internal";
+import { symbolInkArt, symbolInkNames, symbolSolidArt } from "./emoji-ink-symbols-internal";
+import {
+  C,
+  FACE,
+  FLAME,
+  FLAME_CORE,
+  FROWN,
+  G,
+  HEART,
+  L,
+  LAUGH,
+  O,
+  P,
+  R,
+  Ring,
+  SMALL_GRIN,
+  SQUINT,
+  drop,
+  eyes,
+  face,
+  heartAt,
+  mouth,
+  pl,
+  pt,
+  soft,
+  starD,
+  type InkSolid,
+} from "./emoji-ink-solid-internal";
 
 export { normalizeEmoji };
 
@@ -195,4 +222,189 @@ export const inkEmojiNames: Record<string, string> = {
   ...travelInkNames,
   ...objectInkNames,
   ...symbolInkNames,
+};
+
+/* ------------------------------------------------------------------ */
+/* Solid drawings of the base twenty (variants "solid" and "tint")     */
+/* ------------------------------------------------------------------ */
+
+/** Thumb up: three curled fingers with round knuckles, the back of the hand, a cuff at the wrist. */
+const thumbUp: InkSolid = {
+  layers: [
+    {
+      body: [
+        pt("thumb", "flick", L("M9.7 10L11.3 3.7", 4.6), "9.7px 10.5px"),
+        L("M6.9 12.1H13M6.9 15.9H13M6.9 19.7H13", 3.8),
+        R(10.4, 10.2, 9, 11.4, 3.2),
+        soft(R(18.6, 10.8, 3.8, 10.2, 1.4)),
+      ],
+      cuts: [L("M3.5 14H10.8M3.5 17.8H10.8", 1.5), L("M3.5 10.2H8.6", 1.4), L("M19.5 9V23", 1.3)],
+    },
+  ],
+  move: "spring",
+  origin: "14px 21.5px",
+};
+const heart: InkSolid = { layers: [{ body: [P(HEART, 0.6)] }], move: "beat", origin: "12px 12.5px" };
+const clapHand = [R(-3, -12.6, 6, 12.6, 3), L("M-3-4.8L-5.4-8", 2.4)];
+const prayNear = "translate(10.9 20) rotate(-6)";
+
+const baseSolid: Record<string, InkSolid> = {
+  "👍": thumbUp,
+  "👎": { ...thumbUp, tf: "matrix(1 0 0 -1 0 24)" },
+  "❤": { ...heart, tint: { ...heart, layers: [{ body: [P(HEART, 0.6)], cuts: [soft(L("M5.6 10.4c-.5-2.2.6-4.1 2.7-4.6", 1.6))] }] } },
+  "😂": face(
+    [
+      SQUINT,
+      mouth(LAUGH, "laugh-mouth"),
+      pt("tear", "tear-l", soft(drop(5.25, 14.7, 1.3, 6.2, 12.2)), undefined, true),
+      pt("tear", "tear-r", soft(drop(18.75, 14.7, 1.3, 17.8, 12.2)), undefined, true),
+    ],
+    { move: "laugh", origin: "12px 14px" }
+  ),
+  "🎉": {
+    layers: [
+      {
+        body: [P("M2.7 21.3L7.3 8.7 15.3 16.7z", 1.6), O(11.3, 12.7, 5.7, 1.9, 45)],
+        cuts: [soft(L("M3.7 15.8L8.2 20.3M5.5 12L12 18.5", 1.5))],
+        part: { name: "cone", move: "cock", origin: "3px 21px" },
+      },
+    ],
+    lines: pt("burst", "burst", [L("M12.6 6.6c-.5-1.7.3-3.2 1.9-3.9M15.9 9.2c1.1-2.1 3.3-2.8 5.3-1.8M17.9 13.4c1.7-.5 3.1.1 3.9 1.6", 1.9)], "11.5px 12.5px"),
+    dots: pt("burst", "burst", [C(9.8, 3, 1.1), C(20.4, 3.2, 1.1), C(21.4, 19, 1.1), C(17, 21.2, 1)], "11.5px 12.5px"),
+  },
+  "😮": face([...pt("eye", "eye-pop", eyes(9), undefined, true), pt("mouth", "o-pop", O(12, 15.7, 2.3, 2.9), undefined, true)], { move: "jolt", origin: "12px 21px" }),
+  "😢": face(
+    [
+      ...pt("eye", "droop", eyes(9.3, 1.3, 1.8), undefined, true),
+      pt("mouth", "tremble", L("M9.5 17.6q2.5-2.2 5 0", 1.8), undefined, true),
+      pt("tear", "tear-fall", soft(drop(7, 15, 1.5, 7, 11.9)), undefined, true),
+    ],
+    { move: "" }
+  ),
+  "🔥": {
+    layers: [
+      {
+        body: [P(FLAME, 0.4, "translate(12 12.5) scale(1.1) translate(-12 -12.5)")],
+        cuts: [pt("core", "core", soft(P(FLAME_CORE, 0.3, "translate(12 17.4) scale(1.3) translate(-12 -17.4)")), "50% 85%", true)],
+      },
+    ],
+    move: "flicker",
+    origin: "12px 22px",
+  },
+  /* Eyes: solid eyeballs, the white cut as a crescent, so the pupils keep looking right. */
+  "👀": {
+    layers: [
+      {
+        body: [O(6.7, 12, 4.4, 6.2), O(17.3, 12, 4.4, 6.2)],
+        cuts: [O(6.7, 12, 2.75, 4.55), O(17.3, 12, 2.75, 4.55)],
+        restore: pt("pupil", "dart", [C(8.05, 13.3, 2.2), C(18.65, 13.3, 2.2)]),
+      },
+    ],
+    move: "blink-all",
+    origin: "12px 12px",
+  },
+  /* Folded hands, seen from the side: the near hand shows three fingers and its thumb, the far hand peeks out behind. */
+  "🙏": {
+    layers: [
+      { body: [G("translate(13.3 19.4) rotate(-6)", [R(-3.3, -16.2, 6.6, 16.2, 3.3)])] },
+      {
+        body: [G(prayNear, [R(-4.1, -14.2, 8.2, 14.2, 3.7), L("M-4.1-4.6L-5.6-8.6", 2.5)]), soft(G(prayNear, [R(-4.9, -0.9, 10.4, 3.6, 1.4)]))],
+        cuts: [G(prayNear, [L("M-1.37-15V-9M1.37-15V-9", 1.2), L("M-7-1.1H7", 1.2)])],
+        part: { name: "near", move: "press" },
+      },
+    ],
+    move: "bow",
+    origin: "12px 22px",
+  },
+  "👏": {
+    layers: [
+      { body: [G("translate(7.8 21.4) rotate(24)", clapHand)], part: { name: "back", move: "clap-back", origin: "7.8px 21.4px" } },
+      { body: [G("translate(16.2 21.4) rotate(-24) scale(-1 1)", clapHand)], part: { name: "front", move: "clap-front", origin: "16.2px 21.4px" } },
+    ],
+    lines: pt("marks", "marks", [L("M12 1.6v2.6M7.2 2.8l1.1 1.9M16.8 2.8l-1.1 1.9", 1.7)], "12px 5px"),
+  },
+  "😍": face([...pt("heye", "heye", [heartAt(8.2, 9.6, 0.25), heartAt(15.8, 9.6, 0.25)], undefined, true), mouth(SMALL_GRIN)], { move: "swoon", origin: "12px 21px" }),
+  /* Thinking: one brow up, a flat mouth, the hand at the chin in front of the face (a paper gap around it). */
+  "🤔": {
+    layers: [
+      {
+        body: [FACE],
+        cuts: [
+          ...pt("eye", "look-up", [O(8.3, 9.6, 1.25, 1.75), O(15.3, 9.2, 1.25, 1.75)], undefined, true),
+          pt("brow", "brow", L("M13.3 5.6q2.1-1.6 4.5-.7", 1.6), undefined, true),
+          mouth(L("M6.9 15.3l3.4-.5", 1.8)),
+        ],
+      },
+      { body: [O(16.4, 19.3, 4.6, 3, -16), L("M13.4 18.4L11.6 15.4", 2.6)], part: { name: "hand", move: "tap" } },
+    ],
+  },
+  "✅": { layers: [{ body: [R(2.6, 2.6, 18.8, 18.8, 5.4)], cuts: [pt("tick", "draw", pl(L("M7.3 12.3l3.3 3.3 6.2-6.9", 2.3)))] }], move: "squash", origin: "12px 12px" },
+  "🚀": {
+    tf: "rotate(45 12 12)",
+    layers: [
+      {
+        body: [
+          P("M12 .9c3.2 2.6 4.4 5.8 4.4 9.8v5.6H7.6v-5.6c0-4 1.2-7.2 4.4-9.8z", 0.6),
+          soft(P("M7.6 11.4L4.2 14.8v4.2l3.4-2z", 0.9)),
+          soft(P("M16.4 11.4l3.4 3.4v4.2l-3.4-2z", 0.9)),
+          R(9.5, 16, 5, 2.2, 0.8),
+        ],
+        cuts: [C(12, 8.6, 2), L("M7.6 12.4v4.4M16.4 12.4v4.4", 1)],
+        inks: [pt("flame", "thrust", soft(P("M12 19.4c-1.2 1.4-1.8 2.4-1.8 3.2a1.8 1.8 0 0 0 3.6 0c0-.8-.6-1.8-1.8-3.2z", 0.4)), "12px 19.4px")],
+      },
+    ],
+    move: "launch",
+    origin: "12px 12px",
+  },
+  "💯": {
+    layers: [],
+    lines: [
+      G("translate(1.6 0) skewX(-9)", [
+        pt("digit", "digit", L("M4.4 7.4l2.4-2v10", 2.3)),
+        pt("digit", "digit", Ring(11.4, 10.4, 2.4, 4.9, 2.3), undefined, false, 1),
+        pt("digit", "digit", Ring(18, 10.4, 2.4, 4.9, 2.3), undefined, false, 2),
+      ]),
+      pt("underline", "swipe", pl(L("M3 18.6h17.6", 2.2))),
+      pt("underline", "swipe-late", pl(L("M5.2 21.6h12.8", 2.2))),
+    ],
+  },
+  "😡": face(
+    [pt("brows", "brows-drop", L("M6.2 7l4.2 2.1M17.8 7l-4.2 2.1", 2), undefined, true), O(8.8, 11.4, 1.2, 1.35), O(15.2, 11.4, 1.2, 1.35), mouth(FROWN)],
+    { move: "fume", origin: "12px 12px" }
+  ),
+  "⭐": { layers: [{ body: [P(starD(12, 12.9, 10.4, 4.8), 1.8)] }], move: "twinkle", origin: "12px 12.9px" },
+  "💡": {
+    layers: [
+      {
+        body: [P("M9 17.4c0-1.8-3-3-3-6.6a6 6 0 0 1 12 0c0 3.6-3 4.8-3 6.6z", 1.75), R(9.4, 19.3, 5.2, 2.4, 1.1)],
+        cuts: [L("M10.4 11.6l1.6 1.8 1.6-1.8M12 13.4v3.2", 1.4), soft(L("M8.6 9.4c.3-1.5 1.3-2.6 2.8-3", 1.4))],
+      },
+    ],
+    move: "pop",
+    origin: "12px 14px",
+  },
+  "✨": {
+    layers: [
+      {
+        body: [
+          pt("star", "twinkle-4", P("M10.5 3.2C11.2 8 12.5 9.3 17.2 10c-4.7.7-6 2-6.7 6.8C9.8 12 8.5 10.7 3.8 10 8.5 9.3 9.8 8 10.5 3.2z", 1.4), "10.5px 10px"),
+          pt("spark", "spark", soft(P("M18.5 14.6c.2 1.8.7 2.3 2.5 2.5-1.8.2-2.3.7-2.5 2.5-.2-1.8-.7-2.3-2.5-2.5 1.8-.2 2.3-.7 2.5-2.5z", 1.2)), "18.5px 17.1px"),
+        ],
+      },
+    ],
+    dots: [pt("spark", "spark", C(19, 4.6, 1.25), "19px 4.6px", false, 1)],
+  },
+};
+
+/** Solid drawings by emoji (variation selectors removed): the base set plus every category file. */
+export const solidInkArt: Record<string, InkSolid> = {
+  ...baseSolid,
+  ...smileySolidArt,
+  ...peopleSolidArt,
+  ...natureSolidArt,
+  ...foodSolidArt,
+  ...activitySolidArt,
+  ...travelSolidArt,
+  ...objectSolidArt,
+  ...symbolSolidArt,
 };

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { dot } from "./emoji-ink-parts-internal";
+import { C, G, L, O, P, R, Ring, pt, soft, starD, type InkSolid } from "./emoji-ink-solid-internal";
 
 /** Ink drawings for the activities category (see emoji-ink-parts-internal for the shared parts and the style rules). */
 
@@ -245,4 +246,151 @@ export const activityInkNames: Record<string, string> = {
   "🎬": "Clapper board",
   "🏆": "Trophy",
   "🥇": "Gold medal",
+};
+
+/* ----- solid drawings (variants "solid" and "tint") ----- */
+
+/** A ball: a disc with its seams or patches cut out, bouncing when it moves. */
+const ball = (cuts: InkSolid["layers"][number]["cuts"], extra: Partial<InkSolid> = {}): InkSolid => ({ layers: [{ body: [C(12, 12, 10.1)], cuts }], move: "hop", origin: "12px 22px", ...extra });
+
+/** Solid drawings of this category (variants "solid" and "tint"); see emoji-ink-solid-internal. */
+export const activitySolidArt: Record<string, InkSolid> = {
+  "⚽": ball([P(footballPatch.pentagon, 0.9), L(footballPatch.seams, 1.3)]),
+  "🏀": ball([L("M12 2v20M2 12h20", 1.3), L("M5.2 5.2c3.6 3.4 3.6 10.2 0 13.6M18.8 5.2c-3.6 3.4-3.6 10.2 0 13.6", 1.3)]),
+  "🏈": {
+    layers: [{ body: [P("M1.8 12C5.4 5.2 18.6 5.2 22.2 12c-3.6 6.8-16.8 6.8-20.4 0z", 1.75)], cuts: [L("M9.2 12h5.6M10.4 10.4v3.2M12 10v4M13.6 10.4v3.2", 1.2), soft(L("M5.4 9.6c-.4 1.6-.4 3.2 0 4.8M18.6 9.6c.4 1.6.4 3.2 0 4.8", 1.2))] }],
+    tf: "rotate(-42 12 12)",
+    move: "wiggle",
+    origin: "12px 12px",
+  },
+  "⚾": ball([L("M6.2 4.6c2.6 3.4 2.6 11.4 0 14.8M17.8 4.6c-2.6 3.4-2.6 11.4 0 14.8", 1.3), soft(L("M8.2 8l-2 .8M8.8 11.4l-2.2.2M8.8 14.2l-2.2-.4M8 17l-1.8-.8M15.8 8l2 .8M15.2 11.4l2.2.2M15.2 14.2l2.2-.4M16 17l1.8-.8", 1))]),
+  "🎾": ball([L("M4.6 6.2c5 1.8 5 10 .2 11.8M19.4 6.2c-5 1.8-5 10-.2 11.8", 1.4)]),
+  "🏐": ball([0, 120, 240].map((deg) => L(volleyArm, 1.3, `rotate(${deg} 12 12)`))),
+  /* Ping pong: the paddle and its handle, a shine cut across, the ball apart. */
+  "🏓": {
+    layers: [{ body: [C(9.8, 9.8, 7.4), G("translate(14.6 14.6) rotate(-45)", [R(-1.9, 0, 3.8, 6.6, 1.5)])], cuts: [soft(L("M5.6 7.6C6.6 5.8 8.2 5 10 5", 1.3))] }],
+    dots: [pt("ball", "jab", C(19.4, 5, 2.2), "19.4px 5px")],
+    move: "wiggle",
+    origin: "17px 17px",
+  },
+  /* Shuttlecock: the cork apart from the feathers (a paper line), feather lines cut. */
+  "🏸": {
+    layers: [{ body: [C(12, 19.4, 2.6), P("M10.4 17.2L6.2 4.6q5.8-1.8 11.6 0l-4.2 12.6z", 1.4)], cuts: [L("M12 16.4V5.4M9.2 15L8.2 5.4M14.8 15l1-9.6", 1.1), L("M8.6 17.6h6.8", 1)] }],
+    tf: "rotate(40 12 12)",
+    move: "wiggle",
+    origin: "12px 19px",
+  },
+  "🏏": {
+    layers: [{ body: [G("rotate(40 11 12)", [R(7.8, 9.2, 6.4, 11.4, 1.6), L("M11 2.8v6.4", 1.8)])], cuts: [G("rotate(40 11 12)", [soft(L("M11 11.2v7.6", 1.1))])] }],
+    dots: [C(19.4, 18.4, 2.2)],
+    move: "wiggle",
+    origin: "8px 5px",
+  },
+  /* Golf: the green with the ball cut out of it, the flag flutters. */
+  "⛳": {
+    layers: [{ body: [O(12, 19.4, 9.2, 2.8), L("M12 19V3.6", 1.8)], cuts: [C(17.2, 19, 1.15)] }],
+    dots: [pt("flag", "flutter", P("M12 3.4l7.2 3.4L12 10.2z", 1), "12px 6.8px")],
+  },
+  "🏊": {
+    layers: [{ body: [C(17, 6.6, 2.3), L("M3.6 13.8c3-.2 5.8-1.2 8-3.2l2.8-2.6M12 10.6l2.6 1.4", 1.9)] }],
+    lines: [pt("water", "crawl", L(wave(2.6, 17.4, 18.8, 4, 1.3), 1.8)), pt("water", "crawl", L(wave(2.6, 21, 18.8, 4, 1.3), 1.8), undefined, false, 1)],
+    move: "float",
+    origin: "12px 12px",
+  },
+  "🚴": {
+    layers: [
+      {
+        body: [Ring(5.4, 17, 3.4, 3.4, 1.9), Ring(18.6, 17, 3.4, 3.4, 1.9), L("M5.4 17l4-6.4h6.6l2.6 6.4M9.4 10.6L11.6 17l4.4-6.4M9.4 10.2L12 6.6l4.4 2.6", 1.6), C(12.6, 3.8, 1.9)],
+      },
+    ],
+    move: "crawl",
+    origin: "12px 20px",
+  },
+  /* Yoga: crossed legs, the body keyed in front of them. */
+  "🧘": {
+    layers: [
+      { body: [O(8.6, 19, 6, 2.2, -12), O(15.4, 19, 6, 2.2, 12)], cuts: [L("M12 17.6v3", 1)] },
+      { body: [C(12, 4.6, 2.3), P("M8.6 10.6c0-1.8 1.2-2.8 3.4-2.8s3.4 1 3.4 2.8v5.2H8.6z", 1.4), L("M8.6 10.6L5.2 15.8M15.4 10.6l3.4 5.2", 1.8)], key: 0.8 },
+    ],
+    move: "breathe",
+    origin: "12px 20px",
+  },
+  "🏋": {
+    layers: [{ body: [L("M2.6 12h18.8", 1.8), R(5, 5.4, 3.4, 13.2, 1.2), R(15.6, 5.4, 3.4, 13.2, 1.2), L("M2.6 9.6v4.8M21.4 9.6v4.8", 1.8)], cuts: [soft(L("M6.7 7v10M17.3 7v10", 0.9))] }],
+    move: "jab",
+    origin: "12px 12px",
+  },
+  /* Target: alternating rings of ink and paper, the arrow keyed in front (it thunks in). */
+  "🎯": {
+    layers: [
+      { body: [C(12, 12, 9.8)], cuts: [Ring(12, 12, 7.2, 7.2, 1.9), Ring(12, 12, 3.6, 3.6, 1.7)] },
+      { body: [L("M12 12L20.2 3.8", 1.8), L("M20.4 3.6l.2-2.2M20.4 3.6l2.2-.2", 1.6)], key: 0.8, part: { name: "arrow", move: "thunk" } },
+    ],
+  },
+  "🎮": {
+    layers: [
+      {
+        body: [P("M7 7.4h10c2.8 0 4.4 2.4 4.8 5.2l.8 4.8c.2 1.6-.8 2.6-2.2 2.6-1 0-1.8-.6-2.4-1.4l-1.6-2.2H8.8l-1.6 2.2c-.6.8-1.4 1.4-2.4 1.4-1.4 0-2.4-1-2.2-2.6l.8-4.8C2.6 9.8 4.2 7.4 7 7.4z", 1.75)],
+        cuts: [L("M7.4 10.4v3.6M5.6 12.2h3.6", 1.4), C(16, 11, 1.15), C(18.4, 13.2, 1.15)],
+      },
+    ],
+    move: "wiggle",
+    origin: "12px 14px",
+  },
+  "🎲": {
+    layers: [{ body: [R(3.6, 3.6, 16.8, 16.8, 3.6)], cuts: [C(8.4, 8.4, 1.4), C(15.6, 8.4, 1.4), C(12, 12, 1.4), C(8.4, 15.6, 1.4), C(15.6, 15.6, 1.4)] }],
+    tf: "rotate(-10 12 12)",
+    move: "spin-90",
+    origin: "12px 12px",
+  },
+  "🧩": { layers: [{ body: [P("M3.6 7.6h4.2A2.5 2.5 0 1 1 12.8 7.6h4.6v4.2a2.5 2.5 0 1 1 0 5v4.4H12.8a2.5 2.5 0 1 0-5 0H3.6v-4.4a2.5 2.5 0 1 0 0-5z", 1.75)], cuts: [soft(C(10.4, 14.2, 0.9))] }], move: "pop", origin: "12px 13px" },
+  "🎨": {
+    layers: [
+      {
+        body: [P("M12 3C6.6 3 2.6 6.8 2.6 11.8c0 4.6 3.6 8 8 8 1.8 0 2.2-1 2.2-2 0-1.6 1.2-2.2 2.4-2.2h2.2c3 0 5-1.8 5-4.6C22.4 6.6 17.8 3 12 3z", 1.75)],
+        cuts: [soft(C(7.2, 11.2, 1.4)), soft(C(10, 7.4, 1.4)), soft(C(15, 7.4, 1.4)), soft(C(18, 11, 1.4)), C(10.2, 15.2, 1.2)],
+      },
+    ],
+    move: "wiggle",
+    origin: "12px 12px",
+  },
+  "🎸": {
+    layers: [
+      {
+        body: [P("M9.6 12.6a2.8 2.8 0 0 1 4.8 0c.6 1.2 2.6 2 2.8 4.4.4 2.8-1.6 4.6-5.2 4.6s-5.6-1.8-5.2-4.6c.2-2.4 2.2-3.2 2.8-4.4z", 1.75), L("M12 11V4.6", 2.8), R(10.2, 1.4, 3.6, 3, 0.6)],
+        cuts: [C(12, 16.8, 1.7), soft(L("M12 4.6V15", 0.7))],
+      },
+    ],
+    tf: "rotate(40 12 12)",
+    move: "wiggle",
+    origin: "12px 17px",
+  },
+  "🎧": {
+    layers: [{ body: [L("M5.5 13.6V12a6.5 6.5 0 0 1 13 0v1.6", 2.2), R(3, 13.6, 5, 7.4, 2), R(16, 13.6, 5, 7.4, 2)], cuts: [soft(L("M6.6 15.4v3.8M17.4 15.4v3.8", 1.1))] }],
+    move: "nod",
+    origin: "12px 21px",
+  },
+  /* Clapper board: the striped stick snaps shut on the board. */
+  "🎬": {
+    layers: [
+      { body: [P("M3.4 11.4h17.2v8a1.6 1.6 0 0 1-1.6 1.6H5a1.6 1.6 0 0 1-1.6-1.6z", 1.75)], cuts: [soft(L("M6 14.6h12", 1.1))] },
+      { body: [P("M3.2 10.2L2.6 6.6 20.4 3.2l.6 3.6z", 1.4)], cuts: [L("M8 9.6L7.4 5.6M13.4 8.6l-.6-3.8M18.6 7.6l-.4-3.4", 1.4)], key: 0.7, part: { name: "clapper", move: "snap", origin: "3px 10px" } },
+    ],
+  },
+  "🏆": {
+    layers: [
+      {
+        body: [P("M7.2 3.4h9.6v6a4.8 4.8 0 0 1-9.6 0z", 1.75), L("M7.2 5.4H4.4v1.6a3.4 3.4 0 0 0 3.2 3.4M16.8 5.4h2.8v1.6a3.4 3.4 0 0 1-3.2 3.4", 1.8), L("M12 14.2v3.6", 2), R(8.6, 17.8, 6.8, 3.2, 0.8)],
+        cuts: [soft(P(starD(12, 8.2, 2.4, 1.05), 0.5))],
+      },
+    ],
+    move: "pop",
+    origin: "12px 20px",
+  },
+  /* Gold medal: the ribbon and the disc with a one cut out; it swings from the ribbon. */
+  "🥇": {
+    layers: [{ body: [C(12, 14.6, 6.6), L("M7.4 2.8l3.4 6.4M16.6 2.8l-3.4 6.4M7.4 2.8h9.2", 2)], cuts: [L("M10.4 13.2l1.9-1.4v5.6", 1.5)] }],
+    move: "swing",
+    origin: "12px 2.8px",
+  },
 };

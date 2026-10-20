@@ -75,6 +75,7 @@ export * from "./lib/wheel";
 // not exported: assets/emoji-ink-parts-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-people-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-smileys-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/emoji-ink-solid-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-symbols-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-travel-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/mascot-art-internal (internal: private helpers shared by sibling modules)
