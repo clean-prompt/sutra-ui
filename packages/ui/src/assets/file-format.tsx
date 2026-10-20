@@ -187,6 +187,12 @@ export interface FileFormatIconProps extends Omit<React.ComponentPropsWithoutRef
   label?: string;
   /** Override the format color. */
   color?: string;
+  /**
+   * Ink on paper: one ink for every format (the label band, or the sheet in `solid`, in the foreground colour with paper-coloured
+   * text) instead of the format colour. Unset follows the style: the paper style draws it mono, the others coloured; `true` forces mono
+   * and `false` keeps the format colour in the paper style.
+   */
+  mono?: boolean;
   /** Accessible name; when set the icon is exposed as an image, otherwise it is decorative. */
   title?: string;
 }
@@ -196,7 +202,7 @@ const FOLD = "M20.5 .5V6a3.5 3.5 0 0 0 3.5 3.5h5.5";
 
 /** A document icon with a folded corner and a colored file-extension label. */
 export const FileFormatIcon = React.forwardRef<SVGSVGElement, FileFormatIconProps>(
-  ({ ext, variant = "default", size = "md", label, color, title, className, ...props }, ref) => {
+  ({ ext, variant = "default", size = "md", label, color, mono, title, className, ...props }, ref) => {
     const extension = getFileExtension(ext);
     const tint = color ?? getFormatColor(extension);
     const text = (label ?? formatLabels[extension] ?? (extension || "file")).toUpperCase().slice(0, 5);
@@ -215,6 +221,9 @@ export const FileFormatIcon = React.forwardRef<SVGSVGElement, FileFormatIconProp
         height={height}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        data-slot="file-format-icon"
+        data-variant={variant}
+        data-mono={mono == null ? undefined : String(mono)}
         data-ext={extension}
         data-category={getFileCategory(extension)}
         className={cn("shrink-0 overflow-visible", className)}
@@ -227,9 +236,10 @@ export const FileFormatIcon = React.forwardRef<SVGSVGElement, FileFormatIconProp
 
         {variant === "solid" ? (
           <>
-            <path d={BODY} fill={tint} />
-            <path d={FOLD} fill="#000000" fillOpacity="0.2" />
+            <path data-part="body" d={BODY} fill={tint} />
+            <path data-part="fold" d={FOLD} fill="#000000" fillOpacity="0.2" />
             <text
+              data-part="label"
               x="16"
               y="31"
               textAnchor="middle"
@@ -247,6 +257,7 @@ export const FileFormatIcon = React.forwardRef<SVGSVGElement, FileFormatIconProp
             <path d={BODY} className="fill-background stroke-border-strong" strokeWidth="1" />
             <path d={FOLD} className="stroke-border-strong" strokeWidth="1" strokeLinejoin="round" />
             <text
+              data-part="label"
               x="16"
               y="31"
               textAnchor="middle"
@@ -263,8 +274,9 @@ export const FileFormatIcon = React.forwardRef<SVGSVGElement, FileFormatIconProp
           <>
             <path d={BODY} className="fill-background stroke-border-strong" strokeWidth="1" />
             <path d={FOLD} className="fill-muted stroke-border-strong" strokeWidth="1" strokeLinejoin="round" />
-            <rect x="0" y="20" width={bandWidth} height="11" rx="2" fill={tint} />
+            <rect data-part="band" x="0" y="20" width={bandWidth} height="11" rx="2" fill={tint} />
             <text
+              data-part="label"
               x={bandWidth / 2}
               y="27.6"
               textAnchor="middle"

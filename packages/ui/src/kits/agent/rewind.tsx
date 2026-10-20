@@ -345,7 +345,7 @@ export const CheckpointMarker = React.forwardRef<HTMLDivElement, CheckpointMarke
             <span className="text-success">+{sum.add}</span> <span className="text-destructive">−{sum.del}</span>
           </span>
         )}
-        {timestamp != null && <span className="hidden shrink-0 sm:inline">· {formatWhen(timestamp)}</span>}
+        {timestamp != null && <span className="hidden min-w-0 truncate sm:inline">· {formatWhen(timestamp)}</span>}
       </span>
     );
     return (

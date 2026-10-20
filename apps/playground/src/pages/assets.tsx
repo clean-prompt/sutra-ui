@@ -596,7 +596,7 @@ function FileFormatIconsDemo() {
     <Demo
       id="file-format-icons"
       title="File format icons"
-      description={`Document icons for ${allFormats.length} extensions, colored by format. Pass a filename or a bare extension.`}
+      description={`Document icons for ${allFormats.length} extensions, colored by format (ink on paper in the paper style). Pass a filename or a bare extension.`}
       align="start"
       canvasClassName="gap-8"
     >
@@ -621,6 +621,23 @@ function FileFormatIconsDemo() {
           ))}
           <FileFormatIcon ext="brief.unknown" size="xl" label="file" />
         </div>
+      </div>
+
+      <div className="space-y-3">
+        <DemoLabel>Ink on paper (mono)</DemoLabel>
+        <div className="flex flex-wrap items-end gap-4">
+          {(["default", "solid", "minimal"] as const).map((variant) => (
+            <FileFormatIcon key={variant} ext="Q3 report.pdf" variant={variant} size="xl" mono />
+          ))}
+          <span className="mx-2 h-10 w-px bg-border" />
+          {["pdf", "xlsx", "png", "zip", "ts", "mp4"].map((ext) => (
+            <FileFormatIcon key={ext} ext={ext} size="lg" mono />
+          ))}
+        </div>
+        <p className="max-w-2xl text-xs text-muted-foreground">
+          mono draws every format in one ink, the way the paper style does on its own; it is automatic there, and mono={"{false}"} keeps the
+          format colours in the paper style.
+        </p>
       </div>
     </Demo>
   );

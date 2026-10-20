@@ -275,13 +275,16 @@ describe("no scripted motion", () => {
 
 const raw = readFileSync(path.join(__dirname, "../src/styles/sutra.css"), "utf8");
 const MARKER = "Sutra mascot (assets/mascot)";
-const css = raw.slice(raw.indexOf("/* ====", raw.indexOf(MARKER))).replace(/\/\*[\s\S]*?\*\//g, "");
+// The mascot rules run from its header to the next section header (other sections follow it: file format icons).
+const fromMascot = raw.slice(raw.indexOf("/* ====", raw.indexOf(MARKER)));
+const nextSection = fromMascot.slice(10).search(/\n\/\* =+ \*\/\n\/\* [A-Z]/);
+const css = (nextSection < 0 ? fromMascot : fromMascot.slice(0, nextSection + 10)).replace(/\/\*[\s\S]*?\*\//g, "");
 const squash = (s: string) => s.replace(/\s+/g, " ").trim();
 
 describe("the mascot section of sutra.css", () => {
-  it("is the last section of the file and sits after the Motion II section", () => {
+  it("sits after the Motion II section (the guard's effects span ends where it starts) and ends at the next section header", () => {
     expect(raw.indexOf(MARKER)).toBeGreaterThan(raw.indexOf("Motion II: view transitions"));
-    expect(raw.slice(raw.indexOf(MARKER))).not.toMatch(/\n\/\* =+ \*\/\n\/\* (?!Sutra mascot)/);
+    expect(css).not.toContain("file-format-icon");
   });
 
   it("starts an animation for every state, and every animation-name has keyframes", () => {

@@ -1712,3 +1712,27 @@
 :where(:root[data-motion="reduce"]) .sutra-mascot [data-part] {
   animation: none !important;
 }
+
+/* ================================================================== */
+/* File format icons (assets/file-format): ink on paper                */
+/*                                                                    */
+/* The icon draws each format in its own colour through SVG attributes */
+/* (CSS beats them). The paper style, or mono on the component, draws  */
+/* one ink for every format: the label band (the sheet in `solid`) in  */
+/* the foreground colour with background-coloured text. mono={false}   */
+/* keeps the format colours in the paper style.                        */
+/* ================================================================== */
+:is([data-slot="file-format-icon"][data-mono="true"], [data-style="paper"] [data-slot="file-format-icon"]:not([data-mono="false"])) [data-part="band"],
+:is([data-slot="file-format-icon"][data-mono="true"], [data-style="paper"] [data-slot="file-format-icon"]:not([data-mono="false"]))[data-variant="solid"] [data-part="body"] {
+  fill: var(--foreground);
+}
+:is([data-slot="file-format-icon"][data-mono="true"], [data-style="paper"] [data-slot="file-format-icon"]:not([data-mono="false"])) [data-part="label"] {
+  fill: var(--background);
+}
+:is([data-slot="file-format-icon"][data-mono="true"], [data-style="paper"] [data-slot="file-format-icon"]:not([data-mono="false"]))[data-variant="minimal"] [data-part="label"] {
+  fill: var(--foreground);
+}
+:is([data-slot="file-format-icon"][data-mono="true"], [data-style="paper"] [data-slot="file-format-icon"]:not([data-mono="false"]))[data-variant="solid"] [data-part="fold"] {
+  fill: var(--background);
+  fill-opacity: 0.25;
+}

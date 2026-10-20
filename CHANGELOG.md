@@ -67,6 +67,9 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - `AssistantOrb` (voice kit): Siri-style state animation for the Sutra assistant (Idle, Listening, Thinking, Speaking, plus error and muted) as a layered radial orb or a multi-layer waveform, driven by a live level; `useAssistantOrbState` picks the state by priority; demos with a real microphone.
 - Playground: the Paper Showcase page has a sidebar icon, and the brand colour and neutral palette controls are hidden while the paper style is selected (it sets every colour itself).
 
+#### File icons in the paper style
+- `FileFormatIcon` draws ink on paper in the paper style (one ink for every format: the label band, or the sheet in `solid`, in the foreground colour with background-coloured text) and takes `mono` to force it anywhere (`mono={false}` keeps the format colours in the paper style). The checkpoint divider's date in `Rewind` truncates instead of spilling in a narrow row; the playground's inline theme controls start at 1440 px (a popover below), so the brand swatches no longer wrap.
+
 #### Small fixes from the open-items review
 - `FileFormatIcon` shows readable short labels for the long extensions (`numbers` NUM, `sketch` SKTCH, `sqlite` SQLT, `svelte` SVLT) instead of cutting them at five letters ("NUMBE", "SKETC"); other extensions are still cut at five.
 - Solid `Avatar` / `Monogram` initials take white or dark ink, whichever contrasts more with the seed colour (cyan, yellow, green and orange used to fail AA with white; violet reaches 4.4:1, the best either ink can do).

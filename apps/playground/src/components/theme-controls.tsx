@@ -154,7 +154,7 @@ export function ThemeControls(api: ThemeApi) {
   const paper = api.theme.style === "paper";
   return (
     <div className="flex items-center gap-3">
-      <div className="hidden items-center gap-3 xl:flex">
+      <div className="hidden items-center gap-3 min-[1440px]:flex">
         <StyleControl {...api} />
         {paper ? null : <BrandSwatches {...api} />}
         {paper ? null : <NeutralSelect {...api} className="w-28" />}
@@ -162,7 +162,7 @@ export function ThemeControls(api: ThemeApi) {
       </div>
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="icon-sm" aria-label="Theme settings" className="xl:hidden">
+          <Button variant="ghost" size="icon-sm" aria-label="Theme settings" className="min-[1440px]:hidden">
             <RiPaletteLine />
           </Button>
         </PopoverTrigger>
