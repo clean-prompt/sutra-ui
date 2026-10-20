@@ -27,6 +27,7 @@ import {
   RiArrowRightSLine,
   RiBrushLine,
   RiCodeBoxLine,
+  RiFileTextLine,
   RiFontSize,
   RiLayoutGridLine,
   RiLayoutMasonryLine,
@@ -123,6 +124,7 @@ const foundationIcons: Record<string, React.ReactNode> = {
   radius: <RiCheckboxBlankLine />,
   spacing: <RiSpace />,
   motion: <RiSpeedLine />,
+  paper: <RiFileTextLine />,
 };
 
 function AppSidebar({ section, page, anchor }: { section: string; page: string; anchor?: string }) {

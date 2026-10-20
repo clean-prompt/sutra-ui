@@ -149,12 +149,15 @@ function ModeToggle({ theme, setTheme }: ThemeApi) {
 
 /** Theme controls for the top bar: inline on wide screens, in a popover on narrow ones. */
 export function ThemeControls(api: ThemeApi) {
+  // The paper style sets every colour token itself (ink as the accent, its own neutrals), so the brand colour and the
+  // neutral palette have no effect there: hide them instead of showing dead controls.
+  const paper = api.theme.style === "paper";
   return (
     <div className="flex items-center gap-3">
       <div className="hidden items-center gap-3 xl:flex">
         <StyleControl {...api} />
-        <BrandSwatches {...api} />
-        <NeutralSelect {...api} className="w-28" />
+        {paper ? null : <BrandSwatches {...api} />}
+        {paper ? null : <NeutralSelect {...api} className="w-28" />}
         <RadiusControl {...api} />
       </div>
       <Popover>
@@ -168,14 +171,18 @@ export function ThemeControls(api: ThemeApi) {
             <p className="text-xs font-medium text-muted-foreground">Style</p>
             <StyleControl {...api} fullWidth />
           </div>
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground">Brand</p>
-            <BrandSwatches {...api} />
-          </div>
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground">Neutral</p>
-            <NeutralSelect {...api} className="w-full" />
-          </div>
+          {paper ? null : (
+            <>
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">Brand</p>
+                <BrandSwatches {...api} />
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">Neutral</p>
+                <NeutralSelect {...api} className="w-full" />
+              </div>
+            </>
+          )}
           <div className="space-y-2">
             <p className="text-xs font-medium text-muted-foreground">Radius</p>
             <RadiusControl {...api} fullWidth />
