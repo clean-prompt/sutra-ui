@@ -1736,3 +1736,54 @@
   fill: var(--background);
   fill-opacity: 0.25;
 }
+
+/* ================================================================== */
+/* Emoji (assets/emoji-reactions): ink on paper                       */
+/*                                                                    */
+/* Every emoji the library renders sits in span[data-slot="emoji"]    */
+/* with the character in [data-part="glyph"] (it stays in the DOM for */
+/* copy, search and accessible names). The paper style, or ink on the */
+/* component, turns the colour glyph into one ink: an SVG filter      */
+/* (defined once per document by EmojiGlyph, #sutra-emoji-ink) maps   */
+/* darkness to ink opacity and lets light colours through to the      */
+/* paper; in dark the ink is inverted to light on black. An emoji     */
+/* with hand-drawn art (data-art, an svg[data-part="ink"] in          */
+/* currentColor) shows the drawing instead and hides the glyph        */
+/* visually (clipped, not display: none). ink={false} keeps colour in */
+/* the paper style.                                                   */
+/* ================================================================== */
+svg[data-slot="emoji-ink-filter"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+[data-slot="emoji"] > [data-part="ink"] {
+  display: none;
+  width: 1em;
+  height: 1em;
+}
+:is([data-slot="emoji"][data-ink="true"], [data-style="paper"] [data-slot="emoji"]:not([data-ink="false"])) > [data-part="glyph"] {
+  /* Some emoji (airplane, sun, gear) render as text in the font colour: black is the ink before the filter, light on dark after the invert. */
+  color: black;
+  filter: url(#sutra-emoji-ink);
+}
+:is(.dark, [data-theme="dark"]) :is([data-slot="emoji"][data-ink="true"], [data-style="paper"] [data-slot="emoji"]:not([data-ink="false"])) > [data-part="glyph"] {
+  filter: url(#sutra-emoji-ink) invert(1);
+}
+:is([data-slot="emoji"][data-ink="true"], [data-style="paper"] [data-slot="emoji"]:not([data-ink="false"]))[data-art] {
+  position: relative;
+}
+:is([data-slot="emoji"][data-ink="true"], [data-style="paper"] [data-slot="emoji"]:not([data-ink="false"]))[data-art] > [data-part="ink"] {
+  display: block;
+}
+:is([data-slot="emoji"][data-ink="true"], [data-style="paper"] [data-slot="emoji"]:not([data-ink="false"]))[data-art] > [data-part="glyph"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  filter: none;
+}

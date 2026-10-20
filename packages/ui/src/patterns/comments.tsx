@@ -11,6 +11,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density, hitArea } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { EmojiGlyph } from "../assets/emoji-ink";
 import { Avatar } from "../primitives/avatar";
 import { Button } from "../primitives/button";
 import { Textarea } from "../primitives/textarea";
@@ -318,7 +319,7 @@ function CommentItem({
                     focusRing
                   )}
                 >
-                  <span aria-hidden>{r.emoji}</span>
+                  <EmojiGlyph aria-hidden emoji={r.emoji} />
                   {r.count}
                 </button>
               ))}
@@ -340,7 +341,7 @@ function CommentItem({
                     }}
                     className={cn("inline-flex size-8 items-center justify-center rounded-sm text-base hover:bg-accent", focusRing)}
                   >
-                    {e}
+                    <EmojiGlyph emoji={e} />
                   </button>
                 ))}
               </PopoverContent>

@@ -11,6 +11,7 @@ import {
   FileFormatIcon,
   Heading,
   Icon,
+  InkEmoji,
   LogoCloud,
   SutraAppIcon,
   SutraLogo,
@@ -20,6 +21,8 @@ import {
   countries,
   fileFormatColors,
   getFileCategory,
+  inkEmojiNames,
+  inkEmojiSet,
   placeholderLogos,
   sutraAppMeta,
   sutraApps,
@@ -541,7 +544,7 @@ function EmojiReactionsDemo() {
     <Demo
       id="emoji-reactions"
       title="Emoji reactions"
-      description="A reaction bar with a picker for adding new reactions, and the standalone EmojiPicker."
+      description="A reaction bar with a picker for adding new reactions, and the standalone EmojiPicker. In the paper style the reactions and the picker switch to ink on their own."
       align="start"
       canvasClassName="gap-8"
     >
@@ -555,6 +558,34 @@ function EmojiReactionsDemo() {
           </Text>
         </div>
         <EmojiReactionBar reactions={reactions} onReactionsChange={setReactions} />
+      </div>
+
+      <div className="space-y-3">
+        <DemoLabel>Ink in every style, and colour kept in paper</DemoLabel>
+        <div className="flex flex-wrap items-center gap-6">
+          <EmojiReactionBar
+            readOnly
+            ink
+            defaultReactions={[
+              { emoji: "👍", count: 4, reacted: true },
+              { emoji: "🦊", count: 2 },
+              { emoji: "🔥", count: 7 },
+            ]}
+          />
+          <EmojiReactionBar
+            readOnly
+            ink={false}
+            defaultReactions={[
+              { emoji: "👍", count: 4, reacted: true },
+              { emoji: "🦊", count: 2 },
+              { emoji: "🔥", count: 7 },
+            ]}
+          />
+        </div>
+        <p className="max-w-2xl text-xs text-muted-foreground">
+          ink forces the ink version in any style (left), ink={"{false}"} keeps the colour glyphs in the paper style (right). Emoji with hand-drawn
+          art (below) show the drawing, any other emoji (the fox) is filtered to one ink.
+        </p>
       </div>
 
       <div className="space-y-3">
@@ -581,6 +612,49 @@ function EmojiReactionsDemo() {
           )}
         </Text>
       </div>
+    </Demo>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Ink emoji                                                           */
+/* ------------------------------------------------------------------ */
+
+function InkEmojiDemo() {
+  return (
+    <Demo
+      id="ink-emoji"
+      title="Ink emoji"
+      description={`InkEmoji: ${inkEmojiSet.length} original hand-drawn monoline emoji in currentColor, readable at 16px. Shown here forced as ink so they look the same in every style, next to the colour glyph.`}
+      align="start"
+      canvasClassName="gap-6"
+    >
+      <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {inkEmojiSet.map((emoji) => (
+          <div key={emoji} className="flex min-w-0 flex-col gap-3 rounded-box border border-border bg-card p-3">
+            <div className="flex items-end gap-3">
+              <span aria-hidden className="text-[40px] leading-none">
+                {emoji}
+              </span>
+              <span className="h-10 w-px shrink-0 bg-border" />
+              <InkEmoji emoji={emoji} size={16} />
+              <InkEmoji emoji={emoji} size={24} />
+              <InkEmoji emoji={emoji} size={40} />
+            </div>
+            <div className="min-w-0">
+              <div className="truncate text-xs font-medium">{emoji}</div>
+              <div className="truncate text-xs text-muted-foreground">
+                {inkEmojiNames[emoji]}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="max-w-2xl text-xs text-muted-foreground">
+        The paper style switches the reactions and the emoji picker to ink automatically: these drawings for the emoji in this set, and a
+        one-ink filter of the colour glyph for every other emoji. Use <code>EmojiGlyph</code> for emoji you render yourself, or{" "}
+        <code>InkEmoji</code> with <code>fallback</code> to draw the same way anywhere.
+      </p>
     </Demo>
   );
 }
@@ -836,6 +910,7 @@ export function AssetsPage() {
       <IconsDemo />
       <CountryFlagsDemo />
       <EmojiReactionsDemo />
+      <InkEmojiDemo />
       <FileFormatIconsDemo />
       <EmptyStateDemo />
       <DeviceFrameDemo />

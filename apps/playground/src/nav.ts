@@ -113,7 +113,7 @@ export const nav: NavSection[] = [
         label: "Assets",
         items: items(
           "Logo", "App Icons", "Placeholder Logos", "Featured Icon", "Icons", "Country Flags",
-          "Emoji Reactions", "File Format Icons", "Empty State", "Device Frame", "Background Pattern", ["Mascot", fresh], ["Mascot In Chat", fresh]
+          "Emoji Reactions", ["Ink Emoji", fresh], "File Format Icons", "Empty State", "Device Frame", "Background Pattern", ["Mascot", fresh], ["Mascot In Chat", fresh]
         ),
       },
     ],

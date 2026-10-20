@@ -1,4 +1,5 @@
 "assets/brand": ["sutra-wordmark"]
+"assets/emoji-ink": ["emoji","emoji-ink-filter","ink-emoji"]
 "assets/emoji-reactions": ["emoji-picker"]
 "assets/file-format": ["file-format-icon"]
 "assets/marquee": ["marquee","marquee-frame","marquee-item","marquee-list","marquee-pause","marquee-track"]

@@ -713,6 +713,7 @@ One line per component family (parts such as `DialogContent` live in the family'
 - `CountryFlag` (assets): A small, recognizable country flag drawn in inline SVG, with an emoji fallback.
 - `DeviceFrame` (assets): Wraps content in browser window chrome or a phone/tablet bezel.
 - `EmberLogo` (assets): Ember — fictional placeholder logo.
+- `EmojiGlyph` (assets): An emoji as text that reads as ink on paper in the paper style: the hand-drawn art when…
 - `EmojiPicker` (assets): A compact emoji picker with categories, keyword search and recently used emoji.
 - `EmojiReaction` (assets): A reaction pill showing an emoji and its count; highlighted when the user has reacted.
 - `EmptyStateIllustration` (assets): Simple line illustrations for empty, error and success states.
@@ -721,6 +722,7 @@ One line per component family (parts such as `DialogContent` live in the family'
 - `GridBeams` (assets): A faint grid with light beams traveling along its lines. Content renders above it.
 - `HalcyonLogo` (assets): Halcyon — fictional placeholder logo.
 - `Icon` (assets): Sized, toned wrapper around any icon component.
+- `InkEmoji` (assets): An original hand-drawn monoline version of a common emoji, drawn in `currentColor`;…
 - `KiteLogo` (assets): Kite — fictional placeholder logo.
 - `LogoCloud` (assets): A grid or marquee row of company logos.
 - `LumenLogo` (assets): Lumen — fictional placeholder logo.

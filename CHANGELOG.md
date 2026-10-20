@@ -67,6 +67,9 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - `AssistantOrb` (voice kit): Siri-style state animation for the Sutra assistant (Idle, Listening, Thinking, Speaking, plus error and muted) as a layered radial orb or a multi-layer waveform, driven by a live level; `useAssistantOrbState` picks the state by priority; demos with a real microphone.
 - Playground: the Paper Showcase page has a sidebar icon, and the brand colour and neutral palette controls are hidden while the paper style is selected (it sets every colour itself).
 
+#### Emoji in the paper style
+- Every emoji the library renders (reaction chips and bar, the picker, comments, chat and messenger kits) goes through the new `EmojiGlyph` and reads as one ink in the paper style (an SVG ink filter, light ink on black in dark paper); 20 common reactions have original hand-drawn monoline art (`InkEmoji`, with `inkEmojiSet` and `hasInkEmoji`) that the chips and the picker show instead of the glyph in paper. `EmojiReaction`, `EmojiReactionBar` and `EmojiPicker` take `ink` (true forces ink anywhere, false keeps colour in paper). Playground: an "Ink emoji" demo and an ink row in the reactions demo.
+
 #### File icons in the paper style
 - `FileFormatIcon` draws ink on paper in the paper style (one ink for every format: the label band, or the sheet in `solid`, in the foreground colour with background-coloured text) and takes `mono` to force it anywhere (`mono={false}` keeps the format colours in the paper style). The checkpoint divider's date in `Rewind` truncates instead of spilling in a narrow row; the playground's inline theme controls start at 1440 px (a popover below), so the brand swatches no longer wrap.
 

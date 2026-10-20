@@ -10145,6 +10145,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `EffortSlider` (`@sutra/ui/agent`): Discrete effort-level control: click or drag the bars, ← → keys, compact pill variant.
 - `EmbedConsent` (`@sutra/ui/ai`): Privacy gate shown in place of a third-party embed until the user agrees to load it.
 - `EmberLogo` (`@sutra/ui/assets`): Ember — fictional placeholder logo.
+- `EmojiGlyph` (`@sutra/ui/assets`): An emoji as text that reads as ink on paper in the paper style: the hand-drawn art when there is one, otherwise the glyph filtered to one…
 - `EmojiPicker` (`@sutra/ui/assets`): A compact emoji picker with categories, keyword search and recently used emoji.
 - `EmojiReaction` (`@sutra/ui/assets`): A reaction pill showing an emoji and its count; highlighted when the user has reacted.
 - `EmptyStateIllustration` (`@sutra/ui/assets`): Simple line illustrations for empty, error and success states.
@@ -10181,6 +10182,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `HeroHeader` (`@sutra/ui/blocks`): Marketing hero: eyebrow pill, display heading, subtext, CTAs on a mesh gradient.
 - `Icon` (`@sutra/ui/assets`): Sized, toned wrapper around any icon component.
 - `IncomingCall` (`@sutra/ui/social`): Ringing incoming call card with pulsing avatar rings and Accept / Decline / Message actions.
+- `InkEmoji` (`@sutra/ui/assets`): An original hand-drawn monoline version of a common emoji, drawn in `currentColor`; renders nothing for an emoji without art unless…
 - `InstallButton` (`@sutra/ui/social`): Install-the-app button. Hidden when not installable or already installed; shows Add to Home Screen steps on iOS.
 - `InstalledExtensionCard` (`@sutra/ui/agent-admin`): Installed plugin row: source, version, runtime status, auth, enable / update (consent) / open / hide / remove, slots and setup.
 - `InstallSnippet` (`@sutra/ui/blocks`): Tabbed install commands per platform or package manager, each copyable.

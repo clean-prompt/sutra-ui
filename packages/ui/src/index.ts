@@ -67,6 +67,7 @@ export * from "./lib/validate";
 export * from "./lib/wheel";
 
 /* Assets: src/assets */
+// not exported: assets/emoji-ink-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/mascot-art-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/misc (back-compat barrel, all targets exported)
 export * from "./assets/backgrounds";
@@ -74,6 +75,7 @@ export * from "./assets/brand";
 export * from "./assets/country-flags";
 export * from "./assets/device-frame";
 export * from "./assets/device-icons";
+export * from "./assets/emoji-ink";
 export * from "./assets/emoji-reactions";
 export * from "./assets/empty-state-illustration";
 export * from "./assets/file-format";

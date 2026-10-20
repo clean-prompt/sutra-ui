@@ -5,6 +5,7 @@ import { RiEmotionLine, RiSearchLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { EmojiGlyph } from "./emoji-ink";
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */
@@ -174,12 +175,17 @@ export interface EmojiReactionProps
    * @default "md"
    */
   size?: "sm" | "md";
+  /**
+   * Draw the emoji as ink: `true` in every style, `false` keeps the colour glyph in the paper style; unset follows the style
+   * (ink in the paper style). Common reactions use the hand-drawn `InkEmoji` art, any other emoji is filtered to one ink.
+   */
+  ink?: boolean;
 }
 
 /** A reaction pill showing an emoji and its count; highlighted when the user has reacted. */
 export const EmojiReaction = React.forwardRef<HTMLButtonElement, EmojiReactionProps>(
   (
-    { emoji, count = 0, reacted: reactedProp, defaultReacted = false, onToggle, size = "md", className, onClick, ...props },
+    { emoji, count = 0, reacted: reactedProp, defaultReacted = false, onToggle, size = "md", ink, className, onClick, ...props },
     ref
   ) => {
     const [reacted, setReacted] = useControllableState<boolean>({
@@ -218,17 +224,13 @@ export const EmojiReaction = React.forwardRef<HTMLButtonElement, EmojiReactionPr
         }}
         {...props}
       >
-        <span
+        <EmojiGlyph
           key={popKey}
           aria-hidden
-          className={cn(
-            "inline-block leading-none",
-            size === "sm" ? "text-sm" : "text-base",
-            popKey > 0 && "animate-pop"
-          )}
-        >
-          {emoji}
-        </span>
+          emoji={emoji}
+          ink={ink}
+          className={cn(size === "sm" ? "text-sm" : "text-base", popKey > 0 && "animate-pop")}
+        />
         {shownCount > 0 ? <span aria-hidden>{shownCount}</span> : null}
       </button>
     );
@@ -269,6 +271,8 @@ export interface EmojiPickerProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   categories?: EmojiCategory[];
   /** Drop the card surface (background, border, radius, shadow), e.g. when inside a popover. */
   bare?: boolean;
+  /** Draw the emoji as ink: `true` in every style, `false` keeps the colour glyphs in the paper style; unset follows the style (ink in the paper style). */
+  ink?: boolean;
 }
 
 /** A compact emoji picker with categories, keyword search and recently used emoji. */
@@ -286,6 +290,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
       autoFocus = false,
       categories = emojiCategories,
       bare = false,
+      ink,
       className,
       ...props
     },
@@ -404,7 +409,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
                 )}
                 onClick={() => select(lookup(emoji))}
               >
-                {emoji}
+                <EmojiGlyph emoji={emoji} ink={ink} />
               </button>
             ))}
           </div>
@@ -449,7 +454,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
                   focusRing
                 )}
               >
-                {c.icon}
+                <EmojiGlyph emoji={c.icon} ink={ink} />
               </button>
             ))}
           </div>
@@ -487,7 +492,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
                       focusRing
                     )}
                   >
-                    {entry.emoji}
+                    <EmojiGlyph emoji={entry.emoji} ink={ink} />
                   </button>
                 ))}
               </div>
@@ -495,9 +500,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
           ))}
           {results && results.length === 0 ? (
             <div className="flex h-40 flex-col items-center justify-center gap-1 text-center">
-              <span className="text-2xl" aria-hidden>
-                🔍
-              </span>
+              <EmojiGlyph aria-hidden emoji="🔍" ink={ink} className="text-2xl" />
               <p className="text-sm text-muted-foreground">No emoji found</p>
             </div>
           ) : null}
@@ -506,9 +509,7 @@ export const EmojiPicker = React.forwardRef<HTMLDivElement, EmojiPickerProps>(
         <div className="flex h-10 items-center gap-2 border-t border-border bg-subtle px-3 text-sm">
           {preview ? (
             <>
-              <span className="text-xl leading-none" aria-hidden>
-                {preview.emoji}
-              </span>
+              <EmojiGlyph aria-hidden emoji={preview.emoji} ink={ink} className="text-xl leading-none" />
               <span className="truncate text-muted-foreground">:{preview.name.split(" ").slice(0, 2).join("_")}:</span>
             </>
           ) : (
@@ -549,6 +550,8 @@ export interface EmojiReactionBarProps extends React.HTMLAttributes<HTMLDivEleme
   size?: "sm" | "md";
   /** Hide the add-reaction button. */
   readOnly?: boolean;
+  /** Draw the reactions and the picker as ink: `true` in every style, `false` keeps the colour glyphs in the paper style; unset follows the style (ink in the paper style). */
+  ink?: boolean;
   /**
    * Accessible name of the add-reaction button.
    * @default "Add reaction"
@@ -567,6 +570,7 @@ export const EmojiReactionBar = React.forwardRef<HTMLDivElement, EmojiReactionBa
       presets = reactionPresets,
       size = "md",
       readOnly = false,
+      ink,
       addLabel = "Add reaction",
       className,
       ...props
@@ -607,6 +611,7 @@ export const EmojiReactionBar = React.forwardRef<HTMLDivElement, EmojiReactionBa
             count={r.count}
             reacted={Boolean(r.reacted)}
             size={size}
+            ink={ink}
             onToggle={() => toggle(r.emoji)}
           />
         ))}
@@ -642,6 +647,7 @@ export const EmojiReactionBar = React.forwardRef<HTMLDivElement, EmojiReactionBa
                   bare
                   autoFocus
                   quickPicks={presets}
+                  ink={ink}
                   onSelect={(emoji) => {
                     toggle(emoji, true);
                     setOpen(false);

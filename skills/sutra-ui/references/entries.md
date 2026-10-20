@@ -45,9 +45,9 @@ Hooks: `useCaretAnchor`, `useChatConversation`, `useChatMessage`, `useEmbedConse
 
 brand marks, logos, flags, file formats and icon wrappers (Remix icons live in @sutra/ui/icons).
 
-34 components.
+36 components.
 
-`AcmeLogo`, `BackgroundPattern`, `BeaconLogo`, `CobaltLogo`, `CountryFlag`, `DeviceFrame`, `EmberLogo`, `EmojiPicker`, `EmojiReaction`, `EmptyStateIllustration`, `FeaturedIcon`, `FileFormatIcon`, `GridBeams`, `HalcyonLogo`, `Icon`, `KiteLogo`, `LogoCloud`, `LumenLogo`, `Marquee`, `MonolithLogo`, `NimbusLogo`, `NoiseTexture`, `NorthwindLogo`, `OrbitLogo`, `PolarisLogo`, `QRCodePlaceholder`, `QuantaLogo`, `Spotlight`, `SutraAppIcon`, `SutraLogo`, `SutraMark`, `SutraMascot`, `SutraWordmark`, `VertexLogo`
+`AcmeLogo`, `BackgroundPattern`, `BeaconLogo`, `CobaltLogo`, `CountryFlag`, `DeviceFrame`, `EmberLogo`, `EmojiGlyph`, `EmojiPicker`, `EmojiReaction`, `EmptyStateIllustration`, `FeaturedIcon`, `FileFormatIcon`, `GridBeams`, `HalcyonLogo`, `Icon`, `InkEmoji`, `KiteLogo`, `LogoCloud`, `LumenLogo`, `Marquee`, `MonolithLogo`, `NimbusLogo`, `NoiseTexture`, `NorthwindLogo`, `OrbitLogo`, `PolarisLogo`, `QRCodePlaceholder`, `QuantaLogo`, `Spotlight`, `SutraAppIcon`, `SutraLogo`, `SutraMark`, `SutraMascot`, `SutraWordmark`, `VertexLogo`
 
 ## `@sutra/ui/billing`
 

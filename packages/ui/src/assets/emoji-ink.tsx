@@ -1,0 +1,156 @@
+import * as React from "react";
+import { cn } from "../lib/cn";
+import { inkArt, inkEmojiNames, normalizeEmoji } from "./emoji-ink-internal";
+
+/** The emoji that have a hand-drawn ink version (`InkEmoji`), the eight reaction presets first. */
+export const inkEmojiSet: readonly string[] = Object.keys(inkEmojiNames);
+
+export { inkEmojiNames };
+
+/** True when `emoji` has hand-drawn ink art (a trailing variation selector does not matter). */
+export function hasInkEmoji(emoji: string): boolean {
+  return Object.prototype.hasOwnProperty.call(inkArt, normalizeEmoji(emoji));
+}
+
+const nameOf = (emoji: string) => inkEmojiNames[emoji] ?? inkEmojiNames[`${normalizeEmoji(emoji)}️`] ?? inkEmojiNames[normalizeEmoji(emoji)];
+
+/* ------------------------------------------------------------------ */
+/* Filter for glyphs without art                                       */
+/* ------------------------------------------------------------------ */
+
+const FILTER_ID = "sutra-emoji-ink";
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function svgEl(name: string, attrs: Record<string, string>, ...children: Element[]): Element {
+  const node = document.createElementNS(SVG_NS, name);
+  for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
+  for (const child of children) node.appendChild(child);
+  return node;
+}
+
+/**
+ * Defines the SVG filter that turns a colour glyph into one ink (darkness becomes ink opacity, light colours let the
+ * paper through) once per document. CSS references it as `url(#sutra-emoji-ink)`; Safari only resolves a filter that
+ * lives in the same document, so it cannot be a data URI in the stylesheet.
+ */
+function ensureInkFilter() {
+  if (typeof document === "undefined" || !document.body || document.getElementById(FILTER_ID)) return;
+  const filter = svgEl(
+    "filter",
+    { id: FILTER_ID, "color-interpolation-filters": "sRGB", x: "-5%", y: "-5%", width: "110%", height: "110%" },
+    svgEl("feColorMatrix", {
+      type: "matrix",
+      values: "0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.2126 -0.7152 -0.0722 0 1",
+      result: "dark",
+    }),
+    svgEl("feComponentTransfer", { in: "dark", result: "ink" }, svgEl("feFuncA", { type: "linear", slope: "2.6", intercept: "-0.3" })),
+    svgEl("feComposite", { in: "ink", in2: "SourceGraphic", operator: "in" })
+  );
+  const root = svgEl("svg", { "aria-hidden": "true", focusable: "false", width: "0", height: "0", "data-slot": "emoji-ink-filter" }, svgEl("defs", {}, filter));
+  document.body.appendChild(root);
+}
+
+/* ------------------------------------------------------------------ */
+/* InkEmoji                                                            */
+/* ------------------------------------------------------------------ */
+
+export interface InkEmojiProps extends Omit<React.SVGAttributes<SVGSVGElement>, "title" | "children"> {
+  /** The emoji character to draw, e.g. "👍". A trailing variation selector does not matter. */
+  emoji: string;
+  /**
+   * Edge length: a number is pixels, a string is any CSS length. The drawing scales with it and is still readable at 16.
+   * @default "1em"
+   */
+  size?: number | string;
+  /** Names the drawing for assistive technology (`true` uses its built-in name); without it the svg is decorative and `aria-hidden`. */
+  title?: string | boolean;
+  /** Draws the colour glyph as ink (the filtered glyph the paper style uses) for an emoji that has no drawing, instead of rendering nothing. */
+  fallback?: boolean;
+}
+
+/** An original hand-drawn monoline version of a common emoji, drawn in `currentColor`; renders nothing for an emoji without art unless `fallback` is set. */
+export const InkEmoji = React.forwardRef<SVGSVGElement, InkEmojiProps>(
+  ({ emoji, size = "1em", title, fallback = false, className, style, ...props }, ref) => {
+    const art = hasInkEmoji(emoji) ? inkArt[normalizeEmoji(emoji)] : undefined;
+    React.useEffect(() => {
+      if (!art && fallback) ensureInkFilter();
+    }, [art, fallback]);
+    if (!art) {
+      if (!fallback) return null;
+      return (
+        <span
+          data-slot="emoji"
+          data-ink="true"
+          className={cn("inline-block leading-none", className)}
+          style={{ fontSize: typeof size === "number" ? `${size}px` : size }}
+          aria-hidden={title ? undefined : true}
+          aria-label={typeof title === "string" ? title : undefined}
+          role={title ? "img" : undefined}
+        >
+          <span data-part="glyph">{emoji}</span>
+        </span>
+      );
+    }
+    const label = title === true ? nameOf(emoji) : title || undefined;
+    const length = typeof size === "number" ? `${size}px` : size;
+    return (
+      <svg
+        ref={ref}
+        data-slot="ink-emoji"
+        data-emoji={emoji}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1.75}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        role={label ? "img" : undefined}
+        aria-hidden={label ? undefined : true}
+        focusable="false"
+        className={cn("inline-block shrink-0", className)}
+        style={{ width: length, height: length, ...style }}
+        {...props}
+      >
+        {label ? <title>{label}</title> : null}
+        {art}
+      </svg>
+    );
+  }
+);
+InkEmoji.displayName = "InkEmoji";
+
+/* ------------------------------------------------------------------ */
+/* EmojiGlyph                                                          */
+/* ------------------------------------------------------------------ */
+
+export interface EmojiGlyphProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  /** The emoji character. It stays in the DOM as text, so copy and paste and search still work. */
+  emoji: string;
+  /**
+   * `true` draws it as ink in every style, `false` keeps the colour glyph in the paper style; unset follows the style (ink in the paper style, colour otherwise).
+   * An emoji with hand-drawn art (`hasInkEmoji`) shows the drawing, any other is filtered to one ink.
+   */
+  ink?: boolean;
+}
+
+/** An emoji as text that reads as ink on paper in the paper style: the hand-drawn art when there is one, otherwise the glyph filtered to one ink. */
+export const EmojiGlyph = React.forwardRef<HTMLSpanElement, EmojiGlyphProps>(({ emoji, ink, className, ...props }, ref) => {
+  const art = hasInkEmoji(emoji);
+  React.useEffect(() => {
+    if (ink !== false) ensureInkFilter();
+  }, [ink]);
+  return (
+    <span
+      ref={ref}
+      data-slot="emoji"
+      data-ink={ink === undefined ? undefined : String(ink)}
+      data-art={art ? "true" : undefined}
+      className={cn("inline-block leading-none", className)}
+      {...props}
+    >
+      <span data-part="glyph">{emoji}</span>
+      {art ? <InkEmoji emoji={emoji} size="1em" data-part="ink" /> : null}
+    </span>
+  );
+});
+EmojiGlyph.displayName = "EmojiGlyph";
