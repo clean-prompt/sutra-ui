@@ -6,16 +6,23 @@ import {
   ChatMessageBody,
   ChatMessageContent,
   ChatMessageHeader,
+  RadioCard,
+  RadioGroup,
+  Slider,
   SutraMascot,
   Text,
+  mascotCharacterLabels,
+  mascotCharacters,
   mascotStateLabels,
   mascotStates,
   sutraAppMeta,
   sutraApps,
+  type MascotCharacter,
   type MascotState,
   type MascotShape,
 } from "@sutra/ui";
 import { RiPauseLine, RiPlayLine, RiRestartLine } from "@sutra/ui/icons";
+import { SutradharSting, type SutradharStingVariant } from "@sutra/ui/assets/sutradhar-sting";
 import { Demo, DemoLabel } from "../components/demo";
 
 const stateNames: Record<MascotState, string> = {
@@ -80,6 +87,18 @@ function StatePicker() {
 }
 
 export function MascotDemo() {
+  return (
+    <>
+      <MascotBeadDemo />
+      <MascotPickerDemo />
+      <MascotCharactersDemo />
+      <SutradharStingDemo />
+    </>
+  );
+}
+
+/** The bead buddy, the original character, in depth. */
+function MascotBeadDemo() {
   return (
     <Demo
       id="mascot"
@@ -247,6 +266,165 @@ export function MascotChatDemo() {
         <Button size="sm" variant="soft" onClick={() => setAsked((n) => n + 1)}>
           Ask again
         </Button>
+      </div>
+    </Demo>
+  );
+}
+
+/** "Choose your Sutra": the characters as a radio group (arrow keys move the choice), previewed in a chat row and a status line. */
+export function MascotPickerDemo() {
+  const [character, setCharacter] = React.useState<MascotCharacter>("bead");
+  return (
+    <Demo
+      id="mascot-picker"
+      title="Choose your Sutra"
+      description="Every user picks their own Sutra. The choice is a radio group of circle tiles; the preview shows the pick where it lives: as the avatar of a reply and in a status line."
+      align="start"
+      canvasClassName="@container flex-col items-stretch gap-6"
+    >
+      <RadioGroup
+        aria-label="Your Sutra"
+        value={character}
+        onValueChange={(value) => setCharacter(value as MascotCharacter)}
+        className="grid grid-cols-2 gap-2 @3xl:grid-cols-4"
+      >
+        {mascotCharacters.map((c) => (
+          <RadioCard
+            key={c}
+            value={c}
+            className="items-center"
+            label={
+              <span className="flex flex-col items-start gap-2 @sm:flex-row @sm:items-center @sm:gap-3">
+                <SutraMascot character={c} shape="circle" size={40} />
+                {mascotCharacterLabels[c]}
+              </span>
+            }
+          />
+        ))}
+      </RadioGroup>
+      <div className="space-y-4 rounded-lg border p-4">
+        <ChatMessage role="assistant" variant="flat">
+          <SutraMascot character={character} shape="circle" size={36} className="mt-0.5" />
+          <ChatMessageBody>
+            <ChatMessageHeader name="Sutra" />
+            <ChatMessageContent>Your 3 pm is now on Thursday. I let Maya know.</ChatMessageContent>
+          </ChatMessageBody>
+        </ChatMessage>
+        <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+          <SutraMascot character={character} state="thinking" size={20} />
+          Sutra is thinking…
+        </p>
+      </div>
+    </Demo>
+  );
+}
+
+/** Every character in every state, bare and as a tile. */
+export function MascotCharactersDemo() {
+  const [shape, setShape] = React.useState<MascotShape>("bare");
+  return (
+    <Demo
+      id="mascot-characters"
+      title="Mascot characters"
+      description="Eight characters, eight states each. The bead moves with CSS keyframes; the others are drawn frame by frame while motion is allowed and stand in their still pose under reduced motion."
+      align="start"
+      canvasClassName="flex-col items-stretch gap-6"
+    >
+      <div className="flex flex-wrap gap-2">
+        {(["bare", "circle", "squircle"] as const).map((s) => (
+          <Button key={s} size="sm" variant={shape === s ? "primary" : "soft"} aria-pressed={shape === s} onClick={() => setShape(s)}>
+            {s}
+          </Button>
+        ))}
+      </div>
+      <div className="overflow-x-auto">
+        <table className="text-xs text-muted-foreground">
+          <thead>
+            <tr>
+              <th className="p-1 text-start font-medium">Character</th>
+              {mascotStates.map((state) => (
+                <th key={state} className="p-1 font-medium">
+                  {stateNames[state]}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {mascotCharacters.map((c) => (
+              <tr key={c}>
+                <th scope="row" className="p-1 text-start font-medium text-foreground">
+                  {mascotCharacterLabels[c]}
+                </th>
+                {mascotStates.map((state) => (
+                  <td key={state} className="p-1 text-foreground">
+                    <SutraMascot character={c} state={state} shape={shape} size={64} title={`${mascotCharacterLabels[c]}: ${mascotStateLabels[state]}`} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Demo>
+  );
+}
+
+/** The two stings with Sutradhar and the Sutra mark: replay, loop and (for the astra) the aim. */
+export function SutradharStingDemo() {
+  const [replay, setReplay] = React.useState(0);
+  const [loop, setLoop] = React.useState(false);
+  const [aim, setAim] = React.useState(150);
+  const [done, setDone] = React.useState<Record<SutradharStingVariant, number>>({ mark: 0, astra: 0 });
+  return (
+    <Demo
+      id="sutradhar-sting"
+      title="Sutradhar sting"
+      description="A short logo sting that ends on a still lockup: Sutradhar forms the crescent mark on its thread, or wields it as a hand astra and fires an ink wave into empty space. It plays once on screen, pauses off screen, and shows only the lockup under reduced motion."
+      align="start"
+      canvasClassName="flex-col items-stretch gap-6"
+    >
+      <div className="flex flex-wrap items-center gap-3">
+        <Button size="sm" variant="soft" onClick={() => setReplay((n) => n + 1)}>
+          <RiRestartLine aria-hidden /> Replay
+        </Button>
+        <Button size="sm" variant={loop ? "primary" : "soft"} aria-pressed={loop} onClick={() => setLoop((v) => !v)}>
+          Loop
+        </Button>
+        <div className="flex min-w-56 items-center gap-3 text-sm text-muted-foreground">
+          <span id="sting-aim">Aim</span>
+          <Slider
+            aria-labelledby="sting-aim"
+            min={135}
+            max={180}
+            step={1}
+            value={[aim]}
+            onValueChange={(v) => setAim(v[0] ?? 150)}
+            getValueText={(v) => v + " degrees: 90 is straight up, 180 is level to the left"}
+            className="w-40"
+          />
+          <span className="tabular-nums">{aim}°</span>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {(["mark", "astra"] as const).map((variant) => (
+          <figure key={variant} className="m-0 space-y-2">
+            <div className="grid place-items-center rounded-lg border p-4">
+              <SutradharSting
+                variant={variant}
+                aim={aim}
+                loop={loop}
+                replayKey={replay}
+                size={200}
+                title={variant === "mark" ? "Sutradhar plants the Sutra mark" : "Sutradhar fires the astra"}
+                onComplete={() => setDone((d) => ({ ...d, [variant]: d[variant] + 1 }))}
+                className="max-w-full"
+              />
+            </div>
+            <figcaption className="text-xs text-muted-foreground">
+              {variant === "mark" ? "mark" : "astra"}: played to the lockup {done[variant]} {done[variant] === 1 ? "time" : "times"}
+            </figcaption>
+          </figure>
+        ))}
       </div>
     </Demo>
   );

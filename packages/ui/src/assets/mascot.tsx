@@ -13,6 +13,7 @@ import {
   THREAD_W,
   threadRight,
 } from "./mascot-art-internal";
+import { MascotFrameArt, characterFrames } from "./mascot-frames-internal";
 
 /** What the mascot is doing: each state has its own face, extras and motion. */
 export const mascotStates = ["idle", "listening", "thinking", "working", "speaking", "happy", "sleeping", "error"] as const;
@@ -30,10 +31,35 @@ export const mascotStateLabels: Record<MascotState, string> = {
   error: "Sutra ran into a problem",
 };
 
+/** The characters, in picker order: the bead buddy first (the default), then the others the owner chose in October 2026. */
+export const mascotCharacters = ["bead", "pendant", "mala", "bindu", "knot-pendant", "bow", "bun", "sutradhar"] as const;
+export type MascotCharacter = (typeof mascotCharacters)[number];
+
+/** The name of each character, for a picker ("Choose your Sutra"). */
+export const mascotCharacterLabels: Record<MascotCharacter, string> = {
+  bead: "Bead buddy",
+  pendant: "Pendant",
+  mala: "Mala",
+  bindu: "Bindu",
+  "knot-pendant": "Knot above",
+  bow: "Bow",
+  bun: "Bun",
+  sutradhar: "Sutradhar",
+};
+
 export type MascotShape = "bare" | "circle" | "squircle";
 export type MascotTone = "mono" | "dyed";
 
 export interface SutraMascotProps extends Omit<React.ComponentPropsWithoutRef<"svg">, "children" | "title"> {
+  /**
+   * Which Sutra: `bead` the bead buddy on its thread (the original), `pendant` a bead hanging on a thread with a knot under it,
+   * `mala` a head bead leading three beads on a thread, `bindu` a drop of ink whose tip curls into a thread, `knot-pendant` the
+   * bead hanging straight from a knot, `bow` the bead buddy with a bow tied from her thread, `bun` the pendant with a bun and a
+   * pin, `sutradhar` a whole figure strung from beads and thread. Every character has all eight states, the three shapes and
+   * the dyed tone. The bead moves with CSS keyframes; the others are drawn frame by frame while motion is allowed.
+   * @default "bead"
+   */
+  character?: MascotCharacter;
   /**
    * What the mascot is doing. The face and the extras around it change with the state (so it reads without motion), and the
    * animation swaps in place without remounting. `happy` and `error` are one-shot reactions that play again when the state is set again.
@@ -82,6 +108,7 @@ const TILE_RX = { circle: 32, squircle: 19 } as const;
 export const SutraMascot = React.forwardRef<SVGSVGElement, SutraMascotProps>(
   (
     {
+      character = "bead",
       state = "idle",
       size = 64,
       shape = "bare",
@@ -91,6 +118,7 @@ export const SutraMascot = React.forwardRef<SVGSVGElement, SutraMascotProps>(
       paused = false,
       replayKey,
       className,
+      style,
       ...props
     },
     ref
@@ -106,6 +134,58 @@ export const SutraMascot = React.forwardRef<SVGSVGElement, SutraMascotProps>(
     const threadMask = `${id}-thread`;
     const clip = `${id}-clip`;
     const labelled = name ? ({ role: "img", "aria-labelledby": titleId } as const) : ({ "aria-hidden": true, focusable: "false" } as const);
+    const frame = character !== "bead" ? characterFrames[character] : undefined;
+    if (frame) {
+      /* a frame-drawn character: the same root and tile as the bead, its own art (clipped to the box: a pendant's thread runs off the top) */
+      const art = (
+        <MascotFrameArt
+          frame={frame}
+          state={current}
+          form={tile ? "tile" : "bare"}
+          size={typeof size === "number" ? size : 64}
+          ink={ink}
+          bead={bead}
+          uid={id}
+          paused={paused}
+          replayKey={replayKey}
+        />
+      );
+      return (
+        <svg
+          data-slot="sutra-mascot"
+          viewBox="0 0 64 64"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          width={size}
+          height={size}
+          data-shape={shape}
+          data-character={character}
+          data-paused={paused || undefined}
+          {...labelled}
+          {...props}
+          ref={ref}
+          data-state={current}
+          className={cn("sutra-mascot shrink-0", className)}
+          style={{ overflow: "hidden", ...style }}
+        >
+          {name ? <title id={titleId}>{name}</title> : null}
+          {tile ? (
+            <>
+              <defs>
+                <clipPath id={clip}>
+                  <rect width="64" height="64" rx={TILE_RX[shape]} />
+                </clipPath>
+              </defs>
+              <rect width="64" height="64" rx={TILE_RX[shape]} fill={PAPER} />
+              <rect x="0.5" y="0.5" width="63" height="63" rx={TILE_RX[shape] - 0.5} stroke={INK} strokeOpacity="0.14" />
+              <g clipPath={`url(#${clip})`}>{art}</g>
+            </>
+          ) : (
+            art
+          )}
+        </svg>
+      );
+    }
     const art = (
       <g key={replayKey} data-part="stage">
         <g data-part="body">
@@ -127,12 +207,14 @@ export const SutraMascot = React.forwardRef<SVGSVGElement, SutraMascotProps>(
         width={size}
         height={size}
         data-shape={shape}
+        data-character="bead"
         data-paused={paused || undefined}
         {...labelled}
         {...props}
         ref={ref}
         data-state={current}
         className={cn("sutra-mascot shrink-0", className)}
+        style={style}
       >
         {name ? <title id={titleId}>{name}</title> : null}
         <defs>

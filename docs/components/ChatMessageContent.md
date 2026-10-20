@@ -15,66 +15,52 @@
 | `markdown` | `boolean` | `false` | Render string children as markdown. |
 | `streaming` | `boolean` |  | Overrides the message's streaming caret. |
 
-## Example (live: `#/components/assets/mascot-in-chat` in the playground)
+## Example (live: `#/components/assets/mascot-picker` in the playground)
 
 ```tsx
 import * as React from "react";
 import { ChatMessage, ChatMessageBody, ChatMessageContent, ChatMessageHeader } from "@sutra/ui/ai";
-import { SutraMascot } from "@sutra/ui/assets";
-import { Button } from "@sutra/ui/core";
+import { SutraMascot, mascotCharacterLabels, mascotCharacters } from "@sutra/ui/assets";
+import { RadioCard, RadioGroup } from "@sutra/ui/forms";
 
-function MascotChatDemo() {
-  const [step, setStep] = React.useState(script.length - 1);
-  const [asked, setAsked] = React.useState(0);
-  React.useEffect(() => {
-    if (asked === 0) return; // the first answer is already on screen
-    let index = 0;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const next = () => {
-      setStep(index);
-      const wait = script[index]![1];
-      index += 1;
-      if (wait > 0 && index < script.length) timer = setTimeout(next, wait);
-    };
-    next();
-    return () => clearTimeout(timer);
-  }, [asked]);
-  const state = script[step]![0];
-  const answered = state === "happy" || state === "idle";
+function MascotPickerDemo() {
+  const [character, setCharacter] = React.useState<MascotCharacter>("bead");
   return (
     <>
-      <ChatMessage role="user">
-        <ChatMessageBody>
-          <ChatMessageContent>What is on my calendar tomorrow?</ChatMessageContent>
-        </ChatMessageBody>
-      </ChatMessage>
-      <ChatMessage role="assistant" variant="flat">
-        <SutraMascot shape="circle" size={36} state={state} className="mt-0.5" />
-        <ChatMessageBody>
-          <ChatMessageHeader name="Sutra" />
-          <p role="status" className="text-xs text-muted-foreground">
-            {statusText[state]}
-          </p>
-          <ChatMessageContent>
-            {answered ? "Two meetings: design review at 10:00 and a call with Priya at 15:30. The rest of the day is free." : "…"}
-          </ChatMessageContent>
-        </ChatMessageBody>
-      </ChatMessage>
-      <ChatMessage role="assistant" variant="flat">
-        <SutraMascot shape="circle" size={36} state="error" className="mt-0.5" />
-        <ChatMessageBody>
-          <ChatMessageHeader name="Sutra" />
-          <ChatMessageContent>I could not reach the mail service. Nothing was sent.</ChatMessageContent>
-        </ChatMessageBody>
-      </ChatMessage>
-      <div>
-        <Button size="sm" variant="soft" onClick={() => setAsked((n) => n + 1)}>
-          Ask again
-        </Button>
+      <RadioGroup
+        aria-label="Your Sutra"
+        value={character}
+        onValueChange={(value) => setCharacter(value as MascotCharacter)}
+        className="grid grid-cols-2 gap-2 @3xl:grid-cols-4"
+      >
+        {mascotCharacters.map((c) => (
+          <RadioCard
+            key={c}
+            value={c}
+            className="items-center"
+            label={
+              <span className="flex flex-col items-start gap-2 @sm:flex-row @sm:items-center @sm:gap-3">
+                <SutraMascot character={c} shape="circle" size={40} />
+                {mascotCharacterLabels[c]}
+              </span>
+            }
+          />
+        ))}
+      </RadioGroup>
+      <div className="space-y-4 rounded-lg border p-4">
+        <ChatMessage role="assistant" variant="flat">
+          <SutraMascot character={character} shape="circle" size={36} className="mt-0.5" />
+          <ChatMessageBody>
+            <ChatMessageHeader name="Sutra" />
+            <ChatMessageContent>Your 3 pm is now on Thursday. I let Maya know.</ChatMessageContent>
+          </ChatMessageBody>
+        </ChatMessage>
+        <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+          <SutraMascot character={character} state="thinking" size={20} />
+          Sutra is thinking…
+        </p>
       </div>
     </>
   );
 }
 ```
-
-Playground helpers in this snippet (not part of the library): script, statusText.

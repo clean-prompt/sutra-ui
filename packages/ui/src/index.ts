@@ -78,7 +78,16 @@ export * from "./lib/wheel";
 // not exported: assets/emoji-ink-symbols-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-travel-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/mascot-art-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/mascot-bindu-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/mascot-bow-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/mascot-driver-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/mascot-frames-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/mascot-kit-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/mascot-mala-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/mascot-pendant-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/mascot-sutradhar-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/misc (back-compat barrel, all targets exported)
+// not exported: assets/sutradhar-sting-internal (internal: private helpers shared by sibling modules)
 export * from "./assets/backgrounds";
 export * from "./assets/brand";
 export * from "./assets/country-flags";
@@ -93,6 +102,7 @@ export * from "./assets/marquee";
 export * from "./assets/mascot";
 export * from "./assets/placeholder-logos";
 export * from "./assets/qr-placeholder";
+export * from "./assets/sutradhar-sting";
 
 /* Primitives: src/primitives */
 // not exported: primitives/date-picker-internal (internal: private helpers shared by sibling modules)

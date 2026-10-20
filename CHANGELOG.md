@@ -75,6 +75,8 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - `FileFormatIcon` draws ink on paper in the paper style (one ink for every format: the label band, or the sheet in `solid`, in the foreground colour with background-coloured text) and takes `mono` to force it anywhere (`mono={false}` keeps the format colours in the paper style). The checkpoint divider's date in `Rewind` truncates instead of spilling in a narrow row; the playground's inline theme controls start at 1440 px (a popover below), so the brand swatches no longer wrap.
 
 #### Picks of the October design review
+- `SutraMascot` `character`: eight characters (`bead`, `pendant`, `mala`, `bindu`, `knot-pendant`, `bow`, `bun`, `sutradhar`) with every state and shape,
+  `mascotCharacters` and `mascotCharacterLabels` for a picker; `SutradharSting` (`mark`, `astra`) for the brand moments.
 - `intro` on `SutraMark` and `SutraLogo`.
 
 #### Small fixes from the open-items review

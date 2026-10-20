@@ -4,6 +4,7 @@
 "assets/file-format": ["file-format-icon"]
 "assets/marquee": ["marquee","marquee-frame","marquee-item","marquee-list","marquee-pause","marquee-track"]
 "assets/mascot": ["sutra-mascot"]
+"assets/sutradhar-sting": ["sutradhar-sting"]
 "blocks/auth-blocks": ["auth-card"]
 "blocks/kunji-blocks": ["awaiting-approval","device-pairing-flow","pairing-code","pairing-sas","register-with-kunji","sign-in-methods"]
 "blocks/marketing-blocks": ["hero-stats","more-capabilities","pill-count","source-badge"]

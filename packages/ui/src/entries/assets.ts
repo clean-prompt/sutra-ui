@@ -8,4 +8,5 @@ export * from "../assets/file-format";
 export * from "../assets/misc";
 export * from "../assets/marquee";
 export * from "../assets/mascot";
+export * from "../assets/sutradhar-sting";
 export * from "../assets/emoji-ink";
