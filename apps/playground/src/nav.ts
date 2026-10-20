@@ -113,7 +113,7 @@ export const nav: NavSection[] = [
         label: "Assets",
         items: items(
           "Logo", "App Icons", "Placeholder Logos", "Featured Icon", "Icons", "Country Flags",
-          "Emoji Reactions", "File Format Icons", "Empty State", "Device Frame", "Background Pattern"
+          "Emoji Reactions", "File Format Icons", "Empty State", "Device Frame", "Background Pattern", ["Mascot", fresh], ["Mascot In Chat", fresh]
         ),
       },
     ],
@@ -802,6 +802,7 @@ export const nav: NavSection[] = [
           { id: "voice-input", label: "Voice Input" },
           { id: "speak-button", label: "Speak Button" },
           { id: "audio-level", label: "Audio Level" },
+          { id: "assistant-orb", label: "Assistant Orb", ...fresh },
         ],
       },
     ],

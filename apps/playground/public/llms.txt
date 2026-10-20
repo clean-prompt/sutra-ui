@@ -115,7 +115,7 @@ chat, prompt and streaming-text components.
 
 brand marks, logos, flags, file formats and icon wrappers (Remix icons live in @sutra/ui/icons).
 
-[AcmeLogo](md/AcmeLogo.md), [BackgroundPattern](md/BackgroundPattern.md), [BeaconLogo](md/BeaconLogo.md), [CobaltLogo](md/CobaltLogo.md), [CountryFlag](md/CountryFlag.md), [DeviceFrame](md/DeviceFrame.md), [EmberLogo](md/EmberLogo.md), [EmojiPicker](md/EmojiPicker.md), [EmojiReaction](md/EmojiReaction.md), [EmptyStateIllustration](md/EmptyStateIllustration.md), [FeaturedIcon](md/FeaturedIcon.md), [FileFormatIcon](md/FileFormatIcon.md), [GridBeams](md/GridBeams.md), [HalcyonLogo](md/HalcyonLogo.md), [Icon](md/Icon.md), [KiteLogo](md/KiteLogo.md), [LogoCloud](md/LogoCloud.md), [LumenLogo](md/LumenLogo.md), [Marquee](md/Marquee.md), [MonolithLogo](md/MonolithLogo.md), [NimbusLogo](md/NimbusLogo.md), [NoiseTexture](md/NoiseTexture.md), [NorthwindLogo](md/NorthwindLogo.md), [OrbitLogo](md/OrbitLogo.md), [PolarisLogo](md/PolarisLogo.md), [QRCodePlaceholder](md/QRCodePlaceholder.md), [QuantaLogo](md/QuantaLogo.md), [Spotlight](md/Spotlight.md), [SutraAppIcon](md/SutraAppIcon.md), [SutraLogo](md/SutraLogo.md), [SutraMark](md/SutraMark.md), [SutraWordmark](md/SutraWordmark.md), [VertexLogo](md/VertexLogo.md)
+[AcmeLogo](md/AcmeLogo.md), [BackgroundPattern](md/BackgroundPattern.md), [BeaconLogo](md/BeaconLogo.md), [CobaltLogo](md/CobaltLogo.md), [CountryFlag](md/CountryFlag.md), [DeviceFrame](md/DeviceFrame.md), [EmberLogo](md/EmberLogo.md), [EmojiPicker](md/EmojiPicker.md), [EmojiReaction](md/EmojiReaction.md), [EmptyStateIllustration](md/EmptyStateIllustration.md), [FeaturedIcon](md/FeaturedIcon.md), [FileFormatIcon](md/FileFormatIcon.md), [GridBeams](md/GridBeams.md), [HalcyonLogo](md/HalcyonLogo.md), [Icon](md/Icon.md), [KiteLogo](md/KiteLogo.md), [LogoCloud](md/LogoCloud.md), [LumenLogo](md/LumenLogo.md), [Marquee](md/Marquee.md), [MonolithLogo](md/MonolithLogo.md), [NimbusLogo](md/NimbusLogo.md), [NoiseTexture](md/NoiseTexture.md), [NorthwindLogo](md/NorthwindLogo.md), [OrbitLogo](md/OrbitLogo.md), [PolarisLogo](md/PolarisLogo.md), [QRCodePlaceholder](md/QRCodePlaceholder.md), [QuantaLogo](md/QuantaLogo.md), [Spotlight](md/Spotlight.md), [SutraAppIcon](md/SutraAppIcon.md), [SutraLogo](md/SutraLogo.md), [SutraMark](md/SutraMark.md), [SutraMascot](md/SutraMascot.md), [SutraWordmark](md/SutraWordmark.md), [VertexLogo](md/VertexLogo.md)
 
 ### @sutra/ui/billing
 
@@ -424,7 +424,7 @@ xterm.js terminal (needs the optional @xterm/xterm and @xterm/addon-fit peers).
 
 speech input, read-aloud, language picker, translation panes, transliteration, dictionary.
 
-[AudioLevelMeter](md/AudioLevelMeter.md), [ConversationTurns](md/ConversationTurns.md), [DictionaryCard](md/DictionaryCard.md), [FrequencyMeter](md/FrequencyMeter.md), [LanguageBar](md/LanguageBar.md), [LanguagePicker](md/LanguagePicker.md), [SourcePane](md/SourcePane.md), [SpeakButton](md/SpeakButton.md), [SwapButton](md/SwapButton.md), [TargetPane](md/TargetPane.md), [TransliterationCandidates](md/TransliterationCandidates.md), [TransliterationToggle](md/TransliterationToggle.md), [VoiceInput](md/VoiceInput.md)
+[AssistantOrb](md/AssistantOrb.md), [AudioLevelMeter](md/AudioLevelMeter.md), [ConversationTurns](md/ConversationTurns.md), [DictionaryCard](md/DictionaryCard.md), [FrequencyMeter](md/FrequencyMeter.md), [LanguageBar](md/LanguageBar.md), [LanguagePicker](md/LanguagePicker.md), [SourcePane](md/SourcePane.md), [SpeakButton](md/SpeakButton.md), [SwapButton](md/SwapButton.md), [TargetPane](md/TargetPane.md), [TransliterationCandidates](md/TransliterationCandidates.md), [TransliterationToggle](md/TransliterationToggle.md), [VoiceInput](md/VoiceInput.md)
 
 ### @sutra/ui/workspace
 
@@ -446,6 +446,7 @@ workspace/profile switcher, connections, notices, tours, keybinds, timeline rail
 
 - [useActiveIndicator](md/hooks/useActiveIndicator.md): Measures the active item of a tab strip / segmented control for a sliding…
 - [useAgentNow](md/hooks/useAgentNow.md): Current time, re-rendered every `interval` ms while `active`.
+- [useAssistantOrbState](md/hooks/useAssistantOrbState.md): The orb state for what a voice session is doing, by priority: error, speaking,…
 - [useAsyncAction](md/hooks/useAsyncAction.md): Tracks a possibly-async action: `busy`, `error`, and a stable `run`.
 - [useAudioLevel](md/hooks/useAudioLevel.md): Live RMS input level (0..1) of a MediaStream, sampled each animation frame.
 - [useBreakpoint](md/hooks/useBreakpoint.md): True when the viewport is at least the named breakpoint's width (`min-width`,…

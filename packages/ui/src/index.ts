@@ -67,6 +67,7 @@ export * from "./lib/validate";
 export * from "./lib/wheel";
 
 /* Assets: src/assets */
+// not exported: assets/mascot-art-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/misc (back-compat barrel, all targets exported)
 export * from "./assets/backgrounds";
 export * from "./assets/brand";
@@ -78,6 +79,7 @@ export * from "./assets/empty-state-illustration";
 export * from "./assets/file-format";
 export * from "./assets/icons";
 export * from "./assets/marquee";
+export * from "./assets/mascot";
 export * from "./assets/placeholder-logos";
 export * from "./assets/qr-placeholder";
 
@@ -444,6 +446,9 @@ export * from "./kits/system/volume-mixer";
 // not exported: kits/terminal/terminal (imports optional peer @xterm/xterm)
 
 /* Kit: voice (src/kits/voice) */
+// not exported: kits/voice/assistant-orb-canvas-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-internal (internal: private helpers shared by sibling modules)
+export * from "./kits/voice/assistant-orb";
 export * from "./kits/voice/translate";
 export * from "./kits/voice/voice";
 

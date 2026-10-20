@@ -11,60 +11,66 @@
 
 No props of its own.
 
-## Example (live: `#/components/chat-extras/reactions` in the playground)
+## Example (live: `#/components/assets/mascot-in-chat` in the playground)
 
 ```tsx
 import * as React from "react";
-import {
-  ChatCopyAction,
-  ChatMessage,
-  ChatMessageActions,
-  ChatMessageAvatar,
-  ChatMessageBody,
-  ChatMessageContent,
-  ChatMessageFooter,
-  ChatReactions,
-  MessageTimestampHover,
-} from "@sutra/ui/ai";
+import { ChatMessage, ChatMessageBody, ChatMessageContent, ChatMessageHeader } from "@sutra/ui/ai";
+import { SutraMascot } from "@sutra/ui/assets";
+import { Button } from "@sutra/ui/core";
 
-function ReactionsDemo() {
-  const [reactions, setReactions] = React.useState<EmojiReactionItem[]>([
-    { emoji: "👍", count: 3, reacted: true },
-    { emoji: "🎉", count: 1 },
-  ]);
-  const now = React.useMemo(() => Date.now(), []);
+function MascotChatDemo() {
+  const [step, setStep] = React.useState(script.length - 1);
+  const [asked, setAsked] = React.useState(0);
+  React.useEffect(() => {
+    if (asked === 0) return; // the first answer is already on screen
+    let index = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const next = () => {
+      setStep(index);
+      const wait = script[index]![1];
+      index += 1;
+      if (wait > 0 && index < script.length) timer = setTimeout(next, wait);
+    };
+    next();
+    return () => clearTimeout(timer);
+  }, [asked]);
+  const state = script[step]![0];
+  const answered = state === "happy" || state === "idle";
   return (
     <>
-      <ChatMessage role="assistant" variant="flat">
-        <ChatMessageAvatar />
+      <ChatMessage role="user">
         <ChatMessageBody>
-          <div className="flex items-center gap-2 text-sm font-medium">
-            Sutra <MessageTimestampHover date={now - 4 * 60_000} />
-          </div>
-          <ChatMessageContent>The migration finished: 12 tables updated, no data loss.</ChatMessageContent>
-          <ChatReactions reactions={reactions} onReactionsChange={setReactions} />
-          <ChatMessageFooter>
-            <ChatMessageActions>
-              <ChatCopyAction text="The migration finished" />
-            </ChatMessageActions>
-          </ChatMessageFooter>
+          <ChatMessageContent>What is on my calendar tomorrow?</ChatMessageContent>
         </ChatMessageBody>
       </ChatMessage>
       <ChatMessage role="assistant" variant="flat">
-        <ChatMessageAvatar />
+        <SutraMascot shape="circle" size={36} state={state} className="mt-0.5" />
         <ChatMessageBody>
-          <div className="flex items-center gap-2 text-sm font-medium">
-            Sutra <MessageTimestampHover date={now - 26 * 3600_000} alwaysVisible />
-          </div>
-          <ChatMessageContent>Reactions built into the actions row (opt-in via `defaultReactions`).</ChatMessageContent>
-          <ChatMessageFooter>
-            <ChatMessageActions defaultReactions={[{ emoji: "🔥", count: 2 }]}>
-              <ChatCopyAction text="Reactions built in" />
-            </ChatMessageActions>
-          </ChatMessageFooter>
+          <ChatMessageHeader name="Sutra" />
+          <p role="status" className="text-xs text-muted-foreground">
+            {statusText[state]}
+          </p>
+          <ChatMessageContent>
+            {answered ? "Two meetings: design review at 10:00 and a call with Priya at 15:30. The rest of the day is free." : "…"}
+          </ChatMessageContent>
         </ChatMessageBody>
       </ChatMessage>
+      <ChatMessage role="assistant" variant="flat">
+        <SutraMascot shape="circle" size={36} state="error" className="mt-0.5" />
+        <ChatMessageBody>
+          <ChatMessageHeader name="Sutra" />
+          <ChatMessageContent>I could not reach the mail service. Nothing was sent.</ChatMessageContent>
+        </ChatMessageBody>
+      </ChatMessage>
+      <div>
+        <Button size="sm" variant="soft" onClick={() => setAsked((n) => n + 1)}>
+          Ask again
+        </Button>
+      </div>
     </>
   );
 }
 ```
+
+Playground helpers in this snippet (not part of the library): script, statusText.

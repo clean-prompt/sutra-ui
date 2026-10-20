@@ -439,7 +439,11 @@ describe("view transitions, scroll-driven and pointer effects", () => {
     const raw = readFileSync(path.join(SRC, "styles/sutra.css"), "utf8");
     const from = raw.indexOf("Motion II: view transitions");
     expect(from).toBeGreaterThan(-1);
-    return strip(raw.slice(from));
+    // The span ends where the mascot section begins: that section has deliberate idle loops (breathing, blinking) which its own
+    // reduced-motion twin blocks stop; the three effects here (view transitions, scroll, pointer) must never loop.
+    const mascot = raw.indexOf("Sutra mascot (assets/mascot)");
+    const to = mascot > from ? raw.lastIndexOf("/* ====", mascot) : raw.length;
+    return strip(raw.slice(from, to));
   };
 
   it("the files exist and the hooks read prefers-reduced-motion", () => {

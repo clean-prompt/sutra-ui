@@ -86,6 +86,7 @@ import {
   RiSparklingLine,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
+import { MascotChatDemo, MascotDemo } from "./mascot-demos";
 
 /* ------------------------------------------------------------------ */
 /* Brand                                                               */
@@ -807,10 +808,12 @@ export function AssetsPage() {
     <PageIntro
       eyebrow="Components"
       title="Assets"
-      description="Brand marks, app icons, placeholder logos, icons, flags, emoji, file formats and decorative illustrations."
+      description="Brand marks, app icons, the Sutra mascot, placeholder logos, icons, flags, emoji, file formats and decorative illustrations."
     >
       <LogoDemo />
       <AppIconsDemo />
+      <MascotDemo />
+      <MascotChatDemo />
       <PlaceholderLogosDemo />
       <FeaturedIconDemo />
       <IconsDemo />

@@ -62,6 +62,11 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 #### Open items closed
 - `data-motion="reduce" | "full"` in-app motion switch (CSS net twin, `prefersReducedMotion` and the hook read it; a System / Reduce / Full control on the Motion page); `TimePicker wheel` (`true` or `"touch"`) opens the `WheelPicker` group; the Paper showcase has scroll reveals; every public prop now has a description (0 gaps); `Tooltip`, `Popover` and `HoverCard` accept `side="start" | "end"`; numeric runs are isolated with `<bdi dir="ltr">`; login/logout, back and sidebar-toggle icons mirror in RTL; small tap targets at 360 px fell from 149 to about 18; raw colour literals, palette classes and `dark:` prefixes that were real debt became tokens (`light-dark()`, `--chart-N`, `accentClasses.chip`; the lint allowlists shrank: 549 to 530 literals, 168 to 114 palette classes, 49 to 30 `dark:`); `media-cards` `statusTone.primary` used a colour that does not exist (`text-brand-300`) and now reads `text-primary-soft-foreground`.
 
+#### Mascot and assistant orb
+- `SutraMascot`: an original Bead-based character with eight states (idle, listening, thinking, working, speaking, happy, sleeping, error), mono by default, avatar tiles, CSS-only animation that stops under reduced motion while each state keeps its expression.
+- `AssistantOrb` (voice kit): Siri-style state animation for the Sutra assistant (Idle, Listening, Thinking, Speaking, plus error and muted) as a layered radial orb or a multi-layer waveform, driven by a live level; `useAssistantOrbState` picks the state by priority; demos with a real microphone.
+- Playground: the Paper Showcase page has a sidebar icon, and the brand colour and neutral palette controls are hidden while the paper style is selected (it sets every colour itself).
+
 #### Small fixes from the open-items review
 - `FileFormatIcon` shows readable short labels for the long extensions (`numbers` NUM, `sketch` SKTCH, `sqlite` SQLT, `svelte` SVLT) instead of cutting them at five letters ("NUMBE", "SKETC"); other extensions are still cut at five.
 - Solid `Avatar` / `Monogram` initials take white or dark ink, whichever contrasts more with the seed colour (cyan, yellow, green and orange used to fail AA with white; violet reaches 4.4:1, the best either ink can do).

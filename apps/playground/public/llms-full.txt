@@ -10031,6 +10031,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `ArtifactLibrary` (`@sutra/ui/agent`): Searchable grid / list of artifacts with kind filter chips and sorting.
 - `ArtifactPreview` (`@sutra/ui/agent`): Renders artifact content safely: code, markdown, SVG/image via `<img>`, HTML in a `sandbox=""` iframe.
 - `ArtifactViewer` (`@sutra/ui/agent`): Full artifact panel: Preview / Code tabs, version history and fullscreen.
+- `AssistantOrb` (`@sutra/ui/voice`): The voice assistant's face: a radial glass orb or a layered waveform that shows what the assistant is doing (idle, listening, thinking,…
 - `AttachmentThumbnails` (`@sutra/ui/agent`): Data-driven row of `ChatAttachment`s: image tiles (click to preview in a Lightbox) and file cards with pages / size, upload progress,…
 - `AudioLevelMeter` (`@sutra/ui/voice`): Bars that light up with an audio level (0..1). Horizontal bars stand up like an equalizer.
 - `AuthCenteredPage` (`@sutra/ui/blocks`): Centered card on a dotted background, with the logo above and footer links below.
@@ -10408,6 +10409,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `SutraAppIcon` (`@sutra/ui/assets`): App icon for a Sutra suite app: a tile with a thread running across it, a bead on the thread and one pictogram in the bead.
 - `SutraLogo` (`@sutra/ui/assets`): Mark + wordmark lockup.
 - `SutraMark` (`@sutra/ui/assets`): The Sutra logomark: a bead strung on a thread. Ink on paper by default, so it follows the text colour.
+- `SutraMascot` (`@sutra/ui/assets`): The Sutra mascot: a friendly bead on a thread, with a face that follows `state` (idle, listening, thinking, working, speaking, happy,…
 - `SutraWordmark` (`@sutra/ui/assets`): The lowercase "sutra" wordmark. Without `children` it is the drawn brand word (monoline, scales with the font size, real text for screen…
 - `SvgEmbed` (`@sutra/ui/ai`): Safely renders user-supplied SVG through an image data URL (no innerHTML, no script execution).
 - `SwapButton` (`@sutra/ui/voice`): Swap source/target languages with a half-turn animation.
@@ -10472,6 +10474,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 
 - `useActiveIndicator` (`@sutra/ui/tokens`): Measures the active item of a tab strip / segmented control for a sliding indicator.
 - `useAgentNow` (`@sutra/ui/agent`): Current time, re-rendered every `interval` ms while `active`.
+- `useAssistantOrbState` (`@sutra/ui/voice`): The orb state for what a voice session is doing, by priority: error, speaking, thinking, listening, muted, idle.
 - `useAsyncAction` (`@sutra/ui/tokens`): Tracks a possibly-async action: `busy`, `error`, and a stable `run`.
 - `useAudioLevel` (`@sutra/ui/voice`): Live RMS input level (0..1) of a MediaStream, sampled each animation frame. Returns 0 without a stream.
 - `useBreakpoint` (`@sutra/ui/tokens`): True when the viewport is at least the named breakpoint's width (`min-width`, from the tokens).

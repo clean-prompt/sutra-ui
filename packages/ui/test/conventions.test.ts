@@ -39,6 +39,7 @@ function expectRatchet(re: RegExp, allow: Allow) {
 const COLOR_ALLOW: Allow = {
   // brand and third-party art (the colours are the point)
   "assets/brand.tsx": [30, "Sutra brand art: the two brand inks"],
+  "assets/mascot.tsx": [2, "Sutra brand art: the two brand inks of the tile forms (the same pair as SutraAppIcon)"],
   "assets/country-flags.tsx": [163, "national flag colours"],
   "assets/file-format.tsx": [115, "file-type brand colours"],
   "assets/device-frame.tsx": [10, "device and traffic-light art"],

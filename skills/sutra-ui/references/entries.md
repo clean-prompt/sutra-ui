@@ -45,9 +45,9 @@ Hooks: `useCaretAnchor`, `useChatConversation`, `useChatMessage`, `useEmbedConse
 
 brand marks, logos, flags, file formats and icon wrappers (Remix icons live in @sutra/ui/icons).
 
-33 components.
+34 components.
 
-`AcmeLogo`, `BackgroundPattern`, `BeaconLogo`, `CobaltLogo`, `CountryFlag`, `DeviceFrame`, `EmberLogo`, `EmojiPicker`, `EmojiReaction`, `EmptyStateIllustration`, `FeaturedIcon`, `FileFormatIcon`, `GridBeams`, `HalcyonLogo`, `Icon`, `KiteLogo`, `LogoCloud`, `LumenLogo`, `Marquee`, `MonolithLogo`, `NimbusLogo`, `NoiseTexture`, `NorthwindLogo`, `OrbitLogo`, `PolarisLogo`, `QRCodePlaceholder`, `QuantaLogo`, `Spotlight`, `SutraAppIcon`, `SutraLogo`, `SutraMark`, `SutraWordmark`, `VertexLogo`
+`AcmeLogo`, `BackgroundPattern`, `BeaconLogo`, `CobaltLogo`, `CountryFlag`, `DeviceFrame`, `EmberLogo`, `EmojiPicker`, `EmojiReaction`, `EmptyStateIllustration`, `FeaturedIcon`, `FileFormatIcon`, `GridBeams`, `HalcyonLogo`, `Icon`, `KiteLogo`, `LogoCloud`, `LumenLogo`, `Marquee`, `MonolithLogo`, `NimbusLogo`, `NoiseTexture`, `NorthwindLogo`, `OrbitLogo`, `PolarisLogo`, `QRCodePlaceholder`, `QuantaLogo`, `Spotlight`, `SutraAppIcon`, `SutraLogo`, `SutraMark`, `SutraMascot`, `SutraWordmark`, `VertexLogo`
 
 ## `@sutra/ui/billing`
 
@@ -239,11 +239,11 @@ xterm.js terminal (needs the optional @xterm/xterm and @xterm/addon-fit peers).
 
 speech input, read-aloud, language picker, translation panes, transliteration, dictionary.
 
-13 components, 3 hooks.
+14 components, 4 hooks.
 
-`AudioLevelMeter`, `ConversationTurns`, `DictionaryCard`, `FrequencyMeter`, `LanguageBar`, `LanguagePicker`, `SourcePane`, `SpeakButton`, `SwapButton`, `TargetPane`, `TransliterationCandidates`, `TransliterationToggle`, `VoiceInput`
+`AssistantOrb`, `AudioLevelMeter`, `ConversationTurns`, `DictionaryCard`, `FrequencyMeter`, `LanguageBar`, `LanguagePicker`, `SourcePane`, `SpeakButton`, `SwapButton`, `TargetPane`, `TransliterationCandidates`, `TransliterationToggle`, `VoiceInput`
 
-Hooks: `useAudioLevel`, `useSpeechRecognition`, `useSpeechSynthesis`
+Hooks: `useAssistantOrbState`, `useAudioLevel`, `useSpeechRecognition`, `useSpeechSynthesis`
 
 ## `@sutra/ui/workspace`
 
