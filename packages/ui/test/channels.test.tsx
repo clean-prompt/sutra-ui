@@ -305,6 +305,16 @@ describe("agent room", () => {
     expect(await axeViolations(container)).toEqual([]);
   });
 
+  it("puts the members beside the chat by its own width, not the screen's", () => {
+    const { container } = render(<AgentRoom members={members} messages={[]} />);
+    const aside = container.querySelector("aside[aria-label='Members']")!;
+    // A container query: a room in a narrow column stacks its members under the chat on any screen.
+    expect(container.querySelector("[data-slot='agent-room']")!.className).toContain("@container");
+    expect(aside.parentElement!.className).toContain("@lg:flex-row");
+    expect(aside.className).toContain("@lg:w-56");
+    expect(aside.className).not.toMatch(/(^|\s)md:/);
+  });
+
   it("parses mentions case-insensitively, longest name first", () => {
     const parts = parseAgentMentions("hi @researcher and @ada.", members);
     expect(parts.filter((p) => typeof p !== "string").map((p) => (p as { mention: AgentRoomMember }).mention.id)).toEqual(["rex", "ada"]);

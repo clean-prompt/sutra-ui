@@ -128,6 +128,16 @@ const foundationIcons: Record<string, React.ReactNode> = {
 };
 
 function AppSidebar({ section, page, anchor }: { section: string; page: string; anchor?: string }) {
+  // The current page's sub menu opens when you arrive on the page or on one of its demos; clicking its row again folds it
+  // (and clicking once more unfolds it). Other pages' sub menus stay closed, as before.
+  const activeKey = `${section}/${page}`;
+  const [folded, setFolded] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    setFolded(null);
+  }, [activeKey]);
+  React.useEffect(() => {
+    if (anchor) setFolded(null);
+  }, [anchor]);
   return (
     <Sidebar collapsible="offcanvas" mobileTitle="Sutra UI">
       <SidebarHeader className="h-14 flex-row items-center px-4">
@@ -163,7 +173,11 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
                 return (
                   <SidebarMenuItem key={p.id}>
                     <SidebarMenuSub
-                      open={active}
+                      open={active && folded !== activeKey}
+                      onOpenChange={(open) => {
+                        // A row that is not the current page opens by navigating to it (the trigger is its link).
+                        if (active) setFolded(open ? null : activeKey);
+                      }}
                       trigger={
                         <SidebarMenuButton asChild active={active && !anchor} icon={<RiCodeBoxLine />}>
                           <a href={href(route, p.id)}>

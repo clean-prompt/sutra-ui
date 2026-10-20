@@ -224,7 +224,7 @@ export const AgentRoom = React.forwardRef<HTMLDivElement, AgentRoomProps>(
         data-slot="agent-room"
         role="region"
         aria-labelledby={titleId}
-        className={cn("flex min-h-0 flex-col overflow-hidden rounded-box border border-border bg-card shadow-xs", className)}
+        className={cn("@container flex min-h-0 flex-col overflow-hidden rounded-box border border-border bg-card shadow-xs", className)}
         {...props}
       >
         <div className="flex flex-col gap-2 border-b border-border px-4 py-3">
@@ -273,7 +273,7 @@ export const AgentRoom = React.forwardRef<HTMLDivElement, AgentRoomProps>(
             </div>
           )}
         </div>
-        <div className="flex min-h-0 flex-1 flex-col md:flex-row">
+        <div className="flex min-h-0 flex-1 flex-col @lg:flex-row">
           <div className="flex min-h-0 flex-1 flex-col">
             <div
               ref={logRef}
@@ -359,7 +359,7 @@ export const AgentRoom = React.forwardRef<HTMLDivElement, AgentRoomProps>(
             {composer && <div className="border-t border-border p-3">{composer}</div>}
           </div>
           {!hideMembers && (
-            <aside aria-label="Members" className="border-t border-border p-3 md:w-56 md:shrink-0 md:border-s md:border-t-0">
+            <aside aria-label="Members" className="border-t border-border p-3 @lg:w-56 @lg:shrink-0 @lg:border-s @lg:border-t-0">
               <ul className="flex flex-col gap-2">
                 {members.map((m) => (
                   <li key={m.id} data-member={m.id} data-status={m.status ?? "idle"} className="flex items-start gap-2">
