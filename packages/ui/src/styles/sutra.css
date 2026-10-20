@@ -903,6 +903,68 @@
 }
 
 /* ================================================================== */
+/* Sutra mark intro (assets/brand): `intro` on SutraMark / SutraLogo  */
+/*                                                                    */
+/* Plays once on mount. The crescent drops in from above the box and  */
+/* lands with a short bounce, the thread draws down through its       */
+/* opening and on behind the base, then the logo's drawn wordmark     */
+/* writes itself. Every time is a multiple of the motion tokens; the  */
+/* twin blocks at the end of the section show the still logo under    */
+/* reduced motion.                                                    */
+/* ================================================================== */
+[data-slot="sutra-mark"][data-intro] :is([data-part="bead"], [data-part="thread-above"], [data-part="thread-below"]) {
+  transform-box: fill-box;
+  animation-fill-mode: both;
+  animation-timing-function: var(--sutra-ease);
+}
+[data-slot="sutra-mark"][data-intro] [data-part="bead"] {
+  transform-origin: 50% 100%;
+  animation-name: sutra-mark-drop;
+  animation-duration: calc(var(--sutra-duration-fill) * 1.6);
+}
+[data-slot="sutra-mark"][data-intro] [data-part="thread-above"] {
+  animation-name: sutra-mark-thread;
+  animation-duration: var(--sutra-duration-fill);
+  animation-delay: calc(var(--sutra-duration-fill) * 1.2);
+}
+[data-slot="sutra-mark"][data-intro] [data-part="thread-below"] {
+  animation-name: sutra-mark-thread;
+  animation-duration: var(--sutra-duration-slow);
+  animation-delay: calc(var(--sutra-duration-fill) * 2.1);
+}
+[data-slot="sutra-logo"][data-intro] [data-slot="sutra-wordmark"] path {
+  stroke-dasharray: 1 1;
+  animation: sutra-wordmark-write calc(var(--sutra-duration-fill) * 2) ease-in-out calc(var(--sutra-duration-fill) * 2.6) both;
+}
+@keyframes sutra-mark-drop {
+  0% { transform: translateY(-130%); opacity: 0; }
+  12% { opacity: 1; }
+  55% { transform: translateY(0); }
+  70% { transform: translateY(-10%); }
+  84% { transform: translateY(0); }
+  92% { transform: translateY(-3%); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes sutra-mark-thread {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes sutra-wordmark-write {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(:root:not([data-motion="full"])) [data-slot="sutra-mark"][data-intro] [data-part],
+  :where(:root:not([data-motion="full"])) [data-slot="sutra-logo"][data-intro] [data-slot="sutra-wordmark"] path {
+    animation: none;
+  }
+}
+:where(:root[data-motion="reduce"]) [data-slot="sutra-mark"][data-intro] [data-part],
+:where(:root[data-motion="reduce"]) [data-slot="sutra-logo"][data-intro] [data-slot="sutra-wordmark"] path {
+  animation: none;
+}
+
+/* ================================================================== */
 /* Assistant orb (kits/voice/assistant-orb)                            */
 /*                                                                     */
 /* The ambient motion is CSS (keyframes below); the level-driven parts */

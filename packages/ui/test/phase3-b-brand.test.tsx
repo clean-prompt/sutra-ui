@@ -16,11 +16,19 @@ const svgOf = (container: HTMLElement) => container.querySelector("svg")!;
 const beadOf = (svg: SVGSVGElement) => svg.querySelector("g")!;
 const shapesOf = (svg: SVGSVGElement) => Array.from(beadOf(svg).querySelectorAll("path")).map((p) => p.getAttribute("d"));
 
-/* The Bead logo (design/brand-options/01-bead) replaced the thread-S: these tests pin the new drawing and keep the intents of the
-   old ones (flat theme-following tile, heavy frame inside the box, one accessible name, unique ids, axe). */
+/* The crescent mark (design/brand/crescent.mjs, review option L10, 2026-10-21) replaced the Bead, which had replaced the
+   thread-S: these tests pin the drawing and keep the intents of the old ones (flat theme-following tile, heavy frame inside the
+   box, one accessible name, unique ids, axe). */
+
+/** Every number in the mark's path data (coordinates and radii). */
+const numbersOf = (svg: SVGSVGElement) =>
+  shapesOf(svg)
+    .join(" ")
+    .match(/-?\d+(\.\d+)?/g)!
+    .map(Number);
 
 describe("SutraMark glyph (default, ink on paper)", () => {
-  it("is the bead alone in currentColor: no tile, no gradient, no defs", () => {
+  it("is the crescent bead and its thread alone in currentColor: no tile, no gradient, no defs", () => {
     const svg = svgOf(render(<SutraMark />).container);
     expect(svg).toHaveAttribute("viewBox", "0 0 64 64");
     expect(svg).toHaveAttribute("width", "32");
@@ -31,12 +39,34 @@ describe("SutraMark glyph (default, ink on paper)", () => {
     expect(shapesOf(svg)).toHaveLength(3);
   });
 
-  it("is drawn larger inside its box than the tile variants, still within the box", () => {
-    const g = beadOf(svgOf(render(<SutraMark />).container));
-    expect(g.getAttribute("transform")).toBe("translate(32 32) scale(1.18) translate(-32 -32)");
-    // The fine bead spans x 6.2 to 57.8 about the centre: 1.18 keeps it inside 0 to 64.
-    expect(32 - (32 - 6.2) * 1.18).toBeGreaterThanOrEqual(0);
-    expect(32 + (57.8 - 32) * 1.18).toBeLessThanOrEqual(64);
+  it("fills the height of its box with no transform, and stays inside it", () => {
+    const svg = svgOf(render(<SutraMark />).container);
+    expect(beadOf(svg).getAttribute("transform")).toBeNull();
+    for (const v of numbersOf(svg)) {
+      expect(v).toBeGreaterThanOrEqual(0);
+      expect(v).toBeLessThanOrEqual(64);
+    }
+  });
+
+  it("is upright: the crescent and two pieces of one vertical thread, the thread centred on the box", () => {
+    const [bead, above, below] = shapesOf(svgOf(render(<SutraMark />).container));
+    // The two thread pieces share the same left edge (x 29.8) and width (4.4), centred on x 32.
+    expect(above).toMatch(/^M29\.8 /);
+    expect(below).toMatch(/^M29\.8 /);
+    expect(above).toContain("34.2");
+    expect(below).toContain("34.2");
+    // The crescent is a disc arc and an oval (two radii) arc: the bite that makes the horns.
+    expect(bead).toMatch(/A17 17 0 1 0 .*A8\.5 13 0 1 1 /);
+  });
+
+  it("the drawn glyph is taller than the tile drawing", () => {
+    const span = (variant: SutraMarkVariant) => {
+      const [, above, below] = shapesOf(svgOf(render(<SutraMark variant={variant} />).container));
+      const top = Number(above!.match(/^M[\d.]+ ([\d.]+)/)![1]);
+      const bottom = Number(below!.match(/V([\d.]+)A/)![1]);
+      return bottom - top;
+    };
+    expect(span("glyph")).toBeGreaterThan(span("tile"));
   });
 
   it("follows the text colour", () => {
@@ -184,6 +214,33 @@ describe("SutraMark and SutraLogo, every variant", () => {
       </div>
     );
     expect(await axeViolations(container)).toEqual([]);
+  });
+});
+
+describe("intro", () => {
+  it("is off by default: no data-intro on the mark or the logo", () => {
+    const { container } = render(<SutraLogo />);
+    expect(container.querySelector("[data-intro]")).toBeNull();
+    expect(svgOf(render(<SutraMark />).container)).toHaveAttribute("data-slot", "sutra-mark");
+  });
+
+  it("marks the mark and names its three moving parts", () => {
+    const svg = svgOf(render(<SutraMark intro />).container);
+    expect(svg).toHaveAttribute("data-intro", "");
+    expect(Array.from(svg.querySelectorAll("[data-part]")).map((p) => p.getAttribute("data-part"))).toEqual([
+      "bead",
+      "thread-above",
+      "thread-below",
+    ]);
+  });
+
+  it("SutraLogo passes it to the mark and lets the drawn wordmark write itself (pathLength 1)", () => {
+    const { container } = render(<SutraLogo intro />);
+    const logo = screen.getByRole("img", { name: "Sutra" });
+    expect(logo).toHaveAttribute("data-slot", "sutra-logo");
+    expect(logo).toHaveAttribute("data-intro", "");
+    expect(container.querySelector('[data-slot="sutra-mark"]')).toHaveAttribute("data-intro", "");
+    expect(container.querySelector('[data-slot="sutra-wordmark"] path')).toHaveAttribute("pathLength", "1");
   });
 });
 

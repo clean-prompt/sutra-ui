@@ -1,4 +1,4 @@
-"assets/brand": ["sutra-wordmark"]
+"assets/brand": ["sutra-logo","sutra-mark","sutra-wordmark"]
 "assets/emoji-ink": ["emoji","emoji-ink-filter","ink-emoji"]
 "assets/emoji-reactions": ["emoji-picker"]
 "assets/file-format": ["file-format-icon"]

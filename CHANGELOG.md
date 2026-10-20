@@ -42,6 +42,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
   ink as the accent, hairline borders, flat shadows, the system font, calm motion, a retuned chart palette. Components are untouched; they read tokens.
 - The official kunji brand logo and key mark.
 - The Bead logo: `SutraMark` (a ring bead strung on a thread), the drawn `SutraWordmark`, mono `SutraAppIcon`s, final SVGs in `design/brand` and the playground favicon.
+  Since replaced by the crescent mark (see Changed).
 - Logo and app-icon options and two research reports (`docs/research`): the PanelUI analysis and the uselayouts analysis, merged into the improvement plan.
 
 #### Motion (CSS first, no animation library)
@@ -73,6 +74,9 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 #### File icons in the paper style
 - `FileFormatIcon` draws ink on paper in the paper style (one ink for every format: the label band, or the sheet in `solid`, in the foreground colour with background-coloured text) and takes `mono` to force it anywhere (`mono={false}` keeps the format colours in the paper style). The checkpoint divider's date in `Rewind` truncates instead of spilling in a narrow row; the playground's inline theme controls start at 1440 px (a popover below), so the brand swatches no longer wrap.
 
+#### Picks of the October design review
+- `intro` on `SutraMark` and `SutraLogo`.
+
 #### Small fixes from the open-items review
 - `FileFormatIcon` shows readable short labels for the long extensions (`numbers` NUM, `sketch` SKTCH, `sqlite` SQLT, `svelte` SVLT) instead of cutting them at five letters ("NUMBE", "SKETC"); other extensions are still cut at five.
 - Solid `Avatar` / `Monogram` initials take white or dark ink, whichever contrasts more with the seed colour (cyan, yellow, green and orange used to fail AA with white; violet reaches 4.4:1, the best either ink can do).
@@ -101,6 +105,10 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - Touch targets: `hitArea` and `hitAreaTouch` give small controls a 24 px hit area without a visual change (small taps at a 360 px viewport fell from 825 to 147).
 - Colour contrast: Dropzone title, soft avatar tints and the dark-mode destructive button now meet AA.
 - The playground layout was audited (overflow, clipping, wrapping, overlap, phone widths) and fixed on every page; the audit is repo tooling (`pnpm audit:all`, Playwright is a dev dependency).
+- **Logo: the crescent mark.** `SutraMark` now draws a crescent bead on an upright thread (chosen 2026-10-21 from the design review, option L10): the bead is a disc with an oval bite
+  that breaks through its top, so it has two sharp horns, and the thread comes down through the opening, behind the base and on below. Same variants and props;
+  the glyph fills the height of its box, the tile variants use a heavier cut. `design/brand` (marks, lockups, favicon, suite icon) and the playground favicon are
+  regenerated from `design/brand/crescent.mjs`; the eight app icons keep the Bead system (a thread across the tile, a bead holding the pictogram).
 
 - Sheet `side="left" | "right"` stay physical (an existing test pins the default `right`); pass `side="start" | "end"` for right-to-left. Numeric strings such as "0 / 500" reorder under bidi: wrap them in `<bdi dir="ltr">`.
 

@@ -112,7 +112,7 @@ export const nav: NavSection[] = [
         route: "components",
         label: "Assets",
         items: items(
-          "Logo", "App Icons", "Placeholder Logos", "Featured Icon", "Icons", "Country Flags",
+          "Logo", ["Logo Intro", fresh], "App Icons", "Placeholder Logos", "Featured Icon", "Icons", "Country Flags",
           "Emoji Reactions", ["Ink Emoji", fresh], "File Format Icons", "Empty State", "Device Frame", "Background Pattern", ["Mascot", fresh], ["Mascot In Chat", fresh]
         ),
       },

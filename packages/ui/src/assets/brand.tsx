@@ -20,20 +20,23 @@ const INK = "#1c1915";
 const PAPER = "#f7f5f0";
 
 /**
- * The Sutra bead (64×64 space): a ring bead strung on a thread. The thread passes over the left rim and under the right rim, so it is
- * plainly strung. Three filled shapes: the ring (cut where the thread runs under it) and the two thread pieces.
- * `fine` is the full mark; `bold` is the same drawing with a heavier thread and ring for tiles and small sizes (the favicon).
+ * The Sutra mark (64×64 space; chosen 2026-10-21, review option L10 "Crescent"): a crescent bead on an upright thread. The bead
+ * is a disc with an oval bite that breaks through its top, so it has two sharp horns; the thread comes down through the opening,
+ * runs behind the base and on below. Three filled shapes: the crescent, the thread above it (it stops a paper gap above the
+ * floor of the bowl) and the thread below it (it starts a paper gap under the base). `fine` fills the height of the box (the
+ * glyph); `bold` is the same drawing smaller with a heavier thread, for tiles and small sizes (the favicon). The geometry is
+ * computed in design/brand/crescent.mjs, which prints these strings.
  */
 const BEAD = {
   fine: {
-    ring: "M12.37 27.4A19 19 0 1 1 12.37 36.6L24.25 36.6A8 8 0 1 0 24.25 27.4Z",
-    left: "M6.2 29.8H35.95A5.6 5.6 0 0 1 35.95 34.2H6.2A2.2 2.2 0 0 1 6.2 29.8Z",
-    right: "M52.09 29.8H57.8A2.2 2.2 0 0 1 57.8 34.2H52.09A21.4 21.4 0 0 0 52.09 29.8Z",
+    bead: "M25.07 15.18A17 17 0 1 0 38.93 15.18A8.5 13 0 1 1 25.07 15.18Z",
+    above: "M29.8 5.1A2.2 2.2 0 0 1 34.2 5.1V33.19A3.76 3.76 0 0 1 29.8 33.19Z",
+    below: "M29.8 49.37A18.8 18.8 0 0 0 34.2 49.37V58.9A2.2 2.2 0 0 1 29.8 58.9Z",
   },
   bold: {
-    ring: "M12.41 26.2A19 19 0 1 1 12.41 37.8L23.62 37.8A9 9 0 1 0 23.62 26.2Z",
-    left: "M7.8 29.2H35.81A6 6 0 0 1 35.81 34.8H7.8A2.8 2.8 0 0 1 7.8 29.2Z",
-    right: "M52.32 29.2H56.2A2.8 2.8 0 0 1 56.2 34.8H52.32A22 22 0 0 0 52.32 29.2Z",
+    bead: "M26.45 18.53A13.6 13.6 0 1 0 37.55 18.53A6.8 10.4 0 1 1 26.45 18.53Z",
+    above: "M29.7 10.45A2.3 2.3 0 0 1 34.3 10.45V32.18A2.85 2.85 0 0 1 29.7 32.18Z",
+    below: "M29.7 45.97A15.2 15.2 0 0 0 34.3 45.97V53.55A2.3 2.3 0 0 1 29.7 53.55Z",
   },
 } as const;
 
@@ -45,7 +48,7 @@ export type SutraMarkVariant = "glyph" | "tile" | "reversed" | "solid" | "outlin
 
 export interface SutraMarkProps extends SvgBaseProps {
   /**
-   * `glyph` the bead alone in `currentColor`, ink on paper (default),
+   * `glyph` the crescent bead and its thread alone in `currentColor`, ink on paper (default),
    * `tile` the bead in ink on a paper tile with a hairline edge,
    * `reversed` paper bead on an ink tile (for dark surfaces),
    * `solid` flat `--primary` tile with a `--primary-foreground` bead (follows the theme and the paper style),
@@ -53,6 +56,13 @@ export interface SutraMarkProps extends SvgBaseProps {
    * `badge` heavy frame in `currentColor` around a bold bead.
    */
   variant?: SutraMarkVariant;
+  /**
+   * Play the intro once when the mark mounts: the crescent drops in and lands with a short bounce, then the thread draws down
+   * through its opening and on behind the base (about 1.4 s). Reduced motion shows the still mark. Remount (change `key`) to
+   * play it again.
+   * @default false
+   */
+  intro?: boolean;
 }
 
 type MarkLook = {
@@ -64,17 +74,17 @@ type MarkLook = {
 };
 
 const MARK_LOOK: Record<SutraMarkVariant, MarkLook> = {
-  glyph: { geometry: "fine", scale: 1.18, paint: "currentColor" },
+  glyph: { geometry: "fine", scale: 1, paint: "currentColor" },
   tile: { geometry: "bold", scale: 1, paint: INK },
   reversed: { geometry: "bold", scale: 1, paint: PAPER },
   solid: { geometry: "bold", scale: 1, paint: "var(--primary-foreground, #ffffff)" },
-  outline: { geometry: "fine", scale: 0.9, paint: "currentColor" },
+  outline: { geometry: "fine", scale: 0.74, paint: "currentColor" },
   badge: { geometry: "bold", scale: 0.9, paint: "currentColor" },
 };
 
-/** The Sutra logomark: a bead strung on a thread. Ink on paper by default, so it follows the text colour. */
+/** The Sutra logomark: a crescent bead on an upright thread. Ink on paper by default, so it follows the text colour. */
 export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
-  ({ variant = "glyph", size = 32, title, className, ...props }, ref) => {
+  ({ variant = "glyph", size = 32, title, intro = false, className, ...props }, ref) => {
     const id = useSafeId("sutra-mark");
     const titleId = `${id}-title`;
     const { geometry, scale, paint } = MARK_LOOK[variant] ?? MARK_LOOK.glyph;
@@ -89,6 +99,8 @@ export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={cn("shrink-0", className)}
+        data-slot="sutra-mark"
+        data-intro={intro ? "" : undefined}
         {...a11y(title, titleId)}
         {...props}
       >
@@ -108,9 +120,9 @@ export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
           <rect x="3" y="3" width="58" height="58" rx="15" stroke="currentColor" strokeWidth="6" />
         ) : null}
         <g fill={paint} transform={beadTransform}>
-          <path d={shapes.ring} />
-          <path d={shapes.left} />
-          <path d={shapes.right} />
+          <path data-part="bead" d={shapes.bead} />
+          <path data-part="thread-above" d={shapes.above} />
+          <path data-part="thread-below" d={shapes.below} />
         </g>
       </svg>
     );
@@ -190,6 +202,7 @@ export const SutraWordmark = React.forwardRef<HTMLSpanElement, SutraWordmarkProp
               ) : null}
               <path
                 d={WORDMARK_PATH}
+                pathLength={1}
                 stroke={gradient ? `url(#${gradientId})` : "currentColor"}
                 strokeWidth="4.8"
                 strokeLinecap="round"
@@ -227,18 +240,26 @@ export interface SutraLogoProps extends React.HTMLAttributes<HTMLSpanElement> {
   markOnly?: boolean;
   /** Optional product suffix shown after the wordmark, e.g. "notes". */
   product?: React.ReactNode;
+  /**
+   * Play the intro once on mount: the mark's intro (see `SutraMark`), then the drawn wordmark writes itself (about 2.3 s in
+   * all). Reduced motion shows the still logo.
+   * @default false
+   */
+  intro?: boolean;
 }
 
 /** Mark + wordmark lockup. */
 export const SutraLogo = React.forwardRef<HTMLSpanElement, SutraLogoProps>(
   (
-    { layout = "horizontal", size = "md", markVariant = "glyph", markOnly = false, product, className, ...props },
+    { layout = "horizontal", size = "md", markVariant = "glyph", markOnly = false, product, intro = false, className, ...props },
     ref
   ) => (
     <span
       ref={ref}
       role="img"
       aria-label={typeof product === "string" ? `Sutra ${product}` : "Sutra"}
+      data-slot="sutra-logo"
+      data-intro={intro ? "" : undefined}
       className={cn(
         "inline-flex shrink-0 items-center text-foreground",
         layout === "stacked" ? "flex-col gap-2" : size === "xs" || size === "sm" ? "gap-1.5" : "gap-2",
@@ -246,9 +267,10 @@ export const SutraLogo = React.forwardRef<HTMLSpanElement, SutraLogoProps>(
       )}
       {...props}
     >
-      {/* The bare glyph is drawn larger inside its box, so the box is trimmed to keep the lockup's proportions. */}
+      {/* The bare glyph fills the height of its box, so the box is trimmed to keep the lockup's proportions. */}
       <SutraMark
         variant={markVariant}
+        intro={intro}
         size={markPx[size] * (layout === "stacked" ? 1.5 : 1) * (markVariant === "glyph" ? 0.85 : 1)}
       />
       {markOnly ? null : (

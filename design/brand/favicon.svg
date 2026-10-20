@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32" role="img" aria-label="Sutra">
 <title>Sutra</title>
-<rect width="64" height="64" rx="14.3" fill="#1c1915"/><path d="M12.41 26.2A19 19 0 1 1 12.41 37.8L23.62 37.8A9 9 0 1 0 23.62 26.2Z" fill="#f7f5f0"/><path d="M7.8 29.2H35.81A6 6 0 0 1 35.81 34.8H7.8A2.8 2.8 0 0 1 7.8 29.2Z" fill="#f7f5f0"/><path d="M52.32 29.2H56.2A2.8 2.8 0 0 1 56.2 34.8H52.32A22 22 0 0 0 52.32 29.2Z" fill="#f7f5f0"/>
+<rect width="64" height="64" rx="14.3" fill="#1c1915"/><g fill="#f7f5f0"><path d="M26.45 18.53A13.6 13.6 0 1 0 37.55 18.53A6.8 10.4 0 1 1 26.45 18.53Z"/><path d="M29.7 10.45A2.3 2.3 0 0 1 34.3 10.45V32.18A2.85 2.85 0 0 1 29.7 32.18Z"/><path d="M29.7 45.97A15.2 15.2 0 0 0 34.3 45.97V53.55A2.3 2.3 0 0 1 29.7 53.55Z"/></g>
 </svg>

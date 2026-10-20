@@ -122,7 +122,7 @@ function LogoDemo() {
     <Demo
       id="logo"
       title="Logo"
-      description="SutraLogo pairs the bead mark with the drawn wordmark, ink on paper: both follow the text colour. SutraMark and SutraWordmark are also available on their own."
+      description="SutraLogo pairs the crescent mark (a crescent bead on an upright thread) with the drawn wordmark, ink on paper: both follow the text colour. SutraMark and SutraWordmark are also available on their own."
       align="start"
       canvasClassName="gap-8"
     >
@@ -222,6 +222,28 @@ function AppIconGrid({ label, shape, tone }: { label: string; shape: (typeof app
         ))}
       </div>
     </div>
+  );
+}
+
+function LogoIntroDemo() {
+  const [run, setRun] = React.useState(0);
+  return (
+    <Demo
+      id="logo-intro"
+      title="Logo intro"
+      description="intro on SutraMark or SutraLogo plays once on mount: the crescent drops in and lands with a short bounce, the thread draws down through its opening and on behind the base, then the logo's wordmark writes itself. Reduced motion shows the still logo. Replay remounts it (a new key)."
+      align="start"
+      canvasClassName="gap-8"
+    >
+      <div className="flex flex-wrap items-center gap-10" key={run}>
+        <SutraMark intro size={96} title="Sutra" />
+        <SutraLogo intro size="xl" />
+        <SutraMark intro variant="reversed" size={64} title="Sutra" />
+      </div>
+      <Button variant="outline" size="sm" className="self-start" onClick={() => setRun((n) => n + 1)}>
+        Replay
+      </Button>
+    </Demo>
   );
 }
 
@@ -911,6 +933,7 @@ export function AssetsPage() {
       description="Brand marks, app icons, the Sutra mascot, placeholder logos, icons, flags, emoji, file formats and decorative illustrations."
     >
       <LogoDemo />
+      <LogoIntroDemo />
       <AppIconsDemo />
       <MascotDemo />
       <MascotChatDemo />
