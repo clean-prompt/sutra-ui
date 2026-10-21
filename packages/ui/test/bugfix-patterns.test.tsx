@@ -1,3 +1,4 @@
+/** Bug-fix regressions in the patterns (Markdown, JsonViewer, TreeView, LogViewer, KeybindEditor, file preview kind, DiffViewer, CalendarHeatmap). */
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

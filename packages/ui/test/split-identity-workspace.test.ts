@@ -1,3 +1,4 @@
+/** Public export lists of the split identity and workspace kit modules. */
 import { describe, expect, it } from "vitest";
 import * as kunji from "../src/kits/identity/kunji";
 import * as memoryMap from "../src/kits/workspace/memory-map";

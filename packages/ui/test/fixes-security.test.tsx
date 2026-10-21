@@ -1,3 +1,4 @@
+/** Security fixes: PermissionPrompt shortcuts, RichEmbed consent, TwoFactorSetupCard QR, SecretText clipboard clear, VoiceInput mic stream. */
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { PermissionPrompt } from "../src/kits/ai/permission-prompt";

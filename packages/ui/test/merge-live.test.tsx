@@ -1,3 +1,4 @@
+/** Live status parts merged onto shared bases: AgentStatusLine, StatusStrip, ToolTimelineDot, ContextBanner, presence and typing dots. */
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";

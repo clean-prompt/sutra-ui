@@ -1,3 +1,4 @@
+/** Review fixes in the kits: safe hrefs, KeyValueRowsInput, EffortSlider, MessageTimestampHover, locale props, fast-mode cooldown, data-slot hooks. */
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { EffortSlider } from "../src/kits/agent/agent-mode";

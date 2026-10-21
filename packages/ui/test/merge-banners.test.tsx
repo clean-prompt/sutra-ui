@@ -1,3 +1,4 @@
+/** Banner and alert families merged onto shared bases: BannerAction, AlertBanner, RotatingNoticeBar, InlineAlert, domain banners, QRCodeCard, Steps. */
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { vi } from "vitest";

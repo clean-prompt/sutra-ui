@@ -1,3 +1,4 @@
+/** Bug-fix regressions in the primitives (Dropzone, Button, TextLink, FAB, Field, NumberInput, TabDropdown and others). */
 import * as React from "react";
 import { describe, expect, it, vi, afterEach } from "vitest";
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react";

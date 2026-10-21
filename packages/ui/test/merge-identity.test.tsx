@@ -1,3 +1,4 @@
+/** Identity parts merged onto shared bases: Avatar, Monogram, EmptyState welcome, TextLink button mode, Drawer on Sheet, deprecated aliases. */
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { colorForSeed } from "../src/lib/hash";

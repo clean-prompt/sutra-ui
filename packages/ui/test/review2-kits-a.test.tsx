@@ -1,3 +1,4 @@
+/** Review 2 kit fixes (a): relative captions, MemoryMap zoom, PromptInputModelPill, ArtifactViewer fullscreen, TilingLayout tab drag. */
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";

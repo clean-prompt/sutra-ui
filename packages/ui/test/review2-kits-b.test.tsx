@@ -1,3 +1,4 @@
+/** Review 2 kit fixes (b): relative captions, IncomingCall overlay, AccessGate and AwaitingApproval polling. */
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { DevServerList, type DevServerProject } from "../src/kits/system/dev-servers";

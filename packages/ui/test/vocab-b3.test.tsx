@@ -1,3 +1,4 @@
+/** Vocabulary aliases (b3): InlineAlert, RotatingNoticeBar, Meter and Gauge tone, Kanban, TrackCycleChip, PaginationItem. */
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { InlineAlert } from "../src/primitives/inline-alert";

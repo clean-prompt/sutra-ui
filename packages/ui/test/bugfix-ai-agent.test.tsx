@@ -1,3 +1,4 @@
+/** Bug-fix regressions in the AI and agent components (browser pane input, worktree names, status strip, question card, session list, artifact card). */
 import * as React from "react";
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react";
 import { AgentBrowserPane, BrowserConsole, normalizeBrowserInput } from "../src/kits/agent/agent-browser";

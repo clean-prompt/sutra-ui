@@ -1,3 +1,4 @@
+/** Vocabulary aliases (b1): tone on AlertBanner and Badge, controlled FAQ and NowPlaying, usePlayerQueue, density and status aliases. */
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { AppSidebar } from "../src/blocks/sidebar-navigation-blocks";

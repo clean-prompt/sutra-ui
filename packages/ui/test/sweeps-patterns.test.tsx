@@ -1,3 +1,4 @@
+/** Sweep over the patterns: lib/svg-path, chart colour tokens, ImageWithFallback, CoachmarkTour measuring, forwarded refs. */
 import * as React from "react";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";

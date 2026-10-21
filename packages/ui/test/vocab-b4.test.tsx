@@ -1,3 +1,4 @@
+/** Vocabulary aliases (b4): RichTextEditor and SchemaForm onValueChange, PromptInput loading, Progress tone, SidebarMenuButton active. */
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { RichTextEditor, type RichTextEditorInstance } from "../src/kits/editor/rich-text-editor";

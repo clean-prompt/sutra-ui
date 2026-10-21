@@ -1,3 +1,4 @@
+/** Review fixes in the domain kits: MiniPlayer, AccessGate, useKunjiSignIn, useInstallPrompt, QRScanner, CallScreen, SaveStatus and data-slot hooks. */
 import * as React from "react";
 import { renderToString } from "react-dom/server";
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react";

@@ -1,3 +1,4 @@
+/** Vocabulary aliases (b2): controlled triads, tone, lifecycle status, density and empty states, forwardRef. */
 import * as React from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

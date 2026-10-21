@@ -1,3 +1,4 @@
+/** Model state parts merged onto shared bases: model state vocabulary and glyph, ModelStatePill, ModelSelect, ProviderModelPicker. */
 import * as React from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

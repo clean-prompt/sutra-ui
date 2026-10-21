@@ -1,3 +1,4 @@
+/** Review 2 de-duplication: VolumeControl on VolumeSlider, KeyboardShortcutsDialog on ShortcutsDialog, SecretRow, McpServerForm fields. */
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

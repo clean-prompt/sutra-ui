@@ -1,3 +1,4 @@
+/** Public export lists of the split kits/agent-admin/agent-jobs and kits/ai/prompt-input modules. */
 import { describe, expect, it } from "vitest";
 import * as agentJobs from "../src/kits/agent-admin/agent-jobs";
 import * as promptInput from "../src/kits/ai/prompt-input";

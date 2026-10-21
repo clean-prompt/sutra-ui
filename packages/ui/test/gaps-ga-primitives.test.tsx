@@ -1,3 +1,4 @@
+/** Gap-fill options of the primitives: Card parts, Button spinnerProps, Collapse and Collapsible, ToggleButton and ToggleGroup, Accordion variants, Sheet options. */
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

@@ -1,3 +1,4 @@
+/** Small option gap-fills: filled inputs, getPageWindow and PaginationStatus, Rating allowClear, Countdown urgentBelow. */
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

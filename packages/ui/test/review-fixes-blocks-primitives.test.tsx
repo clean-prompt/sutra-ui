@@ -1,3 +1,4 @@
+/** Review fixes in blocks (stale async results, ShareDialog, auth cards, AwaitingApproval, DocsHeader search) and in the primitives. */
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

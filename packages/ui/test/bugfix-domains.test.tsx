@@ -1,3 +1,4 @@
+/** Bug-fix regressions in the domain kits (TOTP, QR code and scanner, kunji sign-in, recovery key, consent, credentials, payment card). */
 import * as React from "react";
 import { act, fireEvent, render, renderHook, screen, waitFor, within } from "@testing-library/react";
 import { EditorView } from "@codemirror/view";

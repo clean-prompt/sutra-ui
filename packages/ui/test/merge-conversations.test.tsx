@@ -1,3 +1,4 @@
+/** Conversation parts merged onto shared bases: InlineEditText, ConversationList and Row, AgentStatusDot, MentionInput. */
 import * as React from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

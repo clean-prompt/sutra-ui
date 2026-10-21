@@ -1,3 +1,4 @@
+/** Public export lists of the split blocks/modal-dialog-blocks and kits/billing/billing modules. */
 import { describe, expect, it } from "vitest";
 import * as modalDialogBlocks from "../src/blocks/modal-dialog-blocks";
 import * as billing from "../src/kits/billing/billing";

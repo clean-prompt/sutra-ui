@@ -1,3 +1,4 @@
+/** Meters and progress merged onto shared bases: attachments, context usage, Progress, PasswordStrength, progress rings, audio and media strips. */
 import * as React from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";

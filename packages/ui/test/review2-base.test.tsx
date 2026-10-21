@@ -1,3 +1,4 @@
+/** Review 2 base fixes: Slider ref and className, useTheme before hydration, useOnlineStatus hydration, TallyCounter bounds. */
 import * as React from "react";
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";

@@ -1,3 +1,4 @@
+/** Vocabulary aliases (b5): StatusDot and StatusBadge tone, ToolTimeline status, Table density, TodayTimeline, Snackbar, ZoneEditor. */
 import * as React from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { StatusBadge, StatusDot } from "../src/primitives/status-badge";

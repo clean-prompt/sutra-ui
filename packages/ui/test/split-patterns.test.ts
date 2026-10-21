@@ -1,3 +1,4 @@
+/** Public export lists of the split patterns modules (chart, tiling-layout). */
 import { describe, expect, it } from "vitest";
 
 import * as chart from "../src/patterns/chart";

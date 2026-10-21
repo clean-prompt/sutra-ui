@@ -1,3 +1,4 @@
+/** Fixes across lib/date, timestamp handling, Kanban due dates, IME Enter handling and keyboard handling in AppLauncher, CoachmarkTour and SearchInput. */
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
 import { act, fireEvent, render, screen } from "@testing-library/react";

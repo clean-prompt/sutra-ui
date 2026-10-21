@@ -1,3 +1,4 @@
+/** Bug-fix regressions in the agent-admin, capabilities and ops components (webhook routes, toolset and provider drawers, custom endpoints, agent creation, mentions, subagent tree). */
 import * as React from "react";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { WebhookRouteEditor, type WebhookRoute } from "../src/kits/agent-admin/webhooks";

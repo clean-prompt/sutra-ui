@@ -1,3 +1,4 @@
+/** Status indicators merged onto shared bases: StatusDot, StatusBadge, domain pills, Spinner, ChatLoader. */
 import * as React from "react";
 import { act, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";

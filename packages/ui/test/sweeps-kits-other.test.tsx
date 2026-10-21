@@ -1,3 +1,4 @@
+/** Sweep: deprecated formatter presets, index clamps moved to lib, MemoryMap resize observation. */
 import * as React from "react";
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
