@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLatestRef } from "./use-iso-layout-effect";
 
 /** Direction of a swipe on the screen: left, right, up or down. */
 export type SwipeDirection = "left" | "right" | "up" | "down";
@@ -55,8 +56,7 @@ export interface SwipeHandlers {
  * Spread the returned handlers on an element; give it a matching `touch-action` (e.g. `touch-pan-y` for horizontal swipes).
  */
 export function useSwipe(options: UseSwipeOptions = {}): SwipeHandlers {
-  const optsRef = React.useRef(options);
-  optsRef.current = options;
+  const optsRef = useLatestRef(options);
   const start = React.useRef<{ x: number; y: number; at: number; id: number } | null>(null);
   const pointers = React.useRef(new Set<number>());
 
@@ -76,7 +76,7 @@ export function useSwipe(options: UseSwipeOptions = {}): SwipeHandlers {
         }
         start.current = { x: event.clientX, y: event.clientY, at: Date.now(), id: event.pointerId };
       },
-      onPointerMove(event) {
+      onPointerMove() {
         if (pointers.current.size > 1) start.current = null;
       },
       onPointerUp(event) {
@@ -107,5 +107,5 @@ export function useSwipe(options: UseSwipeOptions = {}): SwipeHandlers {
       },
       onPointerCancel: reset,
     };
-  }, []);
+  }, [optsRef]);
 }

@@ -1,14 +1,8 @@
 import * as React from "react";
+import { normalizeDirection } from "../lib/direction";
+import { TEXT_MIRROR_BORDER_STYLES, TEXT_MIRROR_STYLES } from "../lib/text-field";
 import { useIsoLayoutEffect } from "./use-iso-layout-effect";
 import { useResizeObserver } from "./use-resize-observer";
-
-const MIRRORED_STYLES = [
-  "fontFamily", "fontSize", "fontWeight", "fontStyle", "fontVariant", "fontStretch", "fontFeatureSettings",
-  "fontVariationSettings", "fontKerning", "letterSpacing", "wordSpacing", "lineHeight", "textTransform", "textIndent",
-  "textAlign", "tabSize", "direction", "paddingTop", "paddingBottom", "paddingLeft", "paddingRight",
-  "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth", "borderTopStyle", "borderRightStyle",
-  "borderBottomStyle", "borderLeftStyle", "whiteSpace", "wordBreak", "overflowWrap",
-] as const;
 
 /** Options for `useTextareaMirror`: an enabled switch. */
 export interface UseTextareaMirrorOptions {
@@ -33,7 +27,7 @@ export function useTextareaMirror(
     if (!ta || !mirror || typeof window === "undefined") return;
     const cs = window.getComputedStyle(ta);
     const style = mirror.style as unknown as Record<string, string>;
-    for (const prop of MIRRORED_STYLES) {
+    for (const prop of [...TEXT_MIRROR_STYLES, ...TEXT_MIRROR_BORDER_STYLES]) {
       const v = (cs as unknown as Record<string, string>)[prop];
       if (v) style[prop] = v;
     }
@@ -43,7 +37,11 @@ export function useTextareaMirror(
     if (ta.offsetHeight) mirror.style.height = `${ta.offsetHeight}px`;
     const borders = (parseFloat(cs.borderLeftWidth) || 0) + (parseFloat(cs.borderRightWidth) || 0);
     const gutter = Math.max(0, ta.offsetWidth - ta.clientWidth - borders);
-    if (gutter) mirror.style.paddingRight = `${(parseFloat(cs.paddingRight) || 0) + gutter}px`;
+    if (gutter) {
+      // The scrollbar sits on the inline-end side of the field: the left in right-to-left (its own computed direction).
+      const side = normalizeDirection(cs.direction) === "rtl" ? "paddingLeft" : "paddingRight";
+      mirror.style[side] = `${(parseFloat(cs[side]) || 0) + gutter}px`;
+    }
     mirror.scrollTop = ta.scrollTop;
     mirror.scrollLeft = ta.scrollLeft;
   }, [textareaRef]);

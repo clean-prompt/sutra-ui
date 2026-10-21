@@ -39,7 +39,8 @@ const EASING_TOKEN: Record<FlipEasing, string> = { snap: "--sutra-spring-snappy"
  * `scale` when asked), on the motion tokens, so a style that retunes them retunes this. Positions are measured relative
  * to the parent, an animation still in flight is cancelled and continued from where the element is, and nothing is
  * measured or animated under `prefers-reduced-motion` (the list just changes) or where `animate` is missing (jsdom).
- * Cancels on unmount; StrictMode's second run measures the same boxes, which is no move.
+ * Cancels on unmount; StrictMode's second run measures the same boxes, which is no move. With `enabled` false it measures nothing.
+ * Otherwise it measures after every render, on purpose: the "before" positions of the next change are whatever this commit laid out.
  */
 export function useFlip(keys: readonly string[], options: UseFlipOptions = {}): FlipRegister {
   const { duration, easing = "snap", max = FLIP_MAX, scale = false, enabled = true } = options;
@@ -80,6 +81,14 @@ export function useFlip(keys: readonly string[], options: UseFlipOptions = {}): 
       return out;
     };
     for (const key of callbacks.current.keys()) if (!keys.includes(key)) callbacks.current.delete(key);
+
+    // Switched off: no layout reads at all (and nothing to continue from), only the key list is remembered.
+    if (!enabled && running.current.size === 0) {
+      before.current = new Map();
+      lastKeys.current = keys;
+      hints.current.clear();
+      return;
+    }
 
     // Where each element is drawn now (an unfinished animation included), then where its layout puts it.
     const drawn = measure();

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { graphemes } from "../lib/text";
 import { useLatestRef } from "./use-iso-layout-effect";
-import { prefersReducedMotion } from "./use-media-query";
+import { usePrefersReducedMotion } from "./use-media-query";
 
 /** Options for `useTypewriter`: typing and deleting speed, delays, looping and a done callback. */
 export interface UseTypewriterOptions {
@@ -50,7 +50,7 @@ export function useTypewriter(text: string | readonly string[], options: UseType
   const lines = React.useMemo(() => (typeof text === "string" ? [text] : [...text]), [text]);
   const sig = lines.join("\u0000");
   const chars = React.useMemo(() => lines.map(graphemes), [sig]); // eslint-disable-line react-hooks/exhaustive-deps
-  const reduced = prefersReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const restIndex = loop ? 0 : lines.length - 1;
   const [run, setRun] = React.useState<Run>(() => (reduced ? { sig, index: restIndex, shown: (chars[restIndex] ?? []).length, phase: "done" } : { sig, index: 0, shown: 0, phase: "type" }));
   const doneRef = useLatestRef(onDone);

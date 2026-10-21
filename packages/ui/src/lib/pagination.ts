@@ -2,8 +2,8 @@
 
 export type PaginationRangeItem = number | "ellipsis-start" | "ellipsis-end";
 
-/** Options for the page-range maths used by `usePagination`. */
-export interface UsePaginationOptions {
+/** Options for the page-range maths (`getPaginationRange`, and the `usePagination` hook that wraps it). */
+export interface PaginationOptions {
   /** Current page (1-based). */
   page: number;
   /** Total number of pages. */
@@ -13,6 +13,9 @@ export interface UsePaginationOptions {
   /** Pages always shown at the start and end. Default 1. */
   boundaryCount?: number;
 }
+
+/** Former name of `PaginationOptions`. @deprecated Use `PaginationOptions`. */
+export type UsePaginationOptions = PaginationOptions;
 
 function range(start: number, end: number) {
   const out: number[] = [];
@@ -26,7 +29,7 @@ export function getPaginationRange({
   totalPages,
   siblingCount = 1,
   boundaryCount = 1,
-}: UsePaginationOptions): PaginationRangeItem[] {
+}: PaginationOptions): PaginationRangeItem[] {
   const total = Math.max(0, Math.floor(totalPages));
   if (total === 0) return [];
   const current = Math.min(Math.max(1, page), total);

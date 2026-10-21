@@ -1,7 +1,7 @@
 import * as React from "react";
 import { clamp } from "../lib/math";
 import { useDrag } from "./use-drag";
-import { useIsoLayoutEffect } from "./use-iso-layout-effect";
+import { useIsoLayoutEffect, useLatestRef } from "./use-iso-layout-effect";
 
 export interface ZoomPanState {
   scale: number;
@@ -55,8 +55,7 @@ export function useZoomPan({
 }: UseZoomPanOptions = {}) {
   const [state, setStateRaw] = React.useState<ZoomPanState>({ scale: defaultScale, x: 0, y: 0 });
   const stateRef = React.useRef(state);
-  const changeRef = React.useRef(onValueChange ?? onChange);
-  changeRef.current = onValueChange ?? onChange;
+  const changeRef = useLatestRef(onValueChange ?? onChange);
   const viewportRef = React.useRef<HTMLElement | null>(null);
   const pointers = React.useRef(new Map<number, { x: number; y: number }>());
   const gesture = React.useRef<{ dist: number; scale: number } | null>(null);
@@ -133,10 +132,8 @@ export function useZoomPan({
     return { x: clientX - rect.left - rect.width / 2, y: clientY - rect.top - rect.height / 2 };
   };
 
-  const wheelOpts = React.useRef({ wheelRequiresModifier });
-  wheelOpts.current = { wheelRequiresModifier };
-  const zoomToRef = React.useRef(zoomTo);
-  zoomToRef.current = zoomTo;
+  const wheelOpts = useLatestRef({ wheelRequiresModifier });
+  const zoomToRef = useLatestRef(zoomTo);
 
   const ref = React.useCallback((node: HTMLElement | null) => {
     const prev = viewportRef.current as (HTMLElement & { __zpWheel?: (e: WheelEvent) => void }) | null;

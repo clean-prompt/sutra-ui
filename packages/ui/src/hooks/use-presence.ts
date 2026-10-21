@@ -1,5 +1,5 @@
 import * as React from "react";
-import { prefersReducedMotion } from "./use-media-query";
+import { usePrefersReducedMotion } from "./use-media-query";
 
 /** Lifecycle state of a presence item: entering, idle or exiting. */
 export type PresenceState = "enter" | "idle" | "exit";
@@ -39,6 +39,7 @@ export function usePresence<T, K extends string | number = string>(
   getKey: (item: T) => K,
   { exitDuration = 200, initial = false, holdEnter = false }: UsePresenceOptions = {}
 ): PresenceItem<T, K>[] {
+  const reduced = usePrefersReducedMotion();
   const currentKeys = new Set(items.map(getKey));
   const [state, setState] = React.useState(() => ({ items, exiting: new Map<K, T>() }));
   const seen = React.useRef<Set<K> | null>(null);
@@ -52,7 +53,7 @@ export function usePresence<T, K extends string | number = string>(
   if (state.items !== items) {
     exiting = new Map(exiting);
     for (const key of currentKeys) exiting.delete(key);
-    if (!prefersReducedMotion()) {
+    if (!reduced) {
       for (const item of state.items) if (!currentKeys.has(getKey(item))) exiting.set(getKey(item), item);
     }
     setState({ items, exiting });
@@ -105,7 +106,6 @@ export function usePresence<T, K extends string | number = string>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
-  const reduced = prefersReducedMotion();
   const live = items.map((item): PresenceItem<T, K> => {
     const key = getKey(item);
     const isNew = !seen.current!.has(key) || (holdEnter && entered.current.has(key));

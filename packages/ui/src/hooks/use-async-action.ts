@@ -1,26 +1,11 @@
 import * as React from "react";
-import { useIsoLayoutEffect, useLatestRef } from "./use-iso-layout-effect";
+import { errorMessage } from "../lib/error";
+import { useLatestRef } from "./use-iso-layout-effect";
+import { useMountedRef } from "./use-mounted-ref";
 
-/** A ref that is true while mounted: set on (re)mount, false after unmount (StrictMode-safe). */
-export function useMountedRef(): React.RefObject<boolean> {
-  const mounted = React.useRef(false);
-  useIsoLayoutEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-  return mounted;
-}
-
-const DEFAULT_ERROR = "Something went wrong. Please try again.";
-
-/** Readable message for a thrown value (Error message, non-empty string, or `fallback`). */
-export function errorMessage(error: unknown, fallback = DEFAULT_ERROR): string {
-  if (error instanceof Error && error.message) return error.message;
-  if (typeof error === "string" && error.trim()) return error;
-  return fallback;
-}
+// Both used to live here: kept as re-exports so existing imports and the public API still resolve.
+export { useMountedRef };
+export { errorMessage };
 
 /** Options for `useAsyncAction`: success and error callbacks and the fallback error message. */
 export interface UseAsyncActionOptions<R> {

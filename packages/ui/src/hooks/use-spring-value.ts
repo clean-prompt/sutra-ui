@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createSpring, springs, type SpringConfig, type SpringHandle, type SpringName } from "../lib/spring";
 import { useLatestRef } from "./use-iso-layout-effect";
-import { prefersReducedMotion } from "./use-media-query";
+import { prefersReducedMotion, usePrefersReducedMotion } from "./use-media-query";
 
 /** Options for `useSpringValue`: spring config (a preset name or physics), the starting value and an update callback. */
 export interface UseSpringValueOptions {
@@ -28,6 +28,7 @@ export function useSpringValue(target: number, { config = "gentle", initial, onU
   const last = React.useRef(initial ?? target);
   const handle = React.useRef<SpringHandle | null>(null);
   const report = useLatestRef(onUpdate);
+  const reduced = usePrefersReducedMotion();
 
   React.useEffect(() => {
     const spring = createSpring(
@@ -53,5 +54,5 @@ export function useSpringValue(target: number, { config = "gentle", initial, onU
     else spring.to(target);
   }, [target, stiffness, damping, mass]);
 
-  if (!onUpdate) return prefersReducedMotion() ? target : value;
+  if (!onUpdate) return reduced ? target : value;
 }

@@ -1,5 +1,6 @@
 /* Shared duration helpers. Pure; never throw on bad input. */
 import { roundTo, type RoundingMode } from "./math";
+import { pad2 as pad } from "./time";
 
 /** A duration split into calendar-free parts. */
 export interface DurationSplit {
@@ -29,8 +30,6 @@ export function splitDuration(ms: number, options: SplitDurationOptions = {}): D
     ms: total % 1000,
   };
 }
-
-const pad = (n: number) => String(n).padStart(2, "0");
 
 /** Options for `formatClock`. */
 export interface FormatClockOptions {

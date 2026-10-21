@@ -17,10 +17,11 @@ export function useReorder<T>({ items: itemsProp, defaultItems = [], onItemsChan
   return {
     items,
     setItems,
-    move: (from: number, to: number) => setItems(reorderArray(items, from, to)),
-    moveUp: (index: number) => setItems(reorderBy(items, index, -1)),
-    moveDown: (index: number) => setItems(reorderBy(items, index, 1)),
-    moveToTop: (index: number) => setItems(reorderArray(items, index, 0)),
-    moveToBottom: (index: number) => setItems(reorderArray(items, index, items.length - 1)),
+    // Functional updates, so two moves in one tick compose instead of the second overwriting the first.
+    move: (from: number, to: number) => setItems((prev) => reorderArray(prev, from, to)),
+    moveUp: (index: number) => setItems((prev) => reorderBy(prev, index, -1)),
+    moveDown: (index: number) => setItems((prev) => reorderBy(prev, index, 1)),
+    moveToTop: (index: number) => setItems((prev) => reorderArray(prev, index, 0)),
+    moveToBottom: (index: number) => setItems((prev) => reorderArray(prev, index, prev.length - 1)),
   };
 }

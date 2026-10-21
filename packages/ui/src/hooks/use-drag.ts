@@ -430,10 +430,9 @@ export function useDrag(options: UseDragOptions = {}): DragBinding {
 
   // A disabled hook ends a drag in flight; unmounting stops springs and timers (and survives a StrictMode remount).
   React.useEffect(() => {
-    if (!enabled && session.current) {
-      session.current = null;
-      setDragging(false);
-    }
+    // Like `cancel()`: `onEnd(info, true)` for a drag that had started, so the consumer can settle or reset.
+    if (!enabled && session.current) binding.cancel();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
   React.useEffect(
     () => () => {

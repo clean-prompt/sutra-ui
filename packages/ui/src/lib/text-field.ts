@@ -22,12 +22,24 @@ export function replaceTextRange(el: HTMLTextAreaElement | HTMLInputElement, sta
   el.focus();
 }
 
-const mirrorProps = [
-  "boxSizing", "width", "height", "overflowX", "overflowY", "borderTopWidth", "borderRightWidth", "borderBottomWidth",
-  "borderLeftWidth", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft", "fontStyle", "fontVariant",
-  "fontWeight", "fontStretch", "fontSize", "lineHeight", "fontFamily", "textAlign", "textTransform", "textIndent",
-  "letterSpacing", "wordSpacing", "tabSize", "direction",
+/**
+ * The computed styles a mirror element copies from a text field so its text wraps and lines up like the field's (typography,
+ * padding, border widths, wrapping). Shared by `getTextareaCaretRect` and `hooks/use-textarea-mirror`. Padding and borders stay
+ * physical on purpose: they are what the field computes, and the mirror reads the same `direction`.
+ */
+export const TEXT_MIRROR_STYLES = [
+  "fontFamily", "fontSize", "fontWeight", "fontStyle", "fontVariant", "fontStretch", "fontFeatureSettings",
+  "fontVariationSettings", "fontKerning", "letterSpacing", "wordSpacing", "lineHeight", "textTransform", "textIndent",
+  "textAlign", "tabSize", "direction", "paddingTop", "paddingBottom", "paddingLeft", "paddingRight",
+  "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth", "whiteSpace", "wordBreak", "overflowWrap",
 ] as const;
+
+/** Border styles for a mirror that draws (transparent) borders like the field; the caret probe measures borders itself instead. */
+export const TEXT_MIRROR_BORDER_STYLES = [
+  "borderTopStyle", "borderRightStyle", "borderBottomStyle", "borderLeftStyle",
+] as const;
+
+const caretMirrorProps = ["boxSizing", "width", "height", "overflowX", "overflowY", ...TEXT_MIRROR_STYLES] as const;
 
 /**
  * Viewport rect of the caret at `position` in a textarea/input (mirror-div technique).
@@ -39,7 +51,7 @@ export function getTextareaCaretRect(el: HTMLTextAreaElement | HTMLInputElement,
   const cs = window.getComputedStyle(el);
   const div = document.createElement("div");
   const style = div.style as unknown as Record<string, string>;
-  for (const p of mirrorProps) style[p] = (cs as unknown as Record<string, string>)[p] ?? "";
+  for (const p of caretMirrorProps) style[p] = (cs as unknown as Record<string, string>)[p] ?? "";
   style.position = "absolute";
   style.visibility = "hidden";
   style.top = "0";

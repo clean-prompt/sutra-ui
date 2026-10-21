@@ -1,4 +1,5 @@
 import * as React from "react";
+import { directionOf } from "../lib/direction";
 import { useControllableState } from "./use-controllable-state";
 import { useLatestRef } from "./use-iso-layout-effect";
 
@@ -174,7 +175,11 @@ const raf = (cb: () => void): number =>
   typeof requestAnimationFrame === "function" ? requestAnimationFrame(cb) : (setTimeout(cb, 16) as unknown as number);
 const caf = (id: number) => (typeof cancelAnimationFrame === "function" ? cancelAnimationFrame(id) : clearTimeout(id));
 
-/** Converts a client point to the container's content coordinates (what an absolute child inside it uses). */
+/**
+ * Converts a client point to the container's content coordinates (what an absolute child with a physical `left` / `top` uses).
+ * `scrollLeft` is 0 at the start edge and runs negative towards the end in right-to-left, which makes `x` negative there: the
+ * padding box's left edge is the origin in both directions, so the same sum holds.
+ */
 function toContent(el: HTMLElement, x: number, y: number): MarqueePoint {
   const r = el.getBoundingClientRect();
   return { x: x - r.left - el.clientLeft + el.scrollLeft, y: y - r.top - el.clientTop + el.scrollTop };
@@ -231,7 +236,9 @@ export function useMarqueeSelection(options: UseMarqueeSelectionOptions): UseMar
     const current = toContent(el, s.client.x, s.client.y);
     const maxX = Math.max(el.scrollWidth, el.clientWidth);
     const maxY = Math.max(el.scrollHeight, el.clientHeight);
-    const clampX = (n: number) => (maxX > 0 ? Math.min(Math.max(n, 0), maxX) : n);
+    // The scrollable overflow lies to the right of the origin in LTR ([0, scrollWidth]) and to its left in RTL.
+    const minX = directionOf(el) === "rtl" ? el.clientWidth - maxX : 0;
+    const clampX = (n: number) => (maxX > 0 ? Math.min(Math.max(n, minX), minX + maxX) : n);
     const clampY = (n: number) => (maxY > 0 ? Math.min(Math.max(n, 0), maxY) : n);
     const rect = rectFromPoints(
       { x: clampX(s.start.x), y: clampY(s.start.y) },
@@ -298,7 +305,10 @@ export function useMarqueeSelection(options: UseMarqueeSelectionOptions): UseMar
       const r = el.getBoundingClientRect();
       const barX = el.offsetWidth - el.clientWidth - el.clientLeft * 2;
       const barY = el.offsetHeight - el.clientHeight - el.clientTop * 2;
-      if (barX > 0 && event.clientX >= r.left + el.clientLeft + el.clientWidth) return;
+      // The vertical scrollbar is on the inline-end side: the right in LTR, the left in RTL (where `clientLeft` includes it).
+      if (directionOf(el) === "rtl") {
+        if (el.clientLeft > 0 && event.clientX < r.left + el.clientLeft) return;
+      } else if (barX > 0 && event.clientX >= r.left + el.clientLeft + el.clientWidth) return;
       if (barY > 0 && event.clientY >= r.top + el.clientTop + el.clientHeight) return;
 
       const operation: MarqueeOperation = event.metaKey || event.ctrlKey ? "toggle" : event.shiftKey ? "add" : "replace";

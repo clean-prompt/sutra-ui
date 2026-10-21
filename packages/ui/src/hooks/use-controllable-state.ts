@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useIsoLayoutEffect } from "./use-iso-layout-effect";
 
 /**
  * State that can be controlled (value + onChange) or uncontrolled (defaultValue).
@@ -20,16 +21,19 @@ export function useControllableState<T>({
   const isControlled = value !== undefined;
   const current = isControlled ? (value as T) : internal;
 
+  // Refs are written in a layout effect, not during render, so a render React discards cannot leave them stale.
   const onChangeRef = React.useRef(onChange);
-  onChangeRef.current = onChange;
   const isControlledRef = React.useRef(isControlled);
-  isControlledRef.current = isControlled;
   /** The value as of the last render. */
   const renderedRef = React.useRef(current);
-  renderedRef.current = current;
   /** The latest value, including updates requested since the last render. */
   const latestRef = React.useRef(current);
-  latestRef.current = current;
+  useIsoLayoutEffect(() => {
+    onChangeRef.current = onChange;
+    isControlledRef.current = isControlled;
+    renderedRef.current = current;
+    latestRef.current = current;
+  });
 
   const setValue = React.useCallback((next: T | ((prev: T) => T)) => {
     const prev = latestRef.current;
