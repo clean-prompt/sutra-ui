@@ -11,7 +11,7 @@ import {
   RiUserLine,
 } from "@remixicon/react";
 import { cn } from "../lib/cn";
-import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { useCountdown } from "../hooks/use-now";
 import { formatCountdown } from "../lib/duration";
 import { CopyButton } from "../primitives/copy-button";
@@ -23,13 +23,17 @@ import { CheckboxField } from "../primitives/checkbox";
 import { OTPField } from "../primitives/input-otp";
 import { Separator } from "../primitives/separator";
 import { PasswordStrength, getPasswordScore } from "../patterns/password-strength";
-import { InlineAlert } from "../primitives/inline-alert";
 import { textLinkVariants } from "../primitives/text-link";
 import { SutraMark } from "../assets/brand";
-import { FeaturedIcon, type IconComponent, type FeaturedIconColor } from "../assets/icons";
 import { QRCode } from "../kits/identity/qr-code";
-import { BlockLink, useBlockAction as useAsyncAction, type BlockLinkRenderer } from "./block-utils";
+import { AuthFrame as BaseAuthFrame, FormError, type AuthFrameProps, type AuthHeadingLevel } from "./auth-frame-internal";
+import { BlockLink, useBlockAction, type BlockLinkRenderer } from "./block-utils";
 import { isEmail } from "../lib/validate";
+
+/** The shared card frame with its styling slot named here, so the generated docs list it. */
+const AuthFrame = React.forwardRef<HTMLDivElement, AuthFrameProps>((props, ref) => <BaseAuthFrame ref={ref} data-slot="auth-card" {...props} />);
+AuthFrame.displayName = "AuthFrame";
+
 
 /* ------------------------------------------------------------------ */
 /* Shared frame                                                        */
@@ -49,75 +53,14 @@ export interface AuthCardBaseProps extends Omit<React.HTMLAttributes<HTMLDivElem
   renderLink?: BlockLinkRenderer;
   /** Replace the default footer (e.g. "Don't have an account? Sign up"). Pass `null` to hide it. */
   footer?: React.ReactNode;
+  /**
+   * Element of the card title (`1` is an `h1`). Use `2` or lower when the card sits inside a page that has its own `h1`.
+   * @default 1
+   */
+  headingLevel?: AuthHeadingLevel;
 }
 
 const linkClass = textLinkVariants({ variant: "default", underline: "hover" });
-
-interface AuthFrameProps extends Omit<AuthCardBaseProps, "renderLink"> {
-  icon?: IconComponent;
-  iconColor?: FeaturedIconColor;
-  defaultLogo?: boolean;
-}
-
-function AuthFrame({
-  variant = "card",
-  logo,
-  defaultLogo,
-  icon,
-  iconColor = "brand",
-  title,
-  description,
-  footer,
-  className,
-  children,
-  ...props
-}: AuthFrameProps) {
-  const card = variant === "card";
-  const showLogo = logo ?? (icon ? false : defaultLogo ?? card);
-  const logoNode = showLogo === true ? <SutraMark size={40} title="Sutra" /> : showLogo || null;
-  return (
-    <div
-      data-slot="auth-card"
-      className={cn(
-        "w-full max-w-[400px] text-card-foreground",
-        card && "rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8",
-        className
-      )}
-      {...props}
-    >
-      <div className="mb-6 flex flex-col items-center gap-2 text-center sm:mb-8">
-        {logoNode ? <div className="mb-2">{logoNode}</div> : null}
-        {icon ? (
-          <FeaturedIcon icon={icon} color={iconColor} variant="outline-ring" size="lg" className="mb-2" />
-        ) : null}
-        {title ? <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">{title}</h1> : null}
-        {description ? <p className="text-pretty text-sm text-muted-foreground">{description}</p> : null}
-      </div>
-      {children}
-      {footer != null && footer !== false ? (
-        <div
-          className={cn(
-            "text-center text-sm text-muted-foreground",
-            card
-              ? "-mx-6 -mb-6 mt-6 rounded-b-2xl border-t border-border bg-subtle px-6 py-4 sm:-mx-8 sm:-mb-8 sm:mt-8 sm:px-8"
-              : "mt-6"
-          )}
-        >
-          {footer}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function FormError({ children }: { children?: React.ReactNode }) {
-  if (children == null || children === false || children === "") return null;
-  return (
-    <InlineAlert variant="destructive" className="mb-5 border border-destructive/20 bg-destructive-soft/50" role="alert">
-      {children}
-    </InlineAlert>
-  );
-}
 
 interface AuthSocialButtonsProps {
   providers: SocialProvider[];
@@ -152,7 +95,7 @@ function AuthSocialButtons({ providers, layout, pending, disabled, onSelect }: A
 
 function useSocial(onSocial?: (provider: SocialProvider) => unknown) {
   const [provider, setProvider] = React.useState<SocialProvider | null>(null);
-  const action = useSharedAsyncAction((p: SocialProvider) => onSocial?.(p));
+  const action = useAsyncAction((p: SocialProvider) => onSocial?.(p));
   const select = (p: SocialProvider) => {
     if (!onSocial) return;
     setProvider(p);
@@ -228,7 +171,7 @@ export interface LoginCardProps extends AuthCardBaseProps {
 }
 
 /** Email + password sign-in card with remember me, forgot link and SSO buttons. */
-export const LoginCard = React.forwardRef<HTMLFormElement, LoginCardProps>(
+export const LoginCard = React.forwardRef<HTMLDivElement, LoginCardProps>(
   (
     {
       title = "Welcome back",
@@ -254,9 +197,10 @@ export const LoginCard = React.forwardRef<HTMLFormElement, LoginCardProps>(
     const [password, setPassword] = React.useState("");
     const [remember, setRemember] = React.useState(true);
     const [errors, setErrors] = React.useState<{ email?: string; password?: string }>({});
-    const action = useAsyncAction(loading);
+    const action = useBlockAction(loading);
     const social = useSocial(onSocialSignIn);
     const busy = action.busy || social.pending != null;
+    const failed = Boolean(error ?? action.error);
 
     const submit = (e: React.FormEvent) => {
       e.preventDefault();
@@ -270,6 +214,7 @@ export const LoginCard = React.forwardRef<HTMLFormElement, LoginCardProps>(
 
     return (
       <AuthFrame
+        ref={ref}
         title={title}
         description={description}
         footer={
@@ -299,9 +244,9 @@ export const LoginCard = React.forwardRef<HTMLFormElement, LoginCardProps>(
             <Separator label="or" className="my-6" />
           </>
         )}
-        <form ref={ref} noValidate onSubmit={submit}>
+        <form noValidate onSubmit={submit}>
           <FieldGroup>
-            <Field invalid={Boolean(errors.email)}>
+            <Field invalid={Boolean(errors.email) || failed}>
               <FieldLabel>Email</FieldLabel>
               <Input
                 type="email"
@@ -315,7 +260,7 @@ export const LoginCard = React.forwardRef<HTMLFormElement, LoginCardProps>(
               />
               <FieldError>{errors.email}</FieldError>
             </Field>
-            <Field invalid={Boolean(errors.password)}>
+            <Field invalid={Boolean(errors.password) || failed}>
               <div className="flex items-center justify-between">
                 <FieldLabel>Password</FieldLabel>
                 {!showRemember && (
@@ -410,7 +355,7 @@ export interface SignUpCardProps extends AuthCardBaseProps {
 }
 
 /** Account creation card: name, email, password with strength meter and terms checkbox. */
-export const SignUpCard = React.forwardRef<HTMLFormElement, SignUpCardProps>(
+export const SignUpCard = React.forwardRef<HTMLDivElement, SignUpCardProps>(
   (
     {
       title = "Create your account",
@@ -435,9 +380,10 @@ export const SignUpCard = React.forwardRef<HTMLFormElement, SignUpCardProps>(
     const [values, setValues] = React.useState<SignUpCardValues>({ name: "", email: "", password: "" });
     const [terms, setTerms] = React.useState(false);
     const [errors, setErrors] = React.useState<Partial<Record<keyof SignUpCardValues | "terms", string>>>({});
-    const action = useAsyncAction(loading);
+    const action = useBlockAction(loading);
     const social = useSocial(onSocialSignIn);
     const busy = action.busy || social.pending != null;
+    const failed = Boolean(error ?? action.error);
     const set = (key: keyof SignUpCardValues) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setValues((v) => ({ ...v, [key]: e.target.value }));
 
@@ -455,6 +401,7 @@ export const SignUpCard = React.forwardRef<HTMLFormElement, SignUpCardProps>(
 
     return (
       <AuthFrame
+        ref={ref}
         title={title}
         description={description}
         footer={
@@ -484,7 +431,7 @@ export const SignUpCard = React.forwardRef<HTMLFormElement, SignUpCardProps>(
             <Separator label="or sign up with email" className="my-6" />
           </>
         )}
-        <form ref={ref} noValidate onSubmit={submit}>
+        <form noValidate onSubmit={submit}>
           <FieldGroup>
             <Field invalid={Boolean(errors.name)}>
               <FieldLabel>Full name</FieldLabel>
@@ -499,7 +446,7 @@ export const SignUpCard = React.forwardRef<HTMLFormElement, SignUpCardProps>(
               />
               <FieldError>{errors.name}</FieldError>
             </Field>
-            <Field invalid={Boolean(errors.email)}>
+            <Field invalid={Boolean(errors.email) || failed}>
               <FieldLabel>Work email</FieldLabel>
               <Input
                 type="email"
@@ -513,7 +460,7 @@ export const SignUpCard = React.forwardRef<HTMLFormElement, SignUpCardProps>(
               />
               <FieldError>{errors.email}</FieldError>
             </Field>
-            <Field invalid={Boolean(errors.password)}>
+            <Field invalid={Boolean(errors.password) || failed}>
               <FieldLabel>Password</FieldLabel>
               <PasswordInput
                 size="lg"
@@ -623,8 +570,9 @@ export const MagicLinkCard = React.forwardRef<HTMLDivElement, MagicLinkCardProps
       if (sentProp === undefined) setSentState(v);
       onSentChange?.(v);
     };
-    const action = useAsyncAction(loading);
-    const resend = useAsyncAction();
+    const action = useBlockAction(loading);
+    const resend = useBlockAction();
+    const failed = Boolean(error ?? action.error);
 
     const submit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -637,6 +585,7 @@ export const MagicLinkCard = React.forwardRef<HTMLDivElement, MagicLinkCardProps
     if (sent) {
       return (
         <AuthFrame
+          ref={ref}
           icon={RiMailSendLine}
           title="Check your inbox"
           description={
@@ -664,7 +613,7 @@ export const MagicLinkCard = React.forwardRef<HTMLDivElement, MagicLinkCardProps
           }
           {...props}
         >
-          <div ref={ref} className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
             <Button asChild size="lg" fullWidth>
               <a href={mailAppHref}>
                 <RiMailLine aria-hidden />
@@ -681,6 +630,7 @@ export const MagicLinkCard = React.forwardRef<HTMLDivElement, MagicLinkCardProps
 
     return (
       <AuthFrame
+        ref={ref}
         title={title}
         description={description}
         footer={
@@ -697,11 +647,11 @@ export const MagicLinkCard = React.forwardRef<HTMLDivElement, MagicLinkCardProps
         }
         {...props}
       >
-        <div ref={ref}>
+        <div>
           <FormError>{error ?? action.error}</FormError>
           <form noValidate onSubmit={submit}>
             <FieldGroup>
-              <Field invalid={invalid}>
+              <Field invalid={invalid || failed}>
                 <FieldLabel>Email</FieldLabel>
                 <Input
                   type="email"
@@ -732,7 +682,7 @@ MagicLinkCard.displayName = "MagicLinkCard";
 /* ------------------------------------------------------------------ */
 
 export interface OTPVerifyCardProps extends AuthCardBaseProps {
-  /** Where the code was sent (shown in the description). */
+  /** Where the code was sent (shown in the description). Without it the description says "your email". */
   email?: string;
   /**
    * Number of code digits.
@@ -761,10 +711,10 @@ export interface OTPVerifyCardProps extends AuthCardBaseProps {
 }
 
 /** Six-digit verification code card with auto-submit and a resend countdown. */
-export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProps>(
+export const OTPVerifyCard = React.forwardRef<HTMLDivElement, OTPVerifyCardProps>(
   (
     {
-      email = "maya@sutra.app",
+      email,
       title = "Check your email",
       description,
       length = 6,
@@ -786,8 +736,8 @@ export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProp
     const [resendAt, setResendAt] = React.useState(() => Date.now() + resendSeconds * 1000);
     // Capped: right after a resend the countdown still holds its clock from the previous expiry.
     const remainingMs = Math.min(useCountdown(resendAt).remainingMs, resendSeconds * 1000);
-    const action = useAsyncAction(loading);
-    const resend = useAsyncAction();
+    const action = useBlockAction(loading);
+    const resend = useBlockAction();
 
     const verify = (value: string) => {
       if (value.length < length) return;
@@ -806,12 +756,13 @@ export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProp
 
     return (
       <AuthFrame
+        ref={ref}
         icon={RiShieldKeyholeLine}
         title={title}
         description={
           description ?? (
             <>
-              We sent a {length}-digit code to <span className="font-medium text-foreground">{email}</span>
+              We sent a {length}-digit code to <span className="font-medium text-foreground">{email || "your email"}</span>
             </>
           )
         }
@@ -819,7 +770,6 @@ export const OTPVerifyCard = React.forwardRef<HTMLFormElement, OTPVerifyCardProp
         {...props}
       >
         <form
-          ref={ref}
           noValidate
           onSubmit={(e) => {
             e.preventDefault();
@@ -902,7 +852,7 @@ export interface ForgotPasswordCardProps extends AuthCardBaseProps {
 }
 
 /** Request a password reset link; shows a confirmation once sent. */
-export const ForgotPasswordCard = React.forwardRef<HTMLFormElement, ForgotPasswordCardProps>(
+export const ForgotPasswordCard = React.forwardRef<HTMLDivElement, ForgotPasswordCardProps>(
   (
     {
       title = "Forgot your password?",
@@ -928,7 +878,8 @@ export const ForgotPasswordCard = React.forwardRef<HTMLFormElement, ForgotPasswo
       if (sentProp === undefined) setSentState(v);
       onSentChange?.(v);
     };
-    const action = useAsyncAction(loading);
+    const action = useBlockAction(loading);
+    const failed = Boolean(error ?? action.error);
     const back = footer !== undefined ? footer : <BackLink href={backHref} label="Back to sign in" renderLink={renderLink} />;
 
     const submit = async (e: React.FormEvent) => {
@@ -942,6 +893,7 @@ export const ForgotPasswordCard = React.forwardRef<HTMLFormElement, ForgotPasswo
     if (sent) {
       return (
         <AuthFrame
+          ref={ref}
           icon={RiMailSendLine}
           iconColor="success"
           title="Check your email"
@@ -962,11 +914,11 @@ export const ForgotPasswordCard = React.forwardRef<HTMLFormElement, ForgotPasswo
     }
 
     return (
-      <AuthFrame icon={RiKey2Line} title={title} description={description} footer={back} {...props}>
+      <AuthFrame ref={ref} icon={RiKey2Line} title={title} description={description} footer={back} {...props}>
         <FormError>{error ?? action.error}</FormError>
-        <form ref={ref} noValidate onSubmit={submit}>
+        <form noValidate onSubmit={submit}>
           <FieldGroup>
-            <Field invalid={invalid}>
+            <Field invalid={invalid || failed}>
               <FieldLabel>Email</FieldLabel>
               <Input
                 type="email"
@@ -1018,7 +970,7 @@ export interface ResetPasswordCardProps extends AuthCardBaseProps {
 }
 
 /** Set a new password with strength meter and confirmation; success state afterwards. */
-export const ResetPasswordCard = React.forwardRef<HTMLFormElement, ResetPasswordCardProps>(
+export const ResetPasswordCard = React.forwardRef<HTMLDivElement, ResetPasswordCardProps>(
   (
     {
       title = "Set a new password",
@@ -1040,7 +992,8 @@ export const ResetPasswordCard = React.forwardRef<HTMLFormElement, ResetPassword
     const [confirm, setConfirm] = React.useState("");
     const [errors, setErrors] = React.useState<{ password?: string; confirm?: string }>({});
     const [done, setDone] = React.useState(false);
-    const action = useAsyncAction(loading);
+    const action = useBlockAction(loading);
+    const failed = Boolean(error ?? action.error);
 
     const submit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -1056,6 +1009,7 @@ export const ResetPasswordCard = React.forwardRef<HTMLFormElement, ResetPassword
     if (done) {
       return (
         <AuthFrame
+          ref={ref}
           icon={RiShieldCheckLine}
           iconColor="success"
           title="Password reset"
@@ -1080,6 +1034,7 @@ export const ResetPasswordCard = React.forwardRef<HTMLFormElement, ResetPassword
 
     return (
       <AuthFrame
+        ref={ref}
         icon={RiLockPasswordLine}
         title={title}
         description={description}
@@ -1087,9 +1042,9 @@ export const ResetPasswordCard = React.forwardRef<HTMLFormElement, ResetPassword
         {...props}
       >
         <FormError>{error ?? action.error}</FormError>
-        <form ref={ref} noValidate onSubmit={submit}>
+        <form noValidate onSubmit={submit}>
           <FieldGroup>
-            <Field invalid={Boolean(errors.password)}>
+            <Field invalid={Boolean(errors.password) || failed}>
               <FieldLabel>New password</FieldLabel>
               <PasswordInput
                 size="lg"
@@ -1101,7 +1056,7 @@ export const ResetPasswordCard = React.forwardRef<HTMLFormElement, ResetPassword
               <PasswordStrength password={password} className="pt-1" />
               <FieldError>{errors.password}</FieldError>
             </Field>
-            <Field invalid={Boolean(errors.confirm)}>
+            <Field invalid={Boolean(errors.confirm) || failed}>
               <FieldLabel>Confirm password</FieldLabel>
               <PasswordInput
                 size="lg"
@@ -1173,9 +1128,10 @@ export const SSOOnlyCard = React.forwardRef<HTMLDivElement, SSOOnlyCardProps>(
     ref
   ) => {
     const social = useSocial(onSocialSignIn);
-    const saml = useAsyncAction();
+    const saml = useBlockAction();
     return (
       <AuthFrame
+        ref={ref}
         title={title}
         description={description}
         footer={
@@ -1197,7 +1153,7 @@ export const SSOOnlyCard = React.forwardRef<HTMLDivElement, SSOOnlyCardProps>(
         }
         {...props}
       >
-        <div ref={ref}>
+        <div>
           <FormError>{error ?? saml.error ?? social.error}</FormError>
           <AuthSocialButtons
             providers={providers}
@@ -1236,7 +1192,7 @@ SSOOnlyCard.displayName = "SSOOnlyCard";
 export interface TwoFactorSetupCardProps extends AuthCardBaseProps {
   /** Base32 secret shown for manual entry (spaces are ignored when copying). */
   secret?: string;
-  /** Account label shown under the QR code. */
+  /** Account label shown under the QR code (an email address, say). Left out of the label and the provisioning URI when empty. */
   account?: string;
   /** Issuer (service name) shown in the authenticator app. Defaults to "Sutra". */
   issuer?: string;
@@ -1265,7 +1221,8 @@ const defaultRecoveryCodes = ["7KQ2-M9XD", "P4LW-8ZRT", "Y3HN-C6VB", "2FJE-Q7SK"
 export function buildOtpauthUri({ issuer, account, secret }: { issuer: string; account: string; secret: string }) {
   const enc = encodeURIComponent;
   const key = secret.replace(/\s+/g, "").toUpperCase();
-  return `otpauth://totp/${enc(issuer)}:${enc(account)}?secret=${enc(key)}&issuer=${enc(issuer)}`;
+  const label = account ? `${enc(issuer)}:${enc(account)}` : enc(issuer);
+  return `otpauth://totp/${label}?secret=${enc(key)}&issuer=${enc(issuer)}`;
 }
 
 /** Authenticator app setup: scan a QR code or copy the secret, then confirm with a 6-digit code. */
@@ -1275,7 +1232,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
       title = "Set up two-factor authentication",
       description = "Protect your account with an authenticator app like 1Password, Authy or Google Authenticator.",
       secret = "JBSW Y3DP EHPK 3PXP K4ZQ",
-      account = "maya@sutra.app",
+      account = "",
       issuer = "Sutra",
       otpauthUri,
       onVerify,
@@ -1294,7 +1251,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
   ) => {
     const [code, setCode] = React.useState("");
     const [done, setDone] = React.useState(false);
-    const action = useAsyncAction(loading);
+    const action = useBlockAction(loading);
 
     const verify = async (value: string) => {
       if (value.length < 6) return;
@@ -1305,6 +1262,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
     if (done) {
       return (
         <AuthFrame
+          ref={ref}
           icon={RiShieldCheckLine}
           iconColor="success"
           title="Two-factor is on"
@@ -1314,7 +1272,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
           className={cn(variant !== "plain" && "max-w-[440px]", className)}
           {...props}
         >
-          <div ref={ref} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             <ul className="grid grid-cols-2 gap-2 rounded-box border border-border bg-subtle p-4 font-mono text-sm tabular-nums text-foreground">
               {recoveryCodes.map((c) => (
                 <li key={c} className="text-center">
@@ -1359,6 +1317,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
 
     return (
       <AuthFrame
+        ref={ref}
         icon={RiShieldKeyholeLine}
         title={title}
         description={description}
@@ -1367,7 +1326,7 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
         className={cn(variant !== "plain" && "max-w-[440px]", className)}
         {...props}
       >
-        <div ref={ref} className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
           <FormError>{error ?? action.error}</FormError>
           <section className="flex flex-col gap-3">
             {step(1, "Scan this QR code with your authenticator app")}
@@ -1378,11 +1337,11 @@ export const TwoFactorSetupCard = React.forwardRef<HTMLDivElement, TwoFactorSetu
                   size={156}
                   quietZone={0}
                   logo={<SutraMark size={30} />}
-                  title={`QR code to add ${issuer} (${account}) to your authenticator app`}
+                  title={`QR code to add ${account ? `${issuer} (${account})` : issuer} to your authenticator app`}
                 />
               </span>
               <span className="text-xs text-muted-foreground">
-                {issuer} · {account}
+                {account ? `${issuer} · ${account}` : issuer}
               </span>
             </div>
           </section>

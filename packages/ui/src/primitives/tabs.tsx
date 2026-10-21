@@ -185,6 +185,7 @@ export const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.L
     let indicatorStyle: React.CSSProperties | undefined;
     const indicatorAccented = accented || activeAccent !== "";
     if (rect) {
+      // rtl-physical: the indicator is placed from the measured offsetLeft, which counts from the physical left
       if (variant === "underline") {
         indicatorStyle = vertical
           ? { top: rect.top, height: rect.height, insetInlineStart: 0, width: 2 }

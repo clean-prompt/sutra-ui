@@ -48,6 +48,7 @@ import {
   RiText,
   RiUser3Line,
 } from "@sutra/ui/icons";
+import { demoShare } from "@sutra/ui/blocks/registry";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { SwipeRowDemo } from "./gesture-demos";
 
@@ -441,8 +442,9 @@ export function MobilePage() {
         <PresenceDemo />
       </Demo>
       <Demo id="share-dialog" title="Share dialog" description="Per-person roles, invite with a role, general access, link permission, expiry and public comments.">
-        <ShareDialog trigger={<Button leadingIcon={<RiShareLine />}>Share</Button>} />
+        <ShareDialog {...demoShare} trigger={<Button leadingIcon={<RiShareLine />}>Share</Button>} />
         <ShareDialog
+          {...demoShare}
           currentUserId="p3"
           defaultAccess="restricted"
           itemName="Design review"

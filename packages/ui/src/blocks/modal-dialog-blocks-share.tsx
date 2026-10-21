@@ -40,7 +40,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../primitives/dropdown-menu";
-import { useBlockAction as useAsyncAction } from "./block-utils";
+import { useBlockAction } from "./block-utils";
 import { isEmail } from "../lib/validate";
 import { useFollowListProp } from "../hooks/use-follow-list-prop";
 import { type BlockDialogBaseProps, useDialogOpen } from "./modal-dialog-blocks-internal";
@@ -59,9 +59,9 @@ export type ShareLinkRole = Exclude<ShareRole, "owner">;
 export type ShareLinkExpiry = "never" | "1h" | "1d" | "7d" | "30d" | "custom";
 
 export interface ShareDialogProps extends BlockDialogBaseProps {
-  /** Name of the shared item. */
+  /** Name of the shared item, shown in the title ("Share “Q4 plan”"). Without it the title is "Share". */
   itemName?: string;
-  /** The share link shown in the link field; the default is a sample URL. */
+  /** The link the "Copy link" button copies. Without it the button is hidden. */
   link?: string;
   /** Controlled who can open the item: `restricted` (invited people), `workspace` or `link` (anyone with the link). Use with `onAccessChange`. */
   access?: ShareAccess;
@@ -83,7 +83,7 @@ export interface ShareDialogProps extends BlockDialogBaseProps {
   onPeopleChange?: (people: DialogMember[]) => void;
   /** Called when someone is invited, with the role picked next to the email field. */
   onInvite?: (email: string, role: ShareLinkRole) => unknown;
-  /** The signed-in person: their row says "(you)" and offers "Leave" unless they own the item. */
+  /** Id (in `people`) of the signed-in person: their row says "(you)" and offers "Leave" unless they own the item. */
   currentUserId?: string;
   /** Called with the person id and the new role when a role is changed. */
   onRoleChange?: (personId: string, role: ShareRole) => void;
@@ -189,13 +189,6 @@ function formatExpiresIn(date: Date) {
   return `Expires in ${plural(Math.round(hours / 24), "day")}`;
 }
 
-const defaultPeople: DialogMember[] = [
-  { id: "p1", name: "Maya Patel", email: "maya@sutra.app", role: "owner", owner: true },
-  { id: "p2", name: "Priya Shah", email: "priya@northwind.co", role: "editor" },
-  { id: "p3", name: "Lena Okafor", email: "lena@northwind.co", role: "commenter" },
-  { id: "p4", name: "Noah Kim", email: "noah@northwind.co", role: "viewer" },
-];
-
 function accessMetaFor(access: ShareAccess, workspaceName: string) {
   switch (access) {
     case "restricted":
@@ -263,8 +256,8 @@ function SharePersonRole({
 
 /** Share an item: invite with a role, per-person roles, general access, link role + expiry, and copy link. */
 export function ShareDialog({
-  itemName = "Q4 Launch Plan",
-  link = "https://sutra.app/n/q4-launch-plan-8d2f",
+  itemName,
+  link,
   access,
   defaultAccess = "link",
   onAccessChange,
@@ -272,7 +265,7 @@ export function ShareDialog({
   defaultPeople: defaultPeopleProp,
   onPeopleChange,
   onInvite,
-  currentUserId = "p1",
+  currentUserId,
   onRoleChange,
   onRemovePerson,
   onLeave,
@@ -302,7 +295,7 @@ export function ShareDialog({
   });
   const [people, setPeople] = useControllableState<DialogMember[]>({
     value: peopleProp && onPeopleChange ? peopleProp : undefined,
-    defaultValue: defaultPeopleProp ?? peopleProp ?? defaultPeople,
+    defaultValue: defaultPeopleProp ?? peopleProp ?? [],
     onChange: onPeopleChange,
   });
   useFollowListProp(peopleProp, setPeople, !onPeopleChange);
@@ -324,7 +317,7 @@ export function ShareDialog({
   });
   const [email, setEmail] = React.useState("");
   const [inviteRole, setInviteRole] = React.useState<ShareLinkRole>(defaultInviteRole);
-  const action = useAsyncAction();
+  const action = useBlockAction();
   const meta = accessMetaFor(general, workspaceName);
   const expiryId = React.useId();
 
@@ -348,17 +341,17 @@ export function ShareDialog({
   };
 
   const changeRole = (id: string, role: ShareRole) => {
-    setPeople(people.map((p) => (p.id === id ? { ...p, role } : p)));
+    setPeople((list) => list.map((p) => (p.id === id ? { ...p, role } : p)));
     onRoleChange?.(id, role);
   };
 
   const remove = (id: string) => {
-    setPeople(people.filter((p) => p.id !== id));
+    setPeople((list) => list.filter((p) => p.id !== id));
     onRemovePerson?.(id);
   };
 
   const leave = (id: string) => {
-    setPeople(people.filter((p) => p.id !== id));
+    setPeople((list) => list.filter((p) => p.id !== id));
     onLeave?.();
   };
 
@@ -368,7 +361,13 @@ export function ShareDialog({
     if (!isEmail(value)) return;
     const ok = await action.run(onInvite ? () => onInvite(value, inviteRole) : undefined);
     if (!ok) return;
-    setPeople([...people, { id: `p-${Date.now()}`, name: value.split("@")[0]!, email: value, role: inviteRole }]);
+    // The address is the id of an invited person, so inviting the same address twice does not add a second row.
+    const id = `invite:${value.toLowerCase()}`;
+    setPeople((list) =>
+      list.some((p) => p.id === id || p.email.toLowerCase() === value.toLowerCase())
+        ? list
+        : [...list, { id, name: value.split("@")[0]!, email: value, role: inviteRole }]
+    );
     setEmail("");
   };
 
@@ -383,7 +382,7 @@ export function ShareDialog({
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
       <DialogContent size="md" className={className}>
         <DialogHeader>
-          <DialogTitle>Share “{itemName}”</DialogTitle>
+          <DialogTitle>{itemName ? `Share “${itemName}”` : "Share"}</DialogTitle>
           <DialogDescription className="sr-only">Manage who can access this item.</DialogDescription>
         </DialogHeader>
         <DialogBody className="flex flex-col gap-6">
@@ -522,9 +521,9 @@ export function ShareDialog({
           </section>
         </DialogBody>
         <DialogFooter bordered className="sm:justify-between">
-          <CopyButton variant="button" size="md" value={link} label="Copy link" onClick={() => onCopyLink?.(link)} />
+          {link ? <CopyButton variant="button" size="md" value={link} label="Copy link" onClick={() => onCopyLink?.(link)} /> : null}
           <DialogClose asChild>
-            <Button>Done</Button>
+            <Button className="ms-auto">Done</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

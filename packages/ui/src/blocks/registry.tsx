@@ -69,7 +69,7 @@ import {
   TestimonialWall,
   marketingDemoData,
 } from "./marketing-blocks";
-import { createMockKunjiClient } from "./demo-data";
+import { createMockKunjiClient, demoInviteLink, demoShare, demoUser } from "./demo-data";
 
 /* Demo fixtures and mocks, so galleries and tests can import everything demo-related from one path. */
 export * from "./demo-data";
@@ -132,11 +132,11 @@ export const blockRegistry: BlockRegistryEntry[] = [
   { id: "login-card", name: "Login card", category: "auth", component: demo("LoginCard", () => centered(h(LoginCard))), description: "Email and password sign in with remember me, forgot password link and Google/Apple/GitHub buttons." },
   { id: "sign-up-card", name: "Sign up card", category: "auth", component: demo("SignUpCard", () => centered(h(SignUpCard))), description: "Name, email and password with a live strength meter and a terms checkbox." },
   { id: "magic-link-card", name: "Magic link card", category: "auth", component: demo("MagicLinkCard", () => centered(h(MagicLinkCard))), description: "Passwordless email sign in that switches to a “check your inbox” state." },
-  { id: "otp-verify-card", name: "OTP verification card", category: "auth", component: demo("OTPVerifyCard", () => centered(h(OTPVerifyCard, { autoFocus: false }))), description: "Six-digit code entry with auto-submit and a resend countdown." },
+  { id: "otp-verify-card", name: "OTP verification card", category: "auth", component: demo("OTPVerifyCard", () => centered(h(OTPVerifyCard, { autoFocus: false, email: demoUser.email }))), description: "Six-digit code entry with auto-submit and a resend countdown." },
   { id: "forgot-password-card", name: "Forgot password card", category: "auth", component: demo("ForgotPasswordCard", () => centered(h(ForgotPasswordCard))), description: "Request a reset link, with a confirmation state." },
   { id: "reset-password-card", name: "Reset password card", category: "auth", component: demo("ResetPasswordCard", () => centered(h(ResetPasswordCard))), description: "New password and confirmation with strength meter and success state." },
   { id: "sso-only-card", name: "SSO-only card", category: "auth", component: demo("SSOOnlyCard", () => centered(h(SSOOnlyCard))), description: "A stack of OAuth providers plus SAML SSO." },
-  { id: "two-factor-setup-card", name: "Two-factor setup card", category: "auth", component: demo("TwoFactorSetupCard", () => centered(h(TwoFactorSetupCard))), description: "QR code, copyable setup key and a verification code, then recovery codes." },
+  { id: "two-factor-setup-card", name: "Two-factor setup card", category: "auth", component: demo("TwoFactorSetupCard", () => centered(h(TwoFactorSetupCard, { account: demoUser.email }))), description: "QR code, copyable setup key and a verification code, then recovery codes." },
 
   /* Full-page auth */
   { id: "auth-split-page", name: "Split auth page", category: "auth-page", component: demo("AuthSplitPage", () => h(AuthSplitPage)), description: "Form on the left, mesh-gradient brand panel with testimonial and logo cloud on the right." },
@@ -185,15 +185,15 @@ export const blockRegistry: BlockRegistryEntry[] = [
   /* Section headers */
   { id: "page-header-actions", name: "Page header with actions", category: "section-header", component: demo("PageHeaderWithActions", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithActions))), description: "Breadcrumbs, title, description and primary/secondary buttons." },
   { id: "page-header-tabs", name: "Page header with tabs", category: "section-header", component: demo("PageHeaderWithTabs", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithTabs, null, ...["overview", "tasks", "notes", "files", "activity"].map((v) => h(TabsContent, { key: v, value: v, className: "pt-6 text-sm text-muted-foreground" }, `The ${v} panel renders here.`))))), description: "Title, collaborators, actions and an underline tab bar with counts." },
-  { id: "page-header-stats", name: "Page header with stats", category: "section-header", component: demo("PageHeaderWithStats", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithStats))), description: "Greeting, range select and stat cards with sparklines and trend badges." },
+  { id: "page-header-stats", name: "Page header with stats", category: "section-header", component: demo("PageHeaderWithStats", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithStats, { title: "Good morning, Maya" }))), description: "Greeting, range select and stat cards with sparklines and trend badges." },
   { id: "page-header-search", name: "Page header with search", category: "section-header", component: demo("PageHeaderWithSearch", () => h("div", { className: "sm:p-6" }, h(PageHeaderWithSearch))), description: "Title with count, search, filter selects and a list/grid toggle." },
   { id: "profile-header", name: "Profile header", category: "section-header", component: demo("ProfileHeader", () => h("div", { className: "sm:p-6" }, h(ProfileHeader))), description: "Cover banner, overlapping avatar, bio, meta, stats and follow actions." },
   { id: "hero-header", name: "Hero header", category: "section-header", component: demo("HeroHeader", () => h(HeroHeader)), description: "Eyebrow pill, display heading, subtext and CTAs on a mesh gradient." },
 
   /* Dialogs */
   { id: "delete-confirm-dialog", name: "Delete confirmation", category: "dialog", component: demo("DeleteConfirmDialog", () => centered(h(DeleteConfirmDialog, { trigger: withTrigger("Delete workspace", "destructive") }))), description: "Destructive featured icon, consequences list and type-to-confirm input." },
-  { id: "invite-members-dialog", name: "Invite members", category: "dialog", component: demo("InviteMembersDialog", () => centered(h(InviteMembersDialog, { trigger: withTrigger("Invite members") }))), description: "Email tags with role select, member list with role menus and invite link." },
-  { id: "share-dialog", name: "Share", category: "dialog", component: demo("ShareDialog", () => centered(h(ShareDialog, { trigger: withTrigger("Share") }))), description: "Invite people, manage permissions, general link access and copy link." },
+  { id: "invite-members-dialog", name: "Invite members", category: "dialog", component: demo("InviteMembersDialog", () => centered(h(InviteMembersDialog, { inviteLink: demoInviteLink, trigger: withTrigger("Invite members") }))), description: "Email tags with role select, member list with role menus and invite link." },
+  { id: "share-dialog", name: "Share", category: "dialog", component: demo("ShareDialog", () => centered(h(ShareDialog, { ...demoShare, trigger: withTrigger("Share") }))), description: "Invite people, manage permissions, general link access and copy link." },
   { id: "feedback-dialog", name: "Feedback", category: "dialog", component: demo("FeedbackDialog", () => centered(h(FeedbackDialog, { trigger: withTrigger("Give feedback") }))), description: "Star rating, category segmented control, message and thank-you state." },
   { id: "upgrade-dialog", name: "Upgrade plan", category: "dialog", component: demo("UpgradeDialog", () => centered(h(UpgradeDialog, { trigger: withTrigger("Upgrade", "primary") }))), description: "Monthly/yearly toggle and three plan cards with feature checklists." },
   { id: "onboarding-dialog", name: "Onboarding", category: "dialog", component: demo("OnboardingDialog", () => centered(h(OnboardingDialog, { trigger: withTrigger("Start onboarding", "primary") }))), description: "Multi-step flow with a step indicator, content slots and Back/Continue." },

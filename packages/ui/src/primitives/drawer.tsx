@@ -178,7 +178,7 @@ const viewportHeight = () => (typeof window !== "undefined" && window.innerHeigh
 export interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   /** Show the grabber handle. Default true. */
   showHandle?: boolean;
-  /** Show a top-right close button. Default false. */
+  /** Show a close button at the top end (top-right in left-to-right). Default false. */
   showClose?: boolean;
   /** Classes for the dimmed backdrop behind the sheet. */
   overlayClassName?: string;

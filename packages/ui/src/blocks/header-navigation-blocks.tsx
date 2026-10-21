@@ -18,6 +18,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { isSafeHref } from "../lib/validate";
+import { useTheme } from "../hooks/use-theme";
 import { Button } from "../primitives/button";
 import { Badge } from "../primitives/badge";
 import { Separator } from "../primitives/separator";
@@ -592,6 +593,49 @@ const defaultDocsSearch: DocsSearchItem[] = [
   { value: "blocks", label: "Auth blocks", section: "Blocks" },
 ];
 
+/** One result in the DocsHeader palette. Without `onSearchSelect` it follows the item's `href` through `renderLink` (or a plain anchor). */
+function DocsSearchResult({
+  item,
+  icon,
+  renderLink,
+  handled,
+  onSelect,
+}: {
+  item: DocsSearchItem;
+  icon: React.ReactNode;
+  renderLink?: BlockLinkRenderer;
+  /** The app handles selection itself (`onSearchSelect`), so no link is followed. */
+  handled: boolean;
+  onSelect: () => void;
+}) {
+  const linkRef = React.useRef<HTMLSpanElement>(null);
+  const href = !handled && item.href && isSafeHref(item.href) ? item.href : undefined;
+  return (
+    <>
+      <CommandItem
+        value={`${item.value} ${item.label}`}
+        icon={icon}
+        onSelect={() => {
+          onSelect();
+          // Click the rendered link, so a router's own handler does the navigation.
+          linkRef.current?.querySelector("a")?.click();
+        }}
+      >
+        {item.label}
+        {item.href ? <RiArrowRightUpLine aria-hidden className="ms-auto size-3.5 opacity-50" /> : null}
+      </CommandItem>
+      {href ? (
+        // Not focusable or announced: it only exists so `renderLink` can build the link that `onSelect` clicks.
+        <span hidden ref={linkRef}>
+          <BlockLink href={href} renderLink={renderLink}>
+            {item.label}
+          </BlockLink>
+        </span>
+      ) : null}
+    </>
+  );
+}
+
 /** Documentation header: logo, version switcher, links, ⌘K search, GitHub and theme toggle. */
 export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
   (
@@ -622,22 +666,14 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
   ) => {
     const [ver, setVer] = React.useState(defaultVersion ?? versions[0] ?? "");
     const currentVersion = version ?? ver;
-    const [themeState, setThemeState] = React.useState<"light" | "dark">("light");
-    const theme = themeProp ?? themeState;
+    const { theme: docTheme, setTheme } = useTheme();
+    const theme = themeProp ?? docTheme.mode;
     const [open, setOpen] = React.useState(false);
     useCommandMenuShortcut(setOpen);
 
-    React.useEffect(() => {
-      if (themeProp !== undefined || typeof document === "undefined") return;
-      setThemeState(document.documentElement.classList.contains("dark") ? "dark" : "light");
-    }, [themeProp]);
-
     const toggleTheme = () => {
       const next = theme === "dark" ? "light" : "dark";
-      if (themeProp === undefined) {
-        setThemeState(next);
-        document.documentElement.classList.toggle("dark", next === "dark");
-      }
+      if (themeProp === undefined) setTheme({ mode: next });
       onThemeChange?.(next);
     };
 
@@ -716,19 +752,17 @@ export const DocsHeader = React.forwardRef<HTMLElement, DocsHeaderProps>(
                 {searchItems
                   .filter((i) => (i.section ?? "Pages") === section)
                   .map((item) => (
-                    <CommandItem
+                    <DocsSearchResult
                       key={item.value}
-                      value={`${item.value} ${item.label}`}
+                      item={item}
                       icon={section === "Components" ? <RiCodeSSlashLine aria-hidden /> : section === "Blocks" ? <RiBookOpenLine aria-hidden /> : <RiFileTextLine aria-hidden />}
+                      renderLink={renderLink}
+                      handled={Boolean(onSearchSelect)}
                       onSelect={() => {
                         setOpen(false);
                         onSearchSelect?.(item);
-                        if (item.href && !onSearchSelect && typeof window !== "undefined" && isSafeHref(item.href)) window.location.assign(item.href);
                       }}
-                    >
-                      {item.label}
-                      {item.href ? <RiArrowRightUpLine aria-hidden className="ms-auto size-3.5 opacity-50" /> : null}
-                    </CommandItem>
+                    />
                   ))}
               </CommandGroup>
             ))}

@@ -256,10 +256,16 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       setValueRef.current(next);
     }, [parse, normalize, clampOnBlur]);
 
-    const timers = React.useRef<{ timeout?: ReturnType<typeof setTimeout>; interval?: ReturnType<typeof setInterval> }>({});
+    const timers = React.useRef<{
+      timeout?: ReturnType<typeof setTimeout>;
+      interval?: ReturnType<typeof setInterval>;
+      /** Removes the window listeners that end a press; stopping the repeat (also on unmount) always runs it. */
+      release?: () => void;
+    }>({});
     const stopRepeat = React.useCallback(() => {
       clearTimeout(timers.current.timeout);
       clearInterval(timers.current.interval);
+      timers.current.release?.();
       timers.current = {};
     }, []);
     React.useEffect(() => stopRepeat, [stopRepeat]);
@@ -275,15 +281,15 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
           if (atBound(n)) stopRepeat();
         }, 60);
       }, 400);
-      const stop = () => {
-        stopRepeat();
+      const stop = () => stopRepeat();
+      window.addEventListener("pointerup", stop);
+      window.addEventListener("pointercancel", stop);
+      window.addEventListener("blur", stop);
+      timers.current.release = () => {
         window.removeEventListener("pointerup", stop);
         window.removeEventListener("pointercancel", stop);
         window.removeEventListener("blur", stop);
       };
-      window.addEventListener("pointerup", stop);
-      window.addEventListener("pointercancel", stop);
-      window.addEventListener("blur", stop);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

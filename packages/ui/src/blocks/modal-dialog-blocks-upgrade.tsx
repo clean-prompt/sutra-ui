@@ -3,7 +3,7 @@ import * as React from "react";
 import { RiCheckLine, RiSparkling2Line } from "@remixicon/react";
 import { cn } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
-import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { Button } from "../primitives/button";
 import { Badge } from "../primitives/badge";
 import { SegmentedControl } from "../primitives/segmented-control";
@@ -110,7 +110,7 @@ export function UpgradeDialog({
   });
   const [chosen, setChosen] = React.useState<string | null>(null);
   // Stays open if `onSelectPlan` throws.
-  const choose = useSharedAsyncAction((id: string) => onSelectPlan?.(id, cycle), { onSuccess: () => setOpen(false) });
+  const choose = useAsyncAction((id: string) => onSelectPlan?.(id, cycle), { onSuccess: () => setOpen(false) });
   const pending = choose.busy ? chosen : null;
 
   const select = async (id: string) => {

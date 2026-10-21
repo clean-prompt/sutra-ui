@@ -28,7 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../primitives/dropdown-menu";
-import { useBlockAction as useAsyncAction } from "./block-utils";
+import { useBlockAction } from "./block-utils";
 import { isEmail } from "../lib/validate";
 import { useFollowListProp } from "../hooks/use-follow-list-prop";
 import { type BlockDialogBaseProps, useDialogOpen } from "./modal-dialog-blocks-internal";
@@ -160,7 +160,7 @@ export interface InviteMembersDialogProps extends BlockDialogBaseProps {
   defaultMembers?: DialogMember[];
   /** Called with the full member list after a role change or removal. */
   onMembersChange?: (members: DialogMember[]) => void;
-  /** Invite link shown in the copy field; the default is a sample URL. */
+  /** Link the "Copy invite link" button copies. Without it the button is hidden. */
   inviteLink?: string;
   /** Called with the entered emails and the chosen role when the user sends the invites. A returned promise shows a spinner; throw to show the error message. */
   onInvite?: (emails: string[], role: string) => unknown;
@@ -175,7 +175,7 @@ export function InviteMembersDialog({
   members: membersProp,
   defaultMembers: defaultMembersProp,
   onMembersChange,
-  inviteLink = "https://sutra.app/join/northwind-7f3k2q",
+  inviteLink,
   onInvite,
   trigger,
   className,
@@ -192,14 +192,15 @@ export function InviteMembersDialog({
   });
   useFollowListProp(membersProp, setMembers, !onMembersChange);
   const { copied, copy } = useCopy();
-  const action = useAsyncAction();
+  const action = useBlockAction();
 
   const invite = async () => {
     if (emails.length === 0) return;
     const ok = await action.run(onInvite ? () => onInvite(emails, role) : undefined);
     if (!ok) return;
-    setMembers([
-      ...members,
+    // The list may have changed while the invite was in flight, so build on the latest one.
+    setMembers((list) => [
+      ...list,
       ...emails.map((email, i) => ({
         id: `invite-${Date.now()}-${i}`,
         name: email.split("@")[0]!.replace(/[._-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
@@ -244,14 +245,16 @@ export function InviteMembersDialog({
           <MemberList title={`Members · ${members.length}`} members={members} roles={roles} onChange={setMembers} />
         </DialogBody>
         <DialogFooter bordered className="sm:justify-between">
-          <Button
-            variant="ghost"
-            leadingIcon={copied ? <RiCheckLine aria-hidden className="text-success animate-pop" /> : <RiLinkM aria-hidden />}
-            onClick={() => void copy(inviteLink)}
-          >
-            {copied ? "Link copied" : "Copy invite link"}
-          </Button>
-          <div className="flex flex-col-reverse gap-2 sm:flex-row">
+          {inviteLink ? (
+            <Button
+              variant="ghost"
+              leadingIcon={copied ? <RiCheckLine aria-hidden className="text-success animate-pop" /> : <RiLinkM aria-hidden />}
+              onClick={() => void copy(inviteLink)}
+            >
+              {copied ? "Link copied" : "Copy invite link"}
+            </Button>
+          ) : null}
+          <div className="flex flex-col-reverse gap-2 sm:ms-auto sm:flex-row">
             <DialogClose asChild>
               <Button variant="secondary">Cancel</Button>
             </DialogClose>

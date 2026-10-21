@@ -28,60 +28,14 @@ import { AccountPanel, type AccountPanelProps } from "../kits/identity/device-se
 import { KunjiLink, KunjiLinkedBadge } from "../kits/identity/kunji-link";
 import { KunjiMark, KunjiSignIn, type KunjiSignInProps } from "../kits/identity/kunji-sign-in";
 import { formatKunjiSub, isKunjiAbortError, type KunjiClient, type KunjiPollResult } from "../kits/identity/kunji-client";
-import { FeaturedIcon, type FeaturedIconColor, type IconComponent } from "../assets/icons";
+import type { FeaturedIconColor, IconComponent } from "../assets/icons";
 import { AuthCenteredPage, type AuthPageBaseProps } from "./auth-pages";
-import { useAsyncAction } from "./block-utils";
-import { useAsyncAction as useSharedAsyncAction } from "../hooks/use-async-action";
+import { AuthFrame, FormError, type AuthHeadingLevel } from "./auth-frame-internal";
+import { useBlockAction } from "./block-utils";
+import { useAsyncAction } from "../hooks/use-async-action";
 import { useCountdown } from "../hooks/use-now";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { formatCountdown } from "../lib/duration";
-
-/* ------------------------------------------------------------------ */
-/* Shared frame                                                        */
-/* ------------------------------------------------------------------ */
-
-interface FrameProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
-  variant?: "card" | "plain";
-  icon?: IconComponent;
-  iconColor?: FeaturedIconColor;
-  logo?: React.ReactNode;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
-}
-
-const Frame = React.forwardRef<HTMLDivElement, FrameProps>(
-  ({ variant = "card", icon, iconColor = "brand", logo, title, description, className, children, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        "w-full max-w-[400px] text-card-foreground",
-        variant === "card" && "rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8",
-        className
-      )}
-      {...props}
-    >
-      {(logo || icon || title || description) && (
-        <div className="mb-6 flex flex-col items-center gap-2 text-center">
-          {logo ? <div className="mb-2">{logo}</div> : null}
-          {icon ? <FeaturedIcon icon={icon} color={iconColor} variant="outline-ring" size="lg" className="mb-2" /> : null}
-          {title ? <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">{title}</h1> : null}
-          {description ? <div className="text-pretty text-sm text-muted-foreground">{description}</div> : null}
-        </div>
-      )}
-      {children}
-    </div>
-  )
-);
-Frame.displayName = "KunjiBlockFrame";
-
-function FormError({ children }: { children?: React.ReactNode }) {
-  if (!children) return null;
-  return (
-    <InlineAlert variant="destructive" className="mb-5 border border-destructive/20 bg-destructive-soft/50" role="alert">
-      {children}
-    </InlineAlert>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Password / token forms                                              */
@@ -103,7 +57,7 @@ function PasswordForm({
 }) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const action = useAsyncAction();
+  const action = useBlockAction();
   return (
     <form
       noValidate
@@ -147,7 +101,7 @@ function PasswordForm({
 
 function TokenForm({ onSubmit, hint }: { onSubmit?: (token: string) => unknown; hint?: React.ReactNode }) {
   const [token, setToken] = React.useState("");
-  const action = useAsyncAction();
+  const action = useBlockAction();
   return (
     <form
       noValidate
@@ -188,6 +142,11 @@ function TokenForm({ onSubmit, hint }: { onSubmit?: (token: string) => unknown; 
 export type SignInMethodId = "kunji" | "password" | "token";
 
 export interface SignInMethodsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /**
+   * Element of the card title (`1` is an `h1`).
+   * @default 1
+   */
+  headingLevel?: AuthHeadingLevel;
   /** The kunji client that issues and polls sign-in challenges (and supplies the app name). */
   client: KunjiClient;
   /** Methods to offer, in order. Default all three. */
@@ -270,8 +229,9 @@ export const SignInMethods = React.forwardRef<HTMLDivElement, SignInMethodsProps
     };
     const names = { ...defaultMethodLabels, ...labels };
     return (
-      <Frame
+      <AuthFrame
         ref={ref}
+        defaultLogo={false}
         variant={variant}
         title={title}
         description={description ?? <>Sign in to {client.appName}</>}
@@ -304,7 +264,7 @@ export const SignInMethods = React.forwardRef<HTMLDivElement, SignInMethodsProps
             </TabsContent>
           )}
         </Tabs>
-      </Frame>
+      </AuthFrame>
     );
   }
 );
@@ -392,14 +352,14 @@ export const KunjiSignInPage = React.forwardRef<HTMLDivElement, KunjiSignInPageP
                 {...kunjiProps}
               />
             ) : (
-              <Frame title={method === "password" ? "Sign in with password" : "Sign in with a token"} className="max-w-none shadow-lg">
+              <AuthFrame defaultLogo={false} title={method === "password" ? "Sign in with password" : "Sign in with a token"} className="max-w-none shadow-lg">
                 {method === "password" ? (
                   <PasswordForm label={usernameLabel} onSubmit={onPasswordSubmit} />
                 ) : (
                   <TokenForm onSubmit={onTokenSubmit} />
                 )}
                 <div className="flex justify-center">{back}</div>
-              </Frame>
+              </AuthFrame>
             )}
           </div>
         )}
@@ -414,6 +374,11 @@ KunjiSignInPage.displayName = "KunjiSignInPage";
 /* ------------------------------------------------------------------ */
 
 export interface AwaitingApprovalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /**
+   * Element of the card title (`1` is an `h1`).
+   * @default 1
+   */
+  headingLevel?: AuthHeadingLevel;
   /** Heading; defaults to a waiting-for-approval message. */
   title?: React.ReactNode;
   /** Text under the heading. */
@@ -456,7 +421,7 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
   ) => {
     const [approved, setApproved] = React.useState(false);
     // Errors keep waiting; a newer check supersedes a pending one.
-    const poll = useSharedAsyncAction(async () => (onCheck ? onCheck() : false), {
+    const poll = useAsyncAction(async () => (onCheck ? onCheck() : false), {
       onSuccess: (ok) => {
         if (!ok) return;
         setApproved(true);
@@ -467,8 +432,10 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
     const check = poll.run;
     const checkingRef = useLatestRef(checking);
 
+    // `poll.run` always calls the latest `onCheck`, so an inline callback must not restart the interval.
+    const polling = Boolean(onCheck);
     React.useEffect(() => {
-      if (!onCheck || approved) return;
+      if (!polling || approved) return;
       // Skip a tick while a check is still in flight, so slow checks don't pile up.
       let inFlight = false;
       const id = setInterval(() => {
@@ -479,17 +446,18 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
         });
       }, pollInterval);
       return () => clearInterval(id);
-    }, [onCheck, approved, pollInterval, check, checkingRef]);
+    }, [polling, approved, pollInterval, check, checkingRef]);
 
     if (approved) {
       return (
-        <Frame ref={ref} variant={variant} icon={RiShieldCheckLine} iconColor="success" title="You're approved" description="Your account is ready." {...props} />
+        <AuthFrame ref={ref} defaultLogo={false} variant={variant} icon={RiShieldCheckLine} iconColor="success" title="You're approved" description="Your account is ready." {...props} />
       );
     }
 
     return (
-      <Frame
+      <AuthFrame
         ref={ref}
+        defaultLogo={false}
         variant={variant}
         icon={RiHourglassLine}
         iconColor="warning"
@@ -529,7 +497,7 @@ export const AwaitingApproval = React.forwardRef<HTMLDivElement, AwaitingApprova
             )}
           </div>
         </div>
-      </Frame>
+      </AuthFrame>
     );
   }
 );
@@ -565,6 +533,11 @@ export interface RegisterWithKunjiValues {
 }
 
 export interface RegisterWithKunjiProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSubmit" | "title"> {
+  /**
+   * Element of the card title (`1` is an `h1`).
+   * @default 1
+   */
+  headingLevel?: AuthHeadingLevel;
   /** First person on the server becomes its admin. */
   firstAdmin?: boolean;
   /** How new people join. */
@@ -616,7 +589,7 @@ export const RegisterWithKunji = React.forwardRef<HTMLDivElement, RegisterWithKu
     const [invite, setInvite] = React.useState("");
     const [touched, setTouched] = React.useState(false);
     const [pending, setPending] = React.useState(false);
-    const action = useAsyncAction();
+    const action = useBlockAction();
     const failing = validateKunjiHandle(handle, reservedHandles);
     const needsInvite = !firstAdmin && joinPolicy === "invite";
     const valid = failing.length === 0 && (!needsInvite || invite.trim().length > 0);
@@ -625,8 +598,9 @@ export const RegisterWithKunji = React.forwardRef<HTMLDivElement, RegisterWithKu
     if (pending) return <AwaitingApproval ref={ref} handle={handle} variant={variant} {...awaitingProps} />;
 
     return (
-      <Frame
+      <AuthFrame
         ref={ref}
+        defaultLogo={false}
         variant={variant}
         logo={<KunjiMark variant="tile" size={40} />}
         title={title}
@@ -678,7 +652,7 @@ export const RegisterWithKunji = React.forwardRef<HTMLDivElement, RegisterWithKu
                     <li
                       key={r.id}
                       data-met={ok || undefined}
-                      className={cn("flex items-center gap-1.5", ok ? "text-success" : touched || handle ? "text-muted-foreground" : "text-muted-foreground")}
+                      className={cn("flex items-center gap-1.5", ok ? "text-success" : "text-muted-foreground")}
                     >
                       {ok ? <RiCheckLine aria-hidden className="size-3.5" /> : <RiCloseLine aria-hidden className="size-3.5 opacity-60" />}
                       {r.label}
@@ -714,7 +688,7 @@ export const RegisterWithKunji = React.forwardRef<HTMLDivElement, RegisterWithKu
             </Button>
           </FieldGroup>
         </form>
-      </Frame>
+      </AuthFrame>
     );
   }
 );
@@ -793,6 +767,11 @@ export interface DevicePairingAdapter {
 }
 
 export interface DevicePairingFlowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  /**
+   * Element of the card title (`1` is an `h1`).
+   * @default 1
+   */
+  headingLevel?: AuthHeadingLevel;
   /** Adapter that performs the pairing (create, show or enter the code, confirm); the flow only drives the UI. */
   adapter: DevicePairingAdapter;
   /** `existing` shows the QR + code; `new` types the code. */
@@ -1043,8 +1022,9 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
     }
 
     return (
-      <Frame
+      <AuthFrame
         ref={ref}
+        defaultLogo={false}
         variant={variant}
         icon={icon}
         iconColor={iconColor}
@@ -1064,7 +1044,7 @@ export const DevicePairingFlow = React.forwardRef<HTMLDivElement, DevicePairingF
             </Button>
           </div>
         )}
-      </Frame>
+      </AuthFrame>
     );
   }
 );

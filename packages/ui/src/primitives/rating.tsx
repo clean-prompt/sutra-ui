@@ -189,6 +189,8 @@ export const Rating = React.forwardRef<HTMLDivElement, RatingProps>(
               onClick={(e) => {
                 const next = valueFromPointer(i, e);
                 commit(allowClear && next === value ? 0 : next);
+                // A tap fires compatibility mouse events but never `mouseleave`, so the hover preview would stick.
+                setHover(null);
               }}
               className={cn(
                 hitArea,

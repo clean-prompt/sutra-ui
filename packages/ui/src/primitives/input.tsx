@@ -5,7 +5,7 @@ import { cn, focusRing, invalidRing, type Size } from "../lib/cn";
 import { Kbd } from "./typography";
 import { useField } from "./field";
 import { filledShell } from "./input-internal";
-import { detectShortcutPlatform, getShortcutKeyLabels } from "../lib/shortcuts";
+import { detectShortcutPlatform, getShortcutKeyLabels, matchesShortcut } from "../lib/shortcuts";
 
 const shellHeights: Record<Size, string> = { sm: "h-8", md: "h-9", lg: "h-10" };
 
@@ -124,6 +124,11 @@ export interface InputProps
   /** Called after the clear button empties the field. */
   onClear?: () => void;
   /**
+   * Accessible name of the clear button.
+   * @default "Clear"
+   */
+  clearLabel?: string;
+  /**
    * Classes for the element that renders. Without addons that is the `<input>` itself (the root).
    * With addons (`leadingIcon`, `trailingIcon`, `prefix`, `suffix`, `clearable`) it lands on the
    * **inner** `<input>`, not the outer wrapper, so layout classes (`w-48`, `flex-1`, margins) have no
@@ -152,6 +157,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       suffix,
       clearable,
       onClear,
+      clearLabel = "Clear",
       id,
       disabled,
       required,
@@ -255,7 +261,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               tabIndex={-1}
-              aria-label="Clear"
+              aria-label={clearLabel}
               onClick={clear}
               className="inline-flex size-6 items-center justify-center rounded-full text-muted-foreground/70 transition-colors hover:text-foreground animate-in fade-in-0 zoom-in-75 duration-150"
             >
@@ -314,25 +320,6 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
 );
 PasswordInput.displayName = "PasswordInput";
 
-const isMac = () => detectShortcutPlatform() === "mac";
-
-function matchesHotkey(e: KeyboardEvent, hotkey: string) {
-  const parts = hotkey.toLowerCase().split("+").map((p) => p.trim());
-  const key = parts[parts.length - 1];
-  const mods = new Set(parts.slice(0, -1));
-  const mod = mods.has("mod");
-  const wantMeta = mods.has("meta") || mods.has("cmd") || (mod && isMac());
-  const wantCtrl = mods.has("ctrl") || (mod && !isMac());
-  return (
-    (e.key ?? "").toLowerCase() === key &&
-    e.metaKey === wantMeta &&
-    e.ctrlKey === wantCtrl &&
-    e.altKey === mods.has("alt") &&
-    (key.length !== 1 || /[a-z0-9]/.test(key) ? e.shiftKey === mods.has("shift") : true)
-  );
-}
-
-
 export interface SearchInputProps extends Omit<InputProps, "type" | "leadingIcon"> {
   /**
    * Global shortcut that focuses the field, e.g. "/" or "mod+k" (⌘ on macOS, Ctrl elsewhere).
@@ -357,12 +344,15 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
     );
     const filled = isControlled ? value !== null && String(value).length > 0 : uncontrolledFilled;
     const [hint, setHint] = React.useState<string[] | null>(null);
+    // The platform is only known on the client: start as non-Mac (what the server renders) and correct after mount.
+    const [mac, setMac] = React.useState(false);
 
     React.useEffect(() => {
       setHint(hotkey ? (getShortcutKeyLabels(hotkey)[0] ?? null) : null);
+      setMac(detectShortcutPlatform() === "mac");
       if (!hotkey) return;
       const onKey = (e: KeyboardEvent) => {
-        if (e.isComposing || e.keyCode === 229 || !matchesHotkey(e, hotkey)) return;
+        if (e.isComposing || e.keyCode === 229 || !matchesShortcut(e, hotkey)) return;
         const t = e.target as HTMLElement | null;
         const typing = t && (t.isContentEditable || /^(input|textarea|select)$/i.test(t.tagName));
         // Plain keys typed into any field (including this one) are text, not the shortcut.
@@ -395,7 +385,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
         clearable={clearable}
         value={value}
         defaultValue={defaultValue}
-        aria-keyshortcuts={hotkey ? hotkey.replace(/mod/i, isMac() ? "Meta" : "Control") : undefined}
+        aria-keyshortcuts={hotkey ? hotkey.replace(/mod/i, mac ? "Meta" : "Control") : undefined}
         onChange={(e) => {
           if (!isControlled) setUncontrolledFilled(e.target.value.length > 0);
           onChange?.(e);

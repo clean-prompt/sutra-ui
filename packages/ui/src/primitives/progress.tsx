@@ -32,7 +32,7 @@ export interface ProgressProps
   /** Semantic colour of the filled part. Default "primary". */
   tone?: ToneInput;
   /** Legacy name of `tone`. @deprecated Use `tone`. */
-  color?: ProgressColor;
+  color?: ProgressColor | ToneInput;
   /** Forces the looping animation regardless of `value` (also used when `value` is null). */
   indeterminate?: boolean;
   /** Text shown above the bar; it also becomes the accessible name. */
@@ -178,7 +178,7 @@ export interface ProgressCircleProps
   /** Semantic colour of the filled part. Default "primary". */
   tone?: ToneInput;
   /** Legacy name of `tone`. @deprecated Use `tone`. */
-  color?: ProgressColor;
+  color?: ProgressColor | ToneInput;
   /** Brand gradient stroke instead of a flat color. */
   gradient?: boolean;
   /** Show the percentage in the center. Default true. */
@@ -340,7 +340,7 @@ export interface ProgressSegmentsProps
   /** Semantic colour of the filled part. Default "primary". */
   tone?: ToneInput;
   /** Legacy name of `tone`. @deprecated Use `tone`. */
-  color?: ProgressColor;
+  color?: ProgressColor | ToneInput;
   /** Segment height: sm, md or lg. */
   size?: "sm" | "md" | "lg";
   /** Accessible name of the progressbar (`aria-label`). */

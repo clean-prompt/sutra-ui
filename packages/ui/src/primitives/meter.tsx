@@ -39,7 +39,7 @@ export function meterLevel(percent: number, thresholds: MeterThresholds | false 
 }
 
 /** @deprecated Use `Tone` (the `tone` prop). */
-export type MeterColor = "primary" | "success" | "warning" | "destructive" | "info" | "neutral";
+export type MeterColor = Tone;
 
 /** Fill per tone: `toneClasses.dot`, but a neutral fill uses the foreground colour (not muted). */
 const fillClass: Record<Tone, string> = { ...toneClasses.dot, neutral: "bg-foreground" };

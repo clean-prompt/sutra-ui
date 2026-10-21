@@ -350,6 +350,12 @@ export const FloatingActionButton = React.forwardRef<HTMLButtonElement, Floating
         ref={containerRef}
         data-slot="fab"
         className={cn(fabContainerClass(position, strategy), containerClassName)}
+        onBlur={(e) => {
+          // Tabbing out of an open dial closes it. A null `relatedTarget` (a click on a button Safari does not focus, the window
+          // losing focus) is not a move to another element, so it leaves the dial open.
+          const to = e.relatedTarget as Node | null;
+          if (isOpen && to && !e.currentTarget.contains(to)) setOpen(false);
+        }}
       >
         {dial}
         {trigger}

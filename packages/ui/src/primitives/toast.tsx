@@ -25,16 +25,26 @@ function readDocumentTheme(): "light" | "dark" {
   return root.classList.contains("dark") || root.dataset.theme === "dark" ? "dark" : "light";
 }
 
-/** Tracks the `.dark` class / `data-theme` attribute on <html>. */
+const noSubscription = () => () => {};
+
+function subscribeDocumentTheme(onChange: () => void) {
+  if (typeof MutationObserver === "undefined") return () => {};
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
+  return () => observer.disconnect();
+}
+
+/**
+ * Tracks the `.dark` class (what `useTheme` writes) and the `data-theme="dark"` attribute (what the stylesheet also
+ * accepts) on <html>. Reads the live value on the first client render, so there is no light flash; the server and
+ * hydration render "light".
+ */
 function useDocumentTheme(enabled: boolean): "light" | "dark" {
-  const [theme, setTheme] = React.useState<"light" | "dark">("light");
-  React.useEffect(() => {
-    if (!enabled || typeof MutationObserver === "undefined") return;
-    setTheme(readDocumentTheme());
-    const observer = new MutationObserver(() => setTheme(readDocumentTheme()));
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] });
-    return () => observer.disconnect();
-  }, [enabled]);
+  const theme = React.useSyncExternalStore(
+    enabled ? subscribeDocumentTheme : noSubscription,
+    readDocumentTheme,
+    () => "light" as const
+  );
   return theme;
 }
 

@@ -298,7 +298,7 @@ const defaultRanges: SelectOption[] = [
 export const PageHeaderWithStats = React.forwardRef<HTMLDivElement, PageHeaderWithStatsProps>(
   (
     {
-      title = "Good morning, Maya",
+      title = "Overview",
       description = "Here's how your week is going across Sutra.",
       stats = defaultStats,
       actions,

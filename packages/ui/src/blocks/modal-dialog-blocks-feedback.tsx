@@ -20,7 +20,7 @@ import {
   DialogTrigger,
 } from "../primitives/dialog";
 import { FeaturedIcon } from "../assets/icons";
-import { useBlockAction as useAsyncAction } from "./block-utils";
+import { useBlockAction } from "./block-utils";
 import { type BlockDialogBaseProps, useDialogOpen } from "./modal-dialog-blocks-internal";
 
 /* ------------------------------------------------------------------ */
@@ -69,17 +69,20 @@ export function FeedbackDialog({
   const [contact, setContact] = React.useState(true);
   const [sent, setSent] = React.useState(false);
   const ratingLabelId = React.useId();
-  const action = useAsyncAction();
+  const action = useBlockAction();
 
+  const { reset: resetAction } = action;
   React.useEffect(() => {
     if (open) return;
+    // A submit still pending at close must not land later and show "Thanks" the next time the dialog opens.
+    resetAction();
     const t = setTimeout(() => {
       setSent(false);
       setRating(0);
       setMessage("");
     }, 200);
     return () => clearTimeout(t);
-  }, [open]);
+  }, [open, resetAction]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

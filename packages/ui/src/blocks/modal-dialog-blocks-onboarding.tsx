@@ -21,7 +21,7 @@ import {
   DialogTrigger,
 } from "../primitives/dialog";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../assets/brand";
-import { useBlockAction as useAsyncAction } from "./block-utils";
+import { useBlockAction } from "./block-utils";
 import { type BlockDialogBaseProps, useDialogOpen } from "./modal-dialog-blocks-internal";
 
 /* ------------------------------------------------------------------ */
@@ -101,7 +101,7 @@ export function OnboardingDialog({
   const [workspace, setWorkspace] = React.useState("Northwind Studio");
   const [theme, setTheme] = React.useState("system");
   const [digest, setDigest] = React.useState(true);
-  const action = useAsyncAction();
+  const action = useBlockAction();
   const slug = workspace.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const steps: OnboardingStep[] = stepsProp ?? [

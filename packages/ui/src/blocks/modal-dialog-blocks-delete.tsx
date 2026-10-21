@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger,
 } from "../primitives/dialog";
 import { FeaturedIcon } from "../assets/icons";
-import { useBlockAction as useAsyncAction } from "./block-utils";
+import { useBlockAction } from "./block-utils";
 import { type BlockDialogBaseProps, useDialogOpen } from "./modal-dialog-blocks-internal";
 
 /* ------------------------------------------------------------------ */
@@ -57,7 +57,7 @@ export function DeleteConfirmDialog({
 }: DeleteConfirmDialogProps) {
   const [open, setOpen] = useDialogOpen(openProps);
   const [typed, setTyped] = React.useState("");
-  const action = useAsyncAction();
+  const action = useBlockAction();
   const matches = !confirmText || typed.trim() === confirmText;
   const inputId = React.useId();
 

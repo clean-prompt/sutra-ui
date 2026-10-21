@@ -24,7 +24,7 @@ import {
   DialogTrigger,
 } from "../primitives/dialog";
 import { SutraAppIcon } from "../assets/brand";
-import { useBlockAction as useAsyncAction } from "./block-utils";
+import { useBlockAction } from "./block-utils";
 import { type BlockDialogBaseProps, useDialogOpen } from "./modal-dialog-blocks-internal";
 
 /* ------------------------------------------------------------------ */
@@ -78,7 +78,7 @@ export function NewItemDialog({
   const [values, setValues] = React.useState<NewItemValues>(() => empty(defaultType));
   const [createMore, setCreateMore] = React.useState(false);
   const [titleError, setTitleError] = React.useState(false);
-  const action = useAsyncAction();
+  const action = useBlockAction();
   const titleRef = React.useRef<HTMLInputElement>(null);
   const set = <K extends keyof NewItemValues>(key: K, v: NewItemValues[K]) => setValues((s) => ({ ...s, [key]: v }));
   const isTask = values.type === "task";

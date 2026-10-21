@@ -7,11 +7,20 @@ import { clamp } from "../lib/math";
 import { usePagination } from "../hooks/use-pagination";
 import { getPageWindow, type PageWindow } from "../lib/pagination";
 import { Skeleton } from "./progress";
-import { Input } from "./input";
+import { Input, inputVariants } from "./input";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 
 export { getPaginationRange, type PaginationRangeItem, type UsePaginationOptions, type PageWindow } from "../lib/pagination";
 export { usePagination } from "../hooks/use-pagination";
+
+/** Most dots the `dots` variant shows; past that it shows a window of pages around the current one. */
+const MAX_DOTS = 9;
+
+function dotPages(page: number, total: number): number[] {
+  const count = Math.min(total, MAX_DOTS);
+  const first = clamp(page - Math.floor(count / 2), 1, total - count + 1);
+  return Array.from({ length: count }, (_, i) => first + i);
+}
 
 const itemSize: Record<Size, string> = {
   sm: "h-8 min-w-8 text-xs",
@@ -329,9 +338,9 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
               disabled={disabled}
               onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
               className={cn(
-                "appearance-none rounded-control border border-input bg-background ps-2.5 pe-7 font-medium tabular-nums text-foreground shadow-xs transition-colors hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-50",
-                size === "sm" ? "h-8 text-xs" : size === "lg" ? "h-10 text-sm" : "h-9 text-sm",
-                focusRing
+                inputVariants({ size }),
+                "w-auto cursor-pointer appearance-none ps-2.5 pe-7 font-medium tabular-nums text-foreground transition-colors hover:bg-subtle",
+                size === "sm" ? "text-xs" : size === "lg" ? "text-sm" : "text-sm"
               )}
             >
               {pageSizeOptions.map((opt) => (
@@ -387,7 +396,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
         <div className="flex items-center gap-3">
           <PaginationPrev size="sm" iconOnly disabled={!canPrev} onClick={() => go(page - 1)} />
           <div className="flex items-center gap-1.5">
-            {Array.from({ length: total }, (_, i) => i + 1).map((p) => (
+            {dotPages(page, total).map((p) => (
               <button
                 key={p}
                 type="button"
