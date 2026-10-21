@@ -2,7 +2,7 @@
 
 > Scroll-spy for a list of sections: tracks which element is in view with one `IntersectionObserver`, and scrolls to one on request (`scrollIntoView`, so a target's `scroll-margin-top` clears a fixed header). Stays on the last section seen while none is in the observed band, never re-renders unless the active id changes, and does nothing where `IntersectionObserver` is missing. Build your own rail on it, or use `SectionRail`.
 
-- Import: `import { useScrollSections } from "@sutra/ui/tokens"`
+- Import: `import { useScrollSections } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-scroll-sections`
 
 ## Signature

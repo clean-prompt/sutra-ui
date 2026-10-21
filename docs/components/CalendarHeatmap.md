@@ -2,7 +2,7 @@
 
 > GitHub-style contribution calendar: week columns, month/weekday labels, totals, month mode.
 
-- Import: `import { CalendarHeatmap } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { CalendarHeatmap } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/heatmap` (patterns)
 - `data-slot`: `calendar-heatmap`
 - Also accepts the props of HTMLAttributes
@@ -85,7 +85,7 @@ Server render: part of it fills in after mount. Without `endDate` (year) or `def
 ## Example
 
 ```tsx
-import { CalendarHeatmap } from "@sutra/ui";
+import { CalendarHeatmap } from "@cleanprompt/sutra-ui";
 
 const sessions = [
   { date: "2026-10-12", value: 3 },

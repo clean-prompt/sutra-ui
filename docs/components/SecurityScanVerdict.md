@@ -2,7 +2,7 @@
 
 > Security scan result: verdict, policy, per-severity counts and findings with file:line.
 
-- Import: `import { SecurityScanVerdict } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SecurityScanVerdict } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/extensions-catalog-scan` (kit `agent-admin`)
 - `data-slot`: `security-scan-verdict`
 - Also accepts the props of HTMLAttributes
@@ -21,7 +21,7 @@
 ## Example (live: `#/components/capabilities/security-scan` in the playground)
 
 ```tsx
-import { SecurityScanVerdict } from "@sutra/ui/agent-admin";
+import { SecurityScanVerdict } from "@cleanprompt/sutra-ui/agent-admin";
 
 <SecurityScanVerdict verdict="dangerous" policy="Blocked by policy" policyTone="block" findings={SCAN_FINDINGS} scanner="skill-guard 1.4" scannedAt="2 min ago" />
 <div className="space-y-6">

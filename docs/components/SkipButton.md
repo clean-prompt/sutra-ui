@@ -2,7 +2,7 @@
 
 > Circular-arrow button that skips back or forward a number of seconds.
 
-- Import: `import { SkipButton } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { SkipButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-controls-playback` (kit `media`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

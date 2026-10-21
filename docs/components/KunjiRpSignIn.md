@@ -2,7 +2,7 @@
 
 > Renders the official hosted rp.js button. Opt-in: Sutra's own `KunjiSignIn` makes no third-party requests.
 
-- Import: `import { KunjiRpSignIn } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { KunjiRpSignIn } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/kits/identity/kunji-buttons` (kit `identity`)
 - `data-slot`: `kunji-rp-sign-in`
 - Also accepts the props of HTMLAttributes

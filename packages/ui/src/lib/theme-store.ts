@@ -10,7 +10,7 @@ export interface SutraTheme {
   neutral: Neutral;
   /** Corner radius preset applied to controls and cards. */
   radius: RadiusMode;
-  /** Visual style (`data-style`). Leave it out for the stock look; `"paper"` also needs `@sutra/ui/paper.css`. */
+  /** Visual style (`data-style`). Leave it out for the stock look; `"paper"` also needs `@cleanprompt/sutra-ui/paper.css`. */
   style?: ThemeStyle;
 }
 

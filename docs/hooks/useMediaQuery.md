@@ -2,7 +2,7 @@
 
 > Whether a CSS media query matches, kept in sync (SSR-safe via `useSyncExternalStore`).
 
-- Import: `import { useMediaQuery } from "@sutra/ui/tokens"`
+- Import: `import { useMediaQuery } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-media-query`
 
 ## Signature

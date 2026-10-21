@@ -2,7 +2,7 @@
 
 > Full Sutra suite sidebar: workspace switcher, search, primary nav, apps, favorites, storage and account.
 
-- Import: `import { AppSidebar } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { AppSidebar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/sidebar-navigation-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

@@ -2,7 +2,7 @@
 
 > Section heading with eyebrow, title, description, actions and an optional tabs slot.
 
-- Import: `import { SectionHeader } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SectionHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/section-header` (patterns)
 - `data-slot`: `section-header`
 - Also accepts the props of HTMLAttributes
@@ -25,9 +25,9 @@
 ## Example (live: `#/components/navigation/section-header` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { RiAddLine, RiDownloadLine, RiUploadCloud2Line } from "@sutra/ui/icons";
-import { Breadcrumbs, PageHeader, SectionHeader, TabMenu } from "@sutra/ui/navigation";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiAddLine, RiDownloadLine, RiUploadCloud2Line } from "@cleanprompt/sutra-ui/icons";
+import { Breadcrumbs, PageHeader, SectionHeader, TabMenu } from "@cleanprompt/sutra-ui/navigation";
 
 <div className="space-y-10">
   <div className="space-y-3">

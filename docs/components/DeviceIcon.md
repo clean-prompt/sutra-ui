@@ -2,7 +2,7 @@
 
 > One glyph per kind of device; unrecognised types fall back to a desktop monitor.
 
-- Import: `import { DeviceIcon } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { DeviceIcon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/cast-picker` (kit `media`)
 - Also accepts the props of SVGAttributes, RemixiconProps
 

@@ -2,7 +2,7 @@
 
 > Stopwatch with start / pause, lap and reset, and a laps list highlighting the fastest and slowest.
 
-- Import: `import { Stopwatch } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { Stopwatch } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/patterns/stopwatch` (patterns)
 - `data-slot`: `stopwatch`
 - Also accepts the props of HTMLAttributes
@@ -18,7 +18,7 @@
 ## Example (live: `#/components/social/stopwatch` in the playground)
 
 ```tsx
-import { Stopwatch } from "@sutra/ui/social";
+import { Stopwatch } from "@cleanprompt/sutra-ui/social";
 
 <Stopwatch />
 ```

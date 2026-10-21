@@ -2,7 +2,7 @@
 
 > One conversation row: select button, inline rename and either hover icon buttons or a "⋯" action menu.
 
-- Import: `import { ConversationRow } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ConversationRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/conversation-list` (kit `ai`)
 - `data-slot`: `conversation-row`
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes

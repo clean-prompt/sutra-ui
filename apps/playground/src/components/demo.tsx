@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn, Eyebrow, Heading, prefersReducedMotion, Text } from "@sutra/ui";
+import { cn, Eyebrow, Heading, prefersReducedMotion, Text } from "@cleanprompt/sutra-ui";
 import { findPage } from "../nav";
 import { href, useHashRoute } from "../router";
 import { NavBadge } from "./nav-badge";

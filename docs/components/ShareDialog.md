@@ -2,7 +2,7 @@
 
 > Share an item: invite with a role, per-person roles, general access, link role + expiry, and copy link.
 
-- Import: `import { ShareDialog } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { ShareDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/modal-dialog-blocks-share` (blocks)
 - `data-slot`: `share-expiry-summary`
 
@@ -46,9 +46,9 @@
 ## Example (live: `#/components/mobile/share-dialog` in the playground)
 
 ```tsx
-import { ShareDialog } from "@sutra/ui/blocks";
-import { Button } from "@sutra/ui/core";
-import { RiCompass3Line, RiShareLine } from "@sutra/ui/icons";
+import { ShareDialog } from "@cleanprompt/sutra-ui/blocks";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiCompass3Line, RiShareLine } from "@cleanprompt/sutra-ui/icons";
 
 <ShareDialog {...demoShare} trigger={<Button leadingIcon={<RiShareLine />}>Share</Button>} />
 <ShareDialog

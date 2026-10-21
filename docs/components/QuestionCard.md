@@ -2,7 +2,7 @@
 
 > A question (or a tabbed set of questions) asked by the model inside the transcript; locks once answered.
 
-- Import: `import { QuestionCard } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { QuestionCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/question-card` (kit `ai`)
 - `data-slot`: `question-answers`, `question-card`, `question-review`, `question-answer`
 - Also accepts the props of HTMLAttributes
@@ -34,7 +34,7 @@
 ## Example (live: `#/components/ai-extras/question-card` in the playground)
 
 ```tsx
-import { QuestionCard } from "@sutra/ui/ai";
+import { QuestionCard } from "@cleanprompt/sutra-ui/ai";
 
 function QuestionCardDemo() {
   return (

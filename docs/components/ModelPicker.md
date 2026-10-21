@@ -2,7 +2,7 @@
 
 > `ModelSelect` preset for composers: opens upward, lifecycle glyphs, wait hints, badges, search, grouping and per-model warm-up.
 
-- Import: `import { ModelPicker } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ModelPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/model-picker` (kit `ai`)
 
 ## Props
@@ -32,7 +32,7 @@
 
 ```tsx
 import * as React from "react";
-import { ModelPicker } from "@sutra/ui/ai";
+import { ModelPicker } from "@cleanprompt/sutra-ui/ai";
 
 function ModelPickerDemo() {
   const [models, setModels] = React.useState(pickerModels);

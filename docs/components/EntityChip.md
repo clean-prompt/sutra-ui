@@ -2,7 +2,7 @@
 
 > Inline reference to an item in any Sutra app, tinted with the app's accent.
 
-- Import: `import { EntityChip } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { EntityChip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/entity-mention` (kit `workspace`)
 - `data-slot`: `entity-chip`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 ## Example (live: `#/components/suite/entity-chip` in the playground)
 
 ```tsx
-import { EntityChip } from "@sutra/ui/suite";
+import { EntityChip } from "@cleanprompt/sutra-ui/suite";
 
 <div className="flex flex-wrap items-center gap-2">
   <EntityChip type="notes" id="n1" title="Q4 launch plan" href="#" preview={<p className="text-sm">Goals, timeline and owners for the October launch…</p>} />

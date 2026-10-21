@@ -2,7 +2,7 @@
 
 > Alert dialog panel (defaults to the `sm` size).
 
-- Import: `import { AlertDialogContent } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { AlertDialogContent } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/dialog` (primitives)
 - Part of [`AlertDialog`](AlertDialog.md)
 - Also accepts the props of HTMLAttributes, DismissableLayerProps, DialogContentImplProps, DialogContentProps
@@ -26,8 +26,8 @@ See the notes in [`AlertDialog`](AlertDialog.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Button, Dialog, DialogBody, DialogClose, DialogContent, DialogDescription } from "@sutra/ui";
-import { DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldLabel, Input } from "@sutra/ui";
+import { Button, Dialog, DialogBody, DialogClose, DialogContent, DialogDescription } from "@cleanprompt/sutra-ui";
+import { DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

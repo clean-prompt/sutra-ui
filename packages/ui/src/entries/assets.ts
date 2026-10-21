@@ -1,4 +1,4 @@
-/* @sutra/ui/assets: brand marks, logos, flags, file formats and icon wrappers (Remix icons live in @sutra/ui/icons). */
+/* @cleanprompt/sutra-ui/assets: brand marks, logos, flags, file formats and icon wrappers (Remix icons live in @cleanprompt/sutra-ui/icons). */
 export * from "../assets/brand";
 export * from "../assets/placeholder-logos";
 export * from "../assets/icons";

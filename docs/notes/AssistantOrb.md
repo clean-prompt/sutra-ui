@@ -31,7 +31,7 @@ The markup is the same on the server and the client. The canvas looks (waveform 
 
 ## Example
 ```tsx
-import { AssistantOrb, assistantOrbVariantLabels, assistantOrbVariants, useAssistantOrbState, useAudioLevel, type AssistantOrbVariant } from "@sutra/ui";
+import { AssistantOrb, assistantOrbVariantLabels, assistantOrbVariants, useAssistantOrbState, useAudioLevel, type AssistantOrbVariant } from "@cleanprompt/sutra-ui";
 
 export function Example({ stream, thinking, speaking, look = "string" }: { stream: MediaStream | null; thinking: boolean; speaking: boolean; look?: AssistantOrbVariant }) {
   const level = useAudioLevel(stream);

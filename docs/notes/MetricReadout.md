@@ -40,7 +40,7 @@ Plain markup, but numbers go through `Intl.NumberFormat` in the default locale, 
 
 ## Example
 ```tsx
-import { MetricReadout, MetricReadoutGroup } from "@sutra/ui";
+import { MetricReadout, MetricReadoutGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

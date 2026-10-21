@@ -30,7 +30,7 @@ Renders on the server, but direction is read from the page after mount: the serv
 
 ## Example
 ```tsx
-import { Progress } from "@sutra/ui";
+import { Progress } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

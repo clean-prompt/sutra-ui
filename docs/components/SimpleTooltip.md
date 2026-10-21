@@ -2,7 +2,7 @@
 
 > One-line tooltip wrapper: `<SimpleTooltip content="Save" shortcut="⌘S"><Button/></SimpleTooltip>`.
 
-- Import: `import { SimpleTooltip } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { SimpleTooltip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/tooltip` (primitives)
 - Also accepts the props of TooltipProps
 
@@ -64,8 +64,8 @@ Server render: same markup as the client. Only the trigger renders on the server
 ## Example
 
 ```tsx
-import { Button, SimpleTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiSave3Line } from "@sutra/ui/icons";
+import { Button, SimpleTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiSave3Line } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

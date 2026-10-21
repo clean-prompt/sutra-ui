@@ -43,8 +43,8 @@ Plain markup from props; showing or hiding by breakpoint is CSS (`md:hidden`), s
 ## Example
 ```tsx
 import * as React from "react";
-import { BottomTabBar } from "@sutra/ui";
-import { RiHomeLine, RiInboxLine, RiUserLine } from "@sutra/ui/icons";
+import { BottomTabBar } from "@cleanprompt/sutra-ui";
+import { RiHomeLine, RiInboxLine, RiUserLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [tab, setTab] = React.useState("home");

@@ -2,7 +2,7 @@
 
 > speechSynthesis wrapper: voices (async-loaded), voice for `lang`, speaking state, speak/cancel.
 
-- Import: `import { useSpeechSynthesis } from "@sutra/ui/voice"`
+- Import: `import { useSpeechSynthesis } from "@cleanprompt/sutra-ui/voice"`
 - Source: `packages/ui/src/kits/voice/voice`
 
 ## Signature

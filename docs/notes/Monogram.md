@@ -29,7 +29,7 @@ Plain markup computed from the props, with no browser API. The seed colour is a 
 
 ## Example
 ```tsx
-import { Monogram } from "@sutra/ui";
+import { Monogram } from "@cleanprompt/sutra-ui";
 
 const tools = ["Nimbus AI", "github-mcp", "Calendar"];
 

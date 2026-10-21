@@ -2,7 +2,7 @@
 
 > Makes its child drift toward the mouse when the pointer comes within `radius` of it (the `magnetic` utility). The wrapper stays put and measures; an inner box moves, so the hit area and the layout do not shift. Clicks, hover and focus work as without it. Wrap a button, a link or an icon; not a text field. Touch and reduced motion: still.
 
-- Import: `import { Magnetic } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { Magnetic } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/pointer-fx` (patterns)
 - `data-slot`: `magnetic`
 - Also accepts the props of HTMLAttributes
@@ -17,9 +17,9 @@
 ## Example (live: `#/foundations/colors/pointer` in the playground)
 
 ```tsx
-import { Button, InlineCode } from "@sutra/ui/core";
-import { RiHeartLine } from "@sutra/ui/icons";
-import { Magnetic, TiltCard } from "@sutra/ui/motion";
+import { Button, InlineCode } from "@cleanprompt/sutra-ui/core";
+import { RiHeartLine } from "@cleanprompt/sutra-ui/icons";
+import { Magnetic, TiltCard } from "@cleanprompt/sutra-ui/motion";
 
 function MotionPointer() {
   return (

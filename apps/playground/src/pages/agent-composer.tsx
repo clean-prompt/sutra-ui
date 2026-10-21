@@ -22,8 +22,8 @@ import {
   type PromptInputModel,
   type QueuedMessage,
   type SideThreadExchange,
-} from "@sutra/ui";
-import { RiBrainLine, RiQuestionAnswerLine, RiShieldCheckLine, RiTerminalBoxLine, RiSparkling2Line, RiFlashlightLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiBrainLine, RiQuestionAnswerLine, RiShieldCheckLine, RiTerminalBoxLine, RiSparkling2Line, RiFlashlightLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /** Anchor ids of the demos on this page. */

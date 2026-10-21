@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "@sutra/ui";
+import { cn } from "@cleanprompt/sutra-ui";
 
 /**
  * Lays children out at the browser's own width, so viewport breakpoints (md:, lg:) match what the block would do on a real

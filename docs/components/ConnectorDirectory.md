@@ -2,7 +2,7 @@
 
 > Catalog of connectors: category picker and a grid of cards with ways and install/connect.
 
-- Import: `import { ConnectorDirectory } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ConnectorDirectory } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/mcp-connectors` (kit `agent-admin`)
 - `data-slot`: `connector-directory`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 
 ```tsx
 import * as React from "react";
-import { ConnectorDirectory } from "@sutra/ui/agent-admin";
+import { ConnectorDirectory } from "@cleanprompt/sutra-ui/agent-admin";
 
 function DirectoryDemo() {
   const [entries, setEntries] = React.useState(CATALOG_CONNECTORS);

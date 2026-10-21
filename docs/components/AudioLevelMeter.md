@@ -2,7 +2,7 @@
 
 > Bars that light up with an audio level (0..1). Horizontal bars stand up like an equalizer.
 
-- Import: `import { AudioLevelMeter } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { AudioLevelMeter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/voice` (kit `voice`)
 - `data-slot`: `level-bar`
 - Also accepts the props of HTMLAttributes

@@ -2,7 +2,7 @@
 
 > The standard button. Extra props are spread to the `<button>` (or to the child with `asChild`); icon-only sizes need an `aria-label`.
 
-- Import: `import { Button } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Button } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/button` (primitives)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
@@ -69,8 +69,8 @@ Server render: same markup as the client. Renders plain markup with no browser A
 ## Example
 
 ```tsx
-import { Button } from "@sutra/ui";
-import { RiAddLine } from "@sutra/ui/icons";
+import { Button } from "@cleanprompt/sutra-ui";
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ saving }: { saving: boolean }) {
   return (

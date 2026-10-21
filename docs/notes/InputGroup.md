@@ -41,8 +41,8 @@ Plain markup with no browser API or mount state, so server and client output mat
 
 ## Example
 ```tsx
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@sutra/ui";
-import { RiFileCopyLine } from "@sutra/ui/icons";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@cleanprompt/sutra-ui";
+import { RiFileCopyLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const link = "sutra.dev/share/q3-report";

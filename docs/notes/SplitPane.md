@@ -43,7 +43,7 @@ The panes render on the server and on the hydrating client render at `defaultSiz
 
 ## Example
 ```tsx
-import { SplitPane, SplitPaneHandle, SplitPanePanel } from "@sutra/ui";
+import { SplitPane, SplitPaneHandle, SplitPanePanel } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

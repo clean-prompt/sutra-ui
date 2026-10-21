@@ -25,7 +25,7 @@ The server has no `navigator` and uses the non-Mac labels ("Ctrl", "Shift"). The
 
 ## Example
 ```tsx
-import { ShortcutKeys } from "@sutra/ui";
+import { ShortcutKeys } from "@cleanprompt/sutra-ui";
 
 const shortcuts = [
   { action: "Open command menu", keys: "mod+k" },

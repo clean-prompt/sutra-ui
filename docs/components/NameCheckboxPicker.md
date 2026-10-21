@@ -2,7 +2,7 @@
 
 > Searchable checkbox list of names (skills, toolsets, events) with select-all and a count.
 
-- Import: `import { NameCheckboxPicker } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { NameCheckboxPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-form` (kit `agent-admin`)
 - `data-slot`: `name-checkbox-picker`
 - Also accepts the props of HTMLAttributes

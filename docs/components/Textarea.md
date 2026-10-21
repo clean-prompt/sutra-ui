@@ -2,7 +2,7 @@
 
 > Multi-line text input with optional auto-resize and character counter. Consumes `Field` context.
 
-- Import: `import { Textarea } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Textarea } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/textarea` (primitives)
 - `data-slot`: `textarea`, `textarea-wrapper`
 - Also accepts the props of HTMLAttributes, TextareaHTMLAttributes
@@ -62,7 +62,7 @@ Server render: part of it fills in after mount. The textarea renders on the serv
 
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldLabel, Textarea } from "@sutra/ui";
+import { Field, FieldDescription, FieldLabel, Textarea } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [notes, setNotes] = React.useState("");

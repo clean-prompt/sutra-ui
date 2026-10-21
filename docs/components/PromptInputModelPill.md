@@ -2,7 +2,7 @@
 
 > Compact model button for agent composers: name, effort and a fast-mode indicator with cooldown countdown.
 
-- Import: `import { PromptInputModelPill } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputModelPill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-model` (kit `ai`)
 - `data-slot`: `model-pill-effort`, `model-pill-fast`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -31,9 +31,9 @@
 
 ```tsx
 import * as React from "react";
-import { PromptInputModelPill } from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
-import { RiBrainLine } from "@sutra/ui/icons";
+import { PromptInputModelPill } from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiBrainLine } from "@cleanprompt/sutra-ui/icons";
 
 function ModelPillDemo() {
   const [cooldown, setCooldown] = React.useState(20);

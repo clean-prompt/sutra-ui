@@ -2,7 +2,7 @@
 
 > One cell of a `DividedGrid`: icon tile, title, description, badge and meta. A link, a button or static, depending on `href` and `onSelect`.
 
-- Import: `import { DividedGridItem } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { DividedGridItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/divided-grid` (patterns)
 - `data-slot`: `divided-grid-icon`, `divided-grid-number`, `divided-grid-badge`, `divided-grid-description`, `divided-grid-meta`, `divided-grid-cell`
 - Part of [`DividedGrid`](DividedGrid.md)
@@ -27,9 +27,9 @@
 
 ```tsx
 import * as React from "react";
-import { Text } from "@sutra/ui/core";
-import { RiSettings4Line } from "@sutra/ui/icons";
-import { DividedGrid, DividedGridItem } from "@sutra/ui/navigation";
+import { Text } from "@cleanprompt/sutra-ui/core";
+import { RiSettings4Line } from "@cleanprompt/sutra-ui/icons";
+import { DividedGrid, DividedGridItem } from "@cleanprompt/sutra-ui/navigation";
 
 function ToolGridDemo() {
   const [picked, setPicked] = React.useState<string | null>(null);

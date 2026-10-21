@@ -2,7 +2,7 @@
 
 > Read-only monospace value with a copy button (endpoint URLs).
 
-- Import: `import { WebhookUrlCopy } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { WebhookUrlCopy } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/webhooks` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 

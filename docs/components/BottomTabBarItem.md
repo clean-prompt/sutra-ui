@@ -2,7 +2,7 @@
 
 > One tab of a `BottomTabBar`; renders a button, a link, or your own element via `asChild`.
 
-- Import: `import { BottomTabBarItem } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { BottomTabBarItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/bottom-tab-bar` (patterns)
 - `data-slot`: `indicator`, `badge-dot`, `badge-count`
 - Part of [`BottomTabBar`](BottomTabBar.md)
@@ -30,8 +30,8 @@ See the notes in [`BottomTabBar`](BottomTabBar.md#notes).
 
 ```tsx
 import * as React from "react";
-import { BottomTabBar } from "@sutra/ui";
-import { RiHomeLine, RiInboxLine, RiUserLine } from "@sutra/ui/icons";
+import { BottomTabBar } from "@cleanprompt/sutra-ui";
+import { RiHomeLine, RiInboxLine, RiUserLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [tab, setTab] = React.useState("home");

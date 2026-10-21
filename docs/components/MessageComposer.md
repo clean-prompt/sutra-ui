@@ -2,7 +2,7 @@
 
 > Message input: auto-growing textarea, attach and emoji buttons, Enter to send (Shift+Enter for a new line).
 
-- Import: `import { MessageComposer } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { MessageComposer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/social/messenger-composer` (kit `social`)
 - `data-slot`: `message-composer`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 
 ```tsx
 import * as React from "react";
-import { MessageComposer, MessageList, MessengerHeader } from "@sutra/ui/social";
+import { MessageComposer, MessageList, MessengerHeader } from "@cleanprompt/sutra-ui/social";
 
 function MessengerDemo() {
   const [messages, setMessages] = React.useState(initialMessages);

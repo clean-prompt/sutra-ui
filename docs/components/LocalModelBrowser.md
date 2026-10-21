@@ -2,7 +2,7 @@
 
 > Searchable list of downloadable local models with quant variants, fit hints and download progress.
 
-- Import: `import { LocalModelBrowser } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { LocalModelBrowser } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/local-models` (kit `agent-admin`)
 - `data-slot`: `local-model-browser`, `local-model-item`, `local-model-progress`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { LocalModelBrowser } from "@sutra/ui/agent-admin";
+import { LocalModelBrowser } from "@cleanprompt/sutra-ui/agent-admin";
 
 function BrowserDemo() {
   const [downloads, setDownloads] = React.useState<Record<string, LocalModelDownloadState>>({ "kestrel-14b": { status: "done" } });

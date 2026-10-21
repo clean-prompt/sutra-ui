@@ -2,7 +2,7 @@
 
 > The big number of a metric with its unit, shared by StatCard and MetricHero.
 
-- Import: `import { StatValue } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { StatValue } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/stat-card` (patterns)
 - `data-slot`: `stat-value`
 - Also accepts the props of HTMLAttributes
@@ -76,7 +76,7 @@ Server render: same markup as the client. Plain markup from props with a `useId`
 ## Example
 
 ```tsx
-import { StatCard, StatGroup } from "@sutra/ui";
+import { StatCard, StatGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

@@ -1,4 +1,4 @@
-import { Badge } from "@sutra/ui";
+import { Badge } from "@cleanprompt/sutra-ui";
 import { activeStatus } from "../nav";
 import type { NavItem, NavPage, NavStatus } from "../nav";
 

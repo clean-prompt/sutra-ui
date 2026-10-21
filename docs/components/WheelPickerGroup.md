@@ -2,7 +2,7 @@
 
 > Several wheels read as one value (hours : minutes : period, or hours and minutes of a duration) with one highlight band across them. `value` is an array with one entry per column. Each column is a `WheelPicker`, so the keys, type-ahead and reduced-motion behaviour are the same; the group is a labelled `role="group"`.
 
-- Import: `import { WheelPickerGroup } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { WheelPickerGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/wheel-picker` (primitives)
 - `data-slot`: `wheel-picker-group`
 - Part of [`WheelPicker`](WheelPicker.md)
@@ -29,7 +29,7 @@ See the notes in [`WheelPicker`](WheelPicker.md#notes).
 
 ```tsx
 import * as React from "react";
-import { WheelPicker, wheelRange } from "@sutra/ui";
+import { WheelPicker, wheelRange } from "@cleanprompt/sutra-ui";
 
 const minutes = wheelRange(5, 60, { step: 5 });
 

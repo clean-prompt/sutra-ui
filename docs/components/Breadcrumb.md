@@ -2,7 +2,7 @@
 
 > Breadcrumb navigation landmark.
 
-- Import: `import { Breadcrumb } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { Breadcrumb } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/breadcrumbs` (primitives)
 - Parts: [`BreadcrumbEllipsis`](BreadcrumbEllipsis.md), [`BreadcrumbItem`](BreadcrumbItem.md), [`BreadcrumbLink`](BreadcrumbLink.md), [`BreadcrumbList`](BreadcrumbList.md), [`BreadcrumbPage`](BreadcrumbPage.md), [`BreadcrumbSeparator`](BreadcrumbSeparator.md), [`Breadcrumbs`](Breadcrumbs.md)
 - Also accepts the props of HTMLAttributes
@@ -96,7 +96,7 @@ Server render: same markup as the client. Plain markup with no browser API: serv
 ## Example
 
 ```tsx
-import { Breadcrumbs } from "@sutra/ui";
+import { Breadcrumbs } from "@cleanprompt/sutra-ui";
 
 const trail = [
   { label: "Home", href: "/" },

@@ -42,7 +42,7 @@ The whole tree is plain markup from `nodes` and the expanded ids; only expanded 
 ## Example
 ```tsx
 import * as React from "react";
-import { TreeView, type TreeNode } from "@sutra/ui";
+import { TreeView, type TreeNode } from "@cleanprompt/sutra-ui";
 
 const files: TreeNode[] = [
   {

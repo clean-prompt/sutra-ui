@@ -2,7 +2,7 @@
 
 > Consume an async iterator or EventSource-like emitter of `{ progress, phase, log }` events into state.
 
-- Import: `import { useStreamingTask } from "@sutra/ui/ops"`
+- Import: `import { useStreamingTask } from "@cleanprompt/sutra-ui/ops"`
 - Source: `packages/ui/src/kits/ops/progress-dialog`
 
 ## Signature

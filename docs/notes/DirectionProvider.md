@@ -29,7 +29,7 @@ With `dir` the markup is the same on the server and the client: the `display: co
 
 ## Example
 ```tsx
-import { DirectionProvider } from "@sutra/ui";
+import { DirectionProvider } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

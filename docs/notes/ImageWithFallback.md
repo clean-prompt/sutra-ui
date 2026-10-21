@@ -30,7 +30,7 @@ With a `src` the server renders the `<img>` at opacity 0 over the shimmer skelet
 
 ## Example
 ```tsx
-import { ImageWithFallback } from "@sutra/ui";
+import { ImageWithFallback } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

@@ -2,7 +2,7 @@
 
 > Drag along one axis and let go: past the distance (or fast enough) it dismisses, otherwise it springs back. Built on `useDrag`, so the offset is in `--sutra-drag-x` / `--sutra-drag-y` and nothing re-renders per move. `reset()` brings a dismissed element back.
 
-- Import: `import { useSwipeDismiss } from "@sutra/ui/tokens"`
+- Import: `import { useSwipeDismiss } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-swipe-dismiss`
 
 ## Signature

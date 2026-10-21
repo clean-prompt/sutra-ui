@@ -2,7 +2,7 @@
 
 > An endless, slowly scrolling row of items (logos, chips, quotes). The row repeats its items as often as the width needs, hides the repeats from assistive tech and stands still, wrapped onto lines, under `prefers-reduced-motion`. Keep the items presentational: the repeats are inert, so links and buttons inside would not work in them.
 
-- Import: `import { Marquee } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { Marquee } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/marquee` (assets)
 - `data-slot`: `marquee`, `marquee-track`, `marquee-list`, `marquee-item`, `marquee-frame`, `marquee-pause`
 - Also accepts the props of HTMLAttributes
@@ -77,7 +77,7 @@ Server render: part of it fills in after mount. The server renders two copies. A
 ## Example
 
 ```tsx
-import { Marquee } from "@sutra/ui";
+import { Marquee } from "@cleanprompt/sutra-ui";
 
 const customers = ["Northwind", "Acme Hosting", "Bright Print", "Globex", "Initech", "Umbrella Labs"];
 

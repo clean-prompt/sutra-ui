@@ -24,9 +24,9 @@ import {
   type KunjiMockOutcome,
   type KunjiSignInState,
   type KunjiSignInStatus,
-} from "@sutra/ui";
-import { createMockKunjiClient, createMockPairingAdapter } from "@sutra/ui/blocks/registry";
-import { RiRefreshLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { createMockKunjiClient, createMockPairingAdapter } from "@cleanprompt/sutra-ui/blocks/registry";
+import { RiRefreshLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

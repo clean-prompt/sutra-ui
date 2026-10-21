@@ -2,7 +2,7 @@
 
 > Rubber-band selection: drag on empty space inside `containerRef` to draw a rectangle and select the items it touches. Shift-drag adds to the selection, Mod-drag (⌘ / Ctrl) toggles, a plain click on empty space clears, and dragging near the edges scrolls the container. Presses on items or interactive elements are left alone, so item clicks and drag-and-drop keep working.
 
-- Import: `import { useMarqueeSelection } from "@sutra/ui/tokens"`
+- Import: `import { useMarqueeSelection } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-marquee-selection`
 
 ## Signature

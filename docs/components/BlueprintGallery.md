@@ -2,7 +2,7 @@
 
 > Filterable grid of automation templates (search + tag chips); one card expands at a time.
 
-- Import: `import { BlueprintGallery } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { BlueprintGallery } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-blueprints` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { BlueprintGallery } from "@sutra/ui/agent-admin";
+import { BlueprintGallery } from "@cleanprompt/sutra-ui/agent-admin";
 
 function BlueprintDemo() {
   const [created, setCreated] = React.useState<string>("");

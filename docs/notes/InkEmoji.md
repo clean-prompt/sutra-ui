@@ -33,7 +33,7 @@ The same markup on the server and the client: the solid and tint drawings define
 
 ## Example
 ```tsx
-import { EmojiGlyph, InkEmoji, hasInkEmoji } from "@sutra/ui";
+import { EmojiGlyph, InkEmoji, hasInkEmoji } from "@cleanprompt/sutra-ui";
 
 export function Example({ emoji }: { emoji: string }) {
   return (

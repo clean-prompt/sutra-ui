@@ -2,7 +2,7 @@
 
 > Bluetooth device batteries: a summary card (connected count, lowest battery, away devices, settings link) over a table of devices by kind, with nested rows for separately charged parts.
 
-- Import: `import { DeviceBatteryList } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { DeviceBatteryList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/device-battery` (kit `system`)
 - `data-slot`: `device-battery-list`, `device-battery-summary`, `device-battery-skeleton`, `device-battery-devices`, `device-battery-skeleton-row`, `device-battery-part`
 - Also accepts the props of HTMLAttributes
@@ -28,7 +28,7 @@
 ## Example (live: `#/components/system/device-batteries` in the playground)
 
 ```tsx
-import { DeviceBatteryList } from "@sutra/ui/system";
+import { DeviceBatteryList } from "@cleanprompt/sutra-ui/system";
 
 <DeviceBatteryList className="w-full" devices={devices} settingsHref="#/components/system/device-batteries" />
 ```

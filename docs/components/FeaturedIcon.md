@@ -2,7 +2,7 @@
 
 > An icon presented in a tinted tile, with soft, solid, ring-halo and glass styles.
 
-- Import: `import { FeaturedIcon } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { FeaturedIcon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/icons` (assets)
 - Also accepts the props of HTMLAttributes
 
@@ -28,9 +28,14 @@
 ## Example (live: `#/components/assets/featured-icon` in the playground)
 
 ```tsx
-import { FeaturedIcon } from "@sutra/ui/assets";
-import { Heading, Text } from "@sutra/ui/core";
-import { RiFlashlightLine, RiMailLine, RiShieldCheckLine, RiTeamLine } from "@sutra/ui/icons";
+import { FeaturedIcon } from "@cleanprompt/sutra-ui/assets";
+import { Heading, Text } from "@cleanprompt/sutra-ui/core";
+import {
+  RiFlashlightLine,
+  RiMailLine,
+  RiShieldCheckLine,
+  RiTeamLine,
+} from "@cleanprompt/sutra-ui/icons";
 
 function FeaturedIconDemo() {
   return (

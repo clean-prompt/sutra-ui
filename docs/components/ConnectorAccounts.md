@@ -2,7 +2,7 @@
 
 > Multiple accounts per connector: inline alias rename, status, repair, folded retired accounts and add.
 
-- Import: `import { ConnectorAccounts } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ConnectorAccounts } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/mcp` (kit `agent-admin`)
 - `data-slot`: `connector-accounts`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,7 @@
 
 ```tsx
 import * as React from "react";
-import { ConnectorAccounts } from "@sutra/ui/agent-admin";
+import { ConnectorAccounts } from "@cleanprompt/sutra-ui/agent-admin";
 
 function AccountsDemo() {
   const [accounts, setAccounts] = React.useState(ACCOUNTS);

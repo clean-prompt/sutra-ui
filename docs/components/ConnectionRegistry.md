@@ -2,7 +2,7 @@
 
 > Saved remote gateways list with an editor, connection test, default and remove.
 
-- Import: `import { ConnectionRegistry } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { ConnectionRegistry } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/workspace-switcher-connections` (kit `workspace`)
 - `data-slot`: `connection-registry`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 ## Example (live: `#/components/workspace/connection-registry` in the playground)
 
 ```tsx
-import { ConnectionRegistry } from "@sutra/ui/workspace";
+import { ConnectionRegistry } from "@cleanprompt/sutra-ui/workspace";
 
 <ConnectionRegistry defaultConnections={savedConnections} onTest={fakeTest} className="w-full max-w-2xl" />
 ```

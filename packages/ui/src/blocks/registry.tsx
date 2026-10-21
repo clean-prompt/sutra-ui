@@ -1,6 +1,6 @@
 /*
  * Block registry: every block wrapped in a demo-ready component, for "All Blocks" galleries,
- * docs and visual tests. Public path: `@sutra/ui/blocks/registry`.
+ * docs and visual tests. Public path: `@cleanprompt/sutra-ui/blocks/registry`.
  *
  * Demo-only. Importing this module has no side effects: the mock kunji client and pairing
  * adapter used by the kunji demos are created lazily, the first time one of those demos renders.

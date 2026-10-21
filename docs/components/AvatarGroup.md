@@ -2,7 +2,7 @@
 
 > Overlapping stack of avatars with overflow count and optional add button.
 
-- Import: `import { AvatarGroup } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { AvatarGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/avatar-group` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -60,7 +60,7 @@ Server render: part of it fills in after mount. The group is plain markup (no br
 ## Example
 
 ```tsx
-import { Avatar, AvatarGroup } from "@sutra/ui";
+import { Avatar, AvatarGroup } from "@cleanprompt/sutra-ui";
 
 const team = ["Maya Chen", "Omar Haddad", "Priya Nair", "Tomas Silva", "Aiko Tanaka"];
 

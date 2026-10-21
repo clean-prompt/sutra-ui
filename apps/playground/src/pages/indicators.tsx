@@ -19,7 +19,7 @@ import {
   type Tone,
   type StatusBadgeStatus,
   type StepIndicatorStep,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiArrowLeftLine,
   RiArrowRightLine,
@@ -31,7 +31,7 @@ import {
   RiShieldCheckLine,
   RiStarFill,
   RiUserLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 const chipTones = ["neutral", "primary", "success", "warning", "destructive", "info"] as const;

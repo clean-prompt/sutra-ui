@@ -2,7 +2,7 @@
 
 > Segmented bar for multi-step progress, or (with `role="meter"`) a level such as password strength.
 
-- Import: `import { ProgressSegments } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ProgressSegments } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/progress` (primitives)
 - Part of [`Progress`](Progress.md)
 - Also accepts the props of HTMLAttributes
@@ -28,7 +28,7 @@ See the notes in [`Progress`](Progress.md#notes).
 ## Example
 
 ```tsx
-import { Progress } from "@sutra/ui";
+import { Progress } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

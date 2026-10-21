@@ -2,7 +2,7 @@
 
 > One compact tool call row: icon, bold name, mono argument, meta and an expandable body (children).
 
-- Import: `import { ToolTimelineItem } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ToolTimelineItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline-steps` (kit `agent`)
 - `data-slot`: `tool-exit-code`, `tool-timeline-item`
 - Part of [`ToolTimeline`](ToolTimeline.md)
@@ -28,7 +28,12 @@
 ## Example (live: `#/components/agent-timeline/tool-timeline` in the playground)
 
 ```tsx
-import { ReadToolBody, ToolTimeline, ToolTimelineItem, ToolTimelineText } from "@sutra/ui/agent";
+import {
+  ReadToolBody,
+  ToolTimeline,
+  ToolTimelineItem,
+  ToolTimelineText,
+} from "@cleanprompt/sutra-ui/agent";
 
 function TimelineDemo() {
   return (

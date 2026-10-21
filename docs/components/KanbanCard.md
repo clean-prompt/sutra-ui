@@ -2,7 +2,7 @@
 
 > Task card: labels, title, priority, assignee (human or agent), due date, subtasks, comments, run status.
 
-- Import: `import { KanbanCard } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { KanbanCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-card` (kit `workspace`)
 - `data-slot`: `kanban-card`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 ## Example (live: `#/components/kanban-memory/kanban-card` in the playground)
 
 ```tsx
-import { KanbanCard } from "@sutra/ui/workspace";
+import { KanbanCard } from "@cleanprompt/sutra-ui/workspace";
 
 function KanbanCardsDemo() {
   const cards = initialBoard.cards.filter((c) => ["SUT-104", "SUT-107", "SUT-108", "SUT-116"].includes(c.id));

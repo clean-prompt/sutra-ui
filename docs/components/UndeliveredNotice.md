@@ -2,7 +2,7 @@
 
 > Inline notice when an answer or message couldn't be delivered, with Retry.
 
-- Import: `import { UndeliveredNotice } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { UndeliveredNotice } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/undelivered-notice` (kit `ai`)
 - `data-slot`: `undelivered-notice`
 - Also accepts the props of HTMLAttributes

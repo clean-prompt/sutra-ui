@@ -2,7 +2,7 @@
 
 > Controlled/uncontrolled list state with move helpers.
 
-- Import: `import { useReorder } from "@sutra/ui/social"`
+- Import: `import { useReorder } from "@cleanprompt/sutra-ui/social"`
 - Source: `packages/ui/src/hooks/use-reorder`
 
 ## Signature

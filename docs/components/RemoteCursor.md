@@ -2,7 +2,7 @@
 
 > Colored pointer/caret with a name label for another collaborator; the label fades when idle.
 
-- Import: `import { RemoteCursor } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { RemoteCursor } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/kits/social/presence` (kit `social`)
 - `data-slot`: `remote-cursor`
 - Also accepts the props of HTMLAttributes

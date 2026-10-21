@@ -2,7 +2,7 @@
 
 > Multi-agent group chat: speaker-attributed transcript, round / turn indicator, hold state, mentions and typing indicators.
 
-- Import: `import { AgentRoom } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { AgentRoom } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-room` (kit `agent-admin`)
 - `data-slot`: `agent-room`, `agent-room-turn`
 - Parts: [`AgentRoomMembers`](AgentRoomMembers.md)

@@ -2,7 +2,7 @@
 
 > Tri-state repeat toggle cycling off → all → one.
 
-- Import: `import { RepeatButton } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { RepeatButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-controls-playback` (kit `media`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

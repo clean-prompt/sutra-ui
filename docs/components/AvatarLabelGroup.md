@@ -2,7 +2,7 @@
 
 > Avatar with a name and a line of supporting text.
 
-- Import: `import { AvatarLabelGroup } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { AvatarLabelGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/avatar` (primitives)
 - Part of [`Avatar`](Avatar.md)
 - Also accepts the props of HTMLAttributes
@@ -33,7 +33,7 @@ See the notes in [`Avatar`](Avatar.md#notes).
 ## Example
 
 ```tsx
-import { Avatar, AvatarLabelGroup } from "@sutra/ui";
+import { Avatar, AvatarLabelGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

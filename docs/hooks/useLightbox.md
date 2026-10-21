@@ -2,7 +2,7 @@
 
 > Imperative control for a `Lightbox`: `const lb = useLightbox(); lb.openAt(2); <Lightbox items={…} {...lb.props} />`.
 
-- Import: `import { useLightbox } from "@sutra/ui/mobile"`
+- Import: `import { useLightbox } from "@cleanprompt/sutra-ui/mobile"`
 - Source: `packages/ui/src/patterns/lightbox`
 
 ## Signature

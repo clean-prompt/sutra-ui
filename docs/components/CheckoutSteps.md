@@ -2,7 +2,7 @@
 
 > Multi-step checkout: plan → payment → confirm (with 3-D Secure step-up) → success or failure with retry.
 
-- Import: `import { CheckoutSteps } from "@sutra/ui"` (or from `@sutra/ui/billing`)
+- Import: `import { CheckoutSteps } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-checkout` (kit `billing`)
 - `data-slot`: `checkout-steps`, `sca-frame`
 - Also accepts the props of HTMLAttributes
@@ -26,8 +26,8 @@
 
 ```tsx
 import * as React from "react";
-import { CheckoutSteps } from "@sutra/ui/billing";
-import { Button } from "@sutra/ui/core";
+import { CheckoutSteps } from "@cleanprompt/sutra-ui/billing";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function CheckoutDemo() {
   const [mode, setMode] = React.useState<"success" | "sca" | "decline">("sca");

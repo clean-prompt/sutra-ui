@@ -2,7 +2,7 @@
 
 > Draggable divider: `role="separator"` with arrows/Home/End, Enter to collapse, double-click to reset.
 
-- Import: `import { SplitPaneHandle } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { SplitPaneHandle } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/split-pane` (patterns)
 - `data-slot`: `split-pane-handle`
 - Part of [`SplitPane`](SplitPane.md)
@@ -21,7 +21,7 @@ See the notes in [`SplitPane`](SplitPane.md#notes).
 ## Example
 
 ```tsx
-import { SplitPane, SplitPaneHandle, SplitPanePanel } from "@sutra/ui";
+import { SplitPane, SplitPaneHandle, SplitPanePanel } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

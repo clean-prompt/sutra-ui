@@ -2,7 +2,7 @@
 
 > Request a password reset link; shows a confirmation once sent.
 
-- Import: `import { ForgotPasswordCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { ForgotPasswordCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/auth-blocks-password-reset` (blocks)
 - `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes

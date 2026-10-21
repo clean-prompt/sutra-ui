@@ -2,7 +2,7 @@
 
 > A number whose digits roll to their new values, in tabular figures. Each digit is a column of 0 to 9 slid with a CSS transition, so the first render shows the value without motion and reduced motion shows changes at once. Screen readers get the formatted value once as text (the columns are hidden from them, and from copy and paste); add `aria-live="polite"` to announce changes. Numbers only: format other values yourself.
 
-- Import: `import { AnimatedNumber } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { AnimatedNumber } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/animated-number` (patterns)
 - `data-slot`: `animated-number`, `animated-number-digit`, `animated-number-text`
 - Also accepts the props of HTMLAttributes
@@ -60,7 +60,7 @@ Server render: part of it fills in after mount. The first render is the final va
 
 ```tsx
 import * as React from "react";
-import { AnimatedNumber, Button } from "@sutra/ui";
+import { AnimatedNumber, Button } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [revenue, setRevenue] = React.useState(12480);

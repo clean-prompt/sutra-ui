@@ -2,7 +2,7 @@
 
 > Legend rows for a breakdown: colour dot, optional icon, label, right-aligned value and optional percent ("● Google Chrome 21.23 GB", "● postgres 312 MB 46%"). The last numeric column is muted. Rows can toggle series.
 
-- Import: `import { BreakdownList } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { BreakdownList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/primitives/meter` (primitives)
 - `data-slot`: `breakdown-list`, `breakdown-list-marker`, `breakdown-list-icon`, `breakdown-list-label`, `breakdown-list-value`, `breakdown-list-percent`, `breakdown-list-item`
 - Also accepts the props of HTMLAttributes
@@ -80,7 +80,7 @@ Server render: same markup as the client. Plain markup computed from the props w
 
 ```tsx
 import * as React from "react";
-import { BreakdownList } from "@sutra/ui";
+import { BreakdownList } from "@cleanprompt/sutra-ui";
 
 const items = [
   { label: "Chrome", value: 21.2, color: "primary" },

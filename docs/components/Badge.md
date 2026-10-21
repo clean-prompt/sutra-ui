@@ -2,7 +2,7 @@
 
 > Compact label for status, category or count.
 
-- Import: `import { Badge } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Badge } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/badge` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -67,8 +67,8 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Badge } from "@sutra/ui";
-import { RiCheckLine } from "@sutra/ui/icons";
+import { Badge } from "@cleanprompt/sutra-ui";
+import { RiCheckLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

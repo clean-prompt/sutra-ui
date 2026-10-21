@@ -2,7 +2,7 @@
 
 > A list row that follows the finger: drag it to reveal buttons at its start or end, or swipe all the way to run the outermost one. It builds on `useDrag` (the offset lives in `--sutra-drag-x`, no render per move), rubber-bands past the end, releases with a spring and opens at 40% of the actions' width. The actions are real buttons: Tab reaches them (a focused button opens its side), Arrow keys on the row open and close it, Escape closes it, and `onAction` runs for buttons and swipes alike. Use `Item` rows as the content; inside an `ItemGroup` the row itself is the list item.
 
-- Import: `import { SwipeRow } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { SwipeRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/swipe-row` (patterns)
 - `data-slot`: `swipe-row-actions`, `swipe-row`, `swipe-row-content`
 - Also accepts the props of HTMLAttributes
@@ -75,8 +75,8 @@ Server render: part of it fills in after mount. The server renders the row and b
 ## Example
 
 ```tsx
-import { SwipeRow } from "@sutra/ui";
-import { RiArchiveLine, RiDeleteBinLine, RiMailLine } from "@sutra/ui/icons";
+import { SwipeRow } from "@cleanprompt/sutra-ui";
+import { RiArchiveLine, RiDeleteBinLine, RiMailLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onArchive, onDelete }: { onArchive: () => void; onDelete: () => void }) {
   return (

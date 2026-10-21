@@ -2,7 +2,7 @@
 
 > Credit balance with burn rate, projected run-out date and a Buy credits dialog with preset amounts.
 
-- Import: `import { CreditBalanceCard } from "@sutra/ui"` (or from `@sutra/ui/billing`)
+- Import: `import { CreditBalanceCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-credits` (kit `billing`)
 - `data-slot`: `credit-balance-card`, `credit-balance`, `run-out`
 - Also accepts the props of HTMLAttributes
@@ -25,7 +25,7 @@
 
 ```tsx
 import * as React from "react";
-import { CreditAutoReload, CreditBalanceCard } from "@sutra/ui/billing";
+import { CreditAutoReload, CreditBalanceCard } from "@cleanprompt/sutra-ui/billing";
 
 function CreditsDemo() {
   const [balance, setBalance] = React.useState(1840);

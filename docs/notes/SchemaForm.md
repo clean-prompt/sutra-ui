@@ -37,7 +37,7 @@ The form renders in full from the schema and value, with ids from `useSafeId`; n
 
 ## Example
 ```tsx
-import { SchemaForm, type SchemaFormSchema } from "@sutra/ui";
+import { SchemaForm, type SchemaFormSchema } from "@cleanprompt/sutra-ui";
 
 const schema: SchemaFormSchema = {
   type: "object",

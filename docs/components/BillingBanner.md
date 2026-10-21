@@ -2,7 +2,7 @@
 
 > Billing notice (trial ending, payment failed, over limit) with a CTA. A preset over `InlineAlert`.
 
-- Import: `import { BillingBanner } from "@sutra/ui"` (or from `@sutra/ui/billing`)
+- Import: `import { BillingBanner } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-banner` (kit `billing`)
 - `data-slot`: `billing-banner`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 
 ```tsx
 import * as React from "react";
-import { BillingBanner } from "@sutra/ui/billing";
+import { BillingBanner } from "@cleanprompt/sutra-ui/billing";
 
 function BannersDemo() {
   const [dismissed, setDismissed] = React.useState(false);

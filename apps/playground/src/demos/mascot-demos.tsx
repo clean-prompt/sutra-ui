@@ -20,9 +20,9 @@ import {
   type MascotCharacter,
   type MascotState,
   type MascotShape,
-} from "@sutra/ui";
-import { RiPauseLine, RiPlayLine, RiRestartLine } from "@sutra/ui/icons";
-import { SutradharSting } from "@sutra/ui/assets/sutradhar-sting";
+} from "@cleanprompt/sutra-ui";
+import { RiPauseLine, RiPlayLine, RiRestartLine } from "@cleanprompt/sutra-ui/icons";
+import { SutradharSting } from "@cleanprompt/sutra-ui/assets/sutradhar-sting";
 import { Demo, DemoLabel } from "../components/demo";
 
 const stateNames: Record<MascotState, string> = {

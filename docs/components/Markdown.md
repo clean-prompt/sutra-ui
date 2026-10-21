@@ -2,7 +2,7 @@
 
 > Token-styled markdown renderer (GFM), memoized per block so streaming only re-renders the tail.
 
-- Import: `import { Markdown } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { Markdown } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/patterns/markdown` (patterns)
 - `data-slot`: `markdown-code-block`
 - Also accepts the props of HTMLAttributes
@@ -60,7 +60,7 @@ Server render: same markup as the client. react-markdown and KaTeX produce their
 ## Example
 
 ```tsx
-import { Markdown } from "@sutra/ui";
+import { Markdown } from "@cleanprompt/sutra-ui";
 
 const source = [
   "## Release notes",

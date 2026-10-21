@@ -36,7 +36,7 @@ The first render is the same on the server and client: the active section is `va
 
 ## Example
 ```tsx
-import { SectionRail } from "@sutra/ui";
+import { SectionRail } from "@cleanprompt/sutra-ui";
 
 const sections = [
   { id: "overview", label: "Overview" },

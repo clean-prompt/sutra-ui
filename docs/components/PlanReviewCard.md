@@ -2,7 +2,7 @@
 
 > Agent plan in a card: select text to comment, then approve (choosing the next mode) or keep planning.
 
-- Import: `import { PlanReviewCard } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { PlanReviewCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/plan-review` (kit `agent`)
 - `data-slot`: `plan-review`, `plan-content`, `plan-comment-trigger`, `plan-comments`, `plan-comment`, `plan-next-mode`
 - Also accepts the props of HTMLAttributes
@@ -34,9 +34,9 @@
 
 ```tsx
 import * as React from "react";
-import { PlanReviewCard } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
-import { RiRefreshLine } from "@sutra/ui/icons";
+import { PlanReviewCard } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiRefreshLine } from "@cleanprompt/sutra-ui/icons";
 
 function PlanReviewDemo() {
   const [key, setKey] = React.useState(0);

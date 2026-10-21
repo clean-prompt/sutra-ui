@@ -2,7 +2,7 @@
 
 > Radar (spider) chart: polygon rings, labelled spokes, toggleable series, spoke-by-spoke keyboard and a tooltip per spoke.
 
-- Import: `import { RadarChart } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { RadarChart } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/chart-radar` (patterns)
 - `data-slot`: `chart-skeleton`, `chart-ring`, `chart-spoke`, `chart-level`, `chart-axis-label`, `chart-series`, `chart-area`, `chart-dot`, `chart-hit`
 - Also accepts the props of HTMLAttributes

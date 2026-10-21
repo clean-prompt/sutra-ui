@@ -2,7 +2,7 @@
 
 > Frame for an agent's computer-use screen: state, control lease, fit / fullscreen, latency and screenshot. Bring your own VNC canvas.
 
-- Import: `import { RemoteScreenViewer } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { RemoteScreenViewer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/remote-screen` (kit `agent-admin`)
 - `data-slot`: `remote-screen-viewer`, `remote-screen-surface`, `remote-screen-lease`
 - Also accepts the props of HTMLAttributes
@@ -31,8 +31,8 @@
 
 ```tsx
 import * as React from "react";
-import { RemoteScreenViewer } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
+import { RemoteScreenViewer } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function RemoteScreenDemo() {
   const [state, setState] = React.useState<RemoteScreenState>("connecting");

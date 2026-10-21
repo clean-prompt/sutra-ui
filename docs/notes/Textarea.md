@@ -32,7 +32,7 @@ The textarea renders on the server with `rows` set to `minRows` and the value or
 ## Example
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldLabel, Textarea } from "@sutra/ui";
+import { Field, FieldDescription, FieldLabel, Textarea } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [notes, setNotes] = React.useState("");

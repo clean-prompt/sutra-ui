@@ -2,7 +2,7 @@
 
 > "‹ 2/3 ›" pager for switching between response versions.
 
-- Import: `import { ChatBranchSwitcher } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatBranchSwitcher } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message-actions` (kit `ai`)
 - `data-slot`: `chat-branch-switcher`
 - Also accepts the props of HTMLAttributes

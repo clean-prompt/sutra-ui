@@ -2,7 +2,7 @@
 
 > Badge for the status of an agent run (running shimmers, failed is red).
 
-- Import: `import { KanbanRunBadge } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { KanbanRunBadge } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-card` (kit `workspace`)
 - `data-slot`: `kanban-run-badge`
 - Also accepts the props of HTMLAttributes

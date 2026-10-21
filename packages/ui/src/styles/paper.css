@@ -7,8 +7,8 @@
  *
  * Usage (after the base styles, so the overrides win):
  *   @import "tailwindcss";
- *   @import "@sutra/ui/styles.css";
- *   @import "@sutra/ui/paper.css";
+ *   @import "@cleanprompt/sutra-ui/styles.css";
+ *   @import "@cleanprompt/sutra-ui/paper.css";
  *
  *   <html data-style="paper">            or any subtree: <section data-style="paper">
  *   <html data-style="paper" class="dark">

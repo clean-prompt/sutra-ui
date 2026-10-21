@@ -2,7 +2,7 @@
 
 > Modal for long-running or streaming operations: phase, progress, live log, cancel/retry, guarded close.
 
-- Import: `import { ProgressDialog } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { ProgressDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/progress-dialog` (kit `ops`)
 - `data-slot`: `progress-dialog`
 
@@ -40,10 +40,10 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { SimpleSelect } from "@sutra/ui/forms";
-import { RiDatabase2Line } from "@sutra/ui/icons";
-import { ProgressDialog, useStreamingTask } from "@sutra/ui/ops";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { SimpleSelect } from "@cleanprompt/sutra-ui/forms";
+import { RiDatabase2Line } from "@cleanprompt/sutra-ui/icons";
+import { ProgressDialog, useStreamingTask } from "@cleanprompt/sutra-ui/ops";
 
 function ProgressDialogDemo() {
   const [open, setOpen] = React.useState(false);

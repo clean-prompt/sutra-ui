@@ -2,7 +2,7 @@
 
 > An iOS-style wheel for one list of values (time, duration, amount, day): the rows scroll with the mouse wheel or a finger and snap one at a time (CSS scroll-snap with `scroll-snap-stop: always`, so a fling cannot skip rows), the row in the centre is the value once the scroll stops. It is a `role="listbox"` with the selected row as `aria-activedescendant`: Arrow keys move one row, Page keys five, Home and End jump to the ends, typing selects by prefix, clicking a row selects it. Disabled rows are skipped. Controlled (`value`) or uncontrolled (`defaultValue`); under reduced motion the keys jump instead of gliding. The accessible name comes from `aria-label` or `aria-labelledby`.
 
-- Import: `import { WheelPicker } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { WheelPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/wheel-picker` (primitives)
 - `data-slot`: `wheel-picker`, `wheel-picker-band`, `wheel-picker-list`
 - Parts: [`WheelPickerGroup`](WheelPickerGroup.md)
@@ -96,7 +96,7 @@ Server render: part of it fills in after mount. The listbox and all rows render 
 
 ```tsx
 import * as React from "react";
-import { WheelPicker, wheelRange } from "@sutra/ui";
+import { WheelPicker, wheelRange } from "@cleanprompt/sutra-ui";
 
 const minutes = wheelRange(5, 60, { step: 5 });
 

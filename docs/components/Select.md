@@ -2,7 +2,7 @@
 
 > Root of a select: Radix `Select.Root` with the reading direction filled in.
 
-- Import: `import { Select } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Select } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/select` (primitives)
 - Parts: [`SelectContent`](SelectContent.md), [`SelectGroup`](SelectGroup.md), [`SelectItem`](SelectItem.md), [`SelectLabel`](SelectLabel.md), [`SelectScrollDownButton`](SelectScrollDownButton.md), [`SelectScrollUpButton`](SelectScrollUpButton.md), [`SelectSeparator`](SelectSeparator.md), [`SelectTrigger`](SelectTrigger.md), [`SelectValue`](SelectValue.md)
 - Also accepts the props of SelectSharedProps, SelectProps
@@ -80,7 +80,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SimpleSelect } from "@sutra/ui";
+import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SimpleSelect } from "@cleanprompt/sutra-ui";
 
 const roles = [
   { value: "viewer", label: "Viewer", description: "Can read" },

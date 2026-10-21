@@ -2,7 +2,7 @@
 
 > IDE-style tiling workspace: nested resizable splits of tab groups with drag-and-drop, zoom and keep-alive panes.
 
-- Import: `import { TilingLayout } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { TilingLayout } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/tiling-layout` (patterns)
 - `data-slot`: `tiling-layout`, `tiling-drag-ghost`
 - Also accepts the props of HTMLAttributes

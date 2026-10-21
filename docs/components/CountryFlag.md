@@ -2,7 +2,7 @@
 
 > A small, recognizable country flag drawn in inline SVG, with an emoji fallback.
 
-- Import: `import { CountryFlag } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { CountryFlag } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/country-flags` (assets)
 - Also accepts the props of HTMLAttributes
 
@@ -18,7 +18,7 @@
 ## Example (live: `#/components/assets/country-flags` in the playground)
 
 ```tsx
-import { CountryFlag, countries } from "@sutra/ui/assets";
+import { CountryFlag, countries } from "@cleanprompt/sutra-ui/assets";
 
 function CountryFlagsDemo() {
   return (

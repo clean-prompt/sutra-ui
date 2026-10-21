@@ -2,7 +2,7 @@
 
 > Show/hide section with an animated height: `Collapsible`, `CollapsibleTrigger`, `CollapsibleContent`.
 
-- Import: `import { Collapsible } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Collapsible } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/collapsible` (primitives)
 - `data-slot`: `collapsible`
 - Parts: [`CollapsibleContent`](CollapsibleContent.md), [`CollapsibleTrigger`](CollapsibleTrigger.md)
@@ -83,7 +83,7 @@ Server render: same markup as the client. Renders the same markup on server and 
 ## Example
 
 ```tsx
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@sutra/ui";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

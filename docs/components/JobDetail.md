@@ -2,7 +2,7 @@
 
 > Detail pane for one job: actions, schedule and next runs, configuration and run history.
 
-- Import: `import { JobDetail } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { JobDetail } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-list` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 

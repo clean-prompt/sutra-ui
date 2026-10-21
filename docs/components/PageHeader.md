@@ -2,7 +2,7 @@
 
 > Page-level header: breadcrumbs, back button, h1 title, actions and tabs.
 
-- Import: `import { PageHeader } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { PageHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/section-header` (patterns)
 - `data-slot`: `page-header`
 - Also accepts the props of HTMLAttributes

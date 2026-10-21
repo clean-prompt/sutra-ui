@@ -2,7 +2,7 @@
 
 > Shortcut for `useDialogs().confirm`.
 
-- Import: `import { useConfirm } from "@sutra/ui/overlays"`
+- Import: `import { useConfirm } from "@cleanprompt/sutra-ui/overlays"`
 - Source: `packages/ui/src/primitives/confirm`
 
 ## Signature

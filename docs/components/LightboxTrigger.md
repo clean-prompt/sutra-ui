@@ -2,7 +2,7 @@
 
 > Opens the surrounding `Lightbox` at `index`. Render inside `<Lightbox>`'s children.
 
-- Import: `import { LightboxTrigger } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { LightboxTrigger } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/lightbox` (patterns)
 - Part of [`Lightbox`](Lightbox.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -21,7 +21,7 @@ See the notes in [`Lightbox`](Lightbox.md#notes).
 ## Example
 
 ```tsx
-import { Lightbox, LightboxTrigger, type LightboxItem } from "@sutra/ui";
+import { Lightbox, LightboxTrigger, type LightboxItem } from "@cleanprompt/sutra-ui";
 
 const photos: LightboxItem[] = [
   { src: "/images/alps.jpg", alt: "Alps at dawn", caption: "Alps at dawn" },

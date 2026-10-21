@@ -10,13 +10,13 @@
     "isolatedModules": true,
     "noEmit": true,
     "paths": {
-      "@sutra/ui": ["../../packages/ui/src/index.ts"],
-      "@sutra/ui/primitives/*": ["../../packages/ui/src/primitives/*.tsx", "../../packages/ui/src/primitives/*.ts"],
-      "@sutra/ui/patterns/*": ["../../packages/ui/src/patterns/*.tsx", "../../packages/ui/src/patterns/*.ts"],
-      "@sutra/ui/kits/*": ["../../packages/ui/src/kits/*.tsx", "../../packages/ui/src/kits/*.ts"],
-      "@sutra/ui/blocks/*": ["../../packages/ui/src/blocks/*.tsx", "../../packages/ui/src/blocks/*.ts"],
-      "@sutra/ui/assets/*": ["../../packages/ui/src/assets/*.tsx", "../../packages/ui/src/assets/*.ts"],
-      "@sutra/ui/*": ["../../packages/ui/src/entries/*.ts"]
+      "@cleanprompt/sutra-ui": ["../../packages/ui/src/index.ts"],
+      "@cleanprompt/sutra-ui/primitives/*": ["../../packages/ui/src/primitives/*.tsx", "../../packages/ui/src/primitives/*.ts"],
+      "@cleanprompt/sutra-ui/patterns/*": ["../../packages/ui/src/patterns/*.tsx", "../../packages/ui/src/patterns/*.ts"],
+      "@cleanprompt/sutra-ui/kits/*": ["../../packages/ui/src/kits/*.tsx", "../../packages/ui/src/kits/*.ts"],
+      "@cleanprompt/sutra-ui/blocks/*": ["../../packages/ui/src/blocks/*.tsx", "../../packages/ui/src/blocks/*.ts"],
+      "@cleanprompt/sutra-ui/assets/*": ["../../packages/ui/src/assets/*.tsx", "../../packages/ui/src/assets/*.ts"],
+      "@cleanprompt/sutra-ui/*": ["../../packages/ui/src/entries/*.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

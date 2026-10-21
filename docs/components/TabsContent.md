@@ -2,7 +2,7 @@
 
 > Panel shown for the active tab.
 
-- Import: `import { TabsContent } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { TabsContent } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/tabs` (primitives)
 - Part of [`Tabs`](Tabs.md)
 - Also accepts the props of HTMLAttributes, TabsContentProps, PrimitivePropsWithRef
@@ -18,7 +18,7 @@ See the notes in [`Tabs`](Tabs.md#notes).
 ## Example
 
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@sutra/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

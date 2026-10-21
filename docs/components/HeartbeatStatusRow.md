@@ -2,7 +2,7 @@
 
 > Periodic heartbeat: pulse dot, period and time since the last beat; turns amber when beats are missed.
 
-- Import: `import { HeartbeatStatusRow } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { HeartbeatStatusRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/status-stack` (kit `agent-admin`)
 - `data-slot`: `heartbeat-last`
 - Also accepts the props of HTMLAttributes

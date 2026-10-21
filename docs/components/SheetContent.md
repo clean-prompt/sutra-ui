@@ -2,7 +2,7 @@
 
 > Sheet panel sliding in from `side`. A sheet opened inside another sheet stacks on top of it: the one underneath scales down and fades (`data-nested`), and the reduced-motion net removes the movement.
 
-- Import: `import { SheetContent } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { SheetContent } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/dialog` (primitives)
 - `data-slot`: `sheet-content`
 - Part of [`Sheet`](Sheet.md)
@@ -32,8 +32,8 @@ See the notes in [`Sheet`](Sheet.md#notes).
 ## Example
 
 ```tsx
-import { Button, Field, FieldLabel, Input, Sheet, SheetBody, SheetClose, SheetContent } from "@sutra/ui";
-import { SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@sutra/ui";
+import { Button, Field, FieldLabel, Input, Sheet, SheetBody, SheetClose, SheetContent } from "@cleanprompt/sutra-ui";
+import { SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

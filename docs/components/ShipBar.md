@@ -2,7 +2,7 @@
 
 > Bottom git action bar: branch, ahead/behind, commit message and a Commit / Commit & push / Create PR split button.
 
-- Import: `import { ShipBar } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ShipBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/git-review-ship` (kit `agent`)
 - `data-slot`: `ship-bar`, `ship-disabled-reason`
 - Also accepts the props of HTMLAttributes
@@ -42,7 +42,7 @@
 
 ```tsx
 import * as React from "react";
-import { ShipBar } from "@sutra/ui/agent";
+import { ShipBar } from "@cleanprompt/sutra-ui/agent";
 
 function ShipDemo() {
   const [message, setMessage] = React.useState("");

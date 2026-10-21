@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Field, FieldDescription, FieldError, FieldLabel, Input, InlineCode, RadioGroupField, StepWizard, Text, type StepWizardStep } from "@sutra/ui";
+import { Field, FieldDescription, FieldError, FieldLabel, Input, InlineCode, RadioGroupField, StepWizard, Text, type StepWizardStep } from "@cleanprompt/sutra-ui";
 import { Demo, DemoLabel } from "../components/demo";
 
 const plans = [

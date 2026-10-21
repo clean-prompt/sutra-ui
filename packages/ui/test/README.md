@@ -1,4 +1,4 @@
-# Tests of @sutra/ui
+# Tests of @cleanprompt/sutra-ui
 
 Vitest, jsdom. The folder is flat; `setup.ts` is the setup file and `helpers/` holds the shared test helpers (not tests).
 

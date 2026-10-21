@@ -2,7 +2,7 @@
 
 > Privacy gate shown in place of a third-party embed until the user agrees to load it.
 
-- Import: `import { EmbedConsent } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { EmbedConsent } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/embeds` (kit `ai`)
 - `data-slot`: `embed-consent`
 - Parts: [`EmbedConsentProvider`](EmbedConsentProvider.md)

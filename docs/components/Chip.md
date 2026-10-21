@@ -2,7 +2,7 @@
 
 > Interactive pill: toggleable filter, removable tag or selectable option.
 
-- Import: `import { Chip } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Chip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/chip` (primitives)
 - Parts: [`ChipGroup`](ChipGroup.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -97,7 +97,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 
 ```tsx
 import * as React from "react";
-import { Chip, ChipGroup } from "@sutra/ui";
+import { Chip, ChipGroup } from "@cleanprompt/sutra-ui";
 
 const topics = ["Design", "Engineering", "Research", "Support"];
 

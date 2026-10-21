@@ -2,7 +2,7 @@
 
 > Ascending bars glyph: `level + 1` of `count` bars filled.
 
-- Import: `import { EffortGlyph } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { EffortGlyph } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-mode` (kit `agent`)
 - Also accepts the props of SVGAttributes
 

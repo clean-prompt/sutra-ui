@@ -2,7 +2,7 @@
 
 > Live process list: sortable columns, totals, animated add/remove, hover-revealed kill control, optional app grouping.
 
-- Import: `import { ProcessTable } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { ProcessTable } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/process-table` (kit `ops`)
 - `data-slot`: `process-group-count`, `process-table-skeleton`, `process-table`, `process-group-quit`
 - Also accepts the props of HTMLAttributes
@@ -41,7 +41,7 @@
 
 ```tsx
 import * as React from "react";
-import { ProcessTable } from "@sutra/ui/ops";
+import { ProcessTable } from "@cleanprompt/sutra-ui/ops";
 
 function ProcessTableDemo() {
   const [procs, setProcs] = React.useState<ProcessInfo[]>(() => Array.from({ length: 8 }, makeProc));

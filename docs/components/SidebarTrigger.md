@@ -2,7 +2,7 @@
 
 > Button that toggles the sidebar (⌘B).
 
-- Import: `import { SidebarTrigger } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarTrigger } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-trigger`
 - Part of [`Sidebar`](Sidebar.md)

@@ -27,7 +27,7 @@ The server renders the root and the viewport with the content. With the default 
 
 ## Example
 ```tsx
-import { Button, ScrollArea } from "@sutra/ui";
+import { Button, ScrollArea } from "@cleanprompt/sutra-ui";
 
 const versions = Array.from({ length: 30 }, (_, i) => `v2.${30 - i}.0`);
 

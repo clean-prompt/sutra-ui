@@ -2,7 +2,7 @@
 
 > File edit body: path (link / button) and a compact DiffCard.
 
-- Import: `import { EditToolBody } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { EditToolBody } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline-bodies` (kit `agent`)
 - `data-slot`: `edit-tool-body`
 - Also accepts the props of HTMLAttributes

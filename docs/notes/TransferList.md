@@ -35,7 +35,7 @@ Markup is computed from `items`. Speed and time left use `Date.now()` at render 
 
 ## Example
 ```tsx
-import { TransferList, type TransferItemData } from "@sutra/ui";
+import { TransferList, type TransferItemData } from "@cleanprompt/sutra-ui";
 
 const MB = 1024 * 1024;
 const transfers: TransferItemData[] = [

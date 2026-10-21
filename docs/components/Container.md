@@ -2,7 +2,7 @@
 
 > Centres content and caps its width (`size`), with responsive horizontal padding. Extra props are spread to the root.
 
-- Import: `import { Container } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Container } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/layout` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -51,7 +51,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Container, Heading, Text } from "@sutra/ui";
+import { Container, Heading, Text } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

@@ -2,7 +2,7 @@
 
 > Single-choice group of radio items. Consumes `Field` context.
 
-- Import: `import { RadioGroup } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { RadioGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/radio` (primitives)
 - `data-slot`: `radio-group`
 - Parts: [`RadioGroupField`](RadioGroupField.md), [`RadioGroupItem`](RadioGroupItem.md)
@@ -93,7 +93,7 @@ Server render: same markup as the client. Items and the group render on the serv
 
 ```tsx
 import * as React from "react";
-import { RadioField, RadioGroup } from "@sutra/ui";
+import { RadioField, RadioGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [plan, setPlan] = React.useState("team");

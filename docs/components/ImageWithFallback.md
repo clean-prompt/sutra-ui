@@ -2,7 +2,7 @@
 
 > Image that reserves its aspect ratio, shimmers while loading and shows "Image unavailable" on error.
 
-- Import: `import { ImageWithFallback } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { ImageWithFallback } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/lightbox` (patterns)
 - `data-slot`: `image`, `image-skeleton`
 - Also accepts the props of HTMLAttributes, ImgHTMLAttributes
@@ -64,7 +64,7 @@ Server render: part of it fills in after mount. With a `src` the server renders 
 ## Example
 
 ```tsx
-import { ImageWithFallback } from "@sutra/ui";
+import { ImageWithFallback } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

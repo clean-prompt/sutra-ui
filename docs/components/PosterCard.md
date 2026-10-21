@@ -2,7 +2,7 @@
 
 > 2:3 poster with fallback, hover play, quiet actions, status/language badges, watch progress and busy overlay.
 
-- Import: `import { PosterCard } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { PosterCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-cards-poster` (kit `media`)
 - `data-slot`: `media-status`, `media-actions`, `media-progress`, `media-busy`
 - Also accepts the props of HTMLAttributes
@@ -31,7 +31,7 @@
 ## Example (live: `#/components/media-player/poster-card` in the playground)
 
 ```tsx
-import { PosterCard } from "@sutra/ui/media";
+import { PosterCard } from "@cleanprompt/sutra-ui/media";
 
 function PosterGrid() {
   return (

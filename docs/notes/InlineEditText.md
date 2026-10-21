@@ -36,8 +36,8 @@ Renders a plain input from `value` or `defaultValue`. The focus and select happe
 ## Example
 ```tsx
 import * as React from "react";
-import { Button, InlineEditText } from "@sutra/ui";
-import { RiPencilLine } from "@sutra/ui/icons";
+import { Button, InlineEditText } from "@cleanprompt/sutra-ui";
+import { RiPencilLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [name, setName] = React.useState("Quarterly report");

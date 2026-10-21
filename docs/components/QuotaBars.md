@@ -2,7 +2,7 @@
 
 > Compact row of provider icons with thin accent bars, as in a dashboard's Agents tile. Each bar is a meter named after the provider with value text such as "72% left".
 
-- Import: `import { QuotaBars } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { QuotaBars } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/usage-quota` (kit `ai`)
 - `data-slot`: `quota-bars`, `quota-bars-skeleton`
 - Also accepts the props of HTMLAttributes
@@ -22,8 +22,8 @@ The Agents tile is a `StatCard` with this row as its body: ```tsx <StatCard labe
 
 ```tsx
 import * as React from "react";
-import { AgentProcessList } from "@sutra/ui/agent";
-import { QuotaBars, QuotaStrip } from "@sutra/ui/ai";
+import { AgentProcessList } from "@cleanprompt/sutra-ui/agent";
+import { QuotaBars, QuotaStrip } from "@cleanprompt/sutra-ui/ai";
 
 function AgentsDemo() {
   const [sessions, setSessions] = React.useState(initialSessions);

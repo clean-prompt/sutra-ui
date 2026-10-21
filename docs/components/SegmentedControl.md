@@ -2,7 +2,7 @@
 
 > Single-choice segmented control with an animated sliding thumb.
 
-- Import: `import { SegmentedControl } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { SegmentedControl } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/segmented-control` (primitives)
 - Parts: [`SegmentedControlItem`](SegmentedControlItem.md)
 - Also accepts the props of HTMLAttributes, ToggleGroupImplProps, PrimitivePropsWithRef
@@ -80,7 +80,7 @@ Server render: part of it fills in after mount. The segments render on the serve
 
 ```tsx
 import * as React from "react";
-import { SegmentedControl } from "@sutra/ui";
+import { SegmentedControl } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [view, setView] = React.useState("list");

@@ -2,7 +2,7 @@
 
 > Feature × plan matrix with grouped sections, check/dash/value cells and a sticky header.
 
-- Import: `import { PlanComparisonTable } from "@sutra/ui"` (or from `@sutra/ui/billing`)
+- Import: `import { PlanComparisonTable } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-plans` (kit `billing`)
 - `data-slot`: `plan-comparison-table`
 - Also accepts the props of HTMLAttributes
@@ -19,7 +19,7 @@
 ## Example (live: `#/components/billing-marketing/plan-comparison` in the playground)
 
 ```tsx
-import { PlanComparisonTable } from "@sutra/ui/billing";
+import { PlanComparisonTable } from "@cleanprompt/sutra-ui/billing";
 
 <PlanComparisonTable plans={plans} sections={comparisonSections} maxHeight={420} />
 ```

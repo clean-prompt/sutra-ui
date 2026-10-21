@@ -2,7 +2,7 @@
 
 > Small monospaced chip for a network port, optionally linking to it on localhost.
 
-- Import: `import { PortBadge } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { PortBadge } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/primitives/port-badge` (primitives)
 - `data-slot`: `port-badge`
 - Parts: [`PortBadgeList`](PortBadgeList.md)
@@ -86,7 +86,7 @@ Server render: same markup as the client. Plain markup built from the props, wit
 ## Example
 
 ```tsx
-import { PortBadge, PortBadgeList } from "@sutra/ui";
+import { PortBadge, PortBadgeList } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

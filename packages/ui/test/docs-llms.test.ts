@@ -43,8 +43,8 @@ describe("page helpers", () => {
   it("writes a component page with escaped table cells, parts and slots", () => {
     const md = componentMarkdown({ name: "Dialog", entry: fixture.components.Dialog, api: fixture, notes: {}, noteIndex: {}, examples: new Map() });
     expect(md).toContain("# Dialog");
-    expect(md).toContain('import { Dialog } from "@sutra/ui"');
-    expect(md).toContain("(or from `@sutra/ui/overlays`)");
+    expect(md).toContain('import { Dialog } from "@cleanprompt/sutra-ui"');
+    expect(md).toContain("(or from `@cleanprompt/sutra-ui/overlays`)");
     expect(md).toContain("`data-slot`: `dialog`");
     expect(md).toContain('`boolean \\| "a" \\| "b"`');
     expect(md).toContain("[`DialogContent`](DialogContent.md)");
@@ -58,7 +58,7 @@ describe("page helpers", () => {
   it("writes a hook page with its signature", () => {
     const md = hookMarkdown({ name: "useThing", entry: fixture.hooks.useThing, examples: new Map() });
     expect(md).toContain("useThing(n: number): number");
-    expect(md).toContain('import { useThing } from "@sutra/ui/tokens"');
+    expect(md).toContain('import { useThing } from "@cleanprompt/sutra-ui/tokens"');
   });
 
   it("turns playground captions into comments in a quoted example", () => {

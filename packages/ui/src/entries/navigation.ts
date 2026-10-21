@@ -1,4 +1,4 @@
-/* @sutra/ui/navigation: breadcrumbs, pagination, tabs, headers, sidebars, trees, the search trigger, divided link grids, the section rail and blog content (prose, post header, table of contents). */
+/* @cleanprompt/sutra-ui/navigation: breadcrumbs, pagination, tabs, headers, sidebars, trees, the search trigger, divided link grids, the section rail and blog content (prose, post header, table of contents). */
 export * from "../primitives/breadcrumbs";
 export * from "../primitives/pagination";
 export * from "../patterns/tab-menu";

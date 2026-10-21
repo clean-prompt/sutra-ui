@@ -26,7 +26,7 @@ Plain markup with inline styles and no browser API, so server and client output 
 
 ## Example
 ```tsx
-import { Badge, Heading, MeshGradient, Text } from "@sutra/ui";
+import { Badge, Heading, MeshGradient, Text } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

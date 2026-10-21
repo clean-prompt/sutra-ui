@@ -2,7 +2,7 @@
 
 > Content of one model row (glyph or icon, name, provider, badges, hint). Used inside menu items, options and buttons.
 
-- Import: `import { ModelSelectOption } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ModelSelectOption } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/model-select` (kit `ai`)
 - `data-slot`: `model-option`
 - Part of [`ModelSelect`](ModelSelect.md)

@@ -2,7 +2,7 @@
 
 > Create or edit a webhook route: name, URL, show-once signing secret with regenerate, events, delivery, test send and recent deliveries.
 
-- Import: `import { WebhookRouteEditor } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { WebhookRouteEditor } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/webhooks` (kit `agent-admin`)
 - `data-slot`: `webhook-secret-masked`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 
 ```tsx
 import * as React from "react";
-import { WebhookRouteEditor, WebhookRouteList } from "@sutra/ui/agent-admin";
+import { WebhookRouteEditor, WebhookRouteList } from "@cleanprompt/sutra-ui/agent-admin";
 
 function WebhooksDemo() {
   const [routes, setRoutes] = React.useState(INITIAL_ROUTES);

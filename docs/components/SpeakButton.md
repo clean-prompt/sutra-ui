@@ -2,7 +2,7 @@
 
 > Reads text aloud with the system voice for `lang`; hidden when no such voice exists.
 
-- Import: `import { SpeakButton } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { SpeakButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/voice` (kit `voice`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
@@ -26,7 +26,7 @@
 ## Example (live: `#/components/voice/speak-button` in the playground)
 
 ```tsx
-import { SpeakButton, getLanguage } from "@sutra/ui/voice";
+import { SpeakButton, getLanguage } from "@cleanprompt/sutra-ui/voice";
 
 function SpeakButtonDemo() {
   const samples = [

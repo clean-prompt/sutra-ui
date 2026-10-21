@@ -2,7 +2,7 @@
 
 > HTML overlay of marker buttons positioned over a map drawing: focusable, labelled, `aria-pressed` for the selected one, optional clustering into count bubbles and a hover/focus tooltip. Shared by WorldMap and the globe.
 
-- Import: `import { GeoMarkerLayer } from "@sutra/ui"` (or from `@sutra/ui/geo`)
+- Import: `import { GeoMarkerLayer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/geo`)
 - Source: `packages/ui/src/kits/geo/geo-marker-layer` (kit `geo`)
 - `data-slot`: `geo-marker-layer`, `geo-marker-item`, `geo-marker-visual`, `geo-marker-cluster`, `geo-marker-badge`, `geo-marker`, `geo-marker-tooltip`
 - Also accepts the props of HTMLAttributes

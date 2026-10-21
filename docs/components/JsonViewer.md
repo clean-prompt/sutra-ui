@@ -2,7 +2,7 @@
 
 > Collapsible JSON tree with search, copy value/path, chunked arrays and a raw view.
 
-- Import: `import { JsonViewer } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { JsonViewer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/json-viewer` (patterns)
 - `data-slot`: `json-viewer`
 - Also accepts the props of HTMLAttributes
@@ -30,7 +30,7 @@
 ## Example (live: `#/components/tiling/layout-json` in the playground)
 
 ```tsx
-import { JsonViewer } from "@sutra/ui/ops";
+import { JsonViewer } from "@cleanprompt/sutra-ui/ops";
 
 <JsonViewer data={layout} defaultExpandDepth={3} maxHeight={360} label="Layout tree" className="w-full" />
 ```

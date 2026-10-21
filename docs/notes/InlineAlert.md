@@ -40,7 +40,7 @@ Plain markup with no browser API, so the server and client output match.
 ## Example
 ```tsx
 import * as React from "react";
-import { Button, InlineAlert, InlineAlertActions, InlineAlertDescription, InlineAlertTitle } from "@sutra/ui";
+import { Button, InlineAlert, InlineAlertActions, InlineAlertDescription, InlineAlertTitle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [visible, setVisible] = React.useState(true);

@@ -2,7 +2,7 @@
 
 > Context (right-click) menu root: Radix `ContextMenu.Root` with the reading direction filled in.
 
-- Import: `import { ContextMenu } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { ContextMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/context-menu` (primitives)
 - Parts: [`ContextMenuCheckboxItem`](ContextMenuCheckboxItem.md), [`ContextMenuContent`](ContextMenuContent.md), [`ContextMenuGroup`](ContextMenuGroup.md), [`ContextMenuItem`](ContextMenuItem.md), [`ContextMenuLabel`](ContextMenuLabel.md), [`ContextMenuRadioGroup`](ContextMenuRadioGroup.md), [`ContextMenuRadioItem`](ContextMenuRadioItem.md), [`ContextMenuSeparator`](ContextMenuSeparator.md), [`ContextMenuShortcut`](ContextMenuShortcut.md), [`ContextMenuSub`](ContextMenuSub.md), [`ContextMenuSubContent`](ContextMenuSubContent.md), [`ContextMenuSubTrigger`](ContextMenuSubTrigger.md), [`ContextMenuTrigger`](ContextMenuTrigger.md)
 - Also accepts the props of ContextMenuProps
@@ -98,9 +98,9 @@ Server render: same markup as the client. The trigger span renders on the server
 
 ```tsx
 import * as React from "react";
-import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem } from "@sutra/ui";
-import { ContextMenuSeparator, ContextMenuTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiFileCopyLine } from "@sutra/ui/icons";
+import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem } from "@cleanprompt/sutra-ui";
+import { ContextMenuSeparator, ContextMenuTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiFileCopyLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onCopy, onDelete }: { onCopy: () => void; onDelete: () => void }) {
   const [starred, setStarred] = React.useState(false);

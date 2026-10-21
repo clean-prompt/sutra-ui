@@ -2,7 +2,7 @@
 
 > Human `Avatar` or procedural `AgentAvatar` for agent assignees. The ref points at the rendered `<span>` or `<svg>`.
 
-- Import: `import { KanbanAssigneeAvatar } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { KanbanAssigneeAvatar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-card` (kit `workspace`)
 
 ## Props

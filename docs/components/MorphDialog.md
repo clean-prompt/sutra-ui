@@ -2,7 +2,7 @@
 
 > A dialog (or bottom sheet) that grows out of the rectangle of the thing that opened it and shrinks back into it. The panel is clipped to the origin's box and its radius and slides onto its final place (Web Animations on the spring token, nothing is scaled, so text never stretches); the scrim, the shadow and the parts marked `data-morph-fade` appear late and go early. It is a Radix Dialog underneath: focus is trapped and handed back on close (to the `trigger`, or to whatever had it), Escape, the close button and a press on the scrim close it, and the panel stays mounted until the closing flight ends. Reduced motion (or no `animate`) means no flight at all. Pass `origin` (an element, a ref or a rect), or use `ExpandCard` for a card that is its own origin. Start the panel's content with the same face as the origin and the flight reads as one object.
 
-- Import: `import { MorphDialog } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { MorphDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/morph-dialog` (patterns)
 - `data-slot`: `morph-dialog-overlay`, `morph-dialog`, `morph-dialog-frame`, `morph-dialog-panel`
 
@@ -32,8 +32,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { MorphDialog } from "@sutra/ui/motion";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { MorphDialog } from "@cleanprompt/sutra-ui/motion";
 
 function AnyOrigin() {
   const [open, setOpen] = React.useState<"dialog" | "sheet" | null>(null);

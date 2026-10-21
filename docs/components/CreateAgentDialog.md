@@ -2,7 +2,7 @@
 
 > Dialog for creating an agent: name, avatar, role, description, persona and model / toolset slots.
 
-- Import: `import { CreateAgentDialog } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { CreateAgentDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-persona` (kit `agent-admin`)
 
 ## Props
@@ -25,10 +25,14 @@
 
 ```tsx
 import * as React from "react";
-import { AgentAvatar, CreateAgentDialog, randomAvatarSpec } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { SimpleSelect } from "@sutra/ui/forms";
-import { RiAddLine } from "@sutra/ui/icons";
+import {
+  AgentAvatar,
+  CreateAgentDialog,
+  randomAvatarSpec,
+} from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { SimpleSelect } from "@cleanprompt/sutra-ui/forms";
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";
 
 function CreateAgentDemo() {
   const [agents, setAgents] = React.useState<{ name: string; avatar: AgentAvatarSpec; role: string }[]>([

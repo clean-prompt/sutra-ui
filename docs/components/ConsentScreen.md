@@ -2,7 +2,7 @@
 
 > Authorization/approval screen: who is asking, what they want, and an expiring Approve.
 
-- Import: `import { ConsentScreen } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { ConsentScreen } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/consent` (kit `identity`)
 - `data-slot`: `consent-screen`
 - Also accepts the props of HTMLAttributes
@@ -35,9 +35,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RiShieldCheckLine, RiUserLine } from "@sutra/ui/icons";
-import { ConsentScreen } from "@sutra/ui/security";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiShieldCheckLine, RiUserLine } from "@cleanprompt/sutra-ui/icons";
+import { ConsentScreen } from "@cleanprompt/sutra-ui/security";
 
 function ConsentDemo() {
   const [nonce, setNonce] = React.useState(0);

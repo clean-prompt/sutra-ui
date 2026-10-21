@@ -2,7 +2,7 @@
 
 > Tabbed install commands per platform or package manager, each copyable.
 
-- Import: `import { InstallSnippet } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { InstallSnippet } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/marketing-blocks-features` (blocks)
 - Also accepts the props of HTMLAttributes
 
@@ -19,7 +19,7 @@
 ## Example (live: `#/components/billing-marketing/install-snippet` in the playground)
 
 ```tsx
-import { InstallSnippet } from "@sutra/ui/blocks";
+import { InstallSnippet } from "@cleanprompt/sutra-ui/blocks";
 
 <InstallSnippet tabs={installTabs} className="max-w-xl" />
 ```

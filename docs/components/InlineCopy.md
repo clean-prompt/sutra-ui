@@ -2,7 +2,7 @@
 
 > Single-line command with a copy button, e.g. `npm i
 
-- Import: `import { InlineCopy } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { InlineCopy } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/patterns/code-block` (patterns)
 - `data-slot`: `inline-copy`
 - Also accepts the props of HTMLAttributes
@@ -63,9 +63,9 @@ Server render: same markup as the client. Highlighting is a pure function of `co
 ## Example
 
 ```tsx
-import { CodeBlock } from "@sutra/ui";
+import { CodeBlock } from "@cleanprompt/sutra-ui";
 
-const code = `import { Button } from "@sutra/ui";
+const code = `import { Button } from "@cleanprompt/sutra-ui";
 
 export function Save() {
   return <Button type="submit">Save changes</Button>;

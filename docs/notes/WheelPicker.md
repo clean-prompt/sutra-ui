@@ -44,7 +44,7 @@ The listbox and all rows render on the server, but the scroll position is set af
 ## Example
 ```tsx
 import * as React from "react";
-import { WheelPicker, wheelRange } from "@sutra/ui";
+import { WheelPicker, wheelRange } from "@cleanprompt/sutra-ui";
 
 const minutes = wheelRange(5, 60, { step: 5 });
 

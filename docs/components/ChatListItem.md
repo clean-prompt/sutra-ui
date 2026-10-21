@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `ConversationRow` (default `rowActions="inline"`).
 
-- Import: `import { ChatListItem } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatListItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-list-view` (kit `ai`)
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
 

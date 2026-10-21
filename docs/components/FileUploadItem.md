@@ -2,7 +2,7 @@
 
 > A single file row: type badge, name, size, progress and status.
 
-- Import: `import { FileUploadItem } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FileUploadItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/patterns/file-upload` (patterns)
 - `data-slot`: `file-upload-item`
 - Part of [`FileUpload`](FileUpload.md)
@@ -23,7 +23,7 @@ See the notes in [`FileUpload`](FileUpload.md#notes).
 ## Example
 
 ```tsx
-import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger, type UploadFile } from "@sutra/ui";
+import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger, type UploadFile } from "@cleanprompt/sutra-ui";
 
 export function Example({ upload }: { upload: (files: UploadFile[]) => void }) {
   return (

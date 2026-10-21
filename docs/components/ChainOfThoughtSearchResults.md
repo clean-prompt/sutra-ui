@@ -2,7 +2,7 @@
 
 > Wrapping row of source chips under a search step.
 
-- Import: `import { ChainOfThoughtSearchResults } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChainOfThoughtSearchResults } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chain-of-thought` (kit `ai`)
 - Part of [`ChainOfThoughtSearchResult`](ChainOfThoughtSearchResult.md)
 - Also accepts the props of HTMLAttributes

@@ -42,7 +42,7 @@ The toggle, level text and slider track render on the server from `value`, `defa
 ## Example
 ```tsx
 import * as React from "react";
-import { VolumeSlider } from "@sutra/ui";
+import { VolumeSlider } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [volume, setVolume] = React.useState(60);

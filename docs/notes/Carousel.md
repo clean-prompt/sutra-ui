@@ -43,7 +43,7 @@ The server renders every slide, the strip and the controls. A starting slide oth
 ## Example
 ```tsx
 import * as React from "react";
-import { Carousel } from "@sutra/ui";
+import { Carousel } from "@cleanprompt/sutra-ui";
 
 const highlights = [
   { title: "Dark mode", body: "Follows your system setting, or pick one in Preferences." },

@@ -2,7 +2,7 @@
 
 > Editor footer: save status and presence on the left; counts, reading time, cursor and mode on the right.
 
-- Import: `import { EditorStatusBar } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { EditorStatusBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/kits/editor/editor-status` (kit `editor`)
 - `data-slot`: `editor-status-bar`, `editor-mode`
 - Also accepts the props of HTMLAttributes

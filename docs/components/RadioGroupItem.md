@@ -2,7 +2,7 @@
 
 > A radio button with a springy dot indicator.
 
-- Import: `import { RadioGroupItem } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { RadioGroupItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/radio` (primitives)
 - `data-slot`: `radio-group-item`, `radio-dot`
 - Part of [`RadioGroup`](RadioGroup.md)
@@ -26,7 +26,7 @@ See the notes in [`RadioGroup`](RadioGroup.md#notes).
 
 ```tsx
 import * as React from "react";
-import { RadioField, RadioGroup } from "@sutra/ui";
+import { RadioField, RadioGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [plan, setPlan] = React.useState("team");

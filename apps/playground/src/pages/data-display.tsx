@@ -36,8 +36,8 @@ import {
   type DataTableColumn,
   type DataTableSort,
   type StatusBadgeStatus,
-} from "@sutra/ui";
-import { RiCheckboxCircleLine, RiDownloadLine, RiTimeLine, RiUserLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiCheckboxCircleLine, RiDownloadLine, RiTimeLine, RiUserLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 const avatarSizes: AvatarSize[] = ["xs", "sm", "md", "lg", "xl", "2xl"];

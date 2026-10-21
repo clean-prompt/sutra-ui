@@ -2,7 +2,7 @@
 
 > Full-panel auth error state with a plain explanation and recovery actions.
 
-- Import: `import { AuthProblem } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { AuthProblem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/kits/identity/kunji-auth-problem` (kit `identity`)
 - `data-slot`: `auth-problem`
 - Also accepts the props of HTMLAttributes
@@ -29,8 +29,8 @@
 ## Example (live: `#/components/kunji/auth-problem` in the playground)
 
 ```tsx
-import { SegmentedControl } from "@sutra/ui/forms";
-import { AuthProblem } from "@sutra/ui/kunji";
+import { SegmentedControl } from "@cleanprompt/sutra-ui/forms";
+import { AuthProblem } from "@cleanprompt/sutra-ui/kunji";
 
 <SegmentedControl className="max-w-full overflow-x-auto" size="sm" value={problem} onValueChange={(v) => setProblem(v as AuthProblemVariant)} options={problemVariants.map((v) => ({ value: v, label: v }))} />
 <AuthProblem

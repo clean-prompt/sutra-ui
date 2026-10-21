@@ -2,7 +2,7 @@
 
 > Docked mini-chat for quick side questions that don't interrupt the main conversation. Resizable from its top edge.
 
-- Import: `import { SideThread } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { SideThread } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-composer-side-thread` (kit `agent`)
 - `data-slot`: `side-thread`
 - Also accepts the props of HTMLAttributes
@@ -31,9 +31,9 @@
 
 ```tsx
 import * as React from "react";
-import { SideThread } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
-import { RiQuestionAnswerLine } from "@sutra/ui/icons";
+import { SideThread } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiQuestionAnswerLine } from "@cleanprompt/sutra-ui/icons";
 
 function SideThreadDemo() {
   const side = useSideThread();

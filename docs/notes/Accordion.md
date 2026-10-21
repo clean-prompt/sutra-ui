@@ -34,7 +34,7 @@ Closed sections render only their triggers; sections open through `defaultValue`
 
 ## Example
 ```tsx
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@sutra/ui";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

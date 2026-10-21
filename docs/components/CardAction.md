@@ -2,7 +2,7 @@
 
 > Control placed at the end of the card header (a button, menu or badge).
 
-- Import: `import { CardAction } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { CardAction } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/layout` (primitives)
 - `data-slot`: `card-action`
 - Part of [`Card`](Card.md)
@@ -19,7 +19,7 @@ See the notes in [`Card`](Card.md#notes).
 ## Example
 
 ```tsx
-import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@sutra/ui";
+import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

@@ -1,4 +1,4 @@
-/* @sutra/ui/ai: chat, prompt and streaming-text components, plus the code block. */
+/* @cleanprompt/sutra-ui/ai: chat, prompt and streaming-text components, plus the code block. */
 export * from "../primitives/text-shimmer";
 export * from "../patterns/markdown";
 export * from "../kits/ai/chain-of-thought";

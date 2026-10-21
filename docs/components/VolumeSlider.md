@@ -2,7 +2,7 @@
 
 > Volume control: a mute toggle (speaker icon by level), a `Slider` and the level ("64%" or "Muted"). Muting keeps the value, so unmuting restores it; moving the slider while muted unmutes.
 
-- Import: `import { VolumeSlider } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { VolumeSlider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/primitives/volume-slider` (primitives)
 - `data-slot`: `volume-slider`, `volume-slider-level`
 - Also accepts the props of HTMLAttributes
@@ -88,7 +88,7 @@ Server render: part of it fills in after mount. The toggle, level text and slide
 
 ```tsx
 import * as React from "react";
-import { VolumeSlider } from "@sutra/ui";
+import { VolumeSlider } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [volume, setVolume] = React.useState(60);

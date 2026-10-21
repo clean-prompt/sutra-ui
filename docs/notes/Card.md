@@ -38,7 +38,7 @@ Plain markup with no browser API, so server and client output match.
 
 ## Example
 ```tsx
-import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@sutra/ui";
+import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

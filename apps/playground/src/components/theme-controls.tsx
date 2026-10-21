@@ -16,8 +16,8 @@ import {
   PopoverTrigger,
   type Brand,
   type SutraTheme,
-} from "@sutra/ui";
-import { RiMoonLine, RiPaletteLine, RiSunLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiMoonLine, RiPaletteLine, RiSunLine } from "@cleanprompt/sutra-ui/icons";
 
 /** Brand-500 swatch colors. Hardcoded because the default brand has no data-brand selector to scope. */
 export const brandSwatch: Record<Brand, string> = {

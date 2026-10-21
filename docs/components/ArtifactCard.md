@@ -2,7 +2,7 @@
 
 > Promoted artifact from a code fence or tool: kind, versions, streaming state, actions and a safe preview.
 
-- Import: `import { ArtifactCard } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ArtifactCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/artifacts-card` (kit `agent`)
 - `data-slot`: `artifact-card`
 - Also accepts the props of HTMLAttributes
@@ -35,8 +35,8 @@
 
 ```tsx
 import * as React from "react";
-import { ArtifactCard } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
+import { ArtifactCard } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function StreamingCard() {
   const full = "# Release notes\n\nThis release adds the **agent browser**, artifact cards and a git review set.\n\n- Annotate pages for the agent\n- Version history for artifacts\n- Ship bar with split actions";

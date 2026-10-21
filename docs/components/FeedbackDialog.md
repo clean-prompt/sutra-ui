@@ -2,7 +2,7 @@
 
 > Collect a star rating, a category and a written message; shows a thank-you state.
 
-- Import: `import { FeedbackDialog } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { FeedbackDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/modal-dialog-blocks-feedback` (blocks)
 
 ## Props

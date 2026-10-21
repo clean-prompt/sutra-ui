@@ -2,7 +2,7 @@
 
 > A grid or marquee row of company logos.
 
-- Import: `import { LogoCloud } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { LogoCloud } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/placeholder-logos` (assets)
 - Also accepts the props of HTMLAttributes
 
@@ -25,7 +25,7 @@
 ## Example (live: `#/components/assets/placeholder-logos` in the playground)
 
 ```tsx
-import { LogoCloud, placeholderLogos } from "@sutra/ui/assets";
+import { LogoCloud, placeholderLogos } from "@cleanprompt/sutra-ui/assets";
 
 function PlaceholderLogosDemo() {
   return (

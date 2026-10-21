@@ -2,7 +2,7 @@
 
 > Floating primary action, optionally expanding into a speed-dial menu.
 
-- Import: `import { FloatingActionButton } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { FloatingActionButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/fab` (primitives)
 - `data-slot`: `fab`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -86,8 +86,8 @@ Server render: same markup as the client. No browser API at render: the document
 ## Example
 
 ```tsx
-import { FloatingActionButton } from "@sutra/ui";
-import { RiEditLine, RiFileTextLine, RiImageAddLine } from "@sutra/ui/icons";
+import { FloatingActionButton } from "@cleanprompt/sutra-ui";
+import { RiEditLine, RiFileTextLine, RiImageAddLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onUpload }: { onUpload: () => void }) {
   return (

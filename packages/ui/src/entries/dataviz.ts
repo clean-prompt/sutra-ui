@@ -1,4 +1,4 @@
-/* @sutra/ui/dataviz: charts, stat cards, meters, gauges and the animated number. */
+/* @cleanprompt/sutra-ui/dataviz: charts, stat cards, meters, gauges and the animated number. */
 export * from "../patterns/chart";
 export * from "../patterns/stat-card";
 export * from "../patterns/bar-list";

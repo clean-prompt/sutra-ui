@@ -43,8 +43,8 @@ No browser API at render: the document listeners attach in an effect and `useId`
 
 ## Example
 ```tsx
-import { FloatingActionButton } from "@sutra/ui";
-import { RiEditLine, RiFileTextLine, RiImageAddLine } from "@sutra/ui/icons";
+import { FloatingActionButton } from "@cleanprompt/sutra-ui";
+import { RiEditLine, RiFileTextLine, RiImageAddLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onUpload }: { onUpload: () => void }) {
   return (

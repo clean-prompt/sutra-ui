@@ -2,7 +2,7 @@
 
 > Closes the sheet when clicked.
 
-- Import: `import { SheetClose } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { SheetClose } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/dialog` (primitives)
 - Part of [`Sheet`](Sheet.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes, PrimitivePropsWithRef
@@ -18,8 +18,8 @@ See the notes in [`Sheet`](Sheet.md#notes).
 ## Example
 
 ```tsx
-import { Button, Field, FieldLabel, Input, Sheet, SheetBody, SheetClose, SheetContent } from "@sutra/ui";
-import { SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@sutra/ui";
+import { Button, Field, FieldLabel, Input, Sheet, SheetBody, SheetClose, SheetContent } from "@cleanprompt/sutra-ui";
+import { SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

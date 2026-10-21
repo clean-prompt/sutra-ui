@@ -2,7 +2,7 @@
 
 > Bottom sheet with drag-to-dismiss, optional snap points, scroll lock and focus return (Radix Dialog).
 
-- Import: `import { Drawer } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { Drawer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/primitives/drawer` (primitives)
 - Parts: [`DrawerBody`](DrawerBody.md), [`DrawerClose`](DrawerClose.md), [`DrawerContent`](DrawerContent.md), [`DrawerDescription`](DrawerDescription.md), [`DrawerFooter`](DrawerFooter.md), [`DrawerHeader`](DrawerHeader.md), [`DrawerTitle`](DrawerTitle.md), [`DrawerTrigger`](DrawerTrigger.md)
 
@@ -85,8 +85,8 @@ Server render: same markup as the client. Only the trigger renders on the server
 ## Example
 
 ```tsx
-import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@sutra/ui";
-import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@sutra/ui";
+import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@cleanprompt/sutra-ui";
+import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

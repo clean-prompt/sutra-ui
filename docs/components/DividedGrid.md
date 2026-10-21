@@ -2,7 +2,7 @@
 
 > One bordered, rounded box whose cells are separated by hairlines instead of being separate cards: a tool grid, a feature list, a set of options. Works for any number of cells: the box clips the last column's and row's lines, so a short last row leaves no stray divider.
 
-- Import: `import { DividedGrid } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { DividedGrid } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/divided-grid` (patterns)
 - `data-slot`: `divided-grid`, `divided-grid-skeleton`, `divided-grid-empty`
 - Parts: [`DividedGridItem`](DividedGridItem.md)
@@ -45,7 +45,7 @@ One cell of a `DividedGrid`: icon tile, title, description, badge and meta. A li
 ## Example (live: `#/components/layout-patterns/grid-empty` in the playground)
 
 ```tsx
-import { DividedGrid } from "@sutra/ui/navigation";
+import { DividedGrid } from "@cleanprompt/sutra-ui/navigation";
 
 function GridEmptyDemo() {
   return (

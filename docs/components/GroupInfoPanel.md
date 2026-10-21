@@ -2,7 +2,7 @@
 
 > Side panel for a group chat: members with roles, shared media grid, mute and leave.
 
-- Import: `import { GroupInfoPanel } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { GroupInfoPanel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/social/messenger` (kit `social`)
 - `data-slot`: `group-info-panel`
 - Also accepts the props of HTMLAttributes
@@ -29,8 +29,8 @@
 ## Example (live: `#/components/social/group-info-panel` in the playground)
 
 ```tsx
-import { RiFilePdf2Line, RiStickyNoteLine } from "@sutra/ui/icons";
-import { GroupInfoPanel, MessengerHeader } from "@sutra/ui/social";
+import { RiFilePdf2Line, RiStickyNoteLine } from "@cleanprompt/sutra-ui/icons";
+import { GroupInfoPanel, MessengerHeader } from "@cleanprompt/sutra-ui/social";
 
 function GroupInfoDemo() {
   return (

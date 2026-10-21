@@ -2,7 +2,7 @@
 
 > A faint grid with light beams traveling along its lines. Content renders above it.
 
-- Import: `import { GridBeams } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { GridBeams } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/backgrounds` (assets)
 - Also accepts the props of HTMLAttributes
 

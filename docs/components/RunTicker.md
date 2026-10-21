@@ -2,7 +2,7 @@
 
 > One-line rolling activity reel: each new line pushes the previous one up and out. Click to see every line.
 
-- Import: `import { RunTicker } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { RunTicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/subagents` (kit `agent-admin`)
 - `data-slot`: `run-ticker`
 - Also accepts the props of HTMLAttributes

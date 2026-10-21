@@ -2,7 +2,7 @@
 
 > Watch a textarea for a trigger character at the start of a word and report the query under the caret.
 
-- Import: `import { useSlashTrigger } from "@sutra/ui/ai"`
+- Import: `import { useSlashTrigger } from "@cleanprompt/sutra-ui/ai"`
 - Source: `packages/ui/src/patterns/slash-menu`
 
 ## Signature

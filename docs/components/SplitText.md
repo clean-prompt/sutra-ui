@@ -2,7 +2,7 @@
 
 > Text that reveals itself character by character or word by word (`animate-fade-up` plus the `stagger` delay on `--i`). Accessible by construction: the real text sits once in a visually hidden span, and the pieces are `aria-hidden`, so a screen reader never hears letters, and copying and find-in-page still see words (a word stays unbroken at line ends). Under `prefers-reduced-motion`, or with `animate={false}`, it renders the plain text.
 
-- Import: `import { SplitText } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { SplitText } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/split-text` (patterns)
 - `data-slot`: `split-text`, `split-text-piece`
 - Also accepts the props of HTMLAttributes

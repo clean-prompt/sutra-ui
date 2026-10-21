@@ -40,7 +40,7 @@ The pager renders plain markup on the server. Whether the page list or the "Page
 ## Example
 ```tsx
 import * as React from "react";
-import { Pagination, PaginationStatus } from "@sutra/ui";
+import { Pagination, PaginationStatus } from "@cleanprompt/sutra-ui";
 
 const total = 245;
 

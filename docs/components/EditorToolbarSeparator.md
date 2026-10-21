@@ -2,7 +2,7 @@
 
 > Vertical divider between tool groups.
 
-- Import: `import { EditorToolbarSeparator } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { EditorToolbarSeparator } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/kits/editor/editor-toolbar` (kit `editor`)
 - Part of [`EditorToolbar`](EditorToolbar.md)
 - Also accepts the props of HTMLAttributes
@@ -20,7 +20,7 @@ import {
   EditorToolbarButton,
   EditorToolbarMenu,
   EditorToolbarSeparator,
-} from "@sutra/ui/editor";
+} from "@cleanprompt/sutra-ui/editor";
 import {
   RiBold,
   RiDoubleQuotesL,
@@ -32,7 +32,7 @@ import {
   RiListUnordered,
   RiStrikethrough,
   RiTableLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 
 function ToolbarOverflowDemo() {
   const [width, setWidth] = React.useState(360);

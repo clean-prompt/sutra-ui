@@ -2,7 +2,7 @@
 
 > A turn section whose sticky header stays pinned only while the turn is in view.
 
-- Import: `import { TranscriptTurn } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { TranscriptTurn } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-transcript` (kit `agent`)
 - `data-slot`: `transcript-turn`
 - Also accepts the props of HTMLAttributes

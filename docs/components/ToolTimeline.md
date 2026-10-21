@@ -2,7 +2,7 @@
 
 > Vertical rail of agent steps. Children are ToolTimelineItem, ToolGroup or ToolTimelineText (other nodes are wrapped as text).
 
-- Import: `import { ToolTimeline } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ToolTimeline } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline-steps` (kit `agent`)
 - `data-slot`: `tool-timeline`
 - Parts: [`ToolTimelineDot`](ToolTimelineDot.md), [`ToolTimelineItem`](ToolTimelineItem.md), [`ToolTimelineText`](ToolTimelineText.md)
@@ -53,7 +53,12 @@ Assistant narration between tool calls.
 ## Example (live: `#/components/agent-timeline/tool-timeline` in the playground)
 
 ```tsx
-import { ReadToolBody, ToolTimeline, ToolTimelineItem, ToolTimelineText } from "@sutra/ui/agent";
+import {
+  ReadToolBody,
+  ToolTimeline,
+  ToolTimelineItem,
+  ToolTimelineText,
+} from "@cleanprompt/sutra-ui/agent";
 
 function TimelineDemo() {
   return (

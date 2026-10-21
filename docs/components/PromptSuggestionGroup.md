@@ -2,7 +2,7 @@
 
 > Container for PromptSuggestion items.
 
-- Import: `import { PromptSuggestionGroup } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptSuggestionGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-suggestion` (kit `ai`)
 - `data-slot`: `prompt-suggestion-group`
 - Part of [`PromptSuggestion`](PromptSuggestion.md)

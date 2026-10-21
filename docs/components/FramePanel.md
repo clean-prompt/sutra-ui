@@ -2,7 +2,7 @@
 
 > The raised surface that holds the rows. Rows are its direct children; a list of `Item`s works as is.
 
-- Import: `import { FramePanel } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { FramePanel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/frame` (primitives)
 - `data-slot`: `frame-panel`
 - Part of [`Frame`](Frame.md)
@@ -27,7 +27,7 @@ See the notes in [`Frame`](Frame.md#notes).
 import {
   Button, Frame, FrameAction, FrameDescription, FrameFooter, FrameHeader, FramePanel, FrameTitle,
   Item, ItemContent, ItemTitle,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 
 const members = ["Maya Chen", "Omar Haddad", "Priya Nair"];
 

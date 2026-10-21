@@ -2,7 +2,7 @@
 
 > Fullscreen media viewer: arrows/swipe, zoom + pan, counter, thumbnails, Escape to close, focus trap.
 
-- Import: `import { Lightbox } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { Lightbox } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/lightbox` (patterns)
 - `data-slot`: `lightbox`, `lightbox-counter`, `lightbox-stage`
 - Parts: [`LightboxTrigger`](LightboxTrigger.md)
@@ -92,7 +92,7 @@ Server render: same markup as the client. A closed viewer renders only its child
 ## Example
 
 ```tsx
-import { Lightbox, LightboxTrigger, type LightboxItem } from "@sutra/ui";
+import { Lightbox, LightboxTrigger, type LightboxItem } from "@cleanprompt/sutra-ui";
 
 const photos: LightboxItem[] = [
   { src: "/images/alps.jpg", alt: "Alps at dawn", caption: "Alps at dawn" },

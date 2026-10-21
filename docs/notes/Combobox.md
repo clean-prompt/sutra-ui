@@ -48,7 +48,7 @@ The trigger renders on the server with its selected labels or placeholder (label
 ## Example
 ```tsx
 import * as React from "react";
-import { Combobox, Field, FieldLabel } from "@sutra/ui";
+import { Combobox, Field, FieldLabel } from "@cleanprompt/sutra-ui";
 
 const countries = [
   { value: "de", label: "Germany" },

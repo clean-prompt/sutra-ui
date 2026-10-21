@@ -2,7 +2,7 @@
 
 > Link card with title, description, domain and an optional image slot. Data comes from the app; nothing is fetched.
 
-- Import: `import { LinkPreviewCard } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { LinkPreviewCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/embeds` (kit `ai`)
 - `data-slot`: `link-preview-card`
 - Also accepts the props of HTMLAttributes, AnchorHTMLAttributes
@@ -23,8 +23,13 @@
 
 ```tsx
 import * as React from "react";
-import { EmbedConsentProvider, LinkPreviewCard, RichEmbed, SvgEmbed } from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
+import {
+  EmbedConsentProvider,
+  LinkPreviewCard,
+  RichEmbed,
+  SvgEmbed,
+} from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function EmbedsDemo() {
   const [allowed, setAllowed] = React.useState<string[]>([]);

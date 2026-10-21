@@ -2,7 +2,7 @@
 
 > Searchable, grouped shortcut list with a key recorder, conflict detection and reset.
 
-- Import: `import { KeybindEditor } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { KeybindEditor } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/keybind-editor` (patterns)
 - `data-slot`: `keybind-editor`, `keybind-editor-row`
 - Also accepts the props of HTMLAttributes
@@ -25,8 +25,8 @@
 
 ```tsx
 import * as React from "react";
-import { ShortcutKeys, ShortcutProvider } from "@sutra/ui/suite";
-import { KeybindEditor } from "@sutra/ui/workspace";
+import { ShortcutKeys, ShortcutProvider } from "@cleanprompt/sutra-ui/suite";
+import { KeybindEditor } from "@cleanprompt/sutra-ui/workspace";
 
 function KeybindDemo() {
   const [overrides, setOverrides] = React.useState<Record<string, string>>({});

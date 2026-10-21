@@ -2,7 +2,7 @@
 
 > Group heading; fades out in icon mode.
 
-- Import: `import { SidebarGroupLabel } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarGroupLabel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-group-label`
 - Part of [`SidebarGroup`](SidebarGroup.md)

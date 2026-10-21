@@ -2,7 +2,7 @@
 
 > Source text pane: auto-growing textarea, counter, clear, did-you-mean strip, voice/speak slots, RTL.
 
-- Import: `import { SourcePane } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { SourcePane } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/translate-panes` (kit `voice`)
 - `data-slot`: `did-you-mean`
 - Also accepts the props of HTMLAttributes
@@ -29,7 +29,11 @@
 
 ```tsx
 import * as React from "react";
-import { SourcePane, TransliterationCandidates, TransliterationToggle } from "@sutra/ui/voice";
+import {
+  SourcePane,
+  TransliterationCandidates,
+  TransliterationToggle,
+} from "@cleanprompt/sutra-ui/voice";
 
 function TransliterationDemo() {
   const ref = React.useRef<HTMLTextAreaElement>(null);

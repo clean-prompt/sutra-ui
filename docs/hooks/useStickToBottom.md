@@ -2,7 +2,7 @@
 
 > Keep a scroller pinned to the bottom while content grows, until the user scrolls up.
 
-- Import: `import { useStickToBottom } from "@sutra/ui/ai"`
+- Import: `import { useStickToBottom } from "@cleanprompt/sutra-ui/ai"`
 - Source: `packages/ui/src/hooks/use-stick-to-bottom`
 
 ## Signature

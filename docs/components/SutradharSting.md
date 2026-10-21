@@ -2,7 +2,7 @@
 
 > A short logo sting with Sutradhar and the Sutra mark (the crescent bead on its thread), drawn in ink like the mascot. The final lockup is the markup (it renders on the server, under reduced motion and before a play starts); while it plays, the shared mascot frame driver writes the frames. It pauses off screen; `astra-endless` keeps streaming for as long as it is on screen. Decorative unless `title` is set. The art is direction-agnostic: it is drawn the same in left-to-right and right-to-left layouts (Sutradhar walks in from the left and the astra's aim is a protractor angle, like a logo), so it is never mirrored.
 
-- Import: `import { SutradharSting } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { SutradharSting } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/sutradhar-sting` (assets)
 - `data-slot`: `sutradhar-sting`
 - Also accepts the props of SVGAttributes
@@ -61,7 +61,7 @@ Server render: same markup as the client. The final lockup is the markup, the sa
 
 ```tsx
 import * as React from "react";
-import { Button, SutradharSting } from "@sutra/ui";
+import { Button, SutradharSting } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [replay, setReplay] = React.useState(0);

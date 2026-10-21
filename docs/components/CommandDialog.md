@@ -2,7 +2,7 @@
 
 > Top-anchored command palette in a modal dialog.
 
-- Import: `import { CommandDialog } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { CommandDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/patterns/command-menu` (patterns)
 - Part of [`Command`](Command.md)
 - Also accepts the props of DialogProps
@@ -73,7 +73,7 @@ Server render: same markup as the client. A closed dialog renders nothing on the
 
 ```tsx
 import * as React from "react";
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@sutra/ui";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

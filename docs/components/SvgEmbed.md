@@ -2,7 +2,7 @@
 
 > Safely renders user-supplied SVG through an image data URL (no innerHTML, no script execution).
 
-- Import: `import { SvgEmbed } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { SvgEmbed } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/embeds` (kit `ai`)
 - `data-slot`: `svg-embed`
 - Also accepts the props of HTMLAttributes

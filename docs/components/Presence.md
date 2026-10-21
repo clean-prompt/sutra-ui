@@ -2,7 +2,7 @@
 
 > Mounts a child when `present` turns true and unmounts it after its exit animation when it turns false. The child carries `data-state="open" | "closed"` and `data-presence="enter" | "idle" | "exit"`, so plain classes do the motion:
 
-- Import: `import { Presence } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { Presence } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/presence` (patterns)
 - `data-slot`: `presence`
 
@@ -25,9 +25,9 @@ An exiting child is `inert` and `aria-hidden` (out of the tab order and the acce
 
 ```tsx
 import * as React from "react";
-import { CodeBlock } from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
-import { Presence } from "@sutra/ui/motion";
+import { CodeBlock } from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { Presence } from "@cleanprompt/sutra-ui/motion";
 
 function MotionPresence() {
   const [open, setOpen] = React.useState(true);

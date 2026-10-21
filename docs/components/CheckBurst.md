@@ -2,7 +2,7 @@
 
 > A tiny celebratory pop for completing a task or reaching a streak: a ring of particles flies out of the centre and fades (Web Animations on `translate`, `scale` and `opacity`, no keyframes in the stylesheet), and the content swells. Pure decoration: the layer is `aria-hidden` and never carries information, so say the result in text (a live region, the checked state). Under `prefers-reduced-motion` nothing plays. It draws past its own box, so keep it out of an `overflow-hidden` ancestor. Drive it with `active`, `burstKey` or `apiRef.burst()`.
 
-- Import: `import { CheckBurst } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { CheckBurst } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/check-burst` (patterns)
 - `data-slot`: `check-burst`, `check-burst-content`, `check-burst-layer`
 - Also accepts the props of HTMLAttributes
@@ -29,10 +29,10 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { AnimatedNumber } from "@sutra/ui/dataviz";
-import { RiFireFill } from "@sutra/ui/icons";
-import { CheckBurst } from "@sutra/ui/motion";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { AnimatedNumber } from "@cleanprompt/sutra-ui/dataviz";
+import { RiFireFill } from "@cleanprompt/sutra-ui/icons";
+import { CheckBurst } from "@cleanprompt/sutra-ui/motion";
 
 function Streak() {
   const [streak, setStreak] = React.useState(6);

@@ -2,7 +2,7 @@
 
 > Repeat-rule editor: none / daily / weekly (weekday toggles) / monthly / yearly / custom interval, plus an end condition.
 
-- Import: `import { RecurrencePicker } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { RecurrencePicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/patterns/recurrence-picker` (patterns)
 - `data-slot`: `recurrence-picker`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,7 @@
 
 ```tsx
 import * as React from "react";
-import { RecurrencePicker, describeRecurrence, toRRule } from "@sutra/ui/social";
+import { RecurrencePicker, describeRecurrence, toRRule } from "@cleanprompt/sutra-ui/social";
 
 function RecurrenceDemo() {
   const [rule, setRule] = React.useState<RecurrenceRule>({ freq: "weekly", byWeekday: ["MO", "WE"] });

@@ -2,7 +2,7 @@
 
 > A snap carousel: native CSS scroll-snap strip (swipe, trackpad and wheel just work), previous and next buttons, dots, Arrow / Home / End keys on the strip, and the slide in view as `value` (found with an IntersectionObserver, so a free scroll updates it). It follows the ARIA carousel pattern: `aria-roledescription="carousel"` and "slide" with "n of N" names, and a status line that announces the slide unless it is rotating. `autoplay` pauses while the pointer or focus is inside, has a visible pause button (WCAG 2.2.2) and stays off under reduced motion until the user starts it. Controlled or uncontrolled.
 
-- Import: `import { Carousel } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { Carousel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/carousel` (patterns)
 - `data-slot`: `carousel`, `carousel-track`, `carousel-controls`
 - Also accepts the props of HTMLAttributes
@@ -83,7 +83,7 @@ Server render: part of it fills in after mount. The server renders every slide, 
 
 ```tsx
 import * as React from "react";
-import { Carousel } from "@sutra/ui";
+import { Carousel } from "@cleanprompt/sutra-ui";
 
 const highlights = [
   { title: "Dark mode", body: "Follows your system setting, or pick one in Preferences." },

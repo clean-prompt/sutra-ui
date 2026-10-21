@@ -2,7 +2,7 @@
 
 > Holds collapsed / mobile state, registers ⌘B, and lays out sidebar + inset.
 
-- Import: `import { SidebarProvider } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarProvider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-wrapper`
 - Part of [`Sidebar`](Sidebar.md)

@@ -52,7 +52,7 @@ describe("blockRegistry (src/blocks/registry.tsx)", async () => {
 });
 
 describe("deprecated names are still exported from their old paths", () => {
-  it("root, @sutra/ui/blocks and the blocks barrel re-export the registry and demo helpers", async () => {
+  it("root, @cleanprompt/sutra-ui/blocks and the blocks barrel re-export the registry and demo helpers", async () => {
     const registry = await import("../src/blocks/registry");
     for (const mod of [await import("../src"), await import("../src/entries/blocks"), await import("../src/blocks")]) {
       expect(mod.blockRegistry).toBe(registry.blockRegistry);

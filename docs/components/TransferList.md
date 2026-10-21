@@ -2,7 +2,7 @@
 
 > Queue of transfers with a summary header ("3 active · 1 failed · 12.4 MB/s") and "Clear completed".
 
-- Import: `import { TransferList } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { TransferList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/transfer-list` (patterns)
 - `data-slot`: `transfer-list`
 - Also accepts the props of HTMLAttributes
@@ -74,7 +74,7 @@ Server render: part of it fills in after mount. Markup is computed from `items`.
 ## Example
 
 ```tsx
-import { TransferList, type TransferItemData } from "@sutra/ui";
+import { TransferList, type TransferItemData } from "@cleanprompt/sutra-ui";
 
 const MB = 1024 * 1024;
 const transfers: TransferItemData[] = [

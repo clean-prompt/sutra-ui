@@ -2,7 +2,7 @@
 
 > Chip showing the current subtitle/audio track; click cycles to the next one or opens a picker.
 
-- Import: `import { TrackCycleChip } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { TrackCycleChip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-controls-menus` (kit `media`)
 
 ## Props

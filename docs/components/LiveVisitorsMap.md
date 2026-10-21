@@ -2,7 +2,7 @@
 
 > Live analytics screen: a header with live, country and source counts, a globe or flat map of avatar markers with source badges and clusters, a visitor list whose rows select and fly to the marker, and a card for the selected visitor.
 
-- Import: `import { LiveVisitorsMap } from "@sutra/ui"` (or from `@sutra/ui/geo`)
+- Import: `import { LiveVisitorsMap } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/geo`)
 - Source: `packages/ui/src/kits/geo/live-visitors-map` (kit `geo`)
 - `data-slot`: `live-visitors-map`, `live-visitors-header`, `live-visitors-count`, `live-visitors-window`, `live-visitors-map-area`, `live-visitors-list`
 - Also accepts the props of HTMLAttributes
@@ -35,7 +35,7 @@
 ## Example (live: `#/components/live-visitors/empty-visitors` in the playground)
 
 ```tsx
-import { LiveVisitorsMap } from "@sutra/ui/geo";
+import { LiveVisitorsMap } from "@cleanprompt/sutra-ui/geo";
 
 function EmptyDemo() {
   return <LiveVisitorsMap visitors={[]} windowLabel="Last 30 minutes" defaultView="flat" label="Live visitors (empty)" />;

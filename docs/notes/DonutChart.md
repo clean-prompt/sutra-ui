@@ -44,7 +44,7 @@ The ring is drawn from `size` alone, so the server HTML already contains the seg
 
 ## Example
 ```tsx
-import { DonutChart } from "@sutra/ui";
+import { DonutChart } from "@cleanprompt/sutra-ui";
 
 const storage = [
   { type: "Photos", gb: 42 },

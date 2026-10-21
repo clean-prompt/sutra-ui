@@ -2,7 +2,7 @@
 
 > Tabbed Skills / Toolsets / Connectors / Plugins hub with counts, search + sort and a responsive detail pane.
 
-- Import: `import { CapabilitiesShell } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { CapabilitiesShell } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/capabilities` (kit `agent-admin`)
 - `data-slot`: `capabilities-shell`, `capabilities-detail`
 - Also accepts the props of HTMLAttributes

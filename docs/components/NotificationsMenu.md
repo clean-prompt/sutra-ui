@@ -2,7 +2,7 @@
 
 > Bell button with unread count opening a notification list with All/Unread tabs and "Mark all read".
 
-- Import: `import { NotificationsMenu } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { NotificationsMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/dropdown-menu-blocks` (blocks)
 
 ## Props

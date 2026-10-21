@@ -2,7 +2,7 @@
 
 > Full-screen expanded player sheet: slides up, swipe down (from the top of its scroll) to dismiss.
 
-- Import: `import { NowPlaying } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { NowPlaying } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/audio-player-now-playing` (kit `media`)
 - `data-slot`: `now-playing-scroll`
 
@@ -48,9 +48,9 @@
 ## Example (live: `#/components/media-player/now-playing` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { RiMore2Fill } from "@sutra/ui/icons";
-import { NowPlaying } from "@sutra/ui/media";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiMore2Fill } from "@cleanprompt/sutra-ui/icons";
+import { NowPlaying } from "@cleanprompt/sutra-ui/media";
 
 <Button onClick={() => player.setExpanded(true)}>Open now playing</Button>
 <NowPlaying

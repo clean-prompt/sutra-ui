@@ -2,7 +2,7 @@
 
 > Progress through a multi-step flow.
 
-- Import: `import { Steps } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Steps } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/step-indicator` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -56,7 +56,7 @@ Server render: same markup as the client. Plain markup with no browser API or me
 
 ```tsx
 import * as React from "react";
-import { Button, Steps } from "@sutra/ui";
+import { Button, Steps } from "@cleanprompt/sutra-ui";
 
 const steps = [
   { title: "Account", description: "Create your login" },

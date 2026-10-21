@@ -37,8 +37,8 @@ Plain markup with no browser API at render. The menu is closed, so only the two 
 ## Example
 ```tsx
 import * as React from "react";
-import { SplitButton } from "@sutra/ui";
-import { RiCalendarLine, RiDraftLine } from "@sutra/ui/icons";
+import { SplitButton } from "@cleanprompt/sutra-ui";
+import { RiCalendarLine, RiDraftLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [status, setStatus] = React.useState("Draft");

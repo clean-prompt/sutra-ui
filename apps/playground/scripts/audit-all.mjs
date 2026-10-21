@@ -67,7 +67,7 @@ async function waitForServer(url, ms = 30000) {
 }
 
 if (!flag("no-build")) {
-  run("pnpm", ["--filter", "@sutra/ui", "build"]);
+  run("pnpm", ["--filter", "@cleanprompt/sutra-ui", "build"]);
   run("pnpm", ["--filter", "playground", "build"]);
 }
 

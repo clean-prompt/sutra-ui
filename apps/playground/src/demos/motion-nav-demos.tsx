@@ -25,8 +25,8 @@ import {
   useMediaQuery,
   usePrefersReducedMotion,
   useViewTransition,
-} from "@sutra/ui";
-import { RiArrowLeftLine, RiArrowRightLine, RiHeartLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiArrowLeftLine, RiArrowRightLine, RiHeartLine } from "@cleanprompt/sutra-ui/icons";
 import { DemoLabel } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

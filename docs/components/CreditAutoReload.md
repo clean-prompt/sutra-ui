@@ -2,7 +2,7 @@
 
 > Auto top-up settings: switch, "below X add Y" inputs, optional monthly cap, validation and save.
 
-- Import: `import { CreditAutoReload } from "@sutra/ui"` (or from `@sutra/ui/billing`)
+- Import: `import { CreditAutoReload } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-credits` (kit `billing`)
 - `data-slot`: `credit-auto-reload`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,7 @@
 
 ```tsx
 import * as React from "react";
-import { CreditAutoReload, CreditBalanceCard } from "@sutra/ui/billing";
+import { CreditAutoReload, CreditBalanceCard } from "@cleanprompt/sutra-ui/billing";
 
 function CreditsDemo() {
   const [balance, setBalance] = React.useState(1840);

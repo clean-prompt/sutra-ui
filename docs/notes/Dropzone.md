@@ -36,7 +36,7 @@ Without `directory` the zone renders the same on both sides. With `directory` th
 ## Example
 ```tsx
 import * as React from "react";
-import { Dropzone } from "@sutra/ui";
+import { Dropzone } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [files, setFiles] = React.useState<File[]>([]);

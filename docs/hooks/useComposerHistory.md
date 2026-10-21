@@ -2,7 +2,7 @@
 
 > Shell-style prompt history for composers: ↑/↓ recall previous prompts when the caret is at the start / end.
 
-- Import: `import { useComposerHistory } from "@sutra/ui/agent"`
+- Import: `import { useComposerHistory } from "@cleanprompt/sutra-ui/agent"`
 - Source: `packages/ui/src/hooks/use-composer-history`
 
 ## Signature
@@ -24,8 +24,8 @@ useComposerHistory({ value, onValueChange, initialEntries, max }: UseComposerHis
 
 ```tsx
 import * as React from "react";
-import { ComposerToolbar, useComposerHistory } from "@sutra/ui/agent";
-import { PromptInput, PromptInputSubmit, PromptInputTextarea } from "@sutra/ui/ai";
+import { ComposerToolbar, useComposerHistory } from "@cleanprompt/sutra-ui/agent";
+import { PromptInput, PromptInputSubmit, PromptInputTextarea } from "@cleanprompt/sutra-ui/ai";
 
 function HistoryDemo() {
   const [value, setValue] = React.useState("");

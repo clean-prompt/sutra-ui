@@ -2,7 +2,7 @@
 
 > File read body: path, line range and an optional snippet.
 
-- Import: `import { ReadToolBody } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ReadToolBody } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline-bodies` (kit `agent`)
 - `data-slot`: `read-tool-body`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,12 @@
 
 ```tsx
 import * as React from "react";
-import { ReadToolBody, SearchToolBody, ToolKeyValueBody, WebToolBody } from "@sutra/ui/agent";
+import {
+  ReadToolBody,
+  SearchToolBody,
+  ToolKeyValueBody,
+  WebToolBody,
+} from "@cleanprompt/sutra-ui/agent";
 
 function BodiesDemo() {
   return (

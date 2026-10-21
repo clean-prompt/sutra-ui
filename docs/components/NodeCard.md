@@ -2,7 +2,7 @@
 
 > Server / node status card: identity, status dot, uptime, metric tiles, chart, core grid and actions.
 
-- Import: `import { NodeCard } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { NodeCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/node-card` (kit `ops`)
 - `data-slot`: `node-card`
 - Also accepts the props of HTMLAttributes

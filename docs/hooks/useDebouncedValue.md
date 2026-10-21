@@ -2,7 +2,7 @@
 
 > A copy of `value` that follows it after it has stopped changing for `delay` ms (default 300). Feed it a search box value and fetch on the debounced one. The first render returns `value` untouched, a pending update is dropped when the component unmounts, and a `delay` of 0 or less updates on the next tick.
 
-- Import: `import { useDebouncedValue } from "@sutra/ui/tokens"`
+- Import: `import { useDebouncedValue } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-debounced-value`
 
 ## Signature
@@ -15,8 +15,8 @@ useDebouncedValue<T>(value: T, delay?: number): T
 
 ```tsx
 import * as React from "react";
-import { Input } from "@sutra/ui/forms";
-import { useDebouncedValue } from "@sutra/ui/tokens";
+import { Input } from "@cleanprompt/sutra-ui/forms";
+import { useDebouncedValue } from "@cleanprompt/sutra-ui/tokens";
 
 function DebouncedDemo() {
   const [text, setText] = React.useState("");

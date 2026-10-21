@@ -44,7 +44,7 @@ import {
   type ChatToolApprovalStatus,
   type ChatToolState,
   type PromptInputModel,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiBookOpenLine,
   RiCodeSSlashLine,
@@ -57,7 +57,7 @@ import {
   RiSearchLine,
   RiSparklingLine,
   RiTerminalBoxLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 export function AiPage() {

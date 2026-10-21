@@ -28,7 +28,7 @@ The remaining time is computed from `Date.now()` during the first render, so the
 
 ## Example
 ```tsx
-import { Countdown } from "@sutra/ui";
+import { Countdown } from "@cleanprompt/sutra-ui";
 
 export function Example({ endsAt }: { endsAt: Date }) {
   return (

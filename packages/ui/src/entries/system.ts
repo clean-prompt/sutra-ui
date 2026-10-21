@@ -1,4 +1,4 @@
-/* @sutra/ui/system: system-monitor screens (volume mixer, device batteries, dev servers, containers, thermals, alert rules) and their primitives. */
+/* @cleanprompt/sutra-ui/system: system-monitor screens (volume mixer, device batteries, dev servers, containers, thermals, alert rules) and their primitives. */
 export * from "../kits/system/volume-mixer";
 export * from "../kits/system/device-battery";
 export * from "../kits/system/dev-servers";

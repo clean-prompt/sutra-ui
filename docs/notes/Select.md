@@ -38,7 +38,7 @@ The trigger renders on the server, but the option list lives in a fragment creat
 ## Example
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SimpleSelect } from "@sutra/ui";
+import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SimpleSelect } from "@cleanprompt/sutra-ui";
 
 const roles = [
   { value: "viewer", label: "Viewer", description: "Can read" },

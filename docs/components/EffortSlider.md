@@ -2,7 +2,7 @@
 
 > Discrete effort-level control: click or drag the bars, ← → keys, compact pill variant.
 
-- Import: `import { EffortSlider } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { EffortSlider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-mode` (kit `agent`)
 - `data-slot`: `effort-slider-track`, `effort-slider`
 - Also accepts the props of HTMLAttributes
@@ -25,9 +25,9 @@
 
 ```tsx
 import * as React from "react";
-import { EffortSlider, PermissionModeSwitcher } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
-import { RiArrowUpLine, RiAttachment2 } from "@sutra/ui/icons";
+import { EffortSlider, PermissionModeSwitcher } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiArrowUpLine, RiAttachment2 } from "@cleanprompt/sutra-ui/icons";
 
 function ModeSwitcherDemo() {
   const [mode, setMode] = React.useState("manual");

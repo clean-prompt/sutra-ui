@@ -2,7 +2,7 @@
 
 > Element that opens the hover card.
 
-- Import: `import { HoverCardTrigger } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { HoverCardTrigger } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/popover` (primitives)
 - Part of [`HoverCard`](HoverCard.md)
 - Also accepts the props of HTMLAttributes, AnchorHTMLAttributes, PrimitivePropsWithRef
@@ -18,7 +18,7 @@ See the notes in [`HoverCard`](HoverCard.md#notes).
 ## Example
 
 ```tsx
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@sutra/ui";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

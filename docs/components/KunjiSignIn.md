@@ -2,7 +2,7 @@
 
 > "Sign in with kunji" widget: runs the protocol against the app's own endpoints and renders every state.
 
-- Import: `import { KunjiSignIn } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { KunjiSignIn } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/kits/identity/kunji-sign-in` (kit `identity`)
 - Parts: [`KunjiSignInView`](KunjiSignInView.md)
 - Also accepts the props of HTMLAttributes
@@ -70,7 +70,7 @@ Presentational kunji sign-in: QR with logo plate, countdown, steps, code fallbac
 ## Example (live: `#/components/kunji/kunji-variants` in the playground)
 
 ```tsx
-import { KunjiSignIn } from "@sutra/ui/kunji";
+import { KunjiSignIn } from "@cleanprompt/sutra-ui/kunji";
 
 <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
   <div className="flex flex-col items-center gap-2">

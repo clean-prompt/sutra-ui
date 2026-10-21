@@ -2,7 +2,7 @@
 
 > One fact in a `KeyValueList`, optionally copyable.
 
-- Import: `import { KeyValue } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { KeyValue } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/primitives/key-value` (primitives)
 - `data-slot`: `key-value`
 - Parts: [`KeyValueList`](KeyValueList.md)
@@ -81,7 +81,7 @@ Server render: same markup as the client. Plain markup from the props, with no b
 ## Example
 
 ```tsx
-import { KeyValue, KeyValueList } from "@sutra/ui";
+import { KeyValue, KeyValueList } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

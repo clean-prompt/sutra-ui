@@ -2,7 +2,7 @@
 
 > Linear-style task modal: inline title, Markdown description, property sidebar, dependencies and Comments / Activity / Runs tabs.
 
-- Import: `import { TaskDetailDialog } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { TaskDetailDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-task-dialog` (kit `workspace`)
 - `data-slot`: `task-detail-dialog`
 
@@ -35,7 +35,7 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function TaskDetailDemo() {
   const [board, setBoard] = React.useState(initialBoard);

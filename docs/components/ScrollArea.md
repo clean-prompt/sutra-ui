@@ -2,7 +2,7 @@
 
 > Custom-styled scroll container with thin overlay scrollbars and optional edge fades. The viewport is focusable while it overflows; `aria-label` / `aria-labelledby` name it as a `region`.
 
-- Import: `import { ScrollArea } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ScrollArea } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/scroll-area` (primitives)
 - Also accepts the props of HTMLAttributes, ScrollAreaProps, PrimitivePropsWithRef
 
@@ -48,7 +48,7 @@ Server render: part of it fills in after mount. The server renders the root and 
 ## Example
 
 ```tsx
-import { Button, ScrollArea } from "@sutra/ui";
+import { Button, ScrollArea } from "@cleanprompt/sutra-ui";
 
 const versions = Array.from({ length: 30 }, (_, i) => `v2.${30 - i}.0`);
 

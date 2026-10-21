@@ -2,7 +2,7 @@
 
 > Data-driven select: pass `options` and get a styled trigger + list.
 
-- Import: `import { SimpleSelect } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { SimpleSelect } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/select` (primitives)
 - Also accepts the props of SelectSharedProps, SelectProps
 
@@ -76,7 +76,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SimpleSelect } from "@sutra/ui";
+import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SimpleSelect } from "@cleanprompt/sutra-ui";
 
 const roles = [
   { value: "viewer", label: "Viewer", description: "Can read" },

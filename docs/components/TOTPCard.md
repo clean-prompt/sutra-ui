@@ -2,7 +2,7 @@
 
 > Authenticator entry: issuer icon, account label, live code and a menu slot.
 
-- Import: `import { TOTPCard } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { TOTPCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/totp` (kit `identity`)
 - `data-slot`: `totp-card`
 - Also accepts the props of HTMLAttributes
@@ -36,22 +36,22 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
+import { Button } from "@cleanprompt/sutra-ui/core";
 import {
   RiDeleteBinLine,
   RiEditLine,
   RiMore2Line,
   RiPushpinLine,
   RiQrCodeLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@sutra/ui/overlays";
-import { TOTPCard } from "@sutra/ui/security";
+} from "@cleanprompt/sutra-ui/overlays";
+import { TOTPCard } from "@cleanprompt/sutra-ui/security";
 
 function AuthenticatorDemo() {
   const [pinned, setPinned] = React.useState<string[]>(["gh"]);

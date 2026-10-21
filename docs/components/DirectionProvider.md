@@ -2,7 +2,7 @@
 
 > Tells Sutra and its Radix primitives which way the text runs. Put one at the app root (no `dir`: it follows `<html dir>` live) or wrap a subtree with a `dir` to force it; read it with `useDirection`.
 
-- Import: `import { DirectionProvider } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { DirectionProvider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/direction-provider` (primitives)
 - `data-slot`: `direction-provider`
 - Also accepts the props of HTMLAttributes
@@ -52,7 +52,7 @@ Server render: part of it fills in after mount. With `dir` the markup is the sam
 ## Example
 
 ```tsx
-import { DirectionProvider } from "@sutra/ui";
+import { DirectionProvider } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

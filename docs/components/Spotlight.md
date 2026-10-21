@@ -2,7 +2,7 @@
 
 > A soft radial glow for heroes and cards.
 
-- Import: `import { Spotlight } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { Spotlight } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/backgrounds` (assets)
 - Also accepts the props of HTMLAttributes
 

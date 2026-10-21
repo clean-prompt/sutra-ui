@@ -42,8 +42,8 @@ The server renders the row and both action groups at rest with a left-to-right d
 
 ## Example
 ```tsx
-import { SwipeRow } from "@sutra/ui";
-import { RiArchiveLine, RiDeleteBinLine, RiMailLine } from "@sutra/ui/icons";
+import { SwipeRow } from "@cleanprompt/sutra-ui";
+import { RiArchiveLine, RiDeleteBinLine, RiMailLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onArchive, onDelete }: { onArchive: () => void; onDelete: () => void }) {
   return (

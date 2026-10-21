@@ -2,7 +2,7 @@
 
 > Wires a form control to the nearest `Field`: id, aria-describedby, aria-invalid, disabled and required. Explicit props always win over the field context.
 
-- Import: `import { useField } from "@sutra/ui/forms"`
+- Import: `import { useField } from "@cleanprompt/sutra-ui/forms"`
 - Source: `packages/ui/src/primitives/field`
 
 ## Signature

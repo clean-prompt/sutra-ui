@@ -2,7 +2,7 @@
 
 > A tab bar that collapses tabs which don't fit into a "More" dropdown (ResizeObserver-driven).
 
-- Import: `import { TabDropdown } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { TabDropdown } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/tab-dropdown` (primitives)
 - `data-slot`: `tab-dropdown-measure`
 - Also accepts the props of HTMLAttributes
@@ -67,7 +67,7 @@ Server render: part of it fills in after mount. The server renders every tab (`v
 
 ```tsx
 import * as React from "react";
-import { TabDropdown } from "@sutra/ui";
+import { TabDropdown } from "@cleanprompt/sutra-ui";
 
 const sections = [
   { value: "overview", label: "Overview" },

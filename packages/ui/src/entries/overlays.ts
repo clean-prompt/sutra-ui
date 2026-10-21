@@ -1,4 +1,4 @@
-/* @sutra/ui/overlays: tooltips, popovers, dialogs, menus, the command palette and the fan menu. */
+/* @cleanprompt/sutra-ui/overlays: tooltips, popovers, dialogs, menus, the command palette and the fan menu. */
 export * from "../primitives/tooltip";
 export * from "../primitives/info-tooltip";
 export * from "../primitives/popover";

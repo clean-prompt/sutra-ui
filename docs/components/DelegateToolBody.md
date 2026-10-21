@@ -2,7 +2,7 @@
 
 > Body for a "delegate" tool call: one row per child task with status and an open button.
 
-- Import: `import { DelegateToolBody } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { DelegateToolBody } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/subagents` (kit `agent-admin`)
 - `data-slot`: `delegate-tool-body`
 - Also accepts the props of HTMLAttributes
@@ -17,7 +17,7 @@
 ## Example (live: `#/components/channels/delegate-tool` in the playground)
 
 ```tsx
-import { DelegateToolBody } from "@sutra/ui/agent-admin";
+import { DelegateToolBody } from "@cleanprompt/sutra-ui/agent-admin";
 
 <DelegateToolBody
   className="w-full max-w-xl"

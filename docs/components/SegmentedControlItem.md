@@ -2,7 +2,7 @@
 
 > One segment. Renders icon-only (square) when it has an icon and no label.
 
-- Import: `import { SegmentedControlItem } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { SegmentedControlItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/segmented-control` (primitives)
 - Part of [`SegmentedControl`](SegmentedControl.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes, PrimitivePropsWithRef, ToggleGroupItemImplProps
@@ -21,7 +21,7 @@ See the notes in [`SegmentedControl`](SegmentedControl.md#notes).
 
 ```tsx
 import * as React from "react";
-import { SegmentedControl } from "@sutra/ui";
+import { SegmentedControl } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [view, setView] = React.useState("list");

@@ -2,7 +2,7 @@
 
 > Menu row: icon, label, badge; shows a tooltip when the sidebar is collapsed to icons.
 
-- Import: `import { SidebarMenuButton } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarMenuButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-menu-badge`, `sidebar-menu-button`
 - Part of [`SidebarMenu`](SidebarMenu.md)

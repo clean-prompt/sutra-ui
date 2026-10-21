@@ -2,7 +2,7 @@
 
 > Collapsible reasoning panel with a "Thinking… / Thought for Ns" header.
 
-- Import: `import { ChainOfThought } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChainOfThought } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chain-of-thought` (kit `ai`)
 - `data-slot`: `thinking-elapsed`, `thinking-tokens`, `thinking-summary`
 - Parts: [`ChainOfThoughtContent`](ChainOfThoughtContent.md), [`ChainOfThoughtSearchResult`](ChainOfThoughtSearchResult.md), [`ChainOfThoughtSearchResults`](ChainOfThoughtSearchResults.md), [`ChainOfThoughtStep`](ChainOfThoughtStep.md)
@@ -61,8 +61,8 @@ import {
   ChainOfThoughtStep,
   ThinkingExpandAllProvider,
   ThinkingToggle,
-} from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
+} from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function ThinkingDemo() {
   const [streaming, setStreaming] = React.useState(true);

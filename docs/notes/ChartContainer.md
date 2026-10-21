@@ -41,7 +41,7 @@ The first render, on the server and before hydration, passes `defaultWidth` (600
 
 ## Example
 ```tsx
-import { ChartContainer } from "@sutra/ui";
+import { ChartContainer } from "@cleanprompt/sutra-ui";
 
 const visits = [
   { day: "Mon", count: 120 },

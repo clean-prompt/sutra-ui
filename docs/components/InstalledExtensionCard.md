@@ -2,7 +2,7 @@
 
 > Installed plugin row: source, version, runtime status, auth, enable / update (consent) / open / hide / remove, slots and setup.
 
-- Import: `import { InstalledExtensionCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { InstalledExtensionCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/extensions-catalog-installed` (kit `agent-admin`)
 - `data-slot`: `installed-extension-card`
 - Also accepts the props of HTMLAttributes
@@ -35,9 +35,14 @@
 
 ```tsx
 import * as React from "react";
-import { InstalledExtensionCard } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiCalendarLine, RiKanbanView, RiTerminalBoxLine, RiTimeLine } from "@sutra/ui/icons";
+import { InstalledExtensionCard } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import {
+  RiCalendarLine,
+  RiKanbanView,
+  RiTerminalBoxLine,
+  RiTimeLine,
+} from "@cleanprompt/sutra-ui/icons";
 
 function InstalledDemo() {
   const [hidden, setHidden] = React.useState<string[]>([]);

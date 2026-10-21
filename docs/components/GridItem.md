@@ -2,7 +2,7 @@
 
 > A cell of `Grid`: `span` columns on mobile, with `md` and `lg` spans for larger screens. Extra props are spread to the root.
 
-- Import: `import { GridItem } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { GridItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/layout` (primitives)
 - Part of [`Grid`](Grid.md)
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,7 @@ See the notes in [`Grid`](Grid.md#notes).
 ## Example
 
 ```tsx
-import { Card, CardContent, CardHeader, CardTitle, Grid, GridItem } from "@sutra/ui";
+import { Card, CardContent, CardHeader, CardTitle, Grid, GridItem } from "@cleanprompt/sutra-ui";
 
 const stats = [
   { label: "Active users", value: "1,284" },

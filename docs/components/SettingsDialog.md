@@ -2,7 +2,7 @@
 
 > `SettingsShell` inside a modal dialog. Escape closes only the topmost layer.
 
-- Import: `import { SettingsDialog } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SettingsDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/settings` (patterns)
 - Also accepts the props of HTMLAttributes
 

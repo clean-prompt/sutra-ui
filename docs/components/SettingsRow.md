@@ -2,7 +2,7 @@
 
 > A settings row: static with a control slot, a toggle row (whole row clickable) or a nav row with value + chevron. Use `type="toggle"` inside a `SettingsGroup` (icon slot, `disabledReason`, full-row hover and click target); use `SwitchField` / `SwitchGroup` for switches inside ordinary forms.
 
-- Import: `import { SettingsRow } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SettingsRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/settings` (patterns)
 - `data-slot`: `settings-row`
 

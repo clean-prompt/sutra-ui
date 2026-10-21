@@ -36,7 +36,7 @@ An open banner renders its full markup on the server; it uses only state, and th
 ## Example
 ```tsx
 import * as React from "react";
-import { AlertBanner } from "@sutra/ui";
+import { AlertBanner } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(true);

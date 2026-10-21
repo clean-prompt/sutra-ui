@@ -39,7 +39,7 @@ Everything is computed from `data` and the props, and the default value text use
 
 ## Example
 ```tsx
-import { HeatmapGrid } from "@sutra/ui";
+import { HeatmapGrid } from "@cleanprompt/sutra-ui";
 
 const load = [12, 48, 91, 35, 77, 5, 62, 100];
 

@@ -2,7 +2,7 @@
 
 > Card surface used across components and blocks; compose it with `CardHeader`, `CardContent` and `CardFooter`.
 
-- Import: `import { Card } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Card } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/layout` (primitives)
 - `data-slot`: `card`
 - Parts: [`CardAction`](CardAction.md), [`CardContent`](CardContent.md), [`CardDescription`](CardDescription.md), [`CardFooter`](CardFooter.md), [`CardHeader`](CardHeader.md), [`CardTitle`](CardTitle.md)
@@ -83,7 +83,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@sutra/ui";
+import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

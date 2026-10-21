@@ -41,8 +41,8 @@ Plain markup: pressed state comes from `value`, `defaultValue` or `defaultPresse
 ## Example
 ```tsx
 import * as React from "react";
-import { ToggleGroup, ToggleGroupItem } from "@sutra/ui";
-import { RiBold, RiItalic, RiUnderline } from "@sutra/ui/icons";
+import { ToggleGroup, ToggleGroupItem } from "@cleanprompt/sutra-ui";
+import { RiBold, RiItalic, RiUnderline } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [marks, setMarks] = React.useState<string[]>(["bold"]);

@@ -2,7 +2,7 @@
 
 > Message viewport with stick-to-bottom scrolling. Give it a height (or place it in a flex column).
 
-- Import: `import { ChatConversation } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatConversation } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-conversation` (kit `ai`)
 - `data-slot`: `chat-conversation`
 - Parts: [`ChatConversationContent`](ChatConversationContent.md)

@@ -1,10 +1,10 @@
-<!-- conventions-hash: 66836294f66e -->
+<!-- conventions-hash: 8c0826a19f5a -->
 # Sutra UI conventions digest
 
 A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or extend the library. When the two disagree, CONVENTIONS.md wins; re-read it when the hash above no longer matches (`node packages/ui/scripts/gen-llms.mjs --update-conventions-hash` records the new one after you update this file).
 
 ## Stack and layers
-- React 19, TypeScript strict, Tailwind CSS v4, Radix UI (`radix-ui`), `class-variance-authority`, Remix icons (`@sutra/ui/icons`). Relative imports inside the package.
+- React 19, TypeScript strict, Tailwind CSS v4, Radix UI (`radix-ui`), `class-variance-authority`, Remix icons (`@cleanprompt/sutra-ui/icons`). Relative imports inside the package.
 - Layers in `packages/ui/src`, each importing only downward: `lib` (pure functions) and `hooks`, `assets` (marks, logos, flags), `primitives` (basic controls), `patterns` (domain-neutral compositions), `kits/<domain>` (ai, agent, billing, ops, ...), `blocks` (sections and pages), `entries` (one barrel per public subpath).
 - Named exports only; every export name is unique across the package (prefix sub-parts with the family: `TableRow`, `DialogContent`). `src/index.ts` and `src/entries/core.ts` are generated (`pnpm gen:index`).
 
@@ -47,7 +47,7 @@ A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or
 - In Tailwind v4 `translate-*`, `scale-*`, `rotate-*` set individual properties: use bare `transition-transform` (or name all four in an arbitrary list).
 
 ## Brand, mascot, orb and ink pictograms
-- Styles are token override files: `data-style="paper"` (needs `@sutra/ui/paper.css`) redefines the semantic tokens in a light and a dark block, so components never branch on the style. The ink is the accent there, so `data-brand` and `data-app` do nothing; put `data-style` on `<html>` to reach portalled layers.
+- Styles are token override files: `data-style="paper"` (needs `@cleanprompt/sutra-ui/paper.css`) redefines the semantic tokens in a light and a dark block, so components never branch on the style. The ink is the accent there, so `data-brand` and `data-app` do nothing; put `data-style` on `<html>` to reach portalled layers.
 - The Sutra mark is a crescent bead on an upright thread (`SutraMark`, `SutraLogo`, drawn `SutraWordmark`). Default `glyph` is mono and follows the text colour; `tile` and `reversed` use the two brand inks; `solid` follows `--primary`. `intro` plays the logo's one-time CSS intro (still under reduced motion). `SutraAppIcon` is ink on paper by default, `tone="dyed"` puts the app dye in the bead; no gradients or effects. kunji art (`KunjiMark`, `KunjiButton`) is official brand art: never recolour, rotate or stretch it.
 - `SutraMascot` is a family of original characters (`character`: `bead` first, then `pendant`, `mala`, `bindu`, `knot-pendant`, `bow`, `bun`, `sutradhar`; `mascotCharacters` drives a picker so people choose their own) with eight `state`s (idle, listening, thinking, working, speaking, happy, sleeping, error). Ink on paper by default; the bead animates with CSS, the others with one shared rAF loop that writes attributes and runs only on screen; reduced motion keeps each state as a still pose. `SutradharSting` is the brand animation (`mark`, `astra`, `astra-endless`): decorative unless `title` is set, plays once, shows its last frame under reduced motion.
 - `AssistantOrb` (`kits/voice`) is the voice assistant's state animation: `state` idle, listening, thinking, speaking (plus error, muted), `level` 0 to 1 (feed it from `useAudioLevel`), eight `variant` looks (`orb`, `waveform`, `mala`, `string`, `ink`, `rings`, `graph`, `halftone`; `assistantOrbVariants` drives a picker). `useAssistantOrbState` picks the state by priority. Both mascot and orb are original designs: never copy another product's.

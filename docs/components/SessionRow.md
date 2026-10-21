@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `DeviceSessionRow`.
 
-- Import: `import { SessionRow } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SessionRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/kits/identity/device-sessions` (kit `identity`)
 - Also accepts the props of HTMLAttributes
 

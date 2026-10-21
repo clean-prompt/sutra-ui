@@ -35,7 +35,7 @@ Plain markup with no browser API, so server and client output match. The logos a
 ## Example
 ```tsx
 import * as React from "react";
-import { SocialButton } from "@sutra/ui";
+import { SocialButton } from "@cleanprompt/sutra-ui";
 
 export function Example({ signIn }: { signIn: (provider: "google" | "github") => Promise<void> }) {
   const [pending, setPending] = React.useState<"google" | "github" | null>(null);

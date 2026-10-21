@@ -2,7 +2,7 @@
 
 > AI proposal review: word diff of a suggestion with Accept / Discard and per-change accept / reject.
 
-- Import: `import { SuggestionDiff } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { SuggestionDiff } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/patterns/diff-viewer-suggestion` (patterns)
 - `data-slot`: `suggestion-diff`
 - Also accepts the props of HTMLAttributes
@@ -26,8 +26,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { SuggestionDiff } from "@sutra/ui/editor";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { SuggestionDiff } from "@cleanprompt/sutra-ui/editor";
 
 function SuggestionDemo() {
   const original = "The sync engine batch writes every half second and conflicts is resolved by last writer wins, which loses data sometimes.";

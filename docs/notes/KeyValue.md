@@ -38,7 +38,7 @@ Plain markup from the props, with no browser API, so server and client output ma
 
 ## Example
 ```tsx
-import { KeyValue, KeyValueList } from "@sutra/ui";
+import { KeyValue, KeyValueList } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

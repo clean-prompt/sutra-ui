@@ -2,7 +2,7 @@
 
 > Inline command / mention listbox anchored to the caret of a composer textarea.
 
-- Import: `import { SlashMenu } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { SlashMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/patterns/slash-menu` (patterns)
 - `data-slot`: `slash-menu`
 - Also accepts the props of HTMLAttributes
@@ -25,7 +25,7 @@
 
 ```tsx
 import * as React from "react";
-import { SlashMenu } from "@sutra/ui/ai";
+import { SlashMenu } from "@cleanprompt/sutra-ui/ai";
 
 function SlashMenuDemo() {
   const ref = React.useRef<HTMLTextAreaElement>(null);

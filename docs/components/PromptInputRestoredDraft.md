@@ -2,7 +2,7 @@
 
 > Notice shown when an unsent draft was restored into the composer, with Discard / Keep.
 
-- Import: `import { PromptInputRestoredDraft } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputRestoredDraft } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input` (kit `ai`)
 - `data-slot`: `prompt-input-restored-draft`
 - Part of [`PromptInput`](PromptInput.md)
@@ -34,9 +34,9 @@ import {
   PromptInputTextarea,
   PromptInputToolbar,
   PromptInputTools,
-} from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
-import { RiDraftLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiDraftLine } from "@cleanprompt/sutra-ui/icons";
 
 function RestoredDraftDemo() {
   const [key, setKey] = React.useState(0);

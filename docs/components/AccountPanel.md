@@ -2,7 +2,7 @@
 
 > Signed-in summary: avatar, name, role, app launch links, and sign out / sign out everywhere.
 
-- Import: `import { AccountPanel } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { AccountPanel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/kits/identity/device-sessions` (kit `identity`)
 - `data-slot`: `account-panel`
 - Also accepts the props of HTMLAttributes
@@ -22,8 +22,8 @@
 ## Example (live: `#/components/identity/account-panel` in the playground)
 
 ```tsx
-import { SutraAppIcon } from "@sutra/ui/assets";
-import { AccountPanel } from "@sutra/ui/identity";
+import { SutraAppIcon } from "@cleanprompt/sutra-ui/assets";
+import { AccountPanel } from "@cleanprompt/sutra-ui/identity";
 
 <AccountPanel
   name="Vyom Shah"

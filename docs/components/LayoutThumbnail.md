@@ -2,7 +2,7 @@
 
 > Mini SVG preview of a layout tree.
 
-- Import: `import { LayoutThumbnail } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { LayoutThumbnail } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/tiling-layout-presets` (patterns)
 - `data-slot`: `layout-thumbnail`
 - Also accepts the props of SVGAttributes

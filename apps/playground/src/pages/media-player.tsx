@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, SegmentedControl } from "@sutra/ui";
+import { Button, SegmentedControl } from "@cleanprompt/sutra-ui";
 import {
   NowPlayingBars,
   PlayPauseButton,
@@ -12,11 +12,11 @@ import {
   VolumeControl,
   useMediaElement,
   type RepeatMode,
-} from "@sutra/ui/kits/media/media-controls";
-import { VideoPlayer } from "@sutra/ui/kits/media/video-player";
-import { MiniPlayer, NowPlaying, QueueList, TrackRow, usePlayerQueue, type PlayerTrack } from "@sutra/ui/kits/media/audio-player";
-import { AlbumCard, EpisodeCard, MediaHero, MediaShelf, PlaylistCard, PosterCard } from "@sutra/ui/kits/media/media-cards";
-import { CastPicker, DeviceIcon, type CastDevice } from "@sutra/ui/kits/media/cast-picker";
+} from "@cleanprompt/sutra-ui/kits/media/media-controls";
+import { VideoPlayer } from "@cleanprompt/sutra-ui/kits/media/video-player";
+import { MiniPlayer, NowPlaying, QueueList, TrackRow, usePlayerQueue, type PlayerTrack } from "@cleanprompt/sutra-ui/kits/media/audio-player";
+import { AlbumCard, EpisodeCard, MediaHero, MediaShelf, PlaylistCard, PosterCard } from "@cleanprompt/sutra-ui/kits/media/media-cards";
+import { CastPicker, DeviceIcon, type CastDevice } from "@cleanprompt/sutra-ui/kits/media/cast-picker";
 import {
   RiArchiveLine,
   RiCastLine,
@@ -28,7 +28,7 @@ import {
   RiShareLine,
   RiTimeLine,
   RiWifiOffLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

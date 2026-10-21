@@ -2,7 +2,7 @@
 
 > Post-sync summary: updated, failed rebuilds, disabled by dependency conflict and available updates.
 
-- Import: `import { SyncReceiptCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SyncReceiptCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/extensions-catalog` (kit `agent-admin`)
 - `data-slot`: `sync-receipt-card`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 ## Example (live: `#/components/capabilities/sync-receipt` in the playground)
 
 ```tsx
-import { SyncReceiptCard } from "@sutra/ui/agent-admin";
+import { SyncReceiptCard } from "@cleanprompt/sutra-ui/agent-admin";
 
 <SyncReceiptCard
   syncedAt="just now"

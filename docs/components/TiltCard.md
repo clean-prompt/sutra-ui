@@ -2,7 +2,7 @@
 
 > A `Card` that tilts toward the mouse in 3D. The pointer is read on a still wrapper (`data-slot="tilt-card-field"`) and the card inside tilts, so it never moves out from under the pointer. Props and the ref go to the card. Touch, reduced motion and no hover leave it flat. Use it for hero, plan and entity cards, not for dense or live content.
 
-- Import: `import { TiltCard } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { TiltCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/pointer-fx` (patterns)
 - `data-slot`: `tilt-card-field`
 - Also accepts the props of HTMLAttributes
@@ -20,9 +20,9 @@
 ## Example (live: `#/foundations/colors/pointer` in the playground)
 
 ```tsx
-import { Button, InlineCode } from "@sutra/ui/core";
-import { RiHeartLine } from "@sutra/ui/icons";
-import { Magnetic, TiltCard } from "@sutra/ui/motion";
+import { Button, InlineCode } from "@cleanprompt/sutra-ui/core";
+import { RiHeartLine } from "@cleanprompt/sutra-ui/icons";
+import { Magnetic, TiltCard } from "@cleanprompt/sutra-ui/motion";
 
 function MotionPointer() {
   return (

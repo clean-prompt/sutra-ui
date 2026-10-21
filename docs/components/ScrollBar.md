@@ -2,7 +2,7 @@
 
 > Thin scrollbar track + thumb; rendered automatically by `ScrollArea`.
 
-- Import: `import { ScrollBar } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ScrollBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/scroll-area` (primitives)
 - Also accepts the props of HTMLAttributes, PrimitivePropsWithRef, ScrollAreaScrollbarProps, ScrollAreaScrollbarVisibleProps
 
@@ -45,7 +45,7 @@ Server render: part of it fills in after mount. The server renders the root and 
 ## Example
 
 ```tsx
-import { Button, ScrollArea } from "@sutra/ui";
+import { Button, ScrollArea } from "@cleanprompt/sutra-ui";
 
 const versions = Array.from({ length: 30 }, (_, i) => `v2.${30 - i}.0`);
 

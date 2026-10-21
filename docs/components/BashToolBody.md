@@ -2,7 +2,7 @@
 
 > Shell call body: `$ command` with copy, ANSI output, separate stderr and an exit code chip.
 
-- Import: `import { BashToolBody } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { BashToolBody } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline-bodies` (kit `agent`)
 - `data-slot`: `bash-tool-body`, `bash-exit-code`, `bash-stderr`, `bash-output`
 - Also accepts the props of HTMLAttributes
@@ -21,7 +21,7 @@
 ## Example (live: `#/components/agent-timeline/bash-tool-body` in the playground)
 
 ```tsx
-import { BashToolBody } from "@sutra/ui/agent";
+import { BashToolBody } from "@cleanprompt/sutra-ui/agent";
 
 function BashDemo() {
   return (

@@ -2,7 +2,7 @@
 
 > Decorative animated gradient background; children render above it.
 
-- Import: `import { MeshGradient } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { MeshGradient } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/mesh-gradient` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -54,7 +54,7 @@ Server render: same markup as the client. Plain markup with inline styles and no
 ## Example
 
 ```tsx
-import { Badge, Heading, MeshGradient, Text } from "@sutra/ui";
+import { Badge, Heading, MeshGradient, Text } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

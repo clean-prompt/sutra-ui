@@ -2,7 +2,7 @@
 
 > Connection-mode chip for collaborative editors: pulsing "Live", "Offline · saved locally", "Reconnecting…".
 
-- Import: `import { PresenceIndicator } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { PresenceIndicator } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/kits/social/presence` (kit `social`)
 - `data-slot`: `presence-indicator`
 - Also accepts the props of HTMLAttributes

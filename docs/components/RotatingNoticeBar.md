@@ -2,7 +2,7 @@
 
 > Global notice strip that rotates through notices with a dot pager and a pause button, also pausing on hover or focus. Renders an `AlertBanner`.
 
-- Import: `import { RotatingNoticeBar } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { RotatingNoticeBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/notice-bar` (patterns)
 - `data-slot`: `rotating-notice-bar`
 - Also accepts the props of HTMLAttributes
@@ -24,9 +24,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RiRestartLine } from "@sutra/ui/icons";
-import { RotatingNoticeBar, useNoticeQueue } from "@sutra/ui/workspace";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiRestartLine } from "@cleanprompt/sutra-ui/icons";
+import { RotatingNoticeBar, useNoticeQueue } from "@cleanprompt/sutra-ui/workspace";
 
 function NoticeDemo() {
   const [persisted, setPersisted] = React.useState<string[]>([]);

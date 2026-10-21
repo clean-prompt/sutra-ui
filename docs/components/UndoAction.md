@@ -2,7 +2,7 @@
 
 > A destructive button that turns into a counted "Undo" for N seconds and only then commits (`onCommit`). The deadline is the wall clock, so a throttled tab still commits on time; the ring and the number follow it. The focus stays on the same button, so Enter or Space undoes. Pair it with a `Toast` through `onArm` and a controlled `armed`. The three labels sit in one grid cell, so the width never jumps. A polite live region announces the countdown, the undo and the commit.
 
-- Import: `import { UndoAction } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { UndoAction } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/undo-action` (primitives)
 - `data-slot`: `undo-action`, `undo-action-ring`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -79,8 +79,8 @@ Server render: same markup as the client. No browser API at render: the deadline
 ## Example
 
 ```tsx
-import { UndoAction } from "@sutra/ui";
-import { RiDeleteBinLine } from "@sutra/ui/icons";
+import { UndoAction } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ deleteProject }: { deleteProject: () => Promise<unknown> }) {
   return (

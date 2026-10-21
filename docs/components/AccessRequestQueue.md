@@ -2,7 +2,7 @@
 
 > Pending pairing requests with approve / deny, plus approved users with confirm-to-revoke.
 
-- Import: `import { AccessRequestQueue } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { AccessRequestQueue } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/channels-access` (kit `agent-admin`)
 - `data-slot`: `access-request-queue`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 
 ```tsx
 import * as React from "react";
-import { AccessRequestQueue } from "@sutra/ui/agent-admin";
+import { AccessRequestQueue } from "@cleanprompt/sutra-ui/agent-admin";
 
 function AccessQueueDemo() {
   const [requests, setRequests] = React.useState<AccessRequest[]>(() => [

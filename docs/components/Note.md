@@ -2,7 +2,7 @@
 
 > The quiet line a screen says while working or when there is nothing here: small, grey, unalarming.
 
-- Import: `import { Note } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { Note } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/primitives/empty-state` (primitives)
 - `data-slot`: `note`
 - Also accepts the props of HTMLAttributes
@@ -58,8 +58,8 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Note } from "@sutra/ui";
-import { RiInboxLine } from "@sutra/ui/icons";
+import { Note } from "@cleanprompt/sutra-ui";
+import { RiInboxLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

@@ -2,7 +2,7 @@
 
 > Recovery key panel: grouped mono grid, copy/download/share/print, auto-clear countdown and a confirm-saved step.
 
-- Import: `import { RecoveryKey } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { RecoveryKey } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/recovery-key` (kit `identity`)
 - `data-slot`: `recovery-key`, `recovery-key-groups`
 - Parts: [`RecoveryKeyInput`](RecoveryKeyInput.md)
@@ -63,8 +63,8 @@ Recovery key entry with auto-grouping, uppercase normalization and validation.
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RecoveryKey } from "@sutra/ui/security";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RecoveryKey } from "@cleanprompt/sutra-ui/security";
 
 function RecoveryKeyDemo() {
   const [n, setN] = React.useState(0);

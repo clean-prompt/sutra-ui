@@ -2,7 +2,7 @@
 
 > FancyZones-style editor: click to split zones (Shift for horizontal), drag dividers, delete zones.
 
-- Import: `import { ZoneEditor } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { ZoneEditor } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/tiling-layout-zone-editor` (patterns)
 - `data-slot`: `zone`, `zone-split`, `zone-editor`, `zone-canvas`
 - Also accepts the props of HTMLAttributes
@@ -23,8 +23,8 @@
 
 ```tsx
 import * as React from "react";
-import { JsonViewer } from "@sutra/ui/ops";
-import { ZoneEditor } from "@sutra/ui/workspace";
+import { JsonViewer } from "@cleanprompt/sutra-ui/ops";
+import { ZoneEditor } from "@cleanprompt/sutra-ui/workspace";
 
 function ZoneEditorDemo() {
   const [output, setOutput] = React.useState<LayoutNode | null>(null);

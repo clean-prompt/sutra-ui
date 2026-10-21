@@ -2,7 +2,7 @@
 
 > Two resizable panes with an accessible draggable divider, persistence and a narrow-width fallback.
 
-- Import: `import { SplitPane } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { SplitPane } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/split-pane` (patterns)
 - `data-slot`: `split-pane`
 - Parts: [`SplitPaneHandle`](SplitPaneHandle.md), [`SplitPanePanel`](SplitPanePanel.md)
@@ -95,7 +95,7 @@ Server render: part of it fills in after mount. The panes render on the server a
 ## Example
 
 ```tsx
-import { SplitPane, SplitPaneHandle, SplitPanePanel } from "@sutra/ui";
+import { SplitPane, SplitPaneHandle, SplitPanePanel } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

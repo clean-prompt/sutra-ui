@@ -2,7 +2,7 @@
 
 > Status pill with a colored dot (or a spinner / icon).
 
-- Import: `import { StatusBadge } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { StatusBadge } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/status-badge` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -56,7 +56,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { StatusBadge, StatusDot } from "@sutra/ui";
+import { StatusBadge, StatusDot } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

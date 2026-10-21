@@ -2,7 +2,7 @@
 
 > Persistent now-playing bar: compact phone layout (tap/swipe up to expand) and a full desktop transport.
 
-- Import: `import { MiniPlayer } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { MiniPlayer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/audio-player` (kit `media`)
 - Also accepts the props of HTMLAttributes
 

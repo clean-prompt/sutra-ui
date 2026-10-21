@@ -2,7 +2,7 @@
 
 > Live RMS input level (0..1) of a MediaStream, sampled each animation frame. Returns 0 without a stream.
 
-- Import: `import { useAudioLevel } from "@sutra/ui/voice"`
+- Import: `import { useAudioLevel } from "@cleanprompt/sutra-ui/voice"`
 - Source: `packages/ui/src/kits/voice/voice`
 
 ## Signature
@@ -15,7 +15,7 @@ useAudioLevel(stream: MediaStream | null | undefined, { smoothing, gain }?: { sm
 
 ```tsx
 import * as React from "react";
-import { AudioLevelMeter } from "@sutra/ui/voice";
+import { AudioLevelMeter } from "@cleanprompt/sutra-ui/voice";
 
 function AudioLevelDemo() {
   const [level, setLevel] = React.useState(0.4);

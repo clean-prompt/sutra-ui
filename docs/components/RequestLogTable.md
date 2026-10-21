@@ -2,7 +2,7 @@
 
 > Filterable, paginated request log with rows that expand into a RequestInspector.
 
-- Import: `import { RequestLogTable } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { RequestLogTable } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/request-inspector` (kit `ops`)
 - `data-slot`: `request-log-table`
 - Also accepts the props of HTMLAttributes
@@ -26,7 +26,7 @@
 ## Example (live: `#/components/monitoring/request-log-table` in the playground)
 
 ```tsx
-import { RequestLogTable } from "@sutra/ui/ops";
+import { RequestLogTable } from "@cleanprompt/sutra-ui/ops";
 
 <RequestLogTable records={fakeRecords} pageSize={10} className="w-full" />
 ```

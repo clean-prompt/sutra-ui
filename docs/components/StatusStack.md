@@ -2,7 +2,7 @@
 
 > Stack of status rows above a composer; collapsed it shows the top row plus "+N more".
 
-- Import: `import { StatusStack } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { StatusStack } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/status-stack` (kit `agent-admin`)
 - Parts: [`StatusStackRow`](StatusStackRow.md)
 - Also accepts the props of HTMLAttributes
@@ -44,9 +44,9 @@ import {
   HeartbeatStatusRow,
   LoopStatusRow,
   StatusStack,
-} from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiSendPlane2Line } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiSendPlane2Line } from "@cleanprompt/sutra-ui/icons";
 
 function StatusStackDemo() {
   const [goal, setGoal] = React.useState({ turns: 3, paused: false, visible: true });

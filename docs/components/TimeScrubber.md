@@ -2,7 +2,7 @@
 
 > Range slider over time with a histogram of counts per bucket and chronological play/pause playback (Space toggles).
 
-- Import: `import { TimeScrubber } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { TimeScrubber } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/memory-map-scrubber` (kit `workspace`)
 - `data-slot`: `time-scrubber`
 - Also accepts the props of HTMLAttributes
@@ -34,7 +34,7 @@
 
 ```tsx
 import * as React from "react";
-import { TimeScrubber } from "@sutra/ui/workspace";
+import { TimeScrubber } from "@cleanprompt/sutra-ui/workspace";
 
 function TimeScrubberDemo() {
   const [range, setRange] = React.useState<[number, number] | undefined>(undefined);

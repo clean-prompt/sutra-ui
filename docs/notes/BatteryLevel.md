@@ -32,7 +32,7 @@ Plain markup computed from the props, no browser API, so server and client outpu
 
 ## Example
 ```tsx
-import { BatteryLevel } from "@sutra/ui";
+import { BatteryLevel } from "@cleanprompt/sutra-ui";
 
 const devices = [
   { name: "Door sensor", level: 82, charging: false },

@@ -28,7 +28,7 @@ Plain markup with no browser API or measuring, so the server and the client rend
 ## Example
 ```tsx
 import * as React from "react";
-import { Button, Steps } from "@sutra/ui";
+import { Button, Steps } from "@cleanprompt/sutra-ui";
 
 const steps = [
   { title: "Account", description: "Create your login" },

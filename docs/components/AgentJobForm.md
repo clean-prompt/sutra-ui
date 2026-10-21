@@ -2,7 +2,7 @@
 
 > Create or edit a scheduled agent job: prompt or script, schedule, model, profile, skills, toolsets, repeat limit and delivery.
 
-- Import: `import { AgentJobForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { AgentJobForm } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-form` (kit `agent-admin`)
 - `data-slot`: `agent-job-form`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
@@ -32,16 +32,16 @@
 
 ```tsx
 import * as React from "react";
-import { AgentJobForm } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiAddLine } from "@sutra/ui/icons";
+import { AgentJobForm } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@sutra/ui/overlays";
+} from "@cleanprompt/sutra-ui/overlays";
 
 function JobFormDialogDemo() {
   const [open, setOpen] = React.useState(false);

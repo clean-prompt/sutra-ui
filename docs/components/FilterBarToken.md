@@ -2,7 +2,7 @@
 
 > A single applied filter: "Status: Active ×".
 
-- Import: `import { FilterBarToken } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FilterBarToken } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - `data-slot`: `filter-bar-token`
 - Part of [`FilterBar`](FilterBar.md)
@@ -24,7 +24,7 @@ See the notes in [`FilterBar`](FilterBar.md#notes).
 
 ```tsx
 import * as React from "react";
-import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "@sutra/ui";
+import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [query, setQuery] = React.useState("");

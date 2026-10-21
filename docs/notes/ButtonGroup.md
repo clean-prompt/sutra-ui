@@ -43,8 +43,8 @@ Plain markup. In toggle mode the root `dir` is written by `useRootDirection`, so
 ## Example
 ```tsx
 import * as React from "react";
-import { ButtonGroup, ButtonGroupItem } from "@sutra/ui";
-import { RiAlignCenter, RiAlignLeft, RiAlignRight } from "@sutra/ui/icons";
+import { ButtonGroup, ButtonGroupItem } from "@cleanprompt/sutra-ui";
+import { RiAlignCenter, RiAlignLeft, RiAlignRight } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [align, setAlign] = React.useState("left");

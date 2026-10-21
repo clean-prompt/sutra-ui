@@ -2,7 +2,7 @@
 
 > The voice assistant's face: one of several looks (`variant`: a glass orb, a waveform, or an ink look such as the Sutra string or the mala) that shows what the assistant is doing (idle, listening, thinking, speaking, error, muted) and follows a live `level`. Colours come from the theme (primary and chart hues, one ink in the paper style).
 
-- Import: `import { AssistantOrb } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { AssistantOrb } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/assistant-orb` (kit `voice`)
 - `data-slot`: `assistant-orb`
 - Also accepts the props of HTMLAttributes
@@ -59,7 +59,7 @@ Server render: part of it fills in after mount. The markup is the same on the se
 ## Example
 
 ```tsx
-import { AssistantOrb, assistantOrbVariantLabels, assistantOrbVariants, useAssistantOrbState, useAudioLevel, type AssistantOrbVariant } from "@sutra/ui";
+import { AssistantOrb, assistantOrbVariantLabels, assistantOrbVariants, useAssistantOrbState, useAudioLevel, type AssistantOrbVariant } from "@cleanprompt/sutra-ui";
 
 export function Example({ stream, thinking, speaking, look = "string" }: { stream: MediaStream | null; thinking: boolean; speaking: boolean; look?: AssistantOrbVariant }) {
   const level = useAudioLevel(stream);

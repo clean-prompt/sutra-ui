@@ -2,7 +2,7 @@
 
 > Central keyboard shortcut registry. Mount once near the app root.
 
-- Import: `import { ShortcutProvider } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { ShortcutProvider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/patterns/shortcuts` (patterns)
 
 ## Props

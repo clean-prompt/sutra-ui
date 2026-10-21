@@ -2,7 +2,7 @@
 
 > A titled tray around a panel of rows: `FrameHeader` (title, description, action), `FramePanel`, `FrameFooter`.
 
-- Import: `import { Frame } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Frame } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/frame` (primitives)
 - `data-slot`: `frame`
 - Parts: [`FrameAction`](FrameAction.md), [`FrameDescription`](FrameDescription.md), [`FrameFooter`](FrameFooter.md), [`FrameHeader`](FrameHeader.md), [`FramePanel`](FramePanel.md), [`FrameTitle`](FrameTitle.md)
@@ -91,7 +91,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 import {
   Button, Frame, FrameAction, FrameDescription, FrameFooter, FrameHeader, FramePanel, FrameTitle,
   Item, ItemContent, ItemTitle,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 
 const members = ["Maya Chen", "Omar Haddad", "Priya Nair"];
 

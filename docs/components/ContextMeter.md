@@ -2,7 +2,7 @@
 
 > Context-window usage ring; its popover is a `ContextUsageBreakdown` with an optional compact action.
 
-- Import: `import { ContextMeter } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ContextMeter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/context-meter` (kit `ai`)
 - `data-slot`: `context-meter`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -30,8 +30,8 @@
 
 ```tsx
 import * as React from "react";
-import { ContextMeter } from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
+import { ContextMeter } from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function ContextMeterDemo() {
   const [history, setHistory] = React.useState(9000);

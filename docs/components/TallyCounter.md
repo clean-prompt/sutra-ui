@@ -2,7 +2,7 @@
 
 > Big tally number with −/+ (press and hold to repeat), step, goal ring and an entry log with undo.
 
-- Import: `import { TallyCounter } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { TallyCounter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/patterns/tally-counter` (patterns)
 - `data-slot`: `tally-counter`, `tally-counter-value`, `tally-counter-log`
 - Also accepts the props of HTMLAttributes
@@ -26,7 +26,7 @@
 ## Example (live: `#/components/social/tally-counter` in the playground)
 
 ```tsx
-import { TallyCounter } from "@sutra/ui/social";
+import { TallyCounter } from "@cleanprompt/sutra-ui/social";
 
 <div className="@container w-full">
   <div className="grid grid-cols-1 gap-8 @lg:grid-cols-2">

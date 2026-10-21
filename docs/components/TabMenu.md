@@ -2,7 +2,7 @@
 
 > Link-style tab bar for page sections, with an animated underline and scroll fades.
 
-- Import: `import { TabMenu } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { TabMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/tab-menu` (patterns)
 - `data-slot`: `tab-menu`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { TabMenu } from "@sutra/ui/navigation";
+import { TabMenu } from "@cleanprompt/sutra-ui/navigation";
 
 function TabMenuDemo() {
   const [tab, setTab] = React.useState("issues");

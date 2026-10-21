@@ -2,7 +2,7 @@
 
 > Bottom row of the composer: tools on the left, submit on the right.
 
-- Import: `import { PromptInputToolbar } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputToolbar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-toolbar` (kit `ai`)
 - `data-slot`: `prompt-input-toolbar`
 - Also accepts the props of HTMLAttributes

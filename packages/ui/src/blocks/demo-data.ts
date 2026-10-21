@@ -1,6 +1,6 @@
 /*
  * Demo fixtures and mocks shared by the blocks and the registry. Not for production use.
- * Public home: `@sutra/ui/blocks/registry`, which re-exports this module plus the block-level demo
+ * Public home: `@cleanprompt/sutra-ui/blocks/registry`, which re-exports this module plus the block-level demo
  * helpers (`marketingDemoData`, `createMockPairingAdapter`).
  *
  * Keep this module free of imports from the block files: the blocks import it for their defaults,

@@ -2,7 +2,7 @@
 
 > Collapsed middle crumbs, revealed in a dropdown menu.
 
-- Import: `import { BreadcrumbEllipsis } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { BreadcrumbEllipsis } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/breadcrumbs` (primitives)
 - Part of [`Breadcrumb`](Breadcrumb.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -21,7 +21,7 @@ See the notes in [`Breadcrumb`](Breadcrumb.md#notes).
 ## Example
 
 ```tsx
-import { Breadcrumbs } from "@sutra/ui";
+import { Breadcrumbs } from "@cleanprompt/sutra-ui";
 
 const trail = [
   { label: "Home", href: "/" },

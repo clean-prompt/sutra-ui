@@ -2,7 +2,7 @@
 
 > Generic status row: glyph, label, "·"-separated facts, title, actions and an optional progress bar.
 
-- Import: `import { StatusStackRow } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { StatusStackRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/status-stack` (kit `agent-admin`)
 - `data-slot`: `status-stack-row`
 - Part of [`StatusStack`](StatusStack.md)
@@ -32,9 +32,9 @@ import {
   HeartbeatStatusRow,
   LoopStatusRow,
   StatusStack,
-} from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiSendPlane2Line } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiSendPlane2Line } from "@cleanprompt/sutra-ui/icons";
 
 function StatusStackDemo() {
   const [goal, setGoal] = React.useState({ turns: 3, paused: false, visible: true });

@@ -2,7 +2,7 @@
 
 > Recursive editor for one schema value: primitives, nested object sections and arrays with add/remove.
 
-- Import: `import { NestedValueEditor } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { NestedValueEditor } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/patterns/schema-form-editor` (patterns)
 - `data-slot`: `schema-form-group`, `schema-form-field`, `schema-form-status`, `schema-form-disabled-note`
 
@@ -57,7 +57,7 @@ Server render: same markup as the client. It renders in full from `schema` and `
 
 ```tsx
 import { useState } from "react";
-import { NestedValueEditor } from "@sutra/ui";
+import { NestedValueEditor } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [value, setValue] = useState<unknown>({ name: "Maya", tags: ["design"] });

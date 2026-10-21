@@ -29,7 +29,7 @@ react-markdown and KaTeX produce their HTML synchronously, so the server renders
 
 ## Example
 ```tsx
-import { Markdown } from "@sutra/ui";
+import { Markdown } from "@cleanprompt/sutra-ui";
 
 const source = [
   "## Release notes",

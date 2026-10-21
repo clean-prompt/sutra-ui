@@ -43,7 +43,7 @@ function nameIndex(api: Api): Map<string, string> {
 }
 
 const VIRTUAL = "virtual:demo-source";
-const SUTRA = /^@sutra\/ui(\/|$)/;
+const SUTRA = /^@cleanprompt\/sutra-ui(\/|$)/;
 
 /* ---------------------------------------------------------------------------------------------- */
 /* Source reading                                                                                  */
@@ -177,13 +177,13 @@ function importLines(names: string[], imported: Map<string, { specifier: string 
   for (const name of names) {
     const own = imported.get(name)!;
     const entry = /^Ri[A-Z]/.test(name) ? "icons" : api?.entries[name];
-    const spec = entry ? (entry === "index" ? "@sutra/ui" : `@sutra/ui/${entry}`) : own.specifier;
+    const spec = entry ? (entry === "index" ? "@cleanprompt/sutra-ui" : `@cleanprompt/sutra-ui/${entry}`) : own.specifier;
     if (!bySpec.has(spec)) bySpec.set(spec, []);
     bySpec.get(spec)!.push(name);
   }
   const lines: string[] = [];
   if (usesReact) lines.push('import * as React from "react";');
-  for (const spec of [...bySpec.keys()].sort((a, b) => (a === "@sutra/ui" ? -1 : b === "@sutra/ui" ? 1 : a.localeCompare(b)))) {
+  for (const spec of [...bySpec.keys()].sort((a, b) => (a === "@cleanprompt/sutra-ui" ? -1 : b === "@cleanprompt/sutra-ui" ? 1 : a.localeCompare(b)))) {
     const list = bySpec.get(spec)!.sort();
     const one = `import { ${list.join(", ")} } from "${spec}";`;
     lines.push(one.length <= 100 ? one : `import {\n${list.map((n) => `  ${n},`).join("\n")}\n} from "${spec}";`);

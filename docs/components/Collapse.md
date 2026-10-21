@@ -2,7 +2,7 @@
 
 > Height-auto open and close for a section, filter row or wizard step. The track goes from `0fr` to `1fr`, so the real content height animates with no measuring and no JS animation; closed content is `inert` (not focusable, out of the accessibility tree). Reduced motion ends the transition at once. It is controlled only: drive `open` yourself or use `Collapsible`.
 
-- Import: `import { Collapse } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Collapse } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/collapse` (primitives)
 - `data-slot`: `collapse`, `collapse-content`
 - Also accepts the props of HTMLAttributes
@@ -58,7 +58,7 @@ Server render: same markup as the client. Plain markup with no browser API at re
 
 ```tsx
 import * as React from "react";
-import { Button, Collapse, Field, FieldLabel, Input } from "@sutra/ui";
+import { Button, Collapse, Field, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

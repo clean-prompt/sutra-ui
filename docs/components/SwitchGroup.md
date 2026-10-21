@@ -2,7 +2,7 @@
 
 > Fieldset of switch rows separated by dividers. Use `options` + `value` record, or children.
 
-- Import: `import { SwitchGroup } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { SwitchGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/switch` (primitives)
 - `data-slot`: `switch-group`
 - Part of [`Switch`](Switch.md)
@@ -34,7 +34,7 @@ See the notes in [`Switch`](Switch.md#notes).
 
 ```tsx
 import * as React from "react";
-import { SwitchField } from "@sutra/ui";
+import { SwitchField } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [digest, setDigest] = React.useState(true);

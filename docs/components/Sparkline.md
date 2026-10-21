@@ -2,7 +2,7 @@
 
 > Tiny inline trend chart. It is a left-to-right island: the series always runs from the physical left, also on a right-to-left page.
 
-- Import: `import { Sparkline } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { Sparkline } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/sparkline` (patterns)
 - `data-slot`: `sparkline`
 - Also accepts the props of SVGAttributes
@@ -67,7 +67,7 @@ Server render: same markup as the client. Pure SVG computed from `data`, `width`
 ## Example
 
 ```tsx
-import { Sparkline } from "@sutra/ui";
+import { Sparkline } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

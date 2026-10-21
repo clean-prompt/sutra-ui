@@ -2,7 +2,7 @@
 
 > Rolling usage-limit bars with threshold coloring, reset captions, a window toggle and per-model attribution.
 
-- Import: `import { UsageLimitBars } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { UsageLimitBars } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/ai/agent-usage` (kit `ai`)
 - Also accepts the props of HTMLAttributes
 
@@ -24,7 +24,7 @@
 
 ```tsx
 import * as React from "react";
-import { UsageLimitBars } from "@sutra/ui/agent";
+import { UsageLimitBars } from "@cleanprompt/sutra-ui/agent";
 
 function UsageLimitsDemo() {
   const [now] = React.useState(() => Date.now());

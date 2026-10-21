@@ -2,7 +2,7 @@
 
 > Tiny inline column chart. A left-to-right island like `Sparkline`: the first bar is always on the physical left.
 
-- Import: `import { SparkBar } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { SparkBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/sparkline` (patterns)
 - `data-slot`: `spark-bar`
 - Also accepts the props of SVGAttributes
@@ -65,7 +65,7 @@ Server render: same markup as the client. Pure SVG computed from `data`, `width`
 ## Example
 
 ```tsx
-import { Sparkline } from "@sutra/ui";
+import { Sparkline } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

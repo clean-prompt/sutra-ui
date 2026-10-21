@@ -2,7 +2,7 @@
 
 > Area chart: single or multi-series, optionally stacked, with gradient fills.
 
-- Import: `import { AreaChart } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { AreaChart } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/chart-cartesian` (patterns)
 - `data-slot`: `chart-area`, `chart-line`
 - Also accepts the props of HTMLAttributes
@@ -100,7 +100,7 @@ Server render: part of it fills in after mount. The full SVG renders on the serv
 ## Example
 
 ```tsx
-import { LineChart } from "@sutra/ui";
+import { LineChart } from "@cleanprompt/sutra-ui";
 
 const latency = [
   { day: "Mon", median: 90, p95: 210 },

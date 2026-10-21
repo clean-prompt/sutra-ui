@@ -2,7 +2,7 @@
 
 > Persona / SOUL.md editor: a markdown textarea with a rendered preview tab.
 
-- Import: `import { PersonaEditor } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { PersonaEditor } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-persona` (kit `agent-admin`)
 - `data-slot`: `persona-editor`, `persona-preview`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 ## Example (live: `#/components/channels/persona-editor` in the playground)
 
 ```tsx
-import { PersonaEditor } from "@sutra/ui/agent-admin";
+import { PersonaEditor } from "@cleanprompt/sutra-ui/agent-admin";
 
 <PersonaEditor
   className="w-full max-w-xl"

@@ -2,7 +2,7 @@
 
 > Removable chip for attached context such as the editor selection or the open file, with an include/exclude eye toggle.
 
-- Import: `import { PromptInputContextChip } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputContextChip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-attachments` (kit `ai`)
 - Also accepts the props of HTMLAttributes
 
@@ -25,7 +25,7 @@
 
 ```tsx
 import * as React from "react";
-import { PromptInputContextChip } from "@sutra/ui/ai";
+import { PromptInputContextChip } from "@cleanprompt/sutra-ui/ai";
 
 function ContextChipDemo() {
   const [chips, setChips] = React.useState([

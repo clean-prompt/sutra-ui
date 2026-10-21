@@ -2,7 +2,7 @@
 
 > Renders a URL as a provider embed (after consent) or a link card. The iframe src is only built into the DOM post-consent.
 
-- Import: `import { RichEmbed } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { RichEmbed } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/embeds` (kit `ai`)
 - `data-slot`: `rich-embed`
 - Also accepts the props of HTMLAttributes

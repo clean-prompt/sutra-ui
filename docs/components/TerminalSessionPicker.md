@@ -2,7 +2,7 @@
 
 > tmux-style session list: name, windows, attached / active badges and "New session".
 
-- Import: `import { TerminalSessionPicker } from "@sutra/ui/terminal"`
+- Import: `import { TerminalSessionPicker } from "@cleanprompt/sutra-ui/terminal"`
 - Source: `packages/ui/src/kits/terminal/terminal` (kit `terminal`)
 - `data-slot`: `terminal-session-picker`
 - Part of [`Terminal`](Terminal.md)

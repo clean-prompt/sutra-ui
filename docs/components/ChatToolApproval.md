@@ -2,7 +2,7 @@
 
 > Human-in-the-loop prompt: shows the pending tool call with Approve / Deny buttons.
 
-- Import: `import { ChatToolApproval } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatToolApproval } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-tool` (kit `ai`)
 - `data-slot`: `chat-tool-approval`
 - Part of [`ChatTool`](ChatTool.md)
@@ -30,9 +30,9 @@
 
 ```tsx
 import * as React from "react";
-import { ChatTool, ChatToolApproval } from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
-import { RiSearchLine, RiTerminalBoxLine } from "@sutra/ui/icons";
+import { ChatTool, ChatToolApproval } from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiSearchLine, RiTerminalBoxLine } from "@cleanprompt/sutra-ui/icons";
 
 function ChatToolDemo() {
   const [approval, setApproval] = React.useState<ChatToolApprovalStatus>("pending");

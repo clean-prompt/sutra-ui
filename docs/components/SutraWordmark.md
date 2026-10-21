@@ -2,7 +2,7 @@
 
 > The lowercase "sutra" wordmark. Without `children` it is the drawn brand word (monoline, scales with the font size, real text for screen readers); with `children` it sets your text in the brand sans.
 
-- Import: `import { SutraWordmark } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { SutraWordmark } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/brand` (assets)
 - `data-slot`: `sutra-wordmark`
 - Also accepts the props of HTMLAttributes

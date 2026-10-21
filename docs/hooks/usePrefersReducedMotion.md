@@ -2,7 +2,7 @@
 
 > Live reduced-motion preference: `<html data-motion="reduce" | "full">` wins over `prefers-reduced-motion: reduce`.
 
-- Import: `import { usePrefersReducedMotion } from "@sutra/ui/tokens"`
+- Import: `import { usePrefersReducedMotion } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-media-query`
 
 ## Signature
@@ -20,8 +20,8 @@ import {
   InlineAlertTitle,
   InlineCode,
   Text,
-} from "@sutra/ui/core";
-import { usePrefersReducedMotion } from "@sutra/ui/tokens";
+} from "@cleanprompt/sutra-ui/core";
+import { usePrefersReducedMotion } from "@cleanprompt/sutra-ui/tokens";
 
 function ReducedMotionNote() {
   const reduced = usePrefersReducedMotion();

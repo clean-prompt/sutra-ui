@@ -2,7 +2,7 @@
 
 > Section of related menu items.
 
-- Import: `import { SidebarGroup } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-group`
 - Part of [`Sidebar`](Sidebar.md)

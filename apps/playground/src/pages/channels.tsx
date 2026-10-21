@@ -34,8 +34,8 @@ import {
   type RemoteScreenState,
   type RunTickerActivity,
   type SubagentNode,
-} from "@sutra/ui";
-import { RiAddLine, RiRestartLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiAddLine, RiRestartLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

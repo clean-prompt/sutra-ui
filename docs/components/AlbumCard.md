@@ -2,7 +2,7 @@
 
 > Square album art with a hover play FAB, title and subtitle.
 
-- Import: `import { AlbumCard } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { AlbumCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-cards-collection` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
@@ -22,7 +22,7 @@
 ## Example (live: `#/components/media-player/album-card` in the playground)
 
 ```tsx
-import { AlbumCard, PlaylistCard } from "@sutra/ui/media";
+import { AlbumCard, PlaylistCard } from "@cleanprompt/sutra-ui/media";
 
 <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
   <AlbumCard title="Tidal" subtitle="Nadia Vale · 2025" image={demoTracks[0].artwork} onOpen={() => {}} onPlay={() => player.playIndex("t1")} playing={queue.currentId === "t1" && media.playing} />

@@ -2,7 +2,7 @@
 
 > Verifiable credential as a gradient wallet card or a compact row.
 
-- Import: `import { CredentialCard } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { CredentialCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/credential-card` (kit `identity`)
 - `data-slot`: `credential-card`
 - Also accepts the props of HTMLAttributes
@@ -20,7 +20,7 @@
 ## Example (live: `#/components/security/credential-card` in the playground)
 
 ```tsx
-import { CredentialCard } from "@sutra/ui/security";
+import { CredentialCard } from "@cleanprompt/sutra-ui/security";
 
 <div className="grid grid-cols-1 w-full gap-4 sm:grid-cols-2">
   {credentials.slice(0, 2).map((c) => (

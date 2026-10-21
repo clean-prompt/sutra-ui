@@ -2,7 +2,7 @@
 
 > Install a plugin from the catalog or a git URL: source verification warning, advanced details, progress log and result.
 
-- Import: `import { ExtensionInstallDialog } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ExtensionInstallDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/extensions-catalog-install` (kit `agent-admin`)
 
 ## Props
@@ -29,8 +29,8 @@
 
 ```tsx
 import * as React from "react";
-import { ExtensionInstallDialog } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
+import { ExtensionInstallDialog } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function InstallDialogDemo() {
   const [status, setStatus] = React.useState<ExtensionInstallStatus>("idle");

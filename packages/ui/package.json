@@ -1,5 +1,5 @@
 {
-  "name": "@sutra/ui",
+  "name": "@cleanprompt/sutra-ui",
   "version": "0.1.0",
   "description": "Sutra design system — React components, tokens and blocks for the Sutra personal suite.",
   "license": "MIT",

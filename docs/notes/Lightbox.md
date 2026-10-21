@@ -44,7 +44,7 @@ A closed viewer renders only its children (the triggers) on both sides; the pane
 
 ## Example
 ```tsx
-import { Lightbox, LightboxTrigger, type LightboxItem } from "@sutra/ui";
+import { Lightbox, LightboxTrigger, type LightboxItem } from "@cleanprompt/sutra-ui";
 
 const photos: LightboxItem[] = [
   { src: "/images/alps.jpg", alt: "Alps at dawn", caption: "Alps at dawn" },

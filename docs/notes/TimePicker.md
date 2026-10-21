@@ -42,7 +42,7 @@ Without `hourCycle` and `locale` the clock convention and segment order come fro
 ## Example
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, TimePicker } from "@sutra/ui";
+import { Field, FieldLabel, TimePicker } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [time, setTime] = React.useState<string | undefined>("09:30");

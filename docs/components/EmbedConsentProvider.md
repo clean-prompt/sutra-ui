@@ -2,7 +2,7 @@
 
 > Remembers which embed providers the user has "always allowed". Persistence is left to the app.
 
-- Import: `import { EmbedConsentProvider } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { EmbedConsentProvider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/embeds` (kit `ai`)
 - Part of [`EmbedConsent`](EmbedConsent.md)
 
@@ -19,8 +19,13 @@
 
 ```tsx
 import * as React from "react";
-import { EmbedConsentProvider, LinkPreviewCard, RichEmbed, SvgEmbed } from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
+import {
+  EmbedConsentProvider,
+  LinkPreviewCard,
+  RichEmbed,
+  SvgEmbed,
+} from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function EmbedsDemo() {
   const [allowed, setAllowed] = React.useState<string[]>([]);

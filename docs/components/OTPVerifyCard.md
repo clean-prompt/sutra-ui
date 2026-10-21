@@ -2,7 +2,7 @@
 
 > Six-digit verification code card with auto-submit and a resend countdown.
 
-- Import: `import { OTPVerifyCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { OTPVerifyCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/auth-blocks-verify` (blocks)
 - `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes

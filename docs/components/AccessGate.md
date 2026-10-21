@@ -2,7 +2,7 @@
 
 > Request-access flow for admin-approved apps: request → pending → approved (collect key) | denied.
 
-- Import: `import { AccessGate } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { AccessGate } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/kits/identity/kunji-access-gate` (kit `identity`)
 - `data-slot`: `access-gate`
 - Also accepts the props of HTMLAttributes
@@ -27,9 +27,9 @@
 ## Example (live: `#/components/kunji/access-gate` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { SegmentedControl } from "@sutra/ui/forms";
-import { AccessGate } from "@sutra/ui/kunji";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { SegmentedControl } from "@cleanprompt/sutra-ui/forms";
+import { AccessGate } from "@cleanprompt/sutra-ui/kunji";
 
 <SegmentedControl
   className="max-w-full overflow-x-auto"

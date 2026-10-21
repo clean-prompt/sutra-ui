@@ -47,7 +47,7 @@ import {
   type ToolsetHealth,
   type ToolsetInstallStatus,
   type ToolsetProvider,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAddLine,
   RiBrainLine,
@@ -68,7 +68,7 @@ import {
   RiSlackLine,
   RiTerminalBoxLine,
   RiTimeLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

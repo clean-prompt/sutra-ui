@@ -45,7 +45,7 @@ Plain markup computed from the props with no browser API, so server and client o
 ## Example
 ```tsx
 import * as React from "react";
-import { BreakdownList } from "@sutra/ui";
+import { BreakdownList } from "@cleanprompt/sutra-ui";
 
 const items = [
   { label: "Chrome", value: 21.2, color: "primary" },

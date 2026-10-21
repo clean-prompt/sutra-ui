@@ -2,7 +2,7 @@
 
 > One-time code input built on `input-otp`. Compose with `InputOTPGroup` and `InputOTPSlot`.
 
-- Import: `import { InputOTP } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { InputOTP } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/input-otp` (primitives)
 - `data-slot`: `input-otp`
 - Parts: [`InputOTPGroup`](InputOTPGroup.md), [`InputOTPSeparator`](InputOTPSeparator.md), [`InputOTPSlot`](InputOTPSlot.md)
@@ -79,7 +79,7 @@ Server render: same markup as the client. The input and the slots render on the 
 
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldLabel, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@sutra/ui";
+import { Field, FieldDescription, FieldLabel, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [code, setCode] = React.useState("");

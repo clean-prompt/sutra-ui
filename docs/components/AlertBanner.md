@@ -2,7 +2,7 @@
 
 > Full-width announcement banner for the top of an app or page.
 
-- Import: `import { AlertBanner } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { AlertBanner } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/alert-banner` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -83,7 +83,7 @@ Server render: same markup as the client. An open banner renders its full markup
 
 ```tsx
 import * as React from "react";
-import { AlertBanner } from "@sutra/ui";
+import { AlertBanner } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(true);

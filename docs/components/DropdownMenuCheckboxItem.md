@@ -2,7 +2,7 @@
 
 > Toggleable item with a check indicator.
 
-- Import: `import { DropdownMenuCheckboxItem } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { DropdownMenuCheckboxItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/dropdown-menu` (primitives)
 - Part of [`DropdownMenu`](DropdownMenu.md)
 - Also accepts the props of HTMLAttributes, MenuCheckboxItemProps, MenuItemImplProps, MenuItemProps
@@ -21,9 +21,9 @@ See the notes in [`DropdownMenu`](DropdownMenu.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Button, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem } from "@sutra/ui";
-import { DropdownMenuSeparator, DropdownMenuTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiFileCopyLine, RiMoreLine } from "@sutra/ui/icons";
+import { Button, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem } from "@cleanprompt/sutra-ui";
+import { DropdownMenuSeparator, DropdownMenuTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiFileCopyLine, RiMoreLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onDuplicate, onDelete }: { onDuplicate: () => void; onDelete: () => void }) {
   const [pinned, setPinned] = React.useState(false);

@@ -2,7 +2,7 @@
 
 > Environment keys grouped into provider cards (sorted by priority) plus a custom keys section.
 
-- Import: `import { ProviderKeysGroups } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProviderKeysGroups } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers-keys` (kit `agent-admin`)
 - `data-slot`: `provider-keys-groups`, `provider-key-group`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,7 @@
 
 ```tsx
 import * as React from "react";
-import { ProviderKeysGroups } from "@sutra/ui/agent-admin";
+import { ProviderKeysGroups } from "@cleanprompt/sutra-ui/agent-admin";
 
 function KeysDemo() {
   const [groups, setGroups] = React.useState(keyGroups);

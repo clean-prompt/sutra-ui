@@ -2,7 +2,7 @@
 
 > Uncommitted / Branch vs base / Last turn scope switch with file counts.
 
-- Import: `import { ReviewScopeTabs } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ReviewScopeTabs } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/git-review-tree` (kit `agent`)
 - `data-slot`: `scope-count`
 - Also accepts the props of HTMLAttributes

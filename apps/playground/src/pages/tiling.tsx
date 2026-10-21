@@ -25,7 +25,7 @@ import {
   type LayoutNode,
   type SavedLayoutPreset,
   type TreeNode,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiChat3Line,
   RiEyeLine,
@@ -36,7 +36,7 @@ import {
   RiRestartLine,
   RiStickyNoteLine,
   RiTerminalBoxLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

@@ -2,7 +2,7 @@
 
 > Interactive 3D globe (orthographic, bundled outlines): drag with momentum, wheel/pinch/keyboard zoom, auto-rotation, fly-to, and the same choropleth, markers, clustering, arcs, country selection and screen-reader tables as WorldMap.
 
-- Import: `import { Globe } from "@sutra/ui"` (or from `@sutra/ui/geo`)
+- Import: `import { Globe } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/geo`)
 - Source: `packages/ui/src/kits/geo/globe` (kit `geo`)
 - `data-slot`: `globe`, `globe-canvas`, `globe-atmosphere`, `globe-sphere`, `globe-skeleton`, `globe-graticule`, `globe-borders`, `globe-selected`, `globe-hover`, `globe-shade`, `globe-rim`
 - Also accepts the props of HTMLAttributes
@@ -63,9 +63,9 @@
 ## Example (live: `#/components/globe/attack-globe` in the playground)
 
 ```tsx
-import { Text } from "@sutra/ui/core";
-import { formatCompact } from "@sutra/ui/format";
-import { Globe } from "@sutra/ui/geo";
+import { Text } from "@cleanprompt/sutra-ui/core";
+import { formatCompact } from "@cleanprompt/sutra-ui/format";
+import { Globe } from "@cleanprompt/sutra-ui/geo";
 
 function AttacksDemo() {
   const total = attacks.reduce((s, a) => s + a.count, 0);

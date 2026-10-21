@@ -2,7 +2,7 @@
 
 > The nearest ThinkingExpandAllProvider state, or null outside one.
 
-- Import: `import { useThinkingExpandAll } from "@sutra/ui/ai"`
+- Import: `import { useThinkingExpandAll } from "@cleanprompt/sutra-ui/ai"`
 - Source: `packages/ui/src/kits/ai/chain-of-thought`
 
 ## Signature

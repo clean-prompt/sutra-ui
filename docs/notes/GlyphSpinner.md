@@ -26,7 +26,7 @@ Always renders frame 0 first: the preference hook reads `false` on the server an
 
 ## Example
 ```tsx
-import { GlyphSpinner } from "@sutra/ui";
+import { GlyphSpinner } from "@cleanprompt/sutra-ui";
 
 export function Example({ running }: { running: boolean }) {
   return (

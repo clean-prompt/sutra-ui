@@ -2,7 +2,7 @@
 
 > Horizontal media shelf: title + "See all", scroll-snap row with edge fades and prev/next, optional grid from a breakpoint.
 
-- Import: `import { MediaShelf } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { MediaShelf } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-cards-shelf` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
@@ -22,7 +22,7 @@
 ## Example (live: `#/components/media-player/media-shelf` in the playground)
 
 ```tsx
-import { AlbumCard, MediaShelf, PosterCard } from "@sutra/ui/media";
+import { AlbumCard, MediaShelf, PosterCard } from "@cleanprompt/sutra-ui/media";
 
 <MediaShelf title="Continue watching" description="Pick up where you left off" onSeeAll={() => {}}>
   {Array.from({ length: 12 }, (_, i) => (

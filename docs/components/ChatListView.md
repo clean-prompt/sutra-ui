@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `<ConversationList groupBy="date" searchable rowActions="inline" archivedSection={false} />`.
 
-- Import: `import { ChatListView } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatListView } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-list-view` (kit `ai`)
 - Also accepts the props of HTMLAttributes
 

@@ -2,7 +2,7 @@
 
 > Two-column auth page: form on one side, brand panel with mesh gradient, testimonial and logos on the other.
 
-- Import: `import { AuthSplitPage } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { AuthSplitPage } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/auth-pages` (blocks)
 - Also accepts the props of HTMLAttributes
 

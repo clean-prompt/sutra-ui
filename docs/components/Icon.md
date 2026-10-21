@@ -2,7 +2,7 @@
 
 > Sized, toned wrapper around any icon component.
 
-- Import: `import { Icon } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { Icon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/icons` (assets)
 - Also accepts the props of SVGAttributes
 
@@ -23,9 +23,9 @@
 
 ```tsx
 import * as React from "react";
-import { Icon } from "@sutra/ui/assets";
-import { RiHeartLine, RiStarLine } from "@sutra/ui/icons";
-import { useCopy } from "@sutra/ui/tokens";
+import { Icon } from "@cleanprompt/sutra-ui/assets";
+import { RiHeartLine, RiStarLine } from "@cleanprompt/sutra-ui/icons";
+import { useCopy } from "@cleanprompt/sutra-ui/tokens";
 
 function IconsDemo() {
   const { copied, copy } = useCopy();

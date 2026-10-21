@@ -2,7 +2,7 @@
 
 > Activates a scope while mounted; `useShortcut` calls inside default to this scope.
 
-- Import: `import { ShortcutScope } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { ShortcutScope } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/patterns/shortcuts` (patterns)
 
 ## Props

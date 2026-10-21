@@ -2,7 +2,7 @@
 
 > Square letter tile for things that are not people: apps, providers, tools, workspaces. Same initials and seed colour as `Avatar`; use `Avatar` for users.
 
-- Import: `import { Monogram } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { Monogram } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/primitives/monogram` (primitives)
 - `data-slot`: `monogram`
 - Also accepts the props of HTMLAttributes
@@ -63,7 +63,7 @@ Server render: same markup as the client. Plain markup computed from the props, 
 ## Example
 
 ```tsx
-import { Monogram } from "@sutra/ui";
+import { Monogram } from "@cleanprompt/sutra-ui";
 
 const tools = ["Nimbus AI", "github-mcp", "Calendar"];
 

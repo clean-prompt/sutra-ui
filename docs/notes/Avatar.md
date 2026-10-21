@@ -29,7 +29,7 @@ Without `src` the initials render in the server HTML. With `src` the server outp
 
 ## Example
 ```tsx
-import { Avatar, AvatarLabelGroup } from "@sutra/ui";
+import { Avatar, AvatarLabelGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

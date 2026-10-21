@@ -2,7 +2,7 @@
 
 > The SVG ring drawn by `ProgressCircle`, `RingMeter` and `ChatAttachment`: a track circle plus a fill arc that starts at 12 o'clock. Decorative (`aria-hidden`); the wrapper carries the role and values.
 
-- Import: `import { ProgressRingSvg } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ProgressRingSvg } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/progress` (primitives)
 - Part of [`Progress`](Progress.md)
 - Also accepts the props of SVGAttributes
@@ -29,7 +29,7 @@ See the notes in [`Progress`](Progress.md#notes).
 ## Example
 
 ```tsx
-import { Progress } from "@sutra/ui";
+import { Progress } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

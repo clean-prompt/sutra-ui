@@ -42,7 +42,7 @@ Plain markup with no browser API, so server and client output match. The variant
 import {
   Button, Frame, FrameAction, FrameDescription, FrameFooter, FrameHeader, FramePanel, FrameTitle,
   Item, ItemContent, ItemTitle,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 
 const members = ["Maya Chen", "Omar Haddad", "Priya Nair"];
 

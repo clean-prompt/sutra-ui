@@ -2,7 +2,7 @@
 
 > Camera QR scanner with a viewfinder, torch and camera switch, permission states and image upload fallback.
 
-- Import: `import { QRScanner } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { QRScanner } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/kits/identity/qr-scanner` (kit `identity`)
 - `data-slot`: `qr-scanner`
 - Parts: [`QRScannerDialog`](QRScannerDialog.md)
@@ -50,9 +50,9 @@ Full-screen dialog around `QRScanner`; the camera only runs while it is open.
 ## Example (live: `#/components/identity/qr-scanner` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { RiQrScan2Line } from "@sutra/ui/icons";
-import { KeyValue, KeyValueList, Note, QRScannerDialog } from "@sutra/ui/identity";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiQrScan2Line } from "@cleanprompt/sutra-ui/icons";
+import { KeyValue, KeyValueList, Note, QRScannerDialog } from "@cleanprompt/sutra-ui/identity";
 
 <div className="flex flex-col items-center gap-4">
   <QRScannerDialog

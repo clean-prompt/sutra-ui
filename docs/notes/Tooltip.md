@@ -32,8 +32,8 @@ Only the trigger renders on the server; the bubble is portalled after mount and 
 
 ## Example
 ```tsx
-import { Button, SimpleTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiSave3Line } from "@sutra/ui/icons";
+import { Button, SimpleTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiSave3Line } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

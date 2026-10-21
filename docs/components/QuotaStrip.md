@@ -2,7 +2,7 @@
 
 > Row of provider quota rings: one column on phones, two on small screens, four on wide ones.
 
-- Import: `import { QuotaStrip } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { QuotaStrip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/usage-quota` (kit `ai`)
 - `data-slot`: `quota-strip`, `quota-strip-skeleton`, `quota-ring-skeleton`
 - Also accepts the props of HTMLAttributes

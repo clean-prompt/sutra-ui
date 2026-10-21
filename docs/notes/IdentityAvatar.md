@@ -30,7 +30,7 @@ The markup is the same on the server and the client, photo included (an SVG `<im
 
 ## Example
 ```tsx
-import { IdentityAvatar } from "@sutra/ui";
+import { IdentityAvatar } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

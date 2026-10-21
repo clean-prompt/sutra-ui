@@ -2,7 +2,7 @@
 
 > A fixed-size buffer of the most recent values, for live charts. When `T` is itself an array, wrap single values: `push([value])`.
 
-- Import: `import { useRollingSeries } from "@sutra/ui/tokens"`
+- Import: `import { useRollingSeries } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-rolling-series`
 
 ## Signature

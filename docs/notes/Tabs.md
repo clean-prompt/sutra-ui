@@ -35,7 +35,7 @@ The server renders the tabs, the selected panel and a plain filled active tab. T
 
 ## Example
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@sutra/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

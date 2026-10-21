@@ -33,7 +33,7 @@ import {
   type PresenceConnection,
   type PresenceUser,
   type ViewerFile,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAddLine,
   RiCompass3Line,
@@ -47,8 +47,8 @@ import {
   RiShareLine,
   RiText,
   RiUser3Line,
-} from "@sutra/ui/icons";
-import { demoShare } from "@sutra/ui/blocks/registry";
+} from "@cleanprompt/sutra-ui/icons";
+import { demoShare } from "@cleanprompt/sutra-ui/blocks/registry";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { SwipeRowDemo } from "../demos/gesture-demos";
 

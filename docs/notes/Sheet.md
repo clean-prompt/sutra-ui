@@ -36,8 +36,8 @@ A closed sheet renders only its trigger on the server and the client. The panel 
 
 ## Example
 ```tsx
-import { Button, Field, FieldLabel, Input, Sheet, SheetBody, SheetClose, SheetContent } from "@sutra/ui";
-import { SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@sutra/ui";
+import { Button, Field, FieldLabel, Input, Sheet, SheetBody, SheetClose, SheetContent } from "@cleanprompt/sutra-ui";
+import { SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

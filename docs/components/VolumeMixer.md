@@ -2,7 +2,7 @@
 
 > Sound mixer: an output card (device picker, master volume) over a table of apps with their status, a per-app `VolumeSlider` and level. Data in, events out.
 
-- Import: `import { VolumeMixer } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { VolumeMixer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/volume-mixer` (kit `system`)
 - `data-slot`: `volume-mixer`, `volume-mixer-output`, `volume-mixer-skeleton`, `volume-mixer-apps`, `volume-mixer-skeleton-row`, `volume-mixer-playing`
 - Also accepts the props of HTMLAttributes
@@ -36,7 +36,7 @@
 
 ```tsx
 import * as React from "react";
-import { VolumeMixer } from "@sutra/ui/system";
+import { VolumeMixer } from "@cleanprompt/sutra-ui/system";
 
 function SoundDemo() {
   const [apps, setApps] = React.useState(initialApps);

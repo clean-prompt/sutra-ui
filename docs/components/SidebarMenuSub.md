@@ -2,7 +2,7 @@
 
 > Collapsible nested menu under a menu item. Hidden in icon mode.
 
-- Import: `import { SidebarMenuSub } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarMenuSub } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-menu-sub`
 - Part of [`SidebarMenu`](SidebarMenu.md)

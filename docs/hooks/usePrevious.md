@@ -2,7 +2,7 @@
 
 > The last value that `value` had before its current one (`undefined`, or `initial`, until it first changes). It keeps its answer across re-renders where nothing changed, so it is safe for "which way did this move" checks, and it is derived while rendering, so it needs no effect and survives StrictMode remounts.
 
-- Import: `import { usePrevious } from "@sutra/ui/tokens"`
+- Import: `import { usePrevious } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-previous`
 
 ## Signature
@@ -15,8 +15,8 @@ usePrevious<T>(value: T, initial?: T | undefined): T | undefined
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { usePrevious } from "@sutra/ui/tokens";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { usePrevious } from "@cleanprompt/sutra-ui/tokens";
 
 function PreviousDemo() {
   const [n, setN] = React.useState(5);

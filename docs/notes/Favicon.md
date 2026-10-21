@@ -27,7 +27,7 @@ The same markup on server and client for the same props: the letter tile, or an 
 
 ## Example
 ```tsx
-import { Favicon, FaviconProvider } from "@sutra/ui";
+import { Favicon, FaviconProvider } from "@cleanprompt/sutra-ui";
 
 const sources = ["github.com", "vercel.com", "news.ycombinator.com"];
 

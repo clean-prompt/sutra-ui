@@ -45,7 +45,7 @@ A closed dialog renders nothing on the server or the client (the panel is portal
 ## Example
 ```tsx
 import * as React from "react";
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@sutra/ui";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

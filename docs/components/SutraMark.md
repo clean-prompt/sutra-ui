@@ -2,7 +2,7 @@
 
 > The Sutra logomark: a crescent bead on an upright thread. Ink on paper by default, so it follows the text colour.
 
-- Import: `import { SutraMark } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { SutraMark } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/brand` (assets)
 - `data-slot`: `sutra-mark`
 - Also accepts the props of SVGAttributes
@@ -20,8 +20,8 @@
 
 ```tsx
 import * as React from "react";
-import { SutraLogo, SutraMark } from "@sutra/ui/assets";
-import { Button } from "@sutra/ui/core";
+import { SutraLogo, SutraMark } from "@cleanprompt/sutra-ui/assets";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function LogoIntroDemo() {
   const [run, setRun] = React.useState(0);

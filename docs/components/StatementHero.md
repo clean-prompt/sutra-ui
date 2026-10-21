@@ -2,7 +2,7 @@
 
 > A centred statement section: big mark, headline, short subtitle, one action and a hint.
 
-- Import: `import { StatementHero } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { StatementHero } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/patterns/statement-hero` (patterns)
 - `data-slot`: `statement-hero`
 - Also accepts the props of HTMLAttributes
@@ -25,10 +25,10 @@
 ## Example (live: `#/components/statement-hero/landing` in the playground)
 
 ```tsx
-import { SutraMark } from "@sutra/ui/assets";
-import { StatementHero } from "@sutra/ui/blocks";
-import { Button } from "@sutra/ui/core";
-import { RiFileUploadLine } from "@sutra/ui/icons";
+import { SutraMark } from "@cleanprompt/sutra-ui/assets";
+import { StatementHero } from "@cleanprompt/sutra-ui/blocks";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiFileUploadLine } from "@cleanprompt/sutra-ui/icons";
 
 function LandingDemo() {
   return (

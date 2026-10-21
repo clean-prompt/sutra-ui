@@ -2,7 +2,7 @@
 
 > Full-composer overlay shown while files (or `onContextDrop` data) are dragged over the PromptInput; replaces the default hint.
 
-- Import: `import { PromptInputDropOverlay } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputDropOverlay } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-attachments` (kit `ai`)
 - `data-slot`: `prompt-input-drop-overlay`
 - Also accepts the props of HTMLAttributes
@@ -19,7 +19,7 @@
 
 ```tsx
 import * as React from "react";
-import { PromptInput, PromptInputDropOverlay, PromptInputTextarea } from "@sutra/ui/ai";
+import { PromptInput, PromptInputDropOverlay, PromptInputTextarea } from "@cleanprompt/sutra-ui/ai";
 
 function DropOverlayDemo() {
   const [dropped, setDropped] = React.useState<string[]>([]);

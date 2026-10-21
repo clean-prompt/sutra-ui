@@ -2,7 +2,7 @@
 
 > TipTap 3 WYSIWYG editor (StarterKit + Link + Placeholder) with Sutra prose styling, a bubble toolbar on selection and/or a fixed `RichTextToolbar`, controlled HTML or JSON value.
 
-- Import: `import { RichTextEditor } from "@sutra/ui/rich-text-editor"`
+- Import: `import { RichTextEditor } from "@cleanprompt/sutra-ui/rich-text-editor"`
 - Source: `packages/ui/src/kits/editor/rich-text-editor` (kit `editor`)
 - `data-slot`: `rich-text-editor`, `rich-text-bubble`
 - Also accepts the props of HTMLAttributes
@@ -34,7 +34,7 @@ The extension setup (`extensions`, `starterKit`, `history`, `placeholder`) is re
 
 ```tsx
 import * as React from "react";
-import { RichTextEditor } from "@sutra/ui/rich-text-editor";
+import { RichTextEditor } from "@cleanprompt/sutra-ui/rich-text-editor";
 
 function RichTextDemo() {
   const [html, setHtml] = React.useState(

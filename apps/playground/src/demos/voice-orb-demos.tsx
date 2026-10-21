@@ -16,8 +16,8 @@ import {
   useAudioLevel,
   type AssistantOrbState,
   type AssistantOrbVariant,
-} from "@sutra/ui";
-import { RiArrowUpLine, RiMicLine, RiMicOffLine, RiStopFill } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiArrowUpLine, RiMicLine, RiMicOffLine, RiStopFill } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel } from "../components/demo";
 
 const FOUR = ["idle", "listening", "thinking", "speaking"] as const satisfies readonly AssistantOrbState[];

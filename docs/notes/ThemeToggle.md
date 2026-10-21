@@ -33,7 +33,7 @@ The server and the hydrating client render `defaultValue` or "system" (or "light
 
 ## Example
 ```tsx
-import { ThemeToggle } from "@sutra/ui";
+import { ThemeToggle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

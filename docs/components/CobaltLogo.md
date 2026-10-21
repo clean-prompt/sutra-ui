@@ -2,7 +2,7 @@
 
 > Cobalt — fictional placeholder logo.
 
-- Import: `import { CobaltLogo } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { CobaltLogo } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/placeholder-logos` (assets)
 - Also accepts the props of HTMLAttributes
 

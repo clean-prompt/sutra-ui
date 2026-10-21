@@ -2,7 +2,7 @@
 
 > Superscript [n] citation pill; shows a preview card on hover when `href` is set.
 
-- Import: `import { ChatInlineCitation } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatInlineCitation } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/patterns/inline-citation` (patterns)
 - `data-slot`: `inline-citation`
 - Also accepts the props of HTMLAttributes

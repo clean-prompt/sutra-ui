@@ -2,7 +2,7 @@
 
 > Conversation header: avatar(s), name, presence or typing, call and info buttons.
 
-- Import: `import { MessengerHeader } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { MessengerHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/social/messenger` (kit `social`)
 - `data-slot`: `messenger-header`
 - Also accepts the props of HTMLAttributes

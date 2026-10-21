@@ -2,7 +2,7 @@
 
 > Full artifact panel: Preview / Code tabs, version history and fullscreen.
 
-- Import: `import { ArtifactViewer } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ArtifactViewer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/artifacts-viewer` (kit `agent`)
 - `data-slot`: `artifact-viewer`
 - Also accepts the props of HTMLAttributes
@@ -35,8 +35,8 @@
 
 ```tsx
 import * as React from "react";
-import { ArtifactViewer } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
+import { ArtifactViewer } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function ViewerDemo() {
   const [open, setOpen] = React.useState(true);

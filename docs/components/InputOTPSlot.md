@@ -2,7 +2,7 @@
 
 > A single character cell with a blinking fake caret.
 
-- Import: `import { InputOTPSlot } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { InputOTPSlot } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/input-otp` (primitives)
 - `data-slot`: `input-otp-slot`
 - Part of [`InputOTP`](InputOTP.md)
@@ -22,7 +22,7 @@ See the notes in [`InputOTP`](InputOTP.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldLabel, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@sutra/ui";
+import { Field, FieldDescription, FieldLabel, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [code, setCode] = React.useState("");

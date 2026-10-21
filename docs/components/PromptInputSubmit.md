@@ -2,7 +2,7 @@
 
 > Round send button; turns into a stop button while loading.
 
-- Import: `import { PromptInputSubmit } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputSubmit } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-toolbar` (kit `ai`)
 - `data-slot`: `prompt-input-submit`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes

@@ -2,7 +2,7 @@
 
 > Waffle-button app switcher: a popover with a 3-column launcher grid.
 
-- Import: `import { AppLauncherMenu } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { AppLauncherMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/workspace/app-launcher` (kit `workspace`)
 - `data-slot`: `app-launcher-menu`
 - Part of [`AppLauncher`](AppLauncher.md)
@@ -28,9 +28,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { ContextMenuItem } from "@sutra/ui/overlays";
-import { AppLauncher, AppLauncherMenu } from "@sutra/ui/social";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { ContextMenuItem } from "@cleanprompt/sutra-ui/overlays";
+import { AppLauncher, AppLauncherMenu } from "@cleanprompt/sutra-ui/social";
 
 function LauncherDemo() {
   const [last, setLast] = React.useState<string | null>(null);

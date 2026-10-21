@@ -1,9 +1,9 @@
 /*
- * @sutra/ui/tokens: design tokens, class helpers, the tone/status/accent/direction vocabulary, spring maths and the generic hooks.
+ * @cleanprompt/sutra-ui/tokens: design tokens, class helpers, the tone/status/accent/direction vocabulary, spring maths and the generic hooks.
  *
  * Only what the docs present to consumers is public here. The rest of src/lib and src/hooks (clamp, pad2, hashString, useLatestRef,
  * useIsoLayoutEffect, useMountedRef, errorMessage, the gesture/flip/morph/deck maths ...) is internal: import it by relative path
- * inside the package. The formatting and date helpers are public from the subpath-only @sutra/ui/format, never from here or the
+ * inside the package. The formatting and date helpers are public from the subpath-only @cleanprompt/sutra-ui/format, never from here or the
  * root. To make one public, document it (README, a note, a skill) and list it here.
  * test/api-surface.test.ts guards this list (names in INTERNAL_NAMES must stay out of every entry).
  */

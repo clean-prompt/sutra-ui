@@ -2,7 +2,7 @@
 
 > In-call layout: remote video, draggable mirrored self-view, timer, quality and a control bar.
 
-- Import: `import { CallScreen } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { CallScreen } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/social/call-overlay` (kit `social`)
 - `data-slot`: `call-screen`
 - Also accepts the props of HTMLAttributes
@@ -44,8 +44,8 @@
 
 ```tsx
 import * as React from "react";
-import { TextLink } from "@sutra/ui/core";
-import { CallScreen } from "@sutra/ui/social";
+import { TextLink } from "@cleanprompt/sutra-ui/core";
+import { CallScreen } from "@cleanprompt/sutra-ui/social";
 
 function CallScreenDemo() {
   const [ended, setEnded] = React.useState(false);

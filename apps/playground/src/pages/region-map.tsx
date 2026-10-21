@@ -1,7 +1,7 @@
 import * as React from "react";
-import { RiDashboardLine, RiShutDownLine } from "@sutra/ui/icons";
-import { Button, Text } from "@sutra/ui";
-import { RegionStatusMap, type RegionLink, type RegionSort, type StatusRegion } from "@sutra/ui/ops";
+import { RiDashboardLine, RiShutDownLine } from "@cleanprompt/sutra-ui/icons";
+import { Button, Text } from "@cleanprompt/sutra-ui";
+import { RegionStatusMap, type RegionLink, type RegionSort, type StatusRegion } from "@cleanprompt/sutra-ui/ops";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

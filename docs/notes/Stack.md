@@ -27,7 +27,7 @@ Plain markup with no browser API, so server and client output match.
 
 ## Example
 ```tsx
-import { Button, HStack, Stack, Text } from "@sutra/ui";
+import { Button, HStack, Stack, Text } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

@@ -2,7 +2,7 @@
 
 > Custom `<video>` player: auto-hiding gradient chrome, seek bar with previews, volume, subtitle/audio chips, speed, PiP/AirPlay/fullscreen, scoped keyboard shortcuts, autoplay-muted fallback, resume and up-next.
 
-- Import: `import { VideoPlayer } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { VideoPlayer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/video-player` (kit `media`)
 - `data-slot`: `video-surface`, `video-top`, `video-controls`
 - Also accepts the props of HTMLAttributes
@@ -52,8 +52,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { CastPicker, VideoPlayer } from "@sutra/ui/media";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { CastPicker, VideoPlayer } from "@cleanprompt/sutra-ui/media";
 
 function VideoPlayerDemo() {
   const [index, setIndex] = React.useState(0);

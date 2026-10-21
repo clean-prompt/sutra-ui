@@ -2,7 +2,7 @@
 
 > Truncates text with a soft gradient fade instead of an ellipsis; the fade only appears when the text overflows.
 
-- Import: `import { FadeText } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { FadeText } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/fade-text` (patterns)
 - `data-slot`: `fade-text`
 - Also accepts the props of HTMLAttributes
@@ -18,7 +18,7 @@
 ## Example (live: `#/components/chat-extras/fade-text` in the playground)
 
 ```tsx
-import { FadeText } from "@sutra/ui/motion";
+import { FadeText } from "@cleanprompt/sutra-ui/motion";
 
 function FadeTextDemo() {
   return (

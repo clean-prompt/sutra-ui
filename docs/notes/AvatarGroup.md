@@ -33,7 +33,7 @@ The group is plain markup (no browser API), so it matches on server and client. 
 
 ## Example
 ```tsx
-import { Avatar, AvatarGroup } from "@sutra/ui";
+import { Avatar, AvatarGroup } from "@cleanprompt/sutra-ui";
 
 const team = ["Maya Chen", "Omar Haddad", "Priya Nair", "Tomas Silva", "Aiko Tanaka"];
 

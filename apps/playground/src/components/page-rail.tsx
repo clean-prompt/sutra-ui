@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SectionRail, prefersReducedMotion } from "@sutra/ui";
+import { SectionRail, prefersReducedMotion } from "@cleanprompt/sutra-ui";
 import type { NavItem } from "../nav";
 import { href } from "../router";
 

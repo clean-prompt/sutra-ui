@@ -3,7 +3,7 @@
  *
  * Usage (in your app's global stylesheet):
  *   @import "tailwindcss";
- *   @import "@sutra/ui/styles.css";
+ *   @import "@cleanprompt/sutra-ui/styles.css";
  *
  * Theme switches (set on <html>):
  *   class="dark" | data-theme="dark"         dark mode (also works on a subtree)
@@ -19,7 +19,7 @@
  * Files. This file holds the tokens, the Tailwind theme, the base layer, the reduced-motion net, the shared utilities and the
  * per-app accents. The component CSS (art that CSS has to move or repaint) is split into siblings that the last lines of this
  * file `@import`, in cascade order: mark-intro.css, orb.css, identity-avatar.css, motion-effects.css, mascot.css, ink.css.
- * Tailwind inlines each import where it stands, so `@import "@sutra/ui/styles.css"` still delivers every rule, in the order the
+ * Tailwind inlines each import where it stands, so `@import "@cleanprompt/sutra-ui/styles.css"` still delivers every rule, in the order the
  * single file had. Add new component CSS as its own file and list it there (new files go last: the cascade is the file order).
  * paper.css is a separate, optional import. Tests read the whole thing through `readSutraCss()` (test/helpers/css.ts).
  *

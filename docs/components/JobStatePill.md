@@ -2,7 +2,7 @@
 
 > Pill for a scheduled job's state (a StatusBadge preset); `running` shows a spinner.
 
-- Import: `import { JobStatePill } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { JobStatePill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-list` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 
@@ -17,7 +17,7 @@
 ## Example (live: `#/components/automation/job-state` in the playground)
 
 ```tsx
-import { JobStatePill } from "@sutra/ui/agent-admin";
+import { JobStatePill } from "@cleanprompt/sutra-ui/agent-admin";
 
 {(["scheduled", "running", "paused", "error", "completed", "disabled"] as AgentJobState[]).map((s) => (
   <JobStatePill key={s} state={s} />

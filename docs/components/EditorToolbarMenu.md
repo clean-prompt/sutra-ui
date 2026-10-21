@@ -2,7 +2,7 @@
 
 > Dropdown tool (e.g. Insert ▸ Math, Mermaid, Callout) whose items carry icon, description and shortcut.
 
-- Import: `import { EditorToolbarMenu } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { EditorToolbarMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/kits/editor/editor-toolbar` (kit `editor`)
 - Part of [`EditorToolbar`](EditorToolbar.md)
 
@@ -29,7 +29,7 @@ import {
   EditorToolbarButton,
   EditorToolbarMenu,
   EditorToolbarSeparator,
-} from "@sutra/ui/editor";
+} from "@cleanprompt/sutra-ui/editor";
 import {
   RiBold,
   RiDoubleQuotesL,
@@ -41,7 +41,7 @@ import {
   RiListUnordered,
   RiStrikethrough,
   RiTableLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 
 function ToolbarOverflowDemo() {
   const [width, setWidth] = React.useState(360);

@@ -2,7 +2,7 @@
 
 > Dependency-free guided tour: spotlight cutout, anchored step card, keyboard and completion callbacks.
 
-- Import: `import { CoachmarkTour } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { CoachmarkTour } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/coachmarks` (patterns)
 - `data-slot`: `coachmark-tour`, `coachmark-card`
 
@@ -30,9 +30,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RiCompass3Line } from "@sutra/ui/icons";
-import { CoachmarkTour } from "@sutra/ui/workspace";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiCompass3Line } from "@cleanprompt/sutra-ui/icons";
+import { CoachmarkTour } from "@cleanprompt/sutra-ui/workspace";
 
 function TourDemo() {
   const [open, setOpen] = React.useState(false);

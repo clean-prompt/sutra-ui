@@ -2,7 +2,7 @@
 
 > Ready-made confirmation dialog with async-aware confirm.
 
-- Import: `import { ConfirmDialog } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { ConfirmDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/dialog` (primitives)
 
 ## Props
@@ -67,8 +67,8 @@ Server render: same markup as the client. A closed dialog renders only its trigg
 
 ```tsx
 import * as React from "react";
-import { Button, Dialog, DialogBody, DialogClose, DialogContent, DialogDescription } from "@sutra/ui";
-import { DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldLabel, Input } from "@sutra/ui";
+import { Button, Dialog, DialogBody, DialogClose, DialogContent, DialogDescription } from "@cleanprompt/sutra-ui";
+import { DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

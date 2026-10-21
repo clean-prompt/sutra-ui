@@ -2,7 +2,7 @@
 
 > Simple line illustrations for empty, error and success states.
 
-- Import: `import { EmptyStateIllustration } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { EmptyStateIllustration } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/empty-state-illustration` (assets)
 - Also accepts the props of SVGAttributes
 

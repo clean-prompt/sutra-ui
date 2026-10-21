@@ -2,7 +2,7 @@
 
 > Ringing incoming call card with pulsing avatar rings and Accept / Decline / Message actions.
 
-- Import: `import { IncomingCall } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { IncomingCall } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/social/call-overlay` (kit `social`)
 - `data-slot`: `incoming-call`
 - Also accepts the props of HTMLAttributes
@@ -27,8 +27,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button, TextLink } from "@sutra/ui/core";
-import { IncomingCall } from "@sutra/ui/social";
+import { Button, TextLink } from "@cleanprompt/sutra-ui/core";
+import { IncomingCall } from "@cleanprompt/sutra-ui/social";
 
 function IncomingCallDemo() {
   const [state, setState] = React.useState<"ringing" | "accepted" | "declined" | "missed" | "message">("ringing");

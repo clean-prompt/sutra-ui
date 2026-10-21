@@ -2,7 +2,7 @@
 
 > Knowledge / memory graph over time on a canvas: d3-force layout, radial time rings, pan/zoom, legend filter, time scrubber, detail panel and an accessible list view.
 
-- Import: `import { MemoryMap } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { MemoryMap } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/memory-map` (kit `workspace`)
 - `data-slot`: `memory-map`
 - Also accepts the props of HTMLAttributes
@@ -50,7 +50,7 @@
 
 ```tsx
 import * as React from "react";
-import { MemoryMap, ShareCodeControls } from "@sutra/ui/workspace";
+import { MemoryMap, ShareCodeControls } from "@cleanprompt/sutra-ui/workspace";
 
 function MemoryMapDemo() {
   const [hiddenKinds, setHiddenKinds] = React.useState<string[]>([]);

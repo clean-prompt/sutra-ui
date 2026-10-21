@@ -2,7 +2,7 @@
 
 > Masked secret with reveal (optionally timed), copy with clipboard auto-clear, and canvas rendering.
 
-- Import: `import { SecretText } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { SecretText } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/secret` (kit `identity`)
 - `data-slot`: `secret-text`, `secret-value`, `secret-mask`, `secret-strength`, `secret-canvas`
 - Also accepts the props of HTMLAttributes

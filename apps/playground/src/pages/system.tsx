@@ -28,7 +28,7 @@ import {
   type DevServerProject,
   type UsageQuota,
   type VolumeMixerApp,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import { Demo, PageIntro } from "../components/demo";
 
 /* All times are relative to a fixed "now" so the pills read the same as the reference screenshots. */
@@ -358,7 +358,7 @@ export function SystemPage() {
     <PageIntro
       eyebrow="Kits"
       title="System monitor"
-      description="Screens for a Mac system monitor (@sutra/ui/system): a per-app volume mixer, Bluetooth device batteries, dev servers with idle detection, coding-agent quotas and sessions, and Docker containers. Components take plain data and report actions through callbacks; destructive actions confirm first."
+      description="Screens for a Mac system monitor (@cleanprompt/sutra-ui/system): a per-app volume mixer, Bluetooth device batteries, dev servers with idle detection, coding-agent quotas and sessions, and Docker containers. Components take plain data and report actions through callbacks; destructive actions confirm first."
     >
       <Demo id="volume-mixer" title="Volume mixer" description="Output device and master volume, then a slider and mute toggle per app." align="start">
         <SoundDemo />

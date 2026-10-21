@@ -2,7 +2,7 @@
 
 > Loading placeholder with a shimmer.
 
-- Import: `import { Skeleton } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Skeleton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/progress` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -51,7 +51,7 @@ Server render: same markup as the client. Plain `div` markup with no browser API
 ## Example
 
 ```tsx
-import { Skeleton } from "@sutra/ui";
+import { Skeleton } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

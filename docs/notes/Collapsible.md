@@ -36,7 +36,7 @@ Renders the same markup on server and client with no browser API. A closed secti
 
 ## Example
 ```tsx
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@sutra/ui";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

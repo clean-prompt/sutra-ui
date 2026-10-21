@@ -2,7 +2,7 @@
 
 > Two-mode kill control (SIGTERM / SIGKILL) with an inline "Kill 1234? Confirm / Cancel" step.
 
-- Import: `import { KillButton } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { KillButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/process-table-kill` (kit `ops`)
 - `data-slot`: `kill-button`
 - Also accepts the props of HTMLAttributes

@@ -2,7 +2,7 @@
 
 > StatCard preset for "the biggest item right now": label, item icon + name and its value, optionally linked.
 
-- Import: `import { TopItemCard } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { TopItemCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/stat-card` (patterns)
 - `data-slot`: `top-item`, `stat-chevron`, `top-item-skeleton`
 - Also accepts the props of HTMLAttributes
@@ -97,7 +97,7 @@ Server render: same markup as the client. Plain markup from props with a `useId`
 ## Example
 
 ```tsx
-import { StatCard, StatGroup } from "@sutra/ui";
+import { StatCard, StatGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

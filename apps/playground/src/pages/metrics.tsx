@@ -20,7 +20,7 @@ import {
   useSampler,
   type Accent,
   type BarListItem,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiApps2Line,
   RiBattery2ChargeLine,
@@ -31,7 +31,7 @@ import {
   RiLayoutGridLine,
   RiRam2Line,
   RiStackLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

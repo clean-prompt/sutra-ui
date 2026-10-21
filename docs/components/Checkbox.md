@@ -2,7 +2,7 @@
 
 > Checkbox with checked, indeterminate and invalid states. Consumes `Field` context.
 
-- Import: `import { Checkbox } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Checkbox } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/checkbox` (primitives)
 - `data-slot`: `checkbox`, `checkbox-indicator`
 - Parts: [`CheckboxCard`](CheckboxCard.md), [`CheckboxField`](CheckboxField.md), [`CheckboxGroup`](CheckboxGroup.md), [`CheckboxGroupItem`](CheckboxGroupItem.md), [`CheckboxGroupSelectAll`](CheckboxGroupSelectAll.md)
@@ -147,7 +147,7 @@ Server render: part of it fills in after mount. A single `Checkbox` renders the 
 
 ```tsx
 import * as React from "react";
-import { CheckboxField, CheckboxGroup } from "@sutra/ui";
+import { CheckboxField, CheckboxGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [accepted, setAccepted] = React.useState(false);

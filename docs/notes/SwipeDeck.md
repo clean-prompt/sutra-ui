@@ -45,7 +45,7 @@ The server renders the top card and the cards behind it (at most `stack` + 1), t
 
 ## Example
 ```tsx
-import { SwipeDeck } from "@sutra/ui";
+import { SwipeDeck } from "@cleanprompt/sutra-ui";
 
 const invoices = [
   { id: "inv-12", vendor: "Northwind Traders", amount: "$1,240.00" },

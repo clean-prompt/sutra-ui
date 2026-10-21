@@ -2,7 +2,7 @@
 
 > App-wide amber banner warning that actions apply to a non-default profile. A preset over `InlineAlert layout="strip"`.
 
-- Import: `import { ProfileScopeBanner } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { ProfileScopeBanner } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/workspace-switcher` (kit `workspace`)
 - `data-slot`: `profile-scope-banner`
 - Also accepts the props of HTMLAttributes

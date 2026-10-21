@@ -41,7 +41,7 @@ The field renders on the server, but the display text is formatted with `Intl.Nu
 ## Example
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, NumberInput } from "@sutra/ui";
+import { Field, FieldLabel, NumberInput } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [seats, setSeats] = React.useState<number | null>(5);

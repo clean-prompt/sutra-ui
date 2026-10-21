@@ -2,7 +2,7 @@
 
 > Where a job's results go: the local inbox, a messaging platform, an email, a GitHub comment or a webhook.
 
-- Import: `import { DeliveryTargetPicker } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { DeliveryTargetPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-delivery` (kit `agent-admin`)
 - `data-slot`: `delivery-target-picker`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 ## Example (live: `#/components/automation/delivery-target` in the playground)
 
 ```tsx
-import { DeliveryTargetPicker } from "@sutra/ui/agent-admin";
+import { DeliveryTargetPicker } from "@cleanprompt/sutra-ui/agent-admin";
 
 <DeliveryTargetPicker status={DELIVERY_STATUS} onConfigureChannels={() => {}} className="max-w-2xl" />
 ```

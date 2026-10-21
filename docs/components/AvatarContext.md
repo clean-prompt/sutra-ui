@@ -2,7 +2,7 @@
 
 > Context used by `AvatarGroup` to pass size, shape and ring to its avatars.
 
-- Import: `import { AvatarContext } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { AvatarContext } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/avatar` (primitives)
 - Part of [`Avatar`](Avatar.md)
 - Also accepts the props of ProviderProps
@@ -18,7 +18,7 @@ See the notes in [`Avatar`](Avatar.md#notes).
 ## Example
 
 ```tsx
-import { Avatar, AvatarLabelGroup } from "@sutra/ui";
+import { Avatar, AvatarLabelGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

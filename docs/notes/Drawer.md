@@ -41,8 +41,8 @@ Only the trigger renders on the server. The sheet is portalled into `<body>` aft
 
 ## Example
 ```tsx
-import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@sutra/ui";
-import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@sutra/ui";
+import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@cleanprompt/sutra-ui";
+import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

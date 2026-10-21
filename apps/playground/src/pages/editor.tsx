@@ -8,9 +8,9 @@ import {
   SplitPaneHandle,
   SplitPanePanel,
   type PresenceUser,
-} from "@sutra/ui";
-import { CodeEditor, type CodeEditorHandle } from "@sutra/ui/code-editor";
-import { RichTextEditor } from "@sutra/ui/rich-text-editor";
+} from "@cleanprompt/sutra-ui";
+import { CodeEditor, type CodeEditorHandle } from "@cleanprompt/sutra-ui/code-editor";
+import { RichTextEditor } from "@cleanprompt/sutra-ui/rich-text-editor";
 import {
   CommentsPanel,
   DiffViewer,
@@ -30,7 +30,7 @@ import {
   type DiffMode,
   type DocumentVersion,
   type SaveState,
-} from "@sutra/ui/editor";
+} from "@cleanprompt/sutra-ui/editor";
 import {
   RiBold,
   RiBookOpenLine,
@@ -51,7 +51,7 @@ import {
   RiInformationLine,
   RiPageSeparator,
   RiHashtag,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

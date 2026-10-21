@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Avatar, Badge, Button, Card, Label, SegmentedControl, Switch, Text } from "@sutra/ui";
-import { formatCompact } from "@sutra/ui/format";
-import { WorldMap, countryName, formatGeoPoint, type GeoProjectionKind } from "@sutra/ui/geo";
+import { Avatar, Badge, Button, Card, Label, SegmentedControl, Switch, Text } from "@cleanprompt/sutra-ui";
+import { formatCompact } from "@cleanprompt/sutra-ui/format";
+import { WorldMap, countryName, formatGeoPoint, type GeoProjectionKind } from "@cleanprompt/sutra-ui/geo";
 import { Demo, PageIntro } from "../components/demo";
 import { SOURCES, attackArcs, attackMarkers, traffic, visitorMarker, visitors } from "../demos/geo-data";
 

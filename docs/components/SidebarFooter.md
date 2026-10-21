@@ -2,7 +2,7 @@
 
 > Bottom area (user card, settings).
 
-- Import: `import { SidebarFooter } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarFooter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-footer`
 - Part of [`Sidebar`](Sidebar.md)

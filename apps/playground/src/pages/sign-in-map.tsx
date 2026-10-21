@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Button, Text } from "@sutra/ui";
-import { SignInMap, type SignInEvent } from "@sutra/ui/identity";
+import { Button, Text } from "@cleanprompt/sutra-ui";
+import { SignInMap, type SignInEvent } from "@cleanprompt/sutra-ui/identity";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

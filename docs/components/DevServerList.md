@@ -2,7 +2,7 @@
 
 > Running dev servers by project: ports, activity ("working", "idle 2 hours"), memory, and a banner to stop idle ones.
 
-- Import: `import { DevServerList } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { DevServerList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/dev-servers` (kit `system`)
 - `data-slot`: `dev-server-list`, `dev-server-idle-banner`, `dev-server-skeleton-row`, `dev-server-skeleton-port`, `dev-server-skeleton-pill`, `dev-server-empty`, `dev-server-row`, `dev-server-memory`, `dev-server-activity`
 - Also accepts the props of HTMLAttributes
@@ -29,7 +29,7 @@
 
 ```tsx
 import * as React from "react";
-import { DevServerList } from "@sutra/ui/system";
+import { DevServerList } from "@cleanprompt/sutra-ui/system";
 
 function ProjectsDemo() {
   const [projects, setProjects] = React.useState(initialProjects);

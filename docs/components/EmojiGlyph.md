@@ -2,7 +2,7 @@
 
 > An emoji as text that reads as ink on paper in the paper style: the hand-drawn art when there is one, otherwise the glyph filtered to one ink.
 
-- Import: `import { EmojiGlyph } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { EmojiGlyph } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/emoji-ink` (assets)
 - `data-slot`: `emoji`, `emoji-ink-filter`
 - Also accepts the props of HTMLAttributes
@@ -60,7 +60,7 @@ Server render: same markup as the client. The same markup on the server and the 
 ## Example
 
 ```tsx
-import { EmojiGlyph, InkEmoji, hasInkEmoji } from "@sutra/ui";
+import { EmojiGlyph, InkEmoji, hasInkEmoji } from "@cleanprompt/sutra-ui";
 
 export function Example({ emoji }: { emoji: string }) {
   return (

@@ -2,7 +2,7 @@
 
 > `Slider` preset with two thumbs (defaults to the full min–max range).
 
-- Import: `import { RangeSlider } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { RangeSlider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/slider` (primitives)
 - Also accepts the props of HTMLAttributes, SliderProps, PrimitivePropsWithRef
 
@@ -68,7 +68,7 @@ Server render: part of it fills in after mount. The track and range render on th
 
 ```tsx
 import * as React from "react";
-import { Slider } from "@sutra/ui";
+import { Slider } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [price, setPrice] = React.useState([20, 80]);

@@ -2,7 +2,7 @@
 
 > Compact icon button used inside ChatMessageActions.
 
-- Import: `import { ChatMessageAction } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatMessageAction } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message-actions` (kit `ai`)
 - `data-slot`: `chat-message-action`
 - Parts: [`ChatMessageActions`](ChatMessageActions.md)

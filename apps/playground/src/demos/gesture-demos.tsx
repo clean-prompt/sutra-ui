@@ -15,8 +15,8 @@ import {
   UndoAction,
   toast,
   type SwipeAction,
-} from "@sutra/ui";
-import { RiArchiveLine, RiCheckLine, RiDeleteBinLine, RiTimeLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiArchiveLine, RiCheckLine, RiDeleteBinLine, RiTimeLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

@@ -2,7 +2,7 @@
 
 > Past runs of a job: start, duration, status, cost/tokens, trigger, error snippet and a transcript link.
 
-- Import: `import { RunHistory } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { RunHistory } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-list` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 

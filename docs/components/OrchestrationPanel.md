@@ -2,7 +2,7 @@
 
 > Assign an orchestrator agent, toggle auto-decomposition into subtasks and list participating agents.
 
-- Import: `import { OrchestrationPanel } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { OrchestrationPanel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/orchestration-panel` (kit `workspace`)
 - `data-slot`: `orchestration-panel`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 
 ```tsx
 import * as React from "react";
-import { OrchestrationPanel } from "@sutra/ui/workspace";
+import { OrchestrationPanel } from "@cleanprompt/sutra-ui/workspace";
 
 function OrchestrationDemo() {
   const [auto, setAuto] = React.useState(true);

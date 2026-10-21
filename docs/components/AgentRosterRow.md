@@ -2,7 +2,7 @@
 
 > One subagent: status, name, description, live elapsed time, tokens and actions.
 
-- Import: `import { AgentRosterRow } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AgentRosterRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-tasks` (kit `agent`)
 - `data-slot`: `agent-elapsed`
 - Part of [`AgentRoster`](AgentRoster.md)
@@ -21,7 +21,7 @@
 
 ```tsx
 import * as React from "react";
-import { AgentRoster, AgentRosterPanel } from "@sutra/ui/agent";
+import { AgentRoster, AgentRosterPanel } from "@cleanprompt/sutra-ui/agent";
 
 function RosterDemo() {
   const [start] = React.useState(() => Date.now());

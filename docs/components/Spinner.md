@@ -2,7 +2,7 @@
 
 > Loading indicator. Uses `currentColor`, so set a text color to recolor it.
 
-- Import: `import { Spinner } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Spinner } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/spinner` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -59,7 +59,7 @@ Server render: same markup as the client. Plain markup, and the glyph variant al
 ## Example
 
 ```tsx
-import { Spinner } from "@sutra/ui";
+import { Spinner } from "@cleanprompt/sutra-ui";
 
 export function Example({ loading }: { loading: boolean }) {
   return (

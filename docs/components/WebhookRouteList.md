@@ -2,7 +2,7 @@
 
 > Webhook routes: name, copyable URL, events, delivery target, last delivery and an enabled switch.
 
-- Import: `import { WebhookRouteList } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { WebhookRouteList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/webhooks` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { WebhookRouteEditor, WebhookRouteList } from "@sutra/ui/agent-admin";
+import { WebhookRouteEditor, WebhookRouteList } from "@cleanprompt/sutra-ui/agent-admin";
 
 function WebhooksDemo() {
   const [routes, setRoutes] = React.useState(INITIAL_ROUTES);

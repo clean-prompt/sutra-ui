@@ -2,7 +2,7 @@
 
 > The leading visual of a row: a bare icon or glyph, an icon tile, an image or an avatar.
 
-- Import: `import { ItemMedia } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ItemMedia } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/item` (primitives)
 - `data-slot`: `item-media`
 - Part of [`Item`](Item.md)
@@ -25,8 +25,8 @@ See the notes in [`Item`](Item.md#notes).
 ## Example
 
 ```tsx
-import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@sutra/ui";
-import { RiMailLine, RiSettings3Line } from "@sutra/ui/icons";
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@cleanprompt/sutra-ui";
+import { RiMailLine, RiSettings3Line } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

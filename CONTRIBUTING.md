@@ -1,6 +1,6 @@
 # Contributing to Sutra UI
 
-Thanks for helping. This repository holds the `@sutra/ui` package (`packages/ui`) and its playground (`apps/playground`).
+Thanks for helping. This repository holds the `@cleanprompt/sutra-ui` package (`packages/ui`) and its playground (`apps/playground`).
 
 ## Set up
 
@@ -35,7 +35,7 @@ Some files are generated and checked by `pnpm verify`; regenerate them instead o
 | --- | --- |
 | `node packages/ui/scripts/gen-index.mjs` (run in `packages/ui`: `pnpm gen:index`) | `src/index.ts`, `src/entries/core.ts` |
 | `pnpm docs:gen` then `pnpm docs:llms` | `apps/playground/src/generated/*`, `docs/components`, `docs/hooks`, `llms.txt`, the skill references |
-| `pnpm --filter @sutra/ui gen:springs` | the spring tokens in the stylesheets |
+| `pnpm --filter @cleanprompt/sutra-ui gen:springs` | the spring tokens in the stylesheets |
 | `pnpm docs:baseline` | the JSDoc ratchet baseline (it may only go down) |
 
 When public names are added, update the API snapshot with `npx vitest run test/api-surface.test.ts -u` (in `packages/ui`) and check that the diff only adds names.

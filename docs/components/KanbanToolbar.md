@@ -2,7 +2,7 @@
 
 > Quick filters for a board: search, assignee toggles, labels and swimlane grouping.
 
-- Import: `import { KanbanToolbar } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { KanbanToolbar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-toolbar` (kit `workspace`)
 - `data-slot`: `kanban-toolbar`
 - Also accepts the props of HTMLAttributes

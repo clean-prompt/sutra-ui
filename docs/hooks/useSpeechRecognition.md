@@ -2,7 +2,7 @@
 
 > Web Speech API wrapper with interim/final transcript; inert (supported=false) where unavailable.
 
-- Import: `import { useSpeechRecognition } from "@sutra/ui/voice"`
+- Import: `import { useSpeechRecognition } from "@cleanprompt/sutra-ui/voice"`
 - Source: `packages/ui/src/kits/voice/voice`
 
 ## Signature

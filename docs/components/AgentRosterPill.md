@@ -2,7 +2,7 @@
 
 > Compact "3 agents" trigger with an aggregate status dot.
 
-- Import: `import { AgentRosterPill } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AgentRosterPill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-tasks` (kit `agent`)
 - Part of [`AgentRoster`](AgentRoster.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -18,7 +18,7 @@
 
 ```tsx
 import * as React from "react";
-import { AgentRoster, AgentRosterPanel } from "@sutra/ui/agent";
+import { AgentRoster, AgentRosterPanel } from "@cleanprompt/sutra-ui/agent";
 
 function RosterDemo() {
   const [start] = React.useState(() => Date.now());

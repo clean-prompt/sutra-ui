@@ -1,7 +1,7 @@
 /*
- * @sutra/ui/format: number, duration, date and relative-time formatters and the date helpers behind them (subpath only).
+ * @cleanprompt/sutra-ui/format: number, duration, date and relative-time formatters and the date helpers behind them (subpath only).
  *
- * Deliberately NOT part of the root `@sutra/ui`: names like `toMs`, `formatCompact` and `formatDuration` are generic enough to
+ * Deliberately NOT part of the root `@cleanprompt/sutra-ui`: names like `toMs`, `formatCompact` and `formatDuration` are generic enough to
  * collide with an app's own, so they are imported from here on purpose. (`pad2` stays internal: no public signature needs it.) `formatBytes`, `splitDuration` and
  * `base32Decode` are not here: the root and their components' modules have their own versions (`FileUpload`, `Countdown`, `TOTP`).
  * An explicit list (no `export *`): test/api-surface.test.ts keeps every name off the root, and scripts/gen-index.mjs lists this

@@ -28,7 +28,7 @@ Plain markup, and the glyph variant always starts on frame 0 (the reduced-motion
 
 ## Example
 ```tsx
-import { Spinner } from "@sutra/ui";
+import { Spinner } from "@cleanprompt/sutra-ui";
 
 export function Example({ loading }: { loading: boolean }) {
   return (

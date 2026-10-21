@@ -2,7 +2,7 @@
 
 > Providers grouped into "Connected" and "Available" sections.
 
-- Import: `import { ProviderList } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProviderList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers` (kit `agent-admin`)
 - `data-slot`: `provider-list`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { ProviderConnectDialog, ProviderList } from "@sutra/ui/agent-admin";
+import { ProviderConnectDialog, ProviderList } from "@cleanprompt/sutra-ui/agent-admin";
 
 function ProviderListDemo() {
   const [providers, setProviders] = React.useState(providerEntries);

@@ -2,7 +2,7 @@
 
 > Scrolling conversation with day separators, an unread divider and grouped bubbles.
 
-- Import: `import { MessageList } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { MessageList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/social/messenger-list` (kit `social`)
 - `data-slot`: `message-list`
 - Also accepts the props of HTMLAttributes
@@ -26,7 +26,7 @@
 
 ```tsx
 import * as React from "react";
-import { MessageComposer, MessageList, MessengerHeader } from "@sutra/ui/social";
+import { MessageComposer, MessageList, MessengerHeader } from "@cleanprompt/sutra-ui/social";
 
 function MessengerDemo() {
   const [messages, setMessages] = React.useState(initialMessages);

@@ -2,7 +2,7 @@
 
 > Sonner toaster styled with Sutra tokens. Follows the `.dark` class on <html> unless `theme` is set.
 
-- Import: `import { Toaster } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Toaster } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/toast` (primitives)
 - Also accepts the props of ToasterProps
 
@@ -53,7 +53,7 @@ Server render: same markup as the client. The server renders the empty live-regi
 ## Example
 
 ```tsx
-import { Button, Toaster, snackbar, toast } from "@sutra/ui";
+import { Button, Toaster, snackbar, toast } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

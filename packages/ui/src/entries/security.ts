@@ -1,4 +1,4 @@
-/* @sutra/ui/security: authenticator codes, secrets, recovery keys, consent, API keys, credentials, payment cards, connected apps, the sign-in map. */
+/* @cleanprompt/sutra-ui/security: authenticator codes, secrets, recovery keys, consent, API keys, credentials, payment cards, connected apps, the sign-in map. */
 export * from "../kits/identity/totp";
 export * from "../kits/identity/secret";
 export * from "../kits/identity/recovery-key";

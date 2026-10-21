@@ -2,7 +2,7 @@
 
 > Inline permission request for a tool action with a numbered, keyboard-driven option list.
 
-- Import: `import { PermissionPrompt } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { PermissionPrompt } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/ai/permission-prompt` (kit `ai`)
 - `data-slot`: `permission-fold`, `permission-prompt`, `permission-options`, `permission-option`, `permission-feedback`, `permission-hints`
 - Also accepts the props of HTMLAttributes
@@ -36,7 +36,7 @@
 ## Example (live: `#/components/agent-permissions/folded-permission` in the playground)
 
 ```tsx
-import { PermissionPrompt } from "@sutra/ui/agent";
+import { PermissionPrompt } from "@cleanprompt/sutra-ui/agent";
 
 function FoldedPermissionDemo() {
   return (

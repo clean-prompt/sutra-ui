@@ -43,7 +43,7 @@ The chips, the input and the count render on the server from `value` or `default
 ## Example
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, TagInput } from "@sutra/ui";
+import { Field, FieldLabel, TagInput } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [tags, setTags] = React.useState(["design", "launch"]);

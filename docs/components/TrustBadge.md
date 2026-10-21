@@ -2,7 +2,7 @@
 
 > Trust scale badge (verified → flagged) with a tooltip explaining what the level means.
 
-- Import: `import { TrustBadge } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { TrustBadge } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/capabilities` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 

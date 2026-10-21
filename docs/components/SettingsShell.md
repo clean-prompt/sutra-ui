@@ -2,7 +2,7 @@
 
 > Responsive settings layout: two panes with section nav, or a drill-in list on narrow containers.
 
-- Import: `import { SettingsShell } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SettingsShell } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/settings` (patterns)
 - `data-slot`: `settings-shell`
 - Also accepts the props of HTMLAttributes
@@ -26,9 +26,9 @@
 ## Example (live: `#/components/identity/settings-shell` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { RiSettings3Line } from "@sutra/ui/icons";
-import { SettingsDialog, SettingsShell } from "@sutra/ui/identity";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiSettings3Line } from "@cleanprompt/sutra-ui/icons";
+import { SettingsDialog, SettingsShell } from "@cleanprompt/sutra-ui/identity";
 
 <div className="flex justify-end">
   <SettingsDialog

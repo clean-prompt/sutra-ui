@@ -2,7 +2,7 @@
 
 > Plan comparison dialog with a monthly/yearly toggle and feature checklists.
 
-- Import: `import { UpgradeDialog } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { UpgradeDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/modal-dialog-blocks-upgrade` (blocks)
 
 ## Props

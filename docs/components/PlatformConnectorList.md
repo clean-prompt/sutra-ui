@@ -2,7 +2,7 @@
 
 > Grid of channel connectors with an "N of M configured" header and gateway status hint.
 
-- Import: `import { PlatformConnectorList } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { PlatformConnectorList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/channels` (kit `agent-admin`)
 - `data-slot`: `connector-count`
 - Also accepts the props of HTMLAttributes
@@ -24,9 +24,9 @@
 
 ```tsx
 import * as React from "react";
-import { PlatformConnectorList } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiRestartLine } from "@sutra/ui/icons";
+import { PlatformConnectorList } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiRestartLine } from "@cleanprompt/sutra-ui/icons";
 
 function ConnectorsDemo() {
   const [connectors, setConnectors] = React.useState(initialConnectors);

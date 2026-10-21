@@ -2,7 +2,7 @@
 
 > Live one-time code with grouped digits, a countdown, copy and a next-code preview.
 
-- Import: `import { TOTPCode } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { TOTPCode } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/totp` (kit `identity`)
 - `data-slot`: `totp-countdown`, `totp-code`, `totp-value`, `totp-next`
 - Also accepts the props of HTMLAttributes
@@ -30,7 +30,7 @@
 ## Example (live: `#/components/security/totp-code` in the playground)
 
 ```tsx
-import { TOTPCode } from "@sutra/ui/security";
+import { TOTPCode } from "@cleanprompt/sutra-ui/security";
 
 <div className="flex flex-col gap-2">
   <TOTPCode secret={DEMO_SECRET} size="lg" label="Demo" />

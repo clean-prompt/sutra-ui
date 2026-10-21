@@ -2,7 +2,7 @@
 
 > Create a git worktree: name, base branch picker (recent / local / remote), path preview and session switch.
 
-- Import: `import { WorktreeDialog } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { WorktreeDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/git-review-worktree` (kit `agent`)
 - `data-slot`: `worktree-path`
 
@@ -27,9 +27,9 @@
 
 ```tsx
 import * as React from "react";
-import { WorktreeDialog } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
-import { RiGitForkLine } from "@sutra/ui/icons";
+import { WorktreeDialog } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiGitForkLine } from "@cleanprompt/sutra-ui/icons";
 
 function WorktreeDemo() {
   const [open, setOpen] = React.useState(false);

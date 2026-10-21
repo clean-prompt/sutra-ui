@@ -74,7 +74,7 @@ import {
   TagInput,
   Textarea,
   type UploadFile,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAlignCenter,
   RiAlignLeft,
@@ -100,7 +100,7 @@ import {
   RiSendPlaneLine,
   RiSunLine,
   RiUserLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { WheelPickerDemo } from "../demos/wheel-demos";
 

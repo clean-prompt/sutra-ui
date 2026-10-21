@@ -2,7 +2,7 @@
 
 > Non-interactive section label.
 
-- Import: `import { ContextMenuLabel } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { ContextMenuLabel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/context-menu` (primitives)
 - Part of [`ContextMenu`](ContextMenu.md)
 - Also accepts the props of HTMLAttributes, PrimitivePropsWithRef
@@ -21,9 +21,9 @@ See the notes in [`ContextMenu`](ContextMenu.md#notes).
 
 ```tsx
 import * as React from "react";
-import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem } from "@sutra/ui";
-import { ContextMenuSeparator, ContextMenuTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiFileCopyLine } from "@sutra/ui/icons";
+import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem } from "@cleanprompt/sutra-ui";
+import { ContextMenuSeparator, ContextMenuTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiFileCopyLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onCopy, onDelete }: { onCopy: () => void; onDelete: () => void }) {
   const [starred, setStarred] = React.useState(false);

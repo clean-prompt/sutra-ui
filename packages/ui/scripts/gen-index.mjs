@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Generates src/index.ts (the root `@sutra/ui` barrel), src/entries/core.ts (`@sutra/ui/core`, every
+// Generates src/index.ts (the root `@cleanprompt/sutra-ui` barrel), src/entries/core.ts (`@cleanprompt/sutra-ui/core`, every
 // primitive) and the `exports` map of package.json from the folder structure.
 //
 //   node scripts/gen-index.mjs           rewrite the generated files
@@ -12,7 +12,7 @@
 // Sections follow the layers: Foundations, Assets, Primitives, Patterns, one section per kit, Blocks.
 // Files are sorted within a section. A module is left out of the root when it
 //   - reaches an optional peer (package.json `peerDependenciesMeta[x].optional`) through its imports;
-//     those live only in their own entry (@sutra/ui/code-editor, @sutra/ui/rich-text-editor, @sutra/ui/terminal, @sutra/ui/pdf),
+//     those live only in their own entry (@cleanprompt/sutra-ui/code-editor, @cleanprompt/sutra-ui/rich-text-editor, @cleanprompt/sutra-ui/terminal, @cleanprompt/sutra-ui/pdf),
 //     and the entry file stays hand-written like every other (entries/*.ts: the root never lists an entry, so a new engine entry needs no table here),
 //   - is listed in INTERNAL below or named `*-internal` (private helpers shared by sibling modules), or
 //   - is a back-compat barrel (a file made only of `export … from` lines) whose every target is
@@ -27,7 +27,7 @@ const SRC = path.join(ROOT, "src");
 const SOURCE_EXTS = [".ts", ".tsx"];
 
 /**
- * Foundations: the lib/ and hooks/ names the root re-exports are exactly those of the `@sutra/ui/tokens` entry
+ * Foundations: the lib/ and hooks/ names the root re-exports are exactly those of the `@cleanprompt/sutra-ui/tokens` entry
  * (src/entries/tokens.ts, an explicit list). Other lib/hooks modules and names are internal helpers.
  */
 const FOUNDATIONS_ENTRY = "entries/tokens";
@@ -41,7 +41,7 @@ export const INTERNAL = {
 };
 
 /**
- * Subpath-only entries: importable as `@sutra/ui/<name>` but never part of the root barrel (their names are generic enough
+ * Subpath-only entries: importable as `@cleanprompt/sutra-ui/<name>` but never part of the root barrel (their names are generic enough
  * to collide with an app's own). The root is built from the layer folders and `entries/tokens` only, and `planIndex` throws if
  * one of these ever lands in a root section. test/api-surface.test.ts checks their names against the root.
  */
@@ -161,7 +161,7 @@ function barrelTargets(id) {
 export function planIndex() {
   const reachesPeer = optionalPeerScanner();
   const sections = [
-    { title: "Foundations: the lib/ and hooks/ names of @sutra/ui/tokens (an explicit list)", modules: [FOUNDATIONS_ENTRY] },
+    { title: "Foundations: the lib/ and hooks/ names of @cleanprompt/sutra-ui/tokens (an explicit list)", modules: [FOUNDATIONS_ENTRY] },
     { title: "Assets: src/assets", modules: listModules("assets") },
     { title: "Primitives: src/primitives", modules: listModules("primitives") },
     { title: "Patterns: src/patterns", modules: listModules("patterns") },
@@ -208,9 +208,9 @@ const HEADER = (what) => [
   " */",
 ];
 
-/** src/index.ts: the `@sutra/ui` root barrel. */
+/** src/index.ts: the `@cleanprompt/sutra-ui` root barrel. */
 export function generateIndex(plan = planIndex()) {
-  const out = HEADER("Sutra UI: public API (the `@sutra/ui` root).");
+  const out = HEADER("Sutra UI: public API (the `@cleanprompt/sutra-ui` root).");
   for (const section of plan.sections) {
     out.push("", `/* ${section.title} */`);
     for (const { id, reason } of [...section.excluded].sort((a, b) => a.id.localeCompare(b.id))) {
@@ -221,10 +221,10 @@ export function generateIndex(plan = planIndex()) {
   return out.join("\n") + "\n";
 }
 
-/** src/entries/core.ts: `@sutra/ui/core`, every primitive the root exports. */
+/** src/entries/core.ts: `@cleanprompt/sutra-ui/core`, every primitive the root exports. */
 export function generateCore(plan = planIndex()) {
   const primitives = plan.sections.find((s) => s.title.startsWith("Primitives")).modules;
-  const out = HEADER("@sutra/ui/core: every primitive (src/primitives), the basic controls everything else builds on.");
+  const out = HEADER("@cleanprompt/sutra-ui/core: every primitive (src/primitives), the basic controls everything else builds on.");
   out.push("", ...primitives.map((id) => `export * from "../${id}";`));
   return out.join("\n") + "\n";
 }
@@ -234,10 +234,10 @@ const conditional = (id) => ({ types: `./dist/${id}.d.ts`, import: `./dist/${id}
 /** Modules that get no subpath in `exports`: the `*-internal` helpers. (INTERNAL only keeps a module out of the root.) */
 export const isPrivateModule = (id) => id.endsWith("-internal");
 
-/** The folders whose modules are importable by deep path (`@sutra/ui/<folder>/<file>`). */
+/** The folders whose modules are importable by deep path (`@cleanprompt/sutra-ui/<folder>/<file>`). */
 const DEEP_LAYERS = ["assets", "primitives", "patterns", "kits", "blocks"];
 
-/** The frozen back-compat aliases `@sutra/ui/components/<name>` -> module id (scripts/components-aliases.json). */
+/** The frozen back-compat aliases `@cleanprompt/sutra-ui/components/<name>` -> module id (scripts/components-aliases.json). */
 function componentAliases() {
   return JSON.parse(readFileSync(path.join(ROOT, "scripts/components-aliases.json"), "utf8"));
 }

@@ -39,7 +39,7 @@ The markup is the same on the server and the client. The paper style needs a one
 
 ## Example
 ```tsx
-import { EmojiReactionBar } from "@sutra/ui";
+import { EmojiReactionBar } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

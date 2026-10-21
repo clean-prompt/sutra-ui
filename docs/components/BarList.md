@@ -2,7 +2,7 @@
 
 > Ranked rows with a proportional bar under each value: top apps by CPU, pages by views, …
 
-- Import: `import { BarList } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { BarList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/bar-list` (patterns)
 - `data-slot`: `bar-list`, `bar-list-header`, `bar-list-skeleton`, `bar-list-empty`, `bar-list-value`, `bar-list-track`, `bar-list-bar`, `bar-list-item`
 - Also accepts the props of HTMLAttributes
@@ -33,8 +33,8 @@
 ## Example (live: `#/components/metrics/bar-list` in the playground)
 
 ```tsx
-import { Monogram } from "@sutra/ui/agent-admin";
-import { BarList } from "@sutra/ui/dataviz";
+import { Monogram } from "@cleanprompt/sutra-ui/agent-admin";
+import { BarList } from "@cleanprompt/sutra-ui/dataviz";
 
 <BarList
   className="w-full max-w-xl"

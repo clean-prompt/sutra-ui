@@ -2,7 +2,7 @@
 
 > Documentation header: logo, version switcher, links, ⌘K search, GitHub and theme toggle.
 
-- Import: `import { DocsHeader } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { DocsHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/header-navigation-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

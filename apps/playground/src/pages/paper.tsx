@@ -40,7 +40,7 @@ import {
   toast,
   type DividedGridItemData,
   type ThemeToggleMode,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAddLine,
   RiArrowDownLine,
@@ -62,7 +62,7 @@ import {
   RiScissorsCutLine,
   RiSettings3Line,
   RiVoiceprintLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { href } from "../router";
 

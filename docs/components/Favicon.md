@@ -2,7 +2,7 @@
 
 > Site icon for a domain: explicit `src`, provider-resolved URL, or a local monogram.
 
-- Import: `import { Favicon } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { Favicon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/primitives/favicon` (primitives)
 - Parts: [`FaviconProvider`](FaviconProvider.md)
 - Also accepts the props of HTMLAttributes
@@ -61,7 +61,7 @@ Server render: same markup as the client. The same markup on server and client f
 ## Example
 
 ```tsx
-import { Favicon, FaviconProvider } from "@sutra/ui";
+import { Favicon, FaviconProvider } from "@cleanprompt/sutra-ui";
 
 const sources = ["github.com", "vercel.com", "news.ycombinator.com"];
 

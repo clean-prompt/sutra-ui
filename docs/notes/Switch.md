@@ -41,7 +41,7 @@ Plain markup: the state comes from `checked` or `defaultChecked`, and the ids co
 ## Example
 ```tsx
 import * as React from "react";
-import { SwitchField } from "@sutra/ui";
+import { SwitchField } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [digest, setDigest] = React.useState(true);

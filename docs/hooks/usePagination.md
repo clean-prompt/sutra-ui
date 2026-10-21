@@ -2,7 +2,7 @@
 
 > Memoized pagination range helper.
 
-- Import: `import { usePagination } from "@sutra/ui/navigation"`
+- Import: `import { usePagination } from "@cleanprompt/sutra-ui/navigation"`
 - Source: `packages/ui/src/hooks/use-pagination`
 
 ## Signature

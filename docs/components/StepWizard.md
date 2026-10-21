@@ -2,7 +2,7 @@
 
 > A multi-step flow in one place: the steps slide in the direction you are going, the area grows or shrinks to the height of the current step, and a progress bar or `Steps` shows where you are. `canAdvance` validates before moving forward (it may be async), Back is free, focus moves to the new step's panel so a screen reader announces it, and Enter in a text field presses Next. Controlled with `value` or uncontrolled. Under reduced motion the steps swap with no slide and the height jumps.
 
-- Import: `import { StepWizard } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { StepWizard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/step-wizard` (patterns)
 - `data-slot`: `step-wizard-progress`, `step-wizard-steps`, `step-wizard`, `step-wizard-viewport`, `step-wizard-panel`, `step-wizard-footer`
 - Also accepts the props of HTMLAttributes
@@ -78,7 +78,7 @@ Server render: part of it fills in after mount. The first step renders in full o
 
 ```tsx
 import * as React from "react";
-import { Input, StepWizard } from "@sutra/ui";
+import { Input, StepWizard } from "@cleanprompt/sutra-ui";
 
 export function Example({ onCreate }: { onCreate: () => Promise<void> }) {
   const [name, setName] = React.useState("");

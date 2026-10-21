@@ -37,7 +37,7 @@ The segments render on the server with the selected one marked, but the thumb be
 ## Example
 ```tsx
 import * as React from "react";
-import { SegmentedControl } from "@sutra/ui";
+import { SegmentedControl } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [view, setView] = React.useState("list");

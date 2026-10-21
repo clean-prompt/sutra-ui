@@ -2,7 +2,7 @@
 
 > Scramble-then-decode text reveal. Exposed as `role="img"` labelled with the final text, so screen readers never hear the scramble; reduced motion shows it instantly.
 
-- Import: `import { DecodeText } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { DecodeText } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/decode-text` (patterns)
 - `data-slot`: `decode-text`
 - Also accepts the props of HTMLAttributes
@@ -23,8 +23,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { DecodeText } from "@sutra/ui/motion";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { DecodeText } from "@cleanprompt/sutra-ui/motion";
 
 function DecodeTextDemo() {
   const [run, setRun] = React.useState(0);

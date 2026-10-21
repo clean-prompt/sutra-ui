@@ -2,7 +2,7 @@
 
 > Position a fixed popup under (or above) the caret of a field, re-measured on scroll/resize.
 
-- Import: `import { useCaretAnchor } from "@sutra/ui/ai"`
+- Import: `import { useCaretAnchor } from "@cleanprompt/sutra-ui/ai"`
 - Source: `packages/ui/src/hooks/use-caret-anchor`
 
 ## Signature

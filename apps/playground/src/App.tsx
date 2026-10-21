@@ -22,7 +22,7 @@ import {
   ShortcutsDialog,
   useShortcuts,
   prefersReducedMotion,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiArrowRightSLine,
   RiBrushLine,
@@ -36,7 +36,7 @@ import {
   RiSpace,
   RiSpeedLine,
   RiCheckboxBlankLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { nav, findPage, routeOf } from "./nav";
 import { href, useHashRoute } from "./router";
 import { ThemeControls, usePersistedTheme } from "./components/theme-controls";

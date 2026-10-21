@@ -15,7 +15,7 @@ import {
   type SlashCommand,
   type StatusStripStatus,
   type UsageDay,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiBookOpenLine,
   RiCodeSSlashLine,
@@ -25,7 +25,7 @@ import {
   RiQuillPenLine,
   RiTranslate2,
   RiUser3Line,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /** Anchor ids of the demos on this page. */

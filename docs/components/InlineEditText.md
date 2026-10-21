@@ -2,7 +2,7 @@
 
 > Single-line inline editor for renaming things in place: Enter or blur commits, Escape cancels, and key presses never reach the surrounding row's shortcuts.
 
-- Import: `import { InlineEditText } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { InlineEditText } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/primitives/inline-edit-text` (primitives)
 - Also accepts the props of HTMLAttributes, InputHTMLAttributes
 
@@ -63,8 +63,8 @@ Server render: same markup as the client. Renders a plain input from `value` or 
 
 ```tsx
 import * as React from "react";
-import { Button, InlineEditText } from "@sutra/ui";
-import { RiPencilLine } from "@sutra/ui/icons";
+import { Button, InlineEditText } from "@cleanprompt/sutra-ui";
+import { RiPencilLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [name, setName] = React.useState("Quarterly report");

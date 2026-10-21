@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Button, SimpleTooltip } from "@sutra/ui";
-import { RiTextDirectionL, RiTextDirectionR } from "@sutra/ui/icons";
+import { Button, SimpleTooltip } from "@cleanprompt/sutra-ui";
+import { RiTextDirectionL, RiTextDirectionR } from "@cleanprompt/sutra-ui/icons";
 
 type Direction = "ltr" | "rtl";
 

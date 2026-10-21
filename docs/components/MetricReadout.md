@@ -2,7 +2,7 @@
 
 > Compact menu-bar style reading ("CPU 92%"): optional icon, label, tabular value with unit and a tiny trend slot. It turns warning or destructive under strain (from `thresholds` or `tone`), and its accessible text reads "CPU 92%, high".
 
-- Import: `import { MetricReadout } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { MetricReadout } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/primitives/metric-readout` (primitives)
 - `data-slot`: `metric-readout`, `metric-readout-icon`, `metric-readout-label`, `metric-readout-value-skeleton`, `metric-readout-value`, `metric-readout-trend`
 - Parts: [`MetricReadoutGroup`](MetricReadoutGroup.md)
@@ -91,7 +91,7 @@ Server render: part of it fills in after mount. Plain markup, but numbers go thr
 ## Example
 
 ```tsx
-import { MetricReadout, MetricReadoutGroup } from "@sutra/ui";
+import { MetricReadout, MetricReadoutGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

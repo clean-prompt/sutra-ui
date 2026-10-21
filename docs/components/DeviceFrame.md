@@ -2,7 +2,7 @@
 
 > Wraps content in browser window chrome or a phone/tablet bezel.
 
-- Import: `import { DeviceFrame } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { DeviceFrame } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/device-frame` (assets)
 - Also accepts the props of HTMLAttributes
 
@@ -19,8 +19,8 @@
 ## Example (live: `#/components/assets/device-frame` in the playground)
 
 ```tsx
-import { DeviceFrame } from "@sutra/ui/assets";
-import { Text } from "@sutra/ui/core";
+import { DeviceFrame } from "@cleanprompt/sutra-ui/assets";
+import { Text } from "@cleanprompt/sutra-ui/core";
 
 function DeviceFrameDemo() {
   return (

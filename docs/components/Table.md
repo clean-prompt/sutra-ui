@@ -2,7 +2,7 @@
 
 > Data table inside a bordered, scrollable box. The box takes focus while it overflows (so the arrow keys scroll it) and becomes a named `region` when the table has an `aria-label` or `aria-labelledby`.
 
-- Import: `import { Table } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Table } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/table` (primitives)
 - Parts: [`TableBody`](TableBody.md), [`TableCaption`](TableCaption.md), [`TableCell`](TableCell.md), [`TableCheckbox`](TableCheckbox.md), [`TableFooter`](TableFooter.md), [`TableHead`](TableHead.md), [`TableHeader`](TableHeader.md), [`TableRow`](TableRow.md)
 - Also accepts the props of HTMLAttributes, TableHTMLAttributes
@@ -94,7 +94,7 @@ Server render: same markup as the client. Plain table markup with no browser API
 ## Example
 
 ```tsx
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@sutra/ui";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@cleanprompt/sutra-ui";
 
 const invoices = [
   { id: "INV-1042", customer: "Acme Corp", amount: "$1,280.00" },

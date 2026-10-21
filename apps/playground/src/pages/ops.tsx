@@ -13,8 +13,8 @@ import {
   type LogViewerStatus,
   type StreamingTaskEvent,
   type TransferItemData,
-} from "@sutra/ui";
-import { RiDatabase2Line, RiFolderTransferLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiDatabase2Line, RiFolderTransferLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

@@ -2,7 +2,7 @@
 
 > Marketplace entry card: banner, icon, name, author, description, stars, version, capabilities (+N), platforms, dates, tier.
 
-- Import: `import { MarketplaceCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { MarketplaceCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/marketing-blocks-card` (blocks)
 - `data-slot`: `more-capabilities`
 - Also accepts the props of HTMLAttributes

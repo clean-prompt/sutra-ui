@@ -35,7 +35,7 @@ A static SVG computed from the props (arc path, `pathLength` dash), so the serve
 
 ## Example
 ```tsx
-import { Gauge } from "@sutra/ui";
+import { Gauge } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

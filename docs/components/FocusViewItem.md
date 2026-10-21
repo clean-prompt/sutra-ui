@@ -2,7 +2,7 @@
 
 > Renders its children unless focus view hides this kind of row.
 
-- Import: `import { FocusViewItem } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { FocusViewItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-tasks` (kit `agent`)
 
 ## Props

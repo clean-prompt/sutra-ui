@@ -34,7 +34,7 @@ import {
   type Credential,
   type PaymentCardValue,
   type SecurityEvent,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAddLine,
   RiDeleteBinLine,
@@ -44,7 +44,7 @@ import {
   RiQrCodeLine,
   RiShieldCheckLine,
   RiUserLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

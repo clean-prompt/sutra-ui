@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Button, Label, Switch, Text } from "@sutra/ui";
-import { LiveVisitorsMap, type LiveVisitor, type LiveVisitorDevice, type LiveVisitorsMapView } from "@sutra/ui/geo";
-import { RiHistoryLine } from "@sutra/ui/icons";
+import { Button, Label, Switch, Text } from "@cleanprompt/sutra-ui";
+import { LiveVisitorsMap, type LiveVisitor, type LiveVisitorDevice, type LiveVisitorsMapView } from "@cleanprompt/sutra-ui/geo";
+import { RiHistoryLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 import { SOURCES, visitors as demoVisitors, type Visitor } from "../demos/geo-data";
 

@@ -25,7 +25,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @sutra/ui build
+      - run: pnpm --filter @cleanprompt/sutra-ui build
       # The playground uses hash routes, so a project-site base path is all it needs.
       - run: pnpm --filter playground exec vite build --base=/${{ github.event.repository.name }}/
       - uses: actions/upload-pages-artifact@v3

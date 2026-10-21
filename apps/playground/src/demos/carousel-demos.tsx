@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Button, Carousel, InlineCode, Text } from "@sutra/ui";
-import { RiBarChartBoxLine, RiCalendarCheckLine, RiMailLine, RiNotification3Line, RiTaskLine } from "@sutra/ui/icons";
+import { Button, Carousel, InlineCode, Text } from "@cleanprompt/sutra-ui";
+import { RiBarChartBoxLine, RiCalendarCheckLine, RiMailLine, RiNotification3Line, RiTaskLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel } from "../components/demo";
 
 const stories = [

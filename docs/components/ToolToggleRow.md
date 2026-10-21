@@ -2,7 +2,7 @@
 
 > One tool row: name, hint tags, lock state, switch and an expandable detail.
 
-- Import: `import { ToolToggleRow } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ToolToggleRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/tool-toggles` (kit `agent-admin`)
 - `data-slot`: `tool-toggle-row`
 - Also accepts the props of HTMLAttributes

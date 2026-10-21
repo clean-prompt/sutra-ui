@@ -2,7 +2,7 @@
 
 > App icon for a Sutra suite app: a tile with a thread running across it, a bead on the thread and one pictogram in the bead. The thread leaves the tile on both sides, so a row of icons reads as beads on one string.
 
-- Import: `import { SutraAppIcon } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { SutraAppIcon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/brand` (assets)
 - Also accepts the props of SVGAttributes
 
@@ -19,8 +19,8 @@
 ## Example (live: `#/components/suite/app-theming` in the playground)
 
 ```tsx
-import { SutraAppIcon, sutraAppMeta, sutraApps } from "@sutra/ui/assets";
-import { Button } from "@sutra/ui/core";
+import { SutraAppIcon, sutraAppMeta, sutraApps } from "@cleanprompt/sutra-ui/assets";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 <div className="@container w-full">
   <div className="grid grid-cols-1 gap-3 @lg:grid-cols-2 @4xl:grid-cols-4">

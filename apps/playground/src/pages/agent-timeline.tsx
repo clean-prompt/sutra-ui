@@ -23,8 +23,8 @@ import {
   ToolTimelineText,
   WebToolBody,
   type AgentStatusState,
-} from "@sutra/ui";
-import { RiRefreshLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiRefreshLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 export function AgentTimelinePage() {

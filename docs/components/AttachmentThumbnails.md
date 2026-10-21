@@ -2,7 +2,7 @@
 
 > Data-driven row of `ChatAttachment`s: image tiles (click to preview in a Lightbox) and file cards with pages / size, upload progress, failed + retry and remove on hover.
 
-- Import: `import { AttachmentThumbnails } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AttachmentThumbnails } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-composer-attachments` (kit `agent`)
 - Also accepts the props of HTMLAttributes
 
@@ -19,8 +19,8 @@
 
 ```tsx
 import * as React from "react";
-import { AttachmentThumbnails } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
+import { AttachmentThumbnails } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function AttachmentThumbnailsDemo() {
   const initial: AttachmentThumbnailItem[] = [

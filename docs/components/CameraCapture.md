@@ -2,7 +2,7 @@
 
 > Camera photo and video capture with a mirrored preview, countdown, timed prompts, review, and permission states.
 
-- Import: `import { CameraCapture } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { CameraCapture } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/patterns/camera-capture` (patterns)
 - `data-slot`: `camera-capture`, `camera-capture-viewport`, `camera-capture-review`, `camera-capture-timer`, `camera-capture-prompt`
 - Also accepts the props of HTMLAttributes
@@ -36,8 +36,8 @@
 ## Example (live: `#/components/files/camera-capture` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { CameraCapture } from "@sutra/ui/media";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { CameraCapture } from "@cleanprompt/sutra-ui/media";
 
 <div className="@container w-full">
   <div className="grid grid-cols-1 w-full gap-4 @2xl:grid-cols-2">

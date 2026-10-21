@@ -43,7 +43,7 @@ The server renders the track and the thumb at the start edge, because the width 
 
 ## Example
 ```tsx
-import { SlideToConfirm } from "@sutra/ui";
+import { SlideToConfirm } from "@cleanprompt/sutra-ui";
 
 export function Example({ sendPayment }: { sendPayment: () => Promise<unknown> }) {
   return (

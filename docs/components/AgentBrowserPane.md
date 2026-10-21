@@ -2,7 +2,7 @@
 
 > Agent-driven browser surface: address bar, lease banner, loading bar and an app-provided viewport.
 
-- Import: `import { AgentBrowserPane } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AgentBrowserPane } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-browser` (kit `agent`)
 - `data-slot`: `agent-browser`, `agent-driving-pill`, `browser-lease`, `browser-viewport`, `browser-agent-shield`
 - Also accepts the props of HTMLAttributes
@@ -37,7 +37,7 @@
 
 ```tsx
 import * as React from "react";
-import { AgentBrowserPane, BrowserConsole } from "@sutra/ui/agent";
+import { AgentBrowserPane, BrowserConsole } from "@cleanprompt/sutra-ui/agent";
 
 function BrowserDemo() {
   const [history, setHistory] = React.useState({ stack: [pages[0]!], index: 0 });

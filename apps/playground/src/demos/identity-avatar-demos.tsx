@@ -13,7 +13,7 @@ import {
   type IdentityAvatarPresenceStyle,
   type IdentityAvatarSize,
   type SutraApp,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import { DemoLabel } from "../components/demo";
 
 const photo = (n: number) => `https://i.pravatar.cc/128?img=${n}`;

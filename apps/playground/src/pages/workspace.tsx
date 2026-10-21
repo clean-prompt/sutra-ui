@@ -24,8 +24,8 @@ import {
   type TimelineRailTurn,
   type WorkspaceGateway,
   type WorkspaceSelection,
-} from "@sutra/ui";
-import { RiCompass3Line, RiLightbulbLine, RiRestartLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiCompass3Line, RiLightbulbLine, RiRestartLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

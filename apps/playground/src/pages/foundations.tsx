@@ -31,8 +31,8 @@ import {
   Kbd,
   StatusBadge,
   Text,
-} from "@sutra/ui";
-import { RiAddLine, RiArrowDownSLine, RiCheckLine, RiCloseLine, RiRefreshLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiAddLine, RiArrowDownSLine, RiCheckLine, RiCloseLine, RiRefreshLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { MotionSettingControl } from "../components/motion-setting";
 import { MotionLists, MotionPresence, MotionSprings, MotionText } from "../demos/motion-demos";
@@ -190,7 +190,7 @@ export function TypographyPage() {
           <Heading size="display-sm">Sutra 1.0 is here</Heading>
           <Text tone="neutral">
             Press <Kbd>⌘</Kbd> <Kbd>K</Kbd> to open the command menu, or import <InlineCode>{"{ Button }"}</InlineCode> from{" "}
-            <InlineCode>@sutra/ui</InlineCode>.
+            <InlineCode>@cleanprompt/sutra-ui</InlineCode>.
           </Text>
           <div className="flex flex-wrap gap-4">
             {(["default", "muted", "primary", "success", "warning", "destructive"] as const).map((tone) => (
@@ -396,7 +396,7 @@ function useRootVar(name: string) {
   return value;
 }
 
-/** The same pattern as @sutra/ui's internal `useChangeKey`: 0 until `value` changes, then +1 per change. */
+/** The same pattern as @cleanprompt/sutra-ui's internal `useChangeKey`: 0 until `value` changes, then +1 per change. */
 function useChangeKey(value: unknown) {
   const [state, setState] = React.useState({ value, key: 0 });
   if (!Object.is(state.value, value)) {

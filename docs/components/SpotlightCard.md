@@ -2,7 +2,7 @@
 
 > A `Card` with a soft glow that follows the mouse (the `spotlight` utility on `usePointerVars`). It also glows at the centre while something inside has keyboard focus. Touch, reduced motion and no hover leave it plain. Decoration only.
 
-- Import: `import { SpotlightCard } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { SpotlightCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/pointer-fx` (patterns)
 - Also accepts the props of HTMLAttributes
 

@@ -2,7 +2,7 @@
 
 > Changed files as a directory tree with colored A / M / D / R status letters and single selection.
 
-- Import: `import { ReviewFileTree } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ReviewFileTree } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/git-review-tree` (kit `agent`)
 - Also accepts the props of HTMLAttributes
 
@@ -22,8 +22,8 @@
 
 ```tsx
 import * as React from "react";
-import { ReviewFileTree, ReviewScopeTabs } from "@sutra/ui/agent";
-import { DiffViewer } from "@sutra/ui/editor";
+import { ReviewFileTree, ReviewScopeTabs } from "@cleanprompt/sutra-ui/agent";
+import { DiffViewer } from "@cleanprompt/sutra-ui/editor";
 
 function ReviewDemo() {
   const [scope, setScope] = React.useState<ReviewScope>("uncommitted");

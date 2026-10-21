@@ -2,7 +2,7 @@
 
 > Scrollable middle area.
 
-- Import: `import { SidebarContent } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarContent } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-content`
 - Part of [`Sidebar`](Sidebar.md)

@@ -34,8 +34,8 @@ A closed dialog renders only its trigger on both server and client, so there is 
 ## Example
 ```tsx
 import * as React from "react";
-import { Button, Dialog, DialogBody, DialogClose, DialogContent, DialogDescription } from "@sutra/ui";
-import { DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldLabel, Input } from "@sutra/ui";
+import { Button, Dialog, DialogBody, DialogClose, DialogContent, DialogDescription } from "@cleanprompt/sutra-ui";
+import { DialogFooter, DialogHeader, DialogTitle, DialogTrigger, Field, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

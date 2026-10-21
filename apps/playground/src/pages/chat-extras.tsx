@@ -22,10 +22,10 @@ import {
   type EmojiReactionItem,
   type PermissionToolKind,
   type QueuedMessage,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 // New families: import per file until they are added to the root barrel.
-import { EmbedConsentProvider, LinkPreviewCard, RichEmbed, SvgEmbed } from "@sutra/ui/kits/ai/embeds";
-import { ApprovalStack } from "@sutra/ui/kits/ai/approval-stack";
+import { EmbedConsentProvider, LinkPreviewCard, RichEmbed, SvgEmbed } from "@cleanprompt/sutra-ui/kits/ai/embeds";
+import { ApprovalStack } from "@cleanprompt/sutra-ui/kits/ai/approval-stack";
 import {
   ClarifySettled,
   DecodeText,
@@ -38,7 +38,7 @@ import {
   ZoomPan,
   glyphSpinnerFrames,
   type GlyphSpinnerVariant,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiChatVoiceLine,
   RiCloseLine,
@@ -50,7 +50,7 @@ import {
   RiTimeLine,
   RiTranslate2,
   RiVoiceprintLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /** Anchor ids of the demos on this page. */

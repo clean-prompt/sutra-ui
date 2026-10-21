@@ -2,7 +2,7 @@
 
 > Section navigation that highlights the section in view ("On this page", a sticky sub-nav). The links are real anchors (`aria-current="location"` on the active one); a click scrolls the section to the top of its scroller, respecting reduced motion. Tracking is `useScrollSections`; pass `value` to drive the highlight yourself.
 
-- Import: `import { SectionRail } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SectionRail } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/section-rail` (patterns)
 - `data-slot`: `section-rail`
 - Also accepts the props of HTMLAttributes
@@ -74,7 +74,7 @@ Server render: same markup as the client. The first render is the same on the se
 ## Example
 
 ```tsx
-import { SectionRail } from "@sutra/ui";
+import { SectionRail } from "@cleanprompt/sutra-ui";
 
 const sections = [
   { id: "overview", label: "Overview" },

@@ -19,8 +19,8 @@ import {
   type KanbanTaskRun,
   type MemoryMapViewState,
   type MemoryNode,
-} from "@sutra/ui";
-import { RiLayoutColumnLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiLayoutColumnLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

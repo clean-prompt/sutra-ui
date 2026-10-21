@@ -2,7 +2,7 @@
 
 > A titled block of settings groups.
 
-- Import: `import { SettingsSection } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SettingsSection } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/settings` (patterns)
 - Also accepts the props of HTMLAttributes
 

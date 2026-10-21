@@ -39,7 +39,7 @@ Plain markup with no browser API at render time: the fill comes from `value` or 
 ## Example
 ```tsx
 import * as React from "react";
-import { Rating } from "@sutra/ui";
+import { Rating } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [stars, setStars] = React.useState(4);

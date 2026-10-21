@@ -27,7 +27,7 @@ import {
   type DeviceSession,
   type SettingsShellSection,
   type ThemeToggleMode,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiBellLine,
   RiDeviceLine,
@@ -38,7 +38,7 @@ import {
   RiSettings3Line,
   RiShieldKeyholeLine,
   RiUserLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

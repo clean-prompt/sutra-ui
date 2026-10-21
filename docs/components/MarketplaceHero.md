@@ -2,7 +2,7 @@
 
 > Marketplace / docs hero: title, subtitle, meta stats row and a search field on a mesh-gradient glow.
 
-- Import: `import { MarketplaceHero } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { MarketplaceHero } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/marketing-blocks-hero` (blocks)
 - `data-slot`: `hero-stats`
 - Also accepts the props of HTMLAttributes

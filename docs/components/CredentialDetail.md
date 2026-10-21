@@ -2,7 +2,7 @@
 
 > Credential metadata plus its claims, with optional per-claim disclosure checkboxes.
 
-- Import: `import { CredentialDetail } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { CredentialDetail } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/credential-card` (kit `identity`)
 - `data-slot`: `credential-detail`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { CredentialDetail } from "@sutra/ui/security";
+import { CredentialDetail } from "@cleanprompt/sutra-ui/security";
 
 function CredentialDetailDemo() {
   const [selected, setSelected] = React.useState<string[]>(["name"]);

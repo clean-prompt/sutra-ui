@@ -14,8 +14,8 @@ import {
   TableRow,
   Text,
   cn,
-} from "@sutra/ui";
-import { RiBookOpenLine, RiCodeSSlashLine, RiDownload2Line, RiListCheck3 } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiBookOpenLine, RiCodeSSlashLine, RiDownload2Line, RiListCheck3 } from "@cleanprompt/sutra-ui/icons";
 import demoSources from "virtual:demo-source";
 import { useHashRoute } from "../router";
 
@@ -199,7 +199,7 @@ function Prose({ text }: { text: string }) {
 const firstParagraph = (text: string) => text.split(/\n\s*\n/)[0]!.replace(/\n/g, " ");
 
 function importPath(entry: string) {
-  return entry === "index" ? "@sutra/ui" : `@sutra/ui/${entry}`;
+  return entry === "index" ? "@cleanprompt/sutra-ui" : `@cleanprompt/sutra-ui/${entry}`;
 }
 
 function PropsTable({ props, label }: { props: ApiProp[]; label: string }) {
@@ -617,10 +617,10 @@ export function DemoPanels({ demoKey, props, code, className }: DemoPanelsProps)
 }
 
 const PEERS: Record<string, string> = {
-  "@sutra/ui/code-editor": "@codemirror/*",
-  "@sutra/ui/rich-text-editor": "@tiptap/*",
-  "@sutra/ui/terminal": "@xterm/xterm and @xterm/addon-fit",
-  "@sutra/ui/pdf": "pdfjs-dist",
+  "@cleanprompt/sutra-ui/code-editor": "@codemirror/*",
+  "@cleanprompt/sutra-ui/rich-text-editor": "@tiptap/*",
+  "@cleanprompt/sutra-ui/terminal": "@xterm/xterm and @xterm/addon-fit",
+  "@cleanprompt/sutra-ui/pdf": "pdfjs-dist",
 };
 
 /** "Install and import" under a page's intro: the package, the stylesheet and the import lines of everything the page's demos use. */
@@ -648,8 +648,8 @@ export function PageInstall({ className }: { className?: string }) {
       </div>
       {open && sources && (
         <div id={`${uid}-install`} className="min-w-0 space-y-2">
-          <CodeBlock code={"pnpm add @sutra/ui"} language="bash" theme="light" hideHeader />
-          <CodeBlock code={`/* your Tailwind v4 stylesheet */\n@import "@sutra/ui/styles.css";`} language="css" theme="light" hideHeader />
+          <CodeBlock code={"pnpm add @cleanprompt/sutra-ui"} language="bash" theme="light" hideHeader />
+          <CodeBlock code={`/* your Tailwind v4 stylesheet */\n@import "@cleanprompt/sutra-ui/styles.css";`} language="css" theme="light" hideHeader />
           <CodeBlock code={sources.imports} language="tsx" theme="light" filename="imports.ts" maxHeight={320} />
           {peers.length > 0 && (
             <Text size="xs" tone="neutral">

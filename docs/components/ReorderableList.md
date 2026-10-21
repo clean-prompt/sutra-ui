@@ -2,7 +2,7 @@
 
 > Accessible reorderable list: drag handle with placeholder, Space-to-lift keyboard moves, optional arrow buttons, live announcements. A generic plain function (React 19 `ref` prop) rather than `forwardRef`, which would erase the item type `T`.
 
-- Import: `import { ReorderableList } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { ReorderableList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/patterns/reorderable-list` (patterns)
 - `data-slot`: `reorderable-list`, `reorderable-list-item`, `reorderable-list-handle`
 - Also accepts the props of HTMLAttributes
@@ -72,7 +72,7 @@ Server render: same markup as the client. The list renders from `items` with pla
 
 ```tsx
 import * as React from "react";
-import { ReorderableList } from "@sutra/ui";
+import { ReorderableList } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [items, setItems] = React.useState(["Design review", "Write tests", "Ship release"]);

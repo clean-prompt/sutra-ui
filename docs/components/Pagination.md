@@ -2,7 +2,7 @@
 
 > Page navigation: numbered, simple, dots or load-more, with an optional page-size selector.
 
-- Import: `import { Pagination } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { Pagination } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/pagination` (primitives)
 - `data-slot`: `pagination-jump`
 - Parts: [`PaginationEllipsis`](PaginationEllipsis.md), [`PaginationItem`](PaginationItem.md), [`PaginationNext`](PaginationNext.md), [`PaginationPrev`](PaginationPrev.md), [`PaginationStatus`](PaginationStatus.md)
@@ -134,7 +134,7 @@ Server render: part of it fills in after mount. The pager renders plain markup o
 
 ```tsx
 import * as React from "react";
-import { Pagination, PaginationStatus } from "@sutra/ui";
+import { Pagination, PaginationStatus } from "@cleanprompt/sutra-ui";
 
 const total = 245;
 

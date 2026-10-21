@@ -32,7 +32,7 @@ import {
   SearchTrigger,
   Text,
   placeholderLogos,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiArrowUpDownLine,
   RiFileCopy2Line,
@@ -45,7 +45,7 @@ import {
   RiQrCodeLine,
   RiScissorsCutLine,
   RiSettings4Line,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { href } from "../router";
 import { FlipListDemo } from "../demos/flip-demos";

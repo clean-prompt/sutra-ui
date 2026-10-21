@@ -2,7 +2,7 @@
 
 > Invoice history: date, description, amount, paid/due/failed status and download / pay actions.
 
-- Import: `import { UsageInvoiceTable } from "@sutra/ui"` (or from `@sutra/ui/billing`)
+- Import: `import { UsageInvoiceTable } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-invoices` (kit `billing`)
 - `data-slot`: `usage-invoice-table`
 - Also accepts the props of HTMLAttributes
@@ -21,7 +21,7 @@
 ## Example (live: `#/components/billing-marketing/invoices` in the playground)
 
 ```tsx
-import { UsageInvoiceTable } from "@sutra/ui/billing";
+import { UsageInvoiceTable } from "@cleanprompt/sutra-ui/billing";
 
 <UsageInvoiceTable invoices={invoices} onDownload={() => {}} onPay={() => {}} />
 ```

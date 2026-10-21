@@ -2,7 +2,7 @@
 
 > Mark + wordmark lockup.
 
-- Import: `import { SutraLogo } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { SutraLogo } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/brand` (assets)
 - `data-slot`: `sutra-logo`
 - Also accepts the props of HTMLAttributes
@@ -22,8 +22,8 @@
 
 ```tsx
 import * as React from "react";
-import { SutraLogo, SutraMark } from "@sutra/ui/assets";
-import { Button } from "@sutra/ui/core";
+import { SutraLogo, SutraMark } from "@cleanprompt/sutra-ui/assets";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function LogoIntroDemo() {
   const [run, setRun] = React.useState(0);

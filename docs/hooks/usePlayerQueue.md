@@ -2,7 +2,7 @@
 
 > Queue state for a player: current item, play order and next/previous with repeat & shuffle semantics.
 
-- Import: `import { usePlayerQueue } from "@sutra/ui/media"`
+- Import: `import { usePlayerQueue } from "@cleanprompt/sutra-ui/media"`
 - Source: `packages/ui/src/kits/media/audio-player-model`
 
 ## Signature

@@ -38,7 +38,7 @@ The track and range render on the server from `value` or `defaultValue`, but eac
 ## Example
 ```tsx
 import * as React from "react";
-import { Slider } from "@sutra/ui";
+import { Slider } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [price, setPrice] = React.useState([20, 80]);

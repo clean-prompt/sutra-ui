@@ -2,7 +2,7 @@
 
 > Live infrastructure status above the composer: model warm-up, queue position, retry / rate-limit countdown, offline and errors. Live region: `role="status"` (polite); ticking clocks and countdowns are hidden from screen readers so only state changes are announced.
 
-- Import: `import { StatusStrip } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { StatusStrip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/status-strip` (kit `ai`)
 - `data-slot`: `status-line`, `status-progress`
 - Also accepts the props of HTMLAttributes
@@ -22,8 +22,8 @@ This covers the platform, not the agent: for what the agent itself is doing (thi
 
 ```tsx
 import * as React from "react";
-import { StatusStrip } from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
+import { StatusStrip } from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function StatusStripDemo() {
   const [startedAt, setStartedAt] = React.useState(() => Date.now());

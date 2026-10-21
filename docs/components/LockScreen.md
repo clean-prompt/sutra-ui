@@ -2,7 +2,7 @@
 
 > Full-screen vault unlock: PIN boxes, password or passkey, with attempts, lockout and recovery-key mode.
 
-- Import: `import { LockScreen } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { LockScreen } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/loading-screen` (patterns)
 - `data-slot`: `lock-screen`, `lock-screen-pin-slot`
 - Also accepts the props of HTMLAttributes
@@ -30,9 +30,9 @@
 ## Example (live: `#/components/identity/lock-screen` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { SegmentedControl } from "@sutra/ui/forms";
-import { EmptyState, LockScreen } from "@sutra/ui/identity";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { SegmentedControl } from "@cleanprompt/sutra-ui/forms";
+import { EmptyState, LockScreen } from "@cleanprompt/sutra-ui/identity";
 
 <SegmentedControl
   aria-label="Unlock method"

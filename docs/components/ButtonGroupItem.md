@@ -2,7 +2,7 @@
 
 > Segment of a `ButtonGroup`; becomes a toggle item when the group has a `type`.
 
-- Import: `import { ButtonGroupItem } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ButtonGroupItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/button-group` (primitives)
 - `data-slot`: `button-group-item`
 - Part of [`ButtonGroup`](ButtonGroup.md)
@@ -32,8 +32,8 @@ See the notes in [`ButtonGroup`](ButtonGroup.md#notes).
 
 ```tsx
 import * as React from "react";
-import { ButtonGroup, ButtonGroupItem } from "@sutra/ui";
-import { RiAlignCenter, RiAlignLeft, RiAlignRight } from "@sutra/ui/icons";
+import { ButtonGroup, ButtonGroupItem } from "@cleanprompt/sutra-ui";
+import { RiAlignCenter, RiAlignLeft, RiAlignRight } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [align, setAlign] = React.useState("left");

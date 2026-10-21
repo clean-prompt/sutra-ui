@@ -32,7 +32,7 @@ The same markup on the server and the client: the frame-drawn characters render 
 
 ## Example
 ```tsx
-import { SutraMascot, mascotStateLabels, type MascotCharacter, type MascotState } from "@sutra/ui";
+import { SutraMascot, mascotStateLabels, type MascotCharacter, type MascotState } from "@cleanprompt/sutra-ui";
 
 export function Example({ phase, character }: { phase: "waiting" | "working" | "answering" | "failed"; character: MascotCharacter }) {
   const state: MascotState =

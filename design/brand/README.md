@@ -14,7 +14,7 @@ Sutra (sūtra) is the thread on which beads are strung. The mark (chosen 2026-10
 
 ## In the library
 
-`@sutra/ui` draws the same geometry: `SutraMark` (the crescent; `variant`: `glyph` default, `tile`, `reversed`, `solid`, `outline`, `badge`), `SutraWordmark` (the drawn word, or your text as children), `SutraLogo`, and `SutraAppIcon` (`tone`: `mono` default, `reversed`, `dyed`; `shape`: `rounded`, `squircle`, `circle`). `sutraAppMeta[app].dye` holds the dyes. See `packages/ui/src/assets/brand.tsx` and the playground page Foundations > Assets.
+`@cleanprompt/sutra-ui` draws the same geometry: `SutraMark` (the crescent; `variant`: `glyph` default, `tile`, `reversed`, `solid`, `outline`, `badge`), `SutraWordmark` (the drawn word, or your text as children), `SutraLogo`, and `SutraAppIcon` (`tone`: `mono` default, `reversed`, `dyed`; `shape`: `rounded`, `squircle`, `circle`). `sutraAppMeta[app].dye` holds the dyes. See `packages/ui/src/assets/brand.tsx` and the playground page Foundations > Assets.
 
 ## Rebuild
 

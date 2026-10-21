@@ -33,7 +33,7 @@ Plain markup with no browser API: server and client output match. The ellipsis m
 
 ## Example
 ```tsx
-import { Breadcrumbs } from "@sutra/ui";
+import { Breadcrumbs } from "@cleanprompt/sutra-ui";
 
 const trail = [
   { label: "Home", href: "/" },

@@ -2,7 +2,7 @@
 
 > Compound file uploader root: owns file state, validation and the hidden input.
 
-- Import: `import { FileUpload } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FileUpload } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/patterns/file-upload` (patterns)
 - `data-slot`: `file-upload`
 - Parts: [`FileUploadDropzone`](FileUploadDropzone.md), [`FileUploadItem`](FileUploadItem.md), [`FileUploadList`](FileUploadList.md), [`FileUploadTrigger`](FileUploadTrigger.md)
@@ -115,7 +115,7 @@ Server render: part of it fills in after mount. Without `directory` the markup i
 ## Example
 
 ```tsx
-import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger, type UploadFile } from "@sutra/ui";
+import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger, type UploadFile } from "@cleanprompt/sutra-ui";
 
 export function Example({ upload }: { upload: (files: UploadFile[]) => void }) {
   return (

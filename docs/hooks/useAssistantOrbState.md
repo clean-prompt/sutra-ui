@@ -2,7 +2,7 @@
 
 > The orb state for what a voice session is doing, by priority: error, speaking, thinking, listening, muted, idle. The assistant's own activity outranks the user's, so a barge-in shows `listening` only once the assistant stops. The result is stable between renders for the same flags.
 
-- Import: `import { useAssistantOrbState } from "@sutra/ui/voice"`
+- Import: `import { useAssistantOrbState } from "@cleanprompt/sutra-ui/voice"`
 - Source: `packages/ui/src/kits/voice/assistant-orb`
 
 ## Signature

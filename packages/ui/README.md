@@ -1,16 +1,16 @@
-# @sutra/ui
+# @cleanprompt/sutra-ui
 
 The Sutra design system: React 19 components, design tokens, hooks, brand assets and page blocks, built on Tailwind CSS v4 and Radix. Flat, token-driven and accessible, with a light and dark theme, a monochrome "paper" style, and right-to-left support.
 
 - **Primitives** (buttons, inputs, dialogs...), **patterns** (tables, charts, pickers, gestures, motion) and **domain kits** (agent, identity, billing, workspace, ops, media, voice, geo, editor...), plus ready-made **blocks**.
-- **Tree-shakeable**: every module is its own file; import from the root or from a category entry (`@sutra/ui/forms`, `@sutra/ui/dataviz`, ...).
+- **Tree-shakeable**: every module is its own file; import from the root or from a category entry (`@cleanprompt/sutra-ui/forms`, `@cleanprompt/sutra-ui/dataviz`, ...).
 - **Accessible by default**: keyboard paths, ARIA, reduced motion (also an in-app `data-motion` switch), 24 px hit areas, tested with axe.
 - **Themes**: brand colour, neutral palette, corner radius and the `data-style="paper"` ink-on-paper style are tokens, not component code.
 
 ## Install
 
 ```bash
-pnpm add @sutra/ui
+pnpm add @cleanprompt/sutra-ui
 ```
 
 Peer dependencies: React 19 and Tailwind CSS v4 (the editor, terminal and PDF kits use optional peers that you install only if you use them).
@@ -18,12 +18,12 @@ Peer dependencies: React 19 and Tailwind CSS v4 (the editor, terminal and PDF ki
 ```css
 /* app/globals.css */
 @import "tailwindcss";
-@import "@sutra/ui/styles.css";
-/* optional: @import "@sutra/ui/paper.css"; then <html data-style="paper"> */
+@import "@cleanprompt/sutra-ui/styles.css";
+/* optional: @import "@cleanprompt/sutra-ui/paper.css"; then <html data-style="paper"> */
 ```
 
 ```tsx
-import { Button, Input, Field, FieldLabel } from "@sutra/ui";
+import { Button, Input, Field, FieldLabel } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

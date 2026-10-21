@@ -2,7 +2,7 @@
 
 > Masonry wall of quotes with source badges and a category filter.
 
-- Import: `import { TestimonialWall } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { TestimonialWall } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/marketing-blocks-browse` (blocks)
 - `data-slot`: `source-badge`, `pill-count`
 - Also accepts the props of HTMLAttributes
@@ -19,7 +19,7 @@
 ## Example (live: `#/components/billing-marketing/testimonial-wall` in the playground)
 
 ```tsx
-import { TestimonialWall } from "@sutra/ui/blocks";
+import { TestimonialWall } from "@cleanprompt/sutra-ui/blocks";
 
 <TestimonialWall testimonials={testimonials} description="What builders say about Sutra." />
 ```

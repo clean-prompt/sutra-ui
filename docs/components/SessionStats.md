@@ -2,7 +2,7 @@
 
 > Cost, API vs wall duration and code changes, as a key/value summary.
 
-- Import: `import { SessionStats } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { SessionStats } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/ai/agent-usage` (kit `ai`)
 - Also accepts the props of HTMLAttributes
 
@@ -22,7 +22,7 @@
 ## Example (live: `#/components/agent-sessions/session-stats` in the playground)
 
 ```tsx
-import { SessionStats } from "@sutra/ui/agent";
+import { SessionStats } from "@cleanprompt/sutra-ui/agent";
 
 function SessionStatsDemo() {
   return (

@@ -2,7 +2,7 @@
 
 > A comment thread: quoted anchor, comments (Markdown), reactions, reply box and resolve / reopen.
 
-- Import: `import { CommentThread } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { CommentThread } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/patterns/comments` (patterns)
 - Also accepts the props of HTMLAttributes
 

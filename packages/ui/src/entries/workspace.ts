@@ -1,4 +1,4 @@
-/* @sutra/ui/workspace: workspace/profile switcher, connections, notices, tours, keybinds, timeline rail, tiling layout, kanban, memory map. */
+/* @cleanprompt/sutra-ui/workspace: workspace/profile switcher, connections, notices, tours, keybinds, timeline rail, tiling layout, kanban, memory map. */
 export * from "../kits/workspace/workspace-switcher";
 export * from "../patterns/notice-bar";
 export * from "../patterns/coachmarks";

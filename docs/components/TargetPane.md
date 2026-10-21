@@ -2,7 +2,7 @@
 
 > Translation output: streaming caret, romanization, alternatives, senses, copy/share/speak and latency.
 
-- Import: `import { TargetPane } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { TargetPane } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/translate-panes` (kit `voice`)
 - `data-slot`: `translation`, `stream-caret`, `romanization`, `latency`
 - Also accepts the props of HTMLAttributes

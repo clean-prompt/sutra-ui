@@ -12,8 +12,8 @@ import {
   TestimonialWall,
   type LightboxItem,
   type MarketplaceExtension,
-} from "@sutra/ui";
-import { marketingDemoData } from "@sutra/ui/blocks/registry";
+} from "@cleanprompt/sutra-ui";
+import { marketingDemoData } from "@cleanprompt/sutra-ui/blocks/registry";
 import {
   BillingBanner,
   CheckoutSteps,
@@ -29,8 +29,8 @@ import {
   type BillingPlan,
   type CheckoutOutcome,
   type PlanComparisonSection,
-} from "@sutra/ui/kits/billing/billing";
-import { RiArrowLeftLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/kits/billing/billing";
+import { RiArrowLeftLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 import { ViewportFrame } from "../components/viewport-frame";
 

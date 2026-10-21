@@ -33,8 +33,8 @@ A closed popover renders only its trigger on server and client. The panel is por
 
 ## Example
 ```tsx
-import { Button, Field, FieldLabel, Input, Popover, PopoverBody, PopoverClose, PopoverContent } from "@sutra/ui";
-import { PopoverDescription, PopoverFooter, PopoverHeader, PopoverTitle, PopoverTrigger } from "@sutra/ui";
+import { Button, Field, FieldLabel, Input, Popover, PopoverBody, PopoverClose, PopoverContent } from "@cleanprompt/sutra-ui";
+import { PopoverDescription, PopoverFooter, PopoverHeader, PopoverTitle, PopoverTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

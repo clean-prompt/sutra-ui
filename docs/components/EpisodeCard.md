@@ -2,7 +2,7 @@
 
 > Landscape 16:9 episode card with episode number, runtime, description, progress and actions.
 
-- Import: `import { EpisodeCard } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { EpisodeCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-cards-poster` (kit `media`)
 - `data-slot`: `media-status`, `media-actions`, `media-progress`, `media-busy`
 - Also accepts the props of HTMLAttributes
@@ -33,8 +33,8 @@
 ## Example (live: `#/components/media-player/episode-card` in the playground)
 
 ```tsx
-import { RiTimeLine } from "@sutra/ui/icons";
-import { EpisodeCard } from "@sutra/ui/media";
+import { RiTimeLine } from "@cleanprompt/sutra-ui/icons";
+import { EpisodeCard } from "@cleanprompt/sutra-ui/media";
 
 <div className="@container w-full">
   <div className="grid grid-cols-1 w-full gap-6 @2xl:grid-cols-[1fr_1.4fr]">

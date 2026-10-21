@@ -2,7 +2,7 @@
 
 > Scrollable content area. A drag never starts here while it is scrolled down. `SheetBody` with drawer spacing.
 
-- Import: `import { DrawerBody } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { DrawerBody } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/primitives/drawer` (primitives)
 - `data-slot`: `drawer-body`
 - Part of [`Drawer`](Drawer.md)
@@ -19,8 +19,8 @@ See the notes in [`Drawer`](Drawer.md#notes).
 ## Example
 
 ```tsx
-import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@sutra/ui";
-import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@sutra/ui";
+import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@cleanprompt/sutra-ui";
+import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

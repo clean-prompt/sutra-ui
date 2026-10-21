@@ -2,7 +2,7 @@
 
 > Monochrome glyph tile for a messaging platform (original shapes, not brand logos).
 
-- Import: `import { PlatformIcon } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { PlatformIcon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/channels-icon` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 
@@ -18,7 +18,7 @@
 ## Example (live: `#/components/channels/platform-icons` in the playground)
 
 ```tsx
-import { PlatformIcon } from "@sutra/ui/agent-admin";
+import { PlatformIcon } from "@cleanprompt/sutra-ui/agent-admin";
 
 function PlatformIconsDemo() {
   const all: ChannelPlatform[] = ["telegram", "whatsapp", "slack", "discord", "signal", "matrix", "email", "sms", "imessage", "webhook"];

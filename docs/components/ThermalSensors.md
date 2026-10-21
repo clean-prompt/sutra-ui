@@ -2,7 +2,7 @@
 
 > CPU / GPU / SSD / battery temperatures in a card, coloured by thresholds, with an optional °C / °F switch.
 
-- Import: `import { ThermalSensors } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { ThermalSensors } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/thermals` (kit `system`)
 - `data-slot`: `thermal-sensors`, `thermal-sensors-skeleton`, `thermal-sensors-empty`, `thermal-sensors-item`
 - Also accepts the props of HTMLAttributes

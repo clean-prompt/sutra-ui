@@ -2,7 +2,7 @@
 
 > Toolbar button that opens the emoji picker to add a reaction.
 
-- Import: `import { ChatReactionAction } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatReactionAction } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message-actions` (kit `ai`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

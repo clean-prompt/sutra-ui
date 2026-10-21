@@ -2,7 +2,7 @@
 
 > Access the enclosing PromptInput state.
 
-- Import: `import { usePromptInput } from "@sutra/ui/ai"`
+- Import: `import { usePromptInput } from "@cleanprompt/sutra-ui/ai"`
 - Source: `packages/ui/src/kits/ai/prompt-input-internal`
 
 ## Signature

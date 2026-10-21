@@ -1097,17 +1097,17 @@ describe("CopyButton / CopyField", () => {
     const ref = React.createRef<HTMLDivElement>();
     const { container } = render(
       <div>
-        <CopyField ref={ref} value="npm i @sutra/ui" prefix="$" label="install command" />
+        <CopyField ref={ref} value="npm i @cleanprompt/sutra-ui" prefix="$" label="install command" />
         <CopyField value="sk-123" variant="chip" mono={false} truncate={false} />
       </div>
     );
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
-    expect(screen.getByRole("group", { name: "install command" })).toHaveTextContent("$npm i @sutra/ui");
-    expect(screen.getByText("npm i @sutra/ui").tagName).toBe("CODE");
+    expect(screen.getByRole("group", { name: "install command" })).toHaveTextContent("$npm i @cleanprompt/sutra-ui");
+    expect(screen.getByText("npm i @cleanprompt/sutra-ui").tagName).toBe("CODE");
     expect(screen.getByText("sk-123").tagName).toBe("SPAN");
     fireEvent.click(screen.getByRole("button", { name: "Copy install command" }));
     await flush();
-    expect(writeText).toHaveBeenCalledWith("npm i @sutra/ui");
+    expect(writeText).toHaveBeenCalledWith("npm i @cleanprompt/sutra-ui");
     expect(await axeViolations(container)).toEqual([]);
   });
 });

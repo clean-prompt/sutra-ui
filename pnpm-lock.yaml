@@ -28,7 +28,7 @@ importers:
       '@codemirror/view':
         specifier: ^6
         version: 6.43.14
-      '@sutra/ui':
+      '@cleanprompt/sutra-ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tiptap/extension-link':

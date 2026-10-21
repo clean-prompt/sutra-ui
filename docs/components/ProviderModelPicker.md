@@ -2,7 +2,7 @@
 
 > Two-column provider → model picker with search highlighting and arrow-key navigation between columns.
 
-- Import: `import { ProviderModelPicker } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProviderModelPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/model-routing-picker` (kit `agent-admin`)
 - `data-slot`: `provider-model-picker`, `provider-setup-cta`
 - Parts: [`ProviderModelPickerDialog`](ProviderModelPickerDialog.md), [`ProviderModelPickerPopover`](ProviderModelPickerPopover.md)
@@ -64,9 +64,9 @@ Trigger button showing the current model; opens the picker in a popover.
 
 ```tsx
 import * as React from "react";
-import { ProviderModelPicker, ProviderModelPickerPopover } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiKey2Line, RiShieldKeyholeLine } from "@sutra/ui/icons";
+import { ProviderModelPicker, ProviderModelPickerPopover } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiKey2Line, RiShieldKeyholeLine } from "@cleanprompt/sutra-ui/icons";
 
 function PickerDemo() {
   const [value, setValue] = React.useState<ModelRef>({ providerId: "nimbus", modelId: "opal-4" });

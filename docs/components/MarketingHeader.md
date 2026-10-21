@@ -2,7 +2,7 @@
 
 > Marketing site header: logo, Products mega-menu of the 8 Sutra apps, links, auth actions and a mobile sheet.
 
-- Import: `import { MarketingHeader } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { MarketingHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/header-navigation-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

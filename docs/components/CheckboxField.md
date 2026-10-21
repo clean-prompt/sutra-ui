@@ -2,7 +2,7 @@
 
 > Checkbox with a label and optional description.
 
-- Import: `import { CheckboxField } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { CheckboxField } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/checkbox` (primitives)
 - `data-slot`: `checkbox-field`
 - Part of [`Checkbox`](Checkbox.md)
@@ -31,7 +31,7 @@ See the notes in [`Checkbox`](Checkbox.md#notes).
 
 ```tsx
 import * as React from "react";
-import { CheckboxField, CheckboxGroup } from "@sutra/ui";
+import { CheckboxField, CheckboxGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [accepted, setAccepted] = React.useState(false);

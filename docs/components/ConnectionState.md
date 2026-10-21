@@ -2,7 +2,7 @@
 
 > Full-panel host states: unresponsive / disconnected (reconnect link + spinner) and load error (retry).
 
-- Import: `import { ConnectionState } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ConnectionState } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-onboarding` (kit `agent`)
 - `data-slot`: `connection-state`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 
 ```tsx
 import * as React from "react";
-import { ConnectionState } from "@sutra/ui/agent";
+import { ConnectionState } from "@cleanprompt/sutra-ui/agent";
 
 function ConnectionStateDemo() {
   const [reconnecting, setReconnecting] = React.useState(false);

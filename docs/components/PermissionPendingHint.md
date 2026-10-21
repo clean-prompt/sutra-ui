@@ -2,7 +2,7 @@
 
 > Subtle "Waiting for permission…" pill near the composer; click scrolls the pending prompt into view.
 
-- Import: `import { PermissionPendingHint } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { PermissionPendingHint } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/ai/permission-prompt` (kit `ai`)
 - `data-slot`: `permission-pending-hint`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -19,7 +19,7 @@
 
 ```tsx
 import * as React from "react";
-import { PermissionPendingHint, PermissionPrompt } from "@sutra/ui/agent";
+import { PermissionPendingHint, PermissionPrompt } from "@cleanprompt/sutra-ui/agent";
 
 function PendingHintDemo() {
   const ref = React.useRef<HTMLDivElement>(null);

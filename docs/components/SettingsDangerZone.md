@@ -2,7 +2,7 @@
 
 > Destructive settings, fenced off in a red-bordered group.
 
-- Import: `import { SettingsDangerZone } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SettingsDangerZone } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/settings` (patterns)
 - Also accepts the props of HTMLAttributes
 

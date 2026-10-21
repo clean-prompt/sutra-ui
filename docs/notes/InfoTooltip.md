@@ -32,7 +32,7 @@ Only the button renders on the server; the bubble is portalled after mount and o
 
 ## Example
 ```tsx
-import { Field, FieldLabel, InfoTooltip, Input } from "@sutra/ui";
+import { Field, FieldLabel, InfoTooltip, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

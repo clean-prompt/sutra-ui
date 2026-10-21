@@ -2,7 +2,7 @@
 
 > Compact per-endpoint usage table with inline bars and error rate.
 
-- Import: `import { ApiKeyUsage } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { ApiKeyUsage } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/api-keys` (kit `identity`)
 - `data-slot`: `api-key-usage`
 - Also accepts the props of HTMLAttributes

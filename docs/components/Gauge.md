@@ -2,7 +2,7 @@
 
 > Radial arc gauge with threshold coloring (role="meter").
 
-- Import: `import { Gauge } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { Gauge } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/gauge` (patterns)
 - `data-slot`: `gauge-fill`, `gauge-value`
 - Also accepts the props of HTMLAttributes
@@ -77,7 +77,7 @@ Server render: same markup as the client. A static SVG computed from the props (
 ## Example
 
 ```tsx
-import { Gauge } from "@sutra/ui";
+import { Gauge } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

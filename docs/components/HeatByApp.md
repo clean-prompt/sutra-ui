@@ -2,7 +2,7 @@
 
 > `BarList` preset ranking apps by energy impact (the heat they add), with a short explanation underneath.
 
-- Import: `import { HeatByApp } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { HeatByApp } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/thermals` (kit `system`)
 - `data-slot`: `heat-by-app`, `heat-by-app-explanation`
 - Also accepts the props of HTMLAttributes
@@ -35,7 +35,7 @@
 
 ```tsx
 import * as React from "react";
-import { FanControl, HeatByApp, ThermalSensors } from "@sutra/ui/system";
+import { FanControl, HeatByApp, ThermalSensors } from "@cleanprompt/sutra-ui/system";
 
 function ThermalsDemo() {
   const [fans, setFans] = React.useState(initialFans);

@@ -2,7 +2,7 @@
 
 > Data-driven table with sorting, selection, loading and empty states.
 
-- Import: `import { DataTable } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { DataTable } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/table` (primitives)
 
 ## Props
@@ -81,7 +81,7 @@ Server render: part of it fills in after mount. The table renders fully on the s
 ## Example
 
 ```tsx
-import { Badge, DataTable } from "@sutra/ui";
+import { Badge, DataTable } from "@cleanprompt/sutra-ui";
 
 const invoices = [
   { id: "INV-1042", customer: "Acme Corp", paid: true, amount: 1280 },

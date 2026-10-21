@@ -2,7 +2,7 @@
 
 > Compact dark (inverse) notification bar with an optional action, Material-style.
 
-- Import: `import { Snackbar } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Snackbar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/toast` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -60,7 +60,7 @@ Server render: same markup as the client. The server renders the empty live-regi
 ## Example
 
 ```tsx
-import { Button, Toaster, snackbar, toast } from "@sutra/ui";
+import { Button, Toaster, snackbar, toast } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

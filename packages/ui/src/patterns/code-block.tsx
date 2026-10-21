@@ -639,7 +639,7 @@ export interface InlineCopyProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   size?: "sm" | "md" | "lg";
 }
 
-/** Single-line command with a copy button, e.g. `npm i @sutra/ui`. */
+/** Single-line command with a copy button, e.g. `npm i @cleanprompt/sutra-ui`. */
 export const InlineCopy = React.forwardRef<HTMLDivElement, InlineCopyProps>(
   ({ className, value, prompt = "$", theme = "light", size = "md", ...props }, ref) => {
     const s = surface[theme];

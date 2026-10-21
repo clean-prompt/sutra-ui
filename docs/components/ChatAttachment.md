@@ -2,7 +2,7 @@
 
 > File attachment preview for prompts and messages: card, chip or image tile, with upload progress, failed / retry and preview.
 
-- Import: `import { ChatAttachment } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatAttachment } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-attachment` (kit `ai`)
 - `data-slot`: `chat-attachment-remove`, `chat-attachment-retry`, `chat-attachment-thumb`, `chat-attachment`
 - Parts: [`ChatAttachmentList`](ChatAttachmentList.md)
@@ -31,7 +31,7 @@
 ## Example
 
 ```tsx
-import { ChatAttachment, ChatAttachmentList } from "@sutra/ui/ai";
+import { ChatAttachment, ChatAttachmentList } from "@cleanprompt/sutra-ui/ai";
 
 function AttachmentDemo() {
   return (

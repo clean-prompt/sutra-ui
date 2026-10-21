@@ -36,7 +36,7 @@ Plain markup with no browser API, so server and client output match. The Galaxy 
 
 ## Example
 ```tsx
-import { AppStoreBadge } from "@sutra/ui";
+import { AppStoreBadge } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

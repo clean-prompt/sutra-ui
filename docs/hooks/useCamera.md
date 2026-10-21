@@ -2,7 +2,7 @@
 
 > Opens a camera with getUserMedia and tracks permission and errors. Every start is guarded so a superseded or unmounted run (StrictMode, fast toggles) releases what it acquired.
 
-- Import: `import { useCamera } from "@sutra/ui/tokens"`
+- Import: `import { useCamera } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-camera`
 
 ## Signature

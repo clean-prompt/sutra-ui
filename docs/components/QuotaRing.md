@@ -2,7 +2,7 @@
 
 > Provider quota ring: a RingMeter with the percentage inside, the provider icon and name, the window label and a pace or reset line coloured by tone ("On pace · 10% to spare", "Runs out in 4d at this rate", "Resets in 3h 12m").
 
-- Import: `import { QuotaRing } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { QuotaRing } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/usage-quota` (kit `ai`)
 - `data-slot`: `quota-ring`, `quota-ring-value`, `quota-ring-status`, `quota-ring-skeleton`
 - Also accepts the props of HTMLAttributes

@@ -2,7 +2,7 @@
 
 > Apps an alert ignores, each with an Unmute button.
 
-- Import: `import { MutedAppsList } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { MutedAppsList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/alert-rules-muted` (kit `system`)
 - `data-slot`: `muted-apps-list`, `muted-apps-empty`, `muted-app`
 - Also accepts the props of HTMLAttributes

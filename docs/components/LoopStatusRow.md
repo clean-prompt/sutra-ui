@@ -2,7 +2,7 @@
 
 > "↻ Loop · every 45m · 2 runs · next in 44:12" with a live countdown, run now and stop.
 
-- Import: `import { LoopStatusRow } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { LoopStatusRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/status-stack` (kit `agent-admin`)
 - `data-slot`: `loop-next`
 - Also accepts the props of HTMLAttributes

@@ -2,7 +2,7 @@
 
 > One model table row (+ optional smoke-test result row). Use inside `ModelTable` or a `Table`.
 
-- Import: `import { ModelRow } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { ModelRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/model-row` (kit `ops`)
 - `data-slot`: `model-row`
 - Also accepts the props of HTMLAttributes

@@ -2,7 +2,7 @@
 
 > The Sutra mascot: a friendly bead on a thread, with a face that follows `state` (idle, listening, thinking, working, speaking, happy, sleeping, error). Flat shapes, ink on paper; the motion is CSS keyframes that stand still under reduced motion while the expression stays. Decorative unless `title` is set. The art is direction-agnostic: it is drawn the same in left-to-right and right-to-left layouts (the characters face left and the listening arcs open to the right on purpose, like a logo), so it is never mirrored.
 
-- Import: `import { SutraMascot } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { SutraMascot } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/mascot` (assets)
 - `data-slot`: `sutra-mascot`
 - Also accepts the props of SVGAttributes
@@ -65,7 +65,7 @@ Server render: same markup as the client. The same markup on the server and the 
 ## Example
 
 ```tsx
-import { SutraMascot, mascotStateLabels, type MascotCharacter, type MascotState } from "@sutra/ui";
+import { SutraMascot, mascotStateLabels, type MascotCharacter, type MascotState } from "@cleanprompt/sutra-ui";
 
 export function Example({ phase, character }: { phase: "waiting" | "working" | "answering" | "failed"; character: MascotCharacter }) {
   const state: MascotState =

@@ -2,7 +2,7 @@
 
 > A button that stays pressed (`aria-pressed`): bold, mute, pin. Controlled with `pressed`, or uncontrolled with `defaultPressed`.
 
-- Import: `import { ToggleButton } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ToggleButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/toggle-group` (primitives)
 - `data-slot`: `toggle-button`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes, ToggleProps, PrimitivePropsWithRef
@@ -71,8 +71,8 @@ Server render: same markup as the client. Plain markup: pressed state comes from
 
 ```tsx
 import * as React from "react";
-import { ToggleGroup, ToggleGroupItem } from "@sutra/ui";
-import { RiBold, RiItalic, RiUnderline } from "@sutra/ui/icons";
+import { ToggleGroup, ToggleGroupItem } from "@cleanprompt/sutra-ui";
+import { RiBold, RiItalic, RiUnderline } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [marks, setMarks] = React.useState<string[]>(["bold"]);

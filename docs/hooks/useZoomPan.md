@@ -2,7 +2,7 @@
 
 > Zoom/pan state + handlers: wheel and pinch zoom around the pointer, drag to pan, double-click reset, keyboard +/−/0/arrows. A one-pointer pan runs on `useDrag`: the offset follows the finger through `--sutra-zoom-x/-y` on the viewport (`contentStyle` reads them; the names are the hook's own so a nested ZoomPan or a Drawer around it never leaks an offset in), so a pan re-renders nothing; `onValueChange` still fires on every move and `state` catches up when the pan ends (`getState()` is always live). A pinch zooms through React state as before.
 
-- Import: `import { useZoomPan } from "@sutra/ui/mobile"`
+- Import: `import { useZoomPan } from "@cleanprompt/sutra-ui/mobile"`
 - Source: `packages/ui/src/hooks/use-zoom-pan`
 
 ## Signature

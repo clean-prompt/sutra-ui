@@ -1,4 +1,4 @@
-/* @sutra/ui/agent-admin: managing an AI agent (capabilities, automation, providers & models, channels & multi-agent). */
+/* @cleanprompt/sutra-ui/agent-admin: managing an AI agent (capabilities, automation, providers & models, channels & multi-agent). */
 export * from "../kits/agent-admin/llm-providers";
 export * from "../kits/agent-admin/model-routing";
 export * from "../kits/agent-admin/backends";

@@ -2,7 +2,7 @@
 
 > Registry shortcuts as runnable commands, grouped. Empty outside a `ShortcutProvider`.
 
-- Import: `import { useRegistryCommands } from "@sutra/ui/overlays"`
+- Import: `import { useRegistryCommands } from "@cleanprompt/sutra-ui/overlays"`
 - Source: `packages/ui/src/patterns/command-menu`
 
 ## Signature

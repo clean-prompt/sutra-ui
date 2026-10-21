@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Button, InlineCode, MorphPill, Text, useCountdown } from "@sutra/ui";
-import { formatClock } from "@sutra/ui/format";
-import { RiCheckLine, RiCloseLine, RiPauseLine, RiPlayLine, RiTimerLine } from "@sutra/ui/icons";
+import { Button, InlineCode, MorphPill, Text, useCountdown } from "@cleanprompt/sutra-ui";
+import { formatClock } from "@cleanprompt/sutra-ui/format";
+import { RiCheckLine, RiCloseLine, RiPauseLine, RiPlayLine, RiTimerLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel } from "../components/demo";
 
 type Mode = "idle" | "picker" | "timer" | "status";

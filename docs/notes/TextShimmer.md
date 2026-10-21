@@ -25,7 +25,7 @@ Plain markup and inline CSS variables, no browser API, so server and client outp
 
 ## Example
 ```tsx
-import { TextShimmer } from "@sutra/ui";
+import { TextShimmer } from "@cleanprompt/sutra-ui";
 
 export function Example({ thinking }: { thinking: boolean }) {
   return (

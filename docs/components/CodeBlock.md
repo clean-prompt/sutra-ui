@@ -2,7 +2,7 @@
 
 > Syntax-highlighted code with filename, copy, line numbers and highlights.
 
-- Import: `import { CodeBlock } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { CodeBlock } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/patterns/code-block` (patterns)
 - `data-slot`: `code-block`
 - Parts: [`CodeBlockTabs`](CodeBlockTabs.md)
@@ -94,9 +94,9 @@ Server render: same markup as the client. Highlighting is a pure function of `co
 ## Example
 
 ```tsx
-import { CodeBlock } from "@sutra/ui";
+import { CodeBlock } from "@cleanprompt/sutra-ui";
 
-const code = `import { Button } from "@sutra/ui";
+const code = `import { Button } from "@cleanprompt/sutra-ui";
 
 export function Save() {
   return <Button type="submit">Save changes</Button>;

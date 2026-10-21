@@ -34,7 +34,7 @@ Plain markup with no browser API, so server and client output match.
 
 ## Example
 ```tsx
-import { TextLink } from "@sutra/ui";
+import { TextLink } from "@cleanprompt/sutra-ui";
 
 export function Example({ onResend }: { onResend: () => void }) {
   return (

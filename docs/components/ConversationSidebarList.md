@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `<ConversationList items={conversations} groupBy="folder" rowActions="menu" folders={…} />`.
 
-- Import: `import { ConversationSidebarList } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ConversationSidebarList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/conversation-sidebar` (kit `ai`)
 - Also accepts the props of HTMLAttributes
 
@@ -28,7 +28,7 @@
 
 ```tsx
 import * as React from "react";
-import { ConversationSidebarList } from "@sutra/ui/ai";
+import { ConversationSidebarList } from "@cleanprompt/sutra-ui/ai";
 
 function ConversationSidebarDemo() {
   const [folders, setFolders] = React.useState<SidebarFolder[]>([

@@ -2,7 +2,7 @@
 
 > Drag-and-drop file area that also opens the file picker on click, Enter or Space.
 
-- Import: `import { Dropzone } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Dropzone } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/dropzone` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -71,7 +71,7 @@ Server render: part of it fills in after mount. Without `directory` the zone ren
 
 ```tsx
 import * as React from "react";
-import { Dropzone } from "@sutra/ui";
+import { Dropzone } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [files, setFiles] = React.useState<File[]>([]);

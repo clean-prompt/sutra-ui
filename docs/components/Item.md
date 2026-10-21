@@ -2,7 +2,7 @@
 
 > One row: `ItemMedia`, `ItemContent` (`ItemTitle` and `ItemDescription`) and `ItemActions`. Static, or a link or button.
 
-- Import: `import { Item } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Item } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/item` (primitives)
 - `data-slot`: `item`
 - Parts: [`ItemActions`](ItemActions.md), [`ItemContent`](ItemContent.md), [`ItemDescription`](ItemDescription.md), [`ItemGroup`](ItemGroup.md), [`ItemMedia`](ItemMedia.md), [`ItemSeparator`](ItemSeparator.md), [`ItemTitle`](ItemTitle.md)
@@ -116,8 +116,8 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@sutra/ui";
-import { RiMailLine, RiSettings3Line } from "@sutra/ui/icons";
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@cleanprompt/sutra-ui";
+import { RiMailLine, RiSettings3Line } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

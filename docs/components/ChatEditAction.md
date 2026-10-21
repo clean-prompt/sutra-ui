@@ -2,7 +2,7 @@
 
 > Edit the message.
 
-- Import: `import { ChatEditAction } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatEditAction } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message-actions` (kit `ai`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

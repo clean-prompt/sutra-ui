@@ -2,7 +2,7 @@
 
 > Fades and moves its content in as it scrolls into view, scrubbed by the scroll position (it reverses when you scroll back). It is the `scroll-reveal` utility plus the script fallback: browsers with `animation-timeline` run it as a CSS animation with no JavaScript; others get `--sutra-progress` from `useScrollProgress`, and with neither the content is simply there. Reduced motion shows the end state at once. Not for dense tables, live data or anything above the fold that must be readable on load. It replaces the element's own `translate` and `scale`, so wrap, do not stack. Keep it out of `overflow-hidden` wrappers (a native timeline binds to the nearest clipping ancestor, which never scrolls): use `overflow-clip` there.
 
-- Import: `import { ScrollReveal } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { ScrollReveal } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/scroll-reveal` (patterns)
 - `data-slot`: `scroll-reveal`
 - Also accepts the props of HTMLAttributes

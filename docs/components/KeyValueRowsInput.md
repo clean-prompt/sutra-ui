@@ -2,7 +2,7 @@
 
 > Repeatable key/value rows with add/remove, duplicate-key detection and optional value masking.
 
-- Import: `import { KeyValueRowsInput } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { KeyValueRowsInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/key-value-rows-internal` (kit `agent-admin`)
 - `data-slot`: `key-value-rows`, `key-value-row`
 - Also accepts the props of HTMLAttributes
@@ -29,7 +29,7 @@
 
 ```tsx
 import * as React from "react";
-import { KeyValueRowsInput } from "@sutra/ui/agent-admin";
+import { KeyValueRowsInput } from "@cleanprompt/sutra-ui/agent-admin";
 
 function KeyValueDemo() {
   const [rows, setRows] = React.useState<KeyValueRowsEntry[]>([

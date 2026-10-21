@@ -2,7 +2,7 @@
 
 > Dismissible contextual tip anchored to an element, with a rotating "Next tip" list.
 
-- Import: `import { TipBubble } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { TipBubble } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/coachmarks` (patterns)
 - `data-slot`: `tip-bubble`
 
@@ -32,9 +32,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RiLightbulbLine } from "@sutra/ui/icons";
-import { TipBubble } from "@sutra/ui/workspace";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiLightbulbLine } from "@cleanprompt/sutra-ui/icons";
+import { TipBubble } from "@cleanprompt/sutra-ui/workspace";
 
 function TipDemo() {
   const [open, setOpen] = React.useState(true);

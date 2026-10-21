@@ -2,7 +2,7 @@
 
 > Docker containers grouped by Compose project: state, ports, a limit warning, CPU and memory per container.
 
-- Import: `import { ContainerList } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { ContainerList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/containers` (kit `system`)
 - `data-slot`: `container-list`, `container-empty`, `container-group`, `container-group-header`, `container-group-description`, `container-skeleton-group`, `container-skeleton-row`, `container-row`, `container-limit-warning`, `container-memory`, `container-cpu`
 - Also accepts the props of HTMLAttributes

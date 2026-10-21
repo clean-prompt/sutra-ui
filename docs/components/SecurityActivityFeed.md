@@ -2,7 +2,7 @@
 
 > Security event timeline: typed icons, device/IP/location, relative time, grouped by day, expandable detail.
 
-- Import: `import { SecurityActivityFeed } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { SecurityActivityFeed } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/connected-apps` (kit `identity`)
 - `data-slot`: `activity-feed`
 - Also accepts the props of HTMLAttributes

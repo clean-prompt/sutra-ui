@@ -2,7 +2,7 @@
 
 > Image crop box: drag to move, eight handles to resize, aspect presets, quarter-turn rotation and optional zoom.
 
-- Import: `import { ImageCropper } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { ImageCropper } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/patterns/image-cropper` (patterns)
 - `data-slot`: `image-cropper`, `image-cropper-stage`, `image-cropper-frame`, `image-cropper-box`, `image-cropper-toolbar`
 - Also accepts the props of HTMLAttributes
@@ -50,7 +50,7 @@
 
 ```tsx
 import * as React from "react";
-import { ImageCropper, imageCropperAspectOptions } from "@sutra/ui/media";
+import { ImageCropper, imageCropperAspectOptions } from "@cleanprompt/sutra-ui/media";
 
 function CropperDemo() {
   const [result, setResult] = React.useState<string | null>(null);

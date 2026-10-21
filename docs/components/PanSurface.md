@@ -2,7 +2,7 @@
 
 > An inertial canvas for boards and big images: drag it and it keeps gliding with time-based friction (`usePan`), stops at its edges with a springy bounce, and moves with the wheel and the arrow keys (Shift for bigger steps, Page Up and Down, Home to recenter). With `zoom` the existing `useZoomPan` handles the scale (wheel with Ctrl or Command, buttons, `+`, `-`, `0`); the offset stays in `usePan`'s CSS variables, so a drag never re-renders. A recenter button appears once the canvas has moved. It is a labelled, focusable group whose content stays in the DOM order for screen readers. A drag on a button inside the canvas still pans and the click after a drag is swallowed; put `data-pan-ignore` on parts that need their own pointer handling. The surface takes touch from the page (`touch-action: none` on its axis), so leave room to scroll around it.
 
-- Import: `import { PanSurface } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { PanSurface } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/pan-surface` (patterns)
 - `data-slot`: `pan-surface`, `pan-surface-content`, `pan-surface-controls`
 - Also accepts the props of HTMLAttributes
@@ -35,7 +35,7 @@
 ## Example (live: `#/components/showpieces/pan-surface-zoom` in the playground)
 
 ```tsx
-import { PanSurface } from "@sutra/ui/mobile";
+import { PanSurface } from "@cleanprompt/sutra-ui/mobile";
 
 function Diagram() {
   const nodes = [

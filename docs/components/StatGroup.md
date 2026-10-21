@@ -2,7 +2,7 @@
 
 > Responsive row of StatCards.
 
-- Import: `import { StatGroup } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { StatGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/stat-card` (patterns)
 - `data-slot`: `stat-group`
 - Also accepts the props of HTMLAttributes
@@ -71,7 +71,7 @@ Server render: same markup as the client. Plain markup from props with a `useId`
 ## Example
 
 ```tsx
-import { StatCard, StatGroup } from "@sutra/ui";
+import { StatCard, StatGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

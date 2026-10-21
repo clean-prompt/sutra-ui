@@ -2,7 +2,7 @@
 
 > Current time in epoch ms, re-rendering every `interval` ms while `active` (or the `fixed` time).
 
-- Import: `import { useNow } from "@sutra/ui/tokens"`
+- Import: `import { useNow } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-now`
 
 ## Signature

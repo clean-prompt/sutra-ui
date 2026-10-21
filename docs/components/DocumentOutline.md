@@ -2,7 +2,7 @@
 
 > Heading tree of a document: indented by level, active highlight, click to jump, optional filter.
 
-- Import: `import { DocumentOutline } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { DocumentOutline } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/kits/editor/document-outline` (kit `editor`)
 - `data-slot`: `document-outline`
 - Also accepts the props of HTMLAttributes

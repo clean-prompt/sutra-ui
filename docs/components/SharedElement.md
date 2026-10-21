@@ -2,7 +2,7 @@
 
 > An element that flies between two screens when the change is applied with `useViewTransition`: render it with the same `name` in the list and in the detail view. It is a plain box with a `view-transition-name` (`data-shared-element` carries the name for tests and debugging); without browser support, or under reduced motion, nothing animates.
 
-- Import: `import { SharedElement } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { SharedElement } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/shared-element` (patterns)
 - `data-slot`: `shared-element`
 - Also accepts the props of HTMLAttributes

@@ -2,7 +2,7 @@
 
 > Show-once secret: copy or download it now, acknowledge, then Done.
 
-- Import: `import { SecretRevealOnce } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { SecretRevealOnce } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/secret` (kit `identity`)
 - `data-slot`: `secret-reveal-once`, `secret-reveal-value`, `secret-canvas`
 - Also accepts the props of HTMLAttributes
@@ -27,9 +27,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RiAddLine } from "@sutra/ui/icons";
-import { SecretRevealOnce } from "@sutra/ui/security";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";
+import { SecretRevealOnce } from "@cleanprompt/sutra-ui/security";
 
 function SecretRevealOnceDemo() {
   const [secret, setSecret] = React.useState<string | null>(null);

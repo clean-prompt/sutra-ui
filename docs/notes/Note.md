@@ -30,8 +30,8 @@ Plain markup with no browser API, so server and client output match.
 
 ## Example
 ```tsx
-import { Note } from "@sutra/ui";
-import { RiInboxLine } from "@sutra/ui/icons";
+import { Note } from "@cleanprompt/sutra-ui";
+import { RiInboxLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

@@ -2,7 +2,7 @@
 
 > The keys that the latest change of `keys` added: empty on the first render and again after a change that only removed or reordered. Give those items an entrance class so a list animates what is new, never what was already there when it mounted:
 
-- Import: `import { useAddedKeys } from "@sutra/ui/tokens"`
+- Import: `import { useAddedKeys } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-added-keys`
 
 ## Signature

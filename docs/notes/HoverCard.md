@@ -32,7 +32,7 @@ Only the trigger renders on the server; the card is portalled after mount and on
 
 ## Example
 ```tsx
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@sutra/ui";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

@@ -2,7 +2,7 @@
 
 > Fan speeds with a per-fan Automatic / Fixed switch and, when Fixed, a target slider (step 100, "2,400 rpm"). Shows a note that fans return to automatic when the app quits, and a safety message when the target is below what the system needs. Data in, events out.
 
-- Import: `import { FanControl } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { FanControl } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/thermals` (kit `system`)
 - `data-slot`: `fan-control`, `fan-control-disabled-reason`, `fan-control-skeleton`, `fan-control-skeleton-rpm`, `fan-control-empty`, `fan-control-item`, `fan-control-rpm`, `fan-control-target`, `fan-control-note`, `fan-control-warning`
 - Also accepts the props of HTMLAttributes
@@ -30,7 +30,7 @@
 
 ```tsx
 import * as React from "react";
-import { FanControl, HeatByApp, ThermalSensors } from "@sutra/ui/system";
+import { FanControl, HeatByApp, ThermalSensors } from "@cleanprompt/sutra-ui/system";
 
 function ThermalsDemo() {
   const [fans, setFans] = React.useState(initialFans);

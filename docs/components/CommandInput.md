@@ -2,7 +2,7 @@
 
 > Search field with a leading icon.
 
-- Import: `import { CommandInput } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { CommandInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/patterns/command-menu` (patterns)
 - Part of [`Command`](Command.md)
 - Also accepts the props of HTMLAttributes, InputHTMLAttributes
@@ -23,7 +23,7 @@ See the notes in [`Command`](Command.md#notes).
 
 ```tsx
 import * as React from "react";
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@sutra/ui";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

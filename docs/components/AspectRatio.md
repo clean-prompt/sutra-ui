@@ -2,7 +2,7 @@
 
 > Box that keeps a fixed width/height ratio for media and embeds.
 
-- Import: `import { AspectRatio } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { AspectRatio } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/aspect-ratio` (primitives)
 - Also accepts the props of HTMLAttributes, PrimitivePropsWithRef
 
@@ -51,7 +51,7 @@ Server render: same markup as the client. Plain markup with no browser API. The 
 ## Example
 
 ```tsx
-import { AspectRatio } from "@sutra/ui";
+import { AspectRatio } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

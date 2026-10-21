@@ -2,7 +2,7 @@
 
 > "1–10 of 245": which rows the current page shows. Announced politely when the page changes.
 
-- Import: `import { PaginationStatus } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { PaginationStatus } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/pagination` (primitives)
 - `data-slot`: `pagination-status`
 - Part of [`Pagination`](Pagination.md)
@@ -28,7 +28,7 @@ See the notes in [`Pagination`](Pagination.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Pagination, PaginationStatus } from "@sutra/ui";
+import { Pagination, PaginationStatus } from "@cleanprompt/sutra-ui";
 
 const total = 245;
 

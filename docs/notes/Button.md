@@ -34,8 +34,8 @@ Renders plain markup with no browser API, so server and client output match. The
 
 ## Example
 ```tsx
-import { Button } from "@sutra/ui";
-import { RiAddLine } from "@sutra/ui/icons";
+import { Button } from "@cleanprompt/sutra-ui";
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ saving }: { saving: boolean }) {
   return (

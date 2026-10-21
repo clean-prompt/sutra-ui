@@ -2,7 +2,7 @@
 
 > Plugin/skill catalog entry with tier, trust, capabilities, platforms, stars and install/update states.
 
-- Import: `import { CatalogCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { CatalogCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/extensions-catalog-card` (kit `agent-admin`)
 - `data-slot`: `catalog-card`
 - Also accepts the props of HTMLAttributes
@@ -35,7 +35,7 @@
 
 ```tsx
 import * as React from "react";
-import { CatalogCard } from "@sutra/ui/agent-admin";
+import { CatalogCard } from "@cleanprompt/sutra-ui/agent-admin";
 
 function CatalogDemo() {
   const [plugins, setPlugins] = React.useState(CATALOG_PLUGINS);

@@ -2,7 +2,7 @@
 
 > `Dropzone` wired to the surrounding `FileUpload` state and limits.
 
-- Import: `import { FileUploadDropzone } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FileUploadDropzone } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/patterns/file-upload` (patterns)
 - `data-slot`: `file-upload-dropzone`
 - Part of [`FileUpload`](FileUpload.md)
@@ -29,7 +29,7 @@ See the notes in [`FileUpload`](FileUpload.md#notes).
 ## Example
 
 ```tsx
-import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger, type UploadFile } from "@sutra/ui";
+import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger, type UploadFile } from "@cleanprompt/sutra-ui";
 
 export function Example({ upload }: { upload: (files: UploadFile[]) => void }) {
   return (

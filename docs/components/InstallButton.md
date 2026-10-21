@@ -2,7 +2,7 @@
 
 > Install-the-app button. Hidden when not installable or already installed; shows Add to Home Screen steps on iOS.
 
-- Import: `import { InstallButton } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { InstallButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/workspace/install-prompt` (kit `workspace`)
 - `data-slot`: `install-button`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -26,7 +26,7 @@
 ## Example (live: `#/components/social/install-button` in the playground)
 
 ```tsx
-import { InstallButton } from "@sutra/ui/social";
+import { InstallButton } from "@cleanprompt/sutra-ui/social";
 
 <div className="flex flex-col items-center gap-1">
   {/* Auto (hidden unless installable) */}

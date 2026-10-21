@@ -2,7 +2,7 @@
 
 > Button that toggles its `Collapsible`; sets `aria-expanded` and `aria-controls`.
 
-- Import: `import { CollapsibleTrigger } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { CollapsibleTrigger } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/collapsible` (primitives)
 - `data-slot`: `collapsible-trigger`
 - Part of [`Collapsible`](Collapsible.md)
@@ -22,7 +22,7 @@ See the notes in [`Collapsible`](Collapsible.md#notes).
 ## Example
 
 ```tsx
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@sutra/ui";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

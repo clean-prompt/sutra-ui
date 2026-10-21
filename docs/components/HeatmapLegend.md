@@ -2,7 +2,7 @@
 
 > "Less ▢▢▢▢ More" scale legend, or labeled swatches for custom stops.
 
-- Import: `import { HeatmapLegend } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { HeatmapLegend } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/heatmap` (patterns)
 - `data-slot`: `heatmap-legend`
 - Also accepts the props of HTMLAttributes
@@ -65,7 +65,7 @@ Server render: same markup as the client. Everything is computed from `data` and
 ## Example
 
 ```tsx
-import { HeatmapGrid } from "@sutra/ui";
+import { HeatmapGrid } from "@cleanprompt/sutra-ui";
 
 const load = [12, 48, 91, 35, 77, 5, 62, 100];
 

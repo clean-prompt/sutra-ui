@@ -2,7 +2,7 @@
 
 > Time field with hour, minute (and optional second / AM-PM) segments. Each segment is a spinbutton: arrows step it, digits type into it, Backspace clears it. Value is a 24-hour `"HH:mm"` string.
 
-- Import: `import { TimePicker } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { TimePicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/time-picker` (primitives)
 - `data-slot`: `time-picker`
 - Also accepts the props of HTMLAttributes
@@ -84,7 +84,7 @@ Server render: part of it fills in after mount. Without `hourCycle` and `locale`
 
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, TimePicker } from "@sutra/ui";
+import { Field, FieldLabel, TimePicker } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [time, setTime] = React.useState<string | undefined>("09:30");

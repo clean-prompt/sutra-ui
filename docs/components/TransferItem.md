@@ -2,7 +2,7 @@
 
 > One upload/download/job row: icon, name, progress, bytes, speed, ETA, status and actions.
 
-- Import: `import { TransferItem } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { TransferItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/transfer-list` (patterns)
 - `data-slot`: `transfer-item`
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
@@ -83,7 +83,7 @@ Server render: part of it fills in after mount. Markup is computed from `items`.
 ## Example
 
 ```tsx
-import { TransferList, type TransferItemData } from "@sutra/ui";
+import { TransferList, type TransferItemData } from "@cleanprompt/sutra-ui";
 
 const MB = 1024 * 1024;
 const transfers: TransferItemData[] = [

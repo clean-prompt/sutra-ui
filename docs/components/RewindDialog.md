@@ -2,7 +2,7 @@
 
 > Rewind to a message/checkpoint: preview, "What to restore" choice, file summary and fork notice.
 
-- Import: `import { RewindDialog } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { RewindDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/rewind` (kit `agent`)
 - `data-slot`: `rewind-dialog`, `rewind-target`, `rewind-files`, `rewind-fork-notice`
 

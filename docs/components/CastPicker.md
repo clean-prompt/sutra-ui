@@ -2,7 +2,7 @@
 
 > Lists cast targets (TVs, phones, speakers…) with current-device marker and connecting/connected states.
 
-- Import: `import { CastPicker } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { CastPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/cast-picker` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
@@ -35,9 +35,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RiCastLine } from "@sutra/ui/icons";
-import { CastPicker, DeviceIcon } from "@sutra/ui/media";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiCastLine } from "@cleanprompt/sutra-ui/icons";
+import { CastPicker, DeviceIcon } from "@cleanprompt/sutra-ui/media";
 
 function CastDemo() {
   const [devices, setDevices] = React.useState(castDevices);

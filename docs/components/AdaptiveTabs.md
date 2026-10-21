@@ -2,7 +2,7 @@
 
 > Inline pill tabs on wide screens that become a `BottomTabBar` on phones — same items.
 
-- Import: `import { AdaptiveTabs } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { AdaptiveTabs } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/bottom-tab-bar` (patterns)
 - `data-slot`: `adaptive-tabs-inline`
 - Also accepts the props of HTMLAttributes
@@ -76,8 +76,8 @@ Server render: same markup as the client. Plain markup from props; showing or hi
 
 ```tsx
 import * as React from "react";
-import { BottomTabBar } from "@sutra/ui";
-import { RiHomeLine, RiInboxLine, RiUserLine } from "@sutra/ui/icons";
+import { BottomTabBar } from "@cleanprompt/sutra-ui";
+import { RiHomeLine, RiInboxLine, RiUserLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [tab, setTab] = React.useState("home");

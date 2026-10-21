@@ -2,7 +2,7 @@
 
 > Waterfall chart: floating bars that climb and fall from the running total, with totals, connectors and a signed table.
 
-- Import: `import { WaterfallChart } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { WaterfallChart } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/chart-waterfall` (patterns)
 - `data-slot`: `chart-skeleton`, `chart-active-band`, `chart-connector`, `chart-bar`, `chart-value`, `chart-reference-line`, `chart-hit`
 - Also accepts the props of HTMLAttributes
@@ -37,7 +37,7 @@
 ## Example (live: `#/components/dataviz/waterfall-chart` in the playground)
 
 ```tsx
-import { WaterfallChart } from "@sutra/ui/dataviz";
+import { WaterfallChart } from "@cleanprompt/sutra-ui/dataviz";
 
 <div className="@container space-y-8">
   <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">

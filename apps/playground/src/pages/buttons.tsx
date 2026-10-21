@@ -15,7 +15,7 @@ import {
   type AppStore,
   type ButtonProps,
   type SocialProvider,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAddLine,
   RiAlignCenter,
@@ -40,7 +40,7 @@ import {
   RiShareLine,
   RiUnderline,
   RiUserAddLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { SlideToConfirmDemo, UndoActionDemo } from "../demos/gesture-demos";
 

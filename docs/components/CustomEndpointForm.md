@@ -2,7 +2,7 @@
 
 > Form for an OpenAI/Anthropic-compatible endpoint with headers, key and a "Test connection" probe.
 
-- Import: `import { CustomEndpointForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { CustomEndpointForm } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers-endpoint` (kit `agent-admin`)
 - `data-slot`: `custom-endpoint-form`, `endpoint-test-result`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
@@ -21,7 +21,7 @@
 
 ```tsx
 import * as React from "react";
-import { CustomEndpointForm } from "@sutra/ui/agent-admin";
+import { CustomEndpointForm } from "@cleanprompt/sutra-ui/agent-admin";
 
 function CustomEndpointDemo() {
   const [saved, setSaved] = React.useState<string | null>(null);

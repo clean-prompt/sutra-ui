@@ -2,7 +2,7 @@
 
 > Tracks a possibly-async action: `busy`, `error`, and a stable `run`. Errors are caught (no unhandled rejections); results of superseded runs and after unmount are ignored.
 
-- Import: `import { useAsyncAction } from "@sutra/ui/tokens"`
+- Import: `import { useAsyncAction } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-async-action`
 
 ## Signature
@@ -15,8 +15,8 @@ useAsyncAction<A extends unknown[] = [], R = unknown>(fn?: ((...args: A) => R | 
 
 ```tsx
 import * as React from "react";
-import { Button, InlineCode, Text } from "@sutra/ui/core";
-import { useAsyncAction } from "@sutra/ui/tokens";
+import { Button, InlineCode, Text } from "@cleanprompt/sutra-ui/core";
+import { useAsyncAction } from "@cleanprompt/sutra-ui/tokens";
 
 function AsyncStates() {
   const [outcome, setOutcome] = React.useState<"ok" | "fail">("ok");

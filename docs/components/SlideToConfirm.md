@@ -2,7 +2,7 @@
 
 > Confirm an irreversible action by sliding the thumb along the track. It is a `role="slider"` (value 0 to 100, arrow keys step, Home resets, End and Enter and Space confirm), the offset follows the finger without React state (`useDrag`), a release short of 90% springs back, and under reduced motion the release is instant. `onConfirm` may return a promise: the control stays busy until it settles and slides back if it rejects.
 
-- Import: `import { SlideToConfirm } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { SlideToConfirm } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/slide-to-confirm` (primitives)
 - `data-slot`: `slide-to-confirm`, `slide-to-confirm-fill`, `slide-to-confirm-label`, `slide-to-confirm-thumb`
 - Also accepts the props of HTMLAttributes
@@ -78,7 +78,7 @@ Server render: part of it fills in after mount. The server renders the track and
 ## Example
 
 ```tsx
-import { SlideToConfirm } from "@sutra/ui";
+import { SlideToConfirm } from "@cleanprompt/sutra-ui";
 
 export function Example({ sendPayment }: { sendPayment: () => Promise<unknown> }) {
   return (

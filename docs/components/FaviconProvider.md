@@ -2,7 +2,7 @@
 
 > Opt in to remote favicons. Without a provider, Sutra makes no network requests and renders a local monogram tile instead.
 
-- Import: `import { FaviconProvider } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { FaviconProvider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/primitives/favicon` (primitives)
 - Part of [`Favicon`](Favicon.md)
 
@@ -20,7 +20,7 @@ See the notes in [`Favicon`](Favicon.md#notes).
 ## Example
 
 ```tsx
-import { Favicon, FaviconProvider } from "@sutra/ui";
+import { Favicon, FaviconProvider } from "@cleanprompt/sutra-ui";
 
 const sources = ["github.com", "vercel.com", "news.ycombinator.com"];
 

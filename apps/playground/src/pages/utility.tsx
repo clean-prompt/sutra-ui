@@ -10,7 +10,7 @@ import {
   useDisclosure,
   usePrevious,
   type AspectRatioPreset,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 const gradients: { ratio: AspectRatioPreset; className: string }[] = [

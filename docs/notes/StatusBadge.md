@@ -29,7 +29,7 @@ Plain markup with no browser API, so server and client output match. The icon po
 
 ## Example
 ```tsx
-import { StatusBadge, StatusDot } from "@sutra/ui";
+import { StatusBadge, StatusDot } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

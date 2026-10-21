@@ -2,7 +2,7 @@
 
 > Re-render every `intervalMs` while `enabled`; returns the current timestamp.
 
-- Import: `import { useScheduleNow } from "@sutra/ui/agent-admin"`
+- Import: `import { useScheduleNow } from "@cleanprompt/sutra-ui/agent-admin"`
 - Source: `packages/ui/src/patterns/cron`
 
 ## Signature

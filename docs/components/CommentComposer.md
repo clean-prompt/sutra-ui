@@ -2,7 +2,7 @@
 
 > Comment input: Markdown text, ⌘/Ctrl+Enter to send, Escape to cancel.
 
-- Import: `import { CommentComposer } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { CommentComposer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/patterns/comments` (patterns)
 - `data-slot`: `comment-composer`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes

@@ -2,7 +2,7 @@
 
 > Text that types itself (see `useTypewriter` for the timing options). Accessible: the current line is real text in a visually hidden span and the typed part and the caret are `aria-hidden`, so a screen reader reads the whole line once, never letter by letter, and the hidden text is there before the first character. Under `prefers-reduced-motion` it prints the finished text straight away.
 
-- Import: `import { Typewriter } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { Typewriter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/typewriter` (patterns)
 - `data-slot`: `typewriter`, `typewriter-caret`
 - Also accepts the props of HTMLAttributes

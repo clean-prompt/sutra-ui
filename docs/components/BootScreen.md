@@ -2,7 +2,7 @@
 
 > What fills the window while an app decides who you are: a brand mark, a slow pulse and one line.
 
-- Import: `import { BootScreen } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { BootScreen } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/loading-screen` (patterns)
 - `data-slot`: `boot-screen`
 - Also accepts the props of HTMLAttributes
@@ -19,8 +19,8 @@
 ## Example (live: `#/components/identity/boot-screen` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { BootScreen } from "@sutra/ui/identity";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { BootScreen } from "@cleanprompt/sutra-ui/identity";
 
 <div className="relative h-64 overflow-hidden rounded-box border border-border">
   <BootScreen key={bootKey} fullscreen={false} delay={250} />

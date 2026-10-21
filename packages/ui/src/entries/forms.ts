@@ -1,4 +1,4 @@
-/* @sutra/ui/forms: form controls, the filter bar and the drag-selection area. */
+/* @cleanprompt/sutra-ui/forms: form controls, the filter bar and the drag-selection area. */
 export * from "../primitives/label";
 export * from "../primitives/field";
 export * from "../primitives/input";

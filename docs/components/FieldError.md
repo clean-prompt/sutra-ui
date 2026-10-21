@@ -2,7 +2,7 @@
 
 > Validation message, announced to assistive tech. Renders nothing when empty.
 
-- Import: `import { FieldError } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FieldError } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/field` (primitives)
 - `data-slot`: `field-error`
 - Part of [`Field`](Field.md)
@@ -23,7 +23,7 @@ See the notes in [`Field`](Field.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@sutra/ui";
+import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [email, setEmail] = React.useState("");

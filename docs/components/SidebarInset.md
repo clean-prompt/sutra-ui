@@ -2,7 +2,7 @@
 
 > Main content area next to the sidebar. Raised card when the sidebar is `inset`.
 
-- Import: `import { SidebarInset } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarInset } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-inset`
 - Part of [`Sidebar`](Sidebar.md)

@@ -2,7 +2,7 @@
 
 > One device/session with icon, details, "This device" badge and an inline-confirmed sign out.
 
-- Import: `import { DeviceSessionRow } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { DeviceSessionRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/kits/identity/device-sessions` (kit `identity`)
 - `data-slot`: `session-row`
 - Also accepts the props of HTMLAttributes

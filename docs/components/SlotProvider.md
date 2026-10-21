@@ -2,7 +2,7 @@
 
 > Provides a slot registry to `SlotOutlet` and `SlotFill` below it.
 
-- Import: `import { SlotProvider } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SlotProvider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/slot-outlet` (kit `agent-admin`)
 
 ## Props

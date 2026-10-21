@@ -2,7 +2,7 @@
 
 > Local monogram tile for a provider (never fetches a remote logo). A `Monogram` preset (solid seed colour).
 
-- Import: `import { ProviderLogo } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProviderLogo } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers-logo` (kit `agent-admin`)
 - `data-slot`: `provider-logo`
 - Also accepts the props of HTMLAttributes

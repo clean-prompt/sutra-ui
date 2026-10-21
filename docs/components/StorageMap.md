@@ -2,7 +2,7 @@
 
 > Disk usage map: a used/free header, a treemap of folders grouped by category (macOS, App data, Yours, Other) and a legend.
 
-- Import: `import { StorageMap } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { StorageMap } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/treemap` (patterns)
 - `data-slot`: `storage-map`, `storage-map-header`, `storage-map-used-skeleton`, `storage-map-used`, `storage-map-free`
 - Also accepts the props of HTMLAttributes
@@ -89,7 +89,7 @@ Server render: part of it fills in after mount. The layout needs the width: the 
 ## Example
 
 ```tsx
-import { Treemap, type TreemapNode } from "@sutra/ui";
+import { Treemap, type TreemapNode } from "@cleanprompt/sutra-ui";
 
 const disk: TreemapNode = {
   id: "disk",

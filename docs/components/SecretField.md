@@ -2,7 +2,7 @@
 
 > Labeled, input-styled `SecretText`.
 
-- Import: `import { SecretField } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { SecretField } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/secret` (kit `identity`)
 - `data-slot`: `secret-field`
 - Also accepts the props of HTMLAttributes
@@ -31,7 +31,7 @@
 ## Example (live: `#/components/security/secret-field` in the playground)
 
 ```tsx
-import { SecretField, SecretText } from "@sutra/ui/security";
+import { SecretField, SecretText } from "@cleanprompt/sutra-ui/security";
 
 <div className="grid w-full max-w-md grid-cols-1 gap-4">
   <SecretField label="Wi-Fi password" value="correct-horse-battery" strength="auto" revealFor={5000} description="Reveals for 5 seconds." />

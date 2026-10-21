@@ -2,7 +2,7 @@
 
 > Small source chip with favicon.
 
-- Import: `import { ChainOfThoughtSearchResult } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChainOfThoughtSearchResult } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chain-of-thought` (kit `ai`)
 - Part of [`ChainOfThought`](ChainOfThought.md)
 - Parts: [`ChainOfThoughtSearchResults`](ChainOfThoughtSearchResults.md)
@@ -36,8 +36,8 @@ import {
   ChainOfThoughtStep,
   ThinkingExpandAllProvider,
   ThinkingToggle,
-} from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
+} from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function ThinkingDemo() {
   const [streaming, setStreaming] = React.useState(true);

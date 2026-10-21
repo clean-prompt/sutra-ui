@@ -2,7 +2,7 @@
 
 > One-line syntax-colored JSON preview: `{ id: 1, name: "x", tags: Array(3) }`.
 
-- Import: `import { JsonInline } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { JsonInline } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/json-viewer` (patterns)
 - Also accepts the props of HTMLAttributes
 

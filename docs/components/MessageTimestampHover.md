@@ -2,7 +2,7 @@
 
 > Relative message time revealed on hover/focus, with the full date in a tooltip.
 
-- Import: `import { MessageTimestampHover } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { MessageTimestampHover } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message-actions` (kit `ai`)
 - `data-slot`: `message-timestamp`
 - Also accepts the props of HTMLAttributes

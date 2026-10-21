@@ -2,7 +2,7 @@
 
 > Detects a flick (decided when the pointer lifts, so it never fights native scrolling). Spread the returned handlers on an element; give it a matching `touch-action` (e.g. `touch-pan-y` for horizontal swipes).
 
-- Import: `import { useSwipe } from "@sutra/ui/mobile"`
+- Import: `import { useSwipe } from "@cleanprompt/sutra-ui/mobile"`
 - Source: `packages/ui/src/hooks/use-swipe`
 
 ## Signature

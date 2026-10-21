@@ -2,7 +2,7 @@
 
 > Text, icon or button placed at an edge of an `InputGroup`. Clicking it focuses the control.
 
-- Import: `import { InputGroupAddon } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { InputGroupAddon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/input-group` (primitives)
 - `data-slot`: `input-group-addon`
 - Part of [`InputGroup`](InputGroup.md)
@@ -25,8 +25,8 @@ See the notes in [`InputGroup`](InputGroup.md#notes).
 ## Example
 
 ```tsx
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@sutra/ui";
-import { RiFileCopyLine } from "@sutra/ui/icons";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@cleanprompt/sutra-ui";
+import { RiFileCopyLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const link = "sutra.dev/share/q3-report";

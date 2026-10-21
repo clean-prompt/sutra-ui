@@ -18,7 +18,7 @@ describe("note examples", () => {
   }, 120_000);
 
   it("catches a wrong prop value", () => {
-    const bad = new Map([["Bad", { example: 'import { Button } from "@sutra/ui";\nexport function Example() {\n  return <Button variant="nope">x</Button>;\n}\n' }]]);
+    const bad = new Map([["Bad", { example: 'import { Button } from "@cleanprompt/sutra-ui";\nexport function Example() {\n  return <Button variant="nope">x</Button>;\n}\n' }]]);
     const problems = checkNoteExamples({ root: ROOT, notes: bad as never });
     expect(problems).toHaveLength(1);
     expect(problems[0]).toMatchObject({ name: "Bad", line: 3 });

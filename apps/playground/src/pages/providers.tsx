@@ -32,8 +32,8 @@ import {
   type RoutingProvider,
   type SetupStage,
   type TaskModelMap,
-} from "@sutra/ui";
-import { RiAttachment2, RiKey2Line, RiSendPlaneFill, RiShieldKeyholeLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiAttachment2, RiKey2Line, RiSendPlaneFill, RiShieldKeyholeLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

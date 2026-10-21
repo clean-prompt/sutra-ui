@@ -2,7 +2,7 @@
 
 > Side-by-side "Yours / Theirs" dialog for resolving a sync conflict.
 
-- Import: `import { ConflictResolver } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { ConflictResolver } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/sync-status` (kit `workspace`)
 - `data-slot`: `conflict-resolver`
 

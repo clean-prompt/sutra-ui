@@ -2,7 +2,7 @@
 
 > Auto-growing textarea (1 → 8 rows). Enter submits, Shift+Enter adds a line, IME composition is respected.
 
-- Import: `import { PromptInputTextarea } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputTextarea } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-textarea` (kit `ai`)
 - `data-slot`: `prompt-input-highlight`, `prompt-input-mirror`
 - Also accepts the props of HTMLAttributes, TextareaHTMLAttributes
@@ -20,7 +20,7 @@
 ## Example (live: `#/components/agent-composer/mention-highlight` in the playground)
 
 ```tsx
-import { PromptInput, PromptInputTextarea } from "@sutra/ui/ai";
+import { PromptInput, PromptInputTextarea } from "@cleanprompt/sutra-ui/ai";
 
 function HighlightDemo() {
   return (

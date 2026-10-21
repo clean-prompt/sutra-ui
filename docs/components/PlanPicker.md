@@ -2,7 +2,7 @@
 
 > Tiered plan cards with a monthly/yearly toggle, feature checklists, per-plan CTAs and a downgrade preview.
 
-- Import: `import { PlanPicker } from "@sutra/ui"` (or from `@sutra/ui/billing`)
+- Import: `import { PlanPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-plans` (kit `billing`)
 - `data-slot`: `plan-picker`, `savings-badge`, `plan-price`
 - Also accepts the props of HTMLAttributes
@@ -25,7 +25,7 @@
 
 ```tsx
 import * as React from "react";
-import { PlanPicker } from "@sutra/ui/billing";
+import { PlanPicker } from "@cleanprompt/sutra-ui/billing";
 
 function PlanPickerDemo() {
   const [current, setCurrent] = React.useState("pro");

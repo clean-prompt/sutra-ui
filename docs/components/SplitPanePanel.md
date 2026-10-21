@@ -2,7 +2,7 @@
 
 > One side of a `SplitPane`. The first panel is sized; the second fills the rest.
 
-- Import: `import { SplitPanePanel } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { SplitPanePanel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/split-pane` (patterns)
 - `data-slot`: `split-pane-panel`
 - Part of [`SplitPane`](SplitPane.md)
@@ -21,7 +21,7 @@ See the notes in [`SplitPane`](SplitPane.md#notes).
 ## Example
 
 ```tsx
-import { SplitPane, SplitPaneHandle, SplitPanePanel } from "@sutra/ui";
+import { SplitPane, SplitPaneHandle, SplitPanePanel } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

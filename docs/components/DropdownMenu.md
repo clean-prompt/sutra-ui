@@ -2,7 +2,7 @@
 
 > Dropdown menu root: Radix `DropdownMenu.Root` with the reading direction filled in.
 
-- Import: `import { DropdownMenu } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { DropdownMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/dropdown-menu` (primitives)
 - Parts: [`DropdownMenuCheckboxItem`](DropdownMenuCheckboxItem.md), [`DropdownMenuContent`](DropdownMenuContent.md), [`DropdownMenuGroup`](DropdownMenuGroup.md), [`DropdownMenuItem`](DropdownMenuItem.md), [`DropdownMenuLabel`](DropdownMenuLabel.md), [`DropdownMenuPortal`](DropdownMenuPortal.md), [`DropdownMenuRadioGroup`](DropdownMenuRadioGroup.md), [`DropdownMenuRadioItem`](DropdownMenuRadioItem.md), [`DropdownMenuSeparator`](DropdownMenuSeparator.md), [`DropdownMenuShortcut`](DropdownMenuShortcut.md), [`DropdownMenuSub`](DropdownMenuSub.md), [`DropdownMenuSubContent`](DropdownMenuSubContent.md), [`DropdownMenuSubTrigger`](DropdownMenuSubTrigger.md), [`DropdownMenuTrigger`](DropdownMenuTrigger.md)
 - Also accepts the props of DropdownMenuProps
@@ -79,7 +79,7 @@ In RTL the sub-menu keys swap: ArrowLeft opens a sub-menu and ArrowRight closes 
 
 ### Screen readers
 
-The trigger gets `aria-haspopup="menu"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="menu"` labelled by the trigger; rows are `menuitem`, `menuitemcheckbox` and `menuitemradio` (with `aria-checked`), groups are `role="group"` and the separator is `separator`. `DropdownMenuLabel` is a plain text div that is not linked to its group, so give `DropdownMenuGroup` an `aria-label` to name it. A disabled row gets `aria-disabled`. Icons and the sub-menu chevron are decoration (the chevron is `aria-hidden`; an `icon` you pass is not hidden for you). The `shortcut` text is read as part of the row name. An icon-only trigger needs `aria-label`.
+The trigger gets `aria-haspopup="menu"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="menu"` labelled by the trigger; rows are `menuitem`, `menuitemcheckbox` and `menuitemradio` (with `aria-checked`), groups are `role="group"` and the separator is `separator`. `DropdownMenuLabel` is a plain text div that is not linked to its group, so give `DropdownMenuGroup` an `aria-label` to name it. A disabled row gets `aria-disabled`. The sub-menu chevron is `aria-hidden`; an `icon` you pass is not hidden for you. The `shortcut` text is read as part of the row name. An icon-only trigger needs `aria-label`.
 
 ### Reduced motion
 
@@ -100,9 +100,9 @@ Server render: same markup as the client. A closed menu renders only its trigger
 
 ```tsx
 import * as React from "react";
-import { Button, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem } from "@sutra/ui";
-import { DropdownMenuSeparator, DropdownMenuTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiFileCopyLine, RiMoreLine } from "@sutra/ui/icons";
+import { Button, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem } from "@cleanprompt/sutra-ui";
+import { DropdownMenuSeparator, DropdownMenuTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiFileCopyLine, RiMoreLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onDuplicate, onDelete }: { onDuplicate: () => void; onDelete: () => void }) {
   const [pinned, setPinned] = React.useState(false);

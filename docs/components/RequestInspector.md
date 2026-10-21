@@ -2,7 +2,7 @@
 
 > LLM / API request record: header, param chips and Messages | Request | Response | Raw tabs.
 
-- Import: `import { RequestInspector } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { RequestInspector } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/request-inspector` (kit `ops`)
 - `data-slot`: `request-inspector`
 - Also accepts the props of HTMLAttributes
@@ -21,7 +21,7 @@
 ## Example (live: `#/components/monitoring/request-inspector` in the playground)
 
 ```tsx
-import { RequestInspector } from "@sutra/ui/ops";
+import { RequestInspector } from "@cleanprompt/sutra-ui/ops";
 
 <RequestInspector record={fakeRecords[1]} />
 ```

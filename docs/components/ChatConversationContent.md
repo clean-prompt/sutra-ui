@@ -2,7 +2,7 @@
 
 > Scrollable message column. Put ChatMessage elements inside.
 
-- Import: `import { ChatConversationContent } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatConversationContent } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-conversation` (kit `ai`)
 - `data-slot`: `chat-conversation-viewport`, `chat-conversation-content`
 - Part of [`ChatConversation`](ChatConversation.md)

@@ -2,7 +2,7 @@
 
 > Squarified treemap: tiles sized by value, coloured by category, with hover/focus tooltips, arrow-key navigation, drill-down (Enter, click) and up (Backspace, Escape, breadcrumb), an optional legend and a screen-reader table.
 
-- Import: `import { Treemap } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { Treemap } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/treemap` (patterns)
 - `data-slot`: `treemap`, `treemap-breadcrumb`, `treemap-skeleton`, `treemap-legend-skeleton`, `treemap-empty`, `treemap-map`, `treemap-tile`, `treemap-tooltip`, `treemap-table`, `treemap-legend`
 - Also accepts the props of HTMLAttributes
@@ -89,7 +89,7 @@ Server render: part of it fills in after mount. The layout needs the width: the 
 ## Example
 
 ```tsx
-import { Treemap, type TreemapNode } from "@sutra/ui";
+import { Treemap, type TreemapNode } from "@cleanprompt/sutra-ui";
 
 const disk: TreemapNode = {
   id: "disk",

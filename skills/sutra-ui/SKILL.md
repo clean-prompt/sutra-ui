@@ -1,11 +1,11 @@
 ---
 name: sutra-ui
-description: Build interfaces with Sutra UI (@sutra/ui), a React 19 + Tailwind v4 + Radix component library with tokens, tone and status vocabulary, RTL and CSS-first motion. Use when writing or reviewing React UI in a project that depends on @sutra/ui or lives in the Sutra repo: finding the right component, its props and import path, styling with tokens, forms, overlays, charts, accessibility, right-to-left and reduced motion.
+description: Build interfaces with Sutra UI (@cleanprompt/sutra-ui), a React 19 + Tailwind v4 + Radix component library with tokens, tone and status vocabulary, RTL and CSS-first motion. Use when writing or reviewing React UI in a project that depends on @cleanprompt/sutra-ui or lives in the Sutra repo: finding the right component, its props and import path, styling with tokens, forms, overlays, charts, accessibility, right-to-left and reduced motion.
 ---
 
 # Sutra UI
 
-Sutra UI is `@sutra/ui`: roughly a thousand exported components in four layers (primitives, patterns, kits, blocks), 90+ hooks, design tokens in three looks (light, dark, paper). This skill tells you how to find the right piece, how to call it correctly the first time, and which rules the library enforces. Do not guess prop names: look them up.
+Sutra UI is `@cleanprompt/sutra-ui`: roughly a thousand exported components in four layers (primitives, patterns, kits, blocks), 90+ hooks, design tokens in three looks (light, dark, paper). This skill tells you how to find the right piece, how to call it correctly the first time, and which rules the library enforces. Do not guess prop names: look them up.
 
 ## 1. Look it up, do not guess
 
@@ -22,23 +22,23 @@ Read the component page before using a component you have not used in this sessi
 ## 2. Install and import
 
 ```
-pnpm add @sutra/ui
+pnpm add @cleanprompt/sutra-ui
 ```
 ```css
 @import "tailwindcss";            /* Tailwind v4 */
-@import "@sutra/ui/styles.css";   /* tokens, animations, the reduced-motion net */
+@import "@cleanprompt/sutra-ui/styles.css";   /* tokens, animations, the reduced-motion net */
 ```
 ```tsx
-import { Button, Dialog, DialogContent, Field, Input } from "@sutra/ui"; // flat named exports, never default
-import { RiAddLine } from "@sutra/ui/icons";                            // the full Remix icon set
+import { Button, Dialog, DialogContent, Field, Input } from "@cleanprompt/sutra-ui"; // flat named exports, never default
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";                            // the full Remix icon set
 ```
-The same names come from subpaths by domain (`@sutra/ui/overlays`, `forms`, `dataviz`, `motion`, `navigation`, ...; see `references/entries.md`). The editor, terminal and pdf entries need optional peers and are never in the root. Components are client components (`"use client"` in the build); import them from server components freely, they render to HTML on the server unless their note says otherwise.
+The same names come from subpaths by domain (`@cleanprompt/sutra-ui/overlays`, `forms`, `dataviz`, `motion`, `navigation`, ...; see `references/entries.md`). The editor, terminal and pdf entries need optional peers and are never in the root. Components are client components (`"use client"` in the build); import them from server components freely, they render to HTML on the server unless their note says otherwise.
 
 ## 3. Styling rules (the ones that get violated)
 
 - Tokens only: `bg-background`, `bg-card`, `bg-muted`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-primary`, `text-destructive`... Never palette classes (`bg-zinc-500`), hex colours or `dark:` overrides; dark mode and the paper style retune the tokens.
 - Radius `rounded-control` (buttons, inputs) and `rounded-box` (cards, panels, popovers). Control heights sm 32, md 36, lg 40 px.
-- Merge your classes with `cn()` from `@sutra/ui`; every component takes `className` and merges it last. Style parts through their `data-slot` or a `*ClassName` prop where one exists.
+- Merge your classes with `cn()` from `@cleanprompt/sutra-ui`; every component takes `className` and merges it last. Style parts through their `data-slot` or a `*ClassName` prop where one exists.
 - Logical utilities only (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`, `text-start`, `border-s`); never `ml/mr/pl/pr/left/right/text-left`. A directional glyph needs `rtl:-scale-x-100`.
 - Size by the container (`@container`, `@md:`), give flex or grid children with text `min-w-0`, and make wide content scroll inside its own `overflow-x-auto`.
 

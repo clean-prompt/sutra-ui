@@ -2,7 +2,7 @@
 
 > "Waiting for an admin" screen that checks in the background and says so.
 
-- Import: `import { AwaitingApproval } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { AwaitingApproval } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/blocks/kunji-blocks-approval` (blocks)
 - `data-slot`: `awaiting-approval`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 ## Example (live: `#/components/kunji/awaiting-approval` in the playground)
 
 ```tsx
-import { AwaitingApproval } from "@sutra/ui/kunji";
+import { AwaitingApproval } from "@cleanprompt/sutra-ui/kunji";
 
 <AwaitingApproval handle="maya" onCheck={() => false} onSignOut={() => {}} />
 ```

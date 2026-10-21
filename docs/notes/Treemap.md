@@ -45,7 +45,7 @@ The layout needs the width: the server and the first client render lay the tiles
 
 ## Example
 ```tsx
-import { Treemap, type TreemapNode } from "@sutra/ui";
+import { Treemap, type TreemapNode } from "@cleanprompt/sutra-ui";
 
 const disk: TreemapNode = {
   id: "disk",

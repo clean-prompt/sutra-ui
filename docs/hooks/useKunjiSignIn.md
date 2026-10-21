@@ -2,7 +2,7 @@
 
 > State machine for kunji sign-in: idle → loading → ready → scanned → success | expired | denied | notLinked | error.
 
-- Import: `import { useKunjiSignIn } from "@sutra/ui/kunji"`
+- Import: `import { useKunjiSignIn } from "@cleanprompt/sutra-ui/kunji"`
 - Source: `packages/ui/src/kits/identity/kunji-sign-in-state`
 
 ## Signature

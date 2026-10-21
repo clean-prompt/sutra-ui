@@ -7,8 +7,8 @@ import {
   Sparkline,
   TextShimmer,
   type SparklineColor,
-} from "@sutra/ui";
-import { RiArrowRightDownLine, RiArrowRightUpLine, RiSparkling2Line } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiArrowRightDownLine, RiArrowRightUpLine, RiSparkling2Line } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 const revenue = [12, 14, 13, 17, 16, 19, 22, 21, 25, 24, 28, 31];

@@ -2,7 +2,7 @@
 
 > OS permission checklist (screen recording, accessibility, microphone…) with open-settings and re-check.
 
-- Import: `import { PermissionPreflightCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { PermissionPreflightCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/remote-screen` (kit `agent-admin`)
 - `data-slot`: `permission-preflight-card`
 - Also accepts the props of HTMLAttributes
@@ -21,7 +21,7 @@
 
 ```tsx
 import * as React from "react";
-import { PermissionPreflightCard } from "@sutra/ui/agent-admin";
+import { PermissionPreflightCard } from "@cleanprompt/sutra-ui/agent-admin";
 
 function PreflightDemo() {
   const [perms, setPerms] = React.useState<OsPermission[]>([

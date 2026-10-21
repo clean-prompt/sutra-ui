@@ -29,7 +29,7 @@ Plain markup computed from the props (the label id uses `useId`), so server and 
 
 ## Example
 ```tsx
-import { StackedMeter } from "@sutra/ui";
+import { StackedMeter } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

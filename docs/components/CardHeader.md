@@ -2,7 +2,7 @@
 
 > Title row of a card; becomes two columns when it holds a `CardAction`.
 
-- Import: `import { CardHeader } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { CardHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/layout` (primitives)
 - `data-slot`: `card-header`
 - Part of [`Card`](Card.md)
@@ -19,7 +19,7 @@ See the notes in [`Card`](Card.md#notes).
 ## Example
 
 ```tsx
-import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@sutra/ui";
+import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

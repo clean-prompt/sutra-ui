@@ -2,7 +2,7 @@
 
 > Destructive confirmation with a featured warning icon and type-to-confirm input.
 
-- Import: `import { DeleteConfirmDialog } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { DeleteConfirmDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/modal-dialog-blocks-delete` (blocks)
 
 ## Props

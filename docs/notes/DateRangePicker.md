@@ -37,7 +37,7 @@ The trigger renders on the server and the popover is portalled, so it appears af
 ## Example
 ```tsx
 import * as React from "react";
-import { DateRangePicker, Field, FieldLabel } from "@sutra/ui";
+import { DateRangePicker, Field, FieldLabel } from "@cleanprompt/sutra-ui";
 
 type Range = React.ComponentProps<typeof DateRangePicker>["value"];
 

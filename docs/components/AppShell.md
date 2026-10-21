@@ -2,7 +2,7 @@
 
 > Complete app layout: SidebarProvider + AppSidebar + SidebarInset with AppHeader and content.
 
-- Import: `import { AppShell } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { AppShell } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/sidebar-navigation-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

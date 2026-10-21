@@ -2,7 +2,7 @@
 
 > Nested link row inside `SidebarMenuSub`. Wrapped in its own list item.
 
-- Import: `import { SidebarMenuSubButton } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarMenuSubButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-menu-sub-button`
 - Part of [`SidebarMenuSub`](SidebarMenuSub.md)

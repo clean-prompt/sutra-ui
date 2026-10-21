@@ -2,7 +2,7 @@
 
 > KPI tile: label, big value, delta, hint and optional sparkline. With `href`/`onClick` the label becomes a link/button stretched over the card; keep other interactive content out of a linked card (or lift it with `relative z-10`).
 
-- Import: `import { StatCard } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { StatCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/stat-card` (patterns)
 - `data-slot`: `stat-chevron`, `stat-link`, `stat-card`, `stat-caption`, `stat-skeleton`, `stat-stats`, `stat-content-skeleton`, `stat-trend-skeleton`, `stat-body`, `stat-delta`, `stat-status`, `stat-content`, `stat-trend`
 - Also accepts the props of HTMLAttributes
@@ -103,7 +103,7 @@ Server render: same markup as the client. Plain markup from props with a `useId`
 ## Example
 
 ```tsx
-import { StatCard, StatGroup } from "@sutra/ui";
+import { StatCard, StatGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

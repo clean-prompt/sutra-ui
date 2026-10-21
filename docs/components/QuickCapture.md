@@ -2,7 +2,7 @@
 
 > Global quick-capture bar: type naturally, see the parsed preview, Alt+↑/↓ to switch app, Enter to save.
 
-- Import: `import { QuickCapture } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { QuickCapture } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/quick-capture` (kit `workspace`)
 - `data-slot`: `quick-capture`
 
@@ -26,8 +26,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { EntityChip, QuickCapture, ShortcutKeys, parseCapture } from "@sutra/ui/suite";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { EntityChip, QuickCapture, ShortcutKeys, parseCapture } from "@cleanprompt/sutra-ui/suite";
 
 function QuickCaptureDemo() {
   const [captured, setCaptured] = React.useState<QuickCaptureValue[]>([]);

@@ -38,7 +38,7 @@ The label, control and parts render on the server, but each description, hint an
 ## Example
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@sutra/ui";
+import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [email, setEmail] = React.useState("");

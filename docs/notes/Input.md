@@ -41,7 +41,7 @@ The clear button pops in with `animate-in fade-in-0 zoom-in-75`, and the border 
 ## Example
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, Input } from "@sutra/ui";
+import { Field, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [site, setSite] = React.useState("");

@@ -12,8 +12,8 @@ import {
   toast,
   type AlertBannerTone,
   type Tone,
-} from "@sutra/ui";
-import { RiArchiveLine, RiCheckLine, RiRocketLine, RiWifiOffLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiArchiveLine, RiCheckLine, RiRocketLine, RiWifiOffLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 const alertTones: { tone: Tone; title: string; description: string }[] = [

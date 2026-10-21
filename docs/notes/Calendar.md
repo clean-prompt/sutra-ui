@@ -41,7 +41,7 @@ The grid renders on the server. "Today" comes from the clock at render time, so 
 ## Example
 ```tsx
 import * as React from "react";
-import { Calendar } from "@sutra/ui";
+import { Calendar } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());

@@ -31,7 +31,7 @@ Plain markup with no browser API at render. A closed `Collapse` renders its chil
 ## Example
 ```tsx
 import * as React from "react";
-import { Button, Collapse, Field, FieldLabel, Input } from "@sutra/ui";
+import { Button, Collapse, Field, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

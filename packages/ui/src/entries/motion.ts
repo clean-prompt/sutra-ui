@@ -1,4 +1,4 @@
-/* @sutra/ui/motion: enter and exit presence, animated lists, split, typed, decoded and fading text, shared-element transitions, scroll reveal and stage, pointer effects, the morph pill. Hooks and the spring maths live in @sutra/ui/tokens. */
+/* @cleanprompt/sutra-ui/motion: enter and exit presence, animated lists, split, typed, decoded and fading text, shared-element transitions, scroll reveal and stage, pointer effects, the morph pill. Hooks and the spring maths live in @cleanprompt/sutra-ui/tokens. */
 export * from "../patterns/presence";
 export * from "../patterns/animated-list";
 export * from "../patterns/split-text";

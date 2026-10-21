@@ -2,7 +2,7 @@
 
 > Renders a keys spec as platform-aware Kbd chips, with "then" between sequence steps.
 
-- Import: `import { ShortcutKeys } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { ShortcutKeys } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/primitives/shortcut-keys` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -50,7 +50,7 @@ Server render: part of it fills in after mount. The server has no `navigator` an
 ## Example
 
 ```tsx
-import { ShortcutKeys } from "@sutra/ui";
+import { ShortcutKeys } from "@cleanprompt/sutra-ui";
 
 const shortcuts = [
   { action: "Open command menu", keys: "mod+k" },

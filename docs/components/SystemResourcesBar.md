@@ -2,7 +2,7 @@
 
 > Compact status-bar meters for CPU, RAM, GPU and VRAM.
 
-- Import: `import { SystemResourcesBar } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SystemResourcesBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/local-models` (kit `agent-admin`)
 - `data-slot`: `system-resources-bar`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,7 @@
 
 ```tsx
 import * as React from "react";
-import { SystemResourcesBar } from "@sutra/ui/agent-admin";
+import { SystemResourcesBar } from "@cleanprompt/sutra-ui/agent-admin";
 
 function ResourcesDemo() {
   const [r, setR] = React.useState({ cpu: 34, ram: 18.2, gpu: 71, vram: 9.4 });

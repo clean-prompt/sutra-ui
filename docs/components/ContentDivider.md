@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `Separator` (it takes a `label`).
 
-- Import: `import { ContentDivider } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ContentDivider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/separator` (primitives)
 - Also accepts the props of HTMLAttributes, SeparatorProps, PrimitivePropsWithRef
 
@@ -52,7 +52,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Separator } from "@sutra/ui";
+import { Separator } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

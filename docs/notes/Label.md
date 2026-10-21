@@ -27,7 +27,7 @@ Plain markup with no browser API or mount state, so server and client output mat
 
 ## Example
 ```tsx
-import { Input, Label } from "@sutra/ui";
+import { Input, Label } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

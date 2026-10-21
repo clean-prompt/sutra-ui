@@ -2,7 +2,7 @@
 
 > All labelled, non-hidden shortcuts in the registry, grouped. Deduplicated by id (latest wins).
 
-- Import: `import { useShortcutRegistry } from "@sutra/ui/suite"`
+- Import: `import { useShortcutRegistry } from "@cleanprompt/sutra-ui/suite"`
 - Source: `packages/ui/src/patterns/shortcuts`
 
 ## Signature

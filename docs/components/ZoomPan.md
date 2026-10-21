@@ -2,7 +2,7 @@
 
 > Zoom & pan viewport for images, diagrams or SVG, with a controls overlay.
 
-- Import: `import { ZoomPan } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { ZoomPan } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/zoom-pan` (patterns)
 - `data-slot`: `zoom-pan-content`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 ## Example (live: `#/components/chat-extras/zoom-pan` in the playground)
 
 ```tsx
-import { ZoomPan } from "@sutra/ui/mobile";
+import { ZoomPan } from "@cleanprompt/sutra-ui/mobile";
 
 function ZoomPanDemo() {
   return (

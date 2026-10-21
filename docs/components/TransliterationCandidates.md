@@ -2,7 +2,7 @@
 
 > IME-style candidate popup under the caret: pick by number, click, or arrows + Enter/Space; Esc keeps the raw text.
 
-- Import: `import { TransliterationCandidates } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { TransliterationCandidates } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/translate-transliteration` (kit `voice`)
 - `data-slot`: `transliteration-candidates`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,11 @@
 
 ```tsx
 import * as React from "react";
-import { SourcePane, TransliterationCandidates, TransliterationToggle } from "@sutra/ui/voice";
+import {
+  SourcePane,
+  TransliterationCandidates,
+  TransliterationToggle,
+} from "@cleanprompt/sutra-ui/voice";
 
 function TransliterationDemo() {
   const ref = React.useRef<HTMLTextAreaElement>(null);

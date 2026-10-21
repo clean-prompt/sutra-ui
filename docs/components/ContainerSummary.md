@@ -2,7 +2,7 @@
 
 > Container overview: total memory with lowest/peak, a per-container breakdown and CPU, limit, network and port tiles.
 
-- Import: `import { ContainerSummary } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { ContainerSummary } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/containers` (kit `system`)
 - `data-slot`: `container-summary`, `container-summary-skeleton`, `container-summary-total`, `container-summary-cpu`, `container-summary-limit`, `container-summary-network`, `container-summary-ports`
 - Also accepts the props of HTMLAttributes
@@ -24,16 +24,16 @@
 ## Example (live: `#/components/system/loading` in the playground)
 
 ```tsx
-import { AgentProcessList } from "@sutra/ui/agent";
-import { QuotaStrip } from "@sutra/ui/ai";
-import { ProcessTable } from "@sutra/ui/ops";
+import { AgentProcessList } from "@cleanprompt/sutra-ui/agent";
+import { QuotaStrip } from "@cleanprompt/sutra-ui/ai";
+import { ProcessTable } from "@cleanprompt/sutra-ui/ops";
 import {
   ContainerSummary,
   DevServerList,
   MetricReadout,
   MetricReadoutGroup,
   VolumeMixer,
-} from "@sutra/ui/system";
+} from "@cleanprompt/sutra-ui/system";
 
 <div className="grid w-full grid-cols-1 gap-4">
   <MetricReadoutGroup label="Menu bar (loading)" className="w-fit rounded-control border border-border bg-card px-3 py-1.5">

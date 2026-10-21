@@ -13,7 +13,7 @@ import {
   SwipeDeck,
   Text,
   type CheckBurstApi,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiCalendarEventLine,
   RiDownloadLine,
@@ -25,7 +25,7 @@ import {
   RiRefreshLine,
   RiShareLine,
   RiVideoChatLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

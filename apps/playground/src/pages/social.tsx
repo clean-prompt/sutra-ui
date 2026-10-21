@@ -26,7 +26,7 @@ import {
   type MessengerMessage,
   type RecurrenceRule,
   type StatusCycleOption,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiBookOpenLine,
   RiBookReadLine,
@@ -36,7 +36,7 @@ import {
   RiPushpinLine,
   RiStickyNoteLine,
   RiTerminalBoxLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { IdentityAvatarDemo } from "../demos/identity-avatar-demos";
 

@@ -2,7 +2,7 @@
 
 > Banner for a long-running background job with phase dots, elapsed time and done actions.
 
-- Import: `import { JobBanner } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { JobBanner } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/job-banner` (kit `ai`)
 - `data-slot`: `job-step`
 - Also accepts the props of HTMLAttributes
@@ -26,7 +26,7 @@
 
 ```tsx
 import * as React from "react";
-import { JobBanner } from "@sutra/ui/ai";
+import { JobBanner } from "@cleanprompt/sutra-ui/ai";
 
 function JobBannerDemo() {
   const [phase, setPhase] = React.useState(0);

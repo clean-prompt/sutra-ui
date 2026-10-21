@@ -2,7 +2,7 @@
 
 > Triage cards one at a time: drag the top card and it flies away (past 90 px or on a flick) or springs back, with a tilt of 0.05 degrees per px and the cards behind stepping up the stack as it goes. The same choices are Skip and Keep buttons, the arrow keys and Enter on the focused deck, and Ctrl or Command + Z or the Undo button takes the last swipe back (the card flies in again). `start` and `end` follow the reading direction, `onSwipe(side, item, index)` reports each choice, `onEmpty` fires after the last card, `index` / `defaultIndex` / `onIndexChange` control the position. Screen readers get a labelled group, the top card as "Card 2 of 8" and a polite announcement per swipe; the cards behind are `inert`. Built on `useDrag`, so a drag writes CSS variables and never re-renders; reduced motion drops the flight (a swipe just changes the card).
 
-- Import: `import { SwipeDeck } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { SwipeDeck } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/swipe-deck` (patterns)
 - `data-slot`: `swipe-deck`, `swipe-deck-stage`, `swipe-deck-empty`, `swipe-deck-actions`, `swipe-deck-card`, `swipe-deck-stamp`
 - Also accepts the props of HTMLAttributes
@@ -91,7 +91,7 @@ Server render: same markup as the client. The server renders the top card and th
 ## Example
 
 ```tsx
-import { SwipeDeck } from "@sutra/ui";
+import { SwipeDeck } from "@cleanprompt/sutra-ui";
 
 const invoices = [
   { id: "inv-12", vendor: "Northwind Traders", amount: "$1,240.00" },

@@ -2,7 +2,7 @@
 
 > "⊙ Goal · 3/20 turns · title" with a turn-budget bar and pause / clear.
 
-- Import: `import { GoalStatusRow } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { GoalStatusRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/status-stack` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 

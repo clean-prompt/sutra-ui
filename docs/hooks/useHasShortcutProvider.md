@@ -2,7 +2,7 @@
 
 > True when rendered inside a `ShortcutProvider`.
 
-- Import: `import { useHasShortcutProvider } from "@sutra/ui/suite"`
+- Import: `import { useHasShortcutProvider } from "@cleanprompt/sutra-ui/suite"`
 - Source: `packages/ui/src/hooks/use-shortcut-manager`
 
 ## Signature

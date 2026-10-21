@@ -28,7 +28,7 @@ It renders in full from `schema` and `value`; ids come from the path, so server 
 ## Example
 ```tsx
 import { useState } from "react";
-import { NestedValueEditor } from "@sutra/ui";
+import { NestedValueEditor } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [value, setValue] = useState<unknown>({ name: "Maya", tags: ["design"] });

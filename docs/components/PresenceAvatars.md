@@ -2,7 +2,7 @@
 
 > Live collaborator stack: colored rings, status dots, tooltips and a "+N" popover listing everyone.
 
-- Import: `import { PresenceAvatars } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { PresenceAvatars } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/kits/social/presence` (kit `social`)
 - `data-slot`: `presence-avatars`, `presence-avatar`
 - Also accepts the props of HTMLAttributes

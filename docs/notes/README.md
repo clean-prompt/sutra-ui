@@ -48,7 +48,7 @@ What the server HTML contains and what appears only after mount.
 
 - A component with no keyboard interaction writes one sentence instead of the table ("Not focusable: no keyboard interaction.").
 - Leave out `## Slots` when the module renders no `data-slot` (the generated reference lists slots anyway).
-- `## Example` (optional) holds one ```tsx block: a small, self-contained module (its own `import` lines from `@sutra/ui` and an `export function Example()`), at most 30 lines,
+- `## Example` (optional) holds one ```tsx block: a small, self-contained module (its own `import` lines from `@cleanprompt/sutra-ui` and an `export function Example()`), at most 30 lines,
   realistic and minimal (the props someone reaches for first, not every option). It is type-checked against the real source by
   `node packages/ui/scripts/gen-docs.mjs --notes-types [Name ...]` and `test/docs-note-examples.test.ts`, so a wrong prop name fails. It replaces the demo-derived
   example in `docs/components/<Name>.md` and shows under the notes in the playground.

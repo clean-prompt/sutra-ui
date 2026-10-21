@@ -44,7 +44,7 @@ Plain markup from props with a `useId` id; the same on server and client. `anima
 
 ## Example
 ```tsx
-import { StatCard, StatGroup } from "@sutra/ui";
+import { StatCard, StatGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

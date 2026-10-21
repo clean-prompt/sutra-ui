@@ -2,7 +2,7 @@
 
 > Folds consecutive low-signal calls into one row ("Explored 6 files"), expandable to list them.
 
-- Import: `import { ToolGroup } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ToolGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline-steps` (kit `agent`)
 - `data-slot`: `tool-group`
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
@@ -27,8 +27,8 @@
 
 ```tsx
 import * as React from "react";
-import { ToolGroup, ToolTimeline, ToolTimelineItem } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
+import { ToolGroup, ToolTimeline, ToolTimelineItem } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function ToolGroupDemo() {
   const [done, setDone] = React.useState(false);

@@ -1,4 +1,4 @@
-/* @sutra/ui/media: video and audio players, media controls, queue, poster/album cards, shelves, cast picker. */
+/* @cleanprompt/sutra-ui/media: video and audio players, media controls, queue, poster/album cards, shelves, cast picker. */
 export * from "../kits/media/media-controls";
 export * from "../kits/media/video-player";
 export * from "../kits/media/audio-player";

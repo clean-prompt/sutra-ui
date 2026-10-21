@@ -2,7 +2,7 @@
 
 > Input-like button that opens a calendar plus a `TimePicker` to pick a local date and time. Time-zone agnostic: the value is wall-clock time in the user's zone, like `datetime-local`.
 
-- Import: `import { DateTimePicker } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { DateTimePicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/date-picker-datetime` (primitives)
 
 ## Props
@@ -95,7 +95,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 
 ```tsx
 import * as React from "react";
-import { DateTimePicker, Field, FieldLabel } from "@sutra/ui";
+import { DateTimePicker, Field, FieldLabel } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [start, setStart] = React.useState<Date | undefined>();

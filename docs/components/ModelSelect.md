@@ -2,7 +2,7 @@
 
 > Flat model list in a popover: state glyphs, wait hints, badges, search, grouping, untagged disclosure and per-model warm-up.
 
-- Import: `import { ModelSelect } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ModelSelect } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/model-select` (kit `ai`)
 - Parts: [`ModelSelectOption`](ModelSelectOption.md)
 

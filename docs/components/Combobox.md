@@ -2,7 +2,7 @@
 
 > Searchable select built on Popover + cmdk, with multi-select chips and creatable options.
 
-- Import: `import { Combobox } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Combobox } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/combobox` (primitives)
 - `data-slot`: `combobox-announcer`, `combobox-clear`, `combobox-empty`, `combobox-loading`
 
@@ -115,7 +115,7 @@ Server render: same markup as the client. The trigger renders on the server with
 
 ```tsx
 import * as React from "react";
-import { Combobox, Field, FieldLabel } from "@sutra/ui";
+import { Combobox, Field, FieldLabel } from "@cleanprompt/sutra-ui";
 
 const countries = [
   { value: "de", label: "Germany" },

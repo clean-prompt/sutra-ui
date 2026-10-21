@@ -2,7 +2,7 @@
 
 > View options menu with sort radio items, direction and checkbox filters.
 
-- Import: `import { SortFilterMenu } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { SortFilterMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/dropdown-menu-blocks` (blocks)
 
 ## Props

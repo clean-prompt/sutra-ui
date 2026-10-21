@@ -2,7 +2,7 @@
 
 > Text-glyph spinner (braille dots, arcs, …): a preset of `<Spinner variant="glyph">`. Holds a static frame under reduced motion.
 
-- Import: `import { GlyphSpinner } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { GlyphSpinner } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/glyph-spinner` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -52,7 +52,7 @@ Server render: same markup as the client. Always renders frame 0 first: the pref
 ## Example
 
 ```tsx
-import { GlyphSpinner } from "@sutra/ui";
+import { GlyphSpinner } from "@cleanprompt/sutra-ui";
 
 export function Example({ running }: { running: boolean }) {
   return (

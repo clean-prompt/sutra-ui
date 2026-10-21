@@ -2,7 +2,7 @@
 
 > Compact diff preview card: file header with stats, capped unified diff, expand and optional accept / reject.
 
-- Import: `import { DiffCard } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { DiffCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/patterns/diff-viewer-card` (patterns)
 - `data-slot`: `diff-card`
 - Also accepts the props of HTMLAttributes
@@ -33,8 +33,8 @@
 
 ```tsx
 import * as React from "react";
-import { EditToolBody } from "@sutra/ui/agent";
-import { DiffCard } from "@sutra/ui/editor";
+import { EditToolBody } from "@cleanprompt/sutra-ui/agent";
+import { DiffCard } from "@cleanprompt/sutra-ui/editor";
 
 function DiffCardDemo() {
   const [decision, setDecision] = React.useState<string | null>(null);

@@ -2,7 +2,7 @@
 
 > Interpreter mode: two speakers left/right with live state, and a log of original + translated turns.
 
-- Import: `import { ConversationTurns } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { ConversationTurns } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/translate-conversation` (kit `voice`)
 - Also accepts the props of HTMLAttributes
 
@@ -21,7 +21,7 @@
 
 ```tsx
 import * as React from "react";
-import { ConversationTurns } from "@sutra/ui/voice";
+import { ConversationTurns } from "@cleanprompt/sutra-ui/voice";
 
 function ConversationDemo() {
   const [turns, setTurns] = React.useState<ConversationTurn[]>([]);

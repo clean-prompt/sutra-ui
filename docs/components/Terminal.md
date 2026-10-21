@@ -2,7 +2,7 @@
 
 > xterm.js terminal (lazy-loaded) themed from Sutra tokens, with fit-on-resize, connection overlay and fullscreen.
 
-- Import: `import { Terminal } from "@sutra/ui/terminal"`
+- Import: `import { Terminal } from "@cleanprompt/sutra-ui/terminal"`
 - Source: `packages/ui/src/kits/terminal/terminal` (kit `terminal`)
 - `data-slot`: `terminal`
 - Parts: [`TerminalSessionPicker`](TerminalSessionPicker.md)

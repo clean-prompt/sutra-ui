@@ -4,7 +4,7 @@
 // explicit (no wildcard), and no `*-internal` module of dist may be resolvable through it.
 // A second phase imports every subpath again in a Node process whose resolver HIDES every optional peer
 // (`peerDependenciesMeta`): a subpath that crashes there, other than the ones in ENTRY_PEERS below, would break
-// an app that installs only some of the peers (this is how `@sutra/ui/editor` once failed without TipTap).
+// an app that installs only some of the peers (this is how `@cleanprompt/sutra-ui/editor` once failed without TipTap).
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";

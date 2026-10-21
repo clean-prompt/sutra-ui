@@ -2,7 +2,7 @@
 
 > Branch name chip: icon, head-truncated name, optional status dot and copy button.
 
-- Import: `import { BranchPill } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { BranchPill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/git-review-changes` (kit `agent`)
 - `data-slot`: `branch-pill`
 - Also accepts the props of HTMLAttributes
@@ -20,7 +20,7 @@
 ## Example (live: `#/components/browser-review/branch-pill` in the playground)
 
 ```tsx
-import { BranchPill } from "@sutra/ui/agent";
+import { BranchPill } from "@cleanprompt/sutra-ui/agent";
 
 <BranchPill name="main" status="clean" />
 <BranchPill name="feature/agent-browser-artifacts-and-git-review" status="dirty" />

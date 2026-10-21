@@ -2,7 +2,7 @@
 
 > Extension detail: breadcrumbs, hero, copyable install command, facts sidebar, capabilities, security note, screenshots, README and more from the author.
 
-- Import: `import { ExtensionDetailPage } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { ExtensionDetailPage } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/marketing-blocks-detail` (blocks)
 - Also accepts the props of HTMLAttributes
 
@@ -21,8 +21,8 @@
 ## Example (live: `#/components/billing-marketing/extension-detail` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { RiArrowLeftLine } from "@sutra/ui/icons";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiArrowLeftLine } from "@cleanprompt/sutra-ui/icons";
 
 <div className="flex flex-col gap-3">
   {selected !== "deep-search" && (

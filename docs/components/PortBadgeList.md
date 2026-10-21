@@ -2,7 +2,7 @@
 
 > A row of port badges with a "+N" overflow chip that names the hidden ports to screen readers and on hover.
 
-- Import: `import { PortBadgeList } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { PortBadgeList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/primitives/port-badge` (primitives)
 - `data-slot`: `port-badge-list`, `port-badge-overflow`
 - Part of [`PortBadge`](PortBadge.md)
@@ -29,7 +29,7 @@ See the notes in [`PortBadge`](PortBadge.md#notes).
 ## Example
 
 ```tsx
-import { PortBadge, PortBadgeList } from "@sutra/ui";
+import { PortBadge, PortBadgeList } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

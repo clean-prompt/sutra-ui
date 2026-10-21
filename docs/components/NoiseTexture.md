@@ -2,7 +2,7 @@
 
 > A film-grain overlay, absolutely positioned over its container.
 
-- Import: `import { NoiseTexture } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { NoiseTexture } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/backgrounds` (assets)
 - Also accepts the props of SVGAttributes
 

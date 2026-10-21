@@ -2,7 +2,7 @@
 
 > Date calendar built on react-day-picker v9. Supports single, multiple and range modes. The ref goes to the root element.
 
-- Import: `import { Calendar } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Calendar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/calendar` (primitives)
 - Also accepts the props of PropsBase, PropsMulti, PropsRange, PropsSingle
 
@@ -61,7 +61,7 @@ Server render: part of it fills in after mount. The grid renders on the server. 
 
 ```tsx
 import * as React from "react";
-import { Calendar } from "@sutra/ui";
+import { Calendar } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());

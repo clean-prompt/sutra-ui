@@ -2,7 +2,7 @@
 
 > See `AnimatedListInner`: the generic cast keeps `ref` and the item type together.
 
-- Import: `import { AnimatedList } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { AnimatedList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/animated-list` (patterns)
 - `data-slot`: `animated-list`, `animated-list-item`, `animated-list-content`
 - Also accepts the props of HTMLAttributes
@@ -25,7 +25,7 @@
 ## Example (live: `#/foundations/colors/animated-list` in the playground)
 
 ```tsx
-import { CodeBlock } from "@sutra/ui/ai";
+import { CodeBlock } from "@cleanprompt/sutra-ui/ai";
 
 function MotionLists() {
   return (

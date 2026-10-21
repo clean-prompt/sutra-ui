@@ -2,7 +2,7 @@
 
 > Sign-in fallback: open the URL, paste the code back, submit.
 
-- Import: `import { PasteCodeAuth } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { PasteCodeAuth } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-onboarding` (kit `agent`)
 - `data-slot`: `paste-code-auth`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 ## Example (live: `#/components/agent-sessions/paste-code-auth` in the playground)
 
 ```tsx
-import { PasteCodeAuth } from "@sutra/ui/agent";
+import { PasteCodeAuth } from "@cleanprompt/sutra-ui/agent";
 
 function PasteCodeAuthDemo() {
   return (

@@ -2,7 +2,7 @@
 
 > Usage dashboard: range switch, KPI tiles, daily bars, per-model bars, wait vs generate and finish reasons.
 
-- Import: `import { UsageSummary } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { UsageSummary } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/usage-summary` (kit `ai`)
 - `data-slot`: `usage-summary`
 - Also accepts the props of HTMLAttributes
@@ -21,7 +21,7 @@
 
 ```tsx
 import * as React from "react";
-import { UsageSummary } from "@sutra/ui/ai";
+import { UsageSummary } from "@cleanprompt/sutra-ui/ai";
 
 function UsageSummaryDemo() {
   const days = React.useMemo(makeUsage, []);

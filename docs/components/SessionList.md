@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `DeviceSessionList`.
 
-- Import: `import { SessionList } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SessionList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/kits/identity/device-sessions` (kit `identity`)
 - Also accepts the props of HTMLAttributes
 

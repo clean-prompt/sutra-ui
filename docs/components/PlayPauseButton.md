@@ -2,7 +2,7 @@
 
 > Round play/pause toggle whose icon morphs between the two states.
 
-- Import: `import { PlayPauseButton } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { PlayPauseButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-controls-playback` (kit `media`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
@@ -36,7 +36,7 @@ import {
   SkipButton,
   TrackCycleChip,
   VolumeControl,
-} from "@sutra/ui/media";
+} from "@cleanprompt/sutra-ui/media";
 
 function ControlsDemo() {
   const [time, setTime] = React.useState(65);

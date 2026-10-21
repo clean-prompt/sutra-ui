@@ -37,9 +37,9 @@ Highlighting is a pure function of `code` and `language`, so the server renders 
 
 ## Example
 ```tsx
-import { CodeBlock } from "@sutra/ui";
+import { CodeBlock } from "@cleanprompt/sutra-ui";
 
-const code = `import { Button } from "@sutra/ui";
+const code = `import { Button } from "@cleanprompt/sutra-ui";
 
 export function Save() {
   return <Button type="submit">Save changes</Button>;

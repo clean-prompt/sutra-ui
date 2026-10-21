@@ -44,7 +44,7 @@ The input and the slots render on the server from `value` or `defaultValue`; the
 ## Example
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldLabel, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@sutra/ui";
+import { Field, FieldDescription, FieldLabel, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [code, setCode] = React.useState("");

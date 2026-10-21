@@ -2,7 +2,7 @@
 
 > A counter that is 0 until `value` changes, then goes up by one per change. Use it as a `key` (and as the switch for an entrance class) to animate a value only when it changes, never on the first render:
 
-- Import: `import { useChangeKey } from "@sutra/ui/tokens"`
+- Import: `import { useChangeKey } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-change-key`
 
 ## Signature

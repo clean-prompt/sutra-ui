@@ -2,7 +2,7 @@
 
 > "+12 −3" change summary with a tiny proportional bar.
 
-- Import: `import { DiffStat } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { DiffStat } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/patterns/diff-viewer-card` (patterns)
 - `data-slot`: `diff-stat`
 - Also accepts the props of HTMLAttributes
@@ -19,7 +19,7 @@
 ## Example (live: `#/components/agent-timeline/diff-stat` in the playground)
 
 ```tsx
-import { DiffStat } from "@sutra/ui/editor";
+import { DiffStat } from "@cleanprompt/sutra-ui/editor";
 
 function DiffStatDemo() {
   return (

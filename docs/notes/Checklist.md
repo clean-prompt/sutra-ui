@@ -37,7 +37,7 @@ Plain markup from `items` or `defaultItems`. New ids come from `createId` only w
 ## Example
 ```tsx
 import * as React from "react";
-import { Checklist, type ChecklistEntry } from "@sutra/ui";
+import { Checklist, type ChecklistEntry } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [items, setItems] = React.useState<ChecklistEntry[]>([

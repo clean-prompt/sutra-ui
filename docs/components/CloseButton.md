@@ -2,7 +2,7 @@
 
 > Icon-only "X" button for dismissing dialogs, alerts and toasts, and (`shape="pill"`) removing a chip or tag.
 
-- Import: `import { CloseButton } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { CloseButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/close-button` (primitives)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
@@ -64,7 +64,7 @@ Server render: same markup as the client. Plain markup with no browser API, so t
 
 ```tsx
 import * as React from "react";
-import { CloseButton } from "@sutra/ui";
+import { CloseButton } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [tipOpen, setTipOpen] = React.useState(true);

@@ -1,4 +1,4 @@
-/* @sutra/ui/suite: keyboard shortcuts and suite-native components (mentions, backlinks, quick capture, timeline, sync). */
+/* @cleanprompt/sutra-ui/suite: keyboard shortcuts and suite-native components (mentions, backlinks, quick capture, timeline, sync). */
 export * from "../patterns/shortcuts";
 export * from "../kits/workspace/entity-mention";
 export * from "../kits/workspace/backlinks";

@@ -2,7 +2,7 @@
 
 > Collapsible tool-call card with state badge, input and output. Children replace the default body.
 
-- Import: `import { ChatTool } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatTool } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-tool` (kit `ai`)
 - `data-slot`: `chat-tool`, `chat-tool-trigger`, `chat-tool-content`
 - Parts: [`ChatToolApproval`](ChatToolApproval.md), [`ChatToolStateBadge`](ChatToolStateBadge.md)
@@ -54,9 +54,9 @@ Status pill for a tool call (a StatusBadge preset with a per-state icon).
 
 ```tsx
 import * as React from "react";
-import { ChatTool, ChatToolApproval } from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
-import { RiSearchLine, RiTerminalBoxLine } from "@sutra/ui/icons";
+import { ChatTool, ChatToolApproval } from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiSearchLine, RiTerminalBoxLine } from "@cleanprompt/sutra-ui/icons";
 
 function ChatToolDemo() {
   const [approval, setApproval] = React.useState<ChatToolApprovalStatus>("pending");

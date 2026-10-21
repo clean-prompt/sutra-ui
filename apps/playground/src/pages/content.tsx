@@ -20,8 +20,8 @@ import {
   ToggleButton,
   type AccordionVariant,
   type FAQEntry,
-} from "@sutra/ui";
-import { RiBankCardLine, RiLockLine, RiRefund2Line, RiShieldCheckLine, RiTeamLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiBankCardLine, RiLockLine, RiRefund2Line, RiShieldCheckLine, RiTeamLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 const accordionItems = [
@@ -223,7 +223,7 @@ const faqWithIcons: FAQEntry[] = [
 ];
 
 const componentCode = `import { useState } from "react";
-import { Button, toast } from "@sutra/ui";
+import { Button, toast } from "@cleanprompt/sutra-ui";
 
 export function SaveButton({ onSave }: { onSave: () => Promise<void> }) {
   const [saving, setSaving] = useState(false);
@@ -248,21 +248,21 @@ export function SaveButton({ onSave }: { onSave: () => Promise<void> }) {
 const shellCode = `# Create a new app and add Sutra UI
 pnpm create vite my-app --template react-ts
 cd my-app
-pnpm add @sutra/ui
+pnpm add @cleanprompt/sutra-ui
 pnpm dev --port 3000`;
 
 const cssCode = `@import "tailwindcss";
-@import "@sutra/ui/styles.css";
+@import "@cleanprompt/sutra-ui/styles.css";
 
 :root {
   --radius-control: 9999px;
 }`;
 
 const installTabs = [
-  { label: "npm", language: "bash", code: "npm install @sutra/ui" },
-  { label: "pnpm", language: "bash", code: "pnpm add @sutra/ui" },
-  { label: "yarn", language: "bash", code: "yarn add @sutra/ui" },
-  { label: "bun", language: "bash", code: "bun add @sutra/ui" },
+  { label: "npm", language: "bash", code: "npm install @cleanprompt/sutra-ui" },
+  { label: "pnpm", language: "bash", code: "pnpm add @cleanprompt/sutra-ui" },
+  { label: "yarn", language: "bash", code: "yarn add @cleanprompt/sutra-ui" },
+  { label: "bun", language: "bash", code: "bun add @cleanprompt/sutra-ui" },
 ];
 
 const fileTabs = [
@@ -270,7 +270,7 @@ const fileTabs = [
     label: "app.tsx",
     language: "tsx",
     highlightLines: [5],
-    code: `import { Toaster } from "@sutra/ui";
+    code: `import { Toaster } from "@cleanprompt/sutra-ui";
 
 export function App() {
   return (
@@ -284,7 +284,7 @@ export function App() {
     code: `{
   "name": "my-app",
   "dependencies": {
-    "@sutra/ui": "^1.0.0",
+    "@cleanprompt/sutra-ui": "^1.0.0",
     "react": "^19.0.0"
   }
 }`,
@@ -528,7 +528,7 @@ export function ContentPage() {
           <div className="space-y-2">
             <DemoLabel>Inline copy</DemoLabel>
             <div className="flex flex-col items-start gap-3">
-              <InlineCopy value="pnpm add @sutra/ui" />
+              <InlineCopy value="pnpm add @cleanprompt/sutra-ui" />
               <InlineCopy value="npx sutra init" theme="dark" size="lg" />
             </div>
           </div>

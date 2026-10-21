@@ -2,7 +2,7 @@
 
 > Hosted vs local radio cards with pros and cons.
 
-- Import: `import { ConnectionMethodChooser } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ConnectionMethodChooser } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/mcp-connectors` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes, RadioGroupProps, PrimitivePropsWithRef
 
@@ -20,7 +20,7 @@
 ## Example (live: `#/components/capabilities/connection-method` in the playground)
 
 ```tsx
-import { ConnectionMethodChooser } from "@sutra/ui/agent-admin";
+import { ConnectionMethodChooser } from "@cleanprompt/sutra-ui/agent-admin";
 
 <ConnectionMethodChooser className="max-w-2xl" />
 ```

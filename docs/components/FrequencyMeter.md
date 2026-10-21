@@ -2,7 +2,7 @@
 
 > Three-bar "how common is this word" indicator.
 
-- Import: `import { FrequencyMeter } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { FrequencyMeter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/translate-dictionary` (kit `voice`)
 - Also accepts the props of HTMLAttributes
 

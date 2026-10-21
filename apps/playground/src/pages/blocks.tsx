@@ -1,7 +1,7 @@
 import * as React from "react";
-import { cn, Badge, Button, Heading, Text } from "@sutra/ui";
-import { blockRegistry as registryEntries } from "@sutra/ui/blocks/registry";
-import { RiCollapseDiagonalLine, RiExpandDiagonalLine } from "@sutra/ui/icons";
+import { cn, Badge, Button, Heading, Text } from "@cleanprompt/sutra-ui";
+import { blockRegistry as registryEntries } from "@cleanprompt/sutra-ui/blocks/registry";
+import { RiCollapseDiagonalLine, RiExpandDiagonalLine } from "@cleanprompt/sutra-ui/icons";
 import { PageIntro } from "../components/demo";
 import { ViewportFrame } from "../components/viewport-frame";
 

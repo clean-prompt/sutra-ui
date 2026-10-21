@@ -2,7 +2,7 @@
 
 > Ordered primary + fallback models: reorder, add through the picker, remove.
 
-- Import: `import { FallbackChainEditor } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { FallbackChainEditor } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/model-routing-chains` (kit `agent-admin`)
 - `data-slot`: `fallback-chain-editor`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { FallbackChainEditor } from "@sutra/ui/agent-admin";
+import { FallbackChainEditor } from "@cleanprompt/sutra-ui/agent-admin";
 
 function FallbackDemo() {
   const [chain, setChain] = React.useState<ModelRef[]>([

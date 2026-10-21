@@ -19,8 +19,8 @@ import {
   usePrefersReducedMotion,
   useSpringValue,
   type SpringName,
-} from "@sutra/ui";
-import { RiAddLine, RiCloseLine, RiDeleteBinLine, RiRefreshLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiAddLine, RiCloseLine, RiDeleteBinLine, RiRefreshLine } from "@cleanprompt/sutra-ui/icons";
 import { DemoLabel } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

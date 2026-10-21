@@ -2,7 +2,7 @@
 
 > A row of reaction pills with an add-reaction button that opens an emoji picker.
 
-- Import: `import { EmojiReactionBar } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { EmojiReactionBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/emoji-reactions` (assets)
 - Part of [`EmojiReaction`](EmojiReaction.md)
 - Also accepts the props of HTMLAttributes
@@ -30,7 +30,7 @@ See the notes in [`EmojiReaction`](EmojiReaction.md#notes).
 ## Example
 
 ```tsx
-import { EmojiReactionBar } from "@sutra/ui";
+import { EmojiReactionBar } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

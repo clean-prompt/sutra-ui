@@ -46,8 +46,8 @@ Plain markup with no browser API, so server and client output match.
 
 ## Example
 ```tsx
-import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@sutra/ui";
-import { RiMailLine, RiSettings3Line } from "@sutra/ui/icons";
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@cleanprompt/sutra-ui";
+import { RiMailLine, RiSettings3Line } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

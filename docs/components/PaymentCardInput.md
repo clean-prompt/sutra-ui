@@ -2,7 +2,7 @@
 
 > Card number / expiry / CVC fields with auto-formatting, brand mark, validation and auto-advance.
 
-- Import: `import { PaymentCardInput } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { PaymentCardInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/billing/payment-card` (kit `billing`)
 - `data-slot`: `payment-card-input`
 - Part of [`PaymentCard`](PaymentCard.md)
@@ -25,7 +25,7 @@
 
 ```tsx
 import * as React from "react";
-import { PaymentCard, PaymentCardInput, validateCardNumber } from "@sutra/ui/security";
+import { PaymentCard, PaymentCardInput, validateCardNumber } from "@cleanprompt/sutra-ui/security";
 
 function PaymentCardInputDemo() {
   const [value, setValue] = React.useState<PaymentCardValue>({ number: "", expiry: "", cvc: "" });

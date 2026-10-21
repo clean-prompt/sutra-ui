@@ -2,7 +2,7 @@
 
 > Compact remaining-quota bar with threshold colors and a reset-time tooltip.
 
-- Import: `import { ProviderQuotaChip } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProviderQuotaChip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers-logo` (kit `agent-admin`)
 - `data-slot`: `provider-quota-chip`
 - Also accepts the props of HTMLAttributes
@@ -21,7 +21,7 @@
 ## Example (live: `#/components/providers/provider-quota-chip` in the playground)
 
 ```tsx
-import { ProviderQuotaChip } from "@sutra/ui/agent-admin";
+import { ProviderQuotaChip } from "@cleanprompt/sutra-ui/agent-admin";
 
 <ProviderQuotaChip used={20} resetsAt={NOW + 3 * HOUR} label="Session" />
 <ProviderQuotaChip used={80} resetsAt={NOW + 26 * HOUR} label="Weekly" />

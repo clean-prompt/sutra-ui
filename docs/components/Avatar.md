@@ -2,7 +2,7 @@
 
 > User avatar with image, initials fallback, status dot and verified badge. The fallback is labelled with `alt` or `name`. For square tiles that stand for apps, providers or tools, use `Monogram`.
 
-- Import: `import { Avatar } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Avatar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/avatar` (primitives)
 - Parts: [`AvatarContext`](AvatarContext.md), [`AvatarFallback`](AvatarFallback.md), [`AvatarImage`](AvatarImage.md), [`AvatarLabelGroup`](AvatarLabelGroup.md)
 - Also accepts the props of HTMLAttributes
@@ -88,7 +88,7 @@ Server render: part of it fills in after mount. Without `src` the initials rende
 ## Example
 
 ```tsx
-import { Avatar, AvatarLabelGroup } from "@sutra/ui";
+import { Avatar, AvatarLabelGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

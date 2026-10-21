@@ -2,7 +2,7 @@
 
 > An avatar for anyone in a Sutra room: people (photo or drawn initials), agents and machines (a Sutra mascot head whose face follows the presence) and apps (the Bead app tiles), with presence drawn as a shaped mark or as a bead on a thread. Ink in the paper style, the seed tint in the stock style. Decorative unless it has a name.
 
-- Import: `import { IdentityAvatar } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { IdentityAvatar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/patterns/identity-avatar` (patterns)
 - `data-slot`: `identity-avatar`
 - Also accepts the props of HTMLAttributes
@@ -67,7 +67,7 @@ Server render: part of it fills in after mount. The markup is the same on the se
 ## Example
 
 ```tsx
-import { IdentityAvatar } from "@sutra/ui";
+import { IdentityAvatar } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

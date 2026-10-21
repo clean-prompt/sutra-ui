@@ -2,7 +2,7 @@
 
 > Fixed-height windowing: which rows of a long list are inside (or near) the viewport.
 
-- Import: `import { useVirtualRows } from "@sutra/ui/ops"`
+- Import: `import { useVirtualRows } from "@cleanprompt/sutra-ui/ops"`
 - Source: `packages/ui/src/hooks/use-virtual-rows`
 
 ## Signature

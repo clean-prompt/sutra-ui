@@ -2,7 +2,7 @@
 
 > QR code in a card with a caption, copyable link and an optional expiry countdown.
 
-- Import: `import { QRCodeCard } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { QRCodeCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/kits/identity/qr-code` (kit `identity`)
 - `data-slot`: `qr-code-card`, `qr-code-card-frame`
 - Part of [`QRCode`](QRCode.md)
@@ -32,8 +32,8 @@
 ## Example (live: `#/components/identity/qr-code` in the playground)
 
 ```tsx
-import { SutraAppIcon, SutraMark } from "@sutra/ui/assets";
-import { QRCode, QRCodeCard } from "@sutra/ui/identity";
+import { SutraAppIcon, SutraMark } from "@cleanprompt/sutra-ui/assets";
+import { QRCode, QRCodeCard } from "@cleanprompt/sutra-ui/identity";
 
 <div className="flex flex-wrap items-start gap-8">
   <QRCodeCard

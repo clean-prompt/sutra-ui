@@ -15,8 +15,8 @@ import {
   type QuestionAnswers,
   type QuestionItem,
   type RewindFileChange,
-} from "@sutra/ui";
-import { RiArrowUpLine, RiAttachment2, RiRefreshLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiArrowUpLine, RiAttachment2, RiRefreshLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /** Anchor ids of the demos on this page. */
@@ -137,7 +137,7 @@ function BashPermissionDemo() {
         preview={
           <div className="flex flex-col gap-1.5">
             <pre className="overflow-x-auto rounded-md border border-border bg-subtle px-3 py-2 font-mono text-xs leading-5">
-              <span className="select-none text-muted-foreground">$ </span>pnpm test --filter @sutra/ui -- --run
+              <span className="select-none text-muted-foreground">$ </span>pnpm test --filter @cleanprompt/sutra-ui -- --run
             </pre>
             <p className="text-xs text-muted-foreground">Run the UI package test suite once</p>
           </div>

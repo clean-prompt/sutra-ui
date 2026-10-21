@@ -2,7 +2,7 @@
 
 > Health probe status (a live StatusBadge preset): checking spinner, healthy + latency, unreachable + reason, or not configured.
 
-- Import: `import { BackendHealthPill } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { BackendHealthPill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/backends` (kit `agent-admin`)
 - `data-slot`: `backend-health`
 - Also accepts the props of HTMLAttributes

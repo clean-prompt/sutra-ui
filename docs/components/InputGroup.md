@@ -2,7 +2,7 @@
 
 > A container that looks like a single input and hosts addons around a control.
 
-- Import: `import { InputGroup } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { InputGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/input-group` (primitives)
 - `data-slot`: `input-group`
 - Parts: [`InputGroupAddon`](InputGroupAddon.md), [`InputGroupButton`](InputGroupButton.md), [`InputGroupInput`](InputGroupInput.md), [`InputGroupText`](InputGroupText.md), [`InputGroupTextarea`](InputGroupTextarea.md)
@@ -113,8 +113,8 @@ Server render: same markup as the client. Plain markup with no browser API or mo
 ## Example
 
 ```tsx
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@sutra/ui";
-import { RiFileCopyLine } from "@sutra/ui/icons";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "@cleanprompt/sutra-ui";
+import { RiFileCopyLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const link = "sutra.dev/share/q3-report";

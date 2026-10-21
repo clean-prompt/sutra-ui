@@ -39,7 +39,7 @@ import {
   type IconComponent,
   type SutraLogoSize,
   type SutraMarkVariant,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAddLine,
   RiAlarmLine,
@@ -91,7 +91,7 @@ import {
   RiUploadLine,
   RiUserLine,
   RiSparklingLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { MascotChatDemo, MascotDemo } from "../demos/mascot-demos";
 
@@ -464,7 +464,7 @@ function IconsDemo() {
     <Demo
       id="icons"
       title="Icons"
-      description="Every Remix icon is re-exported from @sutra/ui/icons. Wrap one in Icon for token sizes and tones. Click a tile to copy its name."
+      description="Every Remix icon is re-exported from @cleanprompt/sutra-ui/icons. Wrap one in Icon for token sizes and tones. Click a tile to copy its name."
       align="start"
       canvasClassName="gap-6"
     >

@@ -2,7 +2,7 @@
 
 > Star rating input with hover preview, half steps and radiogroup keyboard support.
 
-- Import: `import { Rating } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Rating } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/rating` (primitives)
 - Parts: [`RatingSummary`](RatingSummary.md)
 - Also accepts the props of HTMLAttributes
@@ -89,7 +89,7 @@ Server render: same markup as the client. Plain markup with no browser API at re
 
 ```tsx
 import * as React from "react";
-import { Rating } from "@sutra/ui";
+import { Rating } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [stars, setStars] = React.useState(4);

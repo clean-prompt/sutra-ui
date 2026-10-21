@@ -2,7 +2,7 @@
 
 > Execution backend radio cards with live health probes, re-check and configure actions.
 
-- Import: `import { BackendPicker } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { BackendPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/backends` (kit `agent-admin`)
 - `data-slot`: `backend-picker`, `backend-card`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { BackendPicker } from "@sutra/ui/agent-admin";
+import { BackendPicker } from "@cleanprompt/sutra-ui/agent-admin";
 
 function BackendDemo() {
   const [value, setValue] = React.useState("local");

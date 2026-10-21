@@ -2,7 +2,7 @@
 
 > OAuth sign-in button with the provider's logo. Defaults to "Continue with {Provider}".
 
-- Import: `import { SocialButton } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { SocialButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/social-button` (primitives)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
@@ -67,7 +67,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 
 ```tsx
 import * as React from "react";
-import { SocialButton } from "@sutra/ui";
+import { SocialButton } from "@cleanprompt/sutra-ui";
 
 export function Example({ signIn }: { signIn: (provider: "google" | "github") => Promise<void> }) {
   const [pending, setPending] = React.useState<"google" | "github" | null>(null);

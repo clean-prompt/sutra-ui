@@ -18,7 +18,7 @@ export const radiusModes = ["rounded", "pill", "square"] as const;
 /** One of the radius preset names. */
 export type RadiusMode = (typeof radiusModes)[number];
 
-/** Visual styles. `default` is the stock look; `paper` (`@sutra/ui/paper.css`) is calm, monochrome and flat. */
+/** Visual styles. `default` is the stock look; `paper` (`@cleanprompt/sutra-ui/paper.css`) is calm, monochrome and flat. */
 export const themeStyles = ["default", "paper"] as const;
 /** One of the visual style names. */
 export type ThemeStyle = (typeof themeStyles)[number];

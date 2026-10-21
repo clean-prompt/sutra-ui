@@ -2,7 +2,7 @@
 
 > Grouped settings navigation; collapses into a select on small screens.
 
-- Import: `import { SettingsSidebar } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { SettingsSidebar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/sidebar-navigation-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

@@ -34,7 +34,7 @@ Plain markup with no browser API, so the server and client output match.
 ## Example
 ```tsx
 import * as React from "react";
-import { CloseButton } from "@sutra/ui";
+import { CloseButton } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [tipOpen, setTipOpen] = React.useState(true);

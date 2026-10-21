@@ -2,7 +2,7 @@
 
 > 12-column responsive grid (4 → 8 → 12 columns). Use `GridItem span` to size children.
 
-- Import: `import { Grid } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Grid } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/layout` (primitives)
 - Parts: [`GridItem`](GridItem.md)
 - Also accepts the props of HTMLAttributes
@@ -60,7 +60,7 @@ Server render: same markup as the client. Plain markup; the column counts come f
 ## Example
 
 ```tsx
-import { Card, CardContent, CardHeader, CardTitle, Grid, GridItem } from "@sutra/ui";
+import { Card, CardContent, CardHeader, CardTitle, Grid, GridItem } from "@cleanprompt/sutra-ui";
 
 const stats = [
   { label: "Active users", value: "1,284" },

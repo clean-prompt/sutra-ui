@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CommandGroup, CommandItem, CommandPaletteFromRegistry } from "@sutra/ui";
+import { CommandGroup, CommandItem, CommandPaletteFromRegistry } from "@cleanprompt/sutra-ui";
 import { activeStatus } from "../nav";
 import { NavBadge } from "./nav-badge";
 import { RECENT_PREFIX, SEP, paletteEntries, paletteFilter, type PaletteEntry } from "./nav-search";

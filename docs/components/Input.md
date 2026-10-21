@@ -2,7 +2,7 @@
 
 > Text input with optional icons, text addons and a clear button. Consumes `Field` context.
 
-- Import: `import { Input } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Input } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/input` (primitives)
 - `data-slot`: `input`, `input-wrapper`
 - Also accepts the props of HTMLAttributes, InputHTMLAttributes
@@ -82,7 +82,7 @@ Server render: part of it fills in after mount. `Input` and `PasswordInput` rend
 
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, Input } from "@sutra/ui";
+import { Field, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [site, setSite] = React.useState("");

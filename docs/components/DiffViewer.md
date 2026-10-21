@@ -2,7 +2,7 @@
 
 > Text comparison: inline (track-changes style, word-level inside changed lines) or split side-by-side with line numbers. Collapses unchanged regions, colors changes by author and navigates changes with n / p (or j / k, ] / [).
 
-- Import: `import { DiffViewer } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { DiffViewer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/patterns/diff-viewer` (patterns)
 - `data-slot`: `diff-viewer`
 - Also accepts the props of HTMLAttributes
@@ -36,8 +36,8 @@
 ## Example (live: `#/components/agent-permissions/edit-permission` in the playground)
 
 ```tsx
-import { PermissionPrompt } from "@sutra/ui/agent";
-import { DiffViewer } from "@sutra/ui/editor";
+import { PermissionPrompt } from "@cleanprompt/sutra-ui/agent";
+import { DiffViewer } from "@cleanprompt/sutra-ui/editor";
 
 function EditPermissionDemo() {
   const d = useDecision();

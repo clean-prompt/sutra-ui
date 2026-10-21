@@ -2,7 +2,7 @@
 
 > Multi-step onboarding with a step indicator, content slots and Back/Next navigation.
 
-- Import: `import { OnboardingDialog } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { OnboardingDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/modal-dialog-blocks-onboarding` (blocks)
 
 ## Props

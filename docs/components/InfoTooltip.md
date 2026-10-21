@@ -2,7 +2,7 @@
 
 > Small (i) / (?) icon button that reveals a title + description tooltip.
 
-- Import: `import { InfoTooltip } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { InfoTooltip } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/info-tooltip` (primitives)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
@@ -62,7 +62,7 @@ Server render: same markup as the client. Only the button renders on the server;
 ## Example
 
 ```tsx
-import { Field, FieldLabel, InfoTooltip, Input } from "@sutra/ui";
+import { Field, FieldLabel, InfoTooltip, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

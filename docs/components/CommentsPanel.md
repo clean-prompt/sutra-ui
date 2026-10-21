@@ -2,7 +2,7 @@
 
 > Side panel of comment threads anchored to quoted excerpts, with Open / Resolved / All filters and a selection composer.
 
-- Import: `import { CommentsPanel } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { CommentsPanel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/patterns/comments` (patterns)
 - `data-slot`: `comments-panel`
 - Also accepts the props of HTMLAttributes
@@ -35,7 +35,7 @@
 
 ```tsx
 import * as React from "react";
-import { CommentsPanel } from "@sutra/ui/editor";
+import { CommentsPanel } from "@cleanprompt/sutra-ui/editor";
 
 function CommentsDemo() {
   const [threads, setThreads] = React.useState(initialThreads);

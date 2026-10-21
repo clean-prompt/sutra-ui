@@ -2,7 +2,7 @@
 
 > Side sheet to configure a toolset: on/off, backend provider, credentials and a post-setup install step.
 
-- Import: `import { ToolsetProviderDrawer } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ToolsetProviderDrawer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/tool-toggles` (kit `agent-admin`)
 
 ## Props

@@ -2,7 +2,7 @@
 
 > Form generated from a JSON-Schema-like object: nested sections, arrays, validation, section nav + search, and debounced autosave.
 
-- Import: `import { SchemaForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SchemaForm } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/patterns/schema-form` (patterns)
 - `data-slot`: `schema-form-section`, `schema-form`, `schema-form-nav`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
@@ -76,7 +76,7 @@ Server render: same markup as the client. The form renders in full from the sche
 ## Example
 
 ```tsx
-import { SchemaForm, type SchemaFormSchema } from "@sutra/ui";
+import { SchemaForm, type SchemaFormSchema } from "@cleanprompt/sutra-ui";
 
 const schema: SchemaFormSchema = {
   type: "object",

@@ -27,7 +27,7 @@ Plain markup with no browser API, so server and client output match. The size st
 
 ## Example
 ```tsx
-import { Heading, Text } from "@sutra/ui";
+import { Heading, Text } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

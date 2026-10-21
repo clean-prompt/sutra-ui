@@ -2,7 +2,7 @@
 
 > Inline text link with underline styles and optional external indicator. With `onClick` and no `href` (or `as="button"`) it renders a button that reads as part of the sentence. For a standalone action use `Button variant="link"`.
 
-- Import: `import { TextLink } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { TextLink } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/text-link` (primitives)
 - Also accepts the props of HTMLAttributes, AnchorHTMLAttributes
 
@@ -67,7 +67,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { TextLink } from "@sutra/ui";
+import { TextLink } from "@cleanprompt/sutra-ui";
 
 export function Example({ onResend }: { onResend: () => void }) {
   return (

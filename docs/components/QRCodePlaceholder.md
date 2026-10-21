@@ -4,7 +4,7 @@
 
 **Deprecated:** **Not scannable**: the modules are random noise, so a phone camera reads nothing (and it is still announced as "QR code"). For anything a user might scan, use `QRCode` (or `QRCodeCard`) from `components/qr-code`, which encodes a real value. Kept only for static mockups.
 
-- Import: `import { QRCodePlaceholder } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { QRCodePlaceholder } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/qr-placeholder` (assets)
 - Also accepts the props of HTMLAttributes
 

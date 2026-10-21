@@ -2,7 +2,7 @@
 
 > Per-provider show/hide switches for models, custom model ids and reset.
 
-- Import: `import { ModelVisibilityManager } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ModelVisibilityManager } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/model-routing-visibility` (kit `agent-admin`)
 - `data-slot`: `model-visibility-manager`, `visibility-count`
 - Also accepts the props of HTMLAttributes
@@ -20,7 +20,7 @@
 ## Example (live: `#/components/providers/model-visibility` in the playground)
 
 ```tsx
-import { ModelVisibilityManager } from "@sutra/ui/agent-admin";
+import { ModelVisibilityManager } from "@cleanprompt/sutra-ui/agent-admin";
 
 <ModelVisibilityManager className="max-w-xl" providers={routing.filter((p) => p.models.length > 0)} defaultValue={{ hidden: ["corvid/c5-mini"], custom: [] }} />
 ```

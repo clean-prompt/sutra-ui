@@ -2,7 +2,7 @@
 
 > A compact emoji picker with categories, keyword search and recently used emoji.
 
-- Import: `import { EmojiPicker } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { EmojiPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/emoji-reactions` (assets)
 - `data-slot`: `emoji-picker`
 - Also accepts the props of HTMLAttributes
@@ -75,7 +75,7 @@ Server render: same markup as the client. The markup is the same on the server a
 ## Example
 
 ```tsx
-import { EmojiReactionBar } from "@sutra/ui";
+import { EmojiReactionBar } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

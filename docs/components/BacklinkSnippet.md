@@ -2,7 +2,7 @@
 
 > Snippet with case-insensitive matches wrapped in <mark>.
 
-- Import: `import { BacklinkSnippet } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { BacklinkSnippet } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/backlinks` (kit `workspace`)
 - `data-slot`: `backlink-snippet`
 - Also accepts the props of HTMLAttributes

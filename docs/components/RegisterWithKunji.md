@@ -2,7 +2,7 @@
 
 > First-time kunji registration: handle with live rules, name, invite code, then awaiting approval if needed.
 
-- Import: `import { RegisterWithKunji } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { RegisterWithKunji } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/blocks/kunji-blocks-register` (blocks)
 - `data-slot`: `register-with-kunji`
 - Also accepts the props of HTMLAttributes
@@ -25,7 +25,7 @@
 ## Example (live: `#/components/kunji/register-with-kunji` in the playground)
 
 ```tsx
-import { RegisterWithKunji } from "@sutra/ui/kunji";
+import { RegisterWithKunji } from "@cleanprompt/sutra-ui/kunji";
 
 <RegisterWithKunji joinPolicy="invite" suggestedName="Maya Patel" sub="9f2c41d07be35a18c6e04f9d2b7a13c58e6f0d4a" onSubmit={() => new Promise((r) => setTimeout(() => r({ pending: true }), 700))} />
 <RegisterWithKunji firstAdmin />

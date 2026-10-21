@@ -2,7 +2,7 @@
 
 > Web fetch / search body: favicon, domain, title and an optional excerpt.
 
-- Import: `import { WebToolBody } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { WebToolBody } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline-bodies` (kit `agent`)
 - `data-slot`: `web-tool-body`
 - Also accepts the props of HTMLAttributes

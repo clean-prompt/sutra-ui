@@ -2,7 +2,7 @@
 
 > Form on the left; full-bleed image or illustration slot on the right.
 
-- Import: `import { AuthImagePage } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { AuthImagePage } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/auth-pages` (blocks)
 - Also accepts the props of HTMLAttributes
 

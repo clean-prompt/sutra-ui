@@ -35,7 +35,7 @@ The provider renders only its children on the server: no dialog exists until `co
 ## Example
 ```tsx
 import * as React from "react";
-import { Button, DialogProvider, useDialogs } from "@sutra/ui";
+import { Button, DialogProvider, useDialogs } from "@cleanprompt/sutra-ui";
 
 function ProjectActions() {
   const { confirm, prompt } = useDialogs();

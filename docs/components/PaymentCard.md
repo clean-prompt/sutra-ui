@@ -2,7 +2,7 @@
 
 > Card visual with brand detection, masked/revealable number, and a flip to the CVV side.
 
-- Import: `import { PaymentCard } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { PaymentCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/billing/payment-card` (kit `billing`)
 - `data-slot`: `payment-card`, `payment-card-number`, `payment-card-cvv`
 - Parts: [`PaymentCardInput`](PaymentCardInput.md)
@@ -50,7 +50,7 @@ Card number / expiry / CVC fields with auto-formatting, brand mark, validation a
 ## Example (live: `#/components/security/payment-card` in the playground)
 
 ```tsx
-import { PaymentCard } from "@sutra/ui/security";
+import { PaymentCard } from "@cleanprompt/sutra-ui/security";
 
 <PaymentCard number="4242424242424242" holder="Vyom Patel" expiry="08/29" cvv="123" issuer="Sutra Bank" />
 <PaymentCard number="5555555555554444" holder="Vyom Patel" expiry="02/28" cvv="907" issuer="Travel" />

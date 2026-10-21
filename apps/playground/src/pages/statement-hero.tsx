@@ -8,8 +8,8 @@ import {
   SutraMark,
   formatBytes,
   type StatementHeroProps,
-} from "@sutra/ui";
-import { RiArrowRightLine, RiFileUploadLine, RiShieldCheckLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiArrowRightLine, RiFileUploadLine, RiShieldCheckLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

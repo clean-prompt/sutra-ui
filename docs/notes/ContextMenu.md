@@ -39,9 +39,9 @@ The trigger span renders on the server; the menu does not exist until a `context
 ## Example
 ```tsx
 import * as React from "react";
-import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem } from "@sutra/ui";
-import { ContextMenuSeparator, ContextMenuTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiFileCopyLine } from "@sutra/ui/icons";
+import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem } from "@cleanprompt/sutra-ui";
+import { ContextMenuSeparator, ContextMenuTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiFileCopyLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onCopy, onDelete }: { onCopy: () => void; onDelete: () => void }) {
   const [starred, setStarred] = React.useState(false);

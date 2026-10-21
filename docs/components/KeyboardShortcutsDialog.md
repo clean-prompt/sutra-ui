@@ -2,7 +2,7 @@
 
 > Searchable reference of keyboard shortcuts, grouped, rendered with Kbd keys. A preset over `ShortcutsDialog`: it lists the live shortcut registry, or the static `groups` (keys written with mac glyphs keep rendering as glyphs).
 
-- Import: `import { KeyboardShortcutsDialog } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { KeyboardShortcutsDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/modal-dialog-blocks-shortcuts` (blocks)
 
 ## Props

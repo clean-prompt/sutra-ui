@@ -2,7 +2,7 @@
 
 > One step on the reasoning timeline. Children render under the label (e.g. search results).
 
-- Import: `import { ChainOfThoughtStep } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChainOfThoughtStep } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chain-of-thought` (kit `ai`)
 - Part of [`ChainOfThought`](ChainOfThought.md)
 - Also accepts the props of HTMLAttributes
@@ -26,8 +26,8 @@ import {
   ChainOfThoughtStep,
   ThinkingExpandAllProvider,
   ThinkingToggle,
-} from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
+} from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function ThinkingDemo() {
   const [streaming, setStreaming] = React.useState(true);

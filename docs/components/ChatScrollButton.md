@@ -2,7 +2,7 @@
 
 > Floating "jump to latest" button, shown when the viewport is scrolled away from the bottom.
 
-- Import: `import { ChatScrollButton } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatScrollButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-conversation` (kit `ai`)
 - `data-slot`: `chat-scroll-button`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes

@@ -2,7 +2,7 @@
 
 > Hover card root (preview on hover, e.g. user cards and link previews).
 
-- Import: `import { HoverCard } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { HoverCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/popover` (primitives)
 - Parts: [`HoverCardContent`](HoverCardContent.md), [`HoverCardTrigger`](HoverCardTrigger.md)
 - Also accepts the props of HoverCardProps
@@ -64,7 +64,7 @@ Server render: same markup as the client. Only the trigger renders on the server
 ## Example
 
 ```tsx
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@sutra/ui";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

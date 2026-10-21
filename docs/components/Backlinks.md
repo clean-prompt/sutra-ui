@@ -2,7 +2,7 @@
 
 > "Linked from N items" panel: backlinks grouped by app with highlighted context snippets.
 
-- Import: `import { Backlinks } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { Backlinks } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/backlinks` (kit `workspace`)
 - `data-slot`: `backlinks`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 ## Example (live: `#/components/suite/backlinks` in the playground)
 
 ```tsx
-import { Backlinks } from "@sutra/ui/suite";
+import { Backlinks } from "@cleanprompt/sutra-ui/suite";
 
 <div className="@container w-full">
   <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2">

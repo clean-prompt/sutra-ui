@@ -2,7 +2,7 @@
 
 > Declaratively contribute `children` to a slot while mounted. Renders nothing in place. Registers once per slot/id/order/source; later `children` updates re-render only the filled content.
 
-- Import: `import { SlotFill } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SlotFill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/slot-outlet` (kit `agent-admin`)
 
 ## Props

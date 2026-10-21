@@ -2,7 +2,7 @@
 
 > Tabs root. `variant`, `size` and `accent` flow to every list and trigger inside.
 
-- Import: `import { Tabs } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { Tabs } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/tabs` (primitives)
 - Parts: [`TabsContent`](TabsContent.md), [`TabsList`](TabsList.md), [`TabsTrigger`](TabsTrigger.md)
 - Also accepts the props of HTMLAttributes, TabsProps, PrimitivePropsWithRef
@@ -79,7 +79,7 @@ Server render: part of it fills in after mount. The server renders the tabs, the
 ## Example
 
 ```tsx
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@sutra/ui";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

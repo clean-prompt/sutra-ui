@@ -2,7 +2,7 @@
 
 > Local-first sync indicator with a tooltip explaining the state and last sync time.
 
-- Import: `import { SyncStatus } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { SyncStatus } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/sync-status` (kit `workspace`)
 - `data-slot`: `sync-status`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -23,8 +23,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { ConflictResolver, OfflineBanner, SyncStatus } from "@sutra/ui/suite";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { ConflictResolver, OfflineBanner, SyncStatus } from "@cleanprompt/sutra-ui/suite";
 
 function SyncDemo() {
   const [conflictOpen, setConflictOpen] = React.useState(false);

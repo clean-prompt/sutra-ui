@@ -2,7 +2,7 @@
 
 > One connected app/agent: icon, granted scope count, last activity and expiry.
 
-- Import: `import { ConnectedAppRow } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { ConnectedAppRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/connected-apps` (kit `identity`)
 - `data-slot`: `connected-app-row`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes

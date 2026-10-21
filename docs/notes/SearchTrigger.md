@@ -38,7 +38,7 @@ The shortcut chips depend on the platform: the server and the hydrating client r
 ## Example
 ```tsx
 import * as React from "react";
-import { CommandDialog, CommandEmpty, CommandInput, CommandList, SearchTrigger } from "@sutra/ui";
+import { CommandDialog, CommandEmpty, CommandInput, CommandList, SearchTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

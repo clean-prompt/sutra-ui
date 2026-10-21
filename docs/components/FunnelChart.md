@@ -2,7 +2,7 @@
 
 > Funnel chart: stage names and values at the left, the narrowing shape at the right, keyboard and tooltip readouts.
 
-- Import: `import { FunnelChart } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { FunnelChart } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/chart-funnel` (patterns)
 - `data-slot`: `chart-skeleton`, `chart-stage`, `chart-stage-label`
 - Also accepts the props of HTMLAttributes
@@ -32,7 +32,7 @@
 ## Example (live: `#/components/dataviz/funnel-chart` in the playground)
 
 ```tsx
-import { FunnelChart } from "@sutra/ui/dataviz";
+import { FunnelChart } from "@cleanprompt/sutra-ui/dataviz";
 
 <div className="@container space-y-8">
   <div className="grid grid-cols-1 gap-8 @2xl:grid-cols-2">

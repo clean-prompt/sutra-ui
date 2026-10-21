@@ -2,7 +2,7 @@
 
 > Add/edit an MCP server: stdio (command, args, env) or HTTP/SSE (url, headers, auth), with JSON paste + validation.
 
-- Import: `import { McpServerForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { McpServerForm } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/mcp-server-form` (kit `agent-admin`)
 - `data-slot`: `mcp-server-form`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
@@ -24,7 +24,7 @@
 
 ```tsx
 import * as React from "react";
-import { McpServerForm } from "@sutra/ui/agent-admin";
+import { McpServerForm } from "@cleanprompt/sutra-ui/agent-admin";
 
 function McpFormDemo() {
   const [last, setLast] = React.useState<McpServerConfig | null>(null);

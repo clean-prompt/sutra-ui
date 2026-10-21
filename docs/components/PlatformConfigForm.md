@@ -2,7 +2,7 @@
 
 > Env-var style settings form for a channel, with per-platform ID validation and paste-splitting allowlists.
 
-- Import: `import { PlatformConfigForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { PlatformConfigForm } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/channels-config-form` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
 
@@ -21,8 +21,8 @@
 
 ```tsx
 import * as React from "react";
-import { PlatformConfigForm, PlatformIcon } from "@sutra/ui/agent-admin";
-import { SimpleSelect } from "@sutra/ui/forms";
+import { PlatformConfigForm, PlatformIcon } from "@cleanprompt/sutra-ui/agent-admin";
+import { SimpleSelect } from "@cleanprompt/sutra-ui/forms";
 
 function ConfigFormDemo() {
   const [platform, setPlatform] = React.useState<ChannelPlatform>("telegram");

@@ -2,7 +2,7 @@
 
 > Lifecycle mark: shape, not colour, carries the state (filled, outline, spinning ring, moon, warning, download).
 
-- Import: `import { ModelStateGlyph } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { ModelStateGlyph } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ai/model-state` (kit `ai`)
 - `data-slot`: `model-state-glyph`
 - Also accepts the props of SVGAttributes

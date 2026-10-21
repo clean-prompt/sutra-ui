@@ -2,7 +2,7 @@
 
 > Centered card on a dotted background, with the logo above and footer links below.
 
-- Import: `import { AuthCenteredPage } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { AuthCenteredPage } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/auth-pages` (blocks)
 - Also accepts the props of HTMLAttributes
 

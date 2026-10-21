@@ -2,7 +2,7 @@
 
 > Create-key dialog: name, scopes, expiry and permissions, then a show-once secret.
 
-- Import: `import { ApiKeyCreateDialog } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { ApiKeyCreateDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/api-keys` (kit `identity`)
 
 ## Props
@@ -27,9 +27,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RiAddLine } from "@sutra/ui/icons";
-import { ApiKeyCreateDialog, ApiKeyList, ApiKeyUsage } from "@sutra/ui/security";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";
+import { ApiKeyCreateDialog, ApiKeyList, ApiKeyUsage } from "@cleanprompt/sutra-ui/security";
 
 function ApiKeysDemo() {
   const [keys, setKeys] = React.useState(initialKeys);

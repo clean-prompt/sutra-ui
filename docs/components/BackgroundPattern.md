@@ -2,7 +2,7 @@
 
 > Absolutely positioned decorative pattern with a soft fade mask.
 
-- Import: `import { BackgroundPattern } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { BackgroundPattern } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/backgrounds` (assets)
 - Also accepts the props of HTMLAttributes
 
@@ -18,9 +18,9 @@
 ## Example (live: `#/components/assets/background-pattern` in the playground)
 
 ```tsx
-import { BackgroundPattern, SutraMark } from "@sutra/ui/assets";
-import { Button, Heading, Text } from "@sutra/ui/core";
-import { RiArrowRightLine } from "@sutra/ui/icons";
+import { BackgroundPattern, SutraMark } from "@cleanprompt/sutra-ui/assets";
+import { Button, Heading, Text } from "@cleanprompt/sutra-ui/core";
+import { RiArrowRightLine } from "@cleanprompt/sutra-ui/icons";
 
 function BackgroundPatternDemo() {
   return (

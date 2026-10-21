@@ -2,7 +2,7 @@
 
 > Access sidebar state. Must be used inside `SidebarProvider`.
 
-- Import: `import { useSidebar } from "@sutra/ui/navigation"`
+- Import: `import { useSidebar } from "@cleanprompt/sutra-ui/navigation"`
 - Source: `packages/ui/src/patterns/sidebar-navigation`
 
 ## Signature

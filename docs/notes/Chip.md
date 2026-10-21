@@ -37,7 +37,7 @@ Plain markup with no browser API, so server and client output match, including s
 ## Example
 ```tsx
 import * as React from "react";
-import { Chip, ChipGroup } from "@sutra/ui";
+import { Chip, ChipGroup } from "@cleanprompt/sutra-ui";
 
 const topics = ["Design", "Engineering", "Research", "Support"];
 

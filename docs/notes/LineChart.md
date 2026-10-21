@@ -51,7 +51,7 @@ The full SVG renders on the server, but at the fixed fallback width of 600 px: t
 
 ## Example
 ```tsx
-import { LineChart } from "@sutra/ui";
+import { LineChart } from "@cleanprompt/sutra-ui";
 
 const latency = [
   { day: "Mon", median: 90, p95: 210 },

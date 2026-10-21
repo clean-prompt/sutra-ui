@@ -2,7 +2,7 @@
 
 > Top area (brand, workspace switcher).
 
-- Import: `import { SidebarHeader } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-header`
 - Part of [`Sidebar`](Sidebar.md)

@@ -2,7 +2,7 @@
 
 > Review summary: average score, stars, count and a 5→1 distribution chart.
 
-- Import: `import { RatingSummary } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { RatingSummary } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/rating` (primitives)
 - Part of [`Rating`](Rating.md)
 - Also accepts the props of HTMLAttributes
@@ -26,7 +26,7 @@ See the notes in [`Rating`](Rating.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Rating } from "@sutra/ui";
+import { Rating } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [stars, setStars] = React.useState(4);

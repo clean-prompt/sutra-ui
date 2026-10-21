@@ -2,7 +2,7 @@
 
 > Infrastructure regions on a world map or globe: markers toned by status and sized by load, replication/traffic links as arcs, a status legend with counts, a sortable region table whose rows select the marker, and a detail panel (status, incident, load meter, latency and node readings, links, actions) for the selected region.
 
-- Import: `import { RegionStatusMap } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { RegionStatusMap } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/region-status-map` (kit `ops`)
 - `data-slot`: `region-status-map`, `region-status-empty`, `region-status-map-canvas`, `region-status-panel`
 - Also accepts the props of HTMLAttributes
@@ -37,7 +37,7 @@
 ## Example (live: `#/components/region-map/empty` in the playground)
 
 ```tsx
-import { RegionStatusMap } from "@sutra/ui/ops";
+import { RegionStatusMap } from "@cleanprompt/sutra-ui/ops";
 
 function EmptyDemo() {
   return <RegionStatusMap regions={[]} />;

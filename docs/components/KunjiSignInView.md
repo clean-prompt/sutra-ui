@@ -2,7 +2,7 @@
 
 > Presentational kunji sign-in: QR with logo plate, countdown, steps, code fallback, deep link and per-state status.
 
-- Import: `import { KunjiSignInView } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { KunjiSignInView } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/kits/identity/kunji-sign-in` (kit `identity`)
 - `data-slot`: `kunji-deep-link`, `kunji-code`, `kunji-code-value`, `kunji-success`, `kunji-sign-in`, `kunji-identity`, `kunji-status`
 - Part of [`KunjiSignIn`](KunjiSignIn.md)
@@ -38,7 +38,7 @@
 ## Example (live: `#/components/kunji/kunji-states` in the playground)
 
 ```tsx
-import { KunjiSignInView } from "@sutra/ui/kunji";
+import { KunjiSignInView } from "@cleanprompt/sutra-ui/kunji";
 
 <div className="@container w-full">
   <div className="grid grid-cols-1 gap-6 @2xl:grid-cols-2 @6xl:grid-cols-3">

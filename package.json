@@ -3,8 +3,8 @@
   "private": true,
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "build": "pnpm --filter @sutra/ui build",
-    "dev": "pnpm --filter @sutra/ui dev",
+    "build": "pnpm --filter @cleanprompt/sutra-ui build",
+    "dev": "pnpm --filter @cleanprompt/sutra-ui dev",
     "playground": "pnpm --filter playground dev",
     "typecheck": "pnpm -r typecheck",
     "audit:all": "pnpm --filter playground audit:all",
@@ -13,8 +13,8 @@
     "docs:check": "node packages/ui/scripts/gen-docs.mjs --check && node packages/ui/scripts/gen-llms.mjs --check",
     "docs:baseline": "node packages/ui/scripts/gen-docs.mjs --update-baseline",
     "docs:conventions-hash": "node packages/ui/scripts/gen-llms.mjs --update-conventions-hash",
-    "rtl:codemod": "pnpm --filter @sutra/ui rtl:codemod",
+    "rtl:codemod": "pnpm --filter @cleanprompt/sutra-ui rtl:codemod",
     "audit:canvas-snap": "pnpm --filter playground audit:canvas-snap",
-    "verify": "pnpm --filter @sutra/ui verify && pnpm --filter playground typecheck && pnpm --filter playground build"
+    "verify": "pnpm --filter @cleanprompt/sutra-ui verify && pnpm --filter playground typecheck && pnpm --filter playground build"
   }
 }

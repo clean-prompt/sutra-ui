@@ -2,7 +2,7 @@
 
 > A document icon with a folded corner and a colored file-extension label.
 
-- Import: `import { FileFormatIcon } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { FileFormatIcon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/file-format` (assets)
 - `data-slot`: `file-format-icon`
 - Also accepts the props of SVGAttributes
@@ -22,7 +22,7 @@
 ## Example (live: `#/components/assets/file-format-icons` in the playground)
 
 ```tsx
-import { FileFormatIcon, getFileCategory } from "@sutra/ui/assets";
+import { FileFormatIcon, getFileCategory } from "@cleanprompt/sutra-ui/assets";
 
 function FileFormatIconsDemo() {
   return (

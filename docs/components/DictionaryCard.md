@@ -2,7 +2,7 @@
 
 > Dictionary entry: word, phonetic, frequency and senses grouped by part of speech with examples.
 
-- Import: `import { DictionaryCard } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { DictionaryCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/translate-dictionary` (kit `voice`)
 - Also accepts the props of HTMLAttributes
 
@@ -20,7 +20,7 @@
 ## Example (live: `#/components/voice/dictionary` in the playground)
 
 ```tsx
-import { DictionaryCard } from "@sutra/ui/voice";
+import { DictionaryCard } from "@cleanprompt/sutra-ui/voice";
 
 function DictionaryDemo() {
   return (

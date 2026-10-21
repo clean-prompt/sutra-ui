@@ -2,7 +2,7 @@
 
 > Renders every contribution registered for `name`, in order, each isolated by an error boundary.
 
-- Import: `import { SlotOutlet } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SlotOutlet } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/slot-outlet` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 
@@ -19,9 +19,14 @@
 
 ```tsx
 import * as React from "react";
-import { SlotFill, SlotOutlet, SlotProvider, createSlotRegistry } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiTimeLine } from "@sutra/ui/icons";
+import {
+  SlotFill,
+  SlotOutlet,
+  SlotProvider,
+  createSlotRegistry,
+} from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiTimeLine } from "@cleanprompt/sutra-ui/icons";
 
 function SlotDemo() {
   const [registry] = React.useState(() =>

@@ -2,7 +2,7 @@
 
 > One provider: monogram logo, auth method, status, token expiry, model count, quota and actions.
 
-- Import: `import { ProviderRow } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProviderRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers` (kit `agent-admin`)
 - `data-slot`: `provider-row`, `provider-auth`, `provider-expiry`, `provider-model-count`
 - Also accepts the props of HTMLAttributes

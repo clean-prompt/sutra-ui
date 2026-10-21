@@ -2,7 +2,7 @@
 
 > `AlertRuleEditor` in a dialog; the draft resets every time it opens (the content unmounts when closed).
 
-- Import: `import { AlertRuleDialog } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { AlertRuleDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/alert-rules-dialog` (kit `system`)
 
 ## Props

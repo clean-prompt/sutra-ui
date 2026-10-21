@@ -2,7 +2,7 @@
 
 > Horizontally scrolling row of attachments.
 
-- Import: `import { ChatAttachmentList } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatAttachmentList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-attachment` (kit `ai`)
 - `data-slot`: `chat-attachment-list`
 - Part of [`ChatAttachment`](ChatAttachment.md)
@@ -15,7 +15,7 @@ No props of its own.
 ## Example
 
 ```tsx
-import { ChatAttachment, ChatAttachmentList } from "@sutra/ui/ai";
+import { ChatAttachment, ChatAttachmentList } from "@cleanprompt/sutra-ui/ai";
 
 function AttachmentDemo() {
   return (

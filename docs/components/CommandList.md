@@ -2,7 +2,7 @@
 
 > Scrollable results list; animates its height as results change. While no item matches, the (then option-less) listbox is hidden and the `CommandEmpty` message shows in a polite live region beside it, because a listbox without options is invalid ARIA.
 
-- Import: `import { CommandList } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { CommandList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/patterns/command-menu` (patterns)
 - `data-slot`: `command-empty`
 - Part of [`Command`](Command.md)
@@ -20,7 +20,7 @@ See the notes in [`Command`](Command.md#notes).
 
 ```tsx
 import * as React from "react";
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@sutra/ui";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

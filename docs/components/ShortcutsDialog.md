@@ -2,7 +2,7 @@
 
 > Cheat sheet auto-populated from the shortcut registry, with search. Opens with shift+? by default.
 
-- Import: `import { ShortcutsDialog } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { ShortcutsDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/patterns/shortcuts` (patterns)
 - `data-slot`: `shortcuts-dialog-list`, `shortcuts-dialog-group`
 

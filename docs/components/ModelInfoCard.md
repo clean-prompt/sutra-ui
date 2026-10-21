@@ -2,7 +2,7 @@
 
 > Model details: provider, effective context (override vs auto), capabilities, pricing, cutoff, notes.
 
-- Import: `import { ModelInfoCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ModelInfoCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
 - `data-slot`: `model-info-card`, `effective-context`
 - Also accepts the props of HTMLAttributes
@@ -20,7 +20,7 @@
 
 ```tsx
 import * as React from "react";
-import { ModelInfoCard } from "@sutra/ui/agent-admin";
+import { ModelInfoCard } from "@cleanprompt/sutra-ui/agent-admin";
 
 function ModelInfoDemo() {
   const [override, setOverride] = React.useState<number | null>(null);

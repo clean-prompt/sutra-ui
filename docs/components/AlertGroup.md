@@ -2,7 +2,7 @@
 
 > Collapsible grouped alert banner: severity summary, sorted list, per-item and bulk dismiss.
 
-- Import: `import { AlertGroup } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { AlertGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/alert-group` (kit `ops`)
 - `data-slot`: `alert-group`
 - Also accepts the props of HTMLAttributes
@@ -29,9 +29,9 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RiRefreshLine } from "@sutra/ui/icons";
-import { AlertGroup } from "@sutra/ui/ops";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiRefreshLine } from "@cleanprompt/sutra-ui/icons";
+import { AlertGroup } from "@cleanprompt/sutra-ui/ops";
 
 function AlertGroupDemo() {
   const [dismissed, setDismissed] = React.useState<string[]>([]);

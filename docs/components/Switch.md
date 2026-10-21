@@ -2,7 +2,7 @@
 
 > Toggle switch with a springy thumb and optional thumb icons. Consumes `Field` context.
 
-- Import: `import { Switch } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Switch } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/switch` (primitives)
 - `data-slot`: `switch`, `switch-thumb`
 - Parts: [`SwitchField`](SwitchField.md), [`SwitchGroup`](SwitchGroup.md)
@@ -108,7 +108,7 @@ Server render: same markup as the client. Plain markup: the state comes from `ch
 
 ```tsx
 import * as React from "react";
-import { SwitchField } from "@sutra/ui";
+import { SwitchField } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [digest, setDigest] = React.useState(true);

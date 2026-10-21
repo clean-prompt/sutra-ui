@@ -2,7 +2,7 @@
 
 > Composer pill summarizing thinking / fast / effort, with a popover of toggles and an EffortSlider.
 
-- Import: `import { ReasoningPill } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ReasoningPill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
 - `data-slot`: `reasoning-pill`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -23,9 +23,9 @@
 
 ```tsx
 import * as React from "react";
-import { ProviderModelPickerPopover, ReasoningPill } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiAttachment2, RiSendPlaneFill } from "@sutra/ui/icons";
+import { ProviderModelPickerPopover, ReasoningPill } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiAttachment2, RiSendPlaneFill } from "@cleanprompt/sutra-ui/icons";
 
 function ComposerDemo() {
   const [reasoning, setReasoning] = React.useState<ReasoningSettings>({ thinking: true, fast: false, effort: "high" });

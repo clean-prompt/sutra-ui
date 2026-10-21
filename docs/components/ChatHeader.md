@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `MessengerHeader` (the AI `Chat*` components are a separate family).
 
-- Import: `import { ChatHeader } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { ChatHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/social/messenger` (kit `social`)
 - Also accepts the props of HTMLAttributes
 

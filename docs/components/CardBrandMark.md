@@ -2,7 +2,7 @@
 
 > Plain typographic brand mark (no logos).
 
-- Import: `import { CardBrandMark } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { CardBrandMark } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/billing/payment-card` (kit `billing`)
 - `data-slot`: `card-brand-mark`
 - Also accepts the props of HTMLAttributes

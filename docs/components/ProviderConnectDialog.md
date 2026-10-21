@@ -2,7 +2,7 @@
 
 > Connect a provider via OAuth device code, PKCE paste-code or an API key.
 
-- Import: `import { ProviderConnectDialog } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProviderConnectDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers-connect` (kit `agent-admin`)
 - `data-slot`: `device-approved`, `device-waiting`, `device-user-code`, `device-countdown`, `api-key-result`
 
@@ -29,9 +29,9 @@
 
 ```tsx
 import * as React from "react";
-import { ProviderConnectDialog } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiShieldKeyholeLine } from "@sutra/ui/icons";
+import { ProviderConnectDialog } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiShieldKeyholeLine } from "@cleanprompt/sutra-ui/icons";
 
 function ConnectDialogDemo() {
   const [open, setOpen] = React.useState<null | "oauth" | "short">(null);

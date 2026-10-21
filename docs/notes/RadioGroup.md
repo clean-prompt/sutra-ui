@@ -44,7 +44,7 @@ Items and the group render on the server, including `value` and `defaultValue`. 
 ## Example
 ```tsx
 import * as React from "react";
-import { RadioField, RadioGroup } from "@sutra/ui";
+import { RadioField, RadioGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [plan, setPlan] = React.useState("team");

@@ -26,7 +26,7 @@ Plain markup with no browser API. The ratio is a padding-bottom on a wrapper (no
 
 ## Example
 ```tsx
-import { AspectRatio } from "@sutra/ui";
+import { AspectRatio } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

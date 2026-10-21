@@ -40,7 +40,7 @@ Plain markup from props (`useId` for the list id). The chip popover is portalled
 ## Example
 ```tsx
 import * as React from "react";
-import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "@sutra/ui";
+import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [query, setQuery] = React.useState("");

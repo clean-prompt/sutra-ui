@@ -2,7 +2,7 @@
 
 > Tool list with per-tool switches, filters, bulk actions, policy locks and a sticky unsaved-changes footer.
 
-- Import: `import { ToolToggleList } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ToolToggleList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/tool-toggles` (kit `agent-admin`)
 - `data-slot`: `tool-toggle-list`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 
 ```tsx
 import * as React from "react";
-import { ToolToggleList } from "@sutra/ui/agent-admin";
+import { ToolToggleList } from "@cleanprompt/sutra-ui/agent-admin";
 
 function ToolListDemo() {
   const [tools, setTools] = React.useState(TOOLS);

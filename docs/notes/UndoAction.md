@@ -37,8 +37,8 @@ No browser API at render: the deadline starts in a layout effect after mount, an
 
 ## Example
 ```tsx
-import { UndoAction } from "@sutra/ui";
-import { RiDeleteBinLine } from "@sutra/ui/icons";
+import { UndoAction } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ deleteProject }: { deleteProject: () => Promise<unknown> }) {
   return (

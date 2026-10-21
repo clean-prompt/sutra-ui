@@ -38,7 +38,7 @@ The server renders every tab (`visibleCount` starts at the item count and no Mor
 ## Example
 ```tsx
 import * as React from "react";
-import { TabDropdown } from "@sutra/ui";
+import { TabDropdown } from "@cleanprompt/sutra-ui";
 
 const sections = [
   { value: "overview", label: "Overview" },

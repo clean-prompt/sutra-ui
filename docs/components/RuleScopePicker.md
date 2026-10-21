@@ -2,7 +2,7 @@
 
 > Inline destination link ("in this session ▾") that opens a menu of rule scopes.
 
-- Import: `import { RuleScopePicker } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { RuleScopePicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/ai/permission-prompt` (kit `ai`)
 - `data-slot`: `rule-scope-picker`
 - Also accepts the props of HTMLAttributes

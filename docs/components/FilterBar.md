@@ -2,7 +2,7 @@
 
 > Toolbar row for lists and tables: search, filter chips and actions.
 
-- Import: `import { FilterBar } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FilterBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - `data-slot`: `filter-bar`
 - Parts: [`FilterBarActive`](FilterBarActive.md), [`FilterBarChip`](FilterBarChip.md), [`FilterBarClear`](FilterBarClear.md), [`FilterBarSearch`](FilterBarSearch.md), [`FilterBarToken`](FilterBarToken.md)
@@ -110,7 +110,7 @@ Server render: same markup as the client. Plain markup from props (`useId` for t
 
 ```tsx
 import * as React from "react";
-import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "@sutra/ui";
+import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [query, setQuery] = React.useState("");

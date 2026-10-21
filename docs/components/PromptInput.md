@@ -2,7 +2,7 @@
 
 > Chat composer card. Compose with PromptInputAttachments, PromptInputTextarea and PromptInputToolbar.
 
-- Import: `import { PromptInput } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input` (kit `ai`)
 - `data-slot`: `prompt-input`, `prompt-input-large-paste`
 - Parts: [`PromptInputRestoredDraft`](PromptInputRestoredDraft.md)
@@ -51,7 +51,7 @@ Notice shown when an unsent draft was restored into the composer, with Discard /
 ## Example (live: `#/components/agent-composer/mention-highlight` in the playground)
 
 ```tsx
-import { PromptInput, PromptInputTextarea } from "@sutra/ui/ai";
+import { PromptInput, PromptInputTextarea } from "@cleanprompt/sutra-ui/ai";
 
 function HighlightDemo() {
   return (

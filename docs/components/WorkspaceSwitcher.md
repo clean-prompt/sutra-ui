@@ -2,7 +2,7 @@
 
 > Workspace picker: current workspace with its app icon, a checked list and "Create workspace".
 
-- Import: `import { WorkspaceSwitcher } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { WorkspaceSwitcher } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/dropdown-menu-blocks` (blocks)
 
 ## Props
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { ProfileScopeBanner, WorkspaceProfileSwitcher } from "@sutra/ui/workspace";
+import { ProfileScopeBanner, WorkspaceProfileSwitcher } from "@cleanprompt/sutra-ui/workspace";
 
 function SwitcherDemo() {
   const [value, setValue] = React.useState<WorkspaceSelection>({ gatewayId: "homelab", profileId: "ops" });

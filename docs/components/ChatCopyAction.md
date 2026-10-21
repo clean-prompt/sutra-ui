@@ -2,7 +2,7 @@
 
 > Copies the message text and briefly flips to a check mark.
 
-- Import: `import { ChatCopyAction } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatCopyAction } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message-actions` (kit `ai`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
@@ -36,7 +36,7 @@ import {
   ChatMessageFooter,
   ChatReactions,
   MessageTimestampHover,
-} from "@sutra/ui/ai";
+} from "@cleanprompt/sutra-ui/ai";
 
 function ReactionsDemo() {
   const [reactions, setReactions] = React.useState<EmojiReactionItem[]>([

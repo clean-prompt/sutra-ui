@@ -2,7 +2,7 @@
 
 > Form label with an optional required asterisk and `hint`; use it with `htmlFor` or let `Field` wire it. Extra props are spread to the `<label>`.
 
-- Import: `import { Label } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Label } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/label` (primitives)
 - Also accepts the props of HTMLAttributes, LabelHTMLAttributes, PrimitivePropsWithRef
 
@@ -49,7 +49,7 @@ Server render: same markup as the client. Plain markup with no browser API or mo
 ## Example
 
 ```tsx
-import { Input, Label } from "@sutra/ui";
+import { Input, Label } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

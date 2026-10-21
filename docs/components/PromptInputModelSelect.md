@@ -2,7 +2,7 @@
 
 > Model picker dropdown for the composer toolbar.
 
-- Import: `import { PromptInputModelSelect } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputModelSelect } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-model` (kit `ai`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

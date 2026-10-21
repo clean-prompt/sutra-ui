@@ -2,7 +2,7 @@
 
 > Label bound to the field's control.
 
-- Import: `import { FieldLabel } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FieldLabel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/field` (primitives)
 - Part of [`Field`](Field.md)
 - Also accepts the props of HTMLAttributes, LabelHTMLAttributes, PrimitivePropsWithRef
@@ -22,7 +22,7 @@ See the notes in [`Field`](Field.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@sutra/ui";
+import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [email, setEmail] = React.useState("");

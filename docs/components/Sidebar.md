@@ -2,7 +2,7 @@
 
 > App sidebar. Collapses to icons on desktop and becomes a sheet on mobile.
 
-- Import: `import { Sidebar } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { Sidebar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar`
 - Parts: [`SidebarContent`](SidebarContent.md), [`SidebarFooter`](SidebarFooter.md), [`SidebarGroup`](SidebarGroup.md), [`SidebarGroupLabel`](SidebarGroupLabel.md), [`SidebarHeader`](SidebarHeader.md), [`SidebarInset`](SidebarInset.md), [`SidebarMenu`](SidebarMenu.md), [`SidebarMenuButton`](SidebarMenuButton.md), [`SidebarMenuItem`](SidebarMenuItem.md), [`SidebarMenuSub`](SidebarMenuSub.md), [`SidebarMenuSubButton`](SidebarMenuSubButton.md), [`SidebarProvider`](SidebarProvider.md), [`SidebarSeparator`](SidebarSeparator.md), [`SidebarTrigger`](SidebarTrigger.md), [`SidebarUserCard`](SidebarUserCard.md)

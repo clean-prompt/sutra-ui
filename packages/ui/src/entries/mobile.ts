@@ -1,4 +1,4 @@
-/* @sutra/ui/mobile: bottom tab bar, drawer, lightbox, file viewer, split pane, presence, swipe, pan and zoom surfaces. */
+/* @cleanprompt/sutra-ui/mobile: bottom tab bar, drawer, lightbox, file viewer, split pane, presence, swipe, pan and zoom surfaces. */
 export * from "../patterns/bottom-tab-bar";
 export * from "../primitives/drawer";
 export * from "../patterns/lightbox";

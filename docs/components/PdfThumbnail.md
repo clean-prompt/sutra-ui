@@ -2,7 +2,7 @@
 
 > One page of a PDF (the first by default) drawn small, for cards and lists. Needs the optional `pdfjs-dist` peer.
 
-- Import: `import { PdfThumbnail } from "@sutra/ui/pdf"`
+- Import: `import { PdfThumbnail } from "@cleanprompt/sutra-ui/pdf"`
 - Source: `packages/ui/src/kits/editor/pdf-viewer-thumbnail` (kit `editor`)
 - `data-slot`: `pdf-thumbnail`
 - Also accepts the props of HTMLAttributes

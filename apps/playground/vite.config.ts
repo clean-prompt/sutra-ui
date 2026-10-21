@@ -12,14 +12,14 @@ export default defineConfig({
   resolve: {
     // Point straight at the package source so edits hot-reload without a build.
     alias: [
-      { find: /^@sutra\/ui$/, replacement: path.join(ui, "index.ts") },
-      { find: "@sutra/ui/styles.css", replacement: path.join(ui, "styles/sutra.css") },
-      { find: "@sutra/ui/paper.css", replacement: path.join(ui, "styles/paper.css") },
-      // Per-file subpaths: @sutra/ui/primitives/button, @sutra/ui/kits/ai/chat-message → src/… (same for patterns, blocks, assets).
-      { find: /^@sutra\/ui\/(primitives|patterns|blocks|assets)\/([\w-]+)$/, replacement: `${ui}/$1/$2` },
-      { find: /^@sutra\/ui\/kits\/([\w-]+)\/([\w-]+)$/, replacement: `${ui}/kits/$1/$2` },
-      // Category barrels: @sutra/ui/icons, /ai, /forms, … → src/entries/<name>.ts
-      { find: /^@sutra\/ui\/([\w-]+)$/, replacement: `${ui}/entries/$1.ts` },
+      { find: /^@cleanprompt\/sutra-ui$/, replacement: path.join(ui, "index.ts") },
+      { find: "@cleanprompt/sutra-ui/styles.css", replacement: path.join(ui, "styles/sutra.css") },
+      { find: "@cleanprompt/sutra-ui/paper.css", replacement: path.join(ui, "styles/paper.css") },
+      // Per-file subpaths: @cleanprompt/sutra-ui/primitives/button, @cleanprompt/sutra-ui/kits/ai/chat-message → src/… (same for patterns, blocks, assets).
+      { find: /^@cleanprompt\/sutra-ui\/(primitives|patterns|blocks|assets)\/([\w-]+)$/, replacement: `${ui}/$1/$2` },
+      { find: /^@cleanprompt\/sutra-ui\/kits\/([\w-]+)\/([\w-]+)$/, replacement: `${ui}/kits/$1/$2` },
+      // Category barrels: @cleanprompt/sutra-ui/icons, /ai, /forms, … → src/entries/<name>.ts
+      { find: /^@cleanprompt\/sutra-ui\/([\w-]+)$/, replacement: `${ui}/entries/$1.ts` },
     ],
   },
   // Pre-bundle the optional editor/terminal peers at startup so the first visit

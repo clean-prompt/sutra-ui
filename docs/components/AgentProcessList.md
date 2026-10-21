@@ -2,7 +2,7 @@
 
 > Running agent sessions and the processes each one started, separated by rules; "Quit Session…" confirms first. A session that starts waiting for the user is announced once (politely); durations never sit in a live region.
 
-- Import: `import { AgentProcessList } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AgentProcessList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-processes` (kit `agent`)
 - `data-slot`: `agent-process-list-skeleton`, `agent-process-skeleton`
 - Also accepts the props of HTMLAttributes
@@ -29,16 +29,16 @@
 ## Example (live: `#/components/system/loading` in the playground)
 
 ```tsx
-import { AgentProcessList } from "@sutra/ui/agent";
-import { QuotaStrip } from "@sutra/ui/ai";
-import { ProcessTable } from "@sutra/ui/ops";
+import { AgentProcessList } from "@cleanprompt/sutra-ui/agent";
+import { QuotaStrip } from "@cleanprompt/sutra-ui/ai";
+import { ProcessTable } from "@cleanprompt/sutra-ui/ops";
 import {
   ContainerSummary,
   DevServerList,
   MetricReadout,
   MetricReadoutGroup,
   VolumeMixer,
-} from "@sutra/ui/system";
+} from "@cleanprompt/sutra-ui/system";
 
 <div className="grid w-full grid-cols-1 gap-4">
   <MetricReadoutGroup label="Menu bar (loading)" className="w-fit rounded-control border border-border bg-card px-3 py-1.5">

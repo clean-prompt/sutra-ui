@@ -2,7 +2,7 @@
 
 > Gap marker between page ranges. With `onJump` it is a button that offers a jump to a page; without it, a decorative marker.
 
-- Import: `import { PaginationEllipsis } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { PaginationEllipsis } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/pagination` (primitives)
 - `data-slot`: `pagination-ellipsis`
 - Part of [`Pagination`](Pagination.md)
@@ -25,7 +25,7 @@ See the notes in [`Pagination`](Pagination.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Pagination, PaginationStatus } from "@sutra/ui";
+import { Pagination, PaginationStatus } from "@cleanprompt/sutra-ui";
 
 const total = 245;
 

@@ -2,7 +2,7 @@
 
 > Scatter (and bubble) chart: nearest-point hover, keyboard stepping in x order, toggleable series and reference lines.
 
-- Import: `import { ScatterChart } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { ScatterChart } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/chart-scatter` (patterns)
 - `data-slot`: `chart-skeleton`, `chart-marks`, `chart-point`, `chart-reference-line`, `chart-active-point`, `chart-hit`
 - Also accepts the props of HTMLAttributes

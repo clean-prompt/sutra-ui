@@ -2,7 +2,7 @@
 
 > Collapsed summary of an answered clarifying-question card, expandable to the Q → A list.
 
-- Import: `import { ClarifySettled } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ClarifySettled } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/clarify-settled` (kit `ai`)
 - `data-slot`: `clarify-settled`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,7 @@
 
 ```tsx
 import * as React from "react";
-import { ClarifySettled, UndeliveredNotice } from "@sutra/ui/ai";
+import { ClarifySettled, UndeliveredNotice } from "@cleanprompt/sutra-ui/ai";
 
 function ClarifySettledDemo() {
   const [retrying, setRetrying] = React.useState(false);

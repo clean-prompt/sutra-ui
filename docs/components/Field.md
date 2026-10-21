@@ -2,7 +2,7 @@
 
 > Groups a label, control, description and error, and wires their ids together.
 
-- Import: `import { Field } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { Field } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/field` (primitives)
 - `data-slot`: `field`
 - Parts: [`FieldContent`](FieldContent.md), [`FieldContext`](FieldContext.md), [`FieldDescription`](FieldDescription.md), [`FieldError`](FieldError.md), [`FieldGroup`](FieldGroup.md), [`FieldHint`](FieldHint.md), [`FieldLabel`](FieldLabel.md), [`FieldLegend`](FieldLegend.md), [`Fieldset`](Fieldset.md)
@@ -102,7 +102,7 @@ Server render: part of it fills in after mount. The label, control and parts ren
 
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@sutra/ui";
+import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [email, setEmail] = React.useState("");

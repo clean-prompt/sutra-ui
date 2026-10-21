@@ -2,7 +2,7 @@
 
 > Merged chronological agenda across apps: untimed section, hourly rail, now line and overlap layout.
 
-- Import: `import { TodayTimeline } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { TodayTimeline } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/today-timeline` (kit `workspace`)
 - `data-slot`: `today-timeline`
 - Also accepts the props of HTMLAttributes
@@ -25,8 +25,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { TodayTimeline } from "@sutra/ui/suite";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { TodayTimeline } from "@cleanprompt/sutra-ui/suite";
 
 function TimelineDemo() {
   const [items, setItems] = React.useState<TimelineItem[]>(() => [

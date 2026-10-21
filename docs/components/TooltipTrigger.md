@@ -2,7 +2,7 @@
 
 > Element that opens the tooltip on hover/focus.
 
-- Import: `import { TooltipTrigger } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { TooltipTrigger } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/tooltip` (primitives)
 - Part of [`Tooltip`](Tooltip.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes, PrimitivePropsWithRef
@@ -18,8 +18,8 @@ See the notes in [`Tooltip`](Tooltip.md#notes).
 ## Example
 
 ```tsx
-import { Button, SimpleTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiSave3Line } from "@sutra/ui/icons";
+import { Button, SimpleTooltip, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiSave3Line } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

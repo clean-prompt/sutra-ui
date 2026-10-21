@@ -2,7 +2,7 @@
 
 > Invite people by email with a role, manage current members and copy an invite link.
 
-- Import: `import { InviteMembersDialog } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { InviteMembersDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/modal-dialog-blocks-invite` (blocks)
 
 ## Props

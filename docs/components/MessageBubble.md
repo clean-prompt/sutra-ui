@@ -2,7 +2,7 @@
 
 > Human-to-human chat bubble with grouping radii, delivery ticks, reply quote, reactions and rich previews.
 
-- Import: `import { MessageBubble } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { MessageBubble } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/social/messenger-bubble` (kit `social`)
 - `data-slot`: `message-bubble`
 - Also accepts the props of HTMLAttributes

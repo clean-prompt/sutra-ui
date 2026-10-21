@@ -2,7 +2,7 @@
 
 > Thumbnail grid of layout presets plus saving and re-applying custom arrangements.
 
-- Import: `import { LayoutPresetPicker } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { LayoutPresetPicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/tiling-layout-presets` (patterns)
 - `data-slot`: `layout-preset-picker`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 ## Example (live: `#/components/tiling/preset-picker` in the playground)
 
 ```tsx
-import { LayoutPresetPicker } from "@sutra/ui/workspace";
+import { LayoutPresetPicker } from "@cleanprompt/sutra-ui/workspace";
 
 <LayoutPresetPicker
   className="w-full max-w-lg"

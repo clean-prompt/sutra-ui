@@ -2,7 +2,7 @@
 
 > Command palette root (cmdk). Handles filtering and keyboard navigation.
 
-- Import: `import { Command } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { Command } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/patterns/command-menu` (patterns)
 - Parts: [`CommandDialog`](CommandDialog.md), [`CommandEmpty`](CommandEmpty.md), [`CommandFooter`](CommandFooter.md), [`CommandGroup`](CommandGroup.md), [`CommandInput`](CommandInput.md), [`CommandItem`](CommandItem.md), [`CommandList`](CommandList.md), [`CommandLoading`](CommandLoading.md), [`CommandPaletteFromRegistry`](CommandPaletteFromRegistry.md), [`CommandSeparator`](CommandSeparator.md), [`CommandShortcut`](CommandShortcut.md)
 - Also accepts the props of HTMLAttributes, Children
@@ -119,7 +119,7 @@ Server render: same markup as the client. A closed dialog renders nothing on the
 
 ```tsx
 import * as React from "react";
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@sutra/ui";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, useCommandMenuShortcut } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

@@ -2,7 +2,7 @@
 
 > `ProviderModelPicker` in a modal dialog; closes after a selection.
 
-- Import: `import { ProviderModelPickerDialog } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProviderModelPickerDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/model-routing-picker` (kit `agent-admin`)
 - Part of [`ProviderModelPicker`](ProviderModelPicker.md)
 - Also accepts the props of HTMLAttributes
@@ -29,9 +29,9 @@
 
 ```tsx
 import * as React from "react";
-import { ProviderModelPicker, ProviderModelPickerPopover } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiKey2Line, RiShieldKeyholeLine } from "@sutra/ui/icons";
+import { ProviderModelPicker, ProviderModelPickerPopover } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiKey2Line, RiShieldKeyholeLine } from "@cleanprompt/sutra-ui/icons";
 
 function PickerDemo() {
   const [value, setValue] = React.useState<ModelRef>({ providerId: "nimbus", modelId: "opal-4" });

@@ -2,7 +2,7 @@
 
 > Autosave indicator: saved (with relative time), unsaved, saving, error with retry, conflict with actions.
 
-- Import: `import { SaveStatus } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { SaveStatus } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/kits/editor/editor-status` (kit `editor`)
 - `data-slot`: `save-status`
 - Also accepts the props of HTMLAttributes
@@ -25,7 +25,7 @@
 ## Example (live: `#/components/editor/save-status` in the playground)
 
 ```tsx
-import { SaveStatus } from "@sutra/ui/editor";
+import { SaveStatus } from "@cleanprompt/sutra-ui/editor";
 
 function SaveStatusDemo() {
   const now = Date.now();

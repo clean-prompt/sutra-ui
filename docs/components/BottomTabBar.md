@@ -2,7 +2,7 @@
 
 > Fixed mobile bottom navigation: icon over label, ≥44px targets, badges and safe-area padding.
 
-- Import: `import { BottomTabBar } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { BottomTabBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/bottom-tab-bar` (patterns)
 - `data-slot`: `primary-action`, `bottom-tab-bar`
 - Parts: [`BottomTabBarItem`](BottomTabBarItem.md)
@@ -94,8 +94,8 @@ Server render: same markup as the client. Plain markup from props; showing or hi
 
 ```tsx
 import * as React from "react";
-import { BottomTabBar } from "@sutra/ui";
-import { RiHomeLine, RiInboxLine, RiUserLine } from "@sutra/ui/icons";
+import { BottomTabBar } from "@cleanprompt/sutra-ui";
+import { RiHomeLine, RiInboxLine, RiUserLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   const [tab, setTab] = React.useState("home");

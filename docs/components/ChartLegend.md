@@ -2,7 +2,7 @@
 
 > Series legend; interactive entries toggle and isolate series.
 
-- Import: `import { ChartLegend } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { ChartLegend } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/chart-container` (patterns)
 - `data-slot`: `chart-legend`
 - Also accepts the props of HTMLAttributes
@@ -67,7 +67,7 @@ Server render: part of it fills in after mount. The first render, on the server 
 ## Example
 
 ```tsx
-import { ChartContainer } from "@sutra/ui";
+import { ChartContainer } from "@cleanprompt/sutra-ui";
 
 const visits = [
   { day: "Mon", count: 120 },

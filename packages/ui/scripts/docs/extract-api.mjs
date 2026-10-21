@@ -1,4 +1,4 @@
-// Reads the public exports of @sutra/ui with the TypeScript compiler API and describes every component
+// Reads the public exports of @cleanprompt/sutra-ui with the TypeScript compiler API and describes every component
 // (and hook): where it lives, which entry exports it, its own props (type as written, required, default,
 // JSDoc description, @deprecated), the `data-slot` names it renders (`slot`, plus `slots` when there are several) and the cva variants it exposes.
 //
@@ -427,7 +427,7 @@ export function buildApi({ root }) {
   const program = ts.createProgram({ rootNames, options: { ...parsed.options, noEmit: true, types: [], skipLibCheck: true } });
   const checker = program.getTypeChecker();
 
-  /** name -> entries that export it ("index" is the root `@sutra/ui`). */
+  /** name -> entries that export it ("index" is the root `@cleanprompt/sutra-ui`). */
   const entriesOf = new Map();
   const entrySize = new Map();
   const symbols = new Map();
@@ -463,7 +463,7 @@ export function buildApi({ root }) {
 
   for (const [name, exported] of [...symbols.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
     const sym = resolveAlias(checker, exported);
-    // Value names only (the install line imports values); the icon set is one entry, `@sutra/ui/icons`.
+    // Value names only (the install line imports values); the icon set is one entry, `@cleanprompt/sutra-ui/icons`.
     if (sym.flags & ts.SymbolFlags.Value && !/^Ri[A-Z]/.test(name)) entryOfName[name] = primaryEntry(name);
     if (!(sym.flags & (ts.SymbolFlags.Variable | ts.SymbolFlags.Function | ts.SymbolFlags.Class))) continue;
     const decl = sym.valueDeclaration;

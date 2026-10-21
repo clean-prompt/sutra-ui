@@ -2,7 +2,7 @@
 
 > Labeled usage meter with threshold coloring (role="meter"): a level read against thresholds. For task completion use `Progress`.
 
-- Import: `import { Meter } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { Meter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/primitives/meter` (primitives)
 - `data-slot`: `meter-value-skeleton`, `meter-value`, `meter-track`, `meter-segment`, `meter-fill`
 - Parts: [`MeterGroup`](MeterGroup.md)
@@ -90,7 +90,7 @@ Server render: same markup as the client. Plain markup computed from the props (
 ## Example
 
 ```tsx
-import { Meter, MeterGroup } from "@sutra/ui";
+import { Meter, MeterGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

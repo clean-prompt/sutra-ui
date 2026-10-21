@@ -27,9 +27,9 @@ import {
   type ProcessInfo,
   type RequestLogRecord,
   type UptimeBucket,
-} from "@sutra/ui";
-import { Terminal, TerminalSessionPicker, type TerminalConnection, type TerminalHandle, type TerminalSession } from "@sutra/ui/terminal";
-import { RiCpuLine, RiRefreshLine, RiRouterLine, RiServerLine, RiTerminalLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { Terminal, TerminalSessionPicker, type TerminalConnection, type TerminalHandle, type TerminalSession } from "@cleanprompt/sutra-ui/terminal";
+import { RiCpuLine, RiRefreshLine, RiRouterLine, RiServerLine, RiTerminalLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

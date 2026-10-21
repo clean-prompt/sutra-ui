@@ -17,8 +17,8 @@ import {
   StatGroup,
   WaterfallChart,
   type ChartDatum,
-} from "@sutra/ui";
-import { RiCpuLine, RiCoinsLine, RiFlashlightLine, RiTimerLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiCpuLine, RiCoinsLine, RiFlashlightLine, RiTimerLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* Deterministic pseudo-random so demos don't jump between renders. */

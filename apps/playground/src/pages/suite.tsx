@@ -32,8 +32,8 @@ import {
   type QuickCaptureValue,
   type SyncState,
   type TimelineItem,
-} from "@sutra/ui";
-import { RiAddLine, RiKeyboardBoxLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiAddLine, RiKeyboardBoxLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

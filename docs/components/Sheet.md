@@ -2,7 +2,7 @@
 
 > Edge-anchored panel root (a Dialog).
 
-- Import: `import { Sheet } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { Sheet } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/dialog` (primitives)
 - Parts: [`SheetBody`](SheetBody.md), [`SheetClose`](SheetClose.md), [`SheetContent`](SheetContent.md), [`SheetDescription`](SheetDescription.md), [`SheetFooter`](SheetFooter.md), [`SheetHeader`](SheetHeader.md), [`SheetTitle`](SheetTitle.md), [`SheetTrigger`](SheetTrigger.md)
 - Also accepts the props of DialogProps
@@ -76,8 +76,8 @@ Server render: same markup as the client. A closed sheet renders only its trigge
 ## Example
 
 ```tsx
-import { Button, Field, FieldLabel, Input, Sheet, SheetBody, SheetClose, SheetContent } from "@sutra/ui";
-import { SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@sutra/ui";
+import { Button, Field, FieldLabel, Input, Sheet, SheetBody, SheetClose, SheetContent } from "@cleanprompt/sutra-ui";
+import { SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

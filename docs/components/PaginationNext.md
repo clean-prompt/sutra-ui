@@ -2,7 +2,7 @@
 
 > Next page button.
 
-- Import: `import { PaginationNext } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { PaginationNext } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/pagination` (primitives)
 - Part of [`Pagination`](Pagination.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -22,7 +22,7 @@ See the notes in [`Pagination`](Pagination.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Pagination, PaginationStatus } from "@sutra/ui";
+import { Pagination, PaginationStatus } from "@cleanprompt/sutra-ui";
 
 const total = 245;
 

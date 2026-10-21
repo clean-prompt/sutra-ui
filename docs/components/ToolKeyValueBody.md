@@ -2,7 +2,7 @@
 
 > Generic label / value grid for tool inputs and results.
 
-- Import: `import { ToolKeyValueBody } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ToolKeyValueBody } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/tool-timeline-bodies` (kit `agent`)
 - `data-slot`: `tool-key-value-body`
 - Also accepts the props of HTMLAttributes

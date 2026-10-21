@@ -2,7 +2,7 @@
 
 > Where sign-ins come from: outcome-toned markers (clustered) on a flat map or globe, impossible-travel arcs, new-country flags, a summary row and a list of flagged sign-ins with review and revoke actions.
 
-- Import: `import { SignInMap } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SignInMap } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/kits/identity/sign-in-map` (kit `identity`)
 - `data-slot`: `sign-in-map`, `sign-in-map-empty`, `sign-in-map-canvas`, `sign-in-map-flagged`, `sign-in-map-legend`
 - Also accepts the props of HTMLAttributes
@@ -36,7 +36,7 @@
 ## Example (live: `#/components/sign-in-map/empty` in the playground)
 
 ```tsx
-import { SignInMap } from "@sutra/ui/identity";
+import { SignInMap } from "@cleanprompt/sutra-ui/identity";
 
 function EmptyDemo() {
   return <SignInMap events={[]} windowLabel="Last 24 hours" />;

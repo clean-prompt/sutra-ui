@@ -33,8 +33,8 @@ Plain markup with no browser API, so server and client output match.
 
 ## Example
 ```tsx
-import { Badge } from "@sutra/ui";
-import { RiCheckLine } from "@sutra/ui/icons";
+import { Badge } from "@cleanprompt/sutra-ui";
+import { RiCheckLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

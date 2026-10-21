@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   publish:
-    name: Verify and publish @sutra/ui
+    name: Verify and publish @cleanprompt/sutra-ui
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

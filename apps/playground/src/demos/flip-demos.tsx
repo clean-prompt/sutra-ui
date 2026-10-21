@@ -1,6 +1,6 @@
 import * as React from "react";
-import { AnimatedList, Badge, Button, InlineCode, ReorderableList, Text } from "@sutra/ui";
-import { RiAddLine, RiCloseLine, RiShuffleLine, RiSortAsc } from "@sutra/ui/icons";
+import { AnimatedList, Badge, Button, InlineCode, ReorderableList, Text } from "@cleanprompt/sutra-ui";
+import { RiAddLine, RiCloseLine, RiShuffleLine, RiSortAsc } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel } from "../components/demo";
 
 interface Task {

@@ -2,7 +2,7 @@
 
 > MCP server summary with transport, status, tool count, last error and Test / Connect / Disable / Remove / Logs actions.
 
-- Import: `import { McpServerCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { McpServerCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/mcp-server-card` (kit `agent-admin`)
 - `data-slot`: `mcp-server-card`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 
 ```tsx
 import * as React from "react";
-import { McpServerCard } from "@sutra/ui/agent-admin";
+import { McpServerCard } from "@cleanprompt/sutra-ui/agent-admin";
 
 function McpServersDemo() {
   const [servers, setServers] = React.useState(MCP_SERVERS);

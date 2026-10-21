@@ -36,7 +36,7 @@ export function BlockLink({
 
 /**
  * Blocks' action tracker: `run(fn)` resolves true on success (false on error, when superseded or after `reset()`); `busy` also reflects `externalLoading`. Wraps `hooks/use-async-action`.
- * Internal to the blocks; app code should use `useAsyncAction` from `@sutra/ui` (src/hooks/use-async-action.ts).
+ * Internal to the blocks; app code should use `useAsyncAction` from `@cleanprompt/sutra-ui` (src/hooks/use-async-action.ts).
  */
 export function useBlockAction(externalLoading?: boolean) {
   const action = useSharedAsyncAction(async (fn: () => unknown) => {

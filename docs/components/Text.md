@@ -2,7 +2,7 @@
 
 > Body text with `size`, `tone` and `weight`; renders a `<p>` unless `as` says otherwise. Extra props are spread to the element.
 
-- Import: `import { Text } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Text } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/typography` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -60,7 +60,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Eyebrow, InlineCode, Kbd, Text } from "@sutra/ui";
+import { Eyebrow, InlineCode, Kbd, Text } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

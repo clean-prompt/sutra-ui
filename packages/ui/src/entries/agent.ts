@@ -1,4 +1,4 @@
-/* @sutra/ui/agent: UI for agentic coding assistants (tool timeline, permissions, plans, rewind, composer, tasks, sessions, usage). */
+/* @cleanprompt/sutra-ui/agent: UI for agentic coding assistants (tool timeline, permissions, plans, rewind, composer, tasks, sessions, usage). */
 export * from "../kits/agent/tool-timeline";
 export * from "../patterns/diff-viewer";
 export * from "../kits/ai/chain-of-thought";

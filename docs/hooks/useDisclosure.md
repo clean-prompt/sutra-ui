@@ -2,7 +2,7 @@
 
 > Open/close state for any overlay or disclosure, controlled or uncontrolled, with stable handlers.
 
-- Import: `import { useDisclosure } from "@sutra/ui/tokens"`
+- Import: `import { useDisclosure } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-disclosure`
 
 ## Signature
@@ -23,8 +23,8 @@ useDisclosure({ open, defaultOpen, onOpenChange }?: UseDisclosureOptions): UseDi
 
 ```tsx
 import * as React from "react";
-import { Button, Collapse } from "@sutra/ui/core";
-import { useDisclosure } from "@sutra/ui/tokens";
+import { Button, Collapse } from "@cleanprompt/sutra-ui/core";
+import { useDisclosure } from "@cleanprompt/sutra-ui/tokens";
 
 function DisclosureDemo() {
   const disclosure = useDisclosure();

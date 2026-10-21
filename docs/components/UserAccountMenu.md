@@ -2,7 +2,7 @@
 
 > Avatar-triggered account menu: profile header, settings, theme submenu and sign out.
 
-- Import: `import { UserAccountMenu } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { UserAccountMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/dropdown-menu-blocks` (blocks)
 
 ## Props

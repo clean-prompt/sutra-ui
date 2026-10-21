@@ -2,7 +2,7 @@
 
 > Skill list card: name, description, provenance, category, toolset icons and an enable switch.
 
-- Import: `import { SkillCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SkillCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/extensions-catalog-skill` (kit `agent-admin`)
 - `data-slot`: `skill-card`
 - Also accepts the props of HTMLAttributes
@@ -19,7 +19,7 @@
 ## Example (live: `#/components/capabilities/skills` in the playground)
 
 ```tsx
-import { SkillCard, SkillDetail } from "@sutra/ui/agent-admin";
+import { SkillCard, SkillDetail } from "@cleanprompt/sutra-ui/agent-admin";
 
 <div className="grid content-start gap-2">
   {SKILLS.map((s) => (

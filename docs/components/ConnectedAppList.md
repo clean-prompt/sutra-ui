@@ -2,7 +2,7 @@
 
 > Connected apps and agents with a detail drawer (scopes, holder key, push per device, activity) and revoke.
 
-- Import: `import { ConnectedAppList } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { ConnectedAppList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/connected-apps` (kit `identity`)
 - `data-slot`: `connected-app-list`
 - Also accepts the props of HTMLAttributes
@@ -23,8 +23,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { ConnectedAppList } from "@sutra/ui/security";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { ConnectedAppList } from "@cleanprompt/sutra-ui/security";
 
 function ConnectedAppsDemo() {
   const [apps, setApps] = React.useState(initialApps);

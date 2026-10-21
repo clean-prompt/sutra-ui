@@ -2,7 +2,7 @@
 
 > Conversation sidebar: optional search, grouping by date or folder, archived section and inline or menu row actions.
 
-- Import: `import { ConversationList } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ConversationList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/conversation-list` (kit `ai`)
 - `data-slot`: `conversation-list`, `conversation-list-search`, `conversation-list-nav`
 - Also accepts the props of HTMLAttributes

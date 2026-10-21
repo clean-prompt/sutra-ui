@@ -18,7 +18,7 @@
     "@codemirror/search": "^6",
     "@codemirror/state": "^6",
     "@codemirror/view": "^6",
-    "@sutra/ui": "workspace:*",
+    "@cleanprompt/sutra-ui": "workspace:*",
     "@tiptap/extension-link": "^3",
     "@tiptap/extension-placeholder": "^3",
     "@tiptap/pm": "^3",

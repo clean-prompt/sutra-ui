@@ -2,7 +2,7 @@
 
 > Official-style "Download on the App Store / Get it on Google Play" link badge.
 
-- Import: `import { AppStoreBadge } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { AppStoreBadge } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/app-store-badge` (primitives)
 - `data-slot`: `mark`, `eyebrow`, `name`
 - Also accepts the props of HTMLAttributes, AnchorHTMLAttributes
@@ -65,7 +65,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { AppStoreBadge } from "@sutra/ui";
+import { AppStoreBadge } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

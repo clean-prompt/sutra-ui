@@ -2,7 +2,7 @@
 
 > Helper text describing the control.
 
-- Import: `import { FieldDescription } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FieldDescription } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/field` (primitives)
 - `data-slot`: `field-description`
 - Part of [`Field`](Field.md)
@@ -20,7 +20,7 @@ See the notes in [`Field`](Field.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@sutra/ui";
+import { Field, FieldDescription, FieldError, FieldLabel, Input } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [email, setEmail] = React.useState("");

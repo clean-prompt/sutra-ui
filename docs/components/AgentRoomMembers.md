@@ -2,7 +2,7 @@
 
 > Room member manager: add / remove agents, reorder the turn order (buttons or Alt+Arrow) and mute.
 
-- Import: `import { AgentRoomMembers } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { AgentRoomMembers } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-room` (kit `agent-admin`)
 - `data-slot`: `agent-room-members`
 - Part of [`AgentRoom`](AgentRoom.md)

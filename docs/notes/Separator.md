@@ -28,7 +28,7 @@ Plain markup with no browser API, so server and client output match.
 
 ## Example
 ```tsx
-import { Separator } from "@sutra/ui";
+import { Separator } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

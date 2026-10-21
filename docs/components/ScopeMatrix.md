@@ -2,7 +2,7 @@
 
 > Apps × scopes grant grid with a TTL per row and a "replace prior grant" option.
 
-- Import: `import { ScopeMatrix } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { ScopeMatrix } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/consent` (kit `identity`)
 - `data-slot`: `scope-matrix`
 - Also accepts the props of HTMLAttributes
@@ -31,7 +31,7 @@
 
 ```tsx
 import * as React from "react";
-import { ScopeMatrix } from "@sutra/ui/security";
+import { ScopeMatrix } from "@cleanprompt/sutra-ui/security";
 
 function ScopeMatrixDemo() {
   const [value, setValue] = React.useState<Record<string, string[]>>({

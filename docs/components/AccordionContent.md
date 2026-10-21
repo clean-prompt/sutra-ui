@@ -2,7 +2,7 @@
 
 > Animated collapsible body.
 
-- Import: `import { AccordionContent } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { AccordionContent } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/accordion` (primitives)
 - Part of [`Accordion`](Accordion.md)
 - Also accepts the props of HTMLAttributes, CollapsibleContentProps, PrimitivePropsWithRef
@@ -20,7 +20,7 @@ See the notes in [`Accordion`](Accordion.md#notes).
 ## Example
 
 ```tsx
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@sutra/ui";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

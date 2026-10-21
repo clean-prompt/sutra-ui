@@ -2,7 +2,7 @@
 
 > Time-window bar with spans per lane (session uptime, GPU job occupancy), live spans and a tick axis.
 
-- Import: `import { TimelineBar } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { TimelineBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/timeline-bar` (patterns)
 - `data-slot`: `timeline-bar`
 - Also accepts the props of HTMLAttributes
@@ -32,7 +32,7 @@
 
 ```tsx
 import * as React from "react";
-import { TimelineBar } from "@sutra/ui/ops";
+import { TimelineBar } from "@cleanprompt/sutra-ui/ops";
 
 function TimelineDemo() {
   const [now, setNow] = React.useState(() => Date.now());

@@ -2,7 +2,7 @@
 
 > Author header with a horizontally scrolling shelf of their extensions.
 
-- Import: `import { AuthorShelf } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { AuthorShelf } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/marketing-blocks-card` (blocks)
 - Also accepts the props of HTMLAttributes
 
@@ -19,7 +19,7 @@
 ## Example (live: `#/components/billing-marketing/author-shelf` in the playground)
 
 ```tsx
-import { AuthorShelf } from "@sutra/ui/blocks";
+import { AuthorShelf } from "@cleanprompt/sutra-ui/blocks";
 
 <AuthorShelf author={sutraAuthor} items={extensions.filter((e) => e.author.handle === sutraAuthor.handle)} onOpen={open} onViewAll={() => {}} />
 ```

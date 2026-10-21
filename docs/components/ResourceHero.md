@@ -2,7 +2,7 @@
 
 > Endpoint / service header: name, status, copyable endpoint, uptime, readiness and config chips.
 
-- Import: `import { ResourceHero } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { ResourceHero } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/node-card` (kit `ops`)
 - `data-slot`: `resource-hero`
 - Also accepts the props of HTMLAttributes
@@ -25,9 +25,9 @@
 ## Example (live: `#/components/monitoring/resource-hero` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { RiRefreshLine, RiRouterLine } from "@sutra/ui/icons";
-import { ResourceHero } from "@sutra/ui/ops";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiRefreshLine, RiRouterLine } from "@cleanprompt/sutra-ui/icons";
+import { ResourceHero } from "@cleanprompt/sutra-ui/ops";
 
 <ResourceHero
   icon={<RiRouterLine />}

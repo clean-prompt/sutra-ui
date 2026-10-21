@@ -2,7 +2,7 @@
 
 > Contextual message placed inline with content (forms, panels, settings). `layout="strip"` turns it into an edge-to-edge bar with only a bottom border, for the top of a page or panel.
 
-- Import: `import { InlineAlert } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { InlineAlert } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/inline-alert` (primitives)
 - `data-slot`: `inline-alert-icon`, `inline-alert-action`
 - Parts: [`InlineAlertActions`](InlineAlertActions.md), [`InlineAlertDescription`](InlineAlertDescription.md), [`InlineAlertTitle`](InlineAlertTitle.md)
@@ -77,7 +77,7 @@ Server render: same markup as the client. Plain markup with no browser API, so t
 
 ```tsx
 import * as React from "react";
-import { Button, InlineAlert, InlineAlertActions, InlineAlertDescription, InlineAlertTitle } from "@sutra/ui";
+import { Button, InlineAlert, InlineAlertActions, InlineAlertDescription, InlineAlertTitle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [visible, setVisible] = React.useState(true);

@@ -2,7 +2,7 @@
 
 > One GPU: model, VRAM bar, utilization, temperature gauge and process count.
 
-- Import: `import { GpuCard } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { GpuCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/node-card` (kit `ops`)
 - `data-slot`: `gpu-card`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 
 ```tsx
 import * as React from "react";
-import { GpuCard, NodeGrid } from "@sutra/ui/ops";
+import { GpuCard, NodeGrid } from "@cleanprompt/sutra-ui/ops";
 
 function GpuCardsDemo() {
   const [gpus, setGpus] = React.useState(() =>

@@ -2,7 +2,7 @@
 
 > Small status glyph (a StatusDot preset): spinner (running), check (done), cross (failed), clock (waiting), forbid (canceled).
 
-- Import: `import { SubagentStatusGlyph } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { SubagentStatusGlyph } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/subagents` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 

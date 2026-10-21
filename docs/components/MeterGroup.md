@@ -2,7 +2,7 @@
 
 > Stack (or grid) of Meters, e.g. CPU / RAM / GPU / VRAM.
 
-- Import: `import { MeterGroup } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { MeterGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/primitives/meter` (primitives)
 - `data-slot`: `meter-group`
 - Part of [`Meter`](Meter.md)
@@ -21,7 +21,7 @@ See the notes in [`Meter`](Meter.md#notes).
 ## Example
 
 ```tsx
-import { Meter, MeterGroup } from "@sutra/ui";
+import { Meter, MeterGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

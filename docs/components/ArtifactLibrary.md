@@ -2,7 +2,7 @@
 
 > Searchable grid / list of artifacts with kind filter chips and sorting.
 
-- Import: `import { ArtifactLibrary } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ArtifactLibrary } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/artifacts-library` (kit `agent`)
 - `data-slot`: `artifact-library`
 - Also accepts the props of HTMLAttributes
@@ -31,7 +31,7 @@
 ## Example (live: `#/components/browser-review/artifact-library` in the playground)
 
 ```tsx
-import { ArtifactLibrary } from "@sutra/ui/agent";
+import { ArtifactLibrary } from "@cleanprompt/sutra-ui/agent";
 
 <ArtifactLibrary artifacts={libraryItems} className="w-full" />
 <ArtifactLibrary artifacts={[]} className="w-full" />

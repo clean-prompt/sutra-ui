@@ -2,7 +2,7 @@
 
 > Alert rules with an on/off switch, the rule sentence, scope and muted apps, edit and delete; presets when empty.
 
-- Import: `import { AlertRuleList } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { AlertRuleList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/alert-rules-list` (kit `system`)
 - `data-slot`: `alert-rule-list`, `alert-rule-skeleton-row`, `alert-rule-empty`, `alert-rule-row`, `alert-rule-description`, `alert-rule-scope`, `alert-rule-muted`
 - Also accepts the props of HTMLAttributes
@@ -34,7 +34,7 @@
 
 ```tsx
 import * as React from "react";
-import { ALERT_RULE_PRESETS, AlertRuleList } from "@sutra/ui/system";
+import { ALERT_RULE_PRESETS, AlertRuleList } from "@cleanprompt/sutra-ui/system";
 
 function AlertsDemo() {
   const [rules, setRules] = React.useState<AlertRule[]>(() =>

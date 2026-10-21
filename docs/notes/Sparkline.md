@@ -29,7 +29,7 @@ Pure SVG computed from `data`, `width` and `height`, with an id from `useId` for
 
 ## Example
 ```tsx
-import { Sparkline } from "@sutra/ui";
+import { Sparkline } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

@@ -2,7 +2,7 @@
 
 > Summary of the active subscription: price, renewal, seats, quota meters, payment method and actions.
 
-- Import: `import { CurrentPlanCard } from "@sutra/ui"` (or from `@sutra/ui/billing`)
+- Import: `import { CurrentPlanCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-current-plan` (kit `billing`)
 - `data-slot`: `current-plan-card`
 - Also accepts the props of HTMLAttributes
@@ -28,7 +28,7 @@
 ## Example (live: `#/components/billing-marketing/current-plan` in the playground)
 
 ```tsx
-import { CurrentPlanCard } from "@sutra/ui/billing";
+import { CurrentPlanCard } from "@cleanprompt/sutra-ui/billing";
 
 <CurrentPlanCard
   planName="Pro"

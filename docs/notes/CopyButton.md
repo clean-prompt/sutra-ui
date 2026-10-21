@@ -36,13 +36,13 @@ Plain markup with no browser API at render (`navigator.clipboard` is read in the
 
 ## Example
 ```tsx
-import { CopyButton, CopyField } from "@sutra/ui";
+import { CopyButton, CopyField } from "@cleanprompt/sutra-ui";
 
 export function Example({ inviteUrl }: { inviteUrl: string }) {
   return (
     <div className="flex max-w-md flex-col gap-3">
       <CopyField label="API key" value="sk_live_51Hq7x2eZvKYlo2C" />
-      <CopyField label="Install command" prefix="$" value="pnpm add @sutra/ui" />
+      <CopyField label="Install command" prefix="$" value="pnpm add @cleanprompt/sutra-ui" />
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <span>Invite link</span>
         <CopyButton

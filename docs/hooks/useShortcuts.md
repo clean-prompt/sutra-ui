@@ -2,7 +2,7 @@
 
 > Register several shortcuts at once. Works standalone (local listener) without a provider.
 
-- Import: `import { useShortcuts } from "@sutra/ui/suite"`
+- Import: `import { useShortcuts } from "@cleanprompt/sutra-ui/suite"`
 - Source: `packages/ui/src/patterns/shortcuts`
 
 ## Signature

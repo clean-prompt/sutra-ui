@@ -2,7 +2,7 @@
 
 > Selector for which profile a capability change applies to. The ref goes to the trigger.
 
-- Import: `import { ScopeSelector } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ScopeSelector } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/capabilities` (kit `agent-admin`)
 
 ## Props

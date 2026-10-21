@@ -2,7 +2,7 @@
 
 > System rows in a transcript: compaction, interruption, slash commands, errors, dividers and day changes.
 
-- Import: `import { TranscriptSystemRow } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { TranscriptSystemRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-transcript` (kit `agent`)
 - Also accepts the props of HTMLAttributes
 
@@ -29,8 +29,8 @@
 
 ```tsx
 import * as React from "react";
-import { TranscriptSystemRow } from "@sutra/ui/agent";
-import { RiGitMergeLine } from "@sutra/ui/icons";
+import { TranscriptSystemRow } from "@cleanprompt/sutra-ui/agent";
+import { RiGitMergeLine } from "@cleanprompt/sutra-ui/icons";
 
 function SystemRowsDemo() {
   const [retries, setRetries] = React.useState(0);

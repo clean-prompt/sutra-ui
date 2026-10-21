@@ -34,7 +34,7 @@ The server renders the empty live-region `<section>` only: toasts exist only aft
 
 ## Example
 ```tsx
-import { Button, Toaster, snackbar, toast } from "@sutra/ui";
+import { Button, Toaster, snackbar, toast } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

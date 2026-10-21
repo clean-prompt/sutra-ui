@@ -1,5 +1,5 @@
 import * as React from "react";
-import { InlineCode, SegmentedControl } from "@sutra/ui";
+import { InlineCode, SegmentedControl } from "@cleanprompt/sutra-ui";
 
 /** The in-app motion setting: follow the system, always reduce, or always play. */
 export type MotionSetting = "system" | "reduce" | "full";

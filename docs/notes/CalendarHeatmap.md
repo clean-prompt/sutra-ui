@@ -38,7 +38,7 @@ Without `endDate` (year) or `defaultMonth` (month) the range starts from `new Da
 
 ## Example
 ```tsx
-import { CalendarHeatmap } from "@sutra/ui";
+import { CalendarHeatmap } from "@cleanprompt/sutra-ui";
 
 const sessions = [
   { date: "2026-10-12", value: 3 },

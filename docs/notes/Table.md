@@ -36,7 +36,7 @@ Plain table markup with no browser API, so server and client output match. The `
 
 ## Example
 ```tsx
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@sutra/ui";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@cleanprompt/sutra-ui";
 
 const invoices = [
   { id: "INV-1042", customer: "Acme Corp", amount: "$1,280.00" },

@@ -2,7 +2,7 @@
 
 > Context-window bar (a StackedMeter with meter semantics) with per-category rows and an optional "Compact now" action. Also the body of the ContextMeter popover.
 
-- Import: `import { ContextUsageBreakdown } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ContextUsageBreakdown } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/ai/agent-usage` (kit `ai`)
 - `data-slot`: `context-usage-summary`, `context-usage-percent`
 - Also accepts the props of HTMLAttributes
@@ -32,7 +32,7 @@
 
 ```tsx
 import * as React from "react";
-import { ContextUsageBreakdown } from "@sutra/ui/agent";
+import { ContextUsageBreakdown } from "@cleanprompt/sutra-ui/agent";
 
 function ContextUsageDemo() {
   const [messages, setMessages] = React.useState(96_400);

@@ -2,7 +2,7 @@
 
 > Kind → color/glyph legend; doubles as a kind filter when `onToggleKind` is set.
 
-- Import: `import { MemoryMapLegend } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { MemoryMapLegend } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/memory-map-legend` (kit `workspace`)
 - `data-slot`: `memory-map-legend`
 - Also accepts the props of HTMLAttributes

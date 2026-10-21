@@ -2,7 +2,7 @@
 
 > Light / dark / system switch: an animated icon button or a segmented control.
 
-- Import: `import { ThemeToggle } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { ThemeToggle } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/theme-toggle` (patterns)
 - `data-slot`: `theme-toggle`
 - Also accepts the props of HTMLAttributes
@@ -65,7 +65,7 @@ Server render: part of it fills in after mount. The server and the hydrating cli
 ## Example
 
 ```tsx
-import { ThemeToggle } from "@sutra/ui";
+import { ThemeToggle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

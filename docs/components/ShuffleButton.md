@@ -2,7 +2,7 @@
 
 > Shuffle on/off toggle.
 
-- Import: `import { ShuffleButton } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { ShuffleButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-controls-playback` (kit `media`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

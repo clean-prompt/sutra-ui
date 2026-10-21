@@ -2,7 +2,7 @@
 
 > Toolbar tool: icon button with a tooltip (label + shortcut keys) and optional pressed state.
 
-- Import: `import { EditorToolbarButton } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { EditorToolbarButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/kits/editor/editor-toolbar` (kit `editor`)
 - Part of [`EditorToolbar`](EditorToolbar.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -27,7 +27,7 @@ import {
   EditorToolbarButton,
   EditorToolbarMenu,
   EditorToolbarSeparator,
-} from "@sutra/ui/editor";
+} from "@cleanprompt/sutra-ui/editor";
 import {
   RiBold,
   RiDoubleQuotesL,
@@ -39,7 +39,7 @@ import {
   RiListUnordered,
   RiStrikethrough,
   RiTableLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 
 function ToolbarOverflowDemo() {
   const [width, setWidth] = React.useState(360);

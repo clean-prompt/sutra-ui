@@ -30,7 +30,7 @@ import {
   type DeliveryPlatformStatus,
   type DeliveryTarget,
   type WebhookRoute,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAddLine,
   RiArchiveLine,
@@ -40,7 +40,7 @@ import {
   RiPriceTag3Line,
   RiSendPlane2Line,
   RiSunLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

@@ -2,7 +2,7 @@
 
 > Calls `callback` whenever the element resizes (no-op where `ResizeObserver` is missing).
 
-- Import: `import { useResizeObserver } from "@sutra/ui/tokens"`
+- Import: `import { useResizeObserver } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-resize-observer`
 
 ## Signature

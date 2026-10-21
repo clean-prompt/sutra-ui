@@ -2,7 +2,7 @@
 
 > Placeholder for an empty list, search or first-run screen. `variant="welcome"` is the large greeting at the start of a conversation or workspace (see `ChatEmptyState`).
 
-- Import: `import { EmptyState } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { EmptyState } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/primitives/empty-state` (primitives)
 - `data-slot`: `empty-state`
 - Also accepts the props of HTMLAttributes
@@ -61,8 +61,8 @@ Server render: same markup as the client. Plain markup with a `useId` for the he
 ## Example
 
 ```tsx
-import { Button, EmptyState } from "@sutra/ui";
-import { RiAddLine } from "@sutra/ui/icons";
+import { Button, EmptyState } from "@cleanprompt/sutra-ui";
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

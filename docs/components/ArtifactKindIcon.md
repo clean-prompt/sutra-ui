@@ -2,7 +2,7 @@
 
 > Icon for an artifact kind, in a tinted tile.
 
-- Import: `import { ArtifactKindIcon } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ArtifactKindIcon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/artifacts-preview` (kit `agent`)
 - Also accepts the props of HTMLAttributes
 

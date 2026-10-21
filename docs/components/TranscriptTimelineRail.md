@@ -2,7 +2,7 @@
 
 > Minimap rail beside a long transcript: one tick per user turn, hover previews, jump and in-view sync.
 
-- Import: `import { TranscriptTimelineRail } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { TranscriptTimelineRail } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/timeline-rail` (kit `workspace`)
 - `data-slot`: `transcript-timeline-rail`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 
 ```tsx
 import * as React from "react";
-import { TranscriptTimelineRail } from "@sutra/ui/workspace";
+import { TranscriptTimelineRail } from "@cleanprompt/sutra-ui/workspace";
 
 function TranscriptDemo() {
   const scrollRef = React.useRef<HTMLDivElement>(null);

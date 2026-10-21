@@ -2,7 +2,7 @@
 
 > Procedural agent avatar drawn as pure SVG from `{ shape, color, face, seed }`.
 
-- Import: `import { AgentAvatar } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { AgentAvatar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/patterns/agent-avatar` (patterns)
 - `data-slot`: `agent-avatar`
 - Also accepts the props of SVGAttributes

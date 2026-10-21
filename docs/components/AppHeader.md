@@ -2,7 +2,7 @@
 
 > App top bar: sidebar trigger, breadcrumbs, ⌘K search palette, notifications and account menu.
 
-- Import: `import { AppHeader } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { AppHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/header-navigation-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

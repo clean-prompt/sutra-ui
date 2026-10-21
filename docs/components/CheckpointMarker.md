@@ -2,7 +2,7 @@
 
 > Thin transcript divider ("Checkpoint · 3 files changed") with a rewind action.
 
-- Import: `import { CheckpointMarker } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { CheckpointMarker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/rewind` (kit `agent`)
 - `data-slot`: `checkpoint-rewind`, `checkpoint-marker`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,7 @@
 
 ```tsx
 import * as React from "react";
-import { CheckpointMarker, RewindButton, RewindDialog } from "@sutra/ui/agent";
+import { CheckpointMarker, RewindButton, RewindDialog } from "@cleanprompt/sutra-ui/agent";
 
 function RewindDemo() {
   const [open, setOpen] = React.useState(false);

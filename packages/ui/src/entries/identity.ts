@@ -1,4 +1,4 @@
-/* @sutra/ui/identity: QR codes, settings, sessions, the sign-in map, lock and boot screens. */
+/* @cleanprompt/sutra-ui/identity: QR codes, settings, sessions, the sign-in map, lock and boot screens. */
 export * from "../kits/identity/qr-code";
 export * from "../kits/identity/qr-scanner";
 export * from "../patterns/settings";

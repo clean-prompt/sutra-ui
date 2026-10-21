@@ -9,8 +9,8 @@ import {
   imageCropperAspectOptions,
   useSelectionArea,
   type ViewerFile,
-} from "@sutra/ui";
-import { PdfThumbnail, PdfViewer, pdfRenderer } from "@sutra/ui/pdf";
+} from "@cleanprompt/sutra-ui";
+import { PdfThumbnail, PdfViewer, pdfRenderer } from "@cleanprompt/sutra-ui/pdf";
 import workerSrc from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 import { Demo, PageIntro } from "../components/demo";
 
@@ -154,7 +154,7 @@ export function FilesPage() {
     <PageIntro
       eyebrow="Patterns"
       title="Files & capture"
-      description="Image cropping, camera capture, rubber-band selection for file grids, and PDF viewing (@sutra/ui/pdf, with pdfjs-dist as an optional peer)."
+      description="Image cropping, camera capture, rubber-band selection for file grids, and PDF viewing (@cleanprompt/sutra-ui/pdf, with pdfjs-dist as an optional peer)."
     >
       <Demo id="image-cropper" title="Image cropper" description="Crop box with handles, aspect presets, rotation, zoom and a cropped-image export." align="start">
         <CropperDemo />

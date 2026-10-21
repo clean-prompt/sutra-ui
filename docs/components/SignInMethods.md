@@ -2,7 +2,7 @@
 
 > Sign-in method tabs (kunji QR, username + password, access token) that remember the last one used.
 
-- Import: `import { SignInMethods } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { SignInMethods } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/blocks/kunji-blocks-sign-in` (blocks)
 - `data-slot`: `sign-in-methods`
 - Also accepts the props of HTMLAttributes
@@ -29,7 +29,7 @@
 ## Example (live: `#/components/kunji/sign-in-methods` in the playground)
 
 ```tsx
-import { SignInMethods } from "@sutra/ui/kunji";
+import { SignInMethods } from "@cleanprompt/sutra-ui/kunji";
 
 <SignInMethods client={client} usernameLabel="Lab username" onPasswordSubmit={() => new Promise((r) => setTimeout(r, 800))} />
 ```

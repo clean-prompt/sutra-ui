@@ -2,7 +2,7 @@
 
 > Date range picker with two months, a presets sidebar and an Apply/Cancel footer.
 
-- Import: `import { DateRangePicker } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { DateRangePicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/date-picker-range` (primitives)
 
 ## Props
@@ -89,7 +89,7 @@ Server render: part of it fills in after mount. The trigger renders on the serve
 
 ```tsx
 import * as React from "react";
-import { DateRangePicker, Field, FieldLabel } from "@sutra/ui";
+import { DateRangePicker, Field, FieldLabel } from "@cleanprompt/sutra-ui";
 
 type Range = React.ComponentProps<typeof DateRangePicker>["value"];
 

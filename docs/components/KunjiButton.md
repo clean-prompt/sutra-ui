@@ -2,7 +2,7 @@
 
 > Brand "Sign in with kunji" button that opens `KunjiSignIn` in a dialog.
 
-- Import: `import { KunjiButton } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { KunjiButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/kits/identity/kunji-buttons` (kit `identity`)
 - `data-slot`: `kunji-button`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -31,7 +31,7 @@
 ## Example (live: `#/components/kunji/kunji-button` in the playground)
 
 ```tsx
-import { KunjiButton, KunjiMark } from "@sutra/ui/kunji";
+import { KunjiButton, KunjiMark } from "@cleanprompt/sutra-ui/kunji";
 
 <KunjiButton client={client} onSuccess={() => setLog("KunjiButton: signed in")} />
 <KunjiButton client={client} theme="light" />

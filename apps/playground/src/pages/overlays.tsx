@@ -91,7 +91,7 @@ import {
   TooltipTrigger,
   useCommandMenuShortcut,
   useCopy,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiArchiveLine,
   RiArrowDownSLine,
@@ -122,7 +122,7 @@ import {
   RiMailLine,
   RiSlackLine,
   RiTwitterXLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 function PromiseDialogsDemo() {

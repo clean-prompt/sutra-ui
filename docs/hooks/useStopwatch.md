@@ -2,7 +2,7 @@
 
 > Stopwatch state: elapsed ms, running flag, laps and start / pause / lap / reset actions.
 
-- Import: `import { useStopwatch } from "@sutra/ui/social"`
+- Import: `import { useStopwatch } from "@cleanprompt/sutra-ui/social"`
 - Source: `packages/ui/src/hooks/use-stopwatch`
 
 ## Signature

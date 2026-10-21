@@ -2,7 +2,7 @@
 
 > Formatting toolbar (`role="toolbar"`) with roving tabindex (arrow keys, Home/End) and overflow collapsing into a "More" menu when the container is too narrow.
 
-- Import: `import { EditorToolbar } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { EditorToolbar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/kits/editor/editor-toolbar` (kit `editor`)
 - `data-slot`: `editor-toolbar`
 - Parts: [`EditorToolbarButton`](EditorToolbarButton.md), [`EditorToolbarMenu`](EditorToolbarMenu.md), [`EditorToolbarSeparator`](EditorToolbarSeparator.md)
@@ -57,7 +57,7 @@ import {
   EditorToolbarButton,
   EditorToolbarMenu,
   EditorToolbarSeparator,
-} from "@sutra/ui/editor";
+} from "@cleanprompt/sutra-ui/editor";
 import {
   RiBold,
   RiDoubleQuotesL,
@@ -69,7 +69,7 @@ import {
   RiListUnordered,
   RiStrikethrough,
   RiTableLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 
 function ToolbarOverflowDemo() {
   const [width, setWidth] = React.useState(360);

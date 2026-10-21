@@ -2,7 +2,7 @@
 
 > Segmented strength meter with a label and live requirement checklist.
 
-- Import: `import { PasswordStrength } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { PasswordStrength } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/patterns/password-strength` (patterns)
 - `data-slot`: `password-strength`
 - Also accepts the props of HTMLAttributes
@@ -21,7 +21,7 @@
 
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, PasswordInput, PasswordStrength } from "@sutra/ui/forms";
+import { Field, FieldLabel, PasswordInput, PasswordStrength } from "@cleanprompt/sutra-ui/forms";
 
 function PasswordStrengthDemo() {
   const [password, setPassword] = React.useState("Sutra");

@@ -17,14 +17,14 @@ describe("test harness", () => {
 });
 
 describe("barrels", () => {
-  it("exports the documented helpers from the root and @sutra/ui/tokens", () => {
+  it("exports the documented helpers from the root and @cleanprompt/sutra-ui/tokens", () => {
     for (const name of ["cn", "colorForSeed", "initials", "isSafeHref", "isEmail", "useNow", "useMediaQuery", "useAsyncAction", "useSafeId", "CopyButton", "CopyField"]) {
       expect(root).toHaveProperty(name);
     }
     for (const name of ["cn", "colorForSeed", "initials", "isSafeHref", "useNow", "useAsyncAction"]) expect(tokensEntry).toHaveProperty(name);
   });
 
-  it("keeps the generic lib plumbing off the root and @sutra/ui/tokens", () => {
+  it("keeps the generic lib plumbing off the root and @cleanprompt/sutra-ui/tokens", () => {
     for (const name of ["clamp", "pad2", "toMs", "hashString", "formatRelative", "formatDuration", "formatCompact", "base64UrlEncode", "toValidDate", "useLatestRef", "useIsoLayoutEffect", "useMountedRef", "errorMessage", "getPaginationRange"]) {
       expect(root).not.toHaveProperty(name);
       expect(tokensEntry).not.toHaveProperty(name);

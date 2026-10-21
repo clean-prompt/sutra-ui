@@ -2,7 +2,7 @@
 
 > Index page header: title with count, search field, filter selects and a list/grid toggle.
 
-- Import: `import { PageHeaderWithSearch } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { PageHeaderWithSearch } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/section-header-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

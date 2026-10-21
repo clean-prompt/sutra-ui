@@ -38,7 +38,7 @@ Plain markup built from the props, with no browser API, so server and client out
 
 ## Example
 ```tsx
-import { PortBadge, PortBadgeList } from "@sutra/ui";
+import { PortBadge, PortBadgeList } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

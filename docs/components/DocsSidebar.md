@@ -2,7 +2,7 @@
 
 > Documentation navigation with filterable collapsible sections (or a TreeView).
 
-- Import: `import { DocsSidebar } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { DocsSidebar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/sidebar-navigation-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

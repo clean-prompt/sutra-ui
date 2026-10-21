@@ -41,7 +41,7 @@ The server renders two copies. After mount the root and one copy are measured an
 
 ## Example
 ```tsx
-import { Marquee } from "@sutra/ui";
+import { Marquee } from "@cleanprompt/sutra-ui";
 
 const customers = ["Northwind", "Acme Hosting", "Bright Print", "Globex", "Initech", "Umbrella Labs"];
 

@@ -2,7 +2,7 @@
 
 > Battery reading: a glyph or small bar with the percentage, toned warning when low and destructive when critical.
 
-- Import: `import { BatteryLevel } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { BatteryLevel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/primitives/battery-level` (primitives)
 - `data-slot`: `battery-level`, `battery-level-fill`
 - Also accepts the props of HTMLAttributes
@@ -64,7 +64,7 @@ Server render: same markup as the client. Plain markup computed from the props, 
 ## Example
 
 ```tsx
-import { BatteryLevel } from "@sutra/ui";
+import { BatteryLevel } from "@cleanprompt/sutra-ui";
 
 const devices = [
   { name: "Door sensor", level: 82, charging: false },

@@ -2,7 +2,7 @@
 
 > Featured banner: backdrop with gradients, title/logo, meta chips, clamped synopsis, Play and More info.
 
-- Import: `import { MediaHero } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { MediaHero } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/media-cards` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
@@ -27,7 +27,7 @@
 ## Example (live: `#/components/media-player/media-hero` in the playground)
 
 ```tsx
-import { MediaHero } from "@sutra/ui/media";
+import { MediaHero } from "@cleanprompt/sutra-ui/media";
 
 <MediaHero
   eyebrow="Featured"

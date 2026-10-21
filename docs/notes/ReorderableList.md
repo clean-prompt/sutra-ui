@@ -37,7 +37,7 @@ The list renders from `items` with plain markup (no browser API at render), so t
 ## Example
 ```tsx
 import * as React from "react";
-import { ReorderableList } from "@sutra/ui";
+import { ReorderableList } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [items, setItems] = React.useState(["Design review", "Write tests", "Ship release"]);

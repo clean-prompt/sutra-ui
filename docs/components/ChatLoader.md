@@ -2,7 +2,7 @@
 
 > Assistant "working" indicator for the reply slot: a `Spinner` (or TextShimmer) plus an optional label.
 
-- Import: `import { ChatLoader } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatLoader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-loader` (kit `ai`)
 - `data-slot`: `chat-loader`
 - Also accepts the props of HTMLAttributes
@@ -18,7 +18,7 @@
 ## Example (live: `#/components/ai/chat-loader` in the playground)
 
 ```tsx
-import { ChatLoader } from "@sutra/ui/ai";
+import { ChatLoader } from "@cleanprompt/sutra-ui/ai";
 
 function ChatLoaderDemo() {
   const variants = ["dots", "shimmer", "pulse", "spinner", "wave"] as const;

@@ -2,7 +2,7 @@
 
 > The device rows used inside `CastPicker` (usable on its own, e.g. in a settings page).
 
-- Import: `import { CastDeviceList } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { CastDeviceList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/cast-picker` (kit `media`)
 - Also accepts the props of HTMLAttributes
 

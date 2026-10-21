@@ -2,7 +2,7 @@
 
 > Data-driven tree with expand/collapse, selection, tri-state checkboxes and full keyboard support.
 
-- Import: `import { TreeView } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { TreeView } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/tree-view` (patterns)
 - `data-slot`: `tree-view`
 - Also accepts the props of HTMLAttributes
@@ -83,7 +83,7 @@ Server render: same markup as the client. The whole tree is plain markup from `n
 
 ```tsx
 import * as React from "react";
-import { TreeView, type TreeNode } from "@sutra/ui";
+import { TreeView, type TreeNode } from "@cleanprompt/sutra-ui";
 
 const files: TreeNode[] = [
   {

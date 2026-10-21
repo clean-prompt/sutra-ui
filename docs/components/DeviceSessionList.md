@@ -2,7 +2,7 @@
 
 > Devices & sessions manager: list, per-session sign out, and "sign out everywhere else".
 
-- Import: `import { DeviceSessionList } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { DeviceSessionList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/kits/identity/device-sessions` (kit `identity`)
 - `data-slot`: `session-list`
 - Also accepts the props of HTMLAttributes
@@ -25,8 +25,8 @@
 ## Example (live: `#/components/identity/sessions` in the playground)
 
 ```tsx
-import { Button } from "@sutra/ui/core";
-import { DeviceSessionList } from "@sutra/ui/identity";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { DeviceSessionList } from "@cleanprompt/sutra-ui/identity";
 
 <DeviceSessionList
   title="Devices"

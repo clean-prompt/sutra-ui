@@ -2,7 +2,7 @@
 
 > A selectable option with a check indicator.
 
-- Import: `import { SelectItem } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { SelectItem } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/select` (primitives)
 - Part of [`Select`](Select.md)
 - Also accepts the props of HTMLAttributes, SelectItemProps, PrimitivePropsWithRef
@@ -22,7 +22,7 @@ See the notes in [`Select`](Select.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SimpleSelect } from "@sutra/ui";
+import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SimpleSelect } from "@cleanprompt/sutra-ui";
 
 const roles = [
   { value: "viewer", label: "Viewer", description: "Can read" },

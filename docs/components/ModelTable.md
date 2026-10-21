@@ -2,7 +2,7 @@
 
 > Model registry table: family groups, filters, sorting, state-dependent actions and smoke-test rows.
 
-- Import: `import { ModelTable } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { ModelTable } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/model-row` (kit `ops`)
 - `data-slot`: `model-table`
 - Also accepts the props of HTMLAttributes
@@ -29,7 +29,7 @@
 
 ```tsx
 import * as React from "react";
-import { ModelTable } from "@sutra/ui/ops";
+import { ModelTable } from "@cleanprompt/sutra-ui/ops";
 
 function ModelTableDemo() {
   const [models, setModels] = React.useState(initialModels);

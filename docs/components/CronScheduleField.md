@@ -2,7 +2,7 @@
 
 > Schedule builder: interval / hourly / daily / weekdays / weekly / monthly / once / raw cron, with a live summary and next-runs preview.
 
-- Import: `import { CronScheduleField } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { CronScheduleField } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/patterns/cron` (patterns)
 - `data-slot`: `cron-summary`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 
 ```tsx
 import * as React from "react";
-import { CronScheduleField, toScheduleString } from "@sutra/ui/agent-admin";
+import { CronScheduleField, toScheduleString } from "@cleanprompt/sutra-ui/agent-admin";
 
 function ScheduleBuilderDemo() {
   const [value, setValue] = React.useState<CronScheduleValue | null>({ kind: "cron", expr: "0 9 * * 1-5" });

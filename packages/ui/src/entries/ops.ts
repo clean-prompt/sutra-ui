@@ -1,4 +1,4 @@
-/* @sutra/ui/ops: log viewer, transfer queues and streaming progress. */
+/* @cleanprompt/sutra-ui/ops: log viewer, transfer queues and streaming progress. */
 export * from "../patterns/log-viewer";
 export * from "../patterns/transfer-list";
 export * from "../kits/ops/progress-dialog";

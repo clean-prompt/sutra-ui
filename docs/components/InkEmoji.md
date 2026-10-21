@@ -2,7 +2,7 @@
 
 > An original hand-drawn monoline version of an emoji of the built-in set, drawn in `currentColor`; renders nothing for an emoji without art unless `fallback` is set.
 
-- Import: `import { InkEmoji } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { InkEmoji } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/emoji-ink` (assets)
 - `data-slot`: `emoji`, `ink-emoji`, `emoji-ink-filter`
 - Also accepts the props of SVGAttributes
@@ -62,7 +62,7 @@ Server render: same markup as the client. The same markup on the server and the 
 ## Example
 
 ```tsx
-import { EmojiGlyph, InkEmoji, hasInkEmoji } from "@sutra/ui";
+import { EmojiGlyph, InkEmoji, hasInkEmoji } from "@cleanprompt/sutra-ui";
 
 export function Example({ emoji }: { emoji: string }) {
   return (

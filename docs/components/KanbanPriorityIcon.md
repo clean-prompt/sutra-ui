@@ -2,7 +2,7 @@
 
 > Linear-style priority glyph (bars, or an alert square for urgent).
 
-- Import: `import { KanbanPriorityIcon } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { KanbanPriorityIcon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-card` (kit `workspace`)
 - `data-slot`: `kanban-priority-icon`
 - Also accepts the props of SVGAttributes

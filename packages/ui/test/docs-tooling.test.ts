@@ -18,8 +18,8 @@ const api = {
 
 const PAGE = `
 import * as React from "react";
-import { Button, Carousel, type ButtonProps } from "@sutra/ui";
-import { RiHeartLine } from "@sutra/ui/icons";
+import { Button, Carousel, type ButtonProps } from "@cleanprompt/sutra-ui";
+import { RiHeartLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo } from "../components/demo";
 import { Other } from "./other-demos";
 
@@ -70,17 +70,17 @@ describe("demo source extraction", () => {
   });
 
   it("computes imports from the entry that exports each name (the icon set is /icons, types are left out)", () => {
-    expect(demos.button!.imports).toBe('import { Button } from "@sutra/ui/core";\nimport { RiHeartLine } from "@sutra/ui/icons";');
-    expect(demos["Carousel items"]!.imports).toBe('import { Carousel } from "@sutra/ui/navigation";');
+    expect(demos.button!.imports).toBe('import { Button } from "@cleanprompt/sutra-ui/core";\nimport { RiHeartLine } from "@cleanprompt/sutra-ui/icons";');
+    expect(demos["Carousel items"]!.imports).toBe('import { Carousel } from "@cleanprompt/sutra-ui/navigation";');
     expect(demos.button!.names).toEqual(["Button", "RiHeartLine"]);
   });
 
   it("expands a demo that is only <SomeDemo /> to SomeDemo's source", () => {
-    const helper = `import { Button } from "@sutra/ui";\nexport function CounterDemo2() {\n  return <Button>Two</Button>;\n}\n`;
+    const helper = `import { Button } from "@cleanprompt/sutra-ui";\nexport function CounterDemo2() {\n  return <Button>Two</Button>;\n}\n`;
     const decls = declarationsOf("other-demos.tsx", helper);
     const { demos: found } = extractDemos("buttons.tsx", PAGE, api, decls);
     expect(found.wrapped!.code).toBe("function CounterDemo2() {\n  return <Button>Two</Button>;\n}");
-    expect(found.wrapped!.imports).toBe('import { Button } from "@sutra/ui/core";');
+    expect(found.wrapped!.imports).toBe('import { Button } from "@cleanprompt/sutra-ui/core";');
   });
 
   it("maps the routes of App.tsx's page map to their files", () => {

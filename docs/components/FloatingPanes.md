@@ -2,7 +2,7 @@
 
 > Layer of draggable, resizable floating windows kept inside their container.
 
-- Import: `import { FloatingPanes } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { FloatingPanes } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/patterns/tiling-layout-floating` (patterns)
 - `data-slot`: `floating-panes`, `floating-pane`, `floating-pane-handle`, `floating-pane-resize`
 - Also accepts the props of HTMLAttributes
@@ -26,8 +26,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { FloatingPanes } from "@sutra/ui/workspace";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { FloatingPanes } from "@cleanprompt/sutra-ui/workspace";
 
 function FloatingDemo() {
   const [panes, setPanes] = React.useState<FloatingPaneState[]>([

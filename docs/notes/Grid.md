@@ -27,7 +27,7 @@ Plain markup; the column counts come from CSS breakpoints (`md`, `lg`), so there
 
 ## Example
 ```tsx
-import { Card, CardContent, CardHeader, CardTitle, Grid, GridItem } from "@sutra/ui";
+import { Card, CardContent, CardHeader, CardTitle, Grid, GridItem } from "@cleanprompt/sutra-ui";
 
 const stats = [
   { label: "Active users", value: "1,284" },

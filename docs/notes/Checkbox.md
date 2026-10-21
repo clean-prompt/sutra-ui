@@ -43,7 +43,7 @@ A single `Checkbox` renders the same on both sides, including `checked` and `def
 ## Example
 ```tsx
 import * as React from "react";
-import { CheckboxField, CheckboxGroup } from "@sutra/ui";
+import { CheckboxField, CheckboxGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [accepted, setAccepted] = React.useState(false);

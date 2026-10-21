@@ -2,7 +2,7 @@
 
 > Vertically stacked set of collapsible sections.
 
-- Import: `import { Accordion } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Accordion } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/accordion` (primitives)
 - Parts: [`AccordionContent`](AccordionContent.md), [`AccordionItem`](AccordionItem.md), [`AccordionTrigger`](AccordionTrigger.md)
 - Also accepts the props of HTMLAttributes, AccordionImplSingleProps, AccordionImplProps, AccordionSingleProps
@@ -76,7 +76,7 @@ Server render: part of it fills in after mount. Closed sections render only thei
 ## Example
 
 ```tsx
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@sutra/ui";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

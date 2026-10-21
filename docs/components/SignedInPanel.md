@@ -2,7 +2,7 @@
 
 > Signed-in summary: `AccountPanel` plus kunji linking, sign out and sign out everywhere.
 
-- Import: `import { SignedInPanel } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { SignedInPanel } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/blocks/kunji-blocks-signed-in` (blocks)
 - Also accepts the props of HTMLAttributes
 
@@ -27,7 +27,7 @@
 ## Example (live: `#/components/kunji/signed-in-panel` in the playground)
 
 ```tsx
-import { SignedInPanel } from "@sutra/ui/kunji";
+import { SignedInPanel } from "@cleanprompt/sutra-ui/kunji";
 
 <SignedInPanel
   name="Maya Patel"

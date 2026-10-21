@@ -2,7 +2,7 @@
 
 > Group of chips with single or multiple selection.
 
-- Import: `import { ChipGroup } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ChipGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/chip` (primitives)
 - Part of [`Chip`](Chip.md)
 - Also accepts the props of HTMLAttributes
@@ -36,7 +36,7 @@ See the notes in [`Chip`](Chip.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Chip, ChipGroup } from "@sutra/ui";
+import { Chip, ChipGroup } from "@cleanprompt/sutra-ui";
 
 const topics = ["Design", "Engineering", "Research", "Support"];
 

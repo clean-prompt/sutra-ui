@@ -2,7 +2,7 @@
 
 > Supporting text of an `InlineAlert`.
 
-- Import: `import { InlineAlertDescription } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { InlineAlertDescription } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/inline-alert` (primitives)
 - Part of [`InlineAlert`](InlineAlert.md)
 - Also accepts the props of HTMLAttributes
@@ -19,7 +19,7 @@ See the notes in [`InlineAlert`](InlineAlert.md#notes).
 
 ```tsx
 import * as React from "react";
-import { Button, InlineAlert, InlineAlertActions, InlineAlertDescription, InlineAlertTitle } from "@sutra/ui";
+import { Button, InlineAlert, InlineAlertActions, InlineAlertDescription, InlineAlertTitle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [visible, setVisible] = React.useState(true);

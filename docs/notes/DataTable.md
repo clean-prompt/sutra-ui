@@ -36,7 +36,7 @@ The table renders fully on the server, including sorted and selected rows from `
 
 ## Example
 ```tsx
-import { Badge, DataTable } from "@sutra/ui";
+import { Badge, DataTable } from "@cleanprompt/sutra-ui";
 
 const invoices = [
   { id: "INV-1042", customer: "Acme Corp", paid: true, amount: 1280 },

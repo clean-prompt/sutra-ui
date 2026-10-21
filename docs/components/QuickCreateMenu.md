@@ -2,7 +2,7 @@
 
 > "+ New" button opening a menu to create items in any Sutra app.
 
-- Import: `import { QuickCreateMenu } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { QuickCreateMenu } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/dropdown-menu-blocks` (blocks)
 
 ## Props

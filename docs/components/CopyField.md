@@ -2,7 +2,7 @@
 
 > Read-only value with a copy button, for commands, ids, keys and URLs.
 
-- Import: `import { CopyField } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { CopyField } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/copy-button` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -61,13 +61,13 @@ Server render: same markup as the client. Plain markup with no browser API at re
 ## Example
 
 ```tsx
-import { CopyButton, CopyField } from "@sutra/ui";
+import { CopyButton, CopyField } from "@cleanprompt/sutra-ui";
 
 export function Example({ inviteUrl }: { inviteUrl: string }) {
   return (
     <div className="flex max-w-md flex-col gap-3">
       <CopyField label="API key" value="sk_live_51Hq7x2eZvKYlo2C" />
-      <CopyField label="Install command" prefix="$" value="pnpm add @sutra/ui" />
+      <CopyField label="Install command" prefix="$" value="pnpm add @cleanprompt/sutra-ui" />
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <span>Invite link</span>
         <CopyButton

@@ -2,7 +2,7 @@
 
 > Collapsible group / folder header with a count, inline rename and trailing actions.
 
-- Import: `import { ConversationGroupHeader } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ConversationGroupHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/conversation-list` (kit `ai`)
 - `data-slot`: `conversation-group-header`
 - Also accepts the props of HTMLAttributes

@@ -2,7 +2,7 @@
 
 > Collapsible page console with level toggles and a text filter.
 
-- Import: `import { BrowserConsole } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { BrowserConsole } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-browser-console` (kit `agent`)
 - `data-slot`: `browser-console`
 - Also accepts the props of HTMLAttributes
@@ -27,7 +27,7 @@
 ## Example (live: `#/components/browser-review/browser-console` in the playground)
 
 ```tsx
-import { BrowserConsole } from "@sutra/ui/agent";
+import { BrowserConsole } from "@cleanprompt/sutra-ui/agent";
 
 <div className="w-full overflow-hidden rounded-box border border-border">
   <BrowserConsole entries={initialConsole} defaultOpen />

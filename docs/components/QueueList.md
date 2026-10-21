@@ -2,7 +2,7 @@
 
 > Reorderable queue: current row marked with NowPlayingBars, tap to jump, remove, drag or Alt+↑/↓ to reorder.
 
-- Import: `import { QueueList } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { QueueList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/audio-player-queue` (kit `media`)
 - `data-slot`: `queue-drop-indicator`, `queue-select`, `queue-remove`, `queue-announcer`, `queue-handle`
 - Also accepts the props of HTMLAttributes

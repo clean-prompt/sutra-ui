@@ -28,7 +28,7 @@ import {
   isEmail,
   isHttpUrl,
   useAsyncAction,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import { buildSizingRows, describeRow, TARGET_PX } from "../../../../packages/ui/scripts/docs/sizing.mjs";
 import { Demo, PageIntro } from "../components/demo";
 import { useApiData, useNotesData, type ApiEntry } from "../components/demo-panels";
@@ -94,7 +94,7 @@ function NotGenerated() {
   );
 }
 
-const importPath = (entry: string) => (entry === "index" ? "@sutra/ui" : `@sutra/ui/${entry}`);
+const importPath = (entry: string) => (entry === "index" ? "@cleanprompt/sutra-ui" : `@cleanprompt/sutra-ui/${entry}`);
 
 /* ---------------------------------------------------------------------------------------------- */
 /* Styling hooks                                                                                    */
@@ -605,7 +605,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   Button, CheckboxField, DatePicker, Field, FieldDescription, FieldError, FieldLabel,
   Input, SimpleSelect, Slider, SwitchField, Textarea,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 
 interface Values {
   name: string;
@@ -711,7 +711,7 @@ const SCHEMA_SNIPPET = `// Snippet only: zod and @hookform/resolvers are not dep
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Field, FieldError, FieldLabel, Input, SimpleSelect, useAsyncAction } from "@sutra/ui";
+import { Button, Field, FieldError, FieldLabel, Input, SimpleSelect, useAsyncAction } from "@cleanprompt/sutra-ui";
 
 // One schema is the source of truth for the types, the client check and (if you share it) the server check.
 const schema = z.object({

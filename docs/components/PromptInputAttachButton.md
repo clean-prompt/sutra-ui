@@ -2,7 +2,7 @@
 
 > Paperclip button that opens the file picker and forwards files to `onFilesAdded`.
 
-- Import: `import { PromptInputAttachButton } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputAttachButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-toolbar` (kit `ai`)
 - `data-slot`: `prompt-input-attach-button`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes

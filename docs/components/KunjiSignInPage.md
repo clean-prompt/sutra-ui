@@ -2,7 +2,7 @@
 
 > Full-page kunji sign-in: brand, the kunji QR as the hero, "Other ways to sign in" and a footer.
 
-- Import: `import { KunjiSignInPage } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { KunjiSignInPage } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/blocks/kunji-blocks-sign-in` (blocks)
 - Also accepts the props of HTMLAttributes
 
@@ -28,7 +28,7 @@
 ## Example (live: `#/components/kunji/kunji-sign-in-page` in the playground)
 
 ```tsx
-import { KunjiSignInPage } from "@sutra/ui/kunji";
+import { KunjiSignInPage } from "@cleanprompt/sutra-ui/kunji";
 
 <div className="h-[860px] w-full overflow-auto">
   <KunjiSignInPage client={client} className="min-h-full" onPasswordSubmit={() => new Promise((r) => setTimeout(r, 800))} />

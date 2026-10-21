@@ -2,7 +2,7 @@
 
 > Radio item with a label and optional description.
 
-- Import: `import { RadioField } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { RadioField } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/radio` (primitives)
 - `data-slot`: `radio-field`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes, RadioProps$1, PrimitivePropsWithRef
@@ -76,7 +76,7 @@ Server render: same markup as the client. Items and the group render on the serv
 
 ```tsx
 import * as React from "react";
-import { RadioField, RadioGroup } from "@sutra/ui";
+import { RadioField, RadioGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [plan, setPlan] = React.useState("team");

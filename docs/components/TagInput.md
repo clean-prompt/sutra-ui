@@ -2,7 +2,7 @@
 
 > Text input that turns entries into removable tag chips, with optional suggestions.
 
-- Import: `import { TagInput } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { TagInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/tag-input` (primitives)
 - `data-slot`: `tag-input`, `tag-input-tag`, `tag-input-field`, `tag-input-count`, `tag-input-announcer`
 - Also accepts the props of HTMLAttributes, InputHTMLAttributes
@@ -88,7 +88,7 @@ Server render: same markup as the client. The chips, the input and the count ren
 
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, TagInput } from "@sutra/ui";
+import { Field, FieldLabel, TagInput } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [tags, setTags] = React.useState(["design", "launch"]);

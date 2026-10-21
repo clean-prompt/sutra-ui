@@ -2,7 +2,7 @@
 
 > Subtask checklist with add / edit / delete / reorder, an "n/m" count with a thin progress bar and a hide-completed toggle.
 
-- Import: `import { Checklist } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { Checklist } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/patterns/reorderable-list` (patterns)
 - `data-slot`: `checklist`
 - Also accepts the props of HTMLAttributes
@@ -73,7 +73,7 @@ Server render: same markup as the client. Plain markup from `items` or `defaultI
 
 ```tsx
 import * as React from "react";
-import { Checklist, type ChecklistEntry } from "@sutra/ui";
+import { Checklist, type ChecklistEntry } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [items, setItems] = React.useState<ChecklistEntry[]>([

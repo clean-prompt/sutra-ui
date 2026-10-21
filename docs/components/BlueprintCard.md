@@ -2,7 +2,7 @@
 
 > Automation template card: icon, title, description, schedule and tags; expands into a slot form that creates a job.
 
-- Import: `import { BlueprintCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { BlueprintCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-blueprints` (kit `agent-admin`)
 - `data-slot`: `blueprint-cli`
 - Also accepts the props of HTMLAttributes

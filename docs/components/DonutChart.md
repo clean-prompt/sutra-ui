@@ -2,7 +2,7 @@
 
 > Donut (ring) chart with segments, center label, toggleable legend and tooltip.
 
-- Import: `import { DonutChart } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { DonutChart } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/chart-donut` (patterns)
 - `data-slot`: `chart-skeleton`, `chart-empty`, `chart-segment`, `chart-center-value`, `chart-center-label`
 - Also accepts the props of HTMLAttributes
@@ -92,7 +92,7 @@ Server render: same markup as the client. The ring is drawn from `size` alone, s
 ## Example
 
 ```tsx
-import { DonutChart } from "@sutra/ui";
+import { DonutChart } from "@cleanprompt/sutra-ui";
 
 const storage = [
   { type: "Photos", gb: 42 },

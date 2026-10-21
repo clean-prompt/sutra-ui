@@ -2,7 +2,7 @@
 
 > An iframe with a strict sandbox, permissions allow-list, no referrer leakage and lazy loading.
 
-- Import: `import { SandboxedFrame } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { SandboxedFrame } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/embeds` (kit `ai`)
 - `data-slot`: `sandboxed-frame`
 - Also accepts the props of HTMLAttributes, IframeHTMLAttributes

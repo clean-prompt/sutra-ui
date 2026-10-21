@@ -2,7 +2,7 @@
 
 > Account row with an `Avatar` (solid seed colour), name, email and chevron. Use as a dropdown trigger.
 
-- Import: `import { SidebarUserCard } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SidebarUserCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
 - `data-slot`: `sidebar-user-card`
 - Part of [`Sidebar`](Sidebar.md)

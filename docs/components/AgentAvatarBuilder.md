@@ -2,7 +2,7 @@
 
 > Procedural agent avatar editor: shape, color, face, seeded generation and image upload, with a live preview.
 
-- Import: `import { AgentAvatarBuilder } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { AgentAvatarBuilder } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-persona` (kit `agent-admin`)
 - `data-slot`: `agent-avatar-builder`
 - Also accepts the props of HTMLAttributes
@@ -22,7 +22,11 @@
 
 ```tsx
 import * as React from "react";
-import { AgentAvatar, AgentAvatarBuilder, randomAvatarSpec } from "@sutra/ui/agent-admin";
+import {
+  AgentAvatar,
+  AgentAvatarBuilder,
+  randomAvatarSpec,
+} from "@cleanprompt/sutra-ui/agent-admin";
 
 function AvatarDemo() {
   const [spec, setSpec] = React.useState<AgentAvatarSpec>(() => randomAvatarSpec("ada"));

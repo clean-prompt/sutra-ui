@@ -2,7 +2,7 @@
 
 > Inset rounded list of rows separated by hairlines.
 
-- Import: `import { SettingsGroup } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { SettingsGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/patterns/settings` (patterns)
 - Also accepts the props of HTMLAttributes
 

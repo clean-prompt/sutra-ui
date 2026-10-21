@@ -2,7 +2,7 @@
 
 > A selectable region: drag on empty space to rubber-band select (Shift adds, Mod toggles), click items to select, Shift-click for ranges, Mod+A selects all, Escape clears, Space toggles the focused item and the arrow keys move focus. Items get their props from `getItemProps(id)` (via `useSelectionArea()` or the render-prop argument).
 
-- Import: `import { SelectionArea } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { SelectionArea } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/patterns/selection-area` (patterns)
 - `data-slot`: `selection-area-marquee`
 - Also accepts the props of HTMLAttributes
@@ -30,7 +30,7 @@
 
 ```tsx
 import * as React from "react";
-import { SelectionArea } from "@sutra/ui/forms";
+import { SelectionArea } from "@cleanprompt/sutra-ui/forms";
 
 function MarqueeDemo() {
   const [selected, setSelected] = React.useState<string[]>([]);

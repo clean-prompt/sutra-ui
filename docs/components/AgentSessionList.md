@@ -2,7 +2,7 @@
 
 > Sessions sidebar for agent apps: groups, search, status filter, multi-select, bulk actions and keyboard navigation.
 
-- Import: `import { AgentSessionList } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AgentSessionList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-sessions` (kit `agent`)
 - `data-slot`: `agent-session-list`
 - Also accepts the props of HTMLAttributes
@@ -46,7 +46,7 @@
 
 ```tsx
 import * as React from "react";
-import { AgentSessionList } from "@sutra/ui/agent";
+import { AgentSessionList } from "@cleanprompt/sutra-ui/agent";
 
 function SessionListDemo() {
   const [now] = React.useState(() => Date.now());

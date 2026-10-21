@@ -2,7 +2,7 @@
 
 > Recovery key entry with auto-grouping, uppercase normalization and validation.
 
-- Import: `import { RecoveryKeyInput } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { RecoveryKeyInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/recovery-key` (kit `identity`)
 - `data-slot`: `recovery-key-input`
 - Part of [`RecoveryKey`](RecoveryKey.md)
@@ -39,8 +39,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { RecoveryKeyInput } from "@sutra/ui/security";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RecoveryKeyInput } from "@cleanprompt/sutra-ui/security";
 
 function RecoveryKeyInputDemo() {
   const [value, setValue] = React.useState("");

@@ -42,7 +42,7 @@ The first step renders in full on the server (the first render has no entrance a
 ## Example
 ```tsx
 import * as React from "react";
-import { Input, StepWizard } from "@sutra/ui";
+import { Input, StepWizard } from "@cleanprompt/sutra-ui";
 
 export function Example({ onCreate }: { onCreate: () => Promise<void> }) {
   const [name, setName] = React.useState("");

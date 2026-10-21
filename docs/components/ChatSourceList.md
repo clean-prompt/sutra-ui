@@ -2,7 +2,7 @@
 
 > Collapsed "N sources" favicon stack that expands into a full list.
 
-- Import: `import { ChatSourceList } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatSourceList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-source` (kit `ai`)
 - `data-slot`: `chat-source-list`, `chat-source-trigger`, `chat-source-content`
 - Part of [`ChatSource`](ChatSource.md)
@@ -19,7 +19,7 @@
 ## Example (live: `#/components/ai/chat-source` in the playground)
 
 ```tsx
-import { ChatInlineCitation, ChatSource, ChatSourceList } from "@sutra/ui/ai";
+import { ChatInlineCitation, ChatSource, ChatSourceList } from "@cleanprompt/sutra-ui/ai";
 
 function ChatSourceDemo() {
   return (

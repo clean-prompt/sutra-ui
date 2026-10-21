@@ -38,7 +38,7 @@ Plain markup computed from the props (the label id uses `useId`), so server and 
 
 ## Example
 ```tsx
-import { Meter, MeterGroup } from "@sutra/ui";
+import { Meter, MeterGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

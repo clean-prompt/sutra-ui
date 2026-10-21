@@ -30,7 +30,7 @@ The final lockup is the markup, the same on the server and the client; mask ids 
 ## Example
 ```tsx
 import * as React from "react";
-import { Button, SutradharSting } from "@sutra/ui";
+import { Button, SutradharSting } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [replay, setReplay] = React.useState(0);

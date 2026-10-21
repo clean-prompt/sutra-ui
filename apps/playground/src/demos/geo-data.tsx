@@ -1,8 +1,8 @@
 /* Shared demo data for the Geo pages (World Map and Globe). */
 import * as React from "react";
-import { Avatar } from "@sutra/ui";
-import type { GeoArc, GeoMarker, WorldMapDatum } from "@sutra/ui/geo";
-import { RiGithubFill, RiGoogleFill, RiMailFill, RiServerLine, RiTwitterXFill } from "@sutra/ui/icons";
+import { Avatar } from "@cleanprompt/sutra-ui";
+import type { GeoArc, GeoMarker, WorldMapDatum } from "@cleanprompt/sutra-ui/geo";
+import { RiGithubFill, RiGoogleFill, RiMailFill, RiServerLine, RiTwitterXFill } from "@cleanprompt/sutra-ui/icons";
 
 export const traffic: WorldMapDatum[] = [
   { code: "US", value: 48210 },

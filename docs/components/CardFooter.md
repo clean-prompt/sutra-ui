@@ -2,7 +2,7 @@
 
 > Card footer row for actions or meta text; wraps when it cannot fit.
 
-- Import: `import { CardFooter } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { CardFooter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/layout` (primitives)
 - `data-slot`: `card-footer`
 - Part of [`Card`](Card.md)
@@ -21,7 +21,7 @@ See the notes in [`Card`](Card.md#notes).
 ## Example
 
 ```tsx
-import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@sutra/ui";
+import { Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

@@ -2,7 +2,7 @@
 
 > A button that looks like a search field and opens a command palette: placeholder text plus the shortcut as `Kbd` chips. With `hotkey` it also listens for the shortcut (through the shortcut registry when a `ShortcutProvider` is present).
 
-- Import: `import { SearchTrigger } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { SearchTrigger } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/search-trigger` (patterns)
 - `data-slot`: `search-trigger`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -69,7 +69,7 @@ Server render: part of it fills in after mount. The shortcut chips depend on the
 
 ```tsx
 import * as React from "react";
-import { CommandDialog, CommandEmpty, CommandInput, CommandList, SearchTrigger } from "@sutra/ui";
+import { CommandDialog, CommandEmpty, CommandInput, CommandList, SearchTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [open, setOpen] = React.useState(false);

@@ -26,7 +26,7 @@ Plain `div` markup with no browser API, so server and client output match, which
 
 ## Example
 ```tsx
-import { Skeleton } from "@sutra/ui";
+import { Skeleton } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

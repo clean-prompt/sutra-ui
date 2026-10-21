@@ -20,7 +20,7 @@ const pkg = JSON.parse(fs.readFileSync(path.join(PKG, "package.json"), "utf8"));
 /** Modules in src/primitives, src/patterns and src/kits that are deliberately reachable from no public barrel. */
 const INTERNAL_MODULES = [
   "kits/agent-admin/secret-row",
-  // Deep-path shim for @sutra/ui/kits/ai/slash-menu (the module moved to patterns/slash-menu, which the ai entry exports).
+  // Deep-path shim for @cleanprompt/sutra-ui/kits/ai/slash-menu (the module moved to patterns/slash-menu, which the ai entry exports).
   "kits/ai/slash-menu",
   // Frozen back-compat barrels (see CONVENTIONS): every name they re-export reaches the root and the entries through the
   // real modules, so gen-index leaves them out and no entry may import them. Old deep imports keep working.
@@ -32,7 +32,7 @@ const INTERNAL_MODULES = [
 
 /**
  * Generic helpers that are internal on purpose: no root name, no entry name (the formatting and date helpers are not here: they
- * are public, but only from the subpath-only `@sutra/ui/format` entry). Import them by relative path inside the
+ * are public, but only from the subpath-only `@cleanprompt/sutra-ui/format` entry). Import them by relative path inside the
  * package. (Making one public means documenting it and listing it in src/entries/tokens.ts; then remove it here.)
  */
 const INTERNAL_NAMES = [
@@ -214,7 +214,7 @@ describe("public API surface", () => {
         .get(file)!
         .filter((symbol) => {
           const decl = declaringFile(symbol);
-          if (!decl || !decl.startsWith(SRC + path.sep)) return false; // e.g. Remix icons in @sutra/ui/icons
+          if (!decl || !decl.startsWith(SRC + path.sep)) return false; // e.g. Remix icons in @cleanprompt/sutra-ui/icons
           if (reachesOptionalPeer(decl)) return false; // CodeEditor, RichTextEditor, Terminal
           return !root.has(symbol.name);
         })
@@ -224,7 +224,7 @@ describe("public API surface", () => {
   });
 
   it("only the engine entries import an optional peer statically; every other entry imports without any peer installed", () => {
-    // `@sutra/ui/editor` must stay engine-free (a CodeMirror-only app imports it); the engines have their own entries.
+    // `@cleanprompt/sutra-ui/editor` must stay engine-free (a CodeMirror-only app imports it); the engines have their own entries.
     // Keep this list in step with ENTRY_PEERS in scripts/check-exports.mjs (which proves it on the built dist).
     const ENGINE_ENTRIES = ["code-editor", "rich-text-editor"];
     const withPeers = entryFiles.filter((f) => staticPeers(f).length > 0).map((f) => path.basename(f, ".ts"));
@@ -281,7 +281,7 @@ describe("public API surface", () => {
     expect(output).toBe("");
   });
 
-  it("@sutra/ui/core exports every primitive the root exports", () => {
+  it("@cleanprompt/sutra-ui/core exports every primitive the root exports", () => {
     const core = path.join(ENTRIES, "core.ts");
     const primitives = new Set(filesIn(path.join(SRC, "primitives")));
     const fromPrimitives = exportsOf

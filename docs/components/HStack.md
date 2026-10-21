@@ -2,7 +2,7 @@
 
 > Horizontal `Stack` (`direction="row"`). Takes the other `Stack` props.
 
-- Import: `import { HStack } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { HStack } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/layout` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -52,7 +52,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Button, HStack, Stack, Text } from "@sutra/ui";
+import { Button, HStack, Stack, Text } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

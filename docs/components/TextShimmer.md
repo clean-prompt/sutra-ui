@@ -2,7 +2,7 @@
 
 > Text with an animated light sweep, used for "Thinking…" style status lines.
 
-- Import: `import { TextShimmer } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { TextShimmer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/primitives/text-shimmer` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -49,7 +49,7 @@ Server render: same markup as the client. Plain markup and inline CSS variables,
 ## Example
 
 ```tsx
-import { TextShimmer } from "@sutra/ui";
+import { TextShimmer } from "@cleanprompt/sutra-ui";
 
 export function Example({ thinking }: { thinking: boolean }) {
   return (

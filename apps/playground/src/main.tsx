@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ShortcutProvider, TooltipProvider } from "@sutra/ui";
+import { ShortcutProvider, TooltipProvider } from "@cleanprompt/sutra-ui";
 import { App } from "./App";
 import { applyStoredMotion } from "./components/motion-setting";
 import "./index.css";

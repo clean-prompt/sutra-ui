@@ -2,7 +2,7 @@
 
 > Slot above the textarea for attachment previews. Renders nothing when empty.
 
-- Import: `import { PromptInputAttachments } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { PromptInputAttachments } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-attachments` (kit `ai`)
 - Also accepts the props of HTMLAttributes
 
@@ -21,9 +21,9 @@ import {
   PromptInputTextarea,
   PromptInputToolbar,
   PromptInputTools,
-} from "@sutra/ui/ai";
-import { Button } from "@sutra/ui/core";
-import { RiCloseLine, RiFileTextLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/ai";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiCloseLine, RiFileTextLine } from "@cleanprompt/sutra-ui/icons";
 
 function LargePasteDemo() {
   const [files, setFiles] = React.useState<File[]>([]);

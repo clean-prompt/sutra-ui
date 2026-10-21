@@ -2,7 +2,7 @@
 
 > Searchable language list (English/native name/code) with Detect, Recent and keyboard navigation.
 
-- Import: `import { LanguagePicker } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { LanguagePicker } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/translate-picker` (kit `voice`)
 - Also accepts the props of HTMLAttributes
 
@@ -24,7 +24,7 @@
 
 ```tsx
 import * as React from "react";
-import { LanguagePicker, getLanguage } from "@sutra/ui/voice";
+import { LanguagePicker, getLanguage } from "@cleanprompt/sutra-ui/voice";
 
 function LanguagePickerDemo() {
   const [value, setValue] = React.useState("en");

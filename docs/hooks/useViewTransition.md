@@ -2,7 +2,7 @@
 
 > Returns `(update, options?) => Promise<void>` that applies a state change as a view transition: the browser snapshots the page, React commits, and elements that share a `viewTransitionName` morph between the two states. Use it for navigations and big swaps (list to detail, tab to tab), not for hovers or short lists (`useFlip`). It snapshots the whole viewport and the page ignores input until it ends (a few hundred ms), so keep updates quick. No support or reduced motion: the update just runs.
 
-- Import: `import { useViewTransition } from "@sutra/ui/tokens"`
+- Import: `import { useViewTransition } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-view-transition`
 
 ## Signature
@@ -14,7 +14,7 @@ useViewTransition(): (update: () => void, { types, skip }?: ViewTransitionOption
 ## Example (live: `#/foundations/colors/view-transitions` in the playground)
 
 ```tsx
-import { InlineCode } from "@sutra/ui/core";
+import { InlineCode } from "@cleanprompt/sutra-ui/core";
 
 function MotionViewTransitions() {
   return (

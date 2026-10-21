@@ -2,7 +2,7 @@
 
 > Shares the focus-view state between a `FocusViewToggle` and transcript rows.
 
-- Import: `import { FocusViewProvider } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { FocusViewProvider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-tasks` (kit `agent`)
 
 ## Props

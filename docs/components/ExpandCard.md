@@ -2,7 +2,7 @@
 
 > A card that grows into its dialog: the card is the button that opens a `MorphDialog` and also the origin it flies out of and back into. While the dialog is open the card is hidden (it comes back as the panel lands on it). The card is a native button with `aria-haspopup="dialog"`; its content may use blocks. Controlled with `open` / `defaultOpen` / `onOpenChange`.
 
-- Import: `import { ExpandCard } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { ExpandCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/morph-dialog` (patterns)
 - `data-slot`: `expand-card`, `expand-card-face`, `expand-card-detail`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -28,9 +28,9 @@
 ## Example (live: `#/components/showpieces/expand-card-calendar` in the playground)
 
 ```tsx
-import { Avatar, AvatarGroup, Button } from "@sutra/ui/core";
-import { RiCalendarEventLine, RiMapPinLine, RiVideoChatLine } from "@sutra/ui/icons";
-import { ExpandCard } from "@sutra/ui/motion";
+import { Avatar, AvatarGroup, Button } from "@cleanprompt/sutra-ui/core";
+import { RiCalendarEventLine, RiMapPinLine, RiVideoChatLine } from "@cleanprompt/sutra-ui/icons";
+import { ExpandCard } from "@cleanprompt/sutra-ui/motion";
 
 function Calendar() {
   return (

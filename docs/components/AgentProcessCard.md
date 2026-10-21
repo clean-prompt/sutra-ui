@@ -2,7 +2,7 @@
 
 > One agent session: logo, title, status pill, "agent · project · running 48 min", memory and the processes it started.
 
-- Import: `import { AgentProcessCard } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AgentProcessCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-processes` (kit `agent`)
 - `data-slot`: `agent-process-card-skeleton`, `agent-process-skeleton`
 - Also accepts the props of HTMLAttributes

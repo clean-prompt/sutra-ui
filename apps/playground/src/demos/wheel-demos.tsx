@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, InlineCode, Text, WheelPicker, WheelPickerGroup, wheelRange, type WheelPickerOption } from "@sutra/ui";
+import { Button, InlineCode, Text, WheelPicker, WheelPickerGroup, wheelRange, type WheelPickerOption } from "@cleanprompt/sutra-ui";
 import { Demo, DemoLabel } from "../components/demo";
 
 const hours12 = wheelRange(1, 12);

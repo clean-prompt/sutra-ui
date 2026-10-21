@@ -2,7 +2,7 @@
 
 > Read-only agent task list with progress header, status glyphs and a shimmering active item.
 
-- Import: `import { AgentTodoList } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AgentTodoList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-tasks` (kit `agent`)
 - `data-slot`: `todo-progress-text`, `todo-spinner`
 - Also accepts the props of HTMLAttributes
@@ -25,7 +25,7 @@
 
 ```tsx
 import * as React from "react";
-import { AgentTodoList } from "@sutra/ui/agent";
+import { AgentTodoList } from "@cleanprompt/sutra-ui/agent";
 
 function TodoListDemo() {
   const [step, setStep] = React.useState(1);

@@ -2,7 +2,7 @@
 
 > Composer footer layout: add context, mode and effort on the left; model, voice and send on the right; narrow widths collapse extras into an overflow popover. This is the slot-based, agent-specific layout; `PromptInputToolbar` (prompt-input) is the plain flex row for a basic `PromptInput`. Use `ComposerToolbar` when you need the named slots or overflow collapse, `PromptInputToolbar` otherwise.
 
-- Import: `import { ComposerToolbar } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ComposerToolbar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-composer-toolbar` (kit `agent`)
 - `data-slot`: `composer-toolbar`
 - Also accepts the props of HTMLAttributes
@@ -26,7 +26,7 @@
 ## Example (live: `#/components/agent-composer/composer-toolbar` in the playground)
 
 ```tsx
-import { ComposerToolbar } from "@sutra/ui/agent";
+import { ComposerToolbar } from "@cleanprompt/sutra-ui/agent";
 import {
   PromptInput,
   PromptInputAddContextMenu,
@@ -34,8 +34,8 @@ import {
   PromptInputModelSelect,
   PromptInputSubmit,
   PromptInputTextarea,
-} from "@sutra/ui/ai";
-import { RiBrainLine, RiShieldCheckLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/ai";
+import { RiBrainLine, RiShieldCheckLine } from "@cleanprompt/sutra-ui/icons";
 
 function ComposerToolbarDemo() {
   const toolbar = (

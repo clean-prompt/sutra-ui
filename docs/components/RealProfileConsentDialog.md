@@ -2,7 +2,7 @@
 
 > Asks before letting the agent use the user's real browser profile (cookies, logins) instead of a clean one.
 
-- Import: `import { RealProfileConsentDialog } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { RealProfileConsentDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-browser-consent` (kit `agent`)
 
 ## Props
@@ -23,9 +23,9 @@
 
 ```tsx
 import * as React from "react";
-import { RealProfileConsentDialog } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
-import { RiShieldUserLine } from "@sutra/ui/icons";
+import { RealProfileConsentDialog } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiShieldUserLine } from "@cleanprompt/sutra-ui/icons";
 
 function ConsentDemo() {
   const [open, setOpen] = React.useState(false);

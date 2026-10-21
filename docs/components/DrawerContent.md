@@ -2,7 +2,7 @@
 
 > The sheet panel: grabber, drag-to-dismiss (80px or a fast flick), rubber-band upward, snap points.
 
-- Import: `import { DrawerContent } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { DrawerContent } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/primitives/drawer` (primitives)
 - `data-slot`: `drawer-content`, `drawer-handle`
 - Part of [`Drawer`](Drawer.md)
@@ -23,8 +23,8 @@ See the notes in [`Drawer`](Drawer.md#notes).
 ## Example
 
 ```tsx
-import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@sutra/ui";
-import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@sutra/ui";
+import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@cleanprompt/sutra-ui";
+import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

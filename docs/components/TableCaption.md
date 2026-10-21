@@ -2,7 +2,7 @@
 
 > Table caption, rendered under the table.
 
-- Import: `import { TableCaption } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { TableCaption } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/table` (primitives)
 - Part of [`Table`](Table.md)
 - Also accepts the props of HTMLAttributes
@@ -18,7 +18,7 @@ See the notes in [`Table`](Table.md#notes).
 ## Example
 
 ```tsx
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@sutra/ui";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@cleanprompt/sutra-ui";
 
 const invoices = [
   { id: "INV-1042", customer: "Acme Corp", amount: "$1,280.00" },

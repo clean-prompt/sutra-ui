@@ -2,7 +2,7 @@
 
 > Renders stored mention text with inline EntityChips.
 
-- Import: `import { MentionText } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { MentionText } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/entity-mention` (kit `workspace`)
 - `data-slot`: `mention-text`
 - Also accepts the props of HTMLAttributes

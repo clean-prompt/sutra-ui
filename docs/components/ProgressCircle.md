@@ -2,7 +2,7 @@
 
 > Circular progress ring with centered value (role="progressbar"): task completion, like `Progress`. `RingMeter` draws the same ring as a threshold-coloured level (role="meter"), e.g. a context window.
 
-- Import: `import { ProgressCircle } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { ProgressCircle } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/progress` (primitives)
 - Part of [`Progress`](Progress.md)
 - Also accepts the props of HTMLAttributes
@@ -29,7 +29,7 @@ See the notes in [`Progress`](Progress.md#notes).
 ## Example
 
 ```tsx
-import { Progress } from "@sutra/ui";
+import { Progress } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

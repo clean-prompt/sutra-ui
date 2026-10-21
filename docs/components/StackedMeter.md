@@ -2,7 +2,7 @@
 
 > One bar split into colored parts with a legend (storage breakdown, wait vs. generate…).
 
-- Import: `import { StackedMeter } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { StackedMeter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/primitives/meter` (primitives)
 - `data-slot`: `stacked-meter-track`, `stacked-meter-legend-skeleton`, `stacked-meter-part`
 - Also accepts the props of HTMLAttributes
@@ -64,7 +64,7 @@ Server render: same markup as the client. Plain markup computed from the props (
 ## Example
 
 ```tsx
-import { StackedMeter } from "@sutra/ui";
+import { StackedMeter } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

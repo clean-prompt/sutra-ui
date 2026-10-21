@@ -2,7 +2,7 @@
 
 > A reaction pill showing an emoji and its count; highlighted when the user has reacted.
 
-- Import: `import { EmojiReaction } from "@sutra/ui"` (or from `@sutra/ui/assets`)
+- Import: `import { EmojiReaction } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/assets`)
 - Source: `packages/ui/src/assets/emoji-reactions` (assets)
 - Parts: [`EmojiReactionBar`](EmojiReactionBar.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -91,7 +91,7 @@ Server render: same markup as the client. The markup is the same on the server a
 ## Example
 
 ```tsx
-import { EmojiReactionBar } from "@sutra/ui";
+import { EmojiReactionBar } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

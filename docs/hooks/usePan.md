@@ -2,7 +2,7 @@
 
 > Drag with inertia: a release keeps its velocity and slows down with time-based friction; past the bounds it springs back. Built on `useDrag` (offset in `--sutra-drag-x` / `--sutra-drag-y`, no React state per move). A press stops the glide. Under reduced motion following the finger still works but a release stops at once.
 
-- Import: `import { usePan } from "@sutra/ui/tokens"`
+- Import: `import { usePan } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-pan`
 
 ## Signature

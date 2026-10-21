@@ -2,7 +2,7 @@
 
 > Numeric stepper with keyboard support, press-and-hold repeat and locale-aware formatting.
 
-- Import: `import { NumberInput } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { NumberInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/number-input` (primitives)
 - `data-slot`: `number-input`, `number-input-field`
 - Also accepts the props of HTMLAttributes, InputHTMLAttributes
@@ -82,7 +82,7 @@ Server render: part of it fills in after mount. The field renders on the server,
 
 ```tsx
 import * as React from "react";
-import { Field, FieldLabel, NumberInput } from "@sutra/ui";
+import { Field, FieldLabel, NumberInput } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [seats, setSeats] = React.useState<number | null>(5);

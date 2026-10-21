@@ -2,7 +2,7 @@
 
 > App / marketing header: glass bar that gains a border when the page scrolls.
 
-- Import: `import { HeaderNav } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { HeaderNav } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/header-navigation` (patterns)
 - `data-slot`: `header-nav`
 - Parts: [`HeaderNavActions`](HeaderNavActions.md), [`HeaderNavBrand`](HeaderNavBrand.md), [`HeaderNavContent`](HeaderNavContent.md), [`HeaderNavFeatureLink`](HeaderNavFeatureLink.md), [`HeaderNavItem`](HeaderNavItem.md), [`HeaderNavLink`](HeaderNavLink.md), [`HeaderNavMenu`](HeaderNavMenu.md), [`HeaderNavMobile`](HeaderNavMobile.md), [`HeaderNavTrigger`](HeaderNavTrigger.md)
@@ -73,8 +73,8 @@ Hamburger button (mobile only) opening a slide-down sheet with nested sections. 
 ## Example (live: `#/components/navigation/header-nav` in the playground)
 
 ```tsx
-import { SutraLogo } from "@sutra/ui/assets";
-import { Button } from "@sutra/ui/core";
+import { SutraLogo } from "@cleanprompt/sutra-ui/assets";
+import { Button } from "@cleanprompt/sutra-ui/core";
 import {
   RiBookOpenLine,
   RiCalendarLine,
@@ -83,7 +83,7 @@ import {
   RiInboxLine,
   RiLifebuoyLine,
   RiPlugLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import {
   HeaderNav,
   HeaderNavActions,
@@ -95,7 +95,7 @@ import {
   HeaderNavMenu,
   HeaderNavMobile,
   HeaderNavTrigger,
-} from "@sutra/ui/navigation";
+} from "@cleanprompt/sutra-ui/navigation";
 
 <HeaderNav sticky={false} border="always" containerSize="full">
   <HeaderNavBrand href="#header-nav">

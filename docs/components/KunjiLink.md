@@ -2,7 +2,7 @@
 
 > Link a kunji wallet to the signed-in account: scan, confirm with the server, then "Linked ✓".
 
-- Import: `import { KunjiLink } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
+- Import: `import { KunjiLink } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/kunji`)
 - Source: `packages/ui/src/kits/identity/kunji-link` (kit `identity`)
 - `data-slot`: `kunji-link`
 - Parts: [`KunjiLinkedBadge`](KunjiLinkedBadge.md)
@@ -37,7 +37,7 @@ Small badge: "kunji linked" or "kunji not linked".
 ## Example (live: `#/components/kunji/kunji-link` in the playground)
 
 ```tsx
-import { KunjiLink, KunjiLinkedBadge } from "@sutra/ui/kunji";
+import { KunjiLink, KunjiLinkedBadge } from "@cleanprompt/sutra-ui/kunji";
 
 <div className="@container w-full">
   <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2">

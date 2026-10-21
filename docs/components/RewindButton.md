@@ -2,7 +2,7 @@
 
 > Message-action icon button that opens a `RewindDialog`.
 
-- Import: `import { RewindButton } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { RewindButton } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/rewind` (kit `agent`)
 - `data-slot`: `rewind-button`
 
@@ -34,7 +34,7 @@
 
 ```tsx
 import * as React from "react";
-import { CheckpointMarker, RewindButton, RewindDialog } from "@sutra/ui/agent";
+import { CheckpointMarker, RewindButton, RewindDialog } from "@cleanprompt/sutra-ui/agent";
 
 function RewindDemo() {
   const [open, setOpen] = React.useState(false);

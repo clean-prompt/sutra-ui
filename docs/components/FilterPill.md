@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `FilterBarChip` (the dashed "+ Filter" button; it is not a pill).
 
-- Import: `import { FilterPill } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { FilterPill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
@@ -72,7 +72,7 @@ Server render: same markup as the client. Plain markup from props (`useId` for t
 
 ```tsx
 import * as React from "react";
-import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "@sutra/ui";
+import { FilterBar, FilterBarActive, FilterBarChip, FilterBarClear, FilterBarSearch } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [query, setQuery] = React.useState("");

@@ -2,7 +2,7 @@
 
 > Two-level gateway → profile switcher with search, reachability and latency.
 
-- Import: `import { WorkspaceProfileSwitcher } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { WorkspaceProfileSwitcher } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/workspace-switcher` (kit `workspace`)
 - `data-slot`: `workspace-profile-switcher`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes

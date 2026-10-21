@@ -2,7 +2,7 @@
 
 > No card, no chrome: just the mark and the form, centered.
 
-- Import: `import { AuthMinimalPage } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { AuthMinimalPage } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/auth-pages` (blocks)
 - Also accepts the props of HTMLAttributes
 

@@ -2,7 +2,7 @@
 
 > Status-bar gateway indicator with a popover of uptime, version, controls and a live log tail.
 
-- Import: `import { GatewayStatusPopover } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { GatewayStatusPopover } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/workspace-switcher-status` (kit `workspace`)
 - `data-slot`: `gateway-status-popover`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
@@ -32,7 +32,7 @@
 
 ```tsx
 import * as React from "react";
-import { GatewayStatusPopover } from "@sutra/ui/workspace";
+import { GatewayStatusPopover } from "@cleanprompt/sutra-ui/workspace";
 
 function GatewayStatusDemo() {
   const [state, setState] = React.useState<GatewayRunState>("running");

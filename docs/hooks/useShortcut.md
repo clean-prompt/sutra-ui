@@ -2,7 +2,7 @@
 
 > Bind `keys` to `handler`. Pass `null` keys (or `enabled: false`) to disable.
 
-- Import: `import { useShortcut } from "@sutra/ui/suite"`
+- Import: `import { useShortcut } from "@cleanprompt/sutra-ui/suite"`
 - Source: `packages/ui/src/patterns/shortcuts`
 
 ## Signature

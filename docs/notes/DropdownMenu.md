@@ -23,7 +23,7 @@ server: ssr-safe
 In RTL the sub-menu keys swap: ArrowLeft opens a sub-menu and ArrowRight closes it, and the sub-menu opens to the left. `DropdownMenu` passes the document or `DirectionProvider` direction to Radix (an explicit `dir` prop wins). Focus returns to the trigger when the menu closes.
 
 ## Screen readers
-The trigger gets `aria-haspopup="menu"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="menu"` labelled by the trigger; rows are `menuitem`, `menuitemcheckbox` and `menuitemradio` (with `aria-checked`), groups are `role="group"` and the separator is `separator`. `DropdownMenuLabel` is a plain text div that is not linked to its group, so give `DropdownMenuGroup` an `aria-label` to name it. A disabled row gets `aria-disabled`. Icons and the sub-menu chevron are decoration (the chevron is `aria-hidden`; an `icon` you pass is not hidden for you). The `shortcut` text is read as part of the row name. An icon-only trigger needs `aria-label`.
+The trigger gets `aria-haspopup="menu"`, `aria-expanded` and, while open, `aria-controls`. The panel is `role="menu"` labelled by the trigger; rows are `menuitem`, `menuitemcheckbox` and `menuitemradio` (with `aria-checked`), groups are `role="group"` and the separator is `separator`. `DropdownMenuLabel` is a plain text div that is not linked to its group, so give `DropdownMenuGroup` an `aria-label` to name it. A disabled row gets `aria-disabled`. The sub-menu chevron is `aria-hidden`; an `icon` you pass is not hidden for you. The `shortcut` text is read as part of the row name. An icon-only trigger needs `aria-label`.
 
 ## Reduced motion
 The panel fades and zooms in from the trigger with the `animate-in` utilities and slides slightly from its side; the reduced-motion net removes the slide and the scale and keeps only the fade. Row highlight changes are instant by design.
@@ -40,9 +40,9 @@ A closed menu renders only its trigger on both server and client, so nothing can
 ## Example
 ```tsx
 import * as React from "react";
-import { Button, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem } from "@sutra/ui";
-import { DropdownMenuSeparator, DropdownMenuTrigger } from "@sutra/ui";
-import { RiDeleteBinLine, RiFileCopyLine, RiMoreLine } from "@sutra/ui/icons";
+import { Button, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem } from "@cleanprompt/sutra-ui";
+import { DropdownMenuSeparator, DropdownMenuTrigger } from "@cleanprompt/sutra-ui";
+import { RiDeleteBinLine, RiFileCopyLine, RiMoreLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example({ onDuplicate, onDelete }: { onDuplicate: () => void; onDelete: () => void }) {
   const [pinned, setPinned] = React.useState(false);

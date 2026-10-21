@@ -32,7 +32,7 @@ The first render is the final value with no motion and no browser API, so the ma
 ## Example
 ```tsx
 import * as React from "react";
-import { AnimatedNumber, Button } from "@sutra/ui";
+import { AnimatedNumber, Button } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [revenue, setRevenue] = React.useState(12480);

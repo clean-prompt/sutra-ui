@@ -2,7 +2,7 @@
 
 > Background shell job: command, status, elapsed time, output tail and a kill action.
 
-- Import: `import { BackgroundTaskRow } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { BackgroundTaskRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-tasks` (kit `agent`)
 - `data-slot`: `task-elapsed`
 - Also accepts the props of HTMLAttributes
@@ -26,7 +26,7 @@
 
 ```tsx
 import * as React from "react";
-import { BackgroundTaskRow } from "@sutra/ui/agent";
+import { BackgroundTaskRow } from "@cleanprompt/sutra-ui/agent";
 
 function BackgroundTaskDemo() {
   const [start] = React.useState(() => Date.now() - 37_000);

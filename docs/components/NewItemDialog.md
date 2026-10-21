@@ -2,7 +2,7 @@
 
 > Quick create form for a task or note: title, description, due date, priority and labels.
 
-- Import: `import { NewItemDialog } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { NewItemDialog } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/modal-dialog-blocks-new-item` (blocks)
 
 ## Props

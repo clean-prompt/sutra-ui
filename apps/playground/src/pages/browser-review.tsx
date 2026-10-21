@@ -26,8 +26,8 @@ import {
   type ShipAction,
   type ShipStatus,
   type WorktreeBranch,
-} from "@sutra/ui";
-import { RiGitForkLine, RiShieldUserLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiGitForkLine, RiShieldUserLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 
 /* ------------------------------------------------------------------ */

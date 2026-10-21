@@ -33,8 +33,8 @@ import {
   type AgentSession,
   type AgentSessionGroup,
   type AgentTodoItem,
-} from "@sutra/ui";
-import { RiFlashlightLine, RiGitBranchLine, RiGitMergeLine, RiHistoryLine, RiTerminalLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui";
+import { RiFlashlightLine, RiGitBranchLine, RiGitMergeLine, RiHistoryLine, RiTerminalLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 
 /** Anchor ids of the demos on this page. */

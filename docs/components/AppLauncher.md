@@ -2,7 +2,7 @@
 
 > Home-screen grid (or dock) of app tiles with arrow-key navigation, search, badges and a context menu slot.
 
-- Import: `import { AppLauncher } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { AppLauncher } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/kits/workspace/app-launcher` (kit `workspace`)
 - `data-slot`: `app-launcher`
 - Parts: [`AppLauncherMenu`](AppLauncherMenu.md)
@@ -51,9 +51,9 @@ Waffle-button app switcher: a popover with a 3-column launcher grid.
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { ContextMenuItem } from "@sutra/ui/overlays";
-import { AppLauncher, AppLauncherMenu } from "@sutra/ui/social";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { ContextMenuItem } from "@cleanprompt/sutra-ui/overlays";
+import { AppLauncher, AppLauncherMenu } from "@cleanprompt/sutra-ui/social";
 
 function LauncherDemo() {
   const [last, setLast] = React.useState<string | null>(null);

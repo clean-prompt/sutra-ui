@@ -2,7 +2,7 @@
 
 > Mount once near the root to enable `useDialogs()`: promise-based `confirm`, `prompt` and `choose` built on `ConfirmDialog` and `Dialog`. One dialog shows at a time; later calls wait in a queue.
 
-- Import: `import { DialogProvider } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { DialogProvider } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/confirm` (primitives)
 
 ## Props
@@ -56,7 +56,7 @@ Server render: same markup as the client. The provider renders only its children
 
 ```tsx
 import * as React from "react";
-import { Button, DialogProvider, useDialogs } from "@sutra/ui";
+import { Button, DialogProvider, useDialogs } from "@cleanprompt/sutra-ui";
 
 function ProjectActions() {
   const { confirm, prompt } = useDialogs();

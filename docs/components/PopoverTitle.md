@@ -2,7 +2,7 @@
 
 > Popover heading. Inside `PopoverContent` it names the dialog (`aria-labelledby`) unless the content has its own label.
 
-- Import: `import { PopoverTitle } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
+- Import: `import { PopoverTitle } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/overlays`)
 - Source: `packages/ui/src/primitives/popover` (primitives)
 - Part of [`Popover`](Popover.md)
 - Also accepts the props of HTMLAttributes
@@ -18,8 +18,8 @@ See the notes in [`Popover`](Popover.md#notes).
 ## Example
 
 ```tsx
-import { Button, Field, FieldLabel, Input, Popover, PopoverBody, PopoverClose, PopoverContent } from "@sutra/ui";
-import { PopoverDescription, PopoverFooter, PopoverHeader, PopoverTitle, PopoverTrigger } from "@sutra/ui";
+import { Button, Field, FieldLabel, Input, Popover, PopoverBody, PopoverClose, PopoverContent } from "@cleanprompt/sutra-ui";
+import { PopoverDescription, PopoverFooter, PopoverHeader, PopoverTitle, PopoverTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

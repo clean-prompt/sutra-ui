@@ -2,7 +2,7 @@
 
 > Logo / product name link.
 
-- Import: `import { HeaderNavBrand } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { HeaderNavBrand } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/patterns/header-navigation` (patterns)
 - `data-slot`: `header-nav-brand`
 - Part of [`HeaderNav`](HeaderNav.md)
@@ -17,8 +17,8 @@
 ## Example (live: `#/components/navigation/header-nav` in the playground)
 
 ```tsx
-import { SutraLogo } from "@sutra/ui/assets";
-import { Button } from "@sutra/ui/core";
+import { SutraLogo } from "@cleanprompt/sutra-ui/assets";
+import { Button } from "@cleanprompt/sutra-ui/core";
 import {
   RiBookOpenLine,
   RiCalendarLine,
@@ -27,7 +27,7 @@ import {
   RiInboxLine,
   RiLifebuoyLine,
   RiPlugLine,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import {
   HeaderNav,
   HeaderNavActions,
@@ -39,7 +39,7 @@ import {
   HeaderNavMenu,
   HeaderNavMobile,
   HeaderNavTrigger,
-} from "@sutra/ui/navigation";
+} from "@cleanprompt/sutra-ui/navigation";
 
 <HeaderNav sticky={false} border="always" containerSize="full">
   <HeaderNavBrand href="#header-nav">

@@ -2,7 +2,7 @@
 
 > Drag-and-drop task board: sortable cards and columns, WIP limits, swimlanes, quick filters and screen-reader announcements.
 
-- Import: `import { KanbanBoard } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
+- Import: `import { KanbanBoard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-board` (kit `workspace`)
 - `data-slot`: `kanban-board`
 - Also accepts the props of HTMLAttributes
@@ -38,9 +38,9 @@
 
 ```tsx
 import * as React from "react";
-import { SimpleSelect } from "@sutra/ui/forms";
-import { RiLayoutColumnLine } from "@sutra/ui/icons";
-import { KanbanBoard } from "@sutra/ui/workspace";
+import { SimpleSelect } from "@cleanprompt/sutra-ui/forms";
+import { RiLayoutColumnLine } from "@cleanprompt/sutra-ui/icons";
+import { KanbanBoard } from "@cleanprompt/sutra-ui/workspace";
 
 function KanbanBoardDemo() {
   const [boardId, setBoardId] = React.useState("sutra");

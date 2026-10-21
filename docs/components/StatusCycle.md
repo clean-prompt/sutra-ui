@@ -2,7 +2,7 @@
 
 > Status pill that advances on click (Shift+click or ← goes back) with a menu to pick a status directly.
 
-- Import: `import { StatusCycle } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { StatusCycle } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/patterns/status-cycle` (patterns)
 - Also accepts the props of HTMLAttributes
 
@@ -24,7 +24,7 @@
 
 ```tsx
 import * as React from "react";
-import { StatusCycle } from "@sutra/ui/social";
+import { StatusCycle } from "@cleanprompt/sutra-ui/social";
 
 function StatusDemo() {
   const [paper, setPaper] = React.useState("unread");

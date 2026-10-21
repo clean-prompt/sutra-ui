@@ -2,7 +2,7 @@
 
 > One temperature sensor: a bar or gauge coloured by thresholds, the value in °C or °F and an optional history sparkline.
 
-- Import: `import { TemperatureReading } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { TemperatureReading } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/kits/system/thermals` (kit `system`)
 - `data-slot`: `temperature-reading`, `temperature-reading-status`
 - Also accepts the props of HTMLAttributes

@@ -2,7 +2,7 @@
 
 > Heading with the display type scale (`size`); the element level (`as`) is independent of the look. Extra props are spread to the heading.
 
-- Import: `import { Heading } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Heading } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/typography` (primitives)
 - Also accepts the props of HTMLAttributes
 
@@ -55,7 +55,7 @@ Server render: same markup as the client. Plain markup with no browser API, so s
 ## Example
 
 ```tsx
-import { Heading, Text } from "@sutra/ui";
+import { Heading, Text } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

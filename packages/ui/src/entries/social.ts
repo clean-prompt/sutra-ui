@@ -1,4 +1,4 @@
-/* @sutra/ui/social: app launcher, identity avatars, PWA install, calls, messenger, lists, counters, recurrence. */
+/* @cleanprompt/sutra-ui/social: app launcher, identity avatars, PWA install, calls, messenger, lists, counters, recurrence. */
 export * from "../kits/workspace/app-launcher";
 export * from "../patterns/identity-avatar";
 export * from "../patterns/text-button";

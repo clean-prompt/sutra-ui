@@ -54,7 +54,7 @@ import {
   type TabMenuItem,
   type TabsVariant,
   type TreeNode,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import {
   RiAddLine,
   RiBarChartBoxLine,
@@ -75,7 +75,7 @@ import {
   RiShieldCheckLine,
   RiTeamLine,
   RiUploadCloud2Line,
-} from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { CarouselDemo } from "../demos/carousel-demos";
 import { StepWizardDemo } from "../demos/wizard-demos";

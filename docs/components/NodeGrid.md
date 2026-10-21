@@ -2,7 +2,7 @@
 
 > Responsive auto-fill grid for node / GPU cards.
 
-- Import: `import { NodeGrid } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { NodeGrid } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ops/node-card` (kit `ops`)
 - `data-slot`: `node-grid`
 - Also accepts the props of HTMLAttributes

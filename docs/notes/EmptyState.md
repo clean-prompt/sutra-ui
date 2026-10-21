@@ -31,8 +31,8 @@ Plain markup with a `useId` for the heading, so server and client output match. 
 
 ## Example
 ```tsx
-import { Button, EmptyState } from "@sutra/ui";
-import { RiAddLine } from "@sutra/ui/icons";
+import { Button, EmptyState } from "@cleanprompt/sutra-ui";
+import { RiAddLine } from "@cleanprompt/sutra-ui/icons";
 
 export function Example() {
   return (

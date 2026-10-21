@@ -2,7 +2,7 @@
 
 > Model lifecycle pill on `StatusBadge`: the state glyph, a label and optional detail text.
 
-- Import: `import { ModelStatePill } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { ModelStatePill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/kits/ai/model-state` (kit `ai`)
 - Also accepts the props of HTMLAttributes
 

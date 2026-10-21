@@ -2,7 +2,7 @@
 
 > A stacked queue of pending approvals: the top card is interactive, the rest peek out behind with a "+n more" count.
 
-- Import: `import { ApprovalStack } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ApprovalStack } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/ai/approval-stack` (kit `ai`)
 - `data-slot`: `approval-stack-more`, `approval-stack-shell`, `approval-stack-top`
 - Also accepts the props of HTMLAttributes
@@ -29,8 +29,8 @@
 
 ```tsx
 import * as React from "react";
-import { ApprovalStack, PermissionPrompt } from "@sutra/ui/agent";
-import { Button } from "@sutra/ui/core";
+import { ApprovalStack, PermissionPrompt } from "@cleanprompt/sutra-ui/agent";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function ApprovalStackDemo() {
   const [items, setItems] = React.useState(initialApprovals);

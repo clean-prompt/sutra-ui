@@ -18,13 +18,13 @@ export function checkNoteExamples({ root, notes, only }) {
     types: [],
     baseUrl: root,
     paths: {
-      "@sutra/ui": ["src/index.ts"],
-      "@sutra/ui/primitives/*": src("primitives/*"),
-      "@sutra/ui/patterns/*": src("patterns/*"),
-      "@sutra/ui/kits/*": src("kits/*"),
-      "@sutra/ui/blocks/*": src("blocks/*"),
-      "@sutra/ui/assets/*": src("assets/*"),
-      "@sutra/ui/*": ["src/entries/*.ts"],
+      "@cleanprompt/sutra-ui": ["src/index.ts"],
+      "@cleanprompt/sutra-ui/primitives/*": src("primitives/*"),
+      "@cleanprompt/sutra-ui/patterns/*": src("patterns/*"),
+      "@cleanprompt/sutra-ui/kits/*": src("kits/*"),
+      "@cleanprompt/sutra-ui/blocks/*": src("blocks/*"),
+      "@cleanprompt/sutra-ui/assets/*": src("assets/*"),
+      "@cleanprompt/sutra-ui/*": ["src/entries/*.ts"],
     },
   };
   const dir = path.join(root, "test/.note-examples");

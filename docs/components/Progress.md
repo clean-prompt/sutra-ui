@@ -2,7 +2,7 @@
 
 > Linear progress bar, determinate or indeterminate (role="progressbar"): how far a task has got. For a level read against thresholds (disk usage, context window) use `Meter` instead. Restyle the track with `className` (e.g. `rounded-none bg-transparent` for an edge strip) and the fill with `indicatorClassName`.
 
-- Import: `import { Progress } from "@sutra/ui"` (or from `@sutra/ui/core`)
+- Import: `import { Progress } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/core`)
 - Source: `packages/ui/src/primitives/progress` (primitives)
 - Parts: [`ProgressCircle`](ProgressCircle.md), [`ProgressRingSvg`](ProgressRingSvg.md), [`ProgressSegments`](ProgressSegments.md)
 - Also accepts the props of HTMLAttributes, ProgressProps, PrimitivePropsWithRef
@@ -113,7 +113,7 @@ Server render: part of it fills in after mount. Renders on the server, but direc
 ## Example
 
 ```tsx
-import { Progress } from "@sutra/ui";
+import { Progress } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

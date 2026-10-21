@@ -2,7 +2,7 @@
 
 > Compact ring showing a fill level against thresholds (role="meter"), e.g. an AI context window. It draws the same ring as `ProgressCircle` (`ProgressRingSvg`); use `ProgressCircle` for task completion (role="progressbar").
 
-- Import: `import { RingMeter } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { RingMeter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/gauge` (patterns)
 - `data-slot`: `ring-value`
 - Also accepts the props of HTMLAttributes
@@ -70,7 +70,7 @@ Server render: same markup as the client. A static SVG computed from the props (
 ## Example
 
 ```tsx
-import { Gauge } from "@sutra/ui";
+import { Gauge } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

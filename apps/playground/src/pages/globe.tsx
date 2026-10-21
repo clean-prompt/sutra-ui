@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Avatar, Badge, Button, CountryFlag, Label, SimpleSelect, StatusDot, Switch, Text, cn } from "@sutra/ui";
-import { formatCompact } from "@sutra/ui/format";
-import { Globe, countryName, formatGeoPoint, type GeoRotation, type GlobeApi } from "@sutra/ui/geo";
-import { RiCloseLine } from "@sutra/ui/icons";
+import { Avatar, Badge, Button, CountryFlag, Label, SimpleSelect, StatusDot, Switch, Text, cn } from "@cleanprompt/sutra-ui";
+import { formatCompact } from "@cleanprompt/sutra-ui/format";
+import { Globe, countryName, formatGeoPoint, type GeoRotation, type GlobeApi } from "@cleanprompt/sutra-ui/geo";
+import { RiCloseLine } from "@cleanprompt/sutra-ui/icons";
 import { Demo, PageIntro } from "../components/demo";
 import { DATACENTER, SOURCES, attackArcs, attackMarkers, attacks, traffic, visitorMarker, visitors, type Visitor } from "../demos/geo-data";
 

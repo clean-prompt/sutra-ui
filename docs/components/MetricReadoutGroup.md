@@ -2,7 +2,7 @@
 
 > A menu-bar strip of `MetricReadout`s with separators between them (role="group").
 
-- Import: `import { MetricReadoutGroup } from "@sutra/ui"` (or from `@sutra/ui/system`)
+- Import: `import { MetricReadoutGroup } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/system`)
 - Source: `packages/ui/src/primitives/metric-readout` (primitives)
 - `data-slot`: `metric-readout-group`, `metric-readout-separator`
 - Part of [`MetricReadout`](MetricReadout.md)
@@ -23,7 +23,7 @@ See the notes in [`MetricReadout`](MetricReadout.md#notes).
 ## Example
 
 ```tsx
-import { MetricReadout, MetricReadoutGroup } from "@sutra/ui";
+import { MetricReadout, MetricReadoutGroup } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

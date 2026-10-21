@@ -2,7 +2,7 @@
 
 > Toggle button that expands / collapses every ChainOfThought under a ThinkingExpandAllProvider.
 
-- Import: `import { ThinkingToggle } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ThinkingToggle } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chain-of-thought` (kit `ai`)
 - `data-slot`: `thinking-toggle`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes

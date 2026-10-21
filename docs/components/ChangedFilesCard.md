@@ -2,7 +2,7 @@
 
 > Transcript card summarizing changed files ("N files changed +X −Y") with a Review action.
 
-- Import: `import { ChangedFilesCard } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { ChangedFilesCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/git-review-changes` (kit `agent`)
 - `data-slot`: `changed-files-card`
 - Also accepts the props of HTMLAttributes
@@ -24,7 +24,7 @@
 ## Example (live: `#/components/browser-review/changed-files` in the playground)
 
 ```tsx
-import { ChangedFilesCard } from "@sutra/ui/agent";
+import { ChangedFilesCard } from "@cleanprompt/sutra-ui/agent";
 
 <ChangedFilesCard files={changed} onReview={() => {}} onOpenFile={() => {}} className="w-full max-w-xl" />
 ```

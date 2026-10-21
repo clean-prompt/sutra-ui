@@ -2,7 +2,7 @@
 
 > Session status dot (a `StatusDot` preset): running and waiting pulse, elsewhere is a hollow ring.
 
-- Import: `import { AgentStatusDot } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { AgentStatusDot } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-sessions` (kit `agent`)
 - Also accepts the props of HTMLAttributes
 
@@ -18,7 +18,7 @@
 ## Example (live: `#/components/agent-sessions/agent-status-dot` in the playground)
 
 ```tsx
-import { AgentStatusDot } from "@sutra/ui/agent";
+import { AgentStatusDot } from "@cleanprompt/sutra-ui/agent";
 
 function StatusDotDemo() {
   return (

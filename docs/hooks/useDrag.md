@@ -2,7 +2,7 @@
 
 > Tracks a pointer drag: the offset follows the finger through CSS variables (no React state per move), with an axis lock, bounds with elastic, a release velocity from a 100 ms window, `settle` with the spring maths and a click guard after a drag. Spread `handlers` on an element, pass `ref` to it. A press that never passes `threshold` is a plain click. The pointer is captured only once the drag starts; `pointercancel`, a lost capture and a disabled hook end it. The hook sets `touch-action` on the element (`pan-y` for horizontal drags, `pan-x` for vertical ones, `none` for both).
 
-- Import: `import { useDrag } from "@sutra/ui/tokens"`
+- Import: `import { useDrag } from "@cleanprompt/sutra-ui/tokens"`
 - Source: `packages/ui/src/hooks/use-drag`
 
 ## Signature

@@ -2,7 +2,7 @@
 
 > Product-vs-alternatives matrix with check / cross / partial marks and numbered footnotes.
 
-- Import: `import { ComparisonTable } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { ComparisonTable } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/marketing-blocks-comparison` (blocks)
 - Also accepts the props of HTMLAttributes
 
@@ -18,7 +18,7 @@
 ## Example (live: `#/components/billing-marketing/comparison-table` in the playground)
 
 ```tsx
-import { ComparisonTable } from "@sutra/ui/blocks";
+import { ComparisonTable } from "@cleanprompt/sutra-ui/blocks";
 
 <ComparisonTable {...comparison} />
 ```

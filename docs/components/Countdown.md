@@ -2,7 +2,7 @@
 
 > Countdown to a date with d/h/m/s segments or a compact "2h 14m" form; fires `onComplete` once.
 
-- Import: `import { Countdown } from "@sutra/ui"` (or from `@sutra/ui/social`)
+- Import: `import { Countdown } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/social`)
 - Source: `packages/ui/src/patterns/countdown` (patterns)
 - `data-slot`: `countdown`
 - Also accepts the props of HTMLAttributes
@@ -58,7 +58,7 @@ Server render: part of it fills in after mount. The remaining time is computed f
 ## Example
 
 ```tsx
-import { Countdown } from "@sutra/ui";
+import { Countdown } from "@cleanprompt/sutra-ui";
 
 export function Example({ endsAt }: { endsAt: Date }) {
   return (

@@ -2,7 +2,7 @@
 
 > Semantic description list of facts: name on one side, value on the other.
 
-- Import: `import { KeyValueList } from "@sutra/ui"` (or from `@sutra/ui/identity`)
+- Import: `import { KeyValueList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/identity`)
 - Source: `packages/ui/src/primitives/key-value` (primitives)
 - `data-slot`: `key-value-list`
 - Part of [`KeyValue`](KeyValue.md)
@@ -26,7 +26,7 @@ See the notes in [`KeyValue`](KeyValue.md#notes).
 ## Example
 
 ```tsx
-import { KeyValue, KeyValueList } from "@sutra/ui";
+import { KeyValue, KeyValueList } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

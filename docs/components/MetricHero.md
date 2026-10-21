@@ -2,7 +2,7 @@
 
 > Header of a metric detail view: caption, big value, status and facts on the left; a history chart on the right.
 
-- Import: `import { MetricHero } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
+- Import: `import { MetricHero } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/dataviz`)
 - Source: `packages/ui/src/patterns/metric-hero` (patterns)
 - `data-slot`: `metric-hero-chart-skeleton`, `metric-hero`, `metric-hero-summary`, `metric-hero-value-skeleton`, `metric-hero-details-skeleton`, `metric-hero-chart`
 - Also accepts the props of HTMLAttributes

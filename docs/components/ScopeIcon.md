@@ -2,7 +2,7 @@
 
 > Icon for a scope as a ready-to-render node.
 
-- Import: `import { ScopeIcon } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { ScopeIcon } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/consent` (kit `identity`)
 
 ## Props

@@ -35,7 +35,7 @@ Without `directory` the markup is the same on both sides. The folder trigger and
 
 ## Example
 ```tsx
-import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger, type UploadFile } from "@sutra/ui";
+import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger, type UploadFile } from "@cleanprompt/sutra-ui";
 
 export function Example({ upload }: { upload: (files: UploadFile[]) => void }) {
   return (

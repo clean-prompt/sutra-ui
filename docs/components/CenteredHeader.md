@@ -2,7 +2,7 @@
 
 > Logo in the center, navigation split into left and right groups.
 
-- Import: `import { CenteredHeader } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { CenteredHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/header-navigation-blocks` (blocks)
 - Also accepts the props of HTMLAttributes
 

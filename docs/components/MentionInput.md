@@ -2,7 +2,7 @@
 
 > Text field where "@", "#" and "/" open a suggestion menu and insert mention tokens.
 
-- Import: `import { MentionInput } from "@sutra/ui"` (or from `@sutra/ui/suite`)
+- Import: `import { MentionInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/suite`)
 - Source: `packages/ui/src/kits/workspace/entity-mention` (kit `workspace`)
 - `data-slot`: `mention-input`
 - Also accepts the props of HTMLAttributes, TextareaHTMLAttributes
@@ -27,9 +27,9 @@
 
 ```tsx
 import * as React from "react";
-import { Card } from "@sutra/ui/core";
-import { Label } from "@sutra/ui/forms";
-import { MentionInput, MentionText } from "@sutra/ui/suite";
+import { Card } from "@cleanprompt/sutra-ui/core";
+import { Label } from "@cleanprompt/sutra-ui/forms";
+import { MentionInput, MentionText } from "@cleanprompt/sutra-ui/suite";
 
 function MentionDemo() {
   const [value, setValue] = React.useState("Sync with @[Ana Lima](person:ana) about #[Q4 launch plan](notes:n1) ");

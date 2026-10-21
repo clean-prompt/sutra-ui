@@ -2,7 +2,7 @@
 
 > User prompt pinned at the top of the scroll area while its turn scrolls; click to jump to the turn start.
 
-- Import: `import { TurnStickyHeader } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { TurnStickyHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-transcript` (kit `agent`)
 - `data-slot`: `turn-sticky-header`
 - Also accepts the props of HTMLAttributes

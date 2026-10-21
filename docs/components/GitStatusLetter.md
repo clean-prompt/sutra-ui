@@ -2,7 +2,7 @@
 
 > Colored status letter with a screen-reader label.
 
-- Import: `import { GitStatusLetter } from "@sutra/ui"` (or from `@sutra/ui/agent`)
+- Import: `import { GitStatusLetter } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent`)
 - Source: `packages/ui/src/kits/agent/git-review-changes` (kit `agent`)
 - Also accepts the props of HTMLAttributes
 

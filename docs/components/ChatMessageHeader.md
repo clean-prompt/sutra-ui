@@ -2,7 +2,7 @@
 
 > Sender name and time above the content.
 
-- Import: `import { ChatMessageHeader } from "@sutra/ui"` (or from `@sutra/ui/ai`)
+- Import: `import { ChatMessageHeader } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message` (kit `ai`)
 - `data-slot`: `chat-message-header`
 - Part of [`ChatMessage`](ChatMessage.md)
@@ -19,9 +19,14 @@
 
 ```tsx
 import * as React from "react";
-import { ChatMessage, ChatMessageBody, ChatMessageContent, ChatMessageHeader } from "@sutra/ui/ai";
-import { SutraMascot, mascotCharacterLabels, mascotCharacters } from "@sutra/ui/assets";
-import { RadioCard, RadioGroup } from "@sutra/ui/forms";
+import {
+  ChatMessage,
+  ChatMessageBody,
+  ChatMessageContent,
+  ChatMessageHeader,
+} from "@cleanprompt/sutra-ui/ai";
+import { SutraMascot, mascotCharacterLabels, mascotCharacters } from "@cleanprompt/sutra-ui/assets";
+import { RadioCard, RadioGroup } from "@cleanprompt/sutra-ui/forms";
 
 function MascotPickerDemo() {
   const [character, setCharacter] = React.useState<MascotCharacter>("bead");

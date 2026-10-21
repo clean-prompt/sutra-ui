@@ -2,7 +2,7 @@
 
 > Data-driven breadcrumb trail with optional collapsing. The last item is the current page.
 
-- Import: `import { Breadcrumbs } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
+- Import: `import { Breadcrumbs } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/navigation`)
 - Source: `packages/ui/src/primitives/breadcrumbs` (primitives)
 - Part of [`Breadcrumb`](Breadcrumb.md)
 - Also accepts the props of HTMLAttributes
@@ -60,7 +60,7 @@ Server render: same markup as the client. Plain markup with no browser API: serv
 ## Example
 
 ```tsx
-import { Breadcrumbs } from "@sutra/ui";
+import { Breadcrumbs } from "@cleanprompt/sutra-ui";
 
 const trail = [
   { label: "Home", href: "/" },

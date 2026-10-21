@@ -2,7 +2,7 @@
 
 > Status-page uptime strip: N buckets colored up / degraded / down / no-data, with uptime %.
 
-- Import: `import { UptimeBar } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { UptimeBar } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/timeline-bar` (patterns)
 - Also accepts the props of HTMLAttributes
 
@@ -22,7 +22,7 @@
 ## Example (live: `#/components/monitoring/uptime-bar` in the playground)
 
 ```tsx
-import { UptimeBar } from "@sutra/ui/ops";
+import { UptimeBar } from "@cleanprompt/sutra-ui/ops";
 
 function UptimeDemo() {
   return (

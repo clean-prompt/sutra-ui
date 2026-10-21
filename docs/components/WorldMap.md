@@ -2,7 +2,7 @@
 
 > Flat world map from bundled outlines (no network): a choropleth with a stepped legend, marker buttons (dots, icons or avatars, optionally clustered), animated great-circle arcs, country tooltips and selection, and screen-reader tables.
 
-- Import: `import { WorldMap } from "@sutra/ui"` (or from `@sutra/ui/geo`)
+- Import: `import { WorldMap } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/geo`)
 - Source: `packages/ui/src/kits/geo/world-map` (kit `geo`)
 - `data-slot`: `world-map`, `world-map-canvas`, `world-map-sphere`, `world-map-graticule`, `world-map-skeleton`, `world-map-countries`, `world-map-borders`, `world-map-selected`, `world-map-hover`, `world-map-arcs`
 - Also accepts the props of HTMLAttributes
@@ -49,9 +49,9 @@
 
 ```tsx
 import * as React from "react";
-import { Text } from "@sutra/ui/core";
-import { formatCompact } from "@sutra/ui/format";
-import { WorldMap, countryName } from "@sutra/ui/geo";
+import { Text } from "@cleanprompt/sutra-ui/core";
+import { formatCompact } from "@cleanprompt/sutra-ui/format";
+import { WorldMap, countryName } from "@cleanprompt/sutra-ui/geo";
 
 function TrafficDemo() {
   const [country, setCountry] = React.useState<string | null>("US");

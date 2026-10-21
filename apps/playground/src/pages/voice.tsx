@@ -15,7 +15,7 @@ import {
   getLanguage,
   type ConversationLiveState,
   type ConversationTurn,
-} from "@sutra/ui";
+} from "@cleanprompt/sutra-ui";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import {
   AssistantBarDemo,

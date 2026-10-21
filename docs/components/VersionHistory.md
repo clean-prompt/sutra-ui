@@ -2,7 +2,7 @@
 
 > Version history: timeline grouped by day with contributors and named versions; click to see what changed in a version, Shift-click a second to compare the range, preview, rename and restore.
 
-- Import: `import { VersionHistory } from "@sutra/ui"` (or from `@sutra/ui/editor`)
+- Import: `import { VersionHistory } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/editor`)
 - Source: `packages/ui/src/kits/editor/version-history` (kit `editor`)
 - `data-slot`: `version-history`
 - Also accepts the props of HTMLAttributes
@@ -31,8 +31,8 @@
 
 ```tsx
 import * as React from "react";
-import { Markdown } from "@sutra/ui/ai";
-import { VersionHistory } from "@sutra/ui/editor";
+import { Markdown } from "@cleanprompt/sutra-ui/ai";
+import { VersionHistory } from "@cleanprompt/sutra-ui/editor";
 
 function VersionHistoryDemo() {
   const [versions, setVersions] = React.useState(makeVersions);

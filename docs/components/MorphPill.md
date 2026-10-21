@@ -2,7 +2,7 @@
 
 > One surface that changes size between states (idle, a picker, a running timer, a sync status): its width and height follow the measured content on a spring token, and the new content fades in as the old one goes. Under reduced motion the size and the content swap at once (the shared net). Controlled (`state`) or uncontrolled (`defaultState`); pass a function as a state's content to switch states from inside. It is an inline surface: put it in a container with room (`max-w-full` keeps it inside a narrow one, and its content is clipped, not overflowing).
 
-- Import: `import { MorphPill } from "@sutra/ui"` (or from `@sutra/ui/motion`)
+- Import: `import { MorphPill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/motion`)
 - Source: `packages/ui/src/patterns/morph-pill` (patterns)
 - `data-slot`: `morph-pill`, `morph-pill-content`
 - Also accepts the props of HTMLAttributes
@@ -23,7 +23,7 @@
 ## Example (live: `#/components/layout-patterns/morph-pill` in the playground)
 
 ```tsx
-import { Text } from "@sutra/ui/core";
+import { Text } from "@cleanprompt/sutra-ui/core";
 
 function MorphPillDemo() {
   return (

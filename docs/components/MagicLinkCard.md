@@ -2,7 +2,7 @@
 
 > Passwordless sign-in: email only, then a "check your inbox" confirmation.
 
-- Import: `import { MagicLinkCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
+- Import: `import { MagicLinkCard } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/blocks`)
 - Source: `packages/ui/src/blocks/auth-blocks-magic-link` (blocks)
 - `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes

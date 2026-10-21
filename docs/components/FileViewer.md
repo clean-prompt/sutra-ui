@@ -2,7 +2,7 @@
 
 > Previews a file by type (image, PDF, video, audio, text/code/markdown/JSON) in a modal or inline. Apps can add their own renderers, browse several `files`, put actions in the header and show a side panel.
 
-- Import: `import { FileViewer } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { FileViewer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/patterns/file-viewer` (patterns)
 - `data-slot`: `file-viewer-nav`, `file-viewer-position`, `file-viewer-panel`, `file-viewer`
 
@@ -45,8 +45,8 @@
 
 ```tsx
 import * as React from "react";
-import { Button } from "@sutra/ui/core";
-import { FilePreviewCard, FileViewer } from "@sutra/ui/mobile";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { FilePreviewCard, FileViewer } from "@cleanprompt/sutra-ui/mobile";
 
 function FileViewerDemo() {
   const pdfUrl = React.useMemo(() => URL.createObjectURL(new Blob([PDF_SOURCE], { type: "application/pdf" })), []);

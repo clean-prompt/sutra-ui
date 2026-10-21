@@ -2,7 +2,7 @@
 
 > Requested permissions as readable rows with icons, risk and optional toggles.
 
-- Import: `import { ScopeList } from "@sutra/ui"` (or from `@sutra/ui/security`)
+- Import: `import { ScopeList } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/security`)
 - Source: `packages/ui/src/kits/identity/consent` (kit `identity`)
 - `data-slot`: `scope-list`
 - Also accepts the props of HTMLAttributes
@@ -26,7 +26,7 @@
 ## Example (live: `#/components/security/scope-list` in the playground)
 
 ```tsx
-import { ScopeList, formatScope } from "@sutra/ui/security";
+import { ScopeList, formatScope } from "@cleanprompt/sutra-ui/security";
 
 <div className="@container w-full">
   <div className="grid grid-cols-1 w-full gap-6 @2xl:grid-cols-2">

@@ -2,7 +2,7 @@
 
 > One-click local-model quickstart: stage rail with statuses, per-stage CTA, download progress and retry.
 
-- Import: `import { StagedSetupHero } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { StagedSetupHero } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/local-models` (kit `agent-admin`)
 - `data-slot`: `staged-setup-hero`, `setup-current-stage`, `setup-download`
 - Also accepts the props of HTMLAttributes
@@ -25,8 +25,8 @@
 
 ```tsx
 import * as React from "react";
-import { StagedSetupHero } from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
+import { StagedSetupHero } from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
 
 function SetupHeroDemo() {
   const [stages, setStages] = React.useState(initialStages);

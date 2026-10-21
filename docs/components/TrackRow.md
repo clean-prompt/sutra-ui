@@ -2,7 +2,7 @@
 
 > Track list row: number/now-playing bars, hover play, artwork, title/artist, album, duration and menu slot.
 
-- Import: `import { TrackRow } from "@sutra/ui"` (or from `@sutra/ui/media`)
+- Import: `import { TrackRow } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/media`)
 - Source: `packages/ui/src/kits/media/audio-player-track-row` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
@@ -26,8 +26,8 @@
 ## Example (live: `#/components/media-player/track-row` in the playground)
 
 ```tsx
-import { RiMore2Fill } from "@sutra/ui/icons";
-import { TrackRow } from "@sutra/ui/media";
+import { RiMore2Fill } from "@cleanprompt/sutra-ui/icons";
+import { TrackRow } from "@cleanprompt/sutra-ui/media";
 
 <div className="w-full">
   {queue.items.map((t, i) => (

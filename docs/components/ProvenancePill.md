@@ -2,7 +2,7 @@
 
 > Where a capability came from: official, learned, hub, community, local or bundled.
 
-- Import: `import { ProvenancePill } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
+- Import: `import { ProvenancePill } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/capabilities` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 
@@ -23,9 +23,9 @@ import {
   ScopeChip,
   ScopeSelector,
   TrustBadge,
-} from "@sutra/ui/agent-admin";
-import { Button } from "@sutra/ui/core";
-import { RiSearchLine } from "@sutra/ui/icons";
+} from "@cleanprompt/sutra-ui/agent-admin";
+import { Button } from "@cleanprompt/sutra-ui/core";
+import { RiSearchLine } from "@cleanprompt/sutra-ui/icons";
 
 <div className="space-y-2">
   {/* Provenance */}

@@ -2,7 +2,7 @@
 
 > Accessible drawer description (same as `SheetDescription`).
 
-- Import: `import { DrawerDescription } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
+- Import: `import { DrawerDescription } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/mobile`)
 - Source: `packages/ui/src/primitives/drawer` (primitives)
 - Part of [`Drawer`](Drawer.md)
 - Also accepts the props of HTMLAttributes, PrimitivePropsWithRef
@@ -18,8 +18,8 @@ See the notes in [`Drawer`](Drawer.md#notes).
 ## Example
 
 ```tsx
-import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@sutra/ui";
-import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@sutra/ui";
+import { Button, Drawer, DrawerBody, DrawerClose, DrawerContent, DrawerDescription } from "@cleanprompt/sutra-ui";
+import { DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   return (

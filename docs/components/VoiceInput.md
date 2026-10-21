@@ -2,7 +2,7 @@
 
 > Mic toggle with a live input-level ring, timer + max-duration countdown and interim transcript preview.
 
-- Import: `import { VoiceInput } from "@sutra/ui"` (or from `@sutra/ui/voice`)
+- Import: `import { VoiceInput } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/voice`)
 - Source: `packages/ui/src/kits/voice/voice` (kit `voice`)
 - `data-slot`: `level-ring`, `voice-timer`, `voice-interim`
 - Also accepts the props of HTMLAttributes
@@ -25,7 +25,7 @@
 
 ```tsx
 import * as React from "react";
-import { VoiceInput } from "@sutra/ui/voice";
+import { VoiceInput } from "@cleanprompt/sutra-ui/voice";
 
 function VoiceInputDemo() {
   const [text, setText] = React.useState("");

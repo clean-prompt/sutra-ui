@@ -2,7 +2,7 @@
 
 > Switch with a label and optional description, for forms. For settings pages use `SettingsRow type="toggle"` (whole-row target, icon, `disabledReason`).
 
-- Import: `import { SwitchField } from "@sutra/ui"` (or from `@sutra/ui/forms`)
+- Import: `import { SwitchField } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/forms`)
 - Source: `packages/ui/src/primitives/switch` (primitives)
 - `data-slot`: `switch-field`
 - Part of [`Switch`](Switch.md)
@@ -35,7 +35,7 @@ See the notes in [`Switch`](Switch.md#notes).
 
 ```tsx
 import * as React from "react";
-import { SwitchField } from "@sutra/ui";
+import { SwitchField } from "@cleanprompt/sutra-ui";
 
 export function Example() {
   const [digest, setDigest] = React.useState(true);

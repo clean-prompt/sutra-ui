@@ -2,7 +2,7 @@
 
 > pdf.js document viewer: lazily rendered canvas pages (only those near the viewport), selectable text, zoom (fit width, fit page, presets; Ctrl/Cmd+wheel, pinch, + and - keys, 0 to fit the width) and page navigation. Needs the optional `pdfjs-dist` peer.
 
-- Import: `import { PdfViewer } from "@sutra/ui/pdf"`
+- Import: `import { PdfViewer } from "@cleanprompt/sutra-ui/pdf"`
 - Source: `packages/ui/src/kits/editor/pdf-viewer` (kit `editor`)
 - `data-slot`: `pdf-error-message`, `pdf-pages`, `pdf-viewer`, `pdf-toolbar`
 - Also accepts the props of HTMLAttributes
@@ -39,8 +39,8 @@
 
 ```tsx
 import * as React from "react";
-import { FileViewer } from "@sutra/ui/mobile";
-import { PdfThumbnail, PdfViewer, pdfRenderer } from "@sutra/ui/pdf";
+import { FileViewer } from "@cleanprompt/sutra-ui/mobile";
+import { PdfThumbnail, PdfViewer, pdfRenderer } from "@cleanprompt/sutra-ui/pdf";
 
 function PdfDemo() {
   const blob = React.useMemo(samplePdf, []);

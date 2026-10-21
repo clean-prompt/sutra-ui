@@ -1,6 +1,6 @@
 # LogViewer
 
-- Import: `import { LogViewer } from "@sutra/ui"` (or from `@sutra/ui/ops`)
+- Import: `import { LogViewer } from "@cleanprompt/sutra-ui"` (or from `@cleanprompt/sutra-ui/ops`)
 - Source: `packages/ui/src/patterns/log-viewer` (patterns)
 - `data-slot`: `log-viewer`
 - Also accepts the props of HTMLAttributes
@@ -54,7 +54,7 @@
 
 ```tsx
 import * as React from "react";
-import { LogViewer } from "@sutra/ui/ops";
+import { LogViewer } from "@cleanprompt/sutra-ui/ops";
 
 function BigLogDemo() {
   const lines = React.useMemo(
