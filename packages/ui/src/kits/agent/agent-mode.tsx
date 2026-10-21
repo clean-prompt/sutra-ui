@@ -10,6 +10,7 @@ import {
 import { cn, focusRing, normalizeDensity, type Density, hitArea } from "../../lib/cn";
 import { directionOf, logicalArrow } from "../../lib/direction";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useDrag } from "../../hooks/use-drag";
 import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { clamp } from "../../lib/math";
 import {
@@ -343,7 +344,6 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
     });
     const index = Math.max(0, levels.findIndex((l) => l.value === value));
     const trackRef = React.useRef<HTMLDivElement>(null);
-    const dragging = React.useRef(false);
     const current = levels[index];
     const compact = density ? normalizeDensity(density) === "compact" : variant === "compact";
 
@@ -353,29 +353,47 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
       setValue(levels[clamped].value);
     };
 
-    /** Level under a pointer x: segments run from the inline start, so RTL measures from the right edge. */
-    const levelAtX = (clientX: number) => {
+    /** Level under an x inside the track (px from its left edge): segments run from the inline start, so RTL measures from the right. */
+    const levelAtX = (x: number) => {
       const el = trackRef.current;
       const rect = el?.getBoundingClientRect();
       if (!el || !rect || rect.width === 0) return null;
-      const fromStart = directionOf(el) === "rtl" ? rect.right - clientX : clientX - rect.left;
+      const fromStart = directionOf(el) === "rtl" ? rect.width - x : x;
       return Math.floor((fromStart / rect.width) * levels.length);
     };
 
-    const indexFromPointer = (e: React.PointerEvent) => {
+    /** The level of the bar a press landed on, if any (the gaps between bars fall back to the position). */
+    const segmentAt = (e: React.PointerEvent) => {
       const seg = (e.target as HTMLElement).closest?.("[data-effort-index]");
-      if (seg && trackRef.current?.contains(seg)) return Number(seg.getAttribute("data-effort-index"));
-      return levelAtX(e.clientX);
+      return seg && trackRef.current?.contains(seg) ? Number(seg.getAttribute("data-effort-index")) : null;
     };
 
-    const fromX = (clientX: number) => {
-      const i = levelAtX(clientX);
-      if (i != null) setIndex(i);
-    };
+    // The press is the first position (absolute mode), the pointer is captured at once and a drag follows it; a press on a bar
+    // picks that bar, so the first move (the press itself) is skipped then.
+    const pressedBar = React.useRef(false);
+    const drag = useDrag({
+      mode: "absolute",
+      axis: "x",
+      allow: () => !disabled,
+      onDown: (e) => {
+        const i = segmentAt(e);
+        pressedBar.current = i != null;
+        if (i != null) setIndex(i);
+      },
+      onMove: (info) => {
+        if (pressedBar.current) {
+          pressedBar.current = false;
+          return;
+        }
+        const i = levelAtX(info.x);
+        if (i != null) setIndex(i);
+      },
+    });
+    const setTrackRef = useMergedRefs<HTMLDivElement>(trackRef, drag.ref as React.Ref<HTMLDivElement>);
 
     const slider = (
       <div
-        ref={trackRef}
+        ref={setTrackRef}
         role="slider"
         tabIndex={disabled ? -1 : 0}
         aria-label={label}
@@ -387,23 +405,7 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
         aria-orientation="horizontal"
         data-slot="effort-slider-track"
         data-value={current?.value}
-        onPointerDown={(e) => {
-          if (disabled) return;
-          const i = indexFromPointer(e);
-          if (i != null) setIndex(i);
-          dragging.current = true;
-          (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-        }}
-        onPointerMove={(e) => {
-          if (dragging.current) fromX(e.clientX);
-        }}
-        onPointerUp={(e) => {
-          dragging.current = false;
-          (e.currentTarget as HTMLElement).releasePointerCapture?.(e.pointerId);
-        }}
-        onPointerCancel={() => {
-          dragging.current = false;
-        }}
+        {...drag.handlers}
         onKeyDown={(e) => {
           let next: number | null = null;
           if (logicalArrow(e) === "ArrowRight" || e.key === "ArrowUp") next = index + 1;

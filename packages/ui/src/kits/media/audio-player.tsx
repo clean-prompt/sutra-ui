@@ -21,6 +21,7 @@ import { logicalArrow } from "../../lib/direction";
 import { reorderArray } from "../../lib/reorder";
 import { Progress } from "../../primitives/progress";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useDrag, type UseDragOptions } from "../../hooks/use-drag";
 import { useSwipe } from "../../hooks/use-swipe";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { ImageWithFallback } from "../../patterns/lightbox";
@@ -759,6 +760,42 @@ export function NowPlaying({
 }
 NowPlaying.displayName = "NowPlaying";
 
+/**
+ * The drag handle of one queue row (private). One `useDrag` per row: a bare handle, so the pointer is captured on the press and the drag
+ * starts on the first move; the row decides the drop position from the pointer's y, so the list is not moved while dragging.
+ */
+function QueueHandle({
+  label,
+  hintId,
+  onStart,
+  onMove,
+  onEnd,
+  onKeyDown,
+}: Pick<UseDragOptions, "onStart" | "onMove" | "onEnd"> & {
+  label: string;
+  hintId: string;
+  onKeyDown: React.KeyboardEventHandler<HTMLButtonElement>;
+}) {
+  const drag = useDrag({ axis: "both", threshold: 0, captureOnPress: true, onDown: (e) => e.preventDefault(), onStart, onMove, onEnd });
+  return (
+    <button
+      ref={drag.ref}
+      {...drag.handlers}
+      type="button"
+      data-slot="queue-handle"
+      aria-label={label}
+      aria-describedby={hintId}
+      onKeyDown={onKeyDown}
+      className={cn(
+        "grid h-10 w-6 shrink-0 cursor-grab touch-none place-items-center rounded-sm text-muted-foreground/70 hover:text-foreground active:cursor-grabbing",
+        focusRing
+      )}
+    >
+      <RiDraggable aria-hidden className="size-4" />
+    </button>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /* QueueList                                                           */
 /* ------------------------------------------------------------------ */
@@ -868,33 +905,23 @@ export const QueueList = React.forwardRef<HTMLDivElement, QueueListProps>(
                   )}
                 >
                   {onReorder && (
-                    <button
-                      type="button"
-                      data-slot="queue-handle"
-                      aria-label={`Reorder ${item.title}`}
-                      aria-describedby={hintId}
-                      onPointerDown={(e) => {
-                        if (e.pointerType === "mouse" && e.button !== 0) return;
-                        e.preventDefault();
-                        e.currentTarget.setPointerCapture?.(e.pointerId);
-                        setDrag({ from: index, over: index, id: item.id });
+                    <QueueHandle
+                      label={`Reorder ${item.title}`}
+                      hintId={hintId}
+                      onStart={() => setDrag({ from: index, over: index, id: item.id })}
+                      onMove={(info) => {
+                        const over = overIndexAt(info.startY + info.dy, item.id);
+                        setDrag((d) => (d && d.over !== over ? { ...d, over } : d));
                       }}
-                      onPointerMove={(e) => {
-                        if (!drag) return;
-                        const over = overIndexAt(e.clientY, drag.id);
-                        if (over !== drag.over) setDrag({ ...drag, over });
-                      }}
-                      onPointerUp={(e) => {
-                        if (!drag) return;
-                        e.currentTarget.releasePointerCapture?.(e.pointerId);
-                        const { from, over } = drag;
+                      onEnd={(info, cancelled) => {
                         setDrag(null);
-                        if (from !== over) {
-                          onReorder(from, over);
-                          announceMove(items[from], over);
+                        if (cancelled) return;
+                        const over = overIndexAt(info.startY + info.dy, item.id);
+                        if (index !== over) {
+                          onReorder(index, over);
+                          announceMove(item, over);
                         }
                       }}
-                      onPointerCancel={() => setDrag(null)}
                       onKeyDown={(e) => {
                         if (e.altKey) return;
                         if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -906,13 +933,7 @@ export const QueueList = React.forwardRef<HTMLDivElement, QueueListProps>(
                           announceMove(item, to);
                         }
                       }}
-                      className={cn(
-                        "grid h-10 w-6 shrink-0 cursor-grab touch-none place-items-center rounded-sm text-muted-foreground/70 hover:text-foreground active:cursor-grabbing",
-                        focusRing
-                      )}
-                    >
-                      <RiDraggable aria-hidden className="size-4" />
-                    </button>
+                    />
                   )}
                   <button
                     type="button"

@@ -17,6 +17,7 @@ import { cn, focusRing } from "../../lib/cn";
 import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useDrag } from "../../hooks/use-drag";
 import { useIsoLayoutEffect } from "../../hooks/use-iso-layout-effect";
 import { useElementWidth } from "../../hooks/use-resize-observer";
 import { useMergedRefs } from "../../hooks/use-merged-refs";
@@ -359,7 +360,20 @@ export const SideThread = React.forwardRef<HTMLElement, SideThreadProps>(
       onChange: onHeightChange,
     });
     const setHeight = (h: number) => setHeightRaw(Math.round(clamp(h, minHeight, maxHeight)));
-    const drag = React.useRef<{ y: number; h: number; id: number } | null>(null);
+    // The top handle resizes from the height at the press; it is a bare handle (nothing clickable inside), so the pointer is captured
+    // on the press and the drag starts on the first move.
+    const startHeight = React.useRef(height);
+    const resize = useDrag({
+      axis: "both",
+      threshold: 0,
+      captureOnPress: true,
+      enabled: resizable,
+      onDown: (e) => {
+        e.preventDefault();
+        startHeight.current = height;
+      },
+      onMove: (info) => setHeight(startHeight.current - info.dy),
+    });
     const logRef = React.useRef<HTMLDivElement>(null);
     const titleId = React.useId();
     const exchangeState = (x: SideThreadExchange) => {
@@ -405,22 +419,8 @@ export const SideThread = React.forwardRef<HTMLElement, SideThreadProps>(
               e.preventDefault();
               setHeight(next);
             }}
-            onPointerDown={(e) => {
-              if (e.button !== 0) return;
-              e.preventDefault();
-              drag.current = { y: e.clientY, h: height, id: e.pointerId };
-              e.currentTarget.setPointerCapture?.(e.pointerId);
-            }}
-            onPointerMove={(e) => {
-              const d = drag.current;
-              if (!d || d.id !== e.pointerId) return;
-              setHeight(d.h + (d.y - e.clientY));
-            }}
-            onPointerUp={(e) => {
-              drag.current = null;
-              e.currentTarget.releasePointerCapture?.(e.pointerId);
-            }}
-            onPointerCancel={() => (drag.current = null)}
+            ref={resize.ref}
+            {...resize.handlers}
             className={cn(
               "group/handle absolute inset-x-0 top-0 z-10 flex h-2.5 cursor-row-resize touch-none items-start justify-center pt-1 outline-none",
               "focus-visible:bg-ring/10"

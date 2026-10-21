@@ -2,6 +2,7 @@
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
 import { directionOf, logicalArrow, toLogicalDelta } from "../lib/direction";
+import { useDrag } from "../hooks/use-drag";
 import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
 import type { LayoutNode, LayoutTabsNode, TilingDirection, TilingDropEdge } from "./tiling-model";
 
@@ -33,8 +34,8 @@ interface TilingHandleProps {
 export function TilingHandle({ direction, sizes, index, min, step, controls, label, onResize, onEqualize }: TilingHandleProps) {
   const row = direction === "row";
   const sizesRef = useLatestRef(sizes);
-  const dragRef = React.useRef<{ pointerId: number; pos: number; start: number; total: number } | null>(null);
-  const [dragging, setDragging] = React.useState(false);
+  // What the press measured: the divider's share before the drag, the parent's length and the reading direction.
+  const pressRef = React.useRef({ start: 0, total: 0, rtl: false });
   const a = sizes[index] ?? 0;
   const pair = a + (sizes[index + 1] ?? 0);
   const lo = Math.min(min, pair / 2);
@@ -53,8 +54,36 @@ export function TilingHandle({ direction, sizes, index, min, step, controls, lab
     event.preventDefault();
   };
 
+  // A bare handle: the pointer is captured on the press and the drag starts on the first move. Both axes stay free for the finger
+  // (`touch-none`); the divider reads the travel along its own axis.
+  const drag = useDrag({
+    axis: "both",
+    threshold: 0,
+    captureOnPress: true,
+    onDown: (event) => {
+      event.preventDefault();
+      const el = event.currentTarget;
+      const rect = el.parentElement?.getBoundingClientRect();
+      pressRef.current = {
+        start: sizesRef.current[index] ?? 0,
+        total: rect ? (row ? rect.width : rect.height) : 0,
+        rtl: directionOf(el) === "rtl",
+      };
+    },
+    onMove: (info) => {
+      const { start, total, rtl } = pressRef.current;
+      if (!total) return;
+      const raw = row ? info.dx : info.dy;
+      const moved = row ? toLogicalDelta(raw, rtl ? "rtl" : "ltr") : raw; // flex rows run right to left in RTL
+      onResize(index, start + moved / total - (sizesRef.current[index] ?? 0));
+    },
+  });
+  const dragging = drag.dragging;
+
   return (
     <div
+      ref={drag.ref}
+      {...drag.handlers}
       role="separator"
       tabIndex={0}
       aria-orientation={row ? "vertical" : "horizontal"}
@@ -75,41 +104,6 @@ export function TilingHandle({ direction, sizes, index, min, step, controls, lab
       )}
       onKeyDown={handleKeyDown}
       onDoubleClick={onEqualize}
-      onPointerDown={(event) => {
-        if (event.pointerType === "mouse" && event.button !== 0) return;
-        const rect = event.currentTarget.parentElement?.getBoundingClientRect();
-        dragRef.current = {
-          pointerId: event.pointerId,
-          pos: row ? event.clientX : event.clientY,
-          start: sizesRef.current[index] ?? 0,
-          total: rect ? (row ? rect.width : rect.height) : 0,
-        };
-        setDragging(true);
-        try {
-          event.currentTarget.setPointerCapture?.(event.pointerId);
-        } catch {
-          /* best effort */
-        }
-        event.preventDefault();
-      }}
-      onPointerMove={(event) => {
-        const d = dragRef.current;
-        if (!d || d.pointerId !== event.pointerId || !d.total) return;
-        const raw = (row ? event.clientX : event.clientY) - d.pos;
-        const moved = row ? toLogicalDelta(raw, directionOf(event.currentTarget)) : raw; // flex rows run right to left in RTL
-        const target = d.start + moved / d.total;
-        onResize(index, target - (sizesRef.current[index] ?? 0));
-      }}
-      onPointerUp={(event) => {
-        if (dragRef.current?.pointerId === event.pointerId) {
-          dragRef.current = null;
-          setDragging(false);
-        }
-      }}
-      onPointerCancel={() => {
-        dragRef.current = null;
-        setDragging(false);
-      }}
     />
   );
 }

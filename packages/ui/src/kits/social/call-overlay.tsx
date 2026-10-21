@@ -15,6 +15,8 @@ import { AlertDialog as AlertDialogPrimitive } from "radix-ui";
 import { cn, focusRing } from "../../lib/cn";
 import { toneClasses } from "../../lib/tone";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useDrag } from "../../hooks/use-drag";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { useIsoLayoutEffect, useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { useNow } from "../../hooks/use-now";
 import { formatClock } from "../../lib/duration";
@@ -413,46 +415,27 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
     const localRef = useStreamVideo(localStream);
 
     const stageRef = React.useRef<HTMLDivElement>(null);
-    // The drag offset is written to the element as `--sutra-drag-x/-y` (no React state per pointer move); `dragging` flips only
-    // when a drag starts or ends, for the cursor and the transition.
-    const dragRef = React.useRef<{ x: number; y: number; dx: number; dy: number } | null>(null);
-    const [dragging, setDragging] = React.useState(false);
-
-    const endPipDrag = (el: HTMLElement) => {
-      dragRef.current = null;
-      el.style.removeProperty("--sutra-drag-x");
-      el.style.removeProperty("--sutra-drag-y");
-      setDragging(false);
-    };
-    const onPipPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-      if (e.button !== 0) return;
-      e.currentTarget.setPointerCapture?.(e.pointerId);
-      dragRef.current = { x: e.clientX, y: e.clientY, dx: 0, dy: 0 };
-      setDragging(true);
-    };
-    const onPipPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-      const drag = dragRef.current;
-      if (!drag) return;
-      drag.dx = e.clientX - drag.x;
-      drag.dy = e.clientY - drag.y;
-      e.currentTarget.style.setProperty("--sutra-drag-x", `${drag.dx}px`);
-      e.currentTarget.style.setProperty("--sutra-drag-y", `${drag.dy}px`);
-    };
-    const onPipPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-      const drag = dragRef.current;
-      if (!drag) return;
-      const rect = stageRef.current?.getBoundingClientRect();
-      if (rect && rect.width > 0 && (Math.abs(drag.dx) > 4 || Math.abs(drag.dy) > 4)) {
-        const left = e.clientX - rect.left < rect.width / 2;
-        const top = e.clientY - rect.top < rect.height / 2;
-        setCorner(`${top ? "top" : "bottom"}-${left ? "left" : "right"}` as CallPipCorner);
-      }
-      endPipDrag(e.currentTarget);
-    };
-    // Capture can be taken away without a pointercancel (the element unmounts the capture, a touch is re-targeted): end the drag.
-    const onPipLostCapture = (e: React.PointerEvent<HTMLDivElement>) => {
-      if (e.target === e.currentTarget && dragRef.current) endPipDrag(e.currentTarget);
-    };
+    // `useDrag` writes the offset to the element as `--sutra-drag-x/-y` (no React state per pointer move) and ends the drag on release,
+    // `pointercancel` and a lost capture; `dragging` flips only when a drag starts or ends, for the cursor and the transition.
+    // The pip holds a live video, so the pointer is captured on the press (as before) and a drag counts after 4 px.
+    const pipRef = React.useRef<HTMLDivElement | null>(null);
+    const pipDrag = useDrag({
+      captureOnPress: true,
+      onEnd: (info, cancelled) => {
+        // Drop into the nearest corner of the stage, then clear the offset (the corner classes take over).
+        const rect = stageRef.current?.getBoundingClientRect();
+        if (!cancelled && rect && rect.width > 0) {
+          const left = info.startX + info.dx - rect.left < rect.width / 2;
+          const top = info.startY + info.dy - rect.top < rect.height / 2;
+          setCorner(`${top ? "top" : "bottom"}-${left ? "left" : "right"}` as CallPipCorner);
+        }
+        pipDrag.set(0, 0);
+        pipRef.current?.style.removeProperty("--sutra-drag-x");
+        pipRef.current?.style.removeProperty("--sutra-drag-y");
+      },
+    });
+    const dragging = pipDrag.dragging;
+    const setPipRef = useMergedRefs<HTMLDivElement>(pipRef, pipDrag.ref as React.Ref<HTMLDivElement>);
     const onPipKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
       const [v, h] = corner.split("-") as ["top" | "bottom", "left" | "right"];
       const next =
@@ -504,15 +487,12 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
 
         {type === "video" ? (
           <div
+            ref={setPipRef}
             role="group"
             tabIndex={0}
             aria-label={`Your video, ${corner.replace("-", " ")}. Drag or use arrow keys to move.`}
             data-corner={corner}
-            onPointerDown={onPipPointerDown}
-            onPointerMove={onPipPointerMove}
-            onPointerUp={onPipPointerUp}
-            onPointerCancel={(e) => endPipDrag(e.currentTarget)}
-            onLostPointerCapture={onPipLostCapture}
+            {...pipDrag.handlers}
             onKeyDown={onPipKeyDown}
             className={cn(
               "absolute z-10 aspect-[3/4] w-24 cursor-grab touch-none overflow-hidden rounded-xl border border-white/20 bg-code-border shadow-xl sm:w-32",

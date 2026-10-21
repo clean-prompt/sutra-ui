@@ -23,6 +23,7 @@ import {
 } from "../lib/crop";
 import { clamp } from "../lib/math";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useDrag } from "../hooks/use-drag";
 import { useElementSize } from "../hooks/use-resize-observer";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useSafeId } from "../hooks/use-safe-id";
@@ -255,10 +256,7 @@ const ARROWS: Record<string, [number, number]> = {
 type DragMode = "move" | CropHandle;
 
 interface DragState {
-  pointerId: number;
   mode: DragMode;
-  startX: number;
-  startY: number;
   start: CropRect;
   scaleX: number;
   scaleY: number;
@@ -491,49 +489,49 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
     });
 
     /* Pointer */
-    const startDrag = (event: React.PointerEvent<HTMLElement>, mode: DragMode) => {
-      if (event.pointerType === "mouse" && event.button !== 0) return;
-      event.stopPropagation();
-      const frame = frameRef.current;
-      if (!frame || !shown || !bounds) return;
-      const rect = frame.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      dragRef.current = {
-        pointerId: event.pointerId,
-        mode,
-        startX: event.clientX,
-        startY: event.clientY,
-        start: shown,
-        scaleX: bounds.width / rect.width,
-        scaleY: bounds.height / rect.height,
-      };
-      try {
-        event.currentTarget.setPointerCapture?.(event.pointerId);
-      } catch {
-        /* best effort */
-      }
-      event.preventDefault();
-      event.currentTarget.focus({ preventScroll: true });
-      setDragging(mode);
-    };
-
-    const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-      const drag = dragRef.current;
-      const b = latest.current.bounds;
-      if (!drag || drag.pointerId !== event.pointerId || !b) return;
-      const dx = (event.clientX - drag.startX) * drag.scaleX;
-      const dy = (event.clientY - drag.startY) * drag.scaleY;
-      setCrop(drag.mode === "move" ? moveCrop(drag.start, dx, dy, b) : resizeCrop(drag.start, drag.mode, dx, dy, b, constraints));
-    };
-
-    const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {
-      const drag = dragRef.current;
-      if (!drag || drag.pointerId !== event.pointerId) return;
-      dragRef.current = null;
-      setDragging(null);
-      const c = latest.current.crop;
-      if (c && !cropEquals(c, drag.start)) onCropEnd?.(c);
-    };
+    // One drag on the crop box serves the box (move) and its eight handles (resize): a press on a handle bubbles up to the box, which
+    // captures the pointer. The controlled rect is emitted on every move from the travel since the press, scaled to image pixels.
+    const cropDrag = useDrag({
+      axis: "both",
+      threshold: 0,
+      captureOnPress: true,
+      allow: () => {
+        const rect = frameRef.current?.getBoundingClientRect();
+        return !!rect && !!rect.width && !!rect.height && !!shown && !!bounds;
+      },
+      onDown: (event) => {
+        event.stopPropagation();
+        const frame = frameRef.current;
+        if (!frame || !shown || !bounds) return;
+        const rect = frame.getBoundingClientRect();
+        const handle = (event.target as HTMLElement).closest?.("[data-handle]");
+        dragRef.current = {
+          mode: (handle?.getAttribute("data-handle") as CropHandle | null) ?? "move",
+          start: shown,
+          scaleX: bounds.width / rect.width,
+          scaleY: bounds.height / rect.height,
+        };
+        event.preventDefault();
+        ((handle as HTMLElement | null) ?? event.currentTarget).focus({ preventScroll: true });
+      },
+      onStart: () => setDragging(dragRef.current?.mode ?? null),
+      onMove: (info) => {
+        const drag = dragRef.current;
+        const b = latest.current.bounds;
+        if (!drag || !b) return;
+        const dx = info.dx * drag.scaleX;
+        const dy = info.dy * drag.scaleY;
+        setCrop(drag.mode === "move" ? moveCrop(drag.start, dx, dy, b) : resizeCrop(drag.start, drag.mode, dx, dy, b, constraints));
+      },
+      // Release, pointercancel and a lost capture all end the drag the same way.
+      onEnd: () => {
+        const drag = dragRef.current;
+        dragRef.current = null;
+        setDragging(null);
+        const c = latest.current.crop;
+        if (drag && c && !cropEquals(c, drag.start)) onCropEnd?.(c);
+      },
+    });
 
     /* Keyboard */
     const keyStep = (event: React.KeyboardEvent<HTMLElement>, handle?: CropHandle) => {
@@ -639,11 +637,8 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
                       width: pct(shown.width, bounds.width),
                       height: pct(shown.height, bounds.height),
                     }}
-                    onPointerDown={(e) => startDrag(e, "move")}
-                    onPointerMove={onPointerMove}
-                    onPointerUp={endDrag}
-                    onPointerCancel={endDrag}
-                    onLostPointerCapture={endDrag}
+                    ref={cropDrag.ref}
+                    {...cropDrag.handlers}
                     onKeyDown={(e) => keyStep(e)}
                   >
                     <div
@@ -667,7 +662,6 @@ export const ImageCropper = React.forwardRef<HTMLDivElement, ImageCropperProps>(
                             HANDLE_POSITION[handle],
                             focusRing
                           )}
-                          onPointerDown={(e) => startDrag(e, handle)}
                           onKeyDown={(e) => keyStep(e, handle)}
                         >
                           <span
