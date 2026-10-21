@@ -8,7 +8,7 @@ import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../../assets/brand";
 import { HoverCard, HoverCardContent, HoverCardTrigger, Popover, PopoverAnchor, PopoverContent } from "../../primitives/popover";
 import { Spinner } from "../../primitives/spinner";
-import { detectSlashTrigger } from "../ai/slash-menu";
+import { detectSlashTrigger } from "../../patterns/slash-menu";
 
 /* ------------------------------------------------------------------ */
 /* Types & token syntax                                                */

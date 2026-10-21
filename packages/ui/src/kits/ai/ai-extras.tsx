@@ -7,7 +7,7 @@ export * from "./context-meter";
 export * from "./status-strip";
 export * from "./job-banner";
 export * from "./question-card";
-export * from "./slash-menu";
+export * from "../../patterns/slash-menu";
 export * from "./model-picker";
 export * from "./usage-summary";
 export * from "./conversation-sidebar";

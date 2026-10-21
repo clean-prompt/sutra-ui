@@ -1,9 +1,9 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { cn } from "../../lib/cn";
-import { Kbd } from "../../primitives/typography";
-import { replaceTextRange } from "../../lib/text-field";
-import { useCaretAnchor } from "../../hooks/use-caret-anchor";
+import { cn } from "../lib/cn";
+import { Kbd } from "../primitives/typography";
+import { replaceTextRange } from "../lib/text-field";
+import { useCaretAnchor } from "../hooks/use-caret-anchor";
 
 /* ------------------------------------------------------------------ */
 /* useSlashTrigger + SlashMenu                                         */

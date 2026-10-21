@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { PopoverContent } from "../../primitives/popover";
 import { EmptyState } from "../../primitives/empty-state";
 import { formatTokenCount } from "../../lib/token-count";
-import { highlightMatch } from "../ai/slash-menu";
+import { highlightMatch } from "../../patterns/slash-menu";
 import { ProviderLogo } from "./llm-providers-logo";
 import { ModelStateGlyph, normalizeModelState } from "../ai/model-state";
 import { modelWaitHint } from "../ai/model-select";

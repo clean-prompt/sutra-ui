@@ -21,7 +21,7 @@ const KIT_DEPS: Record<string, string[]> = {
   "agent-admin": ["ai", "agent", "identity"],
   identity: ["geo"],
   billing: [],
-  workspace: ["ai"],
+  workspace: [],
   ops: ["ai", "geo"],
   media: [],
   voice: [],

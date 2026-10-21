@@ -20,6 +20,8 @@ const pkg = JSON.parse(fs.readFileSync(path.join(PKG, "package.json"), "utf8"));
 /** Modules in src/primitives, src/patterns and src/kits that are deliberately reachable from no public barrel. */
 const INTERNAL_MODULES = [
   "kits/agent-admin/secret-row",
+  // Deep-path shim for @sutra/ui/kits/ai/slash-menu (the module moved to patterns/slash-menu, which the ai entry exports).
+  "kits/ai/slash-menu",
   // Frozen back-compat barrels (see CONVENTIONS): every name they re-export reaches the root and the entries through the
   // real modules, so gen-index leaves them out and no entry may import them. Old deep imports keep working.
   "kits/ai/ai-extras",

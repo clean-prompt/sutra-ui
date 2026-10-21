@@ -180,7 +180,7 @@
   "shortcut-keys": "primitives/shortcut-keys",
   "shortcuts": "patterns/shortcuts",
   "sidebar-navigation": "patterns/sidebar-navigation",
-  "slash-menu": "kits/ai/slash-menu",
+  "slash-menu": "patterns/slash-menu",
   "slider": "primitives/slider",
   "slot-outlet": "kits/agent-admin/slot-outlet",
   "social-button": "primitives/social-button",

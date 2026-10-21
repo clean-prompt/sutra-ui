@@ -20,7 +20,7 @@ export * from "../kits/ai/context-meter";
 export * from "../kits/ai/status-strip";
 export * from "../kits/ai/job-banner";
 export * from "../kits/ai/question-card";
-export * from "../kits/ai/slash-menu";
+export * from "../patterns/slash-menu";
 export * from "../kits/ai/model-picker";
 export * from "../kits/ai/usage-summary";
 export * from "../kits/ai/conversation-sidebar";

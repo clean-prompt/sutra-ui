@@ -5,7 +5,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TableCheckbox } from "../src/primitives/table";
 import { Globe, type GlobeApi } from "../src/entries/geo";
-import { SlashMenu, type SlashCommand } from "../src/kits/ai/slash-menu";
+import { SlashMenu, type SlashCommand } from "../src/patterns/slash-menu";
 import { KillButton } from "../src/kits/ops/process-table-kill";
 import { IncomingCall } from "../src/kits/social/call-overlay";
 import { VideoPlayer } from "../src/kits/media/video-player";
