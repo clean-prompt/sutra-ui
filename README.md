@@ -71,7 +71,7 @@ The build emits one ES module per source file. `"use client"` is added only to m
 | Import | Holds |
 | --- | --- |
 | `@sutra/ui` | Every asset, primitive, pattern, kit module and block, plus the `/tokens` foundations. **Not** the Remix icon set (`/icons`), the formatting and date helpers (`/format`, subpath only) or the optional-peer modules (`CodeEditor`, `RichTextEditor` → `/editor`; `Terminal` → `/terminal`) |
-| `@sutra/ui/styles.css` | Tokens and Tailwind theme (`src/styles/sutra.css`) |
+| `@sutra/ui/styles.css` | Tokens, Tailwind theme and the component CSS (`src/styles/sutra.css`, which `@import`s the component files next to it; Tailwind inlines them, so one import delivers every rule) |
 | `@sutra/ui/paper.css` | The optional paper style (`src/styles/paper.css`); import it after `styles.css` and set `data-style="paper"` |
 | `@sutra/ui/blocks/registry` | `blockRegistry`, `blockCategoryLabels`, demo fixtures and mocks (demo-only; the same names on `@sutra/ui` and `/blocks` are deprecated) |
 
@@ -155,7 +155,7 @@ Shared across the package: `radix-ui`, `@remixicon/react`, `class-variance-autho
 | `lib/` | Pure, typed helpers (formatters, tokens, tone, status, cron, rrule …). No React components | `lib` |
 | `hooks/` | Generic React hooks | `lib`, `hooks` |
 | `assets/` | Brand marks, logos, flags, icon wrappers, illustrations | `lib`, `hooks`, `assets` |
-| `styles/` | `sutra.css` (tokens, Tailwind theme); `@source "../"` scans the shipped `src`, so `files` must keep `src` | — |
+| `styles/` | `sutra.css` (tokens, themes, base, utilities; it ends with `@import`s of the component CSS: `mark-intro`, `orb`, `identity-avatar`, `motion-effects`, `mascot`, `ink`), `paper.css`; `@source "../"` scans the shipped `src`, so `files` must keep `src` | — |
 | `primitives/` | Basic controls (Button, Input, Dialog, Badge …) | the four above + `primitives` |
 | `patterns/` | Composed, domain-neutral views (Markdown, DiffViewer, TilingLayout …) | + `patterns` |
 | `kits/<domain>/` | Domain features: `ai`, `agent`, `agent-admin`, `identity`, `billing`, `workspace`, `ops`, `media`, `voice`, `social`, `editor`, `terminal`, `system`, `geo` | + `patterns`, its own kit, and the kits listed for it in `KIT_DEPS` |
@@ -179,6 +179,7 @@ Run in `packages/ui` (or from the root with `pnpm --filter @sutra/ui <script>`):
 | `pnpm check:index` | Fail if those generated files are stale |
 | `pnpm check:exports` | After a build: every `exports` subpath resolves, ships its types, and imports under plain Node ESM from `dist` |
 | `pnpm gen:springs` | Regenerate the spring tokens in `styles/sutra.css` and `paper.css` (`--check` runs in `verify`) |
+| `pnpm gen:motion-net` | Regenerate the `data-motion="reduce"` twin of every reduced-motion `@media` block in `styles/*.css` (the marked generated regions; `--check` runs in `verify` and in `test/motion-net-gen.test.ts`) |
 | `pnpm gen:docs` / `pnpm check:docs` | Regenerate / check (`check:docs` runs both the props check and the llms check; `check:docs:api` only the first; `baseline:docs` rewrites the ratchet baseline) the props reference `apps/playground/src/generated/api.json` and the notes `notes.json` (TypeScript compiler API + JSDoc + `docs/notes/*.md`); `test/jsdoc-coverage.test.ts` is the ratchet for missing prop descriptions |
 | `pnpm gen:llms` | Regenerate `llms.txt`, `llms-full.txt`, `docs/components`, `docs/hooks` and `skills/sutra-ui/references` (`--check` runs in `verify`) |
 | `pnpm check:llms` | Check the llms outputs and that the conventions digest records the current `CONVENTIONS.md` hash. `pnpm update:conventions-hash` records the hash after you update `skills/sutra-ui/references/conventions.md` |
