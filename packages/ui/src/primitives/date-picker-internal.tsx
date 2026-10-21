@@ -4,6 +4,7 @@ import type { DateRange, Matcher } from "react-day-picker";
 import { RiCloseCircleFill } from "@remixicon/react";
 import { cn, focusRing, hitArea, type Size } from "../lib/cn";
 import { addDays, calendarDayDiff, startOfDay } from "../lib/time";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { inputShellVariants } from "./input";
 import { filledTrigger } from "./input-internal";
 import type { CalendarProps } from "./calendar";
@@ -88,6 +89,21 @@ export function useOptionalControlled<T>(
     [isControlled, onChange]
   );
   return [current, set] as const;
+}
+
+/**
+ * Runs `onOpen` in a layout effect whenever `open` goes from false to true, however it was opened
+ * (a click through Radix, or the parent setting a controlled `open`). It never runs while the
+ * popover stays open, so in-progress edits are kept. The previous value lives in a ref that starts
+ * at the first `open`, so a mount (also StrictMode's second effect pass) does not count as opening.
+ */
+export function useOnOpen(open: boolean, onOpen: () => void) {
+  const prev = React.useRef(open);
+  useIsoLayoutEffect(() => {
+    const wasOpen = prev.current;
+    prev.current = open;
+    if (open && !wasOpen) onOpen();
+  });
 }
 
 /* ---------------------------------------------------------------- */

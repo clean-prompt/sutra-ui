@@ -17,6 +17,7 @@ import {
   popoverContentClass,
   startOfMonth,
   useCalendarLocale,
+  useOnOpen,
   useOptionalControlled,
   type BasePickerProps,
 } from "./date-picker-internal";
@@ -135,7 +136,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
       defaultValue,
       onValueChange
     );
-    const [open, setOpenState] = useOptionalControlled<boolean>(
+    const [open, setOpen] = useOptionalControlled<boolean>(
       openProp !== undefined,
       openProp ?? false,
       defaultOpen,
@@ -144,13 +145,12 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
     const [draft, setDraft] = React.useState<DateRange | undefined>(value);
     const [month, setMonth] = React.useState<Date>(value?.from ?? new Date());
 
-    const setOpen = (next: boolean) => {
-      if (next) {
-        setDraft(value);
-        setMonth(value?.from ?? new Date());
-      }
-      setOpenState(next);
-    };
+    // Re-sync the draft and month from `value` on every false -> true transition, whether the user
+    // opened it or a controlled `open` did (Radix only calls onOpenChange for the former).
+    useOnOpen(open, () => {
+      setDraft(value);
+      setMonth(value?.from ?? new Date());
+    });
 
     const calendarLocale = useCalendarLocale(locale);
     const formatter = React.useMemo(
@@ -267,7 +267,7 @@ export const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePick
                       disabled={!draft?.from}
                       onClick={() => {
                         setValue(draft?.from ? { from: draft.from, to: draft.to ?? draft.from } : undefined);
-                        setOpenState(false);
+                        setOpen(false);
                       }}
                     >
                       {applyLabel}

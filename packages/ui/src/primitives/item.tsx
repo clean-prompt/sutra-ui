@@ -102,11 +102,11 @@ const itemVariants = cva("group/item flex w-full min-w-0 text-start text-sm text
       muted: "rounded-box bg-muted/50",
     },
     /**
-     * Row padding and gap: `default`, `sm` or `xs`.
-     * @default "default"
+     * Row padding and gap: `md`, `sm` or `xs`.
+     * @default "md"
      */
     size: {
-      default: "gap-3 px-4 py-3",
+      md: "gap-3 px-4 py-3",
       sm: "gap-2.5 px-3 py-2",
       xs: "gap-2 px-2.5 py-1.5",
     },
@@ -119,10 +119,15 @@ const itemVariants = cva("group/item flex w-full min-w-0 text-start text-sm text
       vertical: "flex-col items-start",
     },
   },
-  defaultVariants: { variant: "plain", size: "default", orientation: "horizontal" },
+  defaultVariants: { variant: "plain", size: "md", orientation: "horizontal" },
 });
 
-export interface ItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "role">, VariantProps<typeof itemVariants> {
+export interface ItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "role">, Omit<VariantProps<typeof itemVariants>, "size"> {
+  /**
+   * Row padding and gap: `md`, `sm` or `xs`. `"default"` is a deprecated alias of `"md"` (same classes); use `"md"`.
+   * @default "md"
+   */
+  size?: "md" | "sm" | "xs" | "default";
   /** Make the row one link. Put no buttons inside it (a link cannot hold interactive content). */
   href?: string;
   /** Make the row one button. Put no buttons inside it. */
@@ -141,8 +146,10 @@ export interface ItemProps extends Omit<React.HTMLAttributes<HTMLElement>, "role
 
 /** One row: `ItemMedia`, `ItemContent` (`ItemTitle` and `ItemDescription`) and `ItemActions`. Static, or a link or button. */
 export const Item = React.forwardRef<HTMLElement, ItemProps>(
-  ({ className, variant, size, orientation, href, onClick, asChild, chevron, disabled, children, target, rel, ...props }, ref) => {
+  ({ className, variant, size: sizeProp, orientation, href, onClick, asChild, chevron, disabled, children, target, rel, ...props }, ref) => {
     const inGroup = React.useContext(ItemListContext);
+    // `"default"` is the deprecated spelling of `"md"`.
+    const size = sizeProp === undefined || sizeProp === "default" ? "md" : sizeProp;
     const interactive = Boolean(href || onClick || asChild);
     const classes = cn(
       itemVariants({ variant, size, orientation }),
@@ -163,7 +170,7 @@ export const Item = React.forwardRef<HTMLElement, ItemProps>(
         {chevronIcon}
       </>
     );
-    const common = { "data-slot": "item", "data-size": size ?? "default", "data-disabled": disabled || undefined, className: classes };
+    const common = { "data-slot": "item", "data-size": size, "data-disabled": disabled || undefined, className: classes };
     let row: React.ReactElement;
     if (asChild) {
       row = (

@@ -14,6 +14,7 @@ import {
   isSameDay,
   popoverContentClass,
   useCalendarLocale,
+  useOnOpen,
   useOptionalControlled,
   type BasePickerProps,
 } from "./date-picker-internal";
@@ -176,10 +177,12 @@ export const DateTimePicker = React.forwardRef<HTMLButtonElement, DateTimePicker
   /** Time typed before a day is picked. */
   const [draftTime, setDraftTime] = React.useState<string | undefined>(undefined);
   const [month, setMonth] = React.useState<Date>(() => value ?? min ?? new Date());
-  const handleOpenChange = (next: boolean) => {
-    if (next) setMonth(value ?? min ?? new Date());
-    setOpen(next);
-  };
+  // Re-sync the month and the pre-pick time from `value` on every false -> true transition, whether
+  // the user opened it or a controlled `open` did (Radix only calls onOpenChange for the former).
+  useOnOpen(open, () => {
+    setMonth(value ?? min ?? new Date());
+    setDraftTime(undefined);
+  });
 
   const calendarLocale = useCalendarLocale(locale);
   const formatter = React.useMemo(
@@ -221,7 +224,7 @@ export const DateTimePicker = React.forwardRef<HTMLButtonElement, DateTimePicker
   const timeMax = value && max && isSameDay(value, max) ? fmtBound(max) : undefined;
 
   return (
-    <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
+    <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
       <div className={cn("relative w-full", className)}>
         <PopoverPrimitive.Trigger asChild>
           <button
