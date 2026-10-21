@@ -76,7 +76,10 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
       className,
       onKeyDown,
       onPointerMove,
+      onPointerDown,
       onPointerLeave,
+      onFocus,
+      onBlur,
       ...props
     },
     ref
@@ -428,6 +431,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
             if (e.pointerType === "mouse") poke();
           }}
           onPointerDown={(e) => {
+            onPointerDown?.(e);
             lastPointer.current = e.pointerType || "mouse";
           }}
           onPointerLeave={(e) => {
@@ -438,6 +442,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
             }
           }}
           onFocus={(e) => {
+            onFocus?.(e);
             const target = e.target as HTMLElement;
             if (target === rootRef.current || (target as Element) === localVideo.current) return;
             // Keyboard focus (or an open menu) pins the chrome; a mouse click on a button does not.
@@ -450,6 +455,7 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
             if (visible || target.closest('[role="menu"]')) setChromeFocus(true);
           }}
           onBlur={(e) => {
+            onBlur?.(e);
             const next = e.relatedTarget as Node | null;
             if (!next || !rootRef.current?.contains(next) || next === rootRef.current) setChromeFocus(false);
           }}

@@ -176,7 +176,7 @@ export function highlightMatch(text: string, query: string): React.ReactNode {
 
 /** Inline command / mention listbox anchored to the caret of a composer textarea. */
 export const SlashMenu = React.forwardRef<HTMLDivElement, SlashMenuProps>(
-  ({ anchorRef, commands, trigger = "/", onSelect, heading, emptyState, emptyText, maxRows = 8, filter = defaultCommandFilter, className, style, ...props }, ref) => {
+  ({ anchorRef, commands, trigger = "/", onSelect, heading, emptyState, emptyText, maxRows = 8, filter = defaultCommandFilter, className, style, onMouseDown, ...props }, ref) => {
     const triggers = React.useMemo(() => (Array.isArray(trigger) ? trigger : [trigger]), [trigger]);
     const { match, dismiss, replace } = useSlashTrigger(anchorRef, triggers);
     const items = React.useMemo(() => (match ? filter(commands, match.query) : []), [match, commands, filter]);
@@ -262,8 +262,11 @@ export const SlashMenu = React.forwardRef<HTMLDivElement, SlashMenuProps>(
           className
         )}
         style={{ ...positionStyle, ...style }}
-        onMouseDown={(e) => e.preventDefault()}
         {...props}
+        onMouseDown={(e) => {
+          onMouseDown?.(e);
+          e.preventDefault(); // keep the caret in the composer
+        }}
       >
         <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-1.5 text-xs text-muted-foreground">
           <span className="font-medium">{label}</span>

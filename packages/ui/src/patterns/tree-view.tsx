@@ -426,7 +426,7 @@ function TreeCheckbox({ state, disabled, onToggle }: { state: TreeCheckState; di
         if (!disabled) onToggle();
       }}
       className={cn(
-        "inline-flex size-4 shrink-0 items-center justify-center rounded-[4px] border shadow-xs transition-colors duration-150",
+        "inline-flex size-4 shrink-0 items-center justify-center rounded-xs border shadow-xs transition-colors duration-150",
         on ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background hover:border-border-strong"
       )}
     >

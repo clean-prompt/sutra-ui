@@ -5,7 +5,7 @@ import { accentClasses } from "../lib/accent";
 import { cn, focusRing, hitArea } from "../lib/cn";
 import { Avatar } from "../primitives/avatar";
 import { Button } from "../primitives/button";
-import { EmptyStateIllustration } from "../assets/misc";
+import { EmptyStateIllustration } from "../assets/empty-state-illustration";
 import type { MarketplaceTier, MarketplaceExtension } from "./marketing-blocks-model";
 import { tierMeta } from "./marketing-blocks-internal";
 import { MarketplaceCard } from "./marketing-blocks-card";

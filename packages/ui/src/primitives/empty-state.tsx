@@ -3,7 +3,7 @@ import { RiInboxLine } from "@remixicon/react";
 import { cn, type Size } from "../lib/cn";
 import { normalizeTone } from "../lib/tone";
 import { FeaturedIcon } from "../assets/icons";
-import { EmptyStateIllustration, type EmptyStateIllustrationVariant } from "../assets/misc";
+import { EmptyStateIllustration, type EmptyStateIllustrationVariant } from "../assets/empty-state-illustration";
 import { Spinner } from "./spinner";
 
 /* ------------------------------------------------------------------ */

@@ -81,14 +81,16 @@ export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
           role="group"
           aria-label={`Confirm kill ${who}`}
           className={cn("inline-flex items-center gap-1", className)}
+          data-slot="kill-button"
+          {...props}
           onKeyDown={(e) => {
+            props.onKeyDown?.(e);
+            if (e.defaultPrevented) return;
             if (e.key === "Escape") {
               e.stopPropagation();
               cancel();
             }
           }}
-          data-slot="kill-button"
-          {...props}
         >
           <span className="whitespace-nowrap text-xs font-medium text-foreground">
             {confirming === "SIGKILL" ? "Force kill" : "Kill"} {pid}?

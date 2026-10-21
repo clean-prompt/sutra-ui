@@ -159,12 +159,13 @@ export const IncomingCall = React.forwardRef<HTMLDivElement, IncomingCallProps>(
           role="dialog"
           aria-labelledby={titleId}
           aria-describedby={descId}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") onDecline?.();
-          }}
           className={cn(cardClass, className)}
           data-slot="incoming-call"
           {...props}
+          onKeyDown={(e) => {
+            props.onKeyDown?.(e);
+            if (!e.defaultPrevented && e.key === "Escape") onDecline?.();
+          }}
         >
           {content}
         </div>

@@ -324,7 +324,7 @@ export const FilterBarChip = React.forwardRef<HTMLButtonElement, FilterBarChipPr
                       <span
                         aria-hidden
                         className={cn(
-                          "flex size-4 shrink-0 items-center justify-center rounded-[4px] border shadow-xs transition-colors",
+                          "flex size-4 shrink-0 items-center justify-center rounded-xs border shadow-xs transition-colors",
                           checked
                             ? "border-primary bg-primary text-primary-foreground"
                             : "border-border-strong bg-background"

@@ -312,7 +312,7 @@ export interface TableCheckboxProps
 
 /** Row-selection checkbox sized for table cells (controlled or uncontrolled, with an indeterminate state). */
 export const TableCheckbox = React.forwardRef<HTMLInputElement, TableCheckboxProps>(function TableCheckbox(
-  { checked: checkedProp, defaultChecked = false, indeterminate, onCheckedChange, className, ...props },
+  { checked: checkedProp, defaultChecked = false, indeterminate, onCheckedChange, className, onClick, ...props },
   forwardedRef
 ) {
   const ref = React.useRef<HTMLInputElement>(null);
@@ -333,15 +333,18 @@ export const TableCheckbox = React.forwardRef<HTMLInputElement, TableCheckboxPro
         role="checkbox"
         checked={checked && !indeterminate}
         onChange={(e) => setChecked(e.target.checked)}
-        onClick={(e) => e.stopPropagation()}
         className={cn(
           hitArea,
-          "peer size-4 cursor-pointer appearance-none rounded-[4px] border border-border-strong bg-background shadow-xs transition-colors",
+          "peer size-4 cursor-pointer appearance-none rounded-xs border border-border-strong bg-background shadow-xs transition-colors",
           "checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary",
           "disabled:cursor-not-allowed disabled:opacity-50",
           focusRing
         )}
         {...props}
+        onClick={(e) => {
+          onClick?.(e);
+          e.stopPropagation(); // a row's click handler must not fire when the box is toggled
+        }}
       />
       <RiCheckLine
         aria-hidden
@@ -587,7 +590,7 @@ export function DataTable<T>({
             <TableRow key={`skeleton-${i}`} className="hover:bg-transparent">
               {selectable ? (
                 <TableCell>
-                  <Skeleton shape="rect" className="size-4 rounded-[4px]" />
+                  <Skeleton shape="rect" className="size-4 rounded-xs" />
                 </TableCell>
               ) : null}
               {columns.map((column, c) => (

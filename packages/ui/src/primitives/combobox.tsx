@@ -521,7 +521,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
                                   <span
                                     aria-hidden
                                     className={cn(
-                                      "flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-border-strong transition-colors [&_svg]:size-3",
+                                      "flex size-4 shrink-0 items-center justify-center rounded-xs border border-border-strong transition-colors [&_svg]:size-3",
                                       option.description && "mt-0.5",
                                       isSelected && "border-primary bg-primary text-primary-foreground"
                                     )}

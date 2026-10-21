@@ -124,19 +124,11 @@ describe("prop-spread rule: scans", () => {
       "kits/agent-admin/webhooks.tsx form onSubmit",
       "kits/agent-admin/llm-providers-endpoint.tsx form onSubmit",
       "kits/agent/git-review-tree.tsx TreeView onNodeAction",
-      "kits/ai/slash-menu.tsx div onMouseDown",
-      "kits/geo/globe.tsx div onKeyDown",
       "kits/identity/connected-apps.tsx button onClick",
-      "kits/media/video-player.tsx div onPointerDown",
-      "kits/media/video-player.tsx div onFocus",
       "kits/media/media-controls-volume.tsx VolumeSlider onValueChange",
-      "kits/media/video-player.tsx div onBlur",
-      "kits/ops/process-table-kill.tsx div onKeyDown",
-      "kits/social/call-overlay.tsx div onKeyDown",
       "kits/social/messenger-composer.tsx form onSubmit",
       "kits/voice/voice.tsx Button onClick",
       "kits/workspace/install-prompt.tsx Button onClick",
-      "primitives/table.tsx input onClick",
     ]) allow[key] = reviewed;
     allow["patterns/file-upload.tsx Dropzone onDrop"] = "Dropzone's own onDrop(files) API, not the DOM event";
     allow["primitives/checkbox.tsx CheckboxField onCheckedChange"] = "omitted from the prop type (the group owns it)";

@@ -43,7 +43,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../primitives/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../primitives/tabs";
 import { SutraAppIcon, SutraMark, type SutraApp } from "../assets/brand";
-import { EmptyStateIllustration } from "../assets/misc";
+import { EmptyStateIllustration } from "../assets/empty-state-illustration";
 import { demoUser } from "./demo-data";
 import { useFollowListProp } from "../hooks/use-follow-list-prop";
 

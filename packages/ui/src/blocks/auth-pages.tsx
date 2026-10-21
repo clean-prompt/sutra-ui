@@ -5,7 +5,8 @@ import { Avatar } from "../primitives/avatar";
 import { MeshGradient } from "../primitives/mesh-gradient";
 import { SutraLogo, SutraMark, SutraAppIcon, sutraApps } from "../assets/brand";
 import { LogoCloud, type PlaceholderLogoEntry } from "../assets/placeholder-logos";
-import { BackgroundPattern, DeviceFrame } from "../assets/misc";
+import { BackgroundPattern } from "../assets/backgrounds";
+import { DeviceFrame } from "../assets/device-frame";
 import { LoginCard } from "./auth-blocks";
 import { BlockLink, type BlockLinkRenderer } from "./block-utils";
 

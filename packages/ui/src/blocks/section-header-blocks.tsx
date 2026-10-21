@@ -40,7 +40,7 @@ import {
   DropdownMenuTrigger,
 } from "../primitives/dropdown-menu";
 import { Container } from "../primitives/layout";
-import { BackgroundPattern } from "../assets/misc";
+import { BackgroundPattern } from "../assets/backgrounds";
 import { LogoCloud } from "../assets/placeholder-logos";
 
 export interface HeaderAction {

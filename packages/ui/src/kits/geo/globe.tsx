@@ -191,6 +191,7 @@ export const Globe = React.forwardRef<HTMLDivElement, GlobeProps>(
       loading,
       dataTable = true,
       className,
+      onKeyDown,
       ...props
     },
     ref
@@ -422,9 +423,12 @@ export const Globe = React.forwardRef<HTMLDivElement, GlobeProps>(
         aria-busy={loading || undefined}
         aria-describedby={hintId}
         className={cn("group/globe flex min-w-0 flex-col gap-3 outline-none", className)}
-        onKeyDown={gestures.onKeyDown}
         dir="ltr"
         {...props}
+        onKeyDown={(e) => {
+          onKeyDown?.(e);
+          if (!e.defaultPrevented) gestures.onKeyDown(e);
+        }}
         aria-label={ariaLabel}
       >
         <span id={hintId} className="sr-only">
