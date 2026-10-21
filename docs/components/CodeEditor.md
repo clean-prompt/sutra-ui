@@ -2,7 +2,7 @@
 
 > CodeMirror 6 editor themed with Sutra tokens: markdown highlighting, line numbers, wrapping, search, Mod-B / Mod-I emphasis, controlled or uncontrolled value and an imperative API.
 
-- Import: `import { CodeEditor } from "@sutra/ui/editor"`
+- Import: `import { CodeEditor } from "@sutra/ui/code-editor"`
 - Source: `packages/ui/src/kits/editor/code-editor` (kit `editor`)
 - `data-slot`: `code-editor`
 - Also accepts the props of HTMLAttributes
@@ -37,7 +37,7 @@
 
 ```tsx
 import * as React from "react";
-import { CodeEditor } from "@sutra/ui/editor";
+import { CodeEditor } from "@sutra/ui/code-editor";
 import { SegmentedControl } from "@sutra/ui/forms";
 
 function CodeEditorDemo() {

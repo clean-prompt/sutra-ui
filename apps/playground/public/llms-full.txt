@@ -3713,14 +3713,14 @@ Server render: same markup as the client. The input and the slots render on the 
 | `onClick` | `React.MouseEventHandler<HTMLElement>` |  | Make the row one button. Put no buttons inside it. |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Lays the media, content and actions out in a row or stacks them. |
 | `rel` | `string` |  | Link `rel` when `href` is set. Defaults to `noreferrer noopener` for `target="_blank"`. |
-| `size` | `"default" \| "sm" \| "xs"` | `"default"` | Row padding and gap: `default`, `sm` or `xs`. |
+| `size` | `"md" \| "sm" \| "xs" \| "default"` | `"md"` | Row padding and gap: `md`, `sm` or `xs`. `"default"` is a deprecated alias of `"md"` (same classes); use `"md"`. |
 | `target` | `string` |  | Link `target` when `href` is set. |
 | `variant` | `"plain" \| "outline" \| "muted"` | `"plain"` | Surface of the row: plain, outlined card or muted panel. |
 
 ### Variants
 
 - `variant`: `plain`, `outline`, `muted` (default "plain")
-- `size`: `default`, `sm`, `xs` (default "default")
+- `size`: `md`, `sm`, `xs` (default "md")
 - `orientation`: `horizontal`, `vertical` (default "horizontal")
 
 ### Part props
@@ -10166,7 +10166,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `CheckpointMarker` (`@sutra/ui/agent`): Thin transcript divider ("Checkpoint · 3 files changed") with a rewind action.
 - `ClarifySettled` (`@sutra/ui/ai`): Collapsed summary of an answered clarifying-question card, expandable to the Q → A list.
 - `CobaltLogo` (`@sutra/ui/assets`): Cobalt — fictional placeholder logo.
-- `CodeEditor` (`@sutra/ui/editor`): CodeMirror 6 editor themed with Sutra tokens: markdown highlighting, line numbers, wrapping, search, Mod-B / Mod-I emphasis, controlled or…
+- `CodeEditor` (`@sutra/ui/code-editor`): CodeMirror 6 editor themed with Sutra tokens: markdown highlighting, line numbers, wrapping, search, Mod-B / Mod-I emphasis, controlled or…
 - `ComparisonTable` (`@sutra/ui/blocks`): Product-vs-alternatives matrix with check / cross / partial marks and numbered footnotes.
 - `ComposerToolbar` (`@sutra/ui/agent`): Composer footer layout: add context, mode and effort on the left; model, voice and send on the right; narrow widths collapse extras into an…
 - `ConflictResolver` (`@sutra/ui/suite`): Side-by-side "Yours / Theirs" dialog for resolving a sync conflict.
@@ -10432,8 +10432,8 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `RewindButton` (`@sutra/ui/agent`): Message-action icon button that opens a `RewindDialog`.
 - `RewindDialog` (`@sutra/ui/agent`): Rewind to a message/checkpoint: preview, "What to restore" choice, file summary and fork notice.
 - `RichEmbed` (`@sutra/ui/ai`): Renders a URL as a provider embed (after consent) or a link card. The iframe src is only built into the DOM post-consent.
-- `RichTextEditor` (`@sutra/ui/editor`): TipTap 3 WYSIWYG editor (StarterKit + Link + Placeholder) with Sutra prose styling, a bubble toolbar on selection and/or a fixed…
-- `RichTextToolbar` (`@sutra/ui/editor`): Fixed formatting toolbar for a `RichTextEditor` (or any TipTap editor with StarterKit + Link).
+- `RichTextEditor` (`@sutra/ui/rich-text-editor`): TipTap 3 WYSIWYG editor (StarterKit + Link + Placeholder) with Sutra prose styling, a bubble toolbar on selection and/or a fixed…
+- `RichTextToolbar` (`@sutra/ui/rich-text-editor`): Fixed formatting toolbar for a `RichTextEditor` (or any TipTap editor with StarterKit + Link).
 - `RotatingQRPairing` (`@sutra/ui/agent-admin`): Live pairing QR: polls a rotating payload, crossfades on change, counts down and walks through pairing phases. Built on `QRCodeCard`.
 - `RuleScopePicker` (`@sutra/ui/agent`): Inline destination link ("in this session ▾") that opens a menu of rule scopes.
 - `RunHistory` (`@sutra/ui/agent-admin`): Past runs of a job: start, duration, status, cost/tokens, trigger, error snippet and a transcript link.

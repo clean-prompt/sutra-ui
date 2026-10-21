@@ -112,6 +112,8 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - `@sutra/ui/format`, a subpath-only entry (not on the root, so generic names stay off it): `formatCompact`, `formatTokens`, `formatBadgeCount`, `formatCost`, `formatList`, `pluralize`, `formatClock`, `formatCountdown`, `formatDuration`, `formatRelative`, `formatClockTime`, `formatDateTime`, `formatDayLabel`, `formatShortDate`, `formatRelativeTime`, `formatTokenCount`, `toMs`, `toDate`, `toValidDate`, `isValidDate`, `safeISO`, `startOfDay`, `addDays`, `calendarDayDiff`, `dateKey`, `SECOND_MS`, `MINUTE_MS`, `HOUR_MS`, `DAY_MS` and their option and unit types.
 - Hooks `useAddedKeys`, `useChangeKey`, `useScrollable` and `useReturnFocus` reach an entry (`@sutra/ui` and `/tokens`); `ClarifySettled`, `UndeliveredNotice`, `CodeBlock` (`/ai`), `DecodeText`, `FadeText` (`/motion`), `ZoomPan` (`/mobile`), `FanMenu` (`/overlays`), `FilterBar`, `SelectionArea` (`/forms`), `BlogContent` (`/navigation`), `StatementHero` (`/blocks`) and the device assets (`/assets`) have direct entry exports instead of going through frozen back-compat barrels.
 - Charts take an optional `locale` (`AreaChart`, `LineChart`, `BarChart`, `ScatterChart`, `RadarChart`, `WaterfallChart`, `DonutChart`, `FunnelChart`, `Treemap`, `HeatmapGrid`) for axis ticks, tooltips, labels and date labels; without it the output is unchanged. Formatters are built lazily and cached per locale instead of at import time.
+- `@sutra/ui/code-editor` and `@sutra/ui/rich-text-editor` entries (each needs only its own optional peers, `@codemirror/*` or `@tiptap/*`). `check-exports` now also imports every subpath with the optional peers hidden, and fails if anything outside a small declared map needs one.
+- `Item` takes `size="md"` (the canonical value and the default); `default` keeps working as a deprecated alias.
 
 ### Changed
 - Components and demos use the canonical names; empty-state strings lose their trailing period, "Log in" became "Sign in", the sticky header sits on `z-40`.
@@ -135,6 +137,9 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - **A second batch of oversized files is split** the same way (one module per family, every original path re-exporting its public names): `channels`, `llm-providers`, `audio-player`, `pdf-viewer`, `git-review`, `agent-browser`, `artifacts`, `workspace-switcher`, `messenger`, `kanban-board` (lanes, cards and the add-card composer moved to an internal module; the board itself stays whole), `diff-viewer`, `log-viewer`, `file-viewer` and `schema-form`. `NestedValueEditor` now lives in `patterns/schema-form-editor` and has its own note.
 - The three largest blocks are split the same way, each original path re-exporting its public names: `auth-blocks` (sign-in, sign-up, magic link and SSO, password reset, verification and two-factor), `marketing-blocks` (hero, card, browse, detail, features, comparison and the demo data) and `kunji-blocks` (sign-in, approval, register, signed-in, pairing and the mock adapter). Every card still documents the same `data-slot` names.
 - The last oversized files are split too: `alert-rules`, `process-table`, `media-cards`, `video-player`, `kunji-client` (types, text, poll, QR, session, HTTP client, mock and relying-party helpers) and the assistant orb's drawing code (ten `-internal` modules, none public). `ProcessTable`, `VideoPlayer`, `KanbanBoard` and `LogViewer` keep their component bodies whole, because their handlers share state.
+- **`@sutra/ui/editor` needs no optional peer.** It used to re-export `CodeEditor` and `RichTextEditor`, so an app with only CodeMirror (or only Tiptap) crashed with `ERR_MODULE_NOT_FOUND` on import; it now holds the toolbar, outline, status, diff, history and comments, and each engine has its own entry.
+- Build output tags `createPlaceholderLogo` calls and side-effect-free `Object.keys/values/entries/fromEntries`, `Array.from` and array-method chains as pure, so unused exports tree-shake: importing one placeholder logo no longer pulls all 14, and one ink-emoji export drops from 104 KB to under 1 KB minified.
+- The table checkbox, the globe's keyboard handler, the slash menu, the video player, the process-table confirm step and the call card compose a consumer's `onClick`, `onKeyDown`, `onMouseDown`, `onPointerDown`, `onFocus` or `onBlur` with their own instead of being replaced by it. Checkbox-like controls in the table, combobox, filter bar and tree view use `rounded-xs`, so they follow `data-radius` like `Checkbox` does. Five files stopped importing the frozen `assets/misc` barrel (a test now guards it).
 
 ### Deprecated
 - Semantic colour: `tone` values `brand`, `default`, `muted`, `warn`, `danger`, `error`, `critical`, `failure` (use `neutral | primary | success | warning | destructive | info`),
@@ -160,6 +165,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
   - `SutradharSting` redraws when reduced motion turns on mid-play; the mascot driver survives a tick that throws; a state change during a blend starts from the pose on screen.
   - Server rendering: `Input` `aria-keyshortcuts`, `InstallPrompt`, `Heatmap`, `Comments`, `TimelineBar`, `useTypewriter`, `usePresence` and `useSpringValue` no longer read the browser while rendering.
 - `TransliterationToggle` and `TransliterationCandidates` compose a consumer's `onClick` and `onMouseDown` with their own instead of being replaced by them (calling `preventDefault` in `onClick` vetoes the toggle).
+- `DateRangePicker` and `DateTimePicker` showed a stale month and draft when a parent opened them with a controlled `open`; they now re-sync from `value` whenever they open.
 
 ### Removed
 - `IdentityMark` and its types and helpers (`IdentityMarkProps`, `IdentityMarkKind`, `IdentityMarkState`, `IdentityMarkSize`, `identityHash`,
@@ -170,6 +176,8 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 ### Migration notes
 
 Nothing here needs a code change unless a line says so; each is a difference you can see.
+
+- **`CodeEditor` and `RichTextEditor` moved to their own entries (a code change).** `import { CodeEditor, type CodeEditorHandle } from "@sutra/ui/editor"` becomes `from "@sutra/ui/code-editor"`; `RichTextEditor`, `RichTextToolbar` and the rich-text types come from `@sutra/ui/rich-text-editor`. The deep paths (`@sutra/ui/kits/editor/*`, `@sutra/ui/components/*`) are unchanged.
 
 - **Import formatters from `@sutra/ui/format` (a code change).** `formatCompact`, `formatDuration`, `formatRelative`, `toMs`, `toDate` and the rest of that list are no longer on `@sutra/ui`. `formatBytes`, `splitDuration` and `base32Decode` stay on the root. A helper listed under Removed has no public path: copy it into your app. `@sutra/ui/*/…-internal` deep paths no longer resolve, and `lib/` and `hooks/` never had deep paths.
 

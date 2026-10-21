@@ -19,14 +19,14 @@
 | `onClick` | `React.MouseEventHandler<HTMLElement>` |  | Make the row one button. Put no buttons inside it. |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Lays the media, content and actions out in a row or stacks them. |
 | `rel` | `string` |  | Link `rel` when `href` is set. Defaults to `noreferrer noopener` for `target="_blank"`. |
-| `size` | `"default" \| "sm" \| "xs"` | `"default"` | Row padding and gap: `default`, `sm` or `xs`. |
+| `size` | `"md" \| "sm" \| "xs" \| "default"` | `"md"` | Row padding and gap: `md`, `sm` or `xs`. `"default"` is a deprecated alias of `"md"` (same classes); use `"md"`. |
 | `target` | `string` |  | Link `target` when `href` is set. |
 | `variant` | `"plain" \| "outline" \| "muted"` | `"plain"` | Surface of the row: plain, outlined card or muted panel. |
 
 ## Variants
 
 - `variant`: `plain`, `outline`, `muted` (default "plain")
-- `size`: `default`, `sm`, `xs` (default "default")
+- `size`: `md`, `sm`, `xs` (default "md")
 - `orientation`: `horizontal`, `vertical` (default "horizontal")
 
 ## Part props

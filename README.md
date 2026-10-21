@@ -70,7 +70,7 @@ The build emits one ES module per source file. `"use client"` is added only to m
 
 | Import | Holds |
 | --- | --- |
-| `@sutra/ui` | Every asset, primitive, pattern, kit module and block, plus the `/tokens` foundations. **Not** the Remix icon set (`/icons`), the formatting and date helpers (`/format`, subpath only) or the optional-peer modules (`CodeEditor`, `RichTextEditor` → `/editor`; `Terminal` → `/terminal`) |
+| `@sutra/ui` | Every asset, primitive, pattern, kit module and block, plus the `/tokens` foundations. **Not** the Remix icon set (`/icons`), the formatting and date helpers (`/format`, subpath only) or the optional-peer modules (`CodeEditor` → `/code-editor`; `RichTextEditor` → `/rich-text-editor`; `Terminal` → `/terminal`; the PDF viewer → `/pdf`) |
 | `@sutra/ui/styles.css` | Tokens, Tailwind theme and the component CSS (`src/styles/sutra.css`, which `@import`s the component files next to it; Tailwind inlines them, so one import delivers every rule) |
 | `@sutra/ui/paper.css` | The optional paper style (`src/styles/paper.css`); import it after `styles.css` and set `data-style="paper"` |
 | `@sutra/ui/blocks/registry` | `blockRegistry`, `blockCategoryLabels`, demo fixtures and mocks (demo-only; the same names on `@sutra/ui` and `/blocks` are deprecated) |
@@ -105,7 +105,9 @@ Subpath entries, generated from `src/entries/*.ts` (one barrel per subpath; modu
 | `@sutra/ui/media` | Video and audio players, media controls, queue, poster/album cards, shelves, cast picker | `media-controls`, `video-player`, `audio-player`, `media-cards`, `cast-picker` |
 | `@sutra/ui/voice` | Speech input, read-aloud, language picker, translation panes, transliteration, dictionary, the assistant orb (Idle / Listening / Thinking / Speaking, in eight looks: glass orb, waveform, mala ring, Sutra string, ink drop, thread rings, dot graph, halftone) | `voice`, `translate`, `assistant-orb` |
 | `@sutra/ui/social` | App launcher, identity avatars (people, agents, machines and apps, presence as a mark or a bead), PWA install, calls, messenger, lists, counters, recurrence | `app-launcher`, `identity-avatar`, `text-button`, `install-prompt`, `call-overlay`, `messenger`, `reorderable-list`, `countdown`, `stopwatch`, `tally-counter`, `status-cycle` |
-| `@sutra/ui/editor` | Code and rich-text editors (need the optional @codemirror/* and @tiptap/* peers), plus toolbar, outline, status, diff, history and comments | `code-editor`, `rich-text-editor`, `editor-toolbar`, `document-outline`, `editor-status`, `diff-viewer`, `version-history`, `comments` |
+| `@sutra/ui/editor` | The editor chrome, no engine and no optional peer: toolbar, outline, status bar, diff, version history and comments | `editor-toolbar`, `document-outline`, `editor-status`, `diff-viewer`, `version-history`, `comments` |
+| `@sutra/ui/code-editor` | CodeMirror 6 `CodeEditor` (needs the optional `@codemirror/*` peers; not on the root) | `code-editor` |
+| `@sutra/ui/rich-text-editor` | TipTap 3 `RichTextEditor` and `RichTextToolbar` (needs the optional `@tiptap/*` peers; not on the root) | `rich-text-editor` |
 | `@sutra/ui/terminal` | xterm.js terminal (needs the optional @xterm/xterm and @xterm/addon-fit peers) | `terminal` |
 | `@sutra/ui/pdf` | PDF viewer, thumbnail and a `FileViewer` renderer (optional peer: `pdfjs-dist`) | `pdf-viewer` |
 | `@sutra/ui/geo` | World maps and an interactive globe from bundled Natural Earth outlines (no tiles, no network): choropleth with a stepped legend, marker buttons with clustering, great-circle arcs; the globe adds drag with momentum, wheel/pinch/keyboard zoom, auto-rotation, fly-to and a control bar. Plus the projection, rotation, clustering, colour-scale and country-code helpers, and `LiveVisitorsMap` (live analytics screen). `SignInMap` (with impossible-travel detection) lives in `@sutra/ui/identity` and `/security`; `RegionStatusMap` in `@sutra/ui/ops` | `world-map`, `globe`, `geo-marker-layer`, `geo-model`, `world-data`, `live-visitors-map` |
@@ -131,7 +133,7 @@ The keys are explicit (`pnpm gen:index` writes them; there are no wildcards). Mo
 
 ### Optional peers
 
-`@sutra/ui/editor` needs `@codemirror/*` (CodeEditor) and/or `@tiptap/*` (RichTextEditor); `@sutra/ui/terminal` needs `@xterm/xterm` and `@xterm/addon-fit` (plus `import "@xterm/xterm/css/xterm.css"`); `@sutra/ui/pdf` needs `pdfjs-dist` (pass its legacy worker URL as `workerSrc`). They are optional peer dependencies and nothing reachable from the root imports them, so apps that don't use those entries don't install them.
+`@sutra/ui/code-editor` needs `@codemirror/*` (`state`, `view`, `commands`, `language`, `search`, `lang-markdown`) and `@sutra/ui/rich-text-editor` needs `@tiptap/*` (`react`, `starter-kit`, `extension-link`, `extension-placeholder`, `pm`); each imports its engine statically, so install the peers before you import the entry, and an app with only one of the two engines installed imports only that entry (`@sutra/ui/editor` itself needs neither). `@sutra/ui/terminal` needs `@xterm/xterm` and `@xterm/addon-fit` (plus `import "@xterm/xterm/css/xterm.css"`); `@sutra/ui/pdf` needs `pdfjs-dist` (pass its legacy worker URL as `workerSrc`). They are optional peer dependencies and nothing reachable from the root imports them, so apps that don't use those entries don't install them. `scripts/check-exports.mjs` imports every subpath of the built package with all optional peers hidden and fails if one other than the two engine entries needs a peer at import time (`terminal` and `pdf` load theirs lazily).
 
 ### Hard dependencies
 

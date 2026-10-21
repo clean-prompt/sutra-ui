@@ -2,7 +2,7 @@
 
 > Fixed formatting toolbar for a `RichTextEditor` (or any TipTap editor with StarterKit + Link).
 
-- Import: `import { RichTextToolbar } from "@sutra/ui/editor"`
+- Import: `import { RichTextToolbar } from "@sutra/ui/rich-text-editor"`
 - Source: `packages/ui/src/kits/editor/rich-text-editor` (kit `editor`)
 - Also accepts the props of HTMLAttributes
 

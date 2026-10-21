@@ -117,7 +117,7 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | InputOTP | sm | 32px square |  | sm (14px) |  |  |
 | InputOTP | md (default) | 40px square |  | base (16px) |  |  |
 | InputOTP | lg | 48px square |  | lg (18px) |  |  |
-| Item | default (default) |  | x 16px, y 12px |  |  |  |
+| Item | md (default) |  | x 16px, y 12px |  |  |  |
 | Item | sm |  | x 12px, y 8px |  |  |  |
 | Item | xs |  | x 10px, y 6px |  |  |  |
 | Meter | sm | h 6px |  | xs (12px) |  | under 24px |

@@ -133,6 +133,12 @@ plans, comparison, current plan, credits and auto-reload, invoices, banners, che
 
 [AppHeader](md/AppHeader.md), [AppShell](md/AppShell.md), [AppSidebar](md/AppSidebar.md), [AuthCenteredPage](md/AuthCenteredPage.md), [AuthImagePage](md/AuthImagePage.md), [AuthMinimalPage](md/AuthMinimalPage.md), [AuthorShelf](md/AuthorShelf.md), [AuthSplitPage](md/AuthSplitPage.md), [CenteredHeader](md/CenteredHeader.md), [ComparisonTable](md/ComparisonTable.md), [DeleteConfirmDialog](md/DeleteConfirmDialog.md), [DocsHeader](md/DocsHeader.md), [DocsSidebar](md/DocsSidebar.md), [ExtensionDetailPage](md/ExtensionDetailPage.md), [FeatureGrid](md/FeatureGrid.md), [FeedbackDialog](md/FeedbackDialog.md), [ForgotPasswordCard](md/ForgotPasswordCard.md), [HeroHeader](md/HeroHeader.md), [InstallSnippet](md/InstallSnippet.md), [InviteMembersDialog](md/InviteMembersDialog.md), [KeyboardShortcutsDialog](md/KeyboardShortcutsDialog.md), [LoginCard](md/LoginCard.md), [MagicLinkCard](md/MagicLinkCard.md), [MarketingHeader](md/MarketingHeader.md), [MarketplaceCard](md/MarketplaceCard.md), [MarketplaceGrid](md/MarketplaceGrid.md), [MarketplaceHero](md/MarketplaceHero.md), [NewItemDialog](md/NewItemDialog.md), [NotificationsMenu](md/NotificationsMenu.md), [OnboardingDialog](md/OnboardingDialog.md), [OTPVerifyCard](md/OTPVerifyCard.md), [PageHeaderWithActions](md/PageHeaderWithActions.md), [PageHeaderWithSearch](md/PageHeaderWithSearch.md), [PageHeaderWithStats](md/PageHeaderWithStats.md), [PageHeaderWithTabs](md/PageHeaderWithTabs.md), [ProfileHeader](md/ProfileHeader.md), [QuickCreateMenu](md/QuickCreateMenu.md), [ResetPasswordCard](md/ResetPasswordCard.md), [SettingsSidebar](md/SettingsSidebar.md), [ShareDialog](md/ShareDialog.md), [SignUpCard](md/SignUpCard.md), [SortFilterMenu](md/SortFilterMenu.md), [SSOOnlyCard](md/SSOOnlyCard.md), [TestimonialWall](md/TestimonialWall.md), [TwoFactorSetupCard](md/TwoFactorSetupCard.md), [UpgradeDialog](md/UpgradeDialog.md), [UserAccountMenu](md/UserAccountMenu.md), [WorkspaceSwitcher](md/WorkspaceSwitcher.md)
 
+### @sutra/ui/code-editor
+
+CodeMirror 6 code editor. Needs the optional peers @codemirror/state, view, commands, language, search and lang-markdown (static imports: install them before you import this entry). Not on the root barrel.
+
+[CodeEditor](md/CodeEditor.md)
+
 ### @sutra/ui/dataviz
 
 charts, stat cards, meters, gauges and the animated number.
@@ -167,7 +173,7 @@ charts, stat cards, meters, gauges and the animated number.
 
 ### @sutra/ui/editor
 
-code and rich-text editors (need the optional @codemirror/* and @tiptap/* peers), plus toolbar, outline, status, diff, history and comments.
+the editor chrome that needs no engine: toolbar, outline, status bar, diff, version history and comments. Needs no optional peer, so it imports in an app that installs neither CodeMirror nor TipTap. The engines have their own entries: `@sutra/ui/code-editor` (CodeEditor, optional @codemirror/* peers) and `@sutra/ui/rich-text-editor` (RichTextEditor, optional @tiptap/* peers).
 
 - [CommentComposer](md/CommentComposer.md): Comment input: Markdown text, ⌘/Ctrl+Enter to send, Escape to cancel.
 - [CommentsPanel](md/CommentsPanel.md): Side panel of comment threads anchored to quoted excerpts, with Open / Resolved…
@@ -177,7 +183,7 @@ code and rich-text editors (need the optional @codemirror/* and @tiptap/* peers)
 - [DiffViewer](md/DiffViewer.md): Text comparison: inline (track-changes style, word-level inside changed lines)…
 - [SuggestionDiff](md/SuggestionDiff.md): AI proposal review: word diff of a suggestion with Accept / Discard and…
 
-[CodeEditor](md/CodeEditor.md), [DocumentOutline](md/DocumentOutline.md), [EditorStatusBar](md/EditorStatusBar.md), [EditorToolbar](md/EditorToolbar.md), [RichTextEditor](md/RichTextEditor.md), [RichTextToolbar](md/RichTextToolbar.md), [SaveStatus](md/SaveStatus.md), [VersionHistory](md/VersionHistory.md)
+[DocumentOutline](md/DocumentOutline.md), [EditorStatusBar](md/EditorStatusBar.md), [EditorToolbar](md/EditorToolbar.md), [SaveStatus](md/SaveStatus.md), [VersionHistory](md/VersionHistory.md)
 
 ### @sutra/ui/forms
 
@@ -362,9 +368,15 @@ tooltips, popovers, dialogs, menus, the command palette and the fan menu.
 
 ### @sutra/ui/pdf
 
-PDF viewer, thumbnail and a FileViewer renderer (optional peer: pdfjs-dist).
+PDF viewer, thumbnail and a FileViewer renderer. Optional peer pdfjs-dist is loaded lazily when a viewer opens a document (type-only imports at module level), so the entry imports without it. Not on the root barrel.
 
 [PdfThumbnail](md/PdfThumbnail.md), [PdfViewer](md/PdfViewer.md)
+
+### @sutra/ui/rich-text-editor
+
+TipTap 3 rich-text editor and its fixed toolbar. Needs the optional peers @tiptap/react, starter-kit, extension-link, extension-placeholder and pm (static imports: install them before you import this entry). Not on the root barrel.
+
+[RichTextEditor](md/RichTextEditor.md), [RichTextToolbar](md/RichTextToolbar.md)
 
 ### @sutra/ui/security
 
@@ -412,7 +424,7 @@ system-monitor screens (volume mixer, device batteries, dev servers, containers,
 
 ### @sutra/ui/terminal
 
-xterm.js terminal (needs the optional @xterm/xterm and @xterm/addon-fit peers).
+xterm.js terminal. Optional peers @xterm/xterm and @xterm/addon-fit are loaded lazily when a Terminal mounts (type-only imports at module level), so the entry imports without them. Not on the root barrel.
 
 [Terminal](md/Terminal.md)
 
