@@ -40,7 +40,7 @@ Set the theme on `<html>` (`class="dark"`, `data-brand`, `data-neutral`, `data-r
 
 ## Documentation
 
-- Source, a component playground with props, code and notes for every component, the changelog and the conventions: <https://github.com/0eai/sutra-ui>.
+- Source, a component playground with props, code and notes for every component, the changelog and the conventions: <https://github.com/CleanPromptOrg/sutra-ui>.
 - `llms.txt`, `llms-full.txt` and one markdown page per component are generated for AI assistants (see the repository's `skills/sutra-ui` for a Claude skill).
 
 ## License
