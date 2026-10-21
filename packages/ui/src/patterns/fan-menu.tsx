@@ -135,6 +135,7 @@ export const FanMenu = React.forwardRef<HTMLDivElement, FanMenuProps>(
     return (
       <div
         ref={setRefs}
+        data-slot="fan-menu"
         data-state={open ? "open" : "closed"}
         className={cn("relative inline-flex shrink-0", className)}
         style={{ width: hubSize, height: hubSize, ...style }}

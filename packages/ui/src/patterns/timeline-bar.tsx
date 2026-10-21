@@ -52,6 +52,8 @@ export interface TimelinePosition {
   clippedEnd: boolean;
 }
 
+const subscribeNever = () => () => {};
+
 /** Percent position of a span over [from, to]; `null` when fully outside. */
 export function timelinePosition(span: TimelineSpan, from: TimeInput, to: TimeInput, now: TimeInput = Date.now()): TimelinePosition | null {
   const f = toMs(from);
@@ -163,10 +165,13 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
     const f = toMs(from) ?? NaN;
     const t = toMs(to) ?? NaN;
     const range = t - f;
-    // Open spans grow with the clock: tick while one is showing and no fixed `now` is given.
+    // Open spans and the "now" marker follow the clock: tick while one is showing and no fixed `now` is given.
     const hasOpen = nowProp == null && lanes.some((l) => l.spans.some((sp) => sp.end == null));
-    const clock = useNow({ active: hasOpen, interval: clamp(range / 1000, 1000, 60_000) });
-    const now = toMs(nowProp) ?? (hasOpen ? clock : Date.now());
+    const clock = useNow({ active: nowProp == null && (hasOpen || showNow), interval: clamp(range / 1000, 1000, 60_000) });
+    // The server and the first client render share one deterministic frame (the window end, no marker); the clock takes over after hydration.
+    const hydrated = React.useSyncExternalStore(subscribeNever, () => true, () => false);
+    const live = nowProp != null || hydrated;
+    const now = toMs(nowProp) ?? (hydrated ? clock : t);
     const sameDay = range <= 36 * 3600 * 1000;
     const timeFmt = React.useMemo(
       () =>
@@ -189,10 +194,10 @@ export const TimelineBar = React.forwardRef<HTMLDivElement, TimelineBarProps>(
         if (widest * tickList.length <= axisWidth) break;
       }
     }
-    const nowPct = range > 0 ? ((now - f) / range) * 100 : -1;
+    const nowPct = range > 0 && live ? ((now - f) / range) * 100 : -1;
 
     return (
-      <div ref={setRefs} role="group" aria-label={label} className={cn("w-full text-xs", className)} dir="ltr" {...props}>
+      <div ref={setRefs} role="group" aria-label={label} data-slot="timeline-bar" className={cn("w-full text-xs", className)} dir="ltr" {...props}>
         <div className="flex flex-col gap-1.5">
           {lanes.map((lane) => {
             return (

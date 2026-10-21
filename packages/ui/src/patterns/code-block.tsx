@@ -425,6 +425,7 @@ export const CodeBlock = React.forwardRef<HTMLDivElement, CodeBlockProps>(
     return (
       <div
         ref={ref}
+        data-slot="code-block"
         className={cn("group/code relative overflow-hidden rounded-box border shadow-xs", s.root, className)}
         dir="ltr"
         {...props}
@@ -570,6 +571,7 @@ export const CodeBlockTabs = React.forwardRef<HTMLDivElement, CodeBlockTabsProps
     return (
       <TabsPrimitive.Root
         ref={ref}
+        data-slot="code-block-tabs"
         value={value}
         onValueChange={setValue}
         className={cn("overflow-hidden rounded-box border shadow-xs", s.root, className)}
@@ -644,6 +646,7 @@ export const InlineCopy = React.forwardRef<HTMLDivElement, InlineCopyProps>(
     return (
       <CopyField
         ref={ref}
+        data-slot="inline-copy"
         value={value}
         prefix={prompt !== false ? <span className={s.muted}>{prompt}</span> : undefined}
         copyButtonProps={{ label: "Copy command", className: cn(s.button, size === "lg" && "size-8") }}

@@ -74,6 +74,7 @@ export const BlogContent = React.forwardRef<HTMLDivElement, BlogContentProps>(
     return (
       <Comp
         ref={ref}
+        data-slot="blog-content"
         className={cn(proseBase, proseSize[size], fullWidth && "max-w-none", className)}
         {...props}
       />
@@ -128,6 +129,7 @@ export const BlogPostHeader = React.forwardRef<HTMLElement, BlogPostHeaderProps>
     return (
       <header
         ref={ref}
+        data-slot="blog-post-header"
         className={cn(
           "flex flex-col gap-4",
           align === "center" && "items-center text-center",

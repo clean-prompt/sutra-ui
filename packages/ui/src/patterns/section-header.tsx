@@ -63,6 +63,7 @@ export const SectionHeader = React.forwardRef<HTMLDivElement, SectionHeaderProps
     return (
       <div
         ref={ref}
+        data-slot="section-header"
         className={cn(
           "flex flex-col",
           size === "lg" ? "gap-5" : "gap-4",
@@ -151,6 +152,7 @@ export const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
         {breadcrumbs && <div className="min-w-0">{breadcrumbs}</div>}
         <SectionHeader
           ref={ref}
+          data-slot="page-header"
           as="h1"
           size={size}
           leading={

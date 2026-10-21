@@ -11,6 +11,8 @@ export interface PresenceProps {
   children: React.ReactElement;
   /** Milliseconds before an exiting child is removed even if no `animationend` or `transitionend` arrived. Default 200, the speed of `animate-fade-out`. */
   exitDuration?: number;
+  /** Milliseconds before an entering child settles to `idle` even if no `animationend` or `transitionend` arrived (a safety net; the child's own end event settles it first). Default 600. */
+  enterDuration?: number;
   /** Animate the child in when it is present on the first render too. Default false. */
   initial?: boolean;
   /** Called once the child has been removed. */
@@ -29,7 +31,7 @@ export interface PresenceProps {
  * and is removed on its own `animationend` / `transitionend`, or after `exitDuration`. Under `prefers-reduced-motion` it
  * mounts and unmounts at once, with no enter or exit state. For a list use `AnimatedList`; Radix overlays already do this.
  */
-export function Presence({ present, children, exitDuration = 200, initial = false, onExited }: PresenceProps) {
+export function Presence({ present, children, exitDuration = 200, initial = false, enterDuration = 600, onExited }: PresenceProps) {
   const [phase, setPhase] = React.useState<PresenceState | null>(present ? (initial && !prefersReducedMotion() ? "enter" : "idle") : null);
   // Adjust state while rendering: mount or come back on `present`, start leaving (or leave at once) on `!present`.
   if (present && (phase === null || phase === "exit")) setPhase(prefersReducedMotion() ? "idle" : "enter");
@@ -41,6 +43,13 @@ export function Presence({ present, children, exitDuration = 200, initial = fals
     return () => clearTimeout(timer);
   }, [phase, exitDuration]);
 
+  // `enter` lasts for the entrance only: the child's own animation or transition end settles it, or `enterDuration` does.
+  React.useEffect(() => {
+    if (phase !== "enter") return;
+    const timer = setTimeout(() => setPhase((p) => (p === "enter" ? "idle" : p)), enterDuration);
+    return () => clearTimeout(timer);
+  }, [phase, enterDuration]);
+
   const onExitedRef = useLatestRef(onExited);
   const before = React.useRef(phase);
   React.useEffect(() => {
@@ -51,7 +60,9 @@ export function Presence({ present, children, exitDuration = 200, initial = fals
   if (phase === null) return null;
   const leaving = phase === "exit";
   const end = (e: React.SyntheticEvent) => {
-    if (leaving && e.target === e.currentTarget) setPhase(null);
+    if (e.target !== e.currentTarget) return;
+    if (leaving) setPhase(null);
+    else setPhase((p) => (p === "enter" ? "idle" : p));
   };
   return (
     <Slot.Root

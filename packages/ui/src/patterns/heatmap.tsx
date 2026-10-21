@@ -2,6 +2,7 @@ import * as React from "react";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { toPercent } from "../lib/math";
+import { useNow } from "../hooks/use-now";
 import { rampColor, resolveColorToken } from "../lib/tone";
 import { addDays, dateKey, formatShortDate, toValidDate } from "../lib/time";
 import { meterLevel, type MeterThresholds } from "../primitives/meter";
@@ -345,7 +346,7 @@ export interface HeatmapLegendProps extends React.HTMLAttributes<HTMLDivElement>
 /** "Less ▢▢▢▢ More" scale legend, or labeled swatches for custom stops. */
 export const HeatmapLegend = React.forwardRef<HTMLDivElement, HeatmapLegendProps>(
   ({ className, colors, lowLabel = "Less", highLabel = "More", stops, swatchSize = 10, ...props }, ref) => (
-    <div ref={ref} className={cn("flex items-center gap-1.5 text-2xs text-muted-foreground", className)} {...props}>
+    <div ref={ref} data-slot="heatmap-legend" className={cn("flex items-center gap-1.5 text-2xs text-muted-foreground", className)} {...props}>
       {stops?.length ? (
         stops.map((s) => (
           <span key={`${s.value}-${s.color}`} className="inline-flex items-center gap-1">
@@ -478,7 +479,7 @@ export const HeatmapGrid = React.forwardRef<HTMLDivElement, HeatmapGridProps>(
     });
     const template = cellSize ? `repeat(${cols}, ${cellSize}px)` : `repeat(${cols}, minmax(0, 1fr))`;
     return (
-      <div ref={ref} className={cn("w-full", className)} dir="ltr" {...props}>
+      <div ref={ref} data-slot="heatmap-grid" className={cn("w-full", className)} dir="ltr" {...props}>
         <HeatmapMatrix
           matrix={matrix}
           label={label}
@@ -665,13 +666,15 @@ export const CalendarHeatmap = React.forwardRef<HTMLDivElement, CalendarHeatmapP
     },
     ref
   ) => {
-    const [monthState, setMonthState] = React.useState(() => parseDay(defaultMonth ?? new Date()));
+    // "Today" comes from `useNow` (hourly while it drives the year view), not from `new Date()` in render; pass `endDate` / `month` to pin it.
+    const clock = useNow({ active: mode === "year" && endDate == null, interval: 3_600_000 });
+    const [monthState, setMonthState] = React.useState(() => parseDay(defaultMonth ?? new Date(clock)));
     const month = monthProp ? parseDay(monthProp) : monthState;
     const setMonth = (m: Date) => {
       if (!monthProp) setMonthState(m);
       onMonthChange?.(m);
     };
-    const anchor = mode === "year" ? parseDay(endDate ?? new Date()) : month;
+    const anchor = mode === "year" ? parseDay(endDate ?? new Date(clock)) : month;
     const layout = React.useMemo(
       () => calendarHeatmapLayout(mode, anchor, weekStartsOn, locale),
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -753,7 +756,7 @@ export const CalendarHeatmap = React.forwardRef<HTMLDivElement, CalendarHeatmapP
       ) : null;
 
     return (
-      <div ref={ref} className={cn("inline-flex max-w-full flex-col gap-2", className)} dir="ltr" {...props}>
+      <div ref={ref} data-slot="calendar-heatmap" className={cn("inline-flex max-w-full flex-col gap-2", className)} dir="ltr" {...props}>
         {mode === "month" ? (
           <div className="flex items-center justify-between gap-2">
             <button

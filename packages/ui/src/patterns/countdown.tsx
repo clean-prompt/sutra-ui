@@ -85,7 +85,7 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
 
     if (remaining <= 0 && completeContent !== undefined) {
       return (
-        <div ref={ref} role="timer" aria-label={label} className={className} {...props}>
+        <div ref={ref} data-slot="countdown" role="timer" aria-label={label} className={className} {...props}>
           {completeContent}
         </div>
       );
@@ -95,6 +95,7 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
       return (
         <div
           ref={ref}
+          data-slot="countdown"
           role="timer"
           aria-label={label}
           data-complete={remaining <= 0 || undefined}
@@ -118,6 +119,7 @@ export const Countdown = React.forwardRef<HTMLDivElement, CountdownProps>(
     return (
       <div
         ref={ref}
+        data-slot="countdown"
         role="timer"
         aria-label={label}
         data-complete={remaining <= 0 || undefined}

@@ -9,6 +9,7 @@ export const FilterBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
+      data-slot="filter-bar"
       role="toolbar"
       className={cn("flex flex-wrap items-center gap-2", className)}
       {...props}
@@ -220,6 +221,7 @@ export const FilterBarChip = React.forwardRef<HTMLButtonElement, FilterBarChipPr
         <PopoverPrimitive.Trigger asChild>
           <button
             ref={ref}
+            data-slot="filter-bar-chip"
             type="button"
             disabled={disabled}
             className={cn(
@@ -398,6 +400,7 @@ export const FilterBarActive = React.forwardRef<HTMLDivElement, FilterBarActiveP
   ({ className, filters, removeLabel, children, ...props }, ref) => (
     <div
       ref={ref}
+      data-slot="filter-bar-active"
       aria-label="Active filters"
       role="group"
       className={cn("flex flex-wrap items-center gap-1.5", className)}
@@ -436,6 +439,7 @@ export const FilterBarToken = React.forwardRef<HTMLSpanElement, FilterBarTokenPr
   ({ className, label, onRemove, removeLabel, children, ...props }, ref) => (
     <span
       ref={ref}
+      data-slot="filter-bar-token"
       className={cn(
         "inline-flex h-7 items-center gap-1 rounded-control border border-border bg-background ps-2.5 text-xs text-foreground shadow-xs animate-in fade-in-0 zoom-in-95",
         onRemove ? "pe-1" : "pe-2.5",
@@ -470,6 +474,7 @@ export const FilterBarClear = React.forwardRef<
 >(({ className, children, type, ...props }, ref) => (
   <button
     ref={ref}
+    data-slot="filter-bar-clear"
     type={type ?? "button"}
     className={cn(
       "inline-flex h-8 items-center gap-1 rounded-control px-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:pointer-events-none disabled:opacity-50",

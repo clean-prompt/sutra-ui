@@ -771,6 +771,7 @@ export const LogViewer = React.forwardRef<HTMLDivElement, LogViewerProps>(
     return (
       <div
         ref={ref}
+        data-slot="log-viewer"
         className={cn("flex min-w-0 flex-col overflow-hidden rounded-box border border-border bg-card shadow-xs", className)}
         dir="ltr"
         {...props}

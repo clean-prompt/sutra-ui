@@ -48,6 +48,7 @@ export interface TextButtonProps extends React.HTMLAttributes<HTMLElement> {
 export const TextButton = React.forwardRef<HTMLElement, TextButtonProps>(({ href, tone = "default", className, ...props }, ref) => (
   <TextLink
     ref={ref as React.Ref<HTMLAnchorElement>}
+    data-slot="text-button"
     as={href !== undefined ? "a" : "button"}
     href={href}
     variant={textButtonVariant[tone] ?? "subtle"}

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RiArrowLeftSLine, RiArrowRightSLine, RiSparkling2Line } from "@remixicon/react";
+import { RiArrowLeftSLine, RiArrowRightSLine, RiPauseLine, RiPlayLine, RiSparkling2Line } from "@remixicon/react";
 import { cn, focusRing } from "../lib/cn";
 import { TONES, normalizeTone, type Tone, type ToneInput } from "../lib/tone";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
@@ -20,6 +20,17 @@ export function normalizeNoticeTone(tone: NoticeTone | string | null | undefined
   const t = normalizeTone(tone, "info");
   return (TONES as readonly string[]).includes(t) ? t : "info";
 }
+
+const noticeBarLabels: Required<RotatingNoticeBarLabels> = {
+  previous: "Previous notice",
+  next: "Next notice",
+  pause: "Pause rotation",
+  play: "Start rotation",
+  dismiss: "Dismiss notice",
+  choose: "Choose notice",
+  goTo: (n, count) => `Show notice ${n} of ${count}`,
+  slide: (n, count) => `${n} of ${count}`,
+};
 
 /** @deprecated Use `BannerAction` from `alert-banner`. */
 export type NoticeAction = BannerAction;
@@ -110,6 +121,25 @@ export function useNoticeQueue(source: NoticeItem[] = [], { initialDismissed, on
 /* ------------------------------------------------------------------ */
 
 
+export interface RotatingNoticeBarLabels {
+  /** Name of the previous button. Default "Previous notice". */
+  previous?: string;
+  /** Name of the next button. Default "Next notice". */
+  next?: string;
+  /** Name of the pause button. Default "Pause rotation". */
+  pause?: string;
+  /** Name of the play button. Default "Start rotation". */
+  play?: string;
+  /** Name of the dismiss button. Default "Dismiss notice". */
+  dismiss?: string;
+  /** Name of the dot group. Default "Choose notice". */
+  choose?: string;
+  /** Name of a dot (n is 1-based). Default "Show notice n of N". */
+  goTo?: (n: number, count: number) => string;
+  /** Name of the slide. Default "n of N". */
+  slide?: (n: number, count: number) => string;
+}
+
 export interface RotatingNoticeBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   /** Notices to rotate through; each has an `id` and `content`, with optional tone and action. */
   notices: NoticeItem[];
@@ -125,9 +155,11 @@ export interface RotatingNoticeBarProps extends Omit<React.HTMLAttributes<HTMLDi
   sticky?: boolean;
   /** Accessible name of the notice region. */
   label?: string;
+  /** Texts for the controls and their accessible names (English by default); pass them to translate the bar. */
+  labels?: RotatingNoticeBarLabels;
 }
 
-/** Global notice strip that rotates through notices with a dot pager, pausing on hover or focus. Renders an `AlertBanner`. */
+/** Global notice strip that rotates through notices with a dot pager and a pause button, also pausing on hover or focus. Renders an `AlertBanner`. */
 export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNoticeBarProps>(
   (
     {
@@ -138,6 +170,7 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
       onIndexChange,
       sticky,
       label = "Notices",
+      labels,
       className,
       onMouseEnter,
       onMouseLeave,
@@ -147,8 +180,11 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
     },
     ref
   ) => {
-    const [hidden, setHidden] = React.useState<Set<string>>(() => new Set());
-    const notices = React.useMemo(() => sortNotices(noticesProp, hidden), [noticesProp, hidden]);
+    const onDismissProp = useLatestRef(onDismiss);
+    const queueOptions = React.useMemo<UseNoticeQueueOptions>(() => ({ onDismiss: (id) => onDismissProp.current?.(id) }), [onDismissProp]);
+    const { notices, dismiss: dismissNotice } = useNoticeQueue(noticesProp, queueOptions);
+    const text = { ...noticeBarLabels, ...labels };
+    const [userPaused, setUserPaused] = React.useState(false);
     const [index, setIndex] = React.useState(0);
     const [hovered, setHovered] = React.useState(false);
     const [focused, setFocused] = React.useState(false);
@@ -157,7 +193,8 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
     const safeIndex = count ? Math.min(index, count - 1) : 0;
     const current = notices[safeIndex];
     const paused = hovered || focused;
-    const rotating = autoRotate && !reduced && count > 1 && !paused;
+    const canRotate = autoRotate && !reduced && count > 1;
+    const rotating = canRotate && !paused && !userPaused;
 
     const onIndexChangeRef = useLatestRef(onIndexChange);
 
@@ -185,10 +222,7 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
       "focus-visible:ring-current/40"
     );
 
-    const dismiss = () => {
-      setHidden((s) => new Set(s).add(current.id));
-      onDismiss?.(current.id);
-    };
+    const dismiss = () => dismissNotice(current.id);
 
     return (
       <AlertBanner
@@ -197,7 +231,8 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
         aria-roledescription="carousel"
         aria-label={label}
         data-tone={current.tone ?? "info"}
-        data-paused={paused || undefined}
+        data-slot="rotating-notice-bar"
+        data-paused={paused || userPaused || undefined}
         tone={tone}
         appearance={current.appearance ?? (tone === "primary" ? "solid" : "soft")}
         sticky={sticky}
@@ -207,20 +242,20 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
         dismissible={current.dismissible !== false}
         open
         onDismiss={dismiss}
-        dismissLabel="Dismiss notice"
+        dismissLabel={text.dismiss}
         className={cn("gap-2 py-1.5 transition-colors", className)}
         contentKey={current.id}
         contentProps={{
           role: "group",
           "aria-roledescription": "slide",
-          "aria-label": `${safeIndex + 1} of ${count}`,
+          "aria-label": text.slide(safeIndex + 1, count),
           "aria-live": rotating ? "off" : "polite",
           "data-notice": current.id,
           className: "flex-1 flex-nowrap justify-center gap-x-2 motion-safe:animate-in motion-safe:fade-in-0 [&>div]:truncate",
         }}
         leading={
           count > 1 ? (
-            <button type="button" className={ctrl} aria-label="Previous notice" onClick={() => go(safeIndex - 1)}>
+            <button type="button" className={ctrl} aria-label={text.previous} onClick={() => go(safeIndex - 1)}>
               <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
             </button>
           ) : null
@@ -228,12 +263,12 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
         trailing={
           count > 1 ? (
             <>
-              <div className="hidden items-center gap-1 sm:flex" role="group" aria-label="Choose notice">
+              <div className="hidden items-center gap-1 sm:flex" role="group" aria-label={text.choose}>
                 {notices.map((n, i) => (
                   <button
                     key={n.id}
                     type="button"
-                    aria-label={`Show notice ${i + 1} of ${count}`}
+                    aria-label={text.goTo(i + 1, count)}
                     aria-current={i === safeIndex ? "true" : undefined}
                     onClick={() => go(i)}
                     className={cn("flex size-4 items-center justify-center rounded-full", focusRing)}
@@ -248,7 +283,18 @@ export const RotatingNoticeBar = React.forwardRef<HTMLDivElement, RotatingNotice
                   </button>
                 ))}
               </div>
-              <button type="button" className={ctrl} aria-label="Next notice" onClick={() => go(safeIndex + 1)}>
+              {canRotate && (
+                <button
+                  type="button"
+                  className={ctrl}
+                  aria-label={userPaused ? text.play : text.pause}
+                  aria-pressed={userPaused}
+                  onClick={() => setUserPaused((v) => !v)}
+                >
+                  {userPaused ? <RiPlayLine aria-hidden /> : <RiPauseLine aria-hidden />}
+                </button>
+              )}
+              <button type="button" className={ctrl} aria-label={text.next} onClick={() => go(safeIndex + 1)}>
                 <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden />
               </button>
             </>

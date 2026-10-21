@@ -398,6 +398,7 @@ export const TreeView = React.forwardRef<HTMLUListElement, TreeViewProps>(
       <TreeContext.Provider value={ctx}>
         <ul
           ref={ref}
+          data-slot="tree-view"
           role="tree"
           aria-label={ariaLabel}
           aria-multiselectable={selectionMode === "multiple" || undefined}

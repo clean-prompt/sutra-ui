@@ -3,12 +3,11 @@ import ReactMarkdown, { type Components, type Options } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { cn, focusRing, hitArea } from "../lib/cn";
 import { useScrollable } from "../hooks/use-scrollable";
-import { useCopy } from "../hooks/use-copy";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { isHttpUrl } from "../lib/validate";
+import { CopyButton } from "../primitives/copy-button";
 import { InlineCode } from "../primitives/typography";
 import { ChatInlineCitation, type ChatSourceData } from "./inline-citation";
 
@@ -150,30 +149,17 @@ interface MarkdownCodeBlockProps {
 }
 
 function MarkdownCodeBlock({ code, language }: MarkdownCodeBlockProps) {
-  const { copied, copy } = useCopy();
   const preRef = React.useRef<HTMLPreElement>(null);
   const scrollable = useScrollable(preRef);
   return (
-    <div className="group/code my-4 overflow-hidden rounded-box border border-code-border bg-code text-code-foreground shadow-xs [color-scheme:dark]">
+    <div data-slot="markdown-code-block" className="group/code my-4 overflow-hidden rounded-box border border-code-border bg-code text-code-foreground shadow-xs [color-scheme:dark]">
       <div className="flex h-9 items-center justify-between border-b border-code-foreground/10 bg-code-foreground/[0.03] ps-3.5 pe-1.5">
         <span className="font-mono text-xs lowercase text-code-muted">{language || "text"}</span>
-        <button
-          type="button"
-          onClick={() => void copy(code)}
-          aria-label={copied ? "Copied" : "Copy code"}
-          title={copied ? "Copied" : "Copy code"}
-          className={cn(
-            "inline-flex h-7 items-center gap-1.5 rounded-control px-2 text-xs text-code-muted transition-colors hover:bg-code-foreground/10 hover:text-code-foreground",
-            focusRing
-          )}
-        >
-          {copied ? (
-            <RiCheckLine aria-hidden key="check" className="size-3.5 animate-in zoom-in-50 duration-200" />
-          ) : (
-            <RiFileCopyLine aria-hidden key="copy" className="size-3.5" />
-          )}
-          <span>{copied ? "Copied" : "Copy"}</span>
-        </button>
+        <CopyButton
+          value={code}
+          label="Copy code"
+          className="text-code-muted hover:bg-code-foreground/10 hover:text-code-foreground"
+        />
       </div>
       <pre
         ref={preRef}

@@ -123,6 +123,7 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement & HTMLDivElement, 
         <SegmentedControl
           ref={ref}
           aria-label="Theme"
+          data-slot="theme-toggle"
           size={size}
           value={mode}
           onValueChange={(v) => v && setMode(v as ThemeToggleMode)}
@@ -147,6 +148,7 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement & HTMLDivElement, 
         ref={ref}
         variant="ghost"
         size={iconSize}
+        data-slot="theme-toggle"
         data-mode={mode}
         data-resolved={resolved}
         aria-label={`Theme: ${labels[mode]}. Switch to ${labels[next]}`}

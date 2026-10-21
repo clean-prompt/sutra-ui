@@ -3,6 +3,7 @@ import { cn } from "../lib/cn";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useResizeObserver } from "../hooks/use-resize-observer";
 import { useMergedRefs } from "../hooks/use-merged-refs";
+import { useDirection } from "../hooks/use-direction";
 
 /* ------------------------------------------------------------------ */
 /* FadeText                                                            */
@@ -23,6 +24,7 @@ export const FadeText = React.forwardRef<HTMLSpanElement, FadeTextProps>(
     const ref = React.useRef<HTMLSpanElement | null>(null);
     const [overflowing, setOverflowing] = React.useState(false);
     const multi = lines > 1;
+    const rtl = useDirection(ref) === "rtl";
     const check = React.useCallback(() => {
       const el = ref.current;
       if (!el) return;
@@ -35,11 +37,12 @@ export const FadeText = React.forwardRef<HTMLSpanElement, FadeTextProps>(
     const mask = overflowing
       ? multi
         ? `linear-gradient(to bottom, #000 calc(100% - ${fade}), transparent)`
-        : `linear-gradient(to right, #000 calc(100% - ${fade}), transparent)`
+        : `linear-gradient(to ${rtl ? "left" : "right"}, #000 calc(100% - ${fade}), transparent)`
       : undefined;
     return (
       <span
         ref={setRefs}
+        data-slot="fade-text"
         data-overflowing={overflowing ? "" : undefined}
         title={title ?? (showTitle && overflowing && typeof children === "string" ? children : undefined)}
         className={cn("block min-w-0 overflow-hidden", multi ? "whitespace-normal" : "whitespace-nowrap", className)}

@@ -51,7 +51,7 @@ export const Stopwatch = React.forwardRef<HTMLDivElement, StopwatchProps>(
     const slowest = sw.laps.length > 1 ? Math.max(...lapTimes) : null;
 
     return (
-      <div ref={ref} className={cn("flex flex-col items-center gap-4", className)} {...props}>
+      <div ref={ref} data-slot="stopwatch" className={cn("flex flex-col items-center gap-4", className)} {...props}>
         <div role="timer" aria-label={`Elapsed ${formatClock(sw.elapsed / 1000, STOPWATCH)}`} className="text-display-md font-semibold tabular-nums text-foreground">
           <span aria-hidden>{formatClock(sw.elapsed / 1000, STOPWATCH)}</span>
         </div>

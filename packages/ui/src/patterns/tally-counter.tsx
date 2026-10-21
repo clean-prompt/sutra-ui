@@ -20,6 +20,34 @@ export interface TallyEntry {
   at: Date;
 }
 
+/** Texts of the counter (English by default); pass any of them to translate it. */
+export interface TallyCounterLabels {
+  /** Name of the decrease button. Default "Decrease by {step}". */
+  decrease?: (step: number) => string;
+  /** Name of the increase button. Default "Increase by {step}". */
+  increase?: (step: number) => string;
+  /** Heading of the entry log. Default "History". */
+  history?: string;
+  /** Name of the entry list. Default "{label} history". */
+  historyList?: (label: string) => string;
+  /** The undo button. Default "Undo". */
+  undo?: string;
+  /** Text of an empty log. Default "No entries yet". */
+  noEntries?: string;
+  /** Goal caption under the number. Default "of {goal}". */
+  goal?: (goal: number) => string;
+}
+
+const defaultLabels: Required<TallyCounterLabels> = {
+  decrease: (step) => `Decrease by ${step}`,
+  increase: (step) => `Increase by ${step}`,
+  history: "History",
+  historyList: (label) => `${label} history`,
+  undo: "Undo",
+  noEntries: "No entries yet",
+  goal: (goal) => `of ${goal}`,
+};
+
 export interface TallyCounterProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
   /** Controlled count. Use with `onValueChange`. */
   value?: number;
@@ -53,6 +81,8 @@ export interface TallyCounterProps extends Omit<React.HTMLAttributes<HTMLDivElem
   showLog?: boolean;
   /** Max log entries kept. Default 20. */
   logLimit?: number;
+  /** Button names and captions (English by default); pass them to translate the counter. */
+  labels?: TallyCounterLabels;
 }
 
 /** Big tally number with −/+ (press and hold to repeat), step, goal ring and an entry log with undo. */
@@ -69,12 +99,14 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
       label = "Count",
       showLog = true,
       logLimit = 20,
+      labels,
       className,
       ...props
     },
     ref
   ) => {
     // Tolerate swapped bounds (`max < min`) like `clamp` does.
+    const text = { ...defaultLabels, ...labels };
     const min = Math.min(minProp, maxProp);
     const max = Math.max(minProp, maxProp);
     const [value, setValue] = useControllableState({ value: valueProp, defaultValue, onChange: onValueChange });
@@ -164,7 +196,7 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
     const pct = goal ? clamp(value / goal, 0, 1) : 0;
 
     return (
-      <div ref={ref} role="group" aria-label={label} className={cn("flex flex-col items-center gap-4", className)} {...props}>
+      <div ref={ref} role="group" aria-label={label} data-slot="tally-counter" className={cn("flex flex-col items-center gap-4", className)} {...props}>
         <div className="relative flex items-center justify-center" style={{ width: ringSize, height: ringSize }}>
           {goal ? (
             <svg aria-hidden width={ringSize} height={ringSize} className="absolute inset-0 -rotate-90">
@@ -183,18 +215,18 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
             </svg>
           ) : null}
           <div className="flex flex-col items-center">
-            <output aria-live="polite" aria-label={label} className="text-display-lg font-semibold tabular-nums text-foreground" data-tally-value>
+            <output aria-live="polite" aria-label={label} className="text-display-lg font-semibold tabular-nums text-foreground" data-slot="tally-counter-value" data-tally-value>
               <span key={valueChanges} className={cn("inline-block", ticks && "animate-tick")}>
                 {value}
               </span>
             </output>
-            {goal ? <span className="text-xs text-muted-foreground tabular-nums">of {goal}</span> : null}
+            {goal ? <span className="text-xs text-muted-foreground tabular-nums">{text.goal(goal)}</span> : null}
           </div>
         </div>
         <div className="flex items-center gap-3">
           <button
             type="button"
-            aria-label={`Decrease by ${step}`}
+            aria-label={text.decrease(step)}
             disabled={value <= min}
             {...pressHandlers(-1)}
             className={cn(
@@ -206,7 +238,7 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
           </button>
           <button
             type="button"
-            aria-label={`Increase by ${step}`}
+            aria-label={text.increase(step)}
             disabled={value >= max}
             {...pressHandlers(1)}
             className={cn(
@@ -220,13 +252,13 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
         {showLog ? (
           <div className="w-full max-w-xs space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground">History</span>
+              <span className="text-xs font-medium text-muted-foreground">{text.history}</span>
               <Button variant="ghost" size="xs" leadingIcon={<RiArrowGoBackLine aria-hidden />} onClick={undo} disabled={log.length === 0}>
-                Undo
+                {text.undo}
               </Button>
             </div>
             {log.length > 0 ? (
-              <ol aria-label={`${label} history`} className="max-h-40 divide-y divide-border overflow-y-auto rounded-box border border-border text-sm scrollbar-thin">
+              <ol aria-label={text.historyList(label)} data-slot="tally-counter-log" className="max-h-40 divide-y divide-border overflow-y-auto rounded-box border border-border text-sm scrollbar-thin">
                 {log.map((entry) => (
                   <li key={entry.id} className="flex items-center justify-between px-3 py-1.5 tabular-nums">
                     <span className={entry.delta > 0 ? "text-success" : "text-destructive"}>
@@ -242,7 +274,7 @@ export const TallyCounter = React.forwardRef<HTMLDivElement, TallyCounterProps>(
                 ))}
               </ol>
             ) : (
-              <p className="text-xs text-muted-foreground">No entries yet.</p>
+              <p className="text-xs text-muted-foreground">{text.noEntries}</p>
             )}
           </div>
         ) : null}

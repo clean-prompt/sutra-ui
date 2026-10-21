@@ -113,6 +113,7 @@ export const TabMenu = React.forwardRef<HTMLElement, TabMenuProps>(
     return (
       <nav
         ref={ref}
+        data-slot="tab-menu"
         aria-label={ariaLabel}
         className={cn("relative min-w-0", bordered && "border-b border-border", className)}
         {...props}

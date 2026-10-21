@@ -168,6 +168,49 @@ function humanize(key: string) {
 
 export type SchemaFieldSaveStatus = "saving" | "saved" | "error";
 
+/** Texts of the form chrome (English by default); pass any of them to translate the form. Validation messages are not covered. */
+export interface SchemaFormLabels {
+  /** Per-field status while autosaving. Default "Saving…". */
+  saving?: string;
+  /** Per-field status after a save. Default "Saved". */
+  saved?: string;
+  /** Per-field status after a failed save. Default "Not saved". */
+  notSaved?: string;
+  /** Add-item button; gets the singular item name. Default "Add item". */
+  add?: (item: string) => string;
+  /** Name of a remove button (n is 1-based). Default "Remove item n". */
+  remove?: (item: string, n: number) => string;
+  /** Name of the section navigation. Default "Sections". */
+  sections?: string;
+  /** Section filter that shows every section. Default "All". */
+  all?: string;
+  /** Name of the search field. Default "Search settings". */
+  search?: string;
+  /** Placeholder of the search field. Default "Search settings…". */
+  searchPlaceholder?: string;
+  /** Message when a search matches nothing. */
+  noMatch?: (query: string) => string;
+  /** Screen-reader suffix of a section's error count. Default "errors". */
+  errors?: string;
+  /** Message beside the submit button while fields are invalid. */
+  fixFields?: (count: number) => string;
+}
+
+const defaultLabels: Required<SchemaFormLabels> = {
+  saving: "Saving…",
+  saved: "Saved",
+  notSaved: "Not saved",
+  add: (item) => `Add ${item.toLowerCase()}`,
+  remove: (item, n) => `Remove ${item} ${n}`,
+  sections: "Sections",
+  all: "All",
+  search: "Search settings",
+  searchPlaceholder: "Search settings…",
+  noMatch: (query) => `No settings match “${query}”`,
+  errors: "errors",
+  fixFields: (count) => `Fix ${count} ${count === 1 ? "field" : "fields"} to continue`,
+};
+
 interface SchemaFormCtx {
   errors: SchemaFormErrors;
   showError: (path: string) => boolean;
@@ -176,6 +219,7 @@ interface SchemaFormCtx {
   disabledFields: Record<string, string>;
   disabled: boolean;
   idPrefix: string;
+  labels: Required<SchemaFormLabels>;
 }
 
 const SchemaFormContext = React.createContext<SchemaFormCtx>({
@@ -186,6 +230,7 @@ const SchemaFormContext = React.createContext<SchemaFormCtx>({
   disabledFields: {},
   disabled: false,
   idPrefix: "sf",
+  labels: defaultLabels,
 });
 
 function fieldId(prefix: string, path: string) {
@@ -193,22 +238,23 @@ function fieldId(prefix: string, path: string) {
 }
 
 function SaveStatus({ status }: { status?: SchemaFieldSaveStatus }) {
+  const { labels } = React.useContext(SchemaFormContext);
   if (!status) return null;
   return (
-    <span data-save-status={status} className={cn("inline-flex items-center gap-1 text-2xs font-medium", status === "error" ? "text-destructive" : "text-muted-foreground")}>
+    <span data-slot="schema-form-status" data-save-status={status} className={cn("inline-flex items-center gap-1 text-2xs font-medium", status === "error" ? "text-destructive" : "text-muted-foreground")}>
       {status === "saving" && (
         <>
-          <Spinner size="xs" /> Saving…
+          <Spinner size="xs" /> {labels.saving}
         </>
       )}
       {status === "saved" && (
         <>
-          <RiCheckLine aria-hidden className="size-3 animate-pop text-success" /> Saved
+          <RiCheckLine aria-hidden className="size-3 animate-pop text-success" /> {labels.saved}
         </>
       )}
       {status === "error" && (
         <>
-          <RiErrorWarningLine aria-hidden className="size-3" /> Not saved
+          <RiErrorWarningLine aria-hidden className="size-3" /> {labels.notSaved}
         </>
       )}
     </span>
@@ -281,7 +327,7 @@ export function NestedValueEditor({ schema, value, onValueChange, onChange: onCh
     );
     if (bare) return body;
     return (
-      <fieldset data-path={path} className="space-y-3 rounded-box border border-border p-4" disabled={disabled}>
+      <fieldset data-slot="schema-form-group" data-path={path} className="space-y-3 rounded-box border border-border p-4" disabled={disabled}>
         <legend className="px-1 text-sm font-semibold text-foreground">{label}</legend>
         {schema.description && <p className="-mt-1 text-xs text-muted-foreground">{schema.description}</p>}
         {body}
@@ -296,7 +342,7 @@ export function NestedValueEditor({ schema, value, onValueChange, onChange: onCh
     const canAdd = !disabled && (schema.maxItems == null || list.length < schema.maxItems);
     const singular = label.replace(/s$/, "");
     return (
-      <div data-path={path} role="group" aria-labelledby={`${id}-label`} aria-describedby={describedBy} className="space-y-2">
+      <div data-slot="schema-form-field" data-path={path} role="group" aria-labelledby={`${id}-label`} aria-describedby={describedBy} className="space-y-2">
         <div className="flex items-center gap-2">
           <span id={`${id}-label`} className="text-sm font-medium text-foreground">
             {label}
@@ -314,7 +360,7 @@ export function NestedValueEditor({ schema, value, onValueChange, onChange: onCh
                 type="button"
                 size="icon-sm"
                 variant="ghost"
-                aria-label={`Remove ${singular} ${i + 1}`}
+                aria-label={ctx.labels.remove(singular, i + 1)}
                 disabled={disabled || (schema.minItems != null && list.length <= schema.minItems)}
                 onClick={() => onChange(list.filter((_, j) => j !== i))}
               >
@@ -350,7 +396,7 @@ export function NestedValueEditor({ schema, value, onValueChange, onChange: onCh
           disabled={!canAdd}
           onClick={() => onChange([...list, schemaDefaults(itemSchema) ?? (itemType === "boolean" ? false : itemType === "number" || itemType === "integer" ? undefined : "")])}
         >
-          Add {singular.toLowerCase()}
+          {ctx.labels.add(singular)}
         </Button>
         {error && (
           <p id={errorId} className="text-xs text-destructive">
@@ -497,7 +543,7 @@ export function NestedValueEditor({ schema, value, onValueChange, onChange: onCh
   }
 
   return (
-    <div data-path={path} className={cn("space-y-1.5", type === "boolean" && "flex flex-wrap items-start justify-between gap-x-4 space-y-0")}>
+    <div data-slot="schema-form-field" data-path={path} className={cn("space-y-1.5", type === "boolean" && "flex flex-wrap items-start justify-between gap-x-4 space-y-0")}>
       <div className={cn("flex items-center gap-2", type === "boolean" && "min-w-0 flex-1 flex-col items-start gap-0.5")}>
         <span className="flex items-center gap-2">
           <label id={`${id}-label`} htmlFor={id} className="text-sm font-medium text-foreground">
@@ -530,7 +576,7 @@ export function NestedValueEditor({ schema, value, onValueChange, onChange: onCh
 
 function DisabledNote({ reason }: { reason: string }) {
   return (
-    <p className="flex w-full items-center gap-1 text-xs text-muted-foreground/80">
+    <p data-slot="schema-form-disabled-note" className="flex w-full items-center gap-1 text-xs text-muted-foreground/80">
       <RiLockLine aria-hidden className="size-3" />
       {reason}
     </p>
@@ -573,6 +619,8 @@ export interface SchemaFormProps extends Omit<React.FormHTMLAttributes<HTMLFormE
   navThreshold?: number;
   /** Show all validation errors immediately (default: after blur or submit). */
   validateOnMount?: boolean;
+  /** Texts of the form chrome (English by default); pass them to translate the form. */
+  labels?: SchemaFormLabels;
 }
 
 interface Section {
@@ -622,6 +670,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
       disabled = false,
       navThreshold = 8,
       validateOnMount = false,
+      labels: labelsProp,
       className,
       ...props
     },
@@ -641,15 +690,16 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
       await onSubmit?.(v);
     });
     const idPrefix = useSafeId("sf");
+    const labels = React.useMemo(() => ({ ...defaultLabels, ...labelsProp }), [labelsProp]);
     const errors = React.useMemo(() => validateAgainstSchema({ ...schema, type: "object" }, value), [schema, value]);
 
     const pending = React.useRef<Set<string>>(new Set());
     const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    /** Per field, the id of the newest save that includes it: an older save that settles late must not overwrite its status. */
+    const saveIds = React.useRef<Map<string, number>>(new Map());
+    const saveSeq = React.useRef(0);
     const latest = useLatestRef(value);
     const onSaveRef = useLatestRef(onSave);
-    React.useEffect(() => () => {
-      if (timer.current) clearTimeout(timer.current);
-    }, []);
 
     const flush = React.useCallback(async () => {
       timer.current = null;
@@ -666,19 +716,41 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
         });
         return;
       }
+      const id = ++saveSeq.current;
+      for (const k of valid) saveIds.current.set(k, id);
+      const settle = (state: SchemaFieldSaveStatus) => {
+        const mine = valid.filter((k) => saveIds.current.get(k) === id);
+        if (!mine.length) return;
+        setStatus((s) => ({ ...s, ...Object.fromEntries(mine.map((k) => [k, state])) }));
+      };
       setStatus((s) => ({ ...s, ...Object.fromEntries(valid.map((k) => [k, "saving" as const])) }));
       try {
         await onSaveRef.current?.(v, valid);
-        setStatus((s) => ({ ...s, ...Object.fromEntries(valid.map((k) => [k, "saved" as const])) }));
+        settle("saved");
       } catch {
-        setStatus((s) => ({ ...s, ...Object.fromEntries(valid.map((k) => [k, "error" as const])) }));
+        settle("error");
       }
     }, [schema]);
 
-    const handleChange = (next: unknown) => {
-      const obj = next as Record<string, unknown>;
-      const changed = Object.keys({ ...value, ...obj }).filter((k) => obj[k] !== value[k]);
-      setValue(obj);
+    // An edit made just before the form unmounts is saved instead of dropped with its timer.
+    const flushRef = useLatestRef(flush);
+    React.useEffect(
+      () => () => {
+        if (!timer.current) return;
+        clearTimeout(timer.current);
+        void flushRef.current();
+      },
+      [flushRef]
+    );
+
+    /** `patch` gets the value including edits already requested this tick, so two changes in one tick both land. */
+    const handleChange = (patch: (prev: Record<string, unknown>) => Record<string, unknown>) => {
+      let changed: string[] = [];
+      setValue((prev) => {
+        const obj = patch(prev);
+        changed = Object.keys({ ...prev, ...obj }).filter((k) => obj[k] !== prev[k]);
+        return obj;
+      });
       if (autosave && changed.length) {
         setTouched((t) => new Set([...t, ...changed]));
         for (const k of changed) pending.current.add(k);
@@ -707,8 +779,9 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
         disabledFields,
         disabled,
         idPrefix,
+        labels,
       }),
-      [errors, submitted, touched, status, disabledFields, disabled, idPrefix]
+      [errors, submitted, touched, status, disabledFields, disabled, idPrefix, labels]
     );
 
     const keys = Object.keys(schema.properties ?? {});
@@ -730,9 +803,9 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
     const errorCount = Object.keys(errors).length;
     const fields = (
       <div className="min-w-0 flex-1 space-y-8">
-        {shownSections.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">No settings match “{query}”</p>}
+        {shownSections.length === 0 && <p className="py-6 text-center text-sm text-muted-foreground">{labels.noMatch(query)}</p>}
         {shownSections.map((s) => (
-          <section key={s.id} aria-labelledby={`${idPrefix}-sec-${s.id}`} className="space-y-4">
+          <section key={s.id} data-slot="schema-form-section" aria-labelledby={`${idPrefix}-sec-${s.id}`} className="space-y-4">
             {(showNav || sections.length > 1) && (
               <h3 id={`${idPrefix}-sec-${s.id}`} className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {s.label}
@@ -754,12 +827,14 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
                   path={k}
                   required={schema.required?.includes(k)}
                   value={value[k]}
-                  onValueChange={(v) => {
-                    const next = { ...value };
-                    if (v === undefined) delete next[k];
-                    else next[k] = v;
-                    handleChange(next);
-                  }}
+                  onValueChange={(v) =>
+                    handleChange((prev) => {
+                      const next = { ...prev };
+                      if (v === undefined) delete next[k];
+                      else next[k] = v;
+                      return next;
+                    })
+                  }
                 />
               );
             })}
@@ -773,8 +848,8 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
         <form ref={ref} noValidate onSubmit={submit} data-slot="schema-form" className={cn("@container w-full space-y-5", className)} {...props}>
           {showNav ? (
             <div className="flex flex-col gap-6 @xl:flex-row">
-              <nav aria-label="Sections" className="space-y-2 @xl:w-48 @xl:shrink-0">
-                <SearchInput size="sm" value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery("")} clearable placeholder="Search settings…" aria-label="Search settings" />
+              <nav aria-label={labels.sections} data-slot="schema-form-nav" className="space-y-2 @xl:w-48 @xl:shrink-0">
+                <SearchInput size="sm" value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery("")} clearable placeholder={labels.searchPlaceholder} aria-label={labels.search} />
                 <ul className="flex gap-1 overflow-x-auto @xl:flex-col">
                   <li>
                     <button
@@ -783,7 +858,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
                       onClick={() => setActiveSection(null)}
                       className={cn("w-full rounded-control px-2.5 py-1.5 text-start text-sm", !activeSection ? "bg-accent font-medium text-foreground" : "text-muted-foreground hover:bg-accent", focusRing)}
                     >
-                      All
+                      {labels.all}
                     </button>
                   </li>
                   {sections.map((s) => {
@@ -804,7 +879,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
                           {submitted && secErrors > 0 && (
                             <span className="ms-auto rounded-full bg-destructive-soft px-1.5 text-2xs font-semibold text-destructive-soft-foreground">
                               {secErrors}
-                              <span className="sr-only"> errors</span>
+                              <span className="sr-only"> {labels.errors}</span>
                             </span>
                           )}
                         </button>
@@ -822,7 +897,7 @@ export const SchemaForm = React.forwardRef<HTMLFormElement, SchemaFormProps>(
             <div className="flex items-center justify-end gap-3 border-t border-border pt-4">
               {submitted && errorCount > 0 && (
                 <span role="alert" className="text-xs text-destructive">
-                  Fix {errorCount} {errorCount === 1 ? "field" : "fields"} to continue
+                  {labels.fixFields(errorCount)}
                 </span>
               )}
               <Button type="submit" loading={busy} disabled={disabled}>

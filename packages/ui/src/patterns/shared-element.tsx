@@ -23,6 +23,7 @@ export const SharedElement = React.forwardRef<HTMLElement, SharedElementProps>(
     return (
       <Comp
         ref={ref}
+        data-slot="shared-element"
         data-shared-element={active ? String(name) : undefined}
         {...props}
         className={className}

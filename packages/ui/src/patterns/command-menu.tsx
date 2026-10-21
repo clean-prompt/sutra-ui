@@ -9,7 +9,7 @@ import { Spinner } from "../primitives/spinner";
 import { DialogOverlay } from "../primitives/dialog";
 import { ShortcutKeys, isShortcutKeys } from "../primitives/shortcut-keys";
 import { useHasShortcutProvider } from "../hooks/use-shortcut-manager";
-import { useLatestRef } from "../hooks/use-iso-layout-effect";
+import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useReturnFocus } from "../hooks/use-return-focus";
 import { useShortcut, useShortcutRegistry, type ShortcutRegistryGroup, type ShortcutRegistryItem } from "./shortcuts";
@@ -46,7 +46,7 @@ export const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrim
     const ref = useMergedRefs(innerRef, forwardedRef);
     const ariaLabel = props["aria-label"];
     // cmdk always points aria-labelledby at its own label; an explicit aria-label should win.
-    React.useLayoutEffect(() => {
+    useIsoLayoutEffect(() => {
       if (ariaLabel && innerRef.current) innerRef.current.removeAttribute("aria-labelledby");
     });
     return (
@@ -91,7 +91,7 @@ export const CommandList = React.forwardRef<
   const [slot, setSlot] = React.useState<HTMLElement | null>(null);
   const noMatches = useCommandState((state) => state.filtered.count === 0);
   // An item kept on screen with forceMount is an option too: only a list with none is hidden.
-  React.useLayoutEffect(() => {
+  useIsoLayoutEffect(() => {
     const el = listRef.current;
     if (el) el.hidden = noMatches && !el.querySelector("[role=option]");
   });
@@ -353,8 +353,9 @@ export function useCommandMenuShortcut(
     const onKeyDown = (event: KeyboardEvent) => {
       // Several menus on one page: the first listener to handle the shortcut wins.
       // Autofill and some IMEs dispatch keydown events without a `key`.
-      if (event.defaultPrevented || typeof event.key !== "string") return;
-      if (event.key.toLowerCase() === key.toLowerCase() && (event.metaKey || event.ctrlKey) && !event.altKey) {
+      // Like the provider path (`allowInInputs`): works in text fields, but not while composing, and shift or alt make it another shortcut.
+      if (event.defaultPrevented || event.isComposing || typeof event.key !== "string") return;
+      if (event.key.toLowerCase() === key.toLowerCase() && (event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey) {
         event.preventDefault();
         setOpenRef.current((open) => !open);
       }

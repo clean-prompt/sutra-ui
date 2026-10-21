@@ -155,6 +155,7 @@ export const AgentAvatar = React.forwardRef<SVGSVGElement, AgentAvatarProps>(
     return (
       <svg
         ref={ref}
+        data-slot="agent-avatar"
         viewBox="0 0 100 100"
         width={size}
         height={size}

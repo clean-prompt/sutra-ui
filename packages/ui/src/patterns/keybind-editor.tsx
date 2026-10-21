@@ -107,6 +107,56 @@ export interface KeybindItem {
   defaultKeys?: string;
 }
 
+/** Texts of the editor (English by default); pass any of them to translate it. */
+export interface KeybindEditorLabels {
+  /** Name of the search field. Default "Search shortcuts". */
+  search?: string;
+  /** The reset-all button. Default "Reset all". */
+  resetAll?: string;
+  /** Text when there are no shortcuts. Default "No shortcuts registered". */
+  noShortcuts?: string;
+  /** Text when the search matches nothing. */
+  noMatch?: (query: string) => string;
+  /** Group of an item that has none. Default "General". */
+  general?: string;
+  /** Name of the recorder while it listens. */
+  recording?: (label: string) => string;
+  /** Text inside the recorder. Default "Press keys…". */
+  pressKeys?: string;
+  /** Text of an unbound shortcut. Default "Not set". */
+  notSet?: string;
+  /** Name of a row's edit button. */
+  edit?: (label: string) => string;
+  /** Name of a row's reset button. */
+  reset?: (label: string) => string;
+  /** Conflict message; gets the new keys and the name of the shortcut that has them. */
+  conflict?: (keys: React.ReactNode, name: React.ReactNode) => React.ReactNode;
+  /** The replace button of a conflict. Default "Replace". */
+  replace?: string;
+  /** The cancel button of a conflict. Default "Cancel". */
+  cancel?: string;
+}
+
+const defaultLabels: Required<KeybindEditorLabels> = {
+  search: "Search shortcuts",
+  resetAll: "Reset all",
+  noShortcuts: "No shortcuts registered",
+  noMatch: (query) => `No shortcuts match “${query}”`,
+  general: "General",
+  recording: (label) => `Recording shortcut for ${label}. Press keys, Escape to cancel, Backspace to clear`,
+  pressKeys: "Press keys…",
+  notSet: "Not set",
+  edit: (label) => `Edit shortcut for ${label}`,
+  reset: (label) => `Reset ${label} to default`,
+  conflict: (keys, name) => (
+    <>
+      {keys} is already used by <strong className="font-semibold">{name}</strong>.
+    </>
+  ),
+  replace: "Replace",
+  cancel: "Cancel",
+};
+
 export interface KeybindEditorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   /** Shortcut list. Falls back to `useShortcutRegistry()` inside a `ShortcutProvider`. */
   shortcuts?: KeybindItem[];
@@ -116,7 +166,7 @@ export interface KeybindEditorProps extends Omit<React.HTMLAttributes<HTMLDivEle
   defaultValue?: Record<string, string>;
   /** Called with the full overrides object after a binding changes or is reset. */
   onValueChange?: (overrides: Record<string, string>) => void;
-  /** Fired for every binding change (including the cleared side of a replace and resets). */
+  /** Fired for every binding change (including the cleared side of a replace and resets). @deprecated Use `onValueChange` (the overrides object) when the whole value is enough. */
   onChange?: (id: string, keys: string) => void;
   /** Called after the user resets every binding to its default. */
   onResetAll?: () => void;
@@ -127,6 +177,8 @@ export interface KeybindEditorProps extends Omit<React.HTMLAttributes<HTMLDivEle
    * @default "Search shortcuts…"
    */
   searchPlaceholder?: string;
+  /** Texts and accessible names (English by default); pass them to translate the editor. */
+  labels?: KeybindEditorLabels;
 }
 
 interface Pending {
@@ -147,11 +199,13 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
       onResetAll,
       platform: platformProp,
       searchPlaceholder = "Search shortcuts…",
+      labels,
       className,
       ...props
     },
     ref
   ) => {
+    const text = { ...defaultLabels, ...labels };
     const registry = useShortcutRegistry({ includeInactive: true });
     const contextPlatform = useShortcutPlatform();
     const platform = platformProp ?? contextPlatform;
@@ -228,17 +282,17 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
     });
     const groups = new Map<string, KeybindItem[]>();
     for (const item of visible) {
-      const g = item.group ?? "General";
+      const g = item.group ?? text.general;
       if (!groups.has(g)) groups.set(g, []);
       groups.get(g)!.push(item);
     }
     const anyChanged = items.some((item) => keysOf(item) !== defaultOf(item));
 
     return (
-      <div ref={ref} className={cn("flex flex-col gap-4", className)} {...props}>
+      <div ref={ref} data-slot="keybind-editor" className={cn("flex flex-col gap-4", className)} {...props}>
         <div className="flex items-center gap-2">
           <SearchInput
-            aria-label="Search shortcuts"
+            aria-label={text.search}
             placeholder={searchPlaceholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -261,17 +315,17 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
               onResetAll?.();
             }}
           >
-            Reset all
+            {text.resetAll}
           </Button>
         </div>
 
         {items.length === 0 ? (
           <div className="flex flex-col items-center gap-2 rounded-box border border-dashed border-border py-10 text-sm text-muted-foreground">
             <RiKeyboardLine aria-hidden className="size-5" />
-            No shortcuts registered.
+            {text.noShortcuts}
           </div>
         ) : visible.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">No shortcuts match “{query}”</p>
+          <p className="py-8 text-center text-sm text-muted-foreground">{text.noMatch(query)}</p>
         ) : (
           [...groups.entries()].map(([group, list], gi) => (
             <section key={group} aria-labelledby={`${uid}-g${gi}`} className="flex flex-col gap-1.5">
@@ -286,7 +340,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                   const changed = keys !== defaultOf(item);
                   const conflictItem = isPending ? items.find((i) => i.id === pending.conflictId) : undefined;
                   return (
-                    <li key={item.id} data-keybind={item.id} className="flex flex-col gap-2 px-3 py-2.5">
+                    <li key={item.id} data-slot="keybind-editor-row" data-keybind={item.id} className="flex flex-col gap-2 px-3 py-2.5">
                       <div className="flex items-center gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="truncate text-sm font-medium text-foreground">{item.label}</div>
@@ -296,7 +350,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                           <button
                             type="button"
                             autoFocus
-                            aria-label={`Recording shortcut for ${item.label}. Press keys, Escape to cancel, Backspace to clear`}
+                            aria-label={text.recording(item.label)}
                             data-recording=""
                             onKeyDown={(e) => handleRecordKey(item, e)}
                             onBlur={() => setRecording((r) => (r === item.id ? null : r))}
@@ -305,18 +359,18 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                               focusRing
                             )}
                           >
-                            Press keys…
+                            {text.pressKeys}
                           </button>
                         ) : keys ? (
                           <ShortcutKeys keys={keys} platform={platform} size="md" />
                         ) : (
-                          <span className="text-xs italic text-muted-foreground">Not set</span>
+                          <span className="text-xs italic text-muted-foreground">{text.notSet}</span>
                         )}
                         <div className="flex shrink-0 items-center gap-0.5">
                           <Button
                             size="icon-sm"
                             variant="ghost"
-                            aria-label={`Edit shortcut for ${item.label}`}
+                            aria-label={text.edit(item.label)}
                             ref={(el) => {
                               if (el) editButtons.current.set(item.id, el);
                               else editButtons.current.delete(item.id);
@@ -331,7 +385,7 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                           <Button
                             size="icon-sm"
                             variant="ghost"
-                            aria-label={`Reset ${item.label} to default`}
+                            aria-label={text.reset(item.label)}
                             disabled={!changed}
                             className={cn(!changed && "invisible")}
                             onClick={() => {
@@ -350,8 +404,10 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                         >
                           <RiAlertLine aria-hidden className="size-4 shrink-0" />
                           <span className="min-w-0 flex-1">
-                            <ShortcutKeys keys={pending.keys} platform={platform} className="me-1 align-middle" /> is already used by{" "}
-                            <strong className="font-semibold">{conflictItem?.label ?? pending.conflictId}</strong>.
+                            {text.conflict(
+                              <ShortcutKeys keys={pending.keys} platform={platform} className="me-1 align-middle" />,
+                              conflictItem?.label ?? pending.conflictId
+                            )}
                           </span>
                           <Button
                             size="xs"
@@ -361,10 +417,10 @@ export const KeybindEditor = React.forwardRef<HTMLDivElement, KeybindEditorProps
                               setPending(null);
                             }}
                           >
-                            Replace
+                            {text.replace}
                           </Button>
                           <Button size="xs" variant="ghost" onClick={() => setPending(null)}>
-                            Cancel
+                            {text.cancel}
                           </Button>
                         </div>
                       )}

@@ -1,6 +1,7 @@
 /** Private pieces shared by the tiling modules: id helpers, the resize handle, keep-alive pane hosts and the layout context. */
 import * as React from "react";
 import { cn, focusRing } from "../lib/cn";
+import { directionOf, logicalArrow, toLogicalDelta } from "../lib/direction";
 import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
 import type { LayoutNode, LayoutTabsNode, TilingDirection, TilingDropEdge } from "./tiling-model";
 
@@ -42,8 +43,9 @@ export function TilingHandle({ direction, sizes, index, min, step, controls, lab
     const delta = step * (event.shiftKey ? 5 : 1);
     const dec = row ? "ArrowLeft" : "ArrowUp";
     const inc = row ? "ArrowRight" : "ArrowDown";
-    if (event.key === dec) onResize(index, -delta);
-    else if (event.key === inc) onResize(index, delta);
+    const key = logicalArrow(event);
+    if (key === dec) onResize(index, -delta);
+    else if (key === inc) onResize(index, delta);
     else if (event.key === "Home") onResize(index, -pair);
     else if (event.key === "End") onResize(index, pair);
     else if (event.key === "Enter") onEqualize();
@@ -93,7 +95,9 @@ export function TilingHandle({ direction, sizes, index, min, step, controls, lab
       onPointerMove={(event) => {
         const d = dragRef.current;
         if (!d || d.pointerId !== event.pointerId || !d.total) return;
-        const target = d.start + ((row ? event.clientX : event.clientY) - d.pos) / d.total;
+        const raw = (row ? event.clientX : event.clientY) - d.pos;
+        const moved = row ? toLogicalDelta(raw, directionOf(event.currentTarget)) : raw; // flex rows run right to left in RTL
+        const target = d.start + moved / d.total;
         onResize(index, target - (sizesRef.current[index] ?? 0));
       }}
       onPointerUp={(event) => {

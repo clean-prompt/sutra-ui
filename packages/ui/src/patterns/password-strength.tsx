@@ -91,7 +91,7 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
     const label = score > 0 ? (labels?.[score - 1] ?? level.label) : "";
 
     return (
-      <div ref={ref} className={cn("flex flex-col gap-2.5", className)} {...props}>
+      <div ref={ref} data-slot="password-strength" className={cn("flex flex-col gap-2.5", className)} {...props}>
         <div className="flex items-center gap-3">
           <ProgressSegments
             role="meter"

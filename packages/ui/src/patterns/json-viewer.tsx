@@ -433,10 +433,10 @@ export const JsonViewer = React.forwardRef<HTMLDivElement, JsonViewerProps>(
     const [bulk, setBulk] = React.useState<"default" | "all" | "none">("default");
     const [overrides, setOverrides] = React.useState<Map<string, boolean>>(() => new Map());
     const [chunks, setChunks] = React.useState<Map<string, number>>(() => new Map());
-    const { copy } = useCopy();
-    const [copiedKey, setCopiedKey] = React.useState<string | null>(null);
-    const copiedTimer = React.useRef<ReturnType<typeof setTimeout>>(undefined);
-    React.useEffect(() => () => clearTimeout(copiedTimer.current), []);
+    const { copied, copy } = useCopy();
+    // `useCopy` times the copied state; this only remembers which button asked.
+    const [lastCopied, setLastCopied] = React.useState<string | null>(null);
+    const copiedKey = copied ? lastCopied : null;
 
     const value = parsed.ok ? parsed.value : undefined;
     const matches = React.useMemo(() => (query && parsed.ok ? collectMatches(value, query) : null), [query, value, parsed.ok]);
@@ -464,9 +464,7 @@ export const JsonViewer = React.forwardRef<HTMLDivElement, JsonViewerProps>(
       copy: (text, kind, path) => {
         void copy(text);
         onCopy?.(text, kind, path);
-        setCopiedKey(`${kind}:${path}`);
-        clearTimeout(copiedTimer.current);
-        copiedTimer.current = setTimeout(() => setCopiedKey(null), 1600);
+        setLastCopied(`${kind}:${path}`);
       },
     };
 
@@ -477,7 +475,7 @@ export const JsonViewer = React.forwardRef<HTMLDivElement, JsonViewerProps>(
     );
 
     return (
-      <div ref={ref} className={cn("flex min-w-0 flex-col overflow-hidden rounded-box border border-border bg-card text-sm", className)} dir="ltr" {...props}>
+      <div ref={ref} data-slot="json-viewer" className={cn("flex min-w-0 flex-col overflow-hidden rounded-box border border-border bg-card text-sm", className)} dir="ltr" {...props}>
         {toolbar && parsed.ok ? (
           <div className="flex flex-wrap items-center gap-1 border-b border-border bg-subtle px-2 py-1.5">
             {searchable && mode === "tree" ? (

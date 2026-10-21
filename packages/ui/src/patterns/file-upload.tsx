@@ -195,6 +195,7 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
       <FileUploadContext.Provider value={ctx}>
         <div
           ref={ref}
+          data-slot="file-upload"
           data-disabled={disabled ? "" : undefined}
           className={cn("flex flex-col gap-3", className)}
           {...props}
@@ -261,6 +262,7 @@ export const FileUploadTrigger = React.forwardRef<HTMLButtonElement, FileUploadT
       return (
         <Button
           ref={ref}
+          data-slot="file-upload-trigger"
           variant={variant}
           disabled={disabled || ctxDisabled}
           leadingIcon={leadingIcon ?? <RiUploadLine aria-hidden />}
@@ -281,6 +283,7 @@ export const FileUploadTrigger = React.forwardRef<HTMLButtonElement, FileUploadT
       <>
         <Button
           ref={ref}
+          data-slot="file-upload-trigger"
           variant={variant}
           disabled={isDisabled}
           leadingIcon={leadingIcon ?? <RiFolderUploadLine aria-hidden />}
@@ -331,6 +334,7 @@ export const FileUploadDropzone = React.forwardRef<HTMLDivElement, FileUploadDro
     return (
       <Dropzone
         ref={ref}
+        data-slot="file-upload-dropzone"
         accept={ctx.accept}
         maxSize={ctx.maxSize}
         maxFiles={ctx.maxFiles}
@@ -358,7 +362,7 @@ export const FileUploadList = React.forwardRef<HTMLUListElement, FileUploadListP
     const { files } = useFileUpload();
     if (!children && files.length === 0) return null;
     return (
-      <ul ref={ref} aria-label="Files" className={cn("flex flex-col gap-2", className)} {...props}>
+      <ul ref={ref} data-slot="file-upload-list" aria-label="Files" className={cn("flex flex-col gap-2", className)} {...props}>
         {children ?? files.map((f) => <FileUploadItem key={f.id} file={f} />)}
       </ul>
     );
@@ -430,6 +434,7 @@ export const FileUploadItem = React.forwardRef<HTMLLIElement, FileUploadItemProp
     return (
       <li
         ref={ref}
+        data-slot="file-upload-item"
         data-status={status}
         className={cn(
           "group/file flex items-center gap-3 rounded-box border border-border bg-card p-3 shadow-xs transition-colors",

@@ -104,6 +104,89 @@ export interface TransferStats {
   eta: number | null;
 }
 
+/** Texts of the transfer views (English by default); pass any of them to translate a list, row or tray. */
+export interface TransferLabels {
+  /** Status words ("Queued", "In progress", …). */
+  status?: Partial<Record<TransferStatus, string>>;
+  /** Direction names, the accessible name of the row badge ("Upload", …). */
+  direction?: Partial<Record<TransferDirection, string>>;
+  /** Per-status counts in the summary line, e.g. `(n) => `${n} active``. */
+  count?: Partial<Record<TransferStatus, (n: number) => string>>;
+  /** Summary line when there are no transfers. Default "No transfers". */
+  noTransfers?: string;
+  /** Row action names (they get the item name). */
+  pause?: (name: string) => string;
+  resume?: (name: string) => string;
+  cancel?: (name: string) => string;
+  retry?: (name: string) => string;
+  open?: (name: string) => string;
+  remove?: (name: string) => string;
+  /** Name of a row's progress bar. Default "{name} progress". */
+  progress?: (name: string) => string;
+  /** Transferred of total bytes. Default "{bytes} of {total}". */
+  bytesOf?: (bytes: string, total: string) => string;
+  /** Time left. Default "{eta} left". */
+  left?: (eta: string) => string;
+  /** The "Clear completed" button. */
+  clearCompleted?: string;
+  /** Tray: collapse button name. Default "Minimize transfers". */
+  minimize?: string;
+  /** Tray: expand button name. Default "Expand transfers". */
+  expand?: string;
+  /** Tray: close button name. Default "Close transfers". */
+  close?: string;
+  /** Tray: name of the overall progress bar. Default "Overall progress". */
+  overall?: string;
+}
+
+const defaultStatusLabels: Record<TransferStatus, string> = {
+  queued: "Queued",
+  active: "In progress",
+  paused: "Paused",
+  completed: "Completed",
+  failed: "Failed",
+  canceled: "Canceled",
+};
+const defaultDirectionLabels: Record<TransferDirection, string> = { upload: "Upload", download: "Download", move: "Move", process: "Process" };
+const defaultCountLabels: Record<TransferStatus, (n: number) => string> = {
+  active: (n) => `${n} active`,
+  queued: (n) => `${n} queued`,
+  paused: (n) => `${n} paused`,
+  failed: (n) => `${n} failed`,
+  completed: (n) => `${n} done`,
+  canceled: (n) => `${n} canceled`,
+};
+
+interface ResolvedTransferLabels extends Required<Omit<TransferLabels, "status" | "direction" | "count">> {
+  status: Record<TransferStatus, string>;
+  direction: Record<TransferDirection, string>;
+  count: Record<TransferStatus, (n: number) => string>;
+}
+
+function resolveLabels(labels?: TransferLabels): ResolvedTransferLabels {
+  return {
+    noTransfers: "No transfers",
+    pause: (name) => `Pause ${name}`,
+    resume: (name) => `Resume ${name}`,
+    cancel: (name) => `Cancel ${name}`,
+    retry: (name) => `Retry ${name}`,
+    open: (name) => `Open ${name}`,
+    remove: (name) => `Remove ${name}`,
+    progress: (name) => `${name} progress`,
+    bytesOf: (bytes, total) => `${bytes} of ${total}`,
+    left: (eta) => `${eta} left`,
+    clearCompleted: "Clear completed",
+    minimize: "Minimize transfers",
+    expand: "Expand transfers",
+    close: "Close transfers",
+    overall: "Overall progress",
+    ...labels,
+    status: { ...defaultStatusLabels, ...labels?.status },
+    direction: { ...defaultDirectionLabels, ...labels?.direction },
+    count: { ...defaultCountLabels, ...labels?.count },
+  };
+}
+
 const SPEED_WINDOW_MS = 5000;
 
 /** Percent, speed (bytes/s) and ETA (s) for a transfer, from explicit values or samples. */
@@ -145,8 +228,12 @@ export interface TransferSummary {
   text: string;
 }
 
-/** Counts per status, combined speed and a "3 active · 1 failed · 12.4 MB/s" line. */
-export function summarizeTransfers(items: TransferItemData[], now: number = Date.now()): TransferSummary {
+/** Finished rows that "Clear completed" removes: completed and canceled. */
+const finishedCount = (counts: Record<TransferStatus, number>) => counts.completed + counts.canceled;
+
+/** Counts per status, combined speed and a "3 active · 1 failed · 12.4 MB/s" line (`labels` translates it). */
+export function summarizeTransfers(items: TransferItemData[], now: number = Date.now(), labels?: TransferLabels): TransferSummary {
+  const t = resolveLabels(labels);
   const counts: Record<TransferStatus, number> = { queued: 0, active: 0, paused: 0, completed: 0, failed: 0, canceled: 0 };
   let speed = 0;
   let done = 0;
@@ -169,34 +256,31 @@ export function summarizeTransfers(items: TransferItemData[], now: number = Date
   }
   const percent = total > 0 ? (done / total) * 100 : pctN > 0 ? pctSum / pctN : null;
   const parts: string[] = [];
-  if (counts.active) parts.push(`${counts.active} active`);
-  if (counts.queued) parts.push(`${counts.queued} queued`);
-  if (counts.paused) parts.push(`${counts.paused} paused`);
-  if (counts.failed) parts.push(`${counts.failed} failed`);
-  if (counts.completed) parts.push(`${counts.completed} done`);
-  if (counts.canceled) parts.push(`${counts.canceled} canceled`);
+  for (const status of ["active", "queued", "paused", "failed", "completed", "canceled"] as const) {
+    if (counts[status]) parts.push(t.count[status](counts[status]));
+  }
   if (speed > 0) parts.push(formatSpeed(speed));
-  return { counts, speed, percent, text: parts.join(" · ") || "No transfers" };
+  return { counts, speed, percent, text: parts.join(" · ") || t.noTransfers };
 }
 
 /* ------------------------------------------------------------------ */
 /* TransferItem                                                        */
 /* ------------------------------------------------------------------ */
 
-const statusMeta: Record<TransferStatus, { label: string; text: string; color: ProgressColor }> = {
-  queued: { label: "Queued", text: "text-muted-foreground", color: "neutral" },
-  active: { label: "In progress", text: "text-primary", color: "primary" },
-  paused: { label: "Paused", text: "text-warning-soft-foreground", color: "warning" },
-  completed: { label: "Completed", text: "text-success", color: "success" },
-  failed: { label: "Failed", text: "text-destructive", color: "destructive" },
-  canceled: { label: "Canceled", text: "text-muted-foreground", color: "neutral" },
+const statusMeta: Record<TransferStatus, { text: string; color: ProgressColor }> = {
+  queued: { text: "text-muted-foreground", color: "neutral" },
+  active: { text: "text-primary", color: "primary" },
+  paused: { text: "text-warning-soft-foreground", color: "warning" },
+  completed: { text: "text-success", color: "success" },
+  failed: { text: "text-destructive", color: "destructive" },
+  canceled: { text: "text-muted-foreground", color: "neutral" },
 };
 
-const directionMeta: Record<TransferDirection, { label: string; Icon: typeof RiUploadLine }> = {
-  upload: { label: "Upload", Icon: RiUploadLine },
-  download: { label: "Download", Icon: RiDownloadLine },
-  move: { label: "Move", Icon: RiFolderTransferLine },
-  process: { label: "Process", Icon: RiCpuLine },
+const directionIcons: Record<TransferDirection, typeof RiUploadLine> = {
+  upload: RiUploadLine,
+  download: RiDownloadLine,
+  move: RiFolderTransferLine,
+  process: RiCpuLine,
 };
 
 export interface TransferItemActions {
@@ -226,6 +310,8 @@ export interface TransferItemProps
   density?: Density;
   /** Legacy form of `density="compact"`. @deprecated Use `density="compact"`. */
   compact?: boolean;
+  /** Texts and accessible names (English by default); pass them to translate the row. */
+  labels?: TransferLabels;
 }
 
 function ActionButton({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {
@@ -266,6 +352,7 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
       now,
       density,
       compact: compactProp,
+      labels,
       onPause,
       onResume,
       onCancel,
@@ -277,6 +364,7 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
     },
     ref
   ) => {
+    const t = resolveLabels(labels);
     const status = normalizeTransferStatus(statusProp);
     const compact = normalizeDensity(density ?? compactProp) === "compact";
     const stats = getTransferStats(
@@ -284,37 +372,36 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
       now
     );
     const meta = statusMeta[status];
-    const dir = direction ? directionMeta[direction] : null;
+    const DirIcon = direction ? directionIcons[direction] : null;
+    const dirLabel = direction ? t.direction[direction] : "";
     const showBar = status === "active" || status === "paused" || (status === "queued" && stats.percent != null && stats.percent > 0);
 
     const metaParts: React.ReactNode[] = [];
     if (status === "completed") {
       metaParts.push(total != null ? formatBytes(total) : null);
-    } else if (status === "failed" || status === "canceled") {
-      if (bytes != null && total != null) metaParts.push(`${formatBytes(bytes)} of ${formatBytes(total)}`);
     } else {
-      if (bytes != null && total != null) metaParts.push(`${formatBytes(bytes)} of ${formatBytes(total)}`);
-      else if (total != null) metaParts.push(formatBytes(total));
+      if (bytes != null && total != null) metaParts.push(t.bytesOf(formatBytes(bytes), formatBytes(total)));
+      else if (total != null && status !== "failed" && status !== "canceled") metaParts.push(formatBytes(total));
       if (status === "active") {
         if (stats.speed != null) metaParts.push(formatSpeed(stats.speed));
-        if (stats.eta != null) metaParts.push(`${formatEta(stats.eta)} left`);
+        if (stats.eta != null) metaParts.push(t.left(formatEta(stats.eta)));
       }
     }
     const metaText = metaParts.filter(Boolean);
 
     const actions: React.ReactNode[] = [];
     if (status === "active" && onPause)
-      actions.push(<ActionButton key="pause" label={`Pause ${name}`} onClick={onPause}><RiPauseLine aria-hidden /></ActionButton>);
+      actions.push(<ActionButton key="pause" label={t.pause(name)} onClick={onPause}><RiPauseLine aria-hidden /></ActionButton>);
     if (status === "paused" && onResume)
-      actions.push(<ActionButton key="resume" label={`Resume ${name}`} onClick={onResume}><RiPlayLine aria-hidden /></ActionButton>);
+      actions.push(<ActionButton key="resume" label={t.resume(name)} onClick={onResume}><RiPlayLine aria-hidden /></ActionButton>);
     if ((status === "failed" || status === "canceled") && onRetry)
-      actions.push(<ActionButton key="retry" label={`Retry ${name}`} onClick={onRetry}><RiRestartLine aria-hidden /></ActionButton>);
+      actions.push(<ActionButton key="retry" label={t.retry(name)} onClick={onRetry}><RiRestartLine aria-hidden /></ActionButton>);
     if (status === "completed" && onOpen)
-      actions.push(<ActionButton key="open" label={`Open ${name}`} onClick={onOpen}><RiExternalLinkLine aria-hidden /></ActionButton>);
+      actions.push(<ActionButton key="open" label={t.open(name)} onClick={onOpen}><RiExternalLinkLine aria-hidden /></ActionButton>);
     if ((status === "queued" || status === "active" || status === "paused") && onCancel)
-      actions.push(<ActionButton key="cancel" label={`Cancel ${name}`} onClick={onCancel}><RiCloseLine aria-hidden /></ActionButton>);
+      actions.push(<ActionButton key="cancel" label={t.cancel(name)} onClick={onCancel}><RiCloseLine aria-hidden /></ActionButton>);
     if ((status === "completed" || status === "failed" || status === "canceled") && onRemove)
-      actions.push(<ActionButton key="remove" label={`Remove ${name}`} onClick={onRemove}><RiDeleteBinLine aria-hidden /></ActionButton>);
+      actions.push(<ActionButton key="remove" label={t.remove(name)} onClick={onRemove}><RiDeleteBinLine aria-hidden /></ActionButton>);
 
     const StatusIcon =
       status === "completed" ? RiCheckboxCircleFill : status === "failed" ? RiErrorWarningFill : status === "canceled" ? RiForbidLine : null;
@@ -322,6 +409,7 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
     return (
       <li
         ref={ref}
+        data-slot="transfer-item"
         data-status={status}
         data-direction={direction}
         className={cn("group/transfer flex items-start gap-3", compact ? "px-3 py-2.5" : "px-4 py-3", className)}
@@ -335,14 +423,14 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
           ) : (
             <FileFormatIcon ext={ext ?? name} size="sm" />
           )}
-          {dir && (
+          {DirIcon && (
             <span
               role="img"
-              aria-label={dir.label}
-              title={dir.label}
+              aria-label={dirLabel}
+              title={dirLabel}
               className="absolute -bottom-1 -end-1.5 flex size-4 items-center justify-center rounded-full border border-background bg-foreground text-background [&_svg]:size-2.5"
             >
-              <dir.Icon aria-hidden />
+              <DirIcon aria-hidden />
             </span>
           )}
         </span>
@@ -358,7 +446,7 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
           {detail && <p className="truncate text-xs text-muted-foreground">{detail}</p>}
           {showBar && (
             <Progress
-              aria-label={`${name} progress`}
+              aria-label={t.progress(name)}
               value={status === "active" && stats.percent == null ? null : (stats.percent ?? 0)}
               size="xs"
               color={meta.color}
@@ -368,7 +456,7 @@ export const TransferItem = React.forwardRef<HTMLLIElement, TransferItemProps>(
           <p className="flex min-w-0 flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
             <span className={cn("inline-flex items-center gap-1 font-medium", meta.text)}>
               {StatusIcon && <StatusIcon aria-hidden className="size-3.5" />}
-              {meta.label}
+              {t.status[status]}
             </span>
             {metaText.map((part, i) => (
               <React.Fragment key={i}>
@@ -430,10 +518,21 @@ export interface TransferListProps
   emptyMessage?: React.ReactNode;
   /** Max height of the scrolling list. */
   maxHeight?: number | string;
+  /** Texts and accessible names (English by default); pass them to translate the list. */
+  labels?: TransferLabels;
 }
 
 function bind(fn: ((id: string) => void) | undefined, id: string) {
   return fn ? () => fn(id) : undefined;
+}
+
+/** The "Clear completed" button shared by the list header and the tray. */
+function ClearCompletedButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <Button type="button" variant="ghost" size="xs" onClick={onClick}>
+      {label}
+    </Button>
+  );
 }
 
 /** Queue of transfers with a summary header ("3 active · 1 failed · 12.4 MB/s") and "Clear completed". */
@@ -448,6 +547,7 @@ export const TransferList = React.forwardRef<HTMLDivElement, TransferListProps>(
       emptyState,
       emptyMessage,
       maxHeight,
+      labels,
       onPause,
       onResume,
       onCancel,
@@ -460,12 +560,13 @@ export const TransferList = React.forwardRef<HTMLDivElement, TransferListProps>(
     },
     ref
   ) => {
-    const summary = summarizeTransfers(items, now);
-    const finished = summary.counts.completed + summary.counts.canceled;
+    const t = resolveLabels(labels);
+    const summary = summarizeTransfers(items, now, labels);
+    const finished = finishedCount(summary.counts);
     const density = normalizeDensity(densityProp ?? compactProp);
     const compact = density === "compact";
     return (
-      <div ref={ref} className={cn("flex min-w-0 flex-col", className)} {...props}>
+      <div ref={ref} data-slot="transfer-list" className={cn("flex min-w-0 flex-col", className)} {...props}>
         {title !== null && (
           <div className={cn("flex items-center gap-3 border-b border-border", compact ? "px-3 py-2" : "px-4 py-2.5")}>
             <div className="min-w-0 flex-1">
@@ -474,15 +575,11 @@ export const TransferList = React.forwardRef<HTMLDivElement, TransferListProps>(
                 {summary.text}
               </p>
             </div>
-            {onClearCompleted && finished > 0 && (
-              <Button type="button" variant="ghost" size="xs" onClick={onClearCompleted}>
-                Clear completed
-              </Button>
-            )}
+            {onClearCompleted && finished > 0 && <ClearCompletedButton label={t.clearCompleted} onClick={onClearCompleted} />}
           </div>
         )}
         {items.length === 0 ? (
-          <p className="px-4 py-6 text-center text-sm text-muted-foreground">{emptyState ?? emptyMessage ?? "No transfers"}</p>
+          <p className="px-4 py-6 text-center text-sm text-muted-foreground">{emptyState ?? emptyMessage ?? t.noTransfers}</p>
         ) : (
           <ul
             role="list"
@@ -496,6 +593,7 @@ export const TransferList = React.forwardRef<HTMLDivElement, TransferListProps>(
                 {...item}
                 now={now}
                 density={density}
+                labels={labels}
                 onPause={bind(onPause, item.id)}
                 onResume={bind(onResume, item.id)}
                 onCancel={bind(onCancel, item.id)}
@@ -568,17 +666,19 @@ export const TransferTray = React.forwardRef<HTMLDivElement, TransferTrayProps>(
       inline,
       now,
       maxHeight = 320,
+      labels,
       className,
       ...listProps
     },
     ref
   ) => {
+    const t = resolveLabels(labels);
     const [minimized, setMinimized] = useControllableState({
       value: minimizedProp,
       defaultValue: defaultMinimized,
       onChange: onMinimizedChange,
     });
-    const summary = summarizeTransfers(items, now);
+    const summary = summarizeTransfers(items, now, labels);
     const heading = title ?? trayTitle(items, summary.counts);
     const headingId = React.useId();
     const bodyId = React.useId();
@@ -588,6 +688,7 @@ export const TransferTray = React.forwardRef<HTMLDivElement, TransferTrayProps>(
         ref={ref}
         role="region"
         aria-labelledby={headingId}
+        data-slot="transfer-tray"
         className={cn(
           "z-50 flex w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-box border border-border bg-popover text-foreground shadow-2xl",
           !inline && "fixed bottom-4",
@@ -607,7 +708,7 @@ export const TransferTray = React.forwardRef<HTMLDivElement, TransferTrayProps>(
             type="button"
             variant="ghost"
             size="icon-sm"
-            aria-label={minimized ? "Expand transfers" : "Minimize transfers"}
+            aria-label={minimized ? t.expand : t.minimize}
             aria-expanded={!minimized}
             aria-controls={bodyId}
             onClick={() => setMinimized(!minimized)}
@@ -615,21 +716,19 @@ export const TransferTray = React.forwardRef<HTMLDivElement, TransferTrayProps>(
             {minimized ? <RiArrowUpSLine aria-hidden /> : <RiArrowDownSLine aria-hidden />}
           </Button>
           {onClose && (
-            <Button type="button" variant="ghost" size="icon-sm" aria-label="Close transfers" onClick={onClose}>
+            <Button type="button" variant="ghost" size="icon-sm" aria-label={t.close} onClick={onClose}>
               <RiCloseLine aria-hidden />
             </Button>
           )}
         </div>
         {running && summary.percent != null && (
-          <Progress aria-label="Overall progress" value={summary.percent} size="xs" className="rounded-none" />
+          <Progress aria-label={t.overall} value={summary.percent} size="xs" className="rounded-none" />
         )}
         <div id={bodyId} hidden={minimized}>
-          <TransferList items={items} title={null} now={now} density="compact" maxHeight={maxHeight} {...listProps} />
-          {listProps.onClearCompleted && summary.counts.completed + summary.counts.canceled > 0 && (
+          <TransferList items={items} title={null} now={now} density="compact" maxHeight={maxHeight} labels={labels} {...listProps} />
+          {listProps.onClearCompleted && finishedCount(summary.counts) > 0 && (
             <div className="flex justify-end border-t border-border px-2 py-1.5">
-              <Button type="button" variant="ghost" size="xs" onClick={listProps.onClearCompleted}>
-                Clear completed
-              </Button>
+              <ClearCompletedButton label={t.clearCompleted} onClick={listProps.onClearCompleted} />
             </div>
           )}
         </div>

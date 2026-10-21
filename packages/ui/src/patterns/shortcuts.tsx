@@ -342,9 +342,9 @@ export function ShortcutsDialog({
               {q ? `No shortcuts match “${query}”` : "No shortcuts registered"}
             </p>
           ) : (
-            <div className="grid gap-x-8 gap-y-6 pb-1 sm:grid-cols-2">
+            <div data-slot="shortcuts-dialog-list" className="grid gap-x-8 gap-y-6 pb-1 sm:grid-cols-2">
               {groups.map((group) => (
-                <section key={group.group} aria-label={group.group}>
+                <section key={group.group} data-slot="shortcuts-dialog-group" aria-label={group.group}>
                   <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{group.group}</h3>
                   <ul className="flex flex-col divide-y divide-border">
                     {group.shortcuts.map((s) => (

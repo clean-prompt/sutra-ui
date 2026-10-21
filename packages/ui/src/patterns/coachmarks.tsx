@@ -8,6 +8,7 @@ import { normalizeTone, toneClasses, type Tone, type ToneInput } from "../lib/to
 import { clamp } from "../lib/math";
 import { useChangeKey } from "../hooks/use-change-key";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
 import { prefersReducedMotion } from "../hooks/use-media-query";
 import { useSafeId } from "../hooks/use-safe-id";
 import { useResizeObserver } from "../hooks/use-resize-observer";
@@ -51,8 +52,15 @@ export interface CoachmarkStep {
 export interface CoachmarkTourLabels {
   next?: string;
   back?: string;
+  /** Accessible name of the close button. Default "Skip tour". */
   skip?: string;
   finish?: string;
+  /** Text of the skip button in the footer. Default "Skip". */
+  skipShort?: string;
+  /** Note shown when the step's target is not on screen. */
+  missingTarget?: string;
+  /** Step counter. Default "Step n of N". */
+  step?: (n: number, count: number) => string;
 }
 
 export interface CoachmarkTourProps {
@@ -182,7 +190,16 @@ export function CoachmarkTour({
   const [targetEl, setTargetEl] = React.useState<HTMLElement | null>(null);
   const frameRef = React.useRef(0);
   const uid = useSafeId("coachmark");
-  const { next: nextLabel = "Next", back: backLabel = "Back", skip: skipLabel = "Skip tour", finish: finishLabel = "Finish" } = labels;
+  const {
+    next: nextLabel = "Next",
+    back: backLabel = "Back",
+    skip: skipLabel = "Skip tour",
+    finish: finishLabel = "Finish",
+    skipShort: skipShortLabel = "Skip",
+    missingTarget: missingTargetLabel = "This part of the page isn't visible right now.",
+    step: stepLabel = (n: number, total: number) => `Step ${n} of ${total}`,
+  } = labels;
+  const currentRef = useLatestRef(current);
 
   const measure = React.useCallback(() => {
     const el = resolveTarget(current?.target);
@@ -198,17 +215,33 @@ export function CoachmarkTour({
     );
   }, [current?.target]);
 
-  React.useLayoutEffect(() => {
-    if (!open || !current) {
+  // Keyed on the step index (and the target through `measure`), not on the `steps` literal: a parent that re-renders with a
+  // fresh array must not scroll the page or pull focus back into the card.
+  const hasStep = !!current;
+  useIsoLayoutEffect(() => {
+    const step = currentRef.current;
+    if (!open || !step) {
       setTargetEl(null);
       return;
     }
-    const el = resolveTarget(current.target);
+    const el = resolveTarget(step.target);
     setTargetEl(el);
     el?.scrollIntoView?.({ block: "center", inline: "nearest", behavior: prefersReducedMotion() ? "auto" : "smooth" });
     measure();
+  }, [open, hasStep, index, measure, currentRef]);
+
+  // The tour is modal: focus enters the card when it opens or the step changes, and goes back to where it was on close.
+  useIsoLayoutEffect(() => {
+    if (!open || !hasStep) return;
+    const opener = document.activeElement;
     cardRef.current?.focus({ preventScroll: true });
-  }, [open, index, current, measure]);
+    return () => {
+      if (opener instanceof HTMLElement && opener !== document.body && opener.isConnected) opener.focus({ preventScroll: true });
+    };
+  }, [open, hasStep]);
+  useIsoLayoutEffect(() => {
+    if (open && hasStep) cardRef.current?.focus({ preventScroll: true });
+  }, [index, open, hasStep]);
 
   // Re-measure at most once per frame on scroll, resize and target resize.
   const schedule = React.useCallback(() => {
@@ -231,7 +264,7 @@ export function CoachmarkTour({
     };
   }, [open, measure, schedule]);
 
-  React.useLayoutEffect(() => {
+  useIsoLayoutEffect(() => {
     const el = cardRef.current;
     if (!el) return;
     const { offsetWidth: width, offsetHeight: height } = el;
@@ -256,6 +289,26 @@ export function CoachmarkTour({
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.isComposing || e.keyCode === 229) return;
+      // Keep Tab inside the card: the page behind is covered by the overlay.
+      if (e.key === "Tab") {
+        const card = cardRef.current;
+        if (!card) return;
+        const items = Array.from(card.querySelectorAll<HTMLElement>("button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])"));
+        const first = items[0] ?? card;
+        const lastItem = items[items.length - 1] ?? card;
+        const active = document.activeElement;
+        if (!card.contains(active)) {
+          e.preventDefault();
+          (e.shiftKey ? lastItem : first).focus();
+        } else if (e.shiftKey && (active === card || active === first)) {
+          e.preventDefault();
+          lastItem.focus();
+        } else if (!e.shiftKey && active === lastItem) {
+          e.preventDefault();
+          first.focus();
+        }
+        return;
+      }
       // Leave keys alone in text fields (the spotlighted target may be one): arrows move the caret there.
       const t = e.target as HTMLElement | null;
       if (t && (t.isContentEditable || (t.closest && t.closest("input, textarea, select, [contenteditable]:not([contenteditable='false'])")))) return;
@@ -285,7 +338,7 @@ export function CoachmarkTour({
   const last = index === count - 1;
 
   return createPortal(
-    <div className={cn("fixed inset-0 z-50", className)} data-coachmark-tour="">
+    <div className={cn("fixed inset-0 z-50", className)} data-slot="coachmark-tour" data-coachmark-tour="">
       <svg
         aria-hidden
         className="absolute inset-0 size-full"
@@ -317,9 +370,11 @@ export function CoachmarkTour({
       <div
         ref={cardRef}
         role="dialog"
+        aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={current.body ? bodyId : undefined}
         tabIndex={-1}
+        data-slot="coachmark-card"
         data-side={pos.side}
         data-step={index}
         className={cn(
@@ -348,13 +403,13 @@ export function CoachmarkTour({
         )}
         {!rect && current.target && (
           <p className="mt-2 text-xs text-muted-foreground/80" data-coachmark-missing="">
-            This part of the page isn&apos;t visible right now.
+            {missingTargetLabel}
           </p>
         )}
         <div className="mt-4 flex items-center gap-2">
           <span className="text-xs tabular-nums text-muted-foreground" aria-live="polite">
             <bdi dir="ltr">
-              Step {index + 1} of {count}
+              {stepLabel(index + 1, count)}
             </bdi>
           </span>
           <div className="ms-auto flex items-center gap-1.5">
@@ -365,7 +420,7 @@ export function CoachmarkTour({
             )}
             {!last && (
               <Button size="xs" variant="ghost" onClick={skip}>
-                Skip
+                {skipShortLabel}
               </Button>
             )}
             {index > 0 && (
@@ -505,6 +560,7 @@ export function TipBubble({
           aria-labelledby={`${uid}-title`}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onInteractOutside={(e) => e.preventDefault()}
+          data-slot="tip-bubble"
           data-tip={tip.id}
           className={cn(
             "relative z-50 w-72 max-w-[calc(100vw-1rem)] overflow-hidden rounded-box border border-border bg-popover p-3 ps-4 text-popover-foreground shadow-lg outline-none",

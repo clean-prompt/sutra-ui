@@ -112,6 +112,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
       return (
         <SparkBar
           ref={ref}
+          data-slot="sparkline"
           data={data}
           width={width}
           height={height}
@@ -159,6 +160,7 @@ export const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
       >
         <svg
           ref={ref}
+          data-slot="sparkline"
           role="img"
           aria-label={ariaLabel}
           width={responsive ? "100%" : width}
@@ -298,6 +300,7 @@ export const SparkBar = React.forwardRef<SVGSVGElement, SparkBarProps>(
       >
         <svg
           ref={ref}
+          data-slot="spark-bar"
           role="img"
           aria-label={label ?? (n > 0 ? `${n} values, latest ${data[n - 1]}` : "No data")}
           width={responsive ? "100%" : width}

@@ -97,7 +97,7 @@ export const ChatInlineCitation = React.forwardRef<HTMLElement, ChatInlineCitati
     );
     if (!href) {
       return (
-        <sup ref={ref} className={pill} {...props}>
+        <sup ref={ref} data-slot="inline-citation" className={pill} {...props}>
           {index}
         </sup>
       );
@@ -106,6 +106,7 @@ export const ChatInlineCitation = React.forwardRef<HTMLElement, ChatInlineCitati
       <CitationHoverCard source={{ href, title, snippet }}>
         <a
           ref={ref as React.Ref<HTMLAnchorElement>}
+          data-slot="inline-citation"
           href={safeHref(href)}
           target="_blank"
           rel="noopener noreferrer"

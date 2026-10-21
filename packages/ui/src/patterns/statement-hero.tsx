@@ -90,6 +90,7 @@ export const StatementHero = React.forwardRef<HTMLElement, StatementHeroProps>(
     return (
       <section
         ref={ref}
+        data-slot="statement-hero"
         aria-labelledby={titleId}
         data-size={size}
         data-align={align}

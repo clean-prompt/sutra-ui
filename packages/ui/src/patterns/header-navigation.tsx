@@ -43,13 +43,14 @@ export const HeaderNav = React.forwardRef<HTMLElement, HeaderNavProps>(
     return (
       <header
         ref={ref}
+        data-slot="header-nav"
         data-scrolled={scrolled || undefined}
         className={cn(
           // z-40: sticky chrome sits above page content but below floating content/overlays (z-50).
           "z-40 w-full border-b transition-[border-color,box-shadow,background-color] duration-200",
           sticky && "sticky top-0 glass",
           !sticky && "bg-background",
-          showBorder ? "border-border shadow-[0_1px_12px_-6px_rgb(10_13_18/0.08)]" : "border-transparent",
+          showBorder ? "border-border shadow-sm" : "border-transparent",
           className
         )}
         {...props}
@@ -75,6 +76,7 @@ export const HeaderNavBrand = React.forwardRef<HTMLAnchorElement, HeaderNavBrand
     return (
       <Comp
         ref={ref}
+        data-slot="header-nav-brand"
         className={cn(
           "inline-flex shrink-0 items-center gap-2 rounded-sm text-base font-semibold tracking-tight text-foreground [&_svg]:size-6",
           focusRing,
@@ -96,6 +98,7 @@ export interface HeaderNavMenuProps extends React.ComponentPropsWithoutRef<typeo
 export const HeaderNavMenu = React.forwardRef<React.ElementRef<typeof NavigationMenuPrimitive.Root>, HeaderNavMenuProps>(({ className, listClassName, children, delayDuration = 120, ...props }, ref) => (
   <NavigationMenuPrimitive.Root
     ref={ref}
+    data-slot="header-nav-menu"
     dir={useDirection()}
     delayDuration={delayDuration}
     className={cn("relative z-10 hidden max-w-max flex-1 items-center md:flex", className)}
@@ -124,7 +127,7 @@ export const HeaderNavItem = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Item>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Item>
 >(({ className, ...props }, ref) => (
-  <NavigationMenuPrimitive.Item ref={ref} className={cn("relative", className)} {...props} />
+  <NavigationMenuPrimitive.Item ref={ref} data-slot="header-nav-item" className={cn("relative", className)} {...props} />
 ));
 HeaderNavItem.displayName = "HeaderNavItem";
 
@@ -140,7 +143,7 @@ export const HeaderNavTrigger = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
-  <NavigationMenuPrimitive.Trigger ref={ref} className={cn(topLevelClass, className)} {...props}>
+  <NavigationMenuPrimitive.Trigger ref={ref} data-slot="header-nav-trigger" className={cn(topLevelClass, className)} {...props}>
     {children}
     <RiArrowDownSLine
       aria-hidden
@@ -157,6 +160,7 @@ export const HeaderNavContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <NavigationMenuPrimitive.Content
     ref={ref}
+    data-slot="header-nav-content"
     className={cn(
       "start-0 top-0 w-full p-2 md:absolute md:w-auto",
       "data-[motion^=from-]:animate-in data-[motion^=from-]:fade-in-0 data-[motion^=to-]:animate-out data-[motion^=to-]:fade-out-0",
@@ -179,6 +183,7 @@ export const HeaderNavLink = React.forwardRef<React.ElementRef<typeof Navigation
   ({ className, variant = "top", ...props }, ref) => (
     <NavigationMenuPrimitive.Link
       ref={ref}
+      data-slot="header-nav-link"
       className={cn(
         variant === "top"
           ? topLevelClass
@@ -238,13 +243,13 @@ export const HeaderNavFeatureLink = React.forwardRef<
   );
   if (asChild && React.isValidElement<{ children?: React.ReactNode }>(children)) {
     return (
-      <NavigationMenuPrimitive.Link ref={ref} asChild className={linkClass} {...props}>
+      <NavigationMenuPrimitive.Link ref={ref} data-slot="header-nav-feature-link" asChild className={linkClass} {...props}>
         {React.cloneElement(children, undefined, body)}
       </NavigationMenuPrimitive.Link>
     );
   }
   return (
-    <NavigationMenuPrimitive.Link ref={ref} className={linkClass} {...props}>
+    <NavigationMenuPrimitive.Link ref={ref} data-slot="header-nav-feature-link" className={linkClass} {...props}>
       {body}
     </NavigationMenuPrimitive.Link>
   );
@@ -254,7 +259,7 @@ HeaderNavFeatureLink.displayName = "HeaderNavFeatureLink";
 /** Right-aligned actions (sign in, CTA, theme toggle). */
 export const HeaderNavActions = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("ms-auto flex shrink-0 items-center gap-2", className)} {...props} />
+    <div ref={ref} data-slot="header-nav-actions" className={cn("ms-auto flex shrink-0 items-center gap-2", className)} {...props} />
   )
 );
 HeaderNavActions.displayName = "HeaderNavActions";

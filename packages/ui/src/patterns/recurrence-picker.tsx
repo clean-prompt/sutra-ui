@@ -125,7 +125,7 @@ export const RecurrencePicker = React.forwardRef<HTMLFieldSetElement, Recurrence
     const repeating = rule.freq !== "none";
 
     return (
-      <fieldset ref={ref} className={cn("flex min-w-0 flex-col gap-4", className)} {...props}>
+      <fieldset ref={ref} data-slot="recurrence-picker" className={cn("flex min-w-0 flex-col gap-4", className)} {...props}>
         <legend className="mb-2 text-sm font-medium text-foreground">{legend}</legend>
         <SegmentedControl
           size="sm"

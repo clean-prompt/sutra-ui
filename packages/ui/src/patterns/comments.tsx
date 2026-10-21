@@ -11,6 +11,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density, hitArea } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useNow } from "../hooks/use-now";
 import { EmojiGlyph } from "../assets/emoji-ink";
 import { Avatar } from "../primitives/avatar";
 import { Button } from "../primitives/button";
@@ -243,7 +244,7 @@ function CommentItem({
   onDelete?: CommentHandlers["onDelete"];
   onReact?: CommentHandlers["onReact"];
   reactionOptions: string[];
-  now?: Date | number;
+  now: Date | number;
 }) {
   const [editing, setEditing] = React.useState(false);
   const [pickerOpen, setPickerOpen] = React.useState(false);
@@ -256,7 +257,7 @@ function CommentItem({
         <div className="flex items-center gap-1.5">
           <span className="truncate text-sm font-medium text-foreground">{comment.author.name}</span>
           <time dateTime={safeISO(created)} title={created?.toLocaleString()} className="shrink-0 text-xs text-muted-foreground">
-            {created ? formatRelativeTime(created, now ?? Date.now()) : "—"}
+            {created ? formatRelativeTime(created, now) : "—"}
           </time>
           {comment.editedAt && <span className="text-xs text-muted-foreground">(edited)</span>}
           {showMenu && !editing && (
@@ -375,6 +376,8 @@ export const CommentThread = React.forwardRef<HTMLElement, CommentThreadProps>(
     ref
   ) => {
     const [replying, setReplying] = React.useState(false);
+    // The clock comes from `useNow` (a `now` prop freezes it), so no render reads `Date.now()` directly.
+    const clock = useNow({ active: now === undefined, interval: 60_000, fixed: now });
     const starter = thread.comments[0];
     const mine = (c?: CommentData) => !!c && !!currentUserId && c.author.id === currentUserId;
     const canResolve = role === "owner" || role === "editor" || (role === "commenter" && mine(starter));
@@ -425,7 +428,7 @@ export const CommentThread = React.forwardRef<HTMLElement, CommentThreadProps>(
               onDelete={onDelete}
               onReact={role === "viewer" ? undefined : onReact}
               reactionOptions={reactionOptions}
-              now={now}
+              now={clock}
             />
           ))}
         </ul>
@@ -546,6 +549,7 @@ export const CommentsPanel = React.forwardRef<HTMLElement, CommentsPanelProps>(
       onFilterChange?.(f);
     };
     const [draftQuote, setDraftQuote] = React.useState<string | null>(null);
+    const clock = useNow({ active: now === undefined, interval: 60_000, fixed: now });
     const openCount = threads.filter((t) => !t.resolved).length;
     const resolvedCount = threads.length - openCount;
     const shown = threads.filter((t) => (filter === "all" ? true : filter === "open" ? !t.resolved : t.resolved));
@@ -632,7 +636,7 @@ export const CommentsPanel = React.forwardRef<HTMLElement, CommentsPanelProps>(
                   role={role}
                   active={t.id === activeThreadId}
                   reactionOptions={reactionOptions}
-                  now={now}
+                  now={clock}
                   onReply={onReply}
                   onResolve={onResolve}
                   onEdit={onEdit}

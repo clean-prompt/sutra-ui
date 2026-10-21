@@ -88,6 +88,7 @@ export const DecodeText = React.forwardRef<HTMLSpanElement, DecodeTextProps>(
     return (
       <span
         ref={ref}
+        data-slot="decode-text"
         role="img"
         aria-label={text}
         data-decoding={display !== text ? "" : undefined}

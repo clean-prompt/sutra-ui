@@ -102,7 +102,7 @@ export interface LockScreenProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   title?: React.ReactNode;
   /** Text under the heading. */
   description?: React.ReactNode;
-  /** Wrong attempts allowed before a lockout. */
+  /** Wrong attempts allowed before a lockout. UI-only: the counter lives in this component's state and resets on reload, so enforce real limits on the server. */
   maxAttempts?: number;
   /** Lockout length in seconds, or a function of how many lockouts happened (1, 2, …). */
   lockoutSeconds?: number | ((lockouts: number) => number);

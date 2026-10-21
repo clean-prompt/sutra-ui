@@ -3,6 +3,7 @@ import { cn, focusRing } from "../lib/cn";
 import { accentStyle, type Accent } from "../lib/accent";
 import { pluralize } from "../lib/format";
 import { clamp } from "../lib/math";
+import { logicalArrow } from "../lib/direction";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { isEditableTarget } from "../lib/shortcuts";
 import {
@@ -13,8 +14,11 @@ import {
 
 const ITEM_SELECTOR = "[data-selection-id]";
 
+const itemRoleFor = (role: string): SelectionAreaItemProps["role"] => (role === "grid" ? "gridcell" : role === "tree" ? "treeitem" : "option");
+
 export interface SelectionAreaItemProps {
-  role: "option";
+  /** Matches the container role: `option` in a listbox (the default), `gridcell` in a grid, `treeitem` in a tree. */
+  role: "option" | "gridcell" | "treeitem";
   "aria-selected": boolean;
   "data-selection-id": string;
   "data-selected": "" | undefined;
@@ -35,7 +39,7 @@ export interface SelectionAreaContextValue {
   selectAll: () => void;
   clear: () => void;
   /**
-   * Props for a selectable item: id, `role="option"`, `aria-selected`, roving `tabIndex` and click selection
+   * Props for a selectable item: id, a role matching the container (`option` in a listbox), `aria-selected`, roving `tabIndex` and click selection
    * (plain click selects, Mod-click toggles, Shift-click selects a range). Your own `onClick` / `onFocus` run first;
    * call `event.preventDefault()` in them to skip the built-in behaviour.
    */
@@ -198,9 +202,10 @@ export const SelectionArea = React.forwardRef<HTMLDivElement, SelectionAreaProps
         ? focusedId
         : (value.find((id) => !items || items.includes(id)) ?? items?.[0] ?? null);
 
+    const itemRole = itemRoleFor(role);
     const getItemProps = React.useCallback<SelectionAreaContextValue["getItemProps"]>(
       (id, handlers) => ({
-        role: "option",
+        role: itemRole,
         "aria-selected": selected.has(id),
         "data-selection-id": id,
         "data-selected": selected.has(id) ? "" : undefined,
@@ -228,7 +233,7 @@ export const SelectionArea = React.forwardRef<HTMLDivElement, SelectionAreaProps
           }
         },
       }),
-      [activeId, disabled, rangeTo, selectOnClick, selected, setValue, toggle]
+      [activeId, disabled, itemRole, rangeTo, selectOnClick, selected, setValue, toggle]
     );
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -265,17 +270,18 @@ export const SelectionArea = React.forwardRef<HTMLDivElement, SelectionAreaProps
       const order = getOrder();
       const index = id ? order.indexOf(id) : -1;
       let nextId: string | null = null;
-      switch (event.key) {
+      const key = logicalArrow(event);
+      switch (key) {
         case "ArrowRight":
         case "ArrowLeft":
         case "ArrowDown":
         case "ArrowUp": {
-          const forward = event.key === "ArrowRight" || event.key === "ArrowDown";
+          const forward = key === "ArrowRight" || key === "ArrowDown";
           if (!item) {
             nextId = order[0] ?? null;
             break;
           }
-          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          if (key === "ArrowDown" || key === "ArrowUp") {
             const neighbour = verticalNeighbour(item, elements, forward ? 1 : -1);
             if (neighbour) {
               nextId = neighbour.getAttribute("data-selection-id");

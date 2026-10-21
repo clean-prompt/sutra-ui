@@ -35,6 +35,38 @@ export interface ReorderMove {
   to: number;
 }
 
+/** Texts and announcements of the list (English by default); pass any of them to translate it. `position` is 1-based. */
+export interface ReorderableListLabels {
+  /** Name of a drag handle. Default "Reorder {name}". */
+  reorder?: (name: string) => string;
+  /** Name of a move-up button. Default "Move {name} up". */
+  moveUp?: (name: string) => string;
+  /** Name of a move-down button. Default "Move {name} down". */
+  moveDown?: (name: string) => string;
+  /** Instructions linked to every handle. */
+  instructions?: string;
+  /** Announced when a row is picked up with the keyboard. */
+  pickedUp?: (name: string, position: number, total: number) => string;
+  /** Announced when a row moves. */
+  moved?: (name: string, position: number, total: number) => string;
+  /** Announced when a row is dropped. */
+  dropped?: (name: string, position: number, total: number) => string;
+  /** Announced when a reorder is canceled. */
+  canceled?: (name: string, position: number, total: number) => string;
+}
+
+const defaultListLabels: Required<ReorderableListLabels> = {
+  reorder: (name) => `Reorder ${name}`,
+  moveUp: (name) => `Move ${name} up`,
+  moveDown: (name) => `Move ${name} down`,
+  instructions: "Press Space to pick up. Use the up and down arrow keys to move, Space to drop, Escape to cancel.",
+  pickedUp: (name, position, total) =>
+    `Picked up ${name}. Position ${position} of ${total}. Use the up and down arrow keys to move, Space to drop, Escape to cancel.`,
+  moved: (name, position, total) => `Moved ${name} to position ${position} of ${total}.`,
+  dropped: (name, position, total) => `Dropped ${name} at position ${position} of ${total}.`,
+  canceled: (name, position, total) => `Reorder canceled. ${name} returned to position ${position} of ${total}.`,
+};
+
 export interface ReorderableListProps<T> extends Omit<React.HTMLAttributes<HTMLUListElement>, "children"> {
   /** Items to render, in the current order. */
   items: T[];
@@ -52,6 +84,8 @@ export interface ReorderableListProps<T> extends Omit<React.HTMLAttributes<HTMLU
   handle?: boolean;
   /** Accessible name of the list. */
   label?: string;
+  /** Button names and screen-reader announcements (English by default); pass them to translate the list. */
+  labels?: ReorderableListLabels;
   /** Classes for every row. */
   itemClassName?: string;
   /** Disables dragging, the handles and the move buttons. */
@@ -81,6 +115,7 @@ export function ReorderableList<T>({
   moveButtons,
   handle = true,
   label = "Reorderable list",
+  labels: labelsProp,
   itemClassName,
   disabled,
   flip = true,
@@ -95,6 +130,15 @@ export function ReorderableList<T>({
   const rows = React.useRef(new Map<string, HTMLLIElement>());
   const handles = React.useRef(new Map<string, HTMLButtonElement>());
   const instructionsId = React.useId();
+  const text = { ...defaultListLabels, ...labelsProp };
+  const blurTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  React.useEffect(
+    () => () => {
+      if (blurTimer.current) clearTimeout(blurTimer.current);
+      blurTimer.current = null;
+    },
+    []
+  );
   const working = order ?? items;
   const total = working.length;
   const place = useFlip(working.map(getKey), { ...(typeof flip === "object" ? flip : null), enabled: flip !== false && (typeof flip !== "object" || flip.enabled !== false) });
@@ -116,9 +160,7 @@ export function ReorderableList<T>({
     setOrder(items);
     setActive({ key, origin, mode });
     if (mode === "keyboard") {
-      setAnnouncement(
-        `Picked up ${labelOf(key)}. Position ${origin + 1} of ${items.length}. Use the up and down arrow keys to move, Space to drop, Escape to cancel.`
-      );
+      setAnnouncement(text.pickedUp(labelOf(key), origin + 1, items.length));
     }
   };
 
@@ -128,7 +170,7 @@ export function ReorderableList<T>({
     const name = labelOf(active.key);
     if (pointer && active.mode === "pointer") place.from(active.key, { left: pointer.left, top: pointer.y - pointer.offsetY, width: pointer.width, height: pointer.height });
     if (to !== active.origin) onReorder(order, { from: active.origin, to });
-    setAnnouncement(`Dropped ${name} at position ${to + 1} of ${order.length}.`);
+    setAnnouncement(text.dropped(name, to + 1, order.length));
     setOrder(null);
     setActive(null);
     setPointer(null);
@@ -136,7 +178,7 @@ export function ReorderableList<T>({
 
   const cancel = () => {
     if (!active) return;
-    setAnnouncement(`Reorder canceled. ${labelOf(active.key)} returned to position ${active.origin + 1} of ${items.length}.`);
+    setAnnouncement(text.canceled(labelOf(active.key), active.origin + 1, items.length));
     setOrder(null);
     setActive(null);
     setPointer(null);
@@ -148,7 +190,7 @@ export function ReorderableList<T>({
     const to = from + delta;
     if (to < 0 || to >= order.length) return;
     setOrder(reorderArray(order, from, to));
-    setAnnouncement(`Moved ${labelOf(active.key)} to position ${to + 1} of ${order.length}.`);
+    setAnnouncement(text.moved(labelOf(active.key), to + 1, order.length));
   };
 
   const moveByButton = (key: string, delta: number) => {
@@ -156,7 +198,7 @@ export function ReorderableList<T>({
     const to = from + delta;
     if (from < 0 || to < 0 || to >= items.length) return;
     onReorder(reorderArray(items, from, to), { from, to });
-    setAnnouncement(`Moved ${getLabel(items[from]!)} to position ${to + 1} of ${items.length}.`);
+    setAnnouncement(text.moved(getLabel(items[from]!), to + 1, items.length));
   };
 
   const onHandleKeyDown = (key: string) => (event: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -176,7 +218,9 @@ export function ReorderableList<T>({
 
   const onHandleBlur = (key: string) => () => {
     if (active?.key !== key || active.mode !== "keyboard") return;
-    setTimeout(() => {
+    if (blurTimer.current) clearTimeout(blurTimer.current);
+    blurTimer.current = setTimeout(() => {
+      blurTimer.current = null;
       if (document.activeElement !== handles.current.get(key)) drop();
     }, 0);
   };
@@ -207,6 +251,21 @@ export function ReorderableList<T>({
     if (target !== from) setOrder(reorderArray(order, from, target));
   };
 
+  // Escape also cancels a pointer drag (the handle has focus, but a touch or mouse drag may not keep it).
+  const cancelRef = React.useRef(cancel);
+  cancelRef.current = cancel;
+  const pointerDragging = active?.mode === "pointer";
+  React.useEffect(() => {
+    if (!pointerDragging) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      event.preventDefault();
+      cancelRef.current();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [pointerDragging]);
+
   const activeItem = active ? working.find((i) => getKey(i) === active.key) : undefined;
 
   return (
@@ -214,6 +273,7 @@ export function ReorderableList<T>({
       <ul
         ref={ref}
         aria-label={label}
+        data-slot="reorderable-list"
         className={cn("relative flex flex-col gap-1", className)}
         {...props}
       >
@@ -230,6 +290,7 @@ export function ReorderableList<T>({
                 else rows.current.delete(key);
                 place(key)(el);
               }}
+              data-slot="reorderable-list-item"
               data-active={isActive || undefined}
               className={cn(
                 "group/row flex items-center gap-1.5 rounded-control bg-background transition-shadow",
@@ -246,7 +307,8 @@ export function ReorderableList<T>({
                     else handles.current.delete(key);
                   }}
                   disabled={disabled}
-                  aria-label={`Reorder ${name}`}
+                  data-slot="reorderable-list-handle"
+                  aria-label={text.reorder(name)}
                   aria-describedby={instructionsId}
                   aria-pressed={isActive && active.mode === "keyboard"}
                   onKeyDown={onHandleKeyDown(key)}
@@ -269,7 +331,7 @@ export function ReorderableList<T>({
                   <Button
                     variant="ghost"
                     size="icon-xs"
-                    aria-label={`Move ${name} up`}
+                    aria-label={text.moveUp(name)}
                     disabled={disabled || index === 0 || !!active}
                     onClick={() => moveByButton(key, -1)}
                   >
@@ -278,7 +340,7 @@ export function ReorderableList<T>({
                   <Button
                     variant="ghost"
                     size="icon-xs"
-                    aria-label={`Move ${name} down`}
+                    aria-label={text.moveDown(name)}
                     disabled={disabled || index === total - 1 || !!active}
                     onClick={() => moveByButton(key, 1)}
                   >
@@ -305,7 +367,7 @@ export function ReorderableList<T>({
         </div>
       ) : null}
       <span id={instructionsId} className="sr-only">
-        Press Space to pick up. Use the up and down arrow keys to move, Space to drop, Escape to cancel.
+        {text.instructions}
       </span>
       <div role="status" aria-live="assertive" aria-atomic="true" className="sr-only">
         {announcement}
@@ -356,7 +418,33 @@ export interface ChecklistProps extends Omit<React.HTMLAttributes<HTMLDivElement
   moveButtons?: boolean;
   /** Generates ids for new entries. Default is a random id. */
   createId?: () => string;
+  /** Texts and names (English by default); pass them to translate the checklist. */
+  labels?: ChecklistLabels;
 }
+
+export interface ChecklistLabels {
+  /** Name of an entry's edit button and field. Default "Edit {text}". */
+  edit?: (text: string) => string;
+  /** Name of an entry's delete button. Default "Delete {text}". */
+  delete?: (text: string) => string;
+  /** Button that shows completed entries again. Default "Show completed (n)". */
+  showCompleted?: (done: number) => string;
+  /** Button that hides completed entries. Default "Hide completed". */
+  hideCompleted?: string;
+  /** Message when every entry is done and hidden. Default "All done.". */
+  allDone?: string;
+  /** Name of the progress bar. Default "n of m done". */
+  progress?: (done: number, total: number) => string;
+}
+
+const defaultChecklistLabels: Required<ChecklistLabels> = {
+  edit: (text) => `Edit ${text}`,
+  delete: (text) => `Delete ${text}`,
+  showCompleted: (done) => `Show completed (${done})`,
+  hideCompleted: "Hide completed",
+  allDone: "All done.",
+  progress: (done, total) => `${done} of ${total} done`,
+};
 
 let checklistSeq = 0;
 const defaultCreateId = () => `item-${Date.now().toString(36)}-${(checklistSeq++).toString(36)}`;
@@ -377,6 +465,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
       reorderable = true,
       moveButtons,
       createId = defaultCreateId,
+      labels: labelsProp,
       className,
       ...props
     },
@@ -387,6 +476,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
     const [draft, setDraft] = React.useState("");
     const [editing, setEditing] = React.useState<{ id: string; text: string } | null>(null);
     const labelId = React.useId();
+    const words = { ...defaultChecklistLabels, ...labelsProp };
 
     const done = items.filter((i) => i.done).length;
     const visible = hide ? items.filter((i) => !i.done) : items;
@@ -420,7 +510,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
       editing?.id === item.id ? (
         <input
           autoFocus
-          aria-label={`Edit ${item.text}`}
+          aria-label={words.edit(item.text)}
           value={editing.text}
           onChange={(e) => setEditing({ id: item.id, text: e.target.value })}
           onKeyDown={(e) => {
@@ -447,7 +537,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
             <button
               type="button"
               onClick={() => setEditing({ id: item.id, text: item.text })}
-              aria-label={`Edit ${item.text}`}
+              aria-label={words.edit(item.text)}
               className={cn(
                 "-my-0.5 min-w-0 flex-1 truncate rounded-xs py-0.5 text-start text-sm",
                 item.done ? "text-muted-foreground line-through" : "text-foreground",
@@ -463,7 +553,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
             <Button
               variant="ghost"
               size="icon-xs"
-              aria-label={`Delete ${item.text}`}
+              aria-label={words.delete(item.text)}
               onClick={() => remove(item.id)}
               className="opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100"
             >
@@ -474,7 +564,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
       );
 
     return (
-      <div ref={ref} role="group" aria-labelledby={labelId} className={cn("flex flex-col gap-2", className)} {...props}>
+      <div ref={ref} role="group" aria-labelledby={labelId} data-slot="checklist" className={cn("flex flex-col gap-2", className)} {...props}>
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-baseline gap-2">
             <span id={labelId} className="text-sm font-medium text-foreground">
@@ -494,7 +584,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
               leadingIcon={hide ? <RiEyeLine aria-hidden /> : <RiEyeOffLine aria-hidden />}
               onClick={() => setHide(!hide)}
             >
-              {hide ? `Show completed (${done})` : "Hide completed"}
+              {hide ? words.showCompleted(done) : words.hideCompleted}
             </Button>
           ) : null}
         </div>
@@ -502,7 +592,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
           size="xs"
           value={items.length ? (done / items.length) * 100 : 0}
           color={items.length > 0 && done === items.length ? "success" : "primary"}
-          aria-label={`${done} of ${items.length} done`}
+          aria-label={words.progress(done, items.length)}
         />
         {visible.length > 0 ? (
           reorderable ? (
@@ -526,7 +616,7 @@ export const Checklist = React.forwardRef<HTMLDivElement, ChecklistProps>(
             </ul>
           )
         ) : hide && items.length > 0 ? (
-          <p className="py-2 text-sm text-muted-foreground">All done.</p>
+          <p className="py-2 text-sm text-muted-foreground">{words.allDone}</p>
         ) : null}
         {editable ? (
           <div className="flex items-center gap-2 ps-1.5">
