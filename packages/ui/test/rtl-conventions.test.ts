@@ -28,7 +28,7 @@ const PHYSICAL_BY_DESIGN: Record<string, { count: number; why: string }> = {
   "kits/agent/plan-review.tsx": { count: 1, why: "the selection toolbar is placed at the pixel position of the selection (inline style left)" },
   "kits/editor/pdf-viewer.tsx": { count: 2, why: "pdf.js text layer: absolute spans placed from the page's physical top-left corner" },
   "kits/social/call-overlay.tsx": { count: 4, why: "picture-in-picture corners are named and snapped by physical position" },
-  "kits/voice/translate.tsx": { count: 3, why: "conversation speakers are named left and right (the conversation root is dir=ltr)" },
+  "kits/voice/translate-conversation.tsx": { count: 3, why: "conversation speakers are named left and right (the conversation root is dir=ltr)" },
   "patterns/fan-menu.tsx": { count: 4, why: "the fan direction names a physical side" },
   "patterns/tiling-layout-group-internal.tsx": { count: 8, why: "drop zones and previews sit on the physical edge nearest the pointer" },
   "patterns/transfer-list.tsx": { count: 2, why: "corner position names (bottom-right, bottom-left) are physical" },

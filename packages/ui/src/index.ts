@@ -241,8 +241,15 @@ export * from "./patterns/typewriter";
 export * from "./patterns/zoom-pan";
 
 /* Kit: agent (src/kits/agent) */
+// not exported: kits/agent/agent-composer-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/agent/tool-timeline (back-compat barrel, all targets exported)
+// not exported: kits/agent/tool-timeline-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/agent/agent-browser";
 export * from "./kits/agent/agent-composer";
+export * from "./kits/agent/agent-composer-attachments";
+export * from "./kits/agent/agent-composer-queue";
+export * from "./kits/agent/agent-composer-side-thread";
+export * from "./kits/agent/agent-composer-toolbar";
 export * from "./kits/agent/agent-mode";
 export * from "./kits/agent/agent-onboarding";
 export * from "./kits/agent/agent-processes";
@@ -253,12 +260,15 @@ export * from "./kits/agent/artifacts";
 export * from "./kits/agent/git-review";
 export * from "./kits/agent/plan-review";
 export * from "./kits/agent/rewind";
-export * from "./kits/agent/tool-timeline";
+export * from "./kits/agent/tool-timeline-bodies";
+export * from "./kits/agent/tool-timeline-status-line";
+export * from "./kits/agent/tool-timeline-steps";
 
 /* Kit: agent-admin (src/kits/agent-admin) */
 // not exported: kits/agent-admin/agent-jobs (back-compat barrel, all targets exported)
 // not exported: kits/agent-admin/agent-jobs-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/agent-admin/key-value-rows-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/agent-admin/model-routing-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/agent-admin/secret-row (internal: private secret row shared by llm-providers and tool-toggles)
 export * from "./kits/agent-admin/agent-jobs-blueprints";
 export * from "./kits/agent-admin/agent-jobs-delivery";
@@ -271,10 +281,24 @@ export * from "./kits/agent-admin/backends";
 export * from "./kits/agent-admin/capabilities";
 export * from "./kits/agent-admin/channels";
 export * from "./kits/agent-admin/extensions-catalog";
+export * from "./kits/agent-admin/extensions-catalog-card";
+export * from "./kits/agent-admin/extensions-catalog-install";
+export * from "./kits/agent-admin/extensions-catalog-installed";
+export * from "./kits/agent-admin/extensions-catalog-scan";
+export * from "./kits/agent-admin/extensions-catalog-skill";
 export * from "./kits/agent-admin/llm-providers";
 export * from "./kits/agent-admin/local-models";
 export * from "./kits/agent-admin/mcp";
+export * from "./kits/agent-admin/mcp-connectors";
+export * from "./kits/agent-admin/mcp-model";
+export * from "./kits/agent-admin/mcp-server-card";
+export * from "./kits/agent-admin/mcp-server-form";
 export * from "./kits/agent-admin/model-routing";
+export * from "./kits/agent-admin/model-routing-chains";
+export * from "./kits/agent-admin/model-routing-ensemble";
+export * from "./kits/agent-admin/model-routing-model";
+export * from "./kits/agent-admin/model-routing-picker";
+export * from "./kits/agent-admin/model-routing-visibility";
 export * from "./kits/agent-admin/remote-screen";
 export * from "./kits/agent-admin/slot-outlet";
 export * from "./kits/agent-admin/status-stack";
@@ -379,10 +403,18 @@ export * from "./kits/identity/sign-in-map-model";
 export * from "./kits/identity/totp";
 
 /* Kit: media (src/kits/media) */
+// not exported: kits/media/media-controls (back-compat barrel, all targets exported)
+// not exported: kits/media/media-controls-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/media/audio-player";
 export * from "./kits/media/cast-picker";
 export * from "./kits/media/media-cards";
-export * from "./kits/media/media-controls";
+export * from "./kits/media/media-controls-base";
+export * from "./kits/media/media-controls-element";
+export * from "./kits/media/media-controls-indicators";
+export * from "./kits/media/media-controls-menus";
+export * from "./kits/media/media-controls-playback";
+export * from "./kits/media/media-controls-seek";
+export * from "./kits/media/media-controls-volume";
 export * from "./kits/media/video-player";
 
 /* Kit: ops (src/kits/ops) */
@@ -416,8 +448,14 @@ export * from "./kits/system/volume-mixer";
 // not exported: kits/voice/assistant-orb-art-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/voice/assistant-orb-canvas-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/voice/assistant-orb-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/translate (back-compat barrel, all targets exported)
 export * from "./kits/voice/assistant-orb";
-export * from "./kits/voice/translate";
+export * from "./kits/voice/translate-conversation";
+export * from "./kits/voice/translate-dictionary";
+export * from "./kits/voice/translate-languages";
+export * from "./kits/voice/translate-panes";
+export * from "./kits/voice/translate-picker";
+export * from "./kits/voice/translate-transliteration";
 export * from "./kits/voice/voice";
 
 /* Kit: workspace (src/kits/workspace) */

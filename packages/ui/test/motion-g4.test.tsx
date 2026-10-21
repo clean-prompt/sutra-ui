@@ -27,6 +27,12 @@ const SRC = path.resolve(__dirname, "../src");
 const FOLDERS = ["kits/workspace", "kits/identity", "kits/social", "kits/media", "kits/ops", "kits/system", "kits/billing", "kits/geo", "blocks"];
 
 const read = (rel: string) => readFileSync(path.join(SRC, rel), "utf8");
+/** The media controls are split into one module per family (`media-controls-*.tsx`). */
+const mediaControls = () =>
+  readdirSync(path.join(SRC, "kits/media"))
+    .filter((f) => f.startsWith("media-controls") && f.endsWith(".tsx"))
+    .map((f) => read(`kits/media/${f}`))
+    .join("\n");
 const files = FOLDERS.flatMap((dir) =>
   readdirSync(path.join(SRC, dir))
     .filter((f) => f.endsWith(".tsx"))
@@ -83,7 +89,7 @@ describe("W10: chevrons turn with chevron-turn", () => {
 describe("shared ease and Tailwind v4 transform properties", () => {
   it("no plain ease-out left in the group", () => {
     for (const { rel, text } of files) expect(text.replace(/ease-out-quart/g, ""), rel).not.toMatch(/(?<![\w-])ease-out(?![\w-])/);
-    expect(read("kits/media/media-controls.tsx").match(/ease-out-quart/g)).toHaveLength(3);
+    expect(mediaControls().match(/ease-out-quart/g)).toHaveLength(3);
     expect(read("kits/social/call-overlay.tsx")).toContain("transition-[top,left,right,bottom] duration-300 ease-out-quart");
   });
 
@@ -98,7 +104,7 @@ describe("shared ease and Tailwind v4 transform properties", () => {
       }
     }
     expect(offenders).toEqual([]);
-    expect(read("kits/media/media-controls.tsx")).toContain("transition-[opacity,scale,rotate]");
+    expect(mediaControls()).toContain("transition-[opacity,scale,rotate]");
     expect(read("kits/workspace/app-launcher.tsx")).toContain("transition-[background-color,scale]");
   });
 });

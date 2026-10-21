@@ -25,17 +25,12 @@ import { useDrag, type UseDragOptions } from "../../hooks/use-drag";
 import { useSwipe } from "../../hooks/use-swipe";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { ImageWithFallback } from "../../patterns/lightbox";
-import {
-  NowPlayingBars,
-  PlayPauseButton,
-  RepeatButton,
-  SeekBar,
-  ShuffleButton,
-  VolumeControl,
-  mediaButtonVariants,
-  type MediaTimeRange,
-  type RepeatMode,
-} from "./media-controls";
+import { mediaButtonVariants } from "./media-controls-base";
+import { NowPlayingBars } from "./media-controls-indicators";
+import { PlayPauseButton, RepeatButton, ShuffleButton, type RepeatMode } from "./media-controls-playback";
+import { SeekBar } from "./media-controls-seek";
+import { VolumeControl } from "./media-controls-volume";
+import type { MediaTimeRange } from "./media-controls-element";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */

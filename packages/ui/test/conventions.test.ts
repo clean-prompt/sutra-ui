@@ -95,8 +95,8 @@ const DARK_ALLOW: Allow = {
 
 const TONE_ALLOW: Allow = {
   // these are a component's own variant keys, not the shared `Tone` vocabulary (the scan cannot tell the difference)
-  "kits/agent/tool-timeline.tsx": [1, "TruncatedOutput's own `tone: error` prop"],
-  "kits/media/media-controls.tsx": [2, "the control button's own `default | overlay` variant"],
+  "kits/agent/tool-timeline-bodies.tsx": [1, "TruncatedOutput's own `tone: error` prop"],
+  "kits/media/media-controls-base.tsx": [2, "the control button's own `default | overlay` variant"],
   "kits/ops/progress-dialog.tsx": [1, "DialogHeader's own `DialogTone` (default | success | ...)"],
   "primitives/typography.tsx": [1, "Text's own `default | muted | ...` variant"],
 };

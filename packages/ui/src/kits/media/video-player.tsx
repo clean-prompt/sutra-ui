@@ -18,20 +18,13 @@ import { formatClock } from "../../lib/duration";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { isEditableTarget } from "../../patterns/shortcuts";
-import {
-  MediaBufferingIndicator,
-  MediaPortalProvider,
-  PlayPauseButton,
-  PlaybackRateMenu,
-  SeekBar,
-  SkipButton,
-  TrackCycleChip,
-  VolumeControl,
-  mediaButtonVariants,
-  useMediaElement,
-  type MediaChapter,
-  type MediaTrackOption,
-} from "./media-controls";
+import { MediaPortalProvider, mediaButtonVariants } from "./media-controls-base";
+import { useMediaElement } from "./media-controls-element";
+import { MediaBufferingIndicator } from "./media-controls-indicators";
+import { PlaybackRateMenu, TrackCycleChip, type MediaTrackOption } from "./media-controls-menus";
+import { PlayPauseButton, SkipButton } from "./media-controls-playback";
+import { SeekBar, type MediaChapter } from "./media-controls-seek";
+import { VolumeControl } from "./media-controls-volume";
 import { assignRef } from "../../lib/refs";
 
 export interface VideoTextTrack {

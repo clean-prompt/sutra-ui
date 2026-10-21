@@ -46,10 +46,12 @@ const CHEVRONS: Record<string, number> = {
   "agent/agent-transcript.tsx": 2,
   "agent/git-review.tsx": 1,
   "agent/plan-review.tsx": 1,
-  "agent/tool-timeline.tsx": 3,
+  "agent/tool-timeline-bodies.tsx": 1,
+  "agent/tool-timeline-steps.tsx": 2,
   "agent-admin/agent-room.tsx": 1,
-  "agent-admin/extensions-catalog.tsx": 1,
-  "agent-admin/mcp.tsx": 2,
+  "agent-admin/extensions-catalog-install.tsx": 1,
+  "agent-admin/mcp-server-form.tsx": 1,
+  "agent-admin/mcp.tsx": 1,
   "agent-admin/subagents.tsx": 2,
   "agent-admin/tool-toggles.tsx": 1,
   "ai/chain-of-thought.tsx": 1,
@@ -58,7 +60,8 @@ const CHEVRONS: Record<string, number> = {
   "ai/clarify-settled.tsx": 1,
   "ai/conversation-list.tsx": 2,
   "ai/model-select.tsx": 1,
-  "voice/translate.tsx": 2,
+  "voice/translate-panes.tsx": 1,
+  "voice/translate-picker.tsx": 1,
 };
 
 describe("A7 chevrons", () => {
@@ -107,7 +110,7 @@ describe("scale and ease", () => {
   });
 
   it("the swap button turns on the shared ease, not the plain ease-out keyword", () => {
-    const text = read("voice/translate.tsx");
+    const text = read("voice/translate-picker.tsx");
     expect(text).toContain("transition-transform duration-300 ease-out-quart motion-reduce:transition-none");
     expect(text).not.toMatch(/\bease-out\b(?!-)/);
   });
@@ -367,8 +370,8 @@ describe("A10 guards", () => {
     const net = sutraCss.slice(sutraCss.indexOf("@media (prefers-reduced-motion: reduce)"));
     for (const name of ["animate-pulse", "animate-caret-blink"]) expect(net).toContain(name);
     expect(read("ai/permission-prompt.tsx")).toContain('className="animate-pulse"');
-    expect(read("agent/tool-timeline.tsx")).toContain("animate-caret-blink");
-    expect(read("voice/translate.tsx")).toContain("animate-caret-blink");
+    expect(read("agent/tool-timeline-bodies.tsx")).toContain("animate-caret-blink");
+    expect(read("voice/translate-panes.tsx")).toContain("animate-caret-blink");
   });
 
   it("the placeholder bars of the quota strip use the shared Skeleton, not a raw pulse block", () => {

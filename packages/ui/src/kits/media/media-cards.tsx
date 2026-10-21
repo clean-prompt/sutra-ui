@@ -12,7 +12,7 @@ import { Button } from "../../primitives/button";
 import { Badge } from "../../primitives/badge";
 import { Spinner } from "../../primitives/spinner";
 import { ImageWithFallback } from "../../patterns/lightbox";
-import { NowPlayingBars } from "./media-controls";
+import { NowPlayingBars } from "./media-controls-indicators";
 import { directionOf, inlineKeyStep, inlineScrollOffset, inlineSign } from "../../lib/direction";
 
 /* ------------------------------------------------------------------ */
