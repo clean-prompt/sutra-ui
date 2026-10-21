@@ -3,7 +3,7 @@ import { Avatar, Badge, Button, Card, Label, SegmentedControl, Switch, Text } fr
 import { formatCompact } from "@sutra/ui/format";
 import { WorldMap, countryName, formatGeoPoint, type GeoProjectionKind } from "@sutra/ui/geo";
 import { Demo, PageIntro } from "../components/demo";
-import { SOURCES, attackArcs, attackMarkers, traffic, visitorMarker, visitors } from "./geo-data";
+import { SOURCES, attackArcs, attackMarkers, traffic, visitorMarker, visitors } from "../demos/geo-data";
 
 /* ------------------------------------------------------------------ */
 /* Demos                                                               */

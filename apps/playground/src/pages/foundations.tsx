@@ -35,8 +35,8 @@ import {
 import { RiAddLine, RiArrowDownSLine, RiCheckLine, RiCloseLine, RiRefreshLine } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { MotionSettingControl } from "../components/motion-setting";
-import { MotionLists, MotionPresence, MotionSprings, MotionText } from "./motion-demos";
-import { MotionPointer, MotionScroll, MotionViewTransitions } from "./motion-nav-demos";
+import { MotionLists, MotionPresence, MotionSprings, MotionText } from "../demos/motion-demos";
+import { MotionPointer, MotionScroll, MotionViewTransitions } from "../demos/motion-nav-demos";
 
 /* ------------------------------------------------------------------ */
 /* Colors                                                              */

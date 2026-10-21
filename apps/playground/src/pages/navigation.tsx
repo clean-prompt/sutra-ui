@@ -77,8 +77,8 @@ import {
   RiUploadCloud2Line,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
-import { CarouselDemo } from "./carousel-demos";
-import { StepWizardDemo } from "./wizard-demos";
+import { CarouselDemo } from "../demos/carousel-demos";
+import { StepWizardDemo } from "../demos/wizard-demos";
 
 /* ------------------------------------------------------------------ */
 /* Breadcrumbs                                                         */

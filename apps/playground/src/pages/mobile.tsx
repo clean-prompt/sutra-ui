@@ -50,7 +50,7 @@ import {
 } from "@sutra/ui/icons";
 import { demoShare } from "@sutra/ui/blocks/registry";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
-import { SwipeRowDemo } from "./gesture-demos";
+import { SwipeRowDemo } from "../demos/gesture-demos";
 
 /* ------------------------------------------------------------------ */
 /* Placeholder media (no network)                                      */

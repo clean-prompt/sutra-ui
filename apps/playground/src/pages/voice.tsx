@@ -26,7 +26,7 @@ import {
   AssistantOrbPickerDemo,
   AssistantOrbSizesDemo,
   AssistantOrbThemesDemo,
-} from "./voice-orb-demos";
+} from "../demos/voice-orb-demos";
 
 /** Anchor ids of the demos on this page. */
 export const voiceAnchors = [

@@ -102,7 +102,7 @@ import {
   RiUserLine,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
-import { WheelPickerDemo } from "./wheel-demos";
+import { WheelPickerDemo } from "../demos/wheel-demos";
 
 /* ------------------------------------------------------------------ */
 /* Shared sample data                                                  */

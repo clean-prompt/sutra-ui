@@ -48,8 +48,8 @@ import {
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
 import { href } from "../router";
-import { FlipListDemo } from "./flip-demos";
-import { MorphPillDemo } from "./morph-demos";
+import { FlipListDemo } from "../demos/flip-demos";
+import { MorphPillDemo } from "../demos/morph-demos";
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */

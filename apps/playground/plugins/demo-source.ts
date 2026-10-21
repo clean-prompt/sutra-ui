@@ -1,5 +1,5 @@
 /**
- * Demo source for the playground: finds every `<Demo>` in src/pages with the TypeScript compiler API and serves, per
+ * Demo source for the playground: finds every `<Demo>` in src/pages and the src/demos modules they import with the TypeScript compiler API and serves, per
  * page, the JSX it renders (so the "Code" panel can never drift from the demo), the import line for it and the
  * components whose props table belongs under it.
  *
@@ -296,9 +296,19 @@ export function pageFiles(appText: string): Record<string, string> {
   return out;
 }
 
+/**
+ * The page or demo module a relative import points at, as a path under src without extension ("demos/gesture-demos"),
+ * or null when it is something else (components, lib). `from` is the importing module in the same form ("pages/buttons").
+ */
+export function siblingModule(from: string, rel: string): string | null {
+  const target = path.posix.normalize(path.posix.join(path.posix.dirname(from), rel));
+  return /^(pages|demos)\/[\w-]+$/.test(target) ? target : null;
+}
+
 export function demoSourcePlugin(): Plugin {
   const src = path.resolve(__dirname, "../src");
   const pagesDir = path.join(src, "pages");
+  const demosDir = path.join(src, "demos");
   const apiFile = path.join(src, "generated/api.json");
   let apiCache: { mtime: number; api: Api } | null = null;
 
@@ -308,19 +318,19 @@ export function demoSourcePlugin(): Plugin {
     if (apiCache?.mtime !== mtime) apiCache = { mtime, api: JSON.parse(readFileSync(apiFile, "utf8")) as Api };
     return apiCache.api;
   };
-  const read = (file: string) => readFileSync(path.join(pagesDir, `${file}.tsx`), "utf8");
+  const read = (file: string) => readFileSync(path.join(src, `${file}.tsx`), "utf8");
 
-  /** A page file and the sibling modules it imports (`./gesture-demos`), transitively. */
+  /** A page file ("pages/buttons") and the demo modules it imports (`../demos/gesture-demos`), transitively. */
   const closure = (file: string): string[] => {
     const seen: string[] = [];
     const queue = [file];
     while (queue.length) {
       const f = queue.shift()!;
-      if (seen.includes(f) || !existsSync(path.join(pagesDir, `${f}.tsx`))) continue;
+      if (seen.includes(f) || !existsSync(path.join(src, `${f}.tsx`))) continue;
       seen.push(f);
       for (const rel of extractDemos(f, read(f), null).relativeImports) {
-        const m = /^\.\/([\w-]+)$/.exec(rel);
-        if (m) queue.push(m[1]!);
+        const sibling = siblingModule(f, rel);
+        if (sibling) queue.push(sibling);
       }
     }
     return seen;
@@ -348,11 +358,11 @@ export function demoSourcePlugin(): Plugin {
         if (api) this.addWatchFile(apiFile);
         const all: Record<string, DemoSource> = {};
         const imported = new Map<string, { specifier: string }>();
-        const files = closure(file);
+        const files = closure(`pages/${file}`);
         const declarations = new Map<string, Declaration>();
         for (const f of files) for (const [name, d] of declarationsOf(f, read(f))) if (!declarations.has(name)) declarations.set(name, d);
         for (const f of files) {
-          this.addWatchFile(path.join(pagesDir, `${f}.tsx`));
+          this.addWatchFile(path.join(src, `${f}.tsx`));
           const found = extractDemos(f, read(f), api, declarations);
           for (const [key, demo] of Object.entries(found.demos)) if (!(key in all)) all[key] = demo;
           for (const [name, imp] of found.sutraImports) imported.set(name, imp);
@@ -364,7 +374,7 @@ export function demoSourcePlugin(): Plugin {
       }
     },
     handleHotUpdate({ file, server }) {
-      if (!file.startsWith(pagesDir) && !file.endsWith("generated/api.json") && !file.endsWith("/App.tsx")) return;
+      if (!file.startsWith(pagesDir) && !file.startsWith(demosDir) && !file.endsWith("generated/api.json") && !file.endsWith("/App.tsx")) return;
       for (const mod of server.moduleGraph.idToModuleMap.values()) if (mod.id?.startsWith(`\0${VIRTUAL}`)) server.moduleGraph.invalidateModule(mod);
     },
   };

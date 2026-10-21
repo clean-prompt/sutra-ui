@@ -42,7 +42,7 @@ import {
   RiUserAddLine,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
-import { SlideToConfirmDemo, UndoActionDemo } from "./gesture-demos";
+import { SlideToConfirmDemo, UndoActionDemo } from "../demos/gesture-demos";
 
 const variants: NonNullable<ButtonProps["variant"]>[] = [
   "primary",

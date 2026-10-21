@@ -3,7 +3,7 @@ import { Button, Label, Switch, Text } from "@sutra/ui";
 import { LiveVisitorsMap, type LiveVisitor, type LiveVisitorDevice, type LiveVisitorsMapView } from "@sutra/ui/geo";
 import { RiHistoryLine } from "@sutra/ui/icons";
 import { Demo, PageIntro } from "../components/demo";
-import { SOURCES, visitors as demoVisitors, type Visitor } from "./geo-data";
+import { SOURCES, visitors as demoVisitors, type Visitor } from "../demos/geo-data";
 
 /* ------------------------------------------------------------------ */
 /* Demo data: the shared geo visitors plus device and timing details    */

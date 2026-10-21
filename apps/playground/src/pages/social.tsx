@@ -38,7 +38,7 @@ import {
   RiTerminalBoxLine,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
-import { IdentityAvatarDemo } from "./identity-avatar-demos";
+import { IdentityAvatarDemo } from "../demos/identity-avatar-demos";
 
 /* ------------------------------------------------------------------ */
 /* Launcher                                                            */

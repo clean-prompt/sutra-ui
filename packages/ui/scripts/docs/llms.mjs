@@ -68,27 +68,27 @@ export function loadDemoSource(repo) {
 
 /** Every page's demos: `[{ route, key, demo }]` in route and source order. */
 export function collectDemos(repo, api) {
-  const { extractDemos, declarationsOf, pageFiles } = loadDemoSource(repo);
-  const pages = path.join(repo, "apps/playground/src/pages");
+  const { extractDemos, declarationsOf, pageFiles, siblingModule } = loadDemoSource(repo);
+  const src = path.join(repo, "apps/playground/src");
   const routes = pageFiles(readFileSync(path.join(repo, "apps/playground/src/App.tsx"), "utf8"));
-  const read = (f) => readFileSync(path.join(pages, `${f}.tsx`), "utf8");
+  const read = (f) => readFileSync(path.join(src, `${f}.tsx`), "utf8");
   const closure = (file) => {
     const seen = [];
     const queue = [file];
     while (queue.length) {
       const f = queue.shift();
-      if (seen.includes(f) || !existsSync(path.join(pages, `${f}.tsx`))) continue;
+      if (seen.includes(f) || !existsSync(path.join(src, `${f}.tsx`))) continue;
       seen.push(f);
       for (const rel of extractDemos(f, read(f), null).relativeImports) {
-        const m = /^\.\/([\w-]+)$/.exec(rel);
-        if (m) queue.push(m[1]);
+        const sibling = siblingModule(f, rel);
+        if (sibling) queue.push(sibling);
       }
     }
     return seen;
   };
   const out = [];
   for (const [route, file] of Object.entries(routes).sort(([a], [b]) => a.localeCompare(b))) {
-    const files = closure(file);
+    const files = closure(`pages/${file}`);
     const declarations = new Map();
     for (const f of files) for (const [n, d] of declarationsOf(f, read(f))) if (!declarations.has(n)) declarations.set(n, d);
     const seen = new Set();

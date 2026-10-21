@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-/** Demo sources per page, built from src/pages by plugins/demo-source.ts: route -> lazy module of Demo key -> source. */
+/** Demo sources per page, built from src/pages (and the src/demos modules each page imports) by plugins/demo-source.ts: route -> lazy module of Demo key -> source. */
 declare module "virtual:demo-source" {
   const sources: Record<string, () => Promise<{ default: Record<string, import("./components/demo-panels").DemoSource>; imports: string }>>;
   export default sources;

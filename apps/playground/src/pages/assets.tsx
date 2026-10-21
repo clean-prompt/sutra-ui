@@ -93,7 +93,7 @@ import {
   RiSparklingLine,
 } from "@sutra/ui/icons";
 import { Demo, DemoLabel, PageIntro } from "../components/demo";
-import { MascotChatDemo, MascotDemo } from "./mascot-demos";
+import { MascotChatDemo, MascotDemo } from "../demos/mascot-demos";
 
 /* ------------------------------------------------------------------ */
 /* Brand                                                               */

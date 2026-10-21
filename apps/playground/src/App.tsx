@@ -51,6 +51,7 @@ function lazyPage<M extends Record<string, unknown>>(load: () => Promise<M>, nam
 
 const foundations = () => import("./pages/foundations");
 
+/** The page registry. `pages/` holds only the routed pages listed here; `demos/` holds the demo panels (and shared demo data) they compose. */
 const pages: Record<string, React.ComponentType> = {
   "foundations/colors": lazyPage(foundations, "ColorsPage"),
   "foundations/typography": lazyPage(foundations, "TypographyPage"),
