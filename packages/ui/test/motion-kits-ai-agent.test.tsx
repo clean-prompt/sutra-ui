@@ -18,12 +18,13 @@ import { PromptInput, PromptInputSubmit, PromptInputTextarea, PromptInputToolbar
 import { QuotaBars } from "../src/kits/ai/usage-quota";
 import { AgentTodoList } from "../src/kits/agent/agent-tasks";
 import { SaveStatus } from "../src/kits/editor/editor-status";
+import { readSutraCss } from "./helpers/css";
 
 const SRC = path.resolve(__dirname, "../src");
 const KITS = ["ai", "agent", "agent-admin", "editor", "terminal", "voice"];
 
 const read = (rel: string) => readFileSync(path.join(SRC, "kits", rel), "utf8");
-const sutraCss = readFileSync(path.join(SRC, "styles/sutra.css"), "utf8");
+const sutraCss = readSutraCss();
 const kitFiles = KITS.flatMap((kit) =>
   readdirSync(path.join(SRC, "kits", kit))
     .filter((f) => f.endsWith(".tsx"))

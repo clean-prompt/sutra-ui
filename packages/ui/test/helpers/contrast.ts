@@ -1,12 +1,10 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import { readSutraCss } from "./css";
 
 /** Contrast helpers for tests: resolve the stock tokens of `styles/sutra.css` and evaluate colours (`#hex`, `rgb()`, `color-mix(in oklab …)`, `var()`). */
 
 export type RGBA = [number, number, number, number];
 export type Mode = "light" | "dark";
 
-const STYLES = path.resolve(__dirname, "../../src/styles");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
 function declarations(css: string, match: (selector: string) => boolean): Map<string, string> {
@@ -22,7 +20,7 @@ function declarations(css: string, match: (selector: string) => boolean): Map<st
   return out;
 }
 
-const sutraCss = strip(readFileSync(path.join(STYLES, "sutra.css"), "utf8"));
+const sutraCss = strip(readSutraCss());
 
 /** Custom properties of the stock theme: `:root`, plus the `.dark` block on top for dark. */
 export function stockTokens(mode: Mode): Map<string, string> {

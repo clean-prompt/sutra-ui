@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { readSutraCss } from "./helpers/css";
 
 /**
  * Tailwind v4 sets `translate-*`, `scale-*` and `rotate-*` through the individual CSS properties `translate`, `scale`
@@ -32,7 +33,7 @@ describe("transition lists that name transform", () => {
   });
 
   it("the shared chevron-turn utility names all four properties", () => {
-    const css = readFileSync(path.join(SRC, "styles/sutra.css"), "utf8");
+    const css = readSutraCss();
     expect(css).toMatch(/@utility chevron-turn \{\s*transition-property:\s*transform,\s*translate,\s*scale,\s*rotate/);
   });
 });

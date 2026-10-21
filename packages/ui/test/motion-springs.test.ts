@@ -9,11 +9,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createSpring, settleTime, springAt, springToLinear, springs, type SpringConfig } from "../src/lib/spring";
 // @ts-expect-error plain .mjs without types
 import { PAPER_SPRINGS, springBlock as block } from "../scripts/springs-css.mjs";
+import { readSutraCss } from "./helpers/css";
 
 const ROOT = path.resolve(__dirname, "..");
 const STYLES = path.join(ROOT, "src/styles");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
-const sutraCss = strip(readFileSync(path.join(STYLES, "sutra.css"), "utf8"));
+const sutraCss = strip(readSutraCss());
 const paperCss = strip(readFileSync(path.join(STYLES, "paper.css"), "utf8"));
 const springBlock = (c: unknown, opts?: { themeEases?: boolean }): string[] => block(c, springToLinear, opts);
 const zeta = ({ stiffness: k, damping: c, mass: m = 1 }: SpringConfig) => c / (2 * Math.sqrt(k * m));

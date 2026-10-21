@@ -23,6 +23,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
+import { readSutraCss } from "./helpers/css";
 
 const ROOT = path.resolve(__dirname, "..");
 const SRC = path.join(ROOT, "src");
@@ -64,7 +65,7 @@ const ALLOW_LINEAR: Record<string, Allowed> = {
 /* ------------------------------------------------------------------ */
 
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
-const sutraCss = strip(readFileSync(path.join(SRC, "styles/sutra.css"), "utf8"));
+const sutraCss = strip(readSutraCss());
 
 /** The body of the block that starts at `header` (balanced braces). */
 function blockAfter(css: string, header: string): string {
@@ -436,7 +437,7 @@ describe("view transitions, scroll-driven and pointer effects", () => {
   const effect = (rel: string) => sources.find((s) => s.rel === rel)!;
   /** The "Motion II" section of sutra.css (comments stripped): view transitions, scroll-driven and pointer effects. */
   const effectsCss = () => {
-    const raw = readFileSync(path.join(SRC, "styles/sutra.css"), "utf8");
+    const raw = readSutraCss();
     const from = raw.indexOf("Motion II: view transitions");
     expect(from).toBeGreaterThan(-1);
     // The span ends where the mascot section begins: that section has deliberate idle loops (breathing, blinking) which its own

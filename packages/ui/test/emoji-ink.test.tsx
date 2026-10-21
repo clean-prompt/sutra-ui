@@ -15,8 +15,9 @@ import { EmojiPicker, EmojiReaction, EmojiReactionBar, emojiCategories, reaction
 import { DirectionProvider } from "../src/primitives/direction-provider";
 import { CommentThread } from "../src/patterns/comments";
 import { axeViolations } from "./helpers/a11y";
+import { readSutraCss } from "./helpers/css";
 
-const css = readFileSync(path.join(__dirname, "../src/styles/sutra.css"), "utf8");
+const css = readSutraCss();
 const section = css.slice(css.indexOf("Emoji (assets/emoji-reactions): ink on paper"));
 const strip = (emoji: string) => emoji.replace(/[︎️]/g, "");
 
@@ -274,7 +275,7 @@ describe("the emoji section of the stylesheet", () => {
 
   it("exists and is the last section", () => {
     expect(section.length).toBeGreaterThan(500);
-    expect(css.trimEnd().endsWith("}")).toBe(true);
+    expect(css.replace(/\/\*[\s\S]*?\*\//g, "").trimEnd().endsWith("}")).toBe(true); // a trailing generated-region marker is a comment
     expect(css.indexOf("Emoji (assets/emoji-reactions): ink on paper")).toBeGreaterThan(css.indexOf("File format icons (assets/file-format): ink on paper"));
   });
 

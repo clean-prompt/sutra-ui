@@ -1,0 +1,331 @@
+/* Part of sutra.css (imported from its end, in cascade order; never import it on its own): SutraMascot. */
+/* ================================================================== */
+/* Sutra mascot (assets/mascot): the motion of `SutraMascot`           */
+/*                                                                    */
+/* The drawing carries `data-part` names and the root `data-state`;    */
+/* these rules start the right keyframes per state, so a state change  */
+/* swaps the animation without remounting. Every cycle length is a     */
+/* multiple of --sutra-duration-fill, so there is no hand-written       */
+/* duration; the idle loops (breathing, blinking) are stopped by the   */
+/* reduced-motion twin blocks at the end of this section.              */
+/* The still pose of each state is the plain style below; reduced      */
+/* motion (twin blocks at the end) only removes the animation.         */
+/* ================================================================== */
+.sutra-mascot {
+  --sutra-mascot-unit: var(--sutra-duration-fill);
+  overflow: visible; /* the jump may leave the box; the tile forms clip themselves */
+}
+.sutra-mascot [data-part] {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.sutra-mascot :is([data-part="stage"], [data-part="body"], [data-part="ring"]) {
+  transform-box: view-box;
+  transform-origin: 50% 80%;
+}
+.sutra-mascot [data-part="ring"] {
+  transform-origin: 50% 52%;
+}
+.sutra-mascot [data-part="stage"] {
+  transition: transform var(--sutra-spring-snappy-duration) var(--sutra-spring-snappy);
+}
+
+/* Still poses */
+.sutra-mascot[data-state="listening"] [data-part="stage"] {
+  transform: rotate(3deg) scale(1.05);
+}
+.sutra-mascot[data-state="sleeping"] [data-part="stage"] {
+  transform: rotate(-3deg) translateY(1px);
+}
+.sutra-mascot[data-state="thinking"] [data-part="eyes"] {
+  transform: translate(1.6px, -1.5px);
+}
+.sutra-mascot[data-state="speaking"] [data-talk] {
+  transform: scaleY(0.78);
+}
+.sutra-mascot [data-part="ring"][data-ring="b"] {
+  opacity: 0.5;
+}
+.sutra-mascot [data-part="zee"][data-i="0"] {
+  opacity: 0.55;
+}
+.sutra-mascot [data-part="zee"][data-i="1"] {
+  opacity: 0.78;
+}
+
+/* Idle: a slow breath and a blink every few seconds */
+.sutra-mascot[data-state="idle"] [data-part="body"] {
+  animation-name: sutra-mascot-breathe;
+  animation-duration: calc(var(--sutra-mascot-unit) * 8);
+}
+.sutra-mascot:is([data-state="idle"], [data-state="listening"], [data-state="thinking"], [data-state="speaking"]) [data-part="eye"] {
+  animation-name: sutra-mascot-blink;
+  animation-duration: calc(var(--sutra-mascot-unit) * 12);
+}
+.sutra-mascot[data-state="speaking"] [data-part="eye"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * -5);
+}
+
+/* Listening: leans in, ear rings pulse outward */
+.sutra-mascot[data-state="listening"] [data-part="body"] {
+  animation-name: sutra-mascot-attend;
+  animation-duration: calc(var(--sutra-mascot-unit) * 6);
+}
+.sutra-mascot[data-state="listening"] [data-part="ring"] {
+  animation-name: sutra-mascot-ring;
+  animation-duration: calc(var(--sutra-mascot-unit) * 5);
+  animation-timing-function: var(--sutra-ease);
+}
+.sutra-mascot[data-state="listening"] [data-part="ring"][data-ring="b"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * 1.2);
+}
+
+/* Thinking: eyes look up and around, the bead rocks, the thought dots appear in turn */
+.sutra-mascot[data-state="thinking"] [data-part="body"] {
+  animation-name: sutra-mascot-rock;
+  animation-duration: calc(var(--sutra-mascot-unit) * 7);
+}
+.sutra-mascot[data-state="thinking"] [data-part="eyes"] {
+  animation-name: sutra-mascot-look;
+  animation-duration: calc(var(--sutra-mascot-unit) * 10);
+}
+.sutra-mascot[data-state="thinking"] [data-part="dot"] {
+  animation-name: sutra-mascot-dot;
+  animation-duration: calc(var(--sutra-mascot-unit) * 4);
+  animation-timing-function: var(--sutra-ease);
+}
+.sutra-mascot[data-state="thinking"] [data-part="dot"][data-i="1"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * 0.5);
+}
+.sutra-mascot[data-state="thinking"] [data-part="dot"][data-i="2"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * 1);
+}
+
+/* Working: the thread is pulled back and forth, sparks flicker at its ends */
+.sutra-mascot[data-state="working"] [data-part="body"] {
+  animation-name: sutra-mascot-tug;
+  animation-duration: calc(var(--sutra-mascot-unit) * 3);
+}
+.sutra-mascot[data-state="working"] :is([data-part="thread-l"], [data-part="thread-l-gap"]) {
+  animation-name: sutra-mascot-pull-start;
+  animation-duration: calc(var(--sutra-mascot-unit) * 3);
+}
+.sutra-mascot[data-state="working"] [data-part="thread-r"] {
+  animation-name: sutra-mascot-pull-end;
+  animation-duration: calc(var(--sutra-mascot-unit) * 3);
+}
+.sutra-mascot[data-state="working"] [data-part="spark"] {
+  animation-name: sutra-mascot-spark;
+  animation-duration: calc(var(--sutra-mascot-unit) * 1.4);
+}
+.sutra-mascot[data-state="working"] [data-part="spark"][data-i="1"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * -0.7);
+}
+
+/* Speaking: the mouth opens and closes in a lively cycle, the bead bobs a little */
+.sutra-mascot[data-state="speaking"] [data-part="body"] {
+  animation-name: sutra-mascot-bob;
+  animation-duration: calc(var(--sutra-mascot-unit) * 3.2);
+}
+.sutra-mascot[data-state="speaking"] [data-talk] {
+  animation-name: sutra-mascot-talk;
+  animation-duration: calc(var(--sutra-mascot-unit) * 1.6);
+}
+
+/* Happy: one quick jump, then the stars keep twinkling */
+.sutra-mascot[data-state="happy"] [data-part="stage"] {
+  animation-name: sutra-mascot-jump;
+  animation-duration: calc(var(--sutra-mascot-unit) * 3);
+  animation-timing-function: var(--sutra-ease);
+  animation-iteration-count: 1;
+}
+.sutra-mascot[data-state="happy"] [data-part="body"] {
+  animation-name: sutra-mascot-breathe;
+  animation-duration: calc(var(--sutra-mascot-unit) * 8);
+}
+.sutra-mascot[data-state="happy"] [data-part="sparkle"] {
+  animation-name: sutra-mascot-twinkle;
+  animation-duration: calc(var(--sutra-mascot-unit) * 3);
+}
+.sutra-mascot[data-state="happy"] [data-part="sparkle"][data-i="1"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * -1);
+}
+.sutra-mascot[data-state="happy"] [data-part="sparkle"][data-i="2"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * -2);
+}
+
+/* Sleeping: a slow breath, z marks drift up and fade */
+.sutra-mascot[data-state="sleeping"] [data-part="body"] {
+  animation-name: sutra-mascot-breathe-deep;
+  animation-duration: calc(var(--sutra-mascot-unit) * 10);
+}
+.sutra-mascot[data-state="sleeping"] [data-talk],
+.sutra-mascot[data-state="sleeping"] [data-part="mouth"] {
+  animation-name: sutra-mascot-puff;
+  animation-duration: calc(var(--sutra-mascot-unit) * 10);
+}
+.sutra-mascot[data-state="sleeping"] [data-part="zee"] {
+  animation-name: sutra-mascot-zee;
+  animation-duration: calc(var(--sutra-mascot-unit) * 8);
+  animation-timing-function: var(--sutra-ease);
+}
+.sutra-mascot[data-state="sleeping"] [data-part="zee"][data-i="1"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * 1.6);
+}
+.sutra-mascot[data-state="sleeping"] [data-part="zee"][data-i="2"] {
+  animation-delay: calc(var(--sutra-mascot-unit) * 3.2);
+}
+
+/* Error: one small shake, the bang pops */
+.sutra-mascot[data-state="error"] [data-part="stage"] {
+  animation-name: sutra-mascot-shake;
+  animation-duration: calc(var(--sutra-mascot-unit) * 1.2);
+  animation-timing-function: var(--sutra-ease);
+  animation-iteration-count: 1;
+}
+.sutra-mascot[data-state="error"] [data-part="bang"] {
+  animation-name: sutra-mascot-pop;
+  animation-duration: calc(var(--sutra-mascot-unit) * 1.2);
+  animation-timing-function: var(--sutra-ease);
+  animation-iteration-count: 1;
+}
+
+.sutra-mascot[data-paused] [data-part] {
+  animation-play-state: paused;
+}
+
+@keyframes sutra-mascot-breathe {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.02, 1.045); }
+}
+@keyframes sutra-mascot-breathe-deep {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.035, 1.07); }
+}
+@keyframes sutra-mascot-puff {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.25, 1.35); }
+}
+@keyframes sutra-mascot-attend {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.025) translateY(-0.6px); }
+}
+@keyframes sutra-mascot-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.1); }
+}
+@keyframes sutra-mascot-rock {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes sutra-mascot-look {
+  0%, 100% { transform: translate(0, -1.8px); }
+  22% { transform: translate(2.2px, -2.2px); }
+  48% { transform: translate(2px, -0.5px); }
+  74% { transform: translate(-2.3px, -1.6px); }
+}
+@keyframes sutra-mascot-ring {
+  0% { opacity: 0; transform: scale(0.86); }
+  30% { opacity: 0.9; }
+  100% { opacity: 0; transform: scale(1.08); }
+}
+@keyframes sutra-mascot-dot {
+  0%, 100% { opacity: 0.2; transform: scale(0.55); }
+  30%, 70% { opacity: 1; transform: scale(1); }
+}
+@keyframes sutra-mascot-tug {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  25% { transform: rotate(-2.5deg) translateX(-0.8px); }
+  75% { transform: rotate(2.5deg) translateX(0.8px); }
+}
+@keyframes sutra-mascot-pull-start {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3.4px); }
+  50% { transform: translateX(0.6px); }
+  75% { transform: translateX(2.2px); }
+}
+@keyframes sutra-mascot-pull-end {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(2.2px); }
+  50% { transform: translateX(-0.6px); }
+  75% { transform: translateX(-3px); }
+}
+@keyframes sutra-mascot-spark {
+  0%, 100% { opacity: 0.15; transform: scale(0.45); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+@keyframes sutra-mascot-bob {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-1.1px); }
+  50% { transform: translateY(0.2px); }
+  75% { transform: translateY(-0.8px); }
+}
+@keyframes sutra-mascot-talk {
+  0%, 100% { transform: scaleY(0.25); }
+  14% { transform: scaleY(1); }
+  30% { transform: scaleY(0.4); }
+  46% { transform: scaleY(0.9); }
+  60% { transform: scaleY(0.3); }
+  78% { transform: scaleY(1.05); }
+}
+@keyframes sutra-mascot-jump {
+  0% { transform: translateY(0) scale(1, 1); }
+  14% { transform: translateY(1.2px) scale(1.04, 0.95); }
+  34% { transform: translateY(-7px) scale(0.98, 1.03); }
+  52% { transform: translateY(0) scale(1.05, 0.94); }
+  64% { transform: translateY(-3px) scale(0.99, 1.02); }
+  78% { transform: translateY(0) scale(1.02, 0.97); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+@keyframes sutra-mascot-twinkle {
+  0%, 100% { opacity: 0.7; transform: scale(0.75) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(14deg); }
+}
+@keyframes sutra-mascot-zee {
+  0% { opacity: 0; transform: translate(-2px, 2px) scale(0.7); }
+  25%, 60% { opacity: 1; }
+  100% { opacity: 0; transform: translate(3px, -4px) scale(1.05); }
+}
+@keyframes sutra-mascot-shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  14% { transform: translateX(-2.4px) rotate(-2deg); }
+  30% { transform: translateX(2.4px) rotate(2deg); }
+  46% { transform: translateX(-1.8px) rotate(-1.4deg); }
+  62% { transform: translateX(1.6px) rotate(1deg); }
+  80% { transform: translateX(-0.7px); }
+}
+@keyframes sutra-mascot-pop {
+  0% { opacity: 0; transform: scale(0.3); }
+  40% { opacity: 1; transform: scale(1.3); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* A change of state: the new face opens from a blink (`swap` re-keys the lids), so the expression changes behind shut eyes.
+   Not while paused: a paused mascot keeps its eyes open. */
+.sutra-mascot:not([data-paused]) [data-part="lid"][data-swap] {
+  animation-name: sutra-mascot-reopen;
+  animation-duration: calc(var(--sutra-mascot-unit) * 0.4);
+  animation-timing-function: var(--sutra-ease);
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+}
+@keyframes sutra-mascot-reopen {
+  0%, 20% { transform: scaleY(0.08); }
+  100% { transform: scaleY(1); }
+}
+
+/* Reduced motion: a still pose per state. Same two triggers as the net near the top of sutra.css (the system request unless the
+   page says "full", or `data-motion="reduce"`); the face and the extras stay, only the animation goes. */
+@media (prefers-reduced-motion: reduce) {
+  :where(:root:not([data-motion="full"])) .sutra-mascot [data-part] {
+    animation: none !important;
+  }
+}
+/* BEGIN generated: motion twin (scripts/gen-motion-net.mjs, from the @media block above; do not edit) */
+:where(:root[data-motion="reduce"]) .sutra-mascot [data-part] {
+  animation: none !important;
+}
+/* END generated: motion twin */
+

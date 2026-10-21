@@ -1,0 +1,250 @@
+/* Part of sutra.css (imported from its end, in cascade order; never import it on its own): view transitions, scroll-driven and pointer effects. */
+/* ================================================================== */
+/* Motion II: view transitions, scroll-driven effects, pointer effects */
+/*                                                                     */
+/* Everything below is CSS first, on the motion tokens of sutra.css. A style  */
+/* (paper) retunes the --sutra-* tokens; reduced motion is handled     */
+/* next to each feature.                                               */
+/* ================================================================== */
+
+/* ------------------------------------------------------------------ */
+/* View transitions (hooks/use-view-transition)                        */
+/* ------------------------------------------------------------------ */
+
+/* Groups (the moving frame of a named element) take the slow speed and the shared ease; the page crossfade is quicker.
+   SharedElement also sets view-transition-class `sutra-shared`, so an app can restyle every shared group with
+   ::view-transition-group(*.sutra-shared). */
+::view-transition-group(*) {
+  animation-duration: var(--sutra-duration-slow);
+  animation-timing-function: var(--sutra-ease);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--sutra-duration);
+  animation-timing-function: var(--sutra-ease);
+}
+/* Reduced motion: useViewTransition already skips the transition; this covers one started by hand. The old snapshot is
+   hidden so the two images are not blended on top of each other for the one frame that is left. */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"])::view-transition-group(*),
+  :root:not([data-motion="full"])::view-transition-old(*),
+  :root:not([data-motion="full"])::view-transition-new(*) {
+    animation: none !important;
+  }
+  :root:not([data-motion="full"])::view-transition-old(*) {
+    display: none;
+  }
+}
+/* BEGIN generated: motion twin (scripts/gen-motion-net.mjs, from the @media block above; do not edit) */
+:root[data-motion="reduce"]::view-transition-group(*),
+:root[data-motion="reduce"]::view-transition-old(*),
+:root[data-motion="reduce"]::view-transition-new(*) {
+  animation: none !important;
+}
+:root[data-motion="reduce"]::view-transition-old(*) {
+  display: none;
+}
+/* END generated: motion twin */
+
+/* ------------------------------------------------------------------ */
+/* Scroll-driven effects (hooks/use-scroll-progress)                   */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Two paths, one look. Where the browser has `animation-timeline` (Chrome, Safari 26) the CSS animation runs on the
+ * compositor with no script. Everywhere else the element shows its END STATE, unless useScrollProgress is driving it:
+ * the hook sets `data-scroll="script"` and writes `--sutra-progress` (0..1, default 1), which the same rules read. Each
+ * effect animates opacity, translate and scale (never layout) and leaves `transform` alone, so a reveal sits on an
+ * element of its own: it replaces that element's own `translate` and `scale`. Reduced motion: no animation, end state.
+ *
+ * Put a reveal outside any `overflow: hidden` wrapper (use `overflow-clip`, which does not make a scroll container): a
+ * native view timeline binds to the nearest ancestor that clips, and one that never scrolls leaves the effect idle, so
+ * the element simply shows its end state.
+ */
+@keyframes sutra-reveal {
+  from {
+    opacity: 0;
+    translate: var(--sutra-reveal-x) var(--sutra-reveal-y);
+    scale: var(--sutra-reveal-scale);
+  }
+}
+@keyframes sutra-scroll-progress {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+/* The element fades and moves in as it enters the scroller: `animation-range: entry 0% entry 60%`
+   (SCROLL_REVEAL_RANGE in the hook). `data-from` picks the direction; `--sutra-reveal-distance` the travel (24px). */
+@utility scroll-reveal {
+  --sutra-reveal-x: 0px;
+  --sutra-reveal-y: var(--sutra-reveal-distance, 24px);
+  --sutra-reveal-scale: 1;
+  &[data-from="down"] {
+    --sutra-reveal-y: calc(var(--sutra-reveal-distance, 24px) * -1);
+  }
+  &[data-from="start"] {
+    --sutra-reveal-x: calc(var(--sutra-reveal-distance, 24px) * -1);
+    --sutra-reveal-y: 0px;
+  }
+  &[data-from="end"] {
+    --sutra-reveal-x: var(--sutra-reveal-distance, 24px);
+    --sutra-reveal-y: 0px;
+  }
+  &[data-from="start"]:dir(rtl) {
+    --sutra-reveal-x: var(--sutra-reveal-distance, 24px);
+  }
+  &[data-from="end"]:dir(rtl) {
+    --sutra-reveal-x: calc(var(--sutra-reveal-distance, 24px) * -1);
+  }
+  &[data-from="fade"] {
+    --sutra-reveal-y: 0px;
+  }
+  &[data-from="scale"] {
+    --sutra-reveal-y: 0px;
+    --sutra-reveal-scale: 0.94;
+  }
+  @supports (animation-timeline: view()) {
+    &:not([data-scroll="script"]) {
+      animation: sutra-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+  &[data-scroll="script"] {
+    --sutra-reveal-left: calc(1 - var(--sutra-progress, 1));
+    opacity: var(--sutra-progress, 1);
+    translate: calc(var(--sutra-reveal-x) * var(--sutra-reveal-left)) calc(var(--sutra-reveal-y) * var(--sutra-reveal-left));
+    scale: calc(1 + (var(--sutra-reveal-scale) - 1) * var(--sutra-reveal-left));
+  }
+}
+
+/* A bar that grows with the scroller (the nearest one: put it `sticky top-0` inside a scroll area, or `fixed` for the
+   page). It needs width and height from the caller. Where nothing can drive it, and under reduced motion, it stays
+   empty (an unfilled reading bar is "no information", unlike a reveal whose end state is the content). */
+@utility scroll-progress-bar {
+  scale: 0 1;
+  transform-origin: 0 50%;
+  &:dir(rtl) {
+    transform-origin: 100% 50%;
+  }
+  @supports (animation-timeline: scroll()) {
+    &:not([data-scroll="script"]) {
+      animation: sutra-scroll-progress linear both;
+      animation-timeline: scroll(nearest);
+    }
+  }
+  &[data-scroll="script"] {
+    scale: var(--sutra-progress, 0) 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(:root:not([data-motion="full"])) [class*="scroll-reveal"],
+  :where(:root:not([data-motion="full"])) [class*="scroll-progress-bar"] {
+    animation: none;
+  }
+}
+/* BEGIN generated: motion twin (scripts/gen-motion-net.mjs, from the @media block above; do not edit) */
+:where(:root[data-motion="reduce"]) [class*="scroll-reveal"],
+:where(:root[data-motion="reduce"]) [class*="scroll-progress-bar"] {
+  animation: none;
+}
+/* END generated: motion twin */
+
+/* ------------------------------------------------------------------ */
+/* Pointer effects (hooks/use-pointer-vars)                            */
+/* ------------------------------------------------------------------ */
+
+/*
+ * usePointerVars sets data-pointer="active" and --px --py (px), --tx --ty (-1..1) and --pull-x --pull-y (px) on a box
+ * while a mouse or pen is over it, and removes them on leave. The utilities below only read them: no pointer, no touch,
+ * reduced motion = the element at rest (the moving rules sit inside `prefers-reduced-motion: no-preference`, and the
+ * hook writes nothing there either). The attribute may be on the element or an ancestor, so tilt and magnetic go on a
+ * child of the box that holds the pointer (a box that moves under the pointer would flicker at its edge). Strengths are
+ * tokens a style retunes; paper.css makes them calmer.
+ */
+:root {
+  --sutra-spotlight-size: 240px; /* radius of the glow */
+  --sutra-spotlight-alpha: 16%; /* its strength: share of --primary in the centre */
+  --sutra-tilt-max: 7deg; /* tilt at the edge of the box */
+  --sutra-magnetic-scale: 1; /* multiplies the pull the hook computed */
+}
+
+/* A soft glow that follows the pointer behind the content (a ::before, so it needs no extra markup). It shows while
+   the pointer is over the element and, for keyboard users, while anything inside has focus-visible (glow at the centre). */
+@utility spotlight {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      circle var(--sutra-spotlight-size) at var(--px, 50%) var(--py, 50%),
+      color-mix(in oklab, var(--primary) var(--sutra-spotlight-alpha), transparent),
+      transparent 70%
+    );
+    transition: opacity var(--sutra-duration) var(--sutra-ease);
+  }
+  &[data-pointer="active"]::before,
+  &:has(:focus-visible)::before {
+    opacity: 1;
+  }
+}
+
+/* Tilts toward the pointer (perspective, rotateX/Y). `transform` is its own property, so it composes with Tailwind's
+   translate-*, scale-* and rotate-*; the spring brings it back to rest. Focus needs no mirror: the centre is rest. */
+@utility tilt {
+  transition-property: transform, translate, scale, rotate;
+  transition-duration: var(--sutra-spring-snappy-duration);
+  transition-timing-function: var(--sutra-spring-snappy);
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-pointer="active"]:where(:root:not([data-motion="reduce"]) *),
+    :where(:root:not([data-motion="reduce"]) [data-pointer="active"]) & {
+      transform: perspective(900px) rotateX(calc(var(--ty, 0) * var(--sutra-tilt-max) * -1)) rotateY(calc(var(--tx, 0) * var(--sutra-tilt-max)));
+      will-change: transform;
+    }
+  }
+}
+
+/* Drifts toward the pointer (the hook's pull, scaled by --sutra-magnetic-scale). Uses `translate`, so it composes with
+   transform, scale and rotate utilities, and with a hover lift that sets `scale`. */
+@utility magnetic {
+  transition-property: transform, translate, scale, rotate;
+  transition-duration: var(--sutra-spring-snappy-duration);
+  transition-timing-function: var(--sutra-spring-snappy);
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-pointer="active"]:where(:root:not([data-motion="reduce"]) *),
+    :where(:root:not([data-motion="reduce"]) [data-pointer="active"]) & {
+      translate: calc(var(--pull-x, 0) * var(--sutra-magnetic-scale) * 1px) calc(var(--pull-y, 0) * var(--sutra-magnetic-scale) * 1px);
+      will-change: translate;
+    }
+  }
+}
+
+/*
+ * `<html data-motion="full">` where the system asks for less motion: the moving rules of tilt and magnetic sit inside a
+ * no-preference media query (above), so the override repeats them here. Keep the two in step. The hook writes
+ * `data-pointer` under "full" because it reads the same attribute.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-motion="full"] .tilt[data-pointer="active"],
+  :root[data-motion="full"] [data-pointer="active"] .tilt {
+    transform: perspective(900px) rotateX(calc(var(--ty, 0) * var(--sutra-tilt-max) * -1)) rotateY(calc(var(--tx, 0) * var(--sutra-tilt-max)));
+    will-change: transform;
+  }
+  :root[data-motion="full"] .magnetic[data-pointer="active"],
+  :root[data-motion="full"] [data-pointer="active"] .magnetic {
+    translate: calc(var(--pull-x, 0) * var(--sutra-magnetic-scale) * 1px) calc(var(--pull-y, 0) * var(--sutra-magnetic-scale) * 1px);
+    will-change: translate;
+  }
+}
+

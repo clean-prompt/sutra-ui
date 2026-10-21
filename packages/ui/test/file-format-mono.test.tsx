@@ -1,9 +1,8 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import { render } from "@testing-library/react";
 import { FileFormatIcon } from "../src/assets/file-format";
+import { readSutraCss } from "./helpers/css";
 
-const css = readFileSync(path.join(__dirname, "../src/styles/sutra.css"), "utf8");
+const css = readSutraCss();
 const section = css.slice(css.indexOf("File format icons (assets/file-format): ink on paper"));
 
 describe("FileFormatIcon ink on paper", () => {

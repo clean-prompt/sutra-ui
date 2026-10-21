@@ -12,6 +12,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SutraMascot, mascotStateLabels, mascotStates, type MascotState } from "../src/assets/mascot";
 import { sutraAppMeta, sutraApps } from "../src/assets/brand";
 import { axeViolations } from "./helpers/a11y";
+import { readSutraCss } from "./helpers/css";
 
 const svgOf = (container: HTMLElement) => container.querySelector("svg") as SVGSVGElement;
 const part = (root: ParentNode, name: string) => Array.from(root.querySelectorAll(`[data-part="${name}"]`));
@@ -273,7 +274,7 @@ describe("no scripted motion", () => {
 /* The CSS contract                                                    */
 /* ------------------------------------------------------------------ */
 
-const raw = readFileSync(path.join(__dirname, "../src/styles/sutra.css"), "utf8");
+const raw = readSutraCss();
 const MARKER = "Sutra mascot (assets/mascot)";
 // The mascot rules run from its header to the next section header (other sections follow it: file format icons).
 const fromMascot = raw.slice(raw.indexOf("/* ====", raw.indexOf(MARKER)));

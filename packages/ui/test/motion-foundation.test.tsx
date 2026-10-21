@@ -4,10 +4,11 @@ import path from "node:path";
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { useChangeKey } from "../src/hooks/use-change-key";
+import { readSutraCss } from "./helpers/css";
 
 const STYLES = path.resolve(__dirname, "../src/styles");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
-const sutraCss = strip(readFileSync(path.join(STYLES, "sutra.css"), "utf8"));
+const sutraCss = strip(readSutraCss());
 const paperCss = strip(readFileSync(path.join(STYLES, "paper.css"), "utf8"));
 
 /** The body of the block that starts at `header` (balanced braces). */

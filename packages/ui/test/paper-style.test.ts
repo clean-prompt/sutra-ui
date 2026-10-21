@@ -4,11 +4,12 @@ import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { useTheme } from "../src/hooks/use-theme";
 import { chartColors, chartColorVars, themeStyles } from "../src/lib/tokens";
+import { readSutraCss } from "./helpers/css";
 
 const STYLES = path.resolve(__dirname, "../src/styles");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 const paperCss = strip(readFileSync(path.join(STYLES, "paper.css"), "utf8"));
-const sutraCss = strip(readFileSync(path.join(STYLES, "sutra.css"), "utf8"));
+const sutraCss = strip(readSutraCss());
 
 /** Top-level `selector { declarations }` rules of a flat stylesheet (no nested blocks inside the ones we read). */
 function rulesOf(css: string): { selector: string; decls: Map<string, string> }[] {

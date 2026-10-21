@@ -6,14 +6,13 @@
 import * as React from "react";
 import { renderToString } from "react-dom/server";
 import { act, render, screen } from "@testing-library/react";
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SCROLL_REVEAL_RANGE, progressFor, scrollProgressOf, supportsScrollTimeline, useScrollProgress, type UseScrollProgressOptions } from "../src/hooks/use-scroll-progress";
 import { ScrollProgressBar, ScrollReveal } from "../src/patterns/scroll-reveal";
 import { ScrollStage } from "../src/patterns/scroll-stage";
 import { axeViolations } from "./helpers/a11y";
 import { reduceMotion, resetMedia } from "./helpers/media";
+import { readSutraCss } from "./helpers/css";
 
 const timelines = (on: boolean) => vi.stubGlobal("CSS", { supports: (q: string) => on && q.includes("animation-timeline") });
 
@@ -408,7 +407,7 @@ describe("ScrollStage", () => {
 });
 
 describe("scroll utilities in styles/sutra.css", () => {
-  const css = readFileSync(path.resolve(__dirname, "../src/styles/sutra.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  const css = readSutraCss().replace(/\/\*[\s\S]*?\*\//g, "");
   const block = (header: string) => {
     const start = css.indexOf(header);
     expect(start, header).toBeGreaterThan(-1);

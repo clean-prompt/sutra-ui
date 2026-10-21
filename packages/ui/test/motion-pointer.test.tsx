@@ -12,6 +12,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { pointerVarsFor, usePointerVars, type UsePointerVarsOptions } from "../src/hooks/use-pointer-vars";
 import { Magnetic, SpotlightCard, TiltCard } from "../src/patterns/pointer-fx";
 import { axeViolations } from "./helpers/a11y";
+import { readSutraCss } from "./helpers/css";
 
 const original = window.matchMedia;
 /** A browser with these media queries matching (substring match on the query). */
@@ -327,7 +328,7 @@ describe("Magnetic", () => {
 });
 
 describe("pointer utilities in styles/*.css", () => {
-  const sutra = readFileSync(path.resolve(__dirname, "../src/styles/sutra.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  const sutra = readSutraCss().replace(/\/\*[\s\S]*?\*\//g, "");
   const paper = readFileSync(path.resolve(__dirname, "../src/styles/paper.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
   const body = (css: string, header: string) => {
     const start = css.indexOf(header);

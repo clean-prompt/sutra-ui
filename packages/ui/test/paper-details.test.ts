@@ -6,10 +6,11 @@ import { radii, typography } from "../src/lib/tokens";
 import { buttonVariants } from "../src/primitives/button";
 import { dialogContentVariants, sheetContentVariants } from "../src/primitives/dialog";
 import { headingVariants } from "../src/primitives/typography";
+import { readSutraCss } from "./helpers/css";
 
 const STYLES = path.resolve(__dirname, "../src/styles");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
-const sutraCss = strip(readFileSync(path.join(STYLES, "sutra.css"), "utf8"));
+const sutraCss = strip(readSutraCss());
 const paperCss = strip(readFileSync(path.join(STYLES, "paper.css"), "utf8"));
 
 describe("action radius", () => {

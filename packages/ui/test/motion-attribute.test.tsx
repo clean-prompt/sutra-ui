@@ -5,8 +5,6 @@
  * them (Carousel autoplay, usePresence) honour the attribute over the system setting.
  */
 import * as React from "react";
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import { act, cleanup, render, renderHook, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { compile } from "tailwindcss";
@@ -14,8 +12,9 @@ import { prefersReducedMotion, usePrefersReducedMotion } from "../src/hooks/use-
 import { usePresence } from "../src/hooks/use-presence";
 import { Carousel } from "../src/patterns/carousel";
 import { reduceMotion as system, resetMedia } from "./helpers/media";
+import { readSutraCss } from "./helpers/css";
 
-const raw = readFileSync(path.join(__dirname, "../src/styles/sutra.css"), "utf8");
+const raw = readSutraCss();
 const css = raw.replace(/\/\*[\s\S]*?\*\//g, "");
 
 /** The body of the block that starts at `header` (balanced braces). */

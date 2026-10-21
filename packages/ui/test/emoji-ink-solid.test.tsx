@@ -6,8 +6,6 @@
  * props that carry it through EmojiGlyph, EmojiReaction, EmojiReactionBar and EmojiPicker.
  */
 import * as React from "react";
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { act, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
@@ -15,8 +13,9 @@ import { EmojiGlyph, InkEmoji, hasInkEmoji, inkEmojiSet, playInkEmoji } from "..
 import { EmojiPicker, EmojiReaction, EmojiReactionBar, emojiCategories } from "../src/assets/emoji-reactions";
 import { solidInkArt } from "../src/assets/emoji-ink-internal";
 import { INK_TINT, movesOf } from "../src/assets/emoji-ink-solid-internal";
+import { readSutraCss } from "./helpers/css";
 
-const css = readFileSync(path.join(__dirname, "../src/styles/sutra.css"), "utf8");
+const css = readSutraCss();
 const motion = css.slice(css.indexOf("Ink emoji motion (InkEmoji"));
 const strip = (emoji: string) => emoji.replace(/[︎️]/g, "");
 const picker = emojiCategories.flatMap((category) => category.emojis.map((entry) => entry.emoji));

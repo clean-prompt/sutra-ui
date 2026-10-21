@@ -6,12 +6,11 @@
 import * as React from "react";
 import { renderToString } from "react-dom/server";
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react";
-import { readFileSync } from "node:fs";
-import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runViewTransition, supportsViewTransitions, useViewTransition, viewTransitionName } from "../src/hooks/use-view-transition";
 import { SharedElement } from "../src/patterns/shared-element";
 import { reduceMotion, resetMedia } from "./helpers/media";
+import { readSutraCss } from "./helpers/css";
 
 const doc = document as unknown as { startViewTransition?: unknown };
 
@@ -165,7 +164,7 @@ describe("SharedElement", () => {
 });
 
 describe("view transition CSS (styles/sutra.css)", () => {
-  const css = readFileSync(path.resolve(__dirname, "../src/styles/sutra.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  const css = readSutraCss().replace(/\/\*[\s\S]*?\*\//g, "");
   it("takes the speeds and the ease from the motion tokens", () => {
     expect(css).toMatch(/::view-transition-group\(\*\)\s*\{[^}]*animation-duration:\s*var\(--sutra-duration-slow\)[^}]*var\(--sutra-ease\)/);
     expect(css).toMatch(/::view-transition-old\(root\),\s*::view-transition-new\(root\)\s*\{[^}]*var\(--sutra-duration\)/);
