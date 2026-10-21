@@ -108,7 +108,7 @@ describe("prop-spread rule: scans", () => {
       {
         "primitives/number-input.tsx input aria-valuemin,aria-valuemax,aria-valuenow,aria-valuetext": "ARIA of the spinbutton role it implements",
         "primitives/tag-input.tsx input aria-required,role,aria-expanded,aria-controls,aria-autocomplete,aria-activedescendant": "ARIA of the combobox role it implements",
-        "kits/workspace/kanban-board.tsx KanbanCard activatorRef,activatorProps": "drag-and-drop plumbing",
+        "kits/workspace/kanban-board-internal.tsx KanbanCard activatorRef,activatorProps": "drag-and-drop plumbing",
         "patterns/chart-cartesian.tsx CartesianChart chartType,band,renderActive,renderMarks": "chart engine internals",
         "patterns/chart-cartesian.tsx CartesianChart chartType,band,renderMarks": "chart engine internals",
         "primitives/dropzone.tsx div data-drag,data-density": "drag state and density the component guarantees",
@@ -122,7 +122,8 @@ describe("prop-spread rule: scans", () => {
     const reviewed = "to review: harmless when the prop type omits the handler, a bug when it does not";
     for (const key of [
       "kits/agent-admin/webhooks.tsx form onSubmit",
-      "kits/agent/git-review.tsx TreeView onNodeAction",
+      "kits/agent-admin/llm-providers-endpoint.tsx form onSubmit",
+      "kits/agent/git-review-tree.tsx TreeView onNodeAction",
       "kits/ai/slash-menu.tsx div onMouseDown",
       "kits/geo/globe.tsx div onKeyDown",
       "kits/identity/connected-apps.tsx button onClick",
@@ -132,9 +133,7 @@ describe("prop-spread rule: scans", () => {
       "kits/media/video-player.tsx div onBlur",
       "kits/ops/process-table.tsx div onKeyDown",
       "kits/social/call-overlay.tsx div onKeyDown",
-      "kits/social/messenger.tsx form onSubmit",
-      "kits/voice/translate-transliteration.tsx div onMouseDown",
-      "kits/voice/translate-transliteration.tsx button onClick",
+      "kits/social/messenger-composer.tsx form onSubmit",
       "kits/voice/voice.tsx Button onClick",
       "kits/workspace/install-prompt.tsx Button onClick",
       "primitives/table.tsx input onClick",

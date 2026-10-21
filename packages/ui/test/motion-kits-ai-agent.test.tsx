@@ -40,11 +40,11 @@ const popped = (root: ParentNode) => root.querySelectorAll(".animate-pop");
 
 /** Disclosure chevrons that turn with `chevron-turn`, per file (26 sites in 19 files). */
 const CHEVRONS: Record<string, number> = {
-  "agent/agent-browser.tsx": 1,
+  "agent/agent-browser-console.tsx": 1,
   "agent/agent-processes.tsx": 1,
   "agent/agent-tasks.tsx": 1,
   "agent/agent-transcript.tsx": 2,
-  "agent/git-review.tsx": 1,
+  "agent/git-review-changes.tsx": 1,
   "agent/plan-review.tsx": 1,
   "agent/tool-timeline-bodies.tsx": 1,
   "agent/tool-timeline-steps.tsx": 2,
@@ -337,9 +337,9 @@ describe("icon swaps use animate-pop", () => {
 describe("A9 popper origin", () => {
   it("the base layer sets the transform origin of popper content, and the two sites are Radix popper content", () => {
     expect(sutraCss).toMatch(/\[data-radix-popper-content-wrapper\]\s*>\s*\[data-side\]\s*\{\s*transform-origin:\s*var\(--radix-popper-transform-origin\)/);
-    expect(read("agent/agent-browser.tsx")).toContain("<PopoverPrimitive.Content");
+    expect(read("agent/agent-browser-annotations.tsx")).toContain("<PopoverPrimitive.Content");
     expect(read("ai/prompt-input-model.tsx")).toContain("<DropdownMenu.Content");
-    for (const rel of ["agent/agent-browser.tsx", "ai/prompt-input-model.tsx"]) expect(read(rel), rel).not.toMatch(/\borigin-\[|\borigin-center\b/);
+    for (const rel of ["agent/agent-browser-annotations.tsx", "ai/prompt-input-model.tsx"]) expect(read(rel), rel).not.toMatch(/\borigin-\[|\borigin-center\b/);
   });
 });
 
@@ -349,7 +349,7 @@ describe("A9 popper origin", () => {
 
 describe("A10 guards", () => {
   it("the dead shimmer on the streaming artifact fade is gone", () => {
-    const text = read("agent/artifacts.tsx");
+    const text = read("agent/artifacts-card.tsx");
     expect(text).not.toContain("animate-shimmer");
     expect(text).toContain("bg-gradient-to-t from-card to-transparent");
   });

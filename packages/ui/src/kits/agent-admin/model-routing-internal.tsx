@@ -1,6 +1,6 @@
 /** Private helpers shared by the model-routing modules (`sameRef`, ModelRefLabel). */
 import { cn } from "../../lib/cn";
-import { ProviderLogo } from "./llm-providers";
+import { ProviderLogo } from "./llm-providers-logo";
 import { type RoutingProvider, type ModelRef, resolveModelRef } from "./model-routing-model";
 
 export const sameRef = (a?: ModelRef | null, b?: ModelRef | null) => !!a && !!b && a.providerId === b.providerId && a.modelId === b.modelId;

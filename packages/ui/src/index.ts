@@ -146,8 +146,14 @@ export * from "./primitives/wheel-picker";
 // not exported: patterns/chart-extra-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/chart-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/counters (back-compat barrel, all targets exported)
+// not exported: patterns/diff-viewer-internal (internal: private helpers shared by sibling modules)
+// not exported: patterns/file-viewer-body-internal (internal: private helpers shared by sibling modules)
+// not exported: patterns/file-viewer-chrome-internal (internal: private helpers shared by sibling modules)
+// not exported: patterns/file-viewer-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/identity-avatar-glyphs-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/inline-citation (internal: helpers; public names come from kits/ai/chat-source)
+// not exported: patterns/log-viewer-internal (internal: private helpers shared by sibling modules)
+// not exported: patterns/schema-form-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/tiling-layout-group-internal (internal: private helpers shared by sibling modules)
 // not exported: patterns/tiling-layout-internal (internal: private helpers shared by sibling modules)
 export * from "./patterns/agent-avatar";
@@ -176,11 +182,15 @@ export * from "./patterns/countdown";
 export * from "./patterns/cron";
 export * from "./patterns/decode-text";
 export * from "./patterns/diff-viewer";
+export * from "./patterns/diff-viewer-card";
+export * from "./patterns/diff-viewer-model";
+export * from "./patterns/diff-viewer-suggestion";
 export * from "./patterns/divided-grid";
 export * from "./patterns/fade-text";
 export * from "./patterns/fan-menu";
 export * from "./patterns/file-upload";
 export * from "./patterns/file-viewer";
+export * from "./patterns/file-viewer-model";
 export * from "./patterns/filter-bar";
 export * from "./patterns/gauge";
 export * from "./patterns/header-navigation";
@@ -192,6 +202,7 @@ export * from "./patterns/keybind-editor";
 export * from "./patterns/lightbox";
 export * from "./patterns/loading-screen";
 export * from "./patterns/log-viewer";
+export * from "./patterns/log-viewer-model";
 export * from "./patterns/markdown";
 export * from "./patterns/metric-hero";
 export * from "./patterns/morph-dialog";
@@ -204,6 +215,9 @@ export * from "./patterns/presence";
 export * from "./patterns/recurrence-picker";
 export * from "./patterns/reorderable-list";
 export * from "./patterns/schema-form";
+export * from "./patterns/schema-form-editor";
+export * from "./patterns/schema-form-model";
+export * from "./patterns/schema-form-types";
 export * from "./patterns/scroll-reveal";
 export * from "./patterns/scroll-stage";
 export * from "./patterns/search-trigger";
@@ -242,9 +256,17 @@ export * from "./patterns/zoom-pan";
 
 /* Kit: agent (src/kits/agent) */
 // not exported: kits/agent/agent-composer-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/agent/artifacts (back-compat barrel, all targets exported)
+// not exported: kits/agent/artifacts-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/agent/git-review (back-compat barrel, all targets exported)
+// not exported: kits/agent/git-review-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/agent/tool-timeline (back-compat barrel, all targets exported)
 // not exported: kits/agent/tool-timeline-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/agent/agent-browser";
+export * from "./kits/agent/agent-browser-annotations";
+export * from "./kits/agent/agent-browser-consent";
+export * from "./kits/agent/agent-browser-console";
+export * from "./kits/agent/agent-browser-model";
 export * from "./kits/agent/agent-composer";
 export * from "./kits/agent/agent-composer-attachments";
 export * from "./kits/agent/agent-composer-queue";
@@ -256,8 +278,16 @@ export * from "./kits/agent/agent-processes";
 export * from "./kits/agent/agent-sessions";
 export * from "./kits/agent/agent-tasks";
 export * from "./kits/agent/agent-transcript";
-export * from "./kits/agent/artifacts";
-export * from "./kits/agent/git-review";
+export * from "./kits/agent/artifacts-card";
+export * from "./kits/agent/artifacts-library";
+export * from "./kits/agent/artifacts-model";
+export * from "./kits/agent/artifacts-preview";
+export * from "./kits/agent/artifacts-viewer";
+export * from "./kits/agent/git-review-changes";
+export * from "./kits/agent/git-review-model";
+export * from "./kits/agent/git-review-ship";
+export * from "./kits/agent/git-review-tree";
+export * from "./kits/agent/git-review-worktree";
 export * from "./kits/agent/plan-review";
 export * from "./kits/agent/rewind";
 export * from "./kits/agent/tool-timeline-bodies";
@@ -268,6 +298,7 @@ export * from "./kits/agent/tool-timeline-steps";
 // not exported: kits/agent-admin/agent-jobs (back-compat barrel, all targets exported)
 // not exported: kits/agent-admin/agent-jobs-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/agent-admin/key-value-rows-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/agent-admin/llm-providers-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/agent-admin/model-routing-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/agent-admin/secret-row (internal: private secret row shared by llm-providers and tool-toggles)
 export * from "./kits/agent-admin/agent-jobs-blueprints";
@@ -280,6 +311,11 @@ export * from "./kits/agent-admin/agent-room";
 export * from "./kits/agent-admin/backends";
 export * from "./kits/agent-admin/capabilities";
 export * from "./kits/agent-admin/channels";
+export * from "./kits/agent-admin/channels-access";
+export * from "./kits/agent-admin/channels-config-form";
+export * from "./kits/agent-admin/channels-icon";
+export * from "./kits/agent-admin/channels-model";
+export * from "./kits/agent-admin/channels-pairing";
 export * from "./kits/agent-admin/extensions-catalog";
 export * from "./kits/agent-admin/extensions-catalog-card";
 export * from "./kits/agent-admin/extensions-catalog-install";
@@ -287,6 +323,11 @@ export * from "./kits/agent-admin/extensions-catalog-installed";
 export * from "./kits/agent-admin/extensions-catalog-scan";
 export * from "./kits/agent-admin/extensions-catalog-skill";
 export * from "./kits/agent-admin/llm-providers";
+export * from "./kits/agent-admin/llm-providers-connect";
+export * from "./kits/agent-admin/llm-providers-endpoint";
+export * from "./kits/agent-admin/llm-providers-keys";
+export * from "./kits/agent-admin/llm-providers-logo";
+export * from "./kits/agent-admin/llm-providers-model";
 export * from "./kits/agent-admin/local-models";
 export * from "./kits/agent-admin/mcp";
 export * from "./kits/agent-admin/mcp-connectors";
@@ -360,6 +401,9 @@ export * from "./kits/billing/payment-card";
 /* Kit: editor (src/kits/editor) */
 // not exported: kits/editor/code-editor (imports optional peer @codemirror/state)
 // not exported: kits/editor/pdf-viewer (imports optional peer pdfjs-dist)
+// not exported: kits/editor/pdf-viewer-internal (imports optional peer pdfjs-dist)
+// not exported: kits/editor/pdf-viewer-model (imports optional peer pdfjs-dist)
+// not exported: kits/editor/pdf-viewer-thumbnail (imports optional peer pdfjs-dist)
 // not exported: kits/editor/rich-text-editor (imports optional peer @tiptap/react)
 export * from "./kits/editor/document-outline";
 export * from "./kits/editor/editor-status";
@@ -403,9 +447,14 @@ export * from "./kits/identity/sign-in-map-model";
 export * from "./kits/identity/totp";
 
 /* Kit: media (src/kits/media) */
+// not exported: kits/media/audio-player-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/media/media-controls (back-compat barrel, all targets exported)
 // not exported: kits/media/media-controls-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/media/audio-player";
+export * from "./kits/media/audio-player-model";
+export * from "./kits/media/audio-player-now-playing";
+export * from "./kits/media/audio-player-queue";
+export * from "./kits/media/audio-player-track-row";
 export * from "./kits/media/cast-picker";
 export * from "./kits/media/media-cards";
 export * from "./kits/media/media-controls-base";
@@ -431,6 +480,10 @@ export * from "./kits/ops/request-inspector";
 /* Kit: social (src/kits/social) */
 export * from "./kits/social/call-overlay";
 export * from "./kits/social/messenger";
+export * from "./kits/social/messenger-bubble";
+export * from "./kits/social/messenger-composer";
+export * from "./kits/social/messenger-list";
+export * from "./kits/social/messenger-model";
 export * from "./kits/social/presence";
 
 /* Kit: system (src/kits/system) */
@@ -460,6 +513,7 @@ export * from "./kits/voice/voice";
 
 /* Kit: workspace (src/kits/workspace) */
 // not exported: kits/workspace/kanban (back-compat barrel, all targets exported)
+// not exported: kits/workspace/kanban-board-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/workspace/kanban-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/workspace/memory-map-canvas-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/workspace/memory-map-detail-internal (internal: private helpers shared by sibling modules)
@@ -484,6 +538,8 @@ export * from "./kits/workspace/sync-status";
 export * from "./kits/workspace/timeline-rail";
 export * from "./kits/workspace/today-timeline";
 export * from "./kits/workspace/workspace-switcher";
+export * from "./kits/workspace/workspace-switcher-connections";
+export * from "./kits/workspace/workspace-switcher-status";
 
 /* Blocks: src/blocks (its own barrel) */
 export * from "./blocks";

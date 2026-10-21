@@ -11,7 +11,7 @@ import { Switch } from "../../primitives/switch";
 import { PopoverContent } from "../../primitives/popover";
 import { EffortSlider, defaultEffortLevels, type EffortLevel } from "../agent/agent-mode";
 import { formatTokenCount } from "../../lib/token-count";
-import { ProviderLogo } from "./llm-providers";
+import { ProviderLogo } from "./llm-providers-logo";
 import { type RoutingModel, type RoutingProvider, formatModelPrice, ModelCapabilityChips } from "./model-routing-model";
 
 export * from "./model-routing-model";

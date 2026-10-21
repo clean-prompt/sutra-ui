@@ -76,7 +76,7 @@ const COLOR_ALLOW: Allow = {
 
 const PALETTE_ALLOW: Allow = {
   "primitives/badge.tsx": [50, "Badge colour=gray|blue|purple|pink|orange: a fixed categorical palette whose names are the API (CONVENTIONS: categorical palettes stay on color)"],
-  "patterns/log-viewer.tsx": [30, "the ANSI SGR colour map (16 foregrounds and backgrounds) on the fixed dark log surface"],
+  "patterns/log-viewer-model.ts": [30,"the ANSI SGR colour map (16 foregrounds and backgrounds) on the fixed dark log surface"],
   "patterns/code-block.tsx": [27, "syntax palettes: a fixed dark-surface set and a light set that carries its own dark: steps"],
   "kits/billing/payment-card.tsx": [3, "card chip and network art"],
   "kits/identity/qr-scanner.tsx": [3, "debt: scanner overlay"],

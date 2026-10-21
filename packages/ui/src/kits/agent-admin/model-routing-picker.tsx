@@ -14,7 +14,7 @@ import { PopoverContent } from "../../primitives/popover";
 import { EmptyState } from "../../primitives/empty-state";
 import { formatTokenCount } from "../../lib/token-count";
 import { highlightMatch } from "../ai/slash-menu";
-import { ProviderLogo } from "./llm-providers";
+import { ProviderLogo } from "./llm-providers-logo";
 import { ModelStateGlyph, normalizeModelState } from "../ai/model-state";
 import { modelWaitHint } from "../ai/model-select";
 import { type RoutingModel, type RoutingProvider, type ModelRef, formatModelPrice, ModelCapabilityChips } from "./model-routing-model";

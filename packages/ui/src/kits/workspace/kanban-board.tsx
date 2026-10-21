@@ -1,3 +1,4 @@
+/** Kanban board: the KanbanBoard and its props, one module per family; the lanes, ids, sortable card, column header, cell and add-card composer are in `kanban-board-internal`. */
 import * as React from "react";
 import {
   DndContext,
@@ -8,7 +9,6 @@ import {
   closestCenter,
   closestCorners,
   pointerWithin,
-  useDroppable,
   useSensor,
   useSensors,
   type Announcements,
@@ -18,28 +18,14 @@ import {
   type DragStartEvent,
   type KeyboardCoordinateGetter,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import {
-  RiAddLine,
-  RiArrowDownSLine,
-  RiArrowRightSLine,
-  RiDraggable,
-  RiErrorWarningLine,
-  RiMoreLine,
-} from "@remixicon/react";
-import { cn, focusRing } from "../../lib/cn";
+import { SortableContext, horizontalListSortingStrategy, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { RiMoreLine } from "@remixicon/react";
+import { cn } from "../../lib/cn";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { usePrefersReducedMotion } from "../../hooks/use-media-query";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
-import { Input } from "../../primitives/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,69 +35,21 @@ import {
   DropdownMenuTrigger,
 } from "../../primitives/dropdown-menu";
 import {
-  KANBAN_UNASSIGNED,
   filterBoard,
   kanbanColumnCards,
   kanbanColumnWip,
   moveCard,
   moveColumn,
-  type KanbanAssignee,
   type KanbanBoardModel,
   type KanbanCardData,
-  type KanbanColumnData,
   type KanbanColumnMove,
   type KanbanFilters,
   type KanbanMove,
-  type KanbanPriority,
   type KanbanSwimlanes,
 } from "./kanban-model";
-import { priorityLabel, priorityOrder } from "./kanban-internal";
-import { KanbanAssigneeAvatar, KanbanCard, KanbanPriorityIcon, type KanbanCardProps } from "./kanban-card";
+import { KanbanAddCardComposer, KanbanCell, KanbanColumnHeader, SortableKanbanCard, buildLanes, cardKey, columnKey, unkey, type ActiveDrag } from "./kanban-board-internal";
+import { KanbanAssigneeAvatar, KanbanCard, KanbanPriorityIcon } from "./kanban-card";
 import { KanbanToolbar } from "./kanban-toolbar";
-
-/* ------------------------------------------------------------------ */
-/* KanbanBoard                                                         */
-/* ------------------------------------------------------------------ */
-
-interface Lane {
-  key: string;
-  title: string;
-  assignee?: KanbanAssignee;
-  priority?: KanbanPriority;
-  cells: Record<string, KanbanCardData[]>;
-}
-
-function buildLanes(board: KanbanBoardModel, mode: KanbanSwimlanes): Lane[] {
-  const cellsFor = (pred: (c: KanbanCardData) => boolean) => {
-    const cells: Record<string, KanbanCardData[]> = {};
-    for (const col of board.columns) cells[col.id] = [];
-    for (const c of board.cards) if (pred(c)) cells[c.columnId]?.push(c);
-    return cells;
-  };
-  if (mode === "assignee") {
-    const lanes: Lane[] = (board.assignees ?? [])
-      .filter((a) => board.cards.some((c) => c.assigneeId === a.id))
-      .map((a) => ({ key: a.id, title: a.name, assignee: a, cells: cellsFor((c) => c.assigneeId === a.id) }));
-    const known = new Set((board.assignees ?? []).map((a) => a.id));
-    if (board.cards.some((c) => !c.assigneeId || !known.has(c.assigneeId)))
-      lanes.push({
-        key: KANBAN_UNASSIGNED,
-        title: "Unassigned",
-        cells: cellsFor((c) => !c.assigneeId || !known.has(c.assigneeId)),
-      });
-    return lanes;
-  }
-  if (mode === "priority") {
-    return priorityOrder
-      .filter((p) => board.cards.some((c) => (c.priority ?? "none") === p))
-      .map((p) => ({ key: p, title: priorityLabel[p], priority: p, cells: cellsFor((c) => (c.priority ?? "none") === p) }));
-  }
-  return [{ key: "all", title: "All", cells: cellsFor(() => true) }];
-}
-
-const cardKey = (id: string) => `card:${id}`;
-const columnKey = (id: string) => `column:${id}`;
-const unkey = (key: string | number) => String(key).replace(/^(card|column|area):/, "");
 
 export interface KanbanAddCardRequest {
   columnId: string;
@@ -163,12 +101,6 @@ export interface KanbanBoardProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   locale?: string;
   /** Accessible name of the board. Default "Kanban board". */
   "aria-label"?: string;
-}
-
-interface ActiveDrag {
-  type: "card" | "column";
-  id: string;
-  keyboard: boolean;
 }
 
 /** Drag-and-drop task board: sortable cards and columns, WIP limits, swimlanes, quick filters and screen-reader announcements. */
@@ -731,187 +663,3 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
   }
 );
 KanbanBoard.displayName = "KanbanBoard";
-
-function SortableKanbanCard(props: Omit<KanbanCardProps, "activatorProps" | "activatorRef">) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({
-    id: cardKey(props.card.id),
-    data: { type: "card", columnId: props.card.columnId },
-  });
-  return (
-    <li style={{ transform: CSS.Translate.toString(transform), transition }} ref={setNodeRef}>
-      <KanbanCard {...props} activatorRef={setActivatorNodeRef} activatorProps={{ ...attributes, ...listeners }} />
-    </li>
-  );
-}
-
-interface KanbanColumnHeaderProps {
-  column: KanbanColumnData;
-  wip: { count: number; limit?: number; over: boolean };
-  visibleCount: number;
-  collapsed: boolean;
-  onToggleCollapsed: () => void;
-  onAdd?: () => void;
-  joined: boolean;
-  placeholder: boolean;
-}
-
-function KanbanColumnHeader({ column, wip, visibleCount, collapsed, onToggleCollapsed, onAdd, joined, placeholder }: KanbanColumnHeaderProps) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({
-    id: columnKey(column.id),
-    data: { type: "column", columnId: column.id },
-  });
-  const { role: _role, ...attrs } = attributes;
-  const countText = wip.limit != null ? `${wip.count}/${wip.limit}` : `${wip.count}`;
-  const filteredOut = visibleCount !== wip.count;
-  return (
-    <div
-      ref={setNodeRef}
-      role="listitem"
-      data-kanban-column={column.id}
-      data-over-limit={wip.over || undefined}
-      style={{ transform: CSS.Translate.toString(transform), transition }}
-      className={cn(
-        "group/col flex shrink-0 items-center gap-1.5 border border-border bg-subtle px-2 py-2",
-        joined ? "rounded-t-box border-b-0" : "rounded-box",
-        collapsed ? "w-11 flex-col py-2" : "w-72",
-        wip.over && "border-warning/60 bg-warning-soft/40",
-        placeholder && "opacity-50"
-      )}
-    >
-      <button
-        type="button"
-        ref={setActivatorNodeRef}
-        data-kanban-column-handle={column.id}
-        aria-label={`Reorder column ${column.title}`}
-        {...attrs}
-        {...listeners}
-        className={cn("inline-flex size-6 shrink-0 cursor-grab items-center justify-center rounded-control text-muted-foreground hover:bg-accent active:cursor-grabbing", focusRing)}
-      >
-        <RiDraggable aria-hidden className="size-4" />
-      </button>
-      <span aria-hidden className="size-2 shrink-0 rounded-full" style={{ background: column.color ?? "var(--muted-foreground)" }} />
-      <h3
-        className={cn(
-          "min-w-0 truncate text-sm font-semibold text-foreground",
-          collapsed && "[writing-mode:vertical-rl] rotate-180 py-1"
-        )}
-      >
-        {column.title}
-      </h3>
-      <span
-        className={cn(
-          "shrink-0 rounded-control px-1.5 text-xs tabular-nums text-muted-foreground",
-          wip.over && "bg-warning-soft font-semibold text-warning-soft-foreground"
-        )}
-      >
-        <span aria-hidden>{filteredOut && !collapsed ? <bdi dir="ltr">{`${visibleCount} of ${countText}`}</bdi> : countText}</span>
-        <span className="sr-only">
-          {wip.count} cards{wip.limit != null ? `, WIP limit ${wip.limit}` : ""}
-          {filteredOut ? `, ${visibleCount} shown` : ""}
-        </span>
-      </span>
-      {wip.over && (
-        <span className="inline-flex shrink-0 items-center text-warning" title="Over WIP limit">
-          <RiErrorWarningLine aria-hidden className="size-4" />
-          <span className="sr-only">Over WIP limit</span>
-        </span>
-      )}
-      <div className={cn("flex items-center gap-0.5", collapsed ? "flex-col" : "ms-auto")}>
-        {onAdd && !collapsed && (
-          <Button size="icon-xs" variant="ghost" aria-label={`Add card to ${column.title}`} onClick={onAdd}>
-            <RiAddLine aria-hidden />
-          </Button>
-        )}
-        <Button
-          size="icon-xs"
-          variant="ghost"
-          aria-label={`${collapsed ? "Expand" : "Collapse"} ${column.title}`}
-          aria-expanded={!collapsed}
-          onClick={onToggleCollapsed}
-        >
-          {collapsed ? <RiArrowRightSLine className="rtl:-scale-x-100" aria-hidden /> : <RiArrowDownSLine aria-hidden />}
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function KanbanCell({
-  laneKey,
-  column,
-  collapsed,
-  joined,
-  over,
-  count,
-  children,
-}: {
-  laneKey: string;
-  column: KanbanColumnData;
-  collapsed: boolean;
-  joined: boolean;
-  over: boolean;
-  count: number;
-  children: React.ReactNode;
-}) {
-  const { setNodeRef, isOver } = useDroppable({
-    id: `area:${laneKey}::${column.id}`,
-    data: { type: "area", columnId: column.id, lane: laneKey },
-  });
-  return (
-    <div
-      ref={setNodeRef}
-      data-kanban-area={`${laneKey}::${column.id}`}
-      className={cn(
-        "flex shrink-0 flex-col gap-2 border border-border bg-subtle p-2 transition-colors",
-        joined ? "min-h-40 rounded-b-box border-t-0" : "min-h-24 rounded-box",
-        collapsed ? "w-11 items-center" : "w-72",
-        over && "border-warning/60",
-        isOver && "bg-primary-soft/40"
-      )}
-    >
-      {collapsed ? (
-        <span className="text-xs tabular-nums text-muted-foreground" aria-hidden>
-          {count}
-        </span>
-      ) : (
-        children
-      )}
-    </div>
-  );
-}
-
-function KanbanAddCardComposer({ columnTitle, onSubmit, onCancel }: { columnTitle: string; onSubmit: (title: string) => void; onCancel: () => void }) {
-  const [value, setValue] = React.useState("");
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (value.trim()) onSubmit(value.trim());
-      }}
-      className="flex flex-col gap-1.5"
-    >
-      <Input
-        autoFocus
-        size="sm"
-        value={value}
-        placeholder="Card title"
-        aria-label={`New card title in ${columnTitle}`}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            e.preventDefault();
-            onCancel();
-          }
-        }}
-      />
-      <div className="flex gap-1">
-        <Button type="submit" size="xs" disabled={!value.trim()}>
-          Add card
-        </Button>
-        <Button type="button" size="xs" variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
-      </div>
-    </form>
-  );
-}

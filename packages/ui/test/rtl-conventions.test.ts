@@ -26,7 +26,7 @@ const rel = (f: string) => path.relative(SRC, f).split(path.sep).join("/");
 
 const PHYSICAL_BY_DESIGN: Record<string, { count: number; why: string }> = {
   "kits/agent/plan-review.tsx": { count: 1, why: "the selection toolbar is placed at the pixel position of the selection (inline style left)" },
-  "kits/editor/pdf-viewer.tsx": { count: 2, why: "pdf.js text layer: absolute spans placed from the page's physical top-left corner" },
+  "kits/editor/pdf-viewer-internal.tsx": { count: 2, why: "pdf.js text layer: absolute spans placed from the page's physical top-left corner" },
   "kits/social/call-overlay.tsx": { count: 4, why: "picture-in-picture corners are named and snapped by physical position" },
   "kits/voice/translate-conversation.tsx": { count: 3, why: "conversation speakers are named left and right (the conversation root is dir=ltr)" },
   "patterns/fan-menu.tsx": { count: 4, why: "the fan direction names a physical side" },
