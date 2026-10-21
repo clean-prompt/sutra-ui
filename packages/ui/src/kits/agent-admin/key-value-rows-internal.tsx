@@ -40,7 +40,7 @@ export interface KeyValueRowsInputProps extends Omit<React.HTMLAttributes<HTMLDi
   keyLabel?: string;
   /** Word that ends each value field's accessible name. Default "value". */
   valueLabel?: string;
-  /** `data-slot` of every row. Default "key-value-row". */
+  /** `data-slot` of every row. Default "key-value-row"; the header rows of `CustomEndpointForm` use "endpoint-header-row". */
   rowSlot?: string;
   /** Shown instead of the rows while there are none. */
   emptyState?: React.ReactNode;

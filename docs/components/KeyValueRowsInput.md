@@ -19,7 +19,7 @@
 | `keyPlaceholder` | `string` | `"KEY"` | Placeholder of the key field in each row. |
 | `label` | `string` | `"Variables"` | Accessible name for the group, also used to label row inputs. |
 | `onValueChange` | `(rows: KeyValueRowsEntry[]) => void` |  | Called with the full row list when the user edits, adds or removes a row. |
-| `rowSlot` | `string` | `"key-value-row"` | `data-slot` of every row. Default "key-value-row". |
+| `rowSlot` | `string` | `"key-value-row"` | `data-slot` of every row. Default "key-value-row"; the header rows of `CustomEndpointForm` use "endpoint-header-row". |
 | `secret` | `boolean \| "auto"` | `"auto"` | Mask values: always, never, or `"auto"` (keys that look like secrets). Default "auto". |
 | `value` | `KeyValueRowsEntry[]` |  | Controlled rows as `{ key, value }` entries. |
 | `valueLabel` | `string` | `"value"` | Word that ends each value field's accessible name. Default "value". |
