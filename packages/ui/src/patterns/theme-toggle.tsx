@@ -4,6 +4,7 @@ import { cn, type Size } from "../lib/cn";
 import { useControllableState } from "../hooks/use-controllable-state";
 import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useMediaQuery } from "../hooks/use-media-query";
+import { writeRootTheme } from "../lib/theme-store";
 import { Button } from "../primitives/button";
 import { SegmentedControl, type SegmentedControlProps } from "../primitives/segmented-control";
 
@@ -40,7 +41,7 @@ export interface ThemeToggleProps
   defaultValue?: ThemeToggleMode;
   /** Called with the new mode when the user toggles it. */
   onValueChange?: (mode: ThemeToggleMode) => void;
-  /** Toggle the `dark` class / color-scheme on <html>. Default true. */
+  /** Toggle the `dark` class / color-scheme on <html> (through the same store as `useTheme`). Default true. */
   applyToDocument?: boolean;
   /** localStorage key used when uncontrolled; `null` disables persistence. */
   storageKey?: string | null;
@@ -103,10 +104,9 @@ export const ThemeToggle = React.forwardRef<HTMLButtonElement & HTMLDivElement, 
     }, []);
 
     React.useEffect(() => {
-      if (!ready || !applyToDocument || typeof document === "undefined") return;
-      const root = document.documentElement;
-      root.classList.toggle("dark", resolved === "dark");
-      root.style.colorScheme = resolved;
+      if (!ready || !applyToDocument) return;
+      // Through the shared theme store, so `useTheme` callers follow and nothing else on <html> is rewritten.
+      writeRootTheme({ mode: resolved });
     }, [ready, resolved, applyToDocument]);
 
     React.useEffect(() => {
