@@ -5,7 +5,9 @@
  * paper gap above the floor of the bowl) and the thread below (it starts a paper gap under the base).
  *
  * `fine` is the full mark for the bare glyph; `bold` is the same drawing smaller with a heavier thread, for tiles and the
- * favicon. packages/ui/src/assets/brand.tsx carries the same path strings (run `node design/brand/crescent.mjs` to print them).
+ * favicon. The library draws it from packages/ui/src/assets/brand-internal.ts (the one source of the geometry in the package); this file is
+ * the design-time twin and `packages/ui/test/assets-review-fixes.test.tsx` pins both to the same path strings (run
+ * `node design/brand/crescent.mjs` to print them).
  */
 const n = (v) => String(+(+v).toFixed(2));
 

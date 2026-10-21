@@ -3,7 +3,7 @@
  * The chosen Sutra brand, ink on paper: final SVG files for the mark, lockup, favicon and app icons.
  *   node build.mjs
  * The mark is the crescent bead on an upright thread (review option L10, chosen 2026-10-21), drawn by ./crescent.mjs, the same
- * path strings as packages/ui/src/assets/brand.tsx. The app icons keep the Bead system of option 01 (a tile with a thread
+ * path strings as packages/ui/src/assets/brand-internal.ts. The app icons keep the Bead system of option 01 (a tile with a thread
  * across it and a bead holding the pictogram) from ../brand-options/build.mjs. App icons use the 1024 grid; marks and
  * lockups the 64 box.
  */

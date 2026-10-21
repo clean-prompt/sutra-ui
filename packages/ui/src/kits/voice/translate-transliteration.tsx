@@ -40,7 +40,7 @@ export interface TransliterationCandidatesProps extends Omit<React.HTMLAttribute
 
 /** IME-style candidate popup under the caret: pick by number, click, or arrows + Enter/Space; Esc keeps the raw text. */
 export const TransliterationCandidates = React.forwardRef<HTMLDivElement, TransliterationCandidatesProps>(
-  ({ anchorRef, getCandidates, lang, enabled = true, max = 5, onSelect, className, style, ...props }, ref) => {
+  ({ anchorRef, getCandidates, lang, enabled = true, max = 5, onSelect, className, style, onMouseDown, ...props }, ref) => {
     const [word, setWord] = React.useState<{ start: number; end: number; text: string } | null>(null);
     const [items, setItems] = React.useState<string[]>([]);
     const [active, setActive] = React.useState(0);
@@ -170,7 +170,10 @@ export const TransliterationCandidates = React.forwardRef<HTMLDivElement, Transl
       <div
         ref={ref}
         data-slot="transliteration-candidates"
-        onMouseDown={(e) => e.preventDefault()}
+        onMouseDown={(e) => {
+          onMouseDown?.(e);
+          e.preventDefault(); // keep focus (and the caret) in the field being typed in
+        }}
         className={cn("fixed z-50 min-w-40 overflow-hidden rounded-box border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0", className)}
         style={{ top: (caret?.top ?? rect?.top ?? 0) + (caret?.height ?? 20) + 4, left: caret?.left ?? rect?.left ?? 0, ...style }}
         {...props}
@@ -219,7 +222,7 @@ export interface TransliterationToggleProps extends Omit<React.ButtonHTMLAttribu
 
 /** IME on/off toggle for transliteration input. */
 export const TransliterationToggle = React.forwardRef<HTMLButtonElement, TransliterationToggleProps>(
-  ({ pressed: pressedProp, defaultPressed = false, onPressedChange, glyph = "अ", languageName, className, ...props }, ref) => {
+  ({ pressed: pressedProp, defaultPressed = false, onPressedChange, glyph = "अ", languageName, className, onClick, ...props }, ref) => {
     const [pressed, setPressed] = useControllableState({ value: pressedProp, defaultValue: defaultPressed, onChange: onPressedChange });
     return (
     <button
@@ -227,7 +230,10 @@ export const TransliterationToggle = React.forwardRef<HTMLButtonElement, Transli
       type="button"
       aria-pressed={pressed}
       aria-label={languageName ? `Type in ${languageName} script` : "Transliteration"}
-      onClick={() => setPressed(!pressed)}
+      onClick={(e) => {
+        onClick?.(e);
+        if (!e.defaultPrevented) setPressed(!pressed);
+      }}
       className={cn(
         "inline-flex h-8 items-center gap-1 rounded-control px-2 text-sm font-medium transition-colors",
         pressed ? "bg-primary-soft text-primary-soft-foreground" : "text-muted-foreground hover:bg-accent hover:text-foreground",
