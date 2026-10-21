@@ -4,6 +4,7 @@
 
 - Import: `import { LogViewer } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/log-viewer` (patterns)
+- `data-slot`: `log-viewer`
 - Also accepts the props of HTMLAttributes
 
 ## Props

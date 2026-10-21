@@ -4,6 +4,7 @@
 
 - Import: `import { TimeScrubber } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/memory-map-scrubber` (kit `workspace`)
+- `data-slot`: `time-scrubber`
 - Also accepts the props of HTMLAttributes
 
 ## Props

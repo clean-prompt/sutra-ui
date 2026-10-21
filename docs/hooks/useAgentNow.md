@@ -2,6 +2,8 @@
 
 > Current time, re-rendered every `interval` ms while `active`.
 
+**Deprecated:** Use `useNow({ active, interval })` from `hooks/use-now`.
+
 - Import: `import { useAgentNow } from "@sutra/ui/agent"`
 - Source: `packages/ui/src/kits/agent/agent-tasks`
 

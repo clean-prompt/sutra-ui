@@ -4,6 +4,7 @@
 
 - Import: `import { SectionHeader } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/section-header` (patterns)
+- `data-slot`: `section-header`
 - Also accepts the props of HTMLAttributes
 
 ## Props

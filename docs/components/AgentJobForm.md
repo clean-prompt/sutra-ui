@@ -4,6 +4,7 @@
 
 - Import: `import { AgentJobForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-form` (kit `agent-admin`)
+- `data-slot`: `agent-job-form`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
 
 ## Props

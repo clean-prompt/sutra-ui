@@ -4,6 +4,7 @@
 
 - Import: `import { TodayTimeline } from "@sutra/ui"` (or from `@sutra/ui/suite`)
 - Source: `packages/ui/src/kits/workspace/today-timeline` (kit `workspace`)
+- `data-slot`: `today-timeline`
 - Also accepts the props of HTMLAttributes
 
 ## Props

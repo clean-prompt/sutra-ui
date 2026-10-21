@@ -4,6 +4,7 @@
 
 - Import: `import { TerminalSessionPicker } from "@sutra/ui/terminal"`
 - Source: `packages/ui/src/kits/terminal/terminal` (kit `terminal`)
+- `data-slot`: `terminal-session-picker`
 - Part of [`Terminal`](Terminal.md)
 - Also accepts the props of HTMLAttributes
 

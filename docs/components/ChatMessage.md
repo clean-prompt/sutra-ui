@@ -4,6 +4,7 @@
 
 - Import: `import { ChatMessage } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message` (kit `ai`)
+- `data-slot`: `chat-message`
 - Parts: [`ChatMessageAvatar`](ChatMessageAvatar.md), [`ChatMessageBody`](ChatMessageBody.md), [`ChatMessageContent`](ChatMessageContent.md), [`ChatMessageFooter`](ChatMessageFooter.md), [`ChatMessageHeader`](ChatMessageHeader.md)
 - Also accepts the props of HTMLAttributes
 

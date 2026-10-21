@@ -4,6 +4,7 @@
 
 - Import: `import { HeatmapGrid } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/heatmap` (patterns)
+- `data-slot`: `heatmap-grid`
 - Also accepts the props of HTMLAttributes
 
 ## Props

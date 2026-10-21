@@ -4,6 +4,7 @@
 
 - Import: `import { ChatToolApproval } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-tool` (kit `ai`)
+- `data-slot`: `chat-tool-approval`
 - Part of [`ChatTool`](ChatTool.md)
 - Also accepts the props of HTMLAttributes
 

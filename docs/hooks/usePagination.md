@@ -8,7 +8,7 @@
 ## Signature
 
 ```ts
-usePagination(options: UsePaginationOptions): PaginationRangeItem[]
+usePagination(options: PaginationOptions): PaginationRangeItem[]
 ```
 
 ## Options and result

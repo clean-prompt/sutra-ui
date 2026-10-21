@@ -4,7 +4,7 @@
 
 - Import: `import { CustomEndpointForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/llm-providers` (kit `agent-admin`)
-- `data-slot`: `custom-endpoint-form`, `endpoint-header-row`, `endpoint-test-result`
+- `data-slot`: `custom-endpoint-form`, `endpoint-test-result`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
 
 ## Props

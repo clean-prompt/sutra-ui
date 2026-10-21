@@ -4,6 +4,7 @@
 
 - Import: `import { SharedElement } from "@sutra/ui"` (or from `@sutra/ui/motion`)
 - Source: `packages/ui/src/patterns/shared-element` (patterns)
+- `data-slot`: `shared-element`
 - Also accepts the props of HTMLAttributes
 
 ## Props

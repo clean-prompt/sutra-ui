@@ -12,6 +12,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `adapter` (required) | `DevicePairingAdapter` |  | Adapter that performs the pairing (create, show or enter the code, confirm); the flow only drives the UI. |
+| `headingLevel` | `AuthHeadingLevel` | `1` | Element of the card title (`1` is an `h1`). |
 | `onCancel` | `() => void` |  | Called when the user cancels the pairing. |
 | `onDone` | `(peer: DevicePairingPeer) => void` |  | Called with the peer when pairing finishes. |
 | `side` | `"existing" \| "new"` | `"existing"` | `existing` shows the QR + code; `new` types the code. |

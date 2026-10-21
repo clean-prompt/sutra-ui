@@ -4,6 +4,7 @@
 
 - Import: `import { ModelRow } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ops/model-row` (kit `ops`)
+- `data-slot`: `model-row`
 - Also accepts the props of HTMLAttributes
 
 ## Props

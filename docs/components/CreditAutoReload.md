@@ -4,6 +4,7 @@
 
 - Import: `import { CreditAutoReload } from "@sutra/ui"` (or from `@sutra/ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-credits` (kit `billing`)
+- `data-slot`: `credit-auto-reload`
 - Also accepts the props of HTMLAttributes
 
 ## Props

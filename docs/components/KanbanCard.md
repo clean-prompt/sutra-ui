@@ -4,6 +4,7 @@
 
 - Import: `import { KanbanCard } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-card` (kit `workspace`)
+- `data-slot`: `kanban-card`
 - Also accepts the props of HTMLAttributes
 
 ## Props

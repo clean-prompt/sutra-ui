@@ -6,6 +6,7 @@
 
 - Import: `import { TextButton } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/patterns/text-button` (patterns)
+- `data-slot`: `text-button`
 - Also accepts the props of HTMLAttributes
 
 ## Props

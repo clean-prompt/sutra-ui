@@ -4,6 +4,7 @@
 
 - Import: `import { SidebarFooter } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
+- `data-slot`: `sidebar-footer`
 - Part of [`Sidebar`](Sidebar.md)
 - Also accepts the props of HTMLAttributes
 

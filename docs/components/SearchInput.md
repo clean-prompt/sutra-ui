@@ -12,6 +12,7 @@
 |---|---|---|---|
 | `className` | `string` |  | Classes for the element that renders. Without addons that is the `<input>` itself (the root). With addons (`leadingIcon`, `trailingIcon`, `prefix`, `suffix`, `clearable`) it lands on the **inner** `<input>`, not the outer wrapper, so layout classes (`w-48`, `flex-1`, margins) have no visible effect there; use `wrapperClassName` for those. |
 | `clearable` | `boolean` | `true` | Shows a clear button while the field has a value. |
+| `clearLabel` | `string` | `"Clear"` | Accessible name of the clear button. |
 | `hotkey` | `string` |  | Global shortcut that focuses the field, e.g. "/" or "mod+k" (⌘ on macOS, Ctrl elsewhere). Also rendered as a key hint unless `shortcut` is provided. |
 | `invalid` | `boolean` |  | Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
 | `onClear` | `() => void` |  | Called after the clear button empties the field. |

@@ -4,6 +4,7 @@
 
 - Import: `import { NestedValueEditor } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/patterns/schema-form` (patterns)
+- `data-slot`: `schema-form-group`, `schema-form-field`, `schema-form-status`, `schema-form-disabled-note`
 
 ## Props
 

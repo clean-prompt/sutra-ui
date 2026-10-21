@@ -4,6 +4,7 @@
 
 - Import: `import { FileUpload } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/file-upload` (patterns)
+- `data-slot`: `file-upload`
 - Parts: [`FileUploadDropzone`](FileUploadDropzone.md), [`FileUploadItem`](FileUploadItem.md), [`FileUploadList`](FileUploadList.md), [`FileUploadTrigger`](FileUploadTrigger.md)
 - Also accepts the props of HTMLAttributes
 

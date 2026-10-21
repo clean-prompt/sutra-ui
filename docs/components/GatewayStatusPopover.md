@@ -4,6 +4,7 @@
 
 - Import: `import { GatewayStatusPopover } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/workspace-switcher` (kit `workspace`)
+- `data-slot`: `gateway-status-popover`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
 ## Props

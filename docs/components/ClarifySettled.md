@@ -4,6 +4,7 @@
 
 - Import: `import { ClarifySettled } from "@sutra/ui"`
 - Source: `packages/ui/src/kits/ai/clarify-settled` (kit `ai`)
+- `data-slot`: `clarify-settled`
 - Also accepts the props of HTMLAttributes
 
 ## Props

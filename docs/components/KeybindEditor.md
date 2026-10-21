@@ -4,6 +4,7 @@
 
 - Import: `import { KeybindEditor } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/patterns/keybind-editor` (patterns)
+- `data-slot`: `keybind-editor`, `keybind-editor-row`
 - Also accepts the props of HTMLAttributes
 
 ## Props
@@ -11,7 +12,8 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `defaultValue` | `Record<string, string>` | `{}` | Initial overrides when uncontrolled: an object of id to keys. |
-| `onChange` | `(id: string, keys: string) => void` |  | Fired for every binding change (including the cleared side of a replace and resets). |
+| `labels` | `KeybindEditorLabels` |  | Texts and accessible names (English by default); pass them to translate the editor. |
+| `onChange` | `(id: string, keys: string) => void` |  | **Deprecated.** Use `onValueChange` (the overrides object) when the whole value is enough. Fired for every binding change (including the cleared side of a replace and resets). |
 | `onResetAll` | `() => void` |  | Called after the user resets every binding to its default. |
 | `onValueChange` | `(overrides: Record<string, string>) => void` |  | Called with the full overrides object after a binding changes or is reset. |
 | `platform` | `ShortcutPlatform` |  | Platform whose key glyphs are shown. Defaults to the detected platform. |

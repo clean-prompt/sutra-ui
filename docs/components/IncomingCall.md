@@ -4,6 +4,7 @@
 
 - Import: `import { IncomingCall } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/social/call-overlay` (kit `social`)
+- `data-slot`: `incoming-call`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -11,10 +11,11 @@
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `account` | `string` | `"maya@sutra.app"` | Account label shown under the QR code. |
+| `account` | `string` | `""` | Account label shown under the QR code (an email address, say). Left out of the label and the provisioning URI when empty. |
 | `description` | `React.ReactNode` | `"Protect your account with an authenticator app like 1Password, Authy or Google Authenticator."` | Supporting text under the heading; each card has its own default. |
 | `error` | `React.ReactNode` |  | Error message shown under the code input (e.g. a wrong code). |
 | `footer` | `React.ReactNode` |  | Replace the default footer (e.g. "Don't have an account? Sign up"). Pass `null` to hide it. |
+| `headingLevel` | `AuthHeadingLevel` | `1` | Element of the card title (`1` is an `h1`). Use `2` or lower when the card sits inside a page that has its own `h1`. |
 | `issuer` | `string` | `"Sutra"` | Issuer (service name) shown in the authenticator app. Defaults to "Sutra". |
 | `loading` | `boolean` |  | Disables the form and shows a spinner while the code is checked. |
 | `logo` | `boolean \| React.ReactNode` |  | Show the Sutra mark above the title, or pass a custom logo. Default: true for `card`. |

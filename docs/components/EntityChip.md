@@ -4,6 +4,7 @@
 
 - Import: `import { EntityChip } from "@sutra/ui"` (or from `@sutra/ui/suite`)
 - Source: `packages/ui/src/kits/workspace/entity-mention` (kit `workspace`)
+- `data-slot`: `entity-chip`
 - Also accepts the props of HTMLAttributes
 
 ## Props

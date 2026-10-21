@@ -4,6 +4,7 @@
 
 - Import: `import { DecodeText } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/decode-text` (patterns)
+- `data-slot`: `decode-text`
 - Also accepts the props of HTMLAttributes
 
 ## Props

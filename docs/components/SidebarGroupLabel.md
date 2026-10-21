@@ -4,6 +4,7 @@
 
 - Import: `import { SidebarGroupLabel } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
+- `data-slot`: `sidebar-group-label`
 - Part of [`SidebarGroup`](SidebarGroup.md)
 - Also accepts the props of HTMLAttributes
 

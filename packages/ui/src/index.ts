@@ -67,6 +67,7 @@ export * from "./lib/validate";
 export * from "./lib/wheel";
 
 /* Assets: src/assets */
+// not exported: assets/brand-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-activities-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-food-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/emoji-ink-internal (internal: private helpers shared by sibling modules)
@@ -89,6 +90,7 @@ export * from "./lib/wheel";
 // not exported: assets/mascot-sutradhar-internal (internal: private helpers shared by sibling modules)
 // not exported: assets/misc (back-compat barrel, all targets exported)
 // not exported: assets/sutradhar-sting-internal (internal: private helpers shared by sibling modules)
+// not exported: assets/svg-a11y-internal (internal: private helpers shared by sibling modules)
 export * from "./assets/backgrounds";
 export * from "./assets/brand";
 export * from "./assets/country-flags";
@@ -316,6 +318,7 @@ export * from "./kits/agent/tool-timeline";
 /* Kit: agent-admin (src/kits/agent-admin) */
 // not exported: kits/agent-admin/agent-jobs (back-compat barrel, all targets exported)
 // not exported: kits/agent-admin/agent-jobs-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/agent-admin/key-value-rows-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/agent-admin/secret-row (internal: private secret row shared by llm-providers and tool-toggles)
 export * from "./kits/agent-admin/agent-jobs-blueprints";
 export * from "./kits/agent-admin/agent-jobs-delivery";

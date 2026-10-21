@@ -4,6 +4,7 @@
 
 - Import: `import { CodeBlockTabs } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/code-block` (patterns)
+- `data-slot`: `code-block-tabs`
 - Part of [`CodeBlock`](CodeBlock.md)
 - Also accepts the props of HTMLAttributes
 

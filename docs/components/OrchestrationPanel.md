@@ -4,6 +4,7 @@
 
 - Import: `import { OrchestrationPanel } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/orchestration-panel` (kit `workspace`)
+- `data-slot`: `orchestration-panel`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { Sidebar } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
+- `data-slot`: `sidebar`
 - Parts: [`SidebarContent`](SidebarContent.md), [`SidebarFooter`](SidebarFooter.md), [`SidebarGroup`](SidebarGroup.md), [`SidebarGroupLabel`](SidebarGroupLabel.md), [`SidebarHeader`](SidebarHeader.md), [`SidebarInset`](SidebarInset.md), [`SidebarMenu`](SidebarMenu.md), [`SidebarMenuButton`](SidebarMenuButton.md), [`SidebarMenuItem`](SidebarMenuItem.md), [`SidebarMenuSub`](SidebarMenuSub.md), [`SidebarMenuSubButton`](SidebarMenuSubButton.md), [`SidebarProvider`](SidebarProvider.md), [`SidebarSeparator`](SidebarSeparator.md), [`SidebarTrigger`](SidebarTrigger.md), [`SidebarUserCard`](SidebarUserCard.md)
 - Also accepts the props of HTMLAttributes
 

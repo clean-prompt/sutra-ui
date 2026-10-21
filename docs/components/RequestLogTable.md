@@ -4,6 +4,7 @@
 
 - Import: `import { RequestLogTable } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ops/request-inspector` (kit `ops`)
+- `data-slot`: `request-log-table`
 - Also accepts the props of HTMLAttributes
 
 ## Props

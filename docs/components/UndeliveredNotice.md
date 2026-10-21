@@ -4,6 +4,7 @@
 
 - Import: `import { UndeliveredNotice } from "@sutra/ui"`
 - Source: `packages/ui/src/kits/ai/undelivered-notice` (kit `ai`)
+- `data-slot`: `undelivered-notice`
 - Also accepts the props of HTMLAttributes
 
 ## Props

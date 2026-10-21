@@ -16,6 +16,7 @@
 | `extra` | `SessionStatsItem[]` | `[]` | Extra rows appended at the end. |
 | `linesAdded` | `number` |  | Lines added; shown as "+N" with `linesRemoved`. |
 | `linesRemoved` | `number` |  | Lines removed; shown as "−N" with `linesAdded`. |
+| `locale` | `string` | `"en-US"` | BCP 47 locale used to format `cost`. Default "en-US". |
 | `wallDurationMs` | `number` |  | Elapsed wall-clock time of the session, in ms; the row is hidden when unset. |
 
 ## Example (live: `#/components/agent-sessions/session-stats` in the playground)

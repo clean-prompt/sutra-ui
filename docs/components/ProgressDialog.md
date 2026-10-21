@@ -4,6 +4,7 @@
 
 - Import: `import { ProgressDialog } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ops/progress-dialog` (kit `ops`)
+- `data-slot`: `progress-dialog`
 
 ## Props
 

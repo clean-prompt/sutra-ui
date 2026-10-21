@@ -4,6 +4,7 @@
 
 - Import: `import { SidebarMenu } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
+- `data-slot`: `sidebar-menu`
 - Part of [`Sidebar`](Sidebar.md)
 - Parts: [`SidebarMenuButton`](SidebarMenuButton.md), [`SidebarMenuItem`](SidebarMenuItem.md), [`SidebarMenuSub`](SidebarMenuSub.md), [`SidebarMenuSubButton`](SidebarMenuSubButton.md)
 - Also accepts the props of HTMLAttributes

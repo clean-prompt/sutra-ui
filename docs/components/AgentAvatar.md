@@ -4,6 +4,7 @@
 
 - Import: `import { AgentAvatar } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/patterns/agent-avatar` (patterns)
+- `data-slot`: `agent-avatar`
 - Also accepts the props of SVGAttributes
 
 ## Props

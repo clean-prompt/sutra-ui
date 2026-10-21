@@ -4,6 +4,7 @@
 
 - Import: `import { AppLauncher } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/workspace/app-launcher` (kit `workspace`)
+- `data-slot`: `app-launcher`
 - Parts: [`AppLauncherMenu`](AppLauncherMenu.md)
 - Also accepts the props of HTMLAttributes
 

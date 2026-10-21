@@ -13,7 +13,7 @@
 | `access` | `ShareAccess` |  | Controlled who can open the item: `restricted` (invited people), `workspace` or `link` (anyone with the link). Use with `onAccessChange`. |
 | `allowComments` | `boolean` |  | Controlled state of the "Allow comments on public link" switch. |
 | `className` | `string` |  | Classes for the dialog panel. |
-| `currentUserId` | `string` | `"p1"` | The signed-in person: their row says "(you)" and offers "Leave" unless they own the item. |
+| `currentUserId` | `string` |  | Id (in `people`) of the signed-in person: their row says "(you)" and offers "Leave" unless they own the item. |
 | `defaultAccess` | `ShareAccess` | `"link"` | Initial access when uncontrolled. |
 | `defaultAllowComments` | `boolean` | `false` | Initial state of the comments switch when uncontrolled. |
 | `defaultExpiry` | `ShareLinkExpiry` | `"7d"` | Initial link expiry when uncontrolled. |
@@ -23,8 +23,8 @@
 | `defaultPeople` | `DialogMember[]` |  | Initial people list when uncontrolled. |
 | `expiresAt` | `Date \| null` |  | Expiry date for a controlled `custom` expiry (or to show an existing deadline). |
 | `expiry` | `ShareLinkExpiry` |  | Controlled link expiry: `never`, `1h`, `1d`, `7d`, `30d` or `custom`. |
-| `itemName` | `string` | `"Q4 Launch Plan"` | Name of the shared item. |
-| `link` | `string` | `"https://sutra.app/n/q4-launch-plan-8d2f"` | The share link shown in the link field; the default is a sample URL. |
+| `itemName` | `string` |  | Name of the shared item, shown in the title ("Share “Q4 plan”"). Without it the title is "Share". |
+| `link` | `string` |  | The link the "Copy link" button copies. Without it the button is hidden. |
 | `linkRole` | `ShareLinkRole` |  | Controlled role granted by the link (`editor`, `commenter` or `viewer`). Use with `onLinkRoleChange`. |
 | `onAccessChange` | `(access: ShareAccess) => void` |  | Called with the new access level. |
 | `onAllowCommentsChange` | `(allow: boolean) => void` |  | Called with the new state of the comments switch. |
@@ -50,8 +50,9 @@ import { ShareDialog } from "@sutra/ui/blocks";
 import { Button } from "@sutra/ui/core";
 import { RiCompass3Line, RiShareLine } from "@sutra/ui/icons";
 
-<ShareDialog trigger={<Button leadingIcon={<RiShareLine />}>Share</Button>} />
+<ShareDialog {...demoShare} trigger={<Button leadingIcon={<RiShareLine />}>Share</Button>} />
 <ShareDialog
+  {...demoShare}
   currentUserId="p3"
   defaultAccess="restricted"
   itemName="Design review"

@@ -11,7 +11,7 @@
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `color` | `ProgressColor` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
+| `color` | `ProgressColor \| ToneInput` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
 | `formatValue` | `(value: number, max: number) => React.ReactNode` |  | Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". A text or number result is also used as `aria-valuetext`. |
 | `indeterminate` | `boolean` |  | Forces the looping animation regardless of `value` (also used when `value` is null). |
 | `indicatorClassName` | `string` |  | Classes for the filled indicator bar (`className` styles the track). |
@@ -30,7 +30,7 @@ Circular progress ring with centered value (role="progressbar"): task completion
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `children` | `React.ReactNode` |  | Custom center content (overrides the value). |
-| `color` | `ProgressColor` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
+| `color` | `ProgressColor \| ToneInput` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
 | `gradient` | `boolean` |  | Brand gradient stroke instead of a flat color. |
 | `label` | `string` |  | Accessible name of the progressbar (`aria-label`). |
 | `max` | `number` | `100` | Value that counts as 100%. |
@@ -64,7 +64,7 @@ Segmented bar for multi-step progress, or (with `role="meter"`) a level such as 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `value` (required) | `number` |  | Filled amount, relative to `max` (defaults to `segments`). |
-| `color` | `ProgressColor` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
+| `color` | `ProgressColor \| ToneInput` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
 | `indicatorClassName` | `string` |  | Classes for the filled segments; replaces the tone colour (e.g. `bg-success/70`). |
 | `label` | `string` |  | Accessible name of the progressbar (`aria-label`). |
 | `max` | `number` |  | Total number of units the bar represents; defaults to the segment count. |

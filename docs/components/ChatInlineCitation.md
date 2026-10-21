@@ -4,6 +4,7 @@
 
 - Import: `import { ChatInlineCitation } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/patterns/inline-citation` (patterns)
+- `data-slot`: `inline-citation`
 - Also accepts the props of HTMLAttributes
 
 ## Props

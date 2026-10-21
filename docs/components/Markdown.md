@@ -4,6 +4,7 @@
 
 - Import: `import { Markdown } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/patterns/markdown` (patterns)
+- `data-slot`: `markdown-code-block`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -14,6 +14,7 @@
 | `client` (required) | `KunjiClient` |  | The kunji client that issues and polls sign-in challenges (and supplies the app name). |
 | `defaultMethod` | `SignInMethodId` |  | Method shown first when nothing is remembered; defaults to the first of `methods`. |
 | `description` | `React.ReactNode` |  | Text under the heading. |
+| `headingLevel` | `AuthHeadingLevel` | `1` | Element of the card title (`1` is an `h1`). |
 | `kunjiProps` | `Partial<Omit<KunjiSignInProps, "client">>` |  | Props passed through to the kunji widget (everything except `client`). |
 | `labels` | `Partial<Record<SignInMethodId, React.ReactNode>>` |  | Overrides for the method tab labels, keyed by method id (`kunji`, `password`, `token`). |
 | `methods` | `SignInMethodId[]` | `["kunji", "password", "token"]` | Methods to offer, in order. Default all three. |

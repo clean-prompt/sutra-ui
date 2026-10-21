@@ -4,6 +4,7 @@
 
 - Import: `import { BillingBanner } from "@sutra/ui"` (or from `@sutra/ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-banner` (kit `billing`)
+- `data-slot`: `billing-banner`
 - Also accepts the props of HTMLAttributes
 
 ## Props

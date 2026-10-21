@@ -4,6 +4,7 @@
 
 - Import: `import { MentionInput } from "@sutra/ui"` (or from `@sutra/ui/suite`)
 - Source: `packages/ui/src/kits/workspace/entity-mention` (kit `workspace`)
+- `data-slot`: `mention-input`
 - Also accepts the props of HTMLAttributes, TextareaHTMLAttributes
 
 ## Props

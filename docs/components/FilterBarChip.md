@@ -4,6 +4,7 @@
 
 - Import: `import { FilterBarChip } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
+- `data-slot`: `filter-bar-chip`
 - Part of [`FilterBar`](FilterBar.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

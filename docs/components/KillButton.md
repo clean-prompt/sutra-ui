@@ -4,6 +4,7 @@
 
 - Import: `import { KillButton } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ops/process-table` (kit `ops`)
+- `data-slot`: `kill-button`
 - Also accepts the props of HTMLAttributes
 
 ## Props

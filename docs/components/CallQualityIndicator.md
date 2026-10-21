@@ -4,6 +4,7 @@
 
 - Import: `import { CallQualityIndicator } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/social/call-overlay` (kit `social`)
+- `data-slot`: `call-quality-indicator`
 - Also accepts the props of HTMLAttributes
 
 ## Props

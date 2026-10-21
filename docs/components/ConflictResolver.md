@@ -4,6 +4,7 @@
 
 - Import: `import { ConflictResolver } from "@sutra/ui"` (or from `@sutra/ui/suite`)
 - Source: `packages/ui/src/kits/workspace/sync-status` (kit `workspace`)
+- `data-slot`: `conflict-resolver`
 
 ## Props
 

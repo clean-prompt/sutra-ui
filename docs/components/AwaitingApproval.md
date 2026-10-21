@@ -13,6 +13,7 @@
 |---|---|---|---|
 | `description` | `React.ReactNode` |  | Text under the heading. |
 | `handle` | `string` |  | The handle that is waiting. |
+| `headingLevel` | `AuthHeadingLevel` | `1` | Element of the card title (`1` is an `h1`). |
 | `onApproved` | `() => void` |  | Called once `onCheck` resolves `true`. |
 | `onCheck` | `() => boolean \| Promise<boolean>` |  | Resolve `true` once approved. Polled every `pollInterval`. |
 | `onSignOut` | `() => void` |  | Called when "Sign out" is clicked; setting it shows the button. |

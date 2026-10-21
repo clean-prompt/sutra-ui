@@ -4,6 +4,7 @@
 
 - Import: `import { ChatSourceList } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-source` (kit `ai`)
+- `data-slot`: `chat-source-list`, `chat-source-trigger`, `chat-source-content`
 - Part of [`ChatSource`](ChatSource.md)
 - Also accepts the props of HTMLAttributes, CollapsibleProps, PrimitivePropsWithRef
 

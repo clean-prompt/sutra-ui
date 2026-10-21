@@ -4,6 +4,7 @@
 
 - Import: `import { ReorderableList } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/patterns/reorderable-list` (patterns)
+- `data-slot`: `reorderable-list`, `reorderable-list-item`, `reorderable-list-handle`
 - Also accepts the props of HTMLAttributes
 
 ## Props
@@ -20,6 +21,7 @@
 | `handle` | `boolean` | `true` | Show the drag handle (pointer drag + keyboard pick-up). Default true. |
 | `itemClassName` | `string` |  | Classes for every row. |
 | `label` | `string` | `"Reorderable list"` | Accessible name of the list. |
+| `labels` | `ReorderableListLabels` |  | Button names and screen-reader announcements (English by default); pass them to translate the list. |
 | `moveButtons` | `boolean` |  | Show up / down buttons on each row. |
 | `ref` | `React.Ref<HTMLUListElement>` |  | Ref to the `<ul>` element (the component is generic, so `ref` is a plain prop). |
 

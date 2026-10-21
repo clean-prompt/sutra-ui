@@ -4,6 +4,7 @@
 
 - Import: `import { FileUploadItem } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/file-upload` (patterns)
+- `data-slot`: `file-upload-item`
 - Part of [`FileUpload`](FileUpload.md)
 - Also accepts the props of HTMLAttributes
 

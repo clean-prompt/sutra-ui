@@ -4,7 +4,7 @@
 
 - Import: `import { PlanPicker } from "@sutra/ui"` (or from `@sutra/ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-plans` (kit `billing`)
-- `data-slot`: `savings-badge`, `plan-price`
+- `data-slot`: `plan-picker`, `savings-badge`, `plan-price`
 - Also accepts the props of HTMLAttributes
 
 ## Props

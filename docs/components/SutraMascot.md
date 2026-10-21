@@ -1,6 +1,6 @@
 # SutraMascot
 
-> The Sutra mascot: a friendly bead on a thread, with a face that follows `state` (idle, listening, thinking, working, speaking, happy, sleeping, error). Flat shapes, ink on paper; the motion is CSS keyframes that stand still under reduced motion while the expression stays. Decorative unless `title` is set.
+> The Sutra mascot: a friendly bead on a thread, with a face that follows `state` (idle, listening, thinking, working, speaking, happy, sleeping, error). Flat shapes, ink on paper; the motion is CSS keyframes that stand still under reduced motion while the expression stays. Decorative unless `title` is set. The art is direction-agnostic: it is drawn the same in left-to-right and right-to-left layouts (the characters face left and the listening arcs open to the right on purpose, like a logo), so it is never mirrored.
 
 - Import: `import { SutraMascot } from "@sutra/ui"` (or from `@sutra/ui/assets`)
 - Source: `packages/ui/src/assets/mascot` (assets)
@@ -17,7 +17,7 @@
 | `replayKey` | `string \| number` |  | Change it to play a one-shot reaction (`happy`, `error`) again while the state stays the same. |
 | `shape` | `MascotShape` | `"bare"` | `bare` the character alone in `currentColor` (follows the text colour), `circle` or `squircle` on a paper tile with a hairline, the form for a chat or agent avatar next to `Avatar`. |
 | `size` | `number \| string` | `64` | Rendered width and height: a number of pixels or any CSS length. |
-| `state` | `MascotState` | `"idle"` | What the mascot is doing. The face and the extras around it change with the state (so it reads without motion), and the animation swaps in place without remounting. `happy` and `error` are one-shot reactions that play again when the state is set again. |
+| `state` | `MascotState` | `"idle"` | What the mascot is doing. The face and the extras around it change with the state (so it reads without motion), and the animation swaps in place without remounting: the pose blends into the new state with a blink (instant under reduced motion). `happy` and `error` are one-shot reactions that play again when the state is set again. |
 | `title` | `string \| boolean` |  | Accessible name. A string names the graphic, `true` uses the label of the current state (`mascotStateLabels`), and leaving it out makes the mascot decorative (hidden from assistive technology): pair it with live text that says what Sutra is doing. |
 | `tone` | `MascotTone` | `"mono"` | `mono` ink on paper, `dyed` puts the dye of `app` in the bead. Without an `app`, `dyed` stays ink. |
 
@@ -45,7 +45,7 @@ Not focusable: no keyboard interaction. Put a button around it when it should ac
 
 ### Reduced motion
 
-Each state has its own face and extras in the markup (eyes, mouth, rings, thought dots, sparks, stars, z marks, a bang), so a still mascot still tells the states apart. The bead moves with CSS keyframes on `data-part` started by `data-state`; under `prefers-reduced-motion` or `data-motion="reduce"` the twin blocks at the end of `sutra.css` remove them. The other characters are drawn frame by frame, because their motion is geometry CSS cannot express (a pendulum with a knot a beat behind, beads riding a spline, two-bone arms and legs, a winding curl): each is a pure function of time, the still pose is the markup, and while motion is allowed one shared `requestAnimationFrame` for the whole page writes only the attributes that changed (no React render per frame). A mascot joins that frame only while it is on screen and not `paused`; under reduced motion it requests no frame and shows the still pose. `paused` freezes any character where it is.
+Each state has its own face and extras in the markup (eyes, mouth, rings, thought dots, sparks, stars, z marks, a bang), so a still mascot still tells the states apart. The bead moves with CSS keyframes on `data-part` started by `data-state`; under `prefers-reduced-motion` or `data-motion="reduce"` the twin blocks at the end of `sutra.css` remove them. The other characters are drawn frame by frame, because their motion is geometry CSS cannot express (a pendulum with a knot a beat behind, beads riding a spline, two-bone arms and legs, a winding curl): each is a pure function of time, the still pose is the markup, and while motion is allowed one shared `requestAnimationFrame` for the whole page writes only the attributes that changed (no React render per frame). A mascot joins that frame only while it is on screen and not `paused`; under reduced motion it requests no frame and shows the still pose. `paused` freezes any character where it is. A change of state is smooth: the frame-drawn characters blend the pose on screen into the new state over about a third of a second and blink on the way, so the face changes behind shut eyes, and the bead's new face opens from a blink; under reduced motion the change is instant.
 
 ### Server rendering
 

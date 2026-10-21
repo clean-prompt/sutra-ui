@@ -4,6 +4,7 @@
 
 - Import: `import { TabMenu } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/tab-menu` (patterns)
+- `data-slot`: `tab-menu`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { FadeText } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/fade-text` (patterns)
+- `data-slot`: `fade-text`
 - Also accepts the props of HTMLAttributes
 
 ## Props

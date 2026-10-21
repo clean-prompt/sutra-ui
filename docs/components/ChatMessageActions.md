@@ -4,6 +4,7 @@
 
 - Import: `import { ChatMessageActions } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message-actions` (kit `ai`)
+- `data-slot`: `chat-message-actions`
 - Part of [`ChatMessageAction`](ChatMessageAction.md)
 - Also accepts the props of HTMLAttributes
 

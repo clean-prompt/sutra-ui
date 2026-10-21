@@ -4,6 +4,7 @@
 
 - Import: `import { MemoryMap } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/memory-map` (kit `workspace`)
+- `data-slot`: `memory-map`
 - Also accepts the props of HTMLAttributes
 
 ## Props

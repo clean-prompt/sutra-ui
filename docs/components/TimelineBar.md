@@ -4,6 +4,7 @@
 
 - Import: `import { TimelineBar } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/timeline-bar` (patterns)
+- `data-slot`: `timeline-bar`
 - Also accepts the props of HTMLAttributes
 
 ## Props

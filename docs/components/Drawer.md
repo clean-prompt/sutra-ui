@@ -32,7 +32,7 @@ The sheet panel: grabber, drag-to-dismiss (80px or a fast flick), rubber-band up
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `overlayClassName` | `string` |  | Classes for the dimmed backdrop behind the sheet. |
-| `showClose` | `boolean` | `false` | Show a top-right close button. Default false. |
+| `showClose` | `boolean` | `false` | Show a close button at the top end (top-right in left-to-right). Default false. |
 | `showHandle` | `boolean` | `true` | Show the grabber handle. Default true. |
 
 ## Notes

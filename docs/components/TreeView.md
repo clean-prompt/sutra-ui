@@ -4,6 +4,7 @@
 
 - Import: `import { TreeView } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/tree-view` (patterns)
+- `data-slot`: `tree-view`
 - Also accepts the props of HTMLAttributes
 
 ## Props

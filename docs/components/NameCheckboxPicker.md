@@ -4,6 +4,7 @@
 
 - Import: `import { NameCheckboxPicker } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/kits/agent-admin/agent-jobs-form` (kit `agent-admin`)
+- `data-slot`: `name-checkbox-picker`
 - Also accepts the props of HTMLAttributes
 
 ## Props

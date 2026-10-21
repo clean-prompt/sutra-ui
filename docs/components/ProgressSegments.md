@@ -12,7 +12,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `value` (required) | `number` |  | Filled amount, relative to `max` (defaults to `segments`). |
-| `color` | `ProgressColor` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
+| `color` | `ProgressColor \| ToneInput` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
 | `indicatorClassName` | `string` |  | Classes for the filled segments; replaces the tone colour (e.g. `bg-success/70`). |
 | `label` | `string` |  | Accessible name of the progressbar (`aria-label`). |
 | `max` | `number` |  | Total number of units the bar represents; defaults to the segment count. |

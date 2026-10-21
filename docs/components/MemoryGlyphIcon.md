@@ -4,6 +4,7 @@
 
 - Import: `import { MemoryGlyphIcon } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/memory-map-legend` (kit `workspace`)
+- `data-slot`: `memory-glyph-icon`
 - Also accepts the props of SVGAttributes
 
 ## Props

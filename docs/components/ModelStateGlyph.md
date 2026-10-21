@@ -4,6 +4,7 @@
 
 - Import: `import { ModelStateGlyph } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ai/model-state` (kit `ai`)
+- `data-slot`: `model-state-glyph`
 - Also accepts the props of SVGAttributes
 
 ## Props

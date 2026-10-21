@@ -4,6 +4,7 @@
 
 - Import: `import { RecurrencePicker } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/patterns/recurrence-picker` (patterns)
+- `data-slot`: `recurrence-picker`
 - Also accepts the props of HTMLAttributes
 
 ## Props

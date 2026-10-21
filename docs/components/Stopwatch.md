@@ -4,6 +4,7 @@
 
 - Import: `import { Stopwatch } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/patterns/stopwatch` (patterns)
+- `data-slot`: `stopwatch`
 - Also accepts the props of HTMLAttributes
 
 ## Props

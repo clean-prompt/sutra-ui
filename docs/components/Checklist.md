@@ -4,6 +4,7 @@
 
 - Import: `import { Checklist } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/patterns/reorderable-list` (patterns)
+- `data-slot`: `checklist`
 - Also accepts the props of HTMLAttributes
 
 ## Props
@@ -18,6 +19,7 @@
 | `hideCompleted` | `boolean` |  | Controlled: hides completed entries. Use with `onHideCompletedChange`. |
 | `items` | `ChecklistEntry[]` |  | Controlled entries (`{ id, text, done }`). Use with `onItemsChange`. |
 | `label` | `string` | `"Checklist"` | Heading shown with the progress count. |
+| `labels` | `ChecklistLabels` |  | Texts and names (English by default); pass them to translate the checklist. |
 | `moveButtons` | `boolean` |  | Show up / down buttons in addition to the drag handle. |
 | `onHideCompletedChange` | `(hide: boolean) => void` |  | Called when the "hide completed" toggle changes. |
 | `onItemsChange` | `(items: ChecklistEntry[]) => void` |  | Called with the full entry list after an item is added, edited, toggled, removed or reordered. |

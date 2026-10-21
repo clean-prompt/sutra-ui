@@ -16,6 +16,7 @@ An exiting child is `inert` and `aria-hidden` (out of the tab order and the acce
 |---|---|---|---|
 | `children` (required) | `React.ReactElement` |  | One element that accepts DOM props (it gets `data-state`, `data-presence`, `inert` and the animation listeners). |
 | `present` (required) | `boolean` |  | Whether the child should be on screen. Going to false keeps it mounted until its exit animation has ended. |
+| `enterDuration` | `number` | `600` | Milliseconds before an entering child settles to `idle` even if no `animationend` or `transitionend` arrived (a safety net; the child's own end event settles it first). Default 600. |
 | `exitDuration` | `number` | `200` | Milliseconds before an exiting child is removed even if no `animationend` or `transitionend` arrived. Default 200, the speed of `animate-fade-out`. |
 | `initial` | `boolean` | `false` | Animate the child in when it is present on the first render too. Default false. |
 | `onExited` | `() => void` |  | Called once the child has been removed. |

@@ -4,6 +4,7 @@
 
 - Import: `import { MessengerHeader } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/social/messenger` (kit `social`)
+- `data-slot`: `messenger-header`
 - Also accepts the props of HTMLAttributes
 
 ## Props

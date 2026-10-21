@@ -4,6 +4,7 @@
 
 - Import: `import { FanMenu } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/fan-menu` (patterns)
+- `data-slot`: `fan-menu`
 - Also accepts the props of HTMLAttributes
 
 ## Props

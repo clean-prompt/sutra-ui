@@ -4,6 +4,7 @@
 
 - Import: `import { TransferItem } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/transfer-list` (patterns)
+- `data-slot`: `transfer-item`
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
 
 ## Props
@@ -22,6 +23,7 @@
 | `ext` | `string` |  | Extension override for the file-format icon. |
 | `icon` | `React.ReactNode` |  | Custom icon instead of the file-format icon. |
 | `id` | `string` |  | Row id; the list sets it from the item data. |
+| `labels` | `TransferLabels` |  | Texts and accessible names (English by default); pass them to translate the row. |
 | `now` | `number` |  | Override "now" (epoch ms) for speed computed from `startedAt`. |
 | `onCancel` | `() => void` |  | Called when the cancel button is clicked. |
 | `onOpen` | `() => void` |  | Called when a finished row is opened. |

@@ -18,7 +18,7 @@
 | `icon` | `React.ReactNode` |  | App icon; defaults to the Sutra mark. |
 | `lockedUntil` | `number` |  | Externally imposed lockout end (epoch ms). |
 | `lockoutSeconds` | `number \| ((lockouts: number) => number)` | `defaultLockout` | Lockout length in seconds, or a function of how many lockouts happened (1, 2, …). |
-| `maxAttempts` | `number` | `5` | Wrong attempts allowed before a lockout. |
+| `maxAttempts` | `number` | `5` | Wrong attempts allowed before a lockout. UI-only: the counter lives in this component's state and resets on reload, so enforce real limits on the server. |
 | `mode` | `LockScreenMode` | `"pin"` | Primary unlock method. `passkey` shows only the passkey button. |
 | `onPasskey` | `() => Promise<boolean \| void> \| boolean \| void` |  | Shows "Unlock with passkey". Resolve `false` to report a failure. |
 | `onRecover` | `(recoveryKey: string) => Promise<boolean> \| boolean` |  | Enables the "Use recovery key" secondary mode. |

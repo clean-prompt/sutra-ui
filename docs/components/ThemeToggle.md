@@ -4,6 +4,7 @@
 
 - Import: `import { ThemeToggle } from "@sutra/ui"` (or from `@sutra/ui/identity`)
 - Source: `packages/ui/src/patterns/theme-toggle` (patterns)
+- `data-slot`: `theme-toggle`
 - Also accepts the props of HTMLAttributes
 
 ## Props

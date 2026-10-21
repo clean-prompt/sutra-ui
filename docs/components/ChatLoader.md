@@ -4,6 +4,7 @@
 
 - Import: `import { ChatLoader } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-loader` (kit `ai`)
+- `data-slot`: `chat-loader`
 - Also accepts the props of HTMLAttributes
 
 ## Props

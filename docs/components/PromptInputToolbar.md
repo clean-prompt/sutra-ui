@@ -4,6 +4,7 @@
 
 - Import: `import { PromptInputToolbar } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-toolbar` (kit `ai`)
+- `data-slot`: `prompt-input-toolbar`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { BlogContent } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/blog-content` (patterns)
+- `data-slot`: `blog-content`
 - Also accepts the props of HTMLAttributes
 
 ## Props

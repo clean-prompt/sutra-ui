@@ -4,6 +4,7 @@
 
 - Import: `import { SidebarMenuSubButton } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
+- `data-slot`: `sidebar-menu-sub-button`
 - Part of [`SidebarMenuSub`](SidebarMenuSub.md)
 - Also accepts the props of HTMLAttributes, AnchorHTMLAttributes
 

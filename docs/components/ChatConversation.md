@@ -4,6 +4,7 @@
 
 - Import: `import { ChatConversation } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-conversation` (kit `ai`)
+- `data-slot`: `chat-conversation`
 - Parts: [`ChatConversationContent`](ChatConversationContent.md)
 - Also accepts the props of HTMLAttributes
 

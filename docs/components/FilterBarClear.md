@@ -4,6 +4,7 @@
 
 - Import: `import { FilterBarClear } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
+- `data-slot`: `filter-bar-clear`
 - Part of [`FilterBar`](FilterBar.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

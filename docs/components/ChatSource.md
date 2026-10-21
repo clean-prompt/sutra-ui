@@ -4,6 +4,7 @@
 
 - Import: `import { ChatSource } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-source` (kit `ai`)
+- `data-slot`: `chat-source`
 - Parts: [`ChatSourceList`](ChatSourceList.md)
 - Also accepts the props of HTMLAttributes, AnchorHTMLAttributes
 

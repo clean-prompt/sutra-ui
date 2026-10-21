@@ -4,6 +4,7 @@
 
 - Import: `import { ChatAttachment } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-attachment` (kit `ai`)
+- `data-slot`: `chat-attachment-remove`, `chat-attachment-retry`, `chat-attachment-thumb`, `chat-attachment`
 - Parts: [`ChatAttachmentList`](ChatAttachmentList.md)
 - Also accepts the props of HTMLAttributes
 

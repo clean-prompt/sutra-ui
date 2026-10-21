@@ -4,6 +4,7 @@
 
 - Import: `import { PlanComparisonTable } from "@sutra/ui"` (or from `@sutra/ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-plans` (kit `billing`)
+- `data-slot`: `plan-comparison-table`
 - Also accepts the props of HTMLAttributes
 
 ## Props

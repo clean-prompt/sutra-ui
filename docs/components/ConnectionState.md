@@ -4,6 +4,7 @@
 
 - Import: `import { ConnectionState } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-onboarding` (kit `agent`)
+- `data-slot`: `connection-state`
 - Also accepts the props of HTMLAttributes
 
 ## Props

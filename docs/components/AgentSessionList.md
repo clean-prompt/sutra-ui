@@ -4,6 +4,7 @@
 
 - Import: `import { AgentSessionList } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-sessions` (kit `agent`)
+- `data-slot`: `agent-session-list`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { QuickCapture } from "@sutra/ui"` (or from `@sutra/ui/suite`)
 - Source: `packages/ui/src/kits/workspace/quick-capture` (kit `workspace`)
+- `data-slot`: `quick-capture`
 
 ## Props
 

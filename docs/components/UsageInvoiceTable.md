@@ -4,6 +4,7 @@
 
 - Import: `import { UsageInvoiceTable } from "@sutra/ui"` (or from `@sutra/ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-invoices` (kit `billing`)
+- `data-slot`: `usage-invoice-table`
 - Also accepts the props of HTMLAttributes
 
 ## Props

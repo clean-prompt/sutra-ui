@@ -4,6 +4,7 @@
 
 - Import: `import { Countdown } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/patterns/countdown` (patterns)
+- `data-slot`: `countdown`
 - Also accepts the props of HTMLAttributes
 
 ## Props

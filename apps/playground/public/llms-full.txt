@@ -62,6 +62,13 @@ A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or
 - In-app motion switch: `<html data-motion="reduce" | "full">` (none follows the system); `prefersReducedMotion()` / `usePrefersReducedMotion()` read it, so JS and CSS agree.
 - In Tailwind v4 `translate-*`, `scale-*`, `rotate-*` set individual properties: use bare `transition-transform` (or name all four in an arbitrary list).
 
+## Brand, mascot, orb and ink pictograms
+- Styles are token override files: `data-style="paper"` (needs `@sutra/ui/paper.css`) redefines the semantic tokens in a light and a dark block, so components never branch on the style. The ink is the accent there, so `data-brand` and `data-app` do nothing; put `data-style` on `<html>` to reach portalled layers.
+- The Sutra mark is a crescent bead on an upright thread (`SutraMark`, `SutraLogo`, drawn `SutraWordmark`). Default `glyph` is mono and follows the text colour; `tile` and `reversed` use the two brand inks; `solid` follows `--primary`. `intro` plays the logo's one-time CSS intro (still under reduced motion). `SutraAppIcon` is ink on paper by default, `tone="dyed"` puts the app dye in the bead; no gradients or effects. kunji art (`KunjiMark`, `KunjiButton`) is official brand art: never recolour, rotate or stretch it.
+- `SutraMascot` is a family of original characters (`character`: `bead` first, then `pendant`, `mala`, `bindu`, `knot-pendant`, `bow`, `bun`, `sutradhar`; `mascotCharacters` drives a picker so people choose their own) with eight `state`s (idle, listening, thinking, working, speaking, happy, sleeping, error). Ink on paper by default; the bead animates with CSS, the others with one shared rAF loop that writes attributes and runs only on screen; reduced motion keeps each state as a still pose. `SutradharSting` is the brand animation (`mark`, `astra`, `astra-endless`): decorative unless `title` is set, plays once, shows its last frame under reduced motion.
+- `AssistantOrb` (`kits/voice`) is the voice assistant's state animation: `state` idle, listening, thinking, speaking (plus error, muted), `level` 0 to 1 (feed it from `useAudioLevel`), eight `variant` looks (`orb`, `waveform`, `mala`, `string`, `ink`, `rings`, `graph`, `halftone`; `assistantOrbVariants` drives a picker). `useAssistantOrbState` picks the state by priority. Both mascot and orb are original designs: never copy another product's.
+- Pictograms are ink in paper: `FileFormatIcon` and every emoji (`EmojiGlyph`, which keeps the real character in the DOM) are repainted in one ink by `sutra.css` unless `mono={false}` / `ink={false}`. The 198 built-in picker emoji have hand-drawn `InkEmoji` art (`inkVariant` solid, tint or outline; `inkMotion` on hover or loop); new art goes in the matching `assets/emoji-ink-<category>-internal.tsx` (24 box, `currentColor`, no text) and `test/emoji-ink.test.tsx` fails when an emoji has none.
+
 ## Accessibility
 - Roles and aria attributes are part of each component; icon-only buttons need `aria-label`; controls keep at least a 24 x 24 px hit area (`hitArea` from `lib/cn`).
 - Dialog, AlertDialog, Sheet and CommandDialog give focus back to the opener even when opened without a trigger.
@@ -3475,6 +3482,7 @@ Server render: same markup as the client. Renders a plain input from `value` or 
 |---|---|---|---|
 | `className` | `string` |  | Classes for the element that renders. Without addons that is the `<input>` itself (the root). With addons (`leadingIcon`, `trailingIcon`, `prefix`, `suffix`, `clearable`) it lands on the **inner** `<input>`, not the outer wrapper, so layout classes (`w-48`, `flex-1`, margins) have no visible effect there; use `wrapperClassName` for those. |
 | `clearable` | `boolean` |  | Shows a clear button while the field has a value. |
+| `clearLabel` | `string` | `"Clear"` | Accessible name of the clear button. |
 | `invalid` | `boolean` |  | Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
 | `leadingIcon` | `React.ReactNode` |  | Icon rendered inside the field before the text. |
 | `onClear` | `() => void` |  | Called after the clear button empties the field. |
@@ -4517,6 +4525,7 @@ Server render: part of it fills in after mount. The pager renders plain markup o
 |---|---|---|---|
 | `className` | `string` |  | Classes for the element that renders. Without addons that is the `<input>` itself (the root). With addons (`leadingIcon`, `trailingIcon`, `prefix`, `suffix`, `clearable`) it lands on the **inner** `<input>`, not the outer wrapper, so layout classes (`w-48`, `flex-1`, margins) have no visible effect there; use `wrapperClassName` for those. |
 | `clearable` | `boolean` |  | Shows a clear button while the field has a value. |
+| `clearLabel` | `string` | `"Clear"` | Accessible name of the clear button. |
 | `defaultVisible` | `boolean` | `false` | Initial visibility of the password. |
 | `invalid` | `boolean` |  | Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
 | `leadingIcon` | `React.ReactNode` |  | Icon rendered inside the field before the text. |
@@ -4717,7 +4726,7 @@ Server render: same markup as the client. Plain markup built from the props, wit
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `color` | `ProgressColor` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
+| `color` | `ProgressColor \| ToneInput` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
 | `formatValue` | `(value: number, max: number) => React.ReactNode` |  | Formats the displayed value; receives the value and `max`. Default is the rounded percentage, e.g. "40%". A text or number result is also used as `aria-valuetext`. |
 | `indeterminate` | `boolean` |  | Forces the looping animation regardless of `value` (also used when `value` is null). |
 | `indicatorClassName` | `string` |  | Classes for the filled indicator bar (`className` styles the track). |
@@ -5235,6 +5244,7 @@ Server render: part of it fills in after mount. The server renders the root and 
 |---|---|---|---|
 | `className` | `string` |  | Classes for the element that renders. Without addons that is the `<input>` itself (the root). With addons (`leadingIcon`, `trailingIcon`, `prefix`, `suffix`, `clearable`) it lands on the **inner** `<input>`, not the outer wrapper, so layout classes (`w-48`, `flex-1`, margins) have no visible effect there; use `wrapperClassName` for those. |
 | `clearable` | `boolean` | `true` | Shows a clear button while the field has a value. |
+| `clearLabel` | `string` | `"Clear"` | Accessible name of the clear button. |
 | `hotkey` | `string` |  | Global shortcut that focuses the field, e.g. "/" or "mod+k" (⌘ on macOS, Ctrl elsewhere). Also rendered as a key hint unless `shortcut` is provided. |
 | `invalid` | `boolean` |  | Marks the field invalid: error border and `aria-invalid`. Inherited from a surrounding `Field` when omitted. |
 | `onClear` | `() => void` |  | Called after the clear button empties the field. |
@@ -8056,7 +8066,7 @@ Server render: part of it fills in after mount. The first render, on the server 
 > Subtask checklist with add / edit / delete / reorder, an "n/m" count with a thin progress bar and a hide-completed toggle.
 
 - Import: `import { Checklist } from "@sutra/ui/social"` ([full page](md/Checklist.md))
-- Props: `addPlaceholder`, `createId`, `defaultHideCompleted`, `defaultItems`, `editable`, `hideCompleted`, `items`, `label`, `moveButtons`, `onHideCompletedChange`, `onItemsChange`, `reorderable` (* required)
+- Props: `addPlaceholder`, `createId`, `defaultHideCompleted`, `defaultItems`, `editable`, `hideCompleted`, `items`, `label`, `labels`, `moveButtons`, `onHideCompletedChange`, `onItemsChange`, `reorderable` (* required)
 
 **When to use:** A subtask list with checkboxes, inline editing, add and delete, drag or keyboard reordering, an "n/m" count with a thin progress bar and a hide-completed toggle. It is the ready-made use of `ReorderableList`.
 
@@ -8713,7 +8723,7 @@ Server render: part of it fills in after mount. With a `src` the server renders 
 > Searchable, grouped shortcut list with a key recorder, conflict detection and reset.
 
 - Import: `import { KeybindEditor } from "@sutra/ui/workspace"` ([full page](md/KeybindEditor.md))
-- Props: `defaultValue`, `onChange`, `onResetAll`, `onValueChange`, `platform`, `searchPlaceholder`, `shortcuts`, `value` (* required)
+- Props: `defaultValue`, `labels`, `onChange`, `onResetAll`, `onValueChange`, `platform`, `searchPlaceholder`, `shortcuts`, `value` (* required)
 
 ## LayoutPresetPicker
 
@@ -8968,7 +8978,7 @@ Server render: same markup as the client. react-markdown and KaTeX produce their
 > Mounts a child when `present` turns true and unmounts it after its exit animation when it turns false. The child carries `data-state="open" | "closed"` and `data-presence="enter" | "idle" | "exit"`, so plain classes do the motion:
 
 - Import: `import { Presence } from "@sutra/ui/motion"` ([full page](md/Presence.md))
-- Props: `children`*, `present`*, `exitDuration`, `initial`, `onExited` (* required)
+- Props: `children`*, `present`*, `enterDuration`, `exitDuration`, `initial`, `onExited` (* required)
 
 ## Prose
 
@@ -8996,7 +9006,7 @@ Server render: same markup as the client. react-markdown and KaTeX produce their
 > Accessible reorderable list: drag handle with placeholder, Space-to-lift keyboard moves, optional arrow buttons, live announcements. A generic plain function (React 19 `ref` prop) rather than `forwardRef`, which would erase the item type `T`.
 
 - Import: `import { ReorderableList } from "@sutra/ui/social"` ([full page](md/ReorderableList.md))
-- Props: `getKey`*, `items`*, `onReorder`*, `renderItem`*, `disabled`, `flip`, `getLabel`, `handle`, `itemClassName`, `label`, `moveButtons`, `ref` (* required)
+- Props: `getKey`*, `items`*, `onReorder`*, `renderItem`*, `disabled`, `flip`, `getLabel`, `handle`, `itemClassName`, `label`, `labels`, `moveButtons`, `ref` (* required)
 
 **When to use:** A list whose rows the user can reorder by dragging a handle, by picking a row up with the keyboard, or with optional up and down buttons, with live announcements. You render each row; the list reports the new order after every move. `Checklist` builds a subtask list on it.
 
@@ -9048,10 +9058,10 @@ Server render: same markup as the client. The list renders from `items` with pla
 
 ## RotatingNoticeBar
 
-> Global notice strip that rotates through notices with a dot pager, pausing on hover or focus. Renders an `AlertBanner`.
+> Global notice strip that rotates through notices with a dot pager and a pause button, also pausing on hover or focus. Renders an `AlertBanner`.
 
 - Import: `import { RotatingNoticeBar } from "@sutra/ui/workspace"` ([full page](md/RotatingNoticeBar.md))
-- Props: `notices`*, `autoRotate`, `interval`, `label`, `onDismiss`, `onIndexChange`, `sticky` (* required)
+- Props: `notices`*, `autoRotate`, `interval`, `label`, `labels`, `onDismiss`, `onIndexChange`, `sticky` (* required)
 
 ## ScatterChart
 
@@ -9065,7 +9075,7 @@ Server render: same markup as the client. The list renders from `items` with pla
 > Form generated from a JSON-Schema-like object: nested sections, arrays, validation, section nav + search, and debounced autosave.
 
 - Import: `import { SchemaForm } from "@sutra/ui/agent-admin"` ([full page](md/SchemaForm.md))
-- Props: `schema`*, `autosave`, `autosaveDelay`, `defaultValue`, `disabled`, `disabledFields`, `navThreshold`, `onChange`, `onSave`, `onSubmit`, `onValueChange`, `submitLabel`, `validateOnMount`, `value` (* required)
+- Props: `schema`*, `autosave`, `autosaveDelay`, `defaultValue`, `disabled`, `disabledFields`, `labels`, `navThreshold`, `onChange`, `onSave`, `onSubmit`, `onValueChange`, `submitLabel`, `validateOnMount`, `value` (* required)
 
 **When to use:** A settings form generated from a JSON-Schema-like object: typed controls, nested sections, array fields with add and remove, validation, section navigation with search, and either an explicit Save button or debounced autosave with per-field status. `NestedValueEditor` edits one schema value on its own.
 
@@ -9728,7 +9738,7 @@ Server render: part of it fills in after mount. The server renders the row and b
 > Big tally number with −/+ (press and hold to repeat), step, goal ring and an entry log with undo.
 
 - Import: `import { TallyCounter } from "@sutra/ui/social"` ([full page](md/TallyCounter.md))
-- Props: `defaultValue`, `goal`, `label`, `logLimit`, `max`, `min`, `onValueChange`, `showLog`, `step`, `value` (* required)
+- Props: `defaultValue`, `goal`, `label`, `labels`, `logLimit`, `max`, `min`, `onValueChange`, `showLog`, `step`, `value` (* required)
 
 ## TextButton
 
@@ -9823,14 +9833,14 @@ Server render: part of it fills in after mount. The server and the hydrating cli
 > One upload/download/job row: icon, name, progress, bytes, speed, ETA, status and actions.
 
 - Import: `import { TransferItem } from "@sutra/ui/ops"` ([full page](md/TransferItem.md))
-- Props: `name`*, `status`*, `bytes`, `compact`, `density`, `detail`, `direction`, `error`, `eta`, `ext`, `icon`, `id`, `now`, `onCancel`, `onOpen`, `onPause`, `onRemove`, `onResume`, `onRetry`, `progress`, `samples`, `speed`, `startedAt`, `total` (* required)
+- Props: `name`*, `status`*, `bytes`, `compact`, `density`, `detail`, `direction`, `error`, `eta`, `ext`, `icon`, `id`, `labels`, `now`, `onCancel`, `onOpen`, `onPause`, `onRemove`, `onResume`, `onRetry`, `progress`, `samples`, `speed`, `startedAt`, `total` (* required)
 
 ## TransferList
 
 > Queue of transfers with a summary header ("3 active · 1 failed · 12.4 MB/s") and "Clear completed".
 
 - Import: `import { TransferList } from "@sutra/ui/ops"` ([full page](md/TransferList.md))
-- Props: `items`*, `compact`, `density`, `emptyMessage`, `emptyState`, `maxHeight`, `now`, `onCancel`, `onClearCompleted`, `onOpen`, `onPause`, `onRemove`, `onResume`, `onRetry`, `title` (* required)
+- Props: `items`*, `compact`, `density`, `emptyMessage`, `emptyState`, `labels`, `maxHeight`, `now`, `onCancel`, `onClearCompleted`, `onOpen`, `onPause`, `onRemove`, `onResume`, `onRetry`, `title` (* required)
 
 **When to use:** A queue of uploads, downloads and background jobs: each row has a file icon, name, progress bar, bytes, speed, time left and a status, with per-row actions and a summary header ("3 active · 1 failed · 12.4 MB/s"). `TransferTray` is the floating, collapsible version pinned to a corner, and `TransferItem` is one row.
 
@@ -9878,7 +9888,7 @@ Server render: part of it fills in after mount. Markup is computed from `items`.
 > Floating, collapsible uploads/downloads panel pinned to a corner (Google Drive style).
 
 - Import: `import { TransferTray } from "@sutra/ui/ops"` ([full page](md/TransferTray.md))
-- Props: `items`*, `defaultMinimized`, `emptyMessage`, `emptyState`, `inline`, `maxHeight`, `minimized`, `now`, `onCancel`, `onClearCompleted`, `onClose`, `onMinimizedChange`, `onOpen`, `onPause`, `onRemove`, `onResume`, `onRetry`, `position`, `title` (* required)
+- Props: `items`*, `defaultMinimized`, `emptyMessage`, `emptyState`, `inline`, `labels`, `maxHeight`, `minimized`, `now`, `onCancel`, `onClearCompleted`, `onClose`, `onMinimizedChange`, `onOpen`, `onPause`, `onRemove`, `onResume`, `onRetry`, `position`, `title` (* required)
 
 ## Treemap
 

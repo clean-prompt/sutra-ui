@@ -4,6 +4,7 @@
 
 - Import: `import { ChatFeedbackActions } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-message-actions` (kit `ai`)
+- `data-slot`: `chat-feedback-actions`
 - Also accepts the props of HTMLAttributes
 
 ## Props

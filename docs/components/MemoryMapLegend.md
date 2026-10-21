@@ -4,6 +4,7 @@
 
 - Import: `import { MemoryMapLegend } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/memory-map-legend` (kit `workspace`)
+- `data-slot`: `memory-map-legend`
 - Also accepts the props of HTMLAttributes
 
 ## Props

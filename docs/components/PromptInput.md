@@ -4,7 +4,7 @@
 
 - Import: `import { PromptInput } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input` (kit `ai`)
-- `data-slot`: `prompt-input-large-paste`
+- `data-slot`: `prompt-input`, `prompt-input-large-paste`
 - Parts: [`PromptInputRestoredDraft`](PromptInputRestoredDraft.md)
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
 

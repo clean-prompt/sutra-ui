@@ -4,6 +4,7 @@
 
 - Import: `import { BlogPostHeader } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/blog-content` (patterns)
+- `data-slot`: `blog-post-header`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { CoachmarkTour } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/patterns/coachmarks` (patterns)
+- `data-slot`: `coachmark-tour`, `coachmark-card`
 
 ## Props
 

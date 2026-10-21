@@ -4,6 +4,7 @@
 
 - Import: `import { SparkBar } from "@sutra/ui"` (or from `@sutra/ui/dataviz`)
 - Source: `packages/ui/src/patterns/sparkline` (patterns)
+- `data-slot`: `spark-bar`
 - Also accepts the props of SVGAttributes
 
 ## Props

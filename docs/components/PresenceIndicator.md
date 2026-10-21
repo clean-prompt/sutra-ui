@@ -4,6 +4,7 @@
 
 - Import: `import { PresenceIndicator } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
 - Source: `packages/ui/src/kits/social/presence` (kit `social`)
+- `data-slot`: `presence-indicator`
 - Also accepts the props of HTMLAttributes
 
 ## Props

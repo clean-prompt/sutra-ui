@@ -15,6 +15,7 @@
 | `description` | `React.ReactNode` | `"We'll email you a magic link for a password-free sign in."` | Supporting text under the heading; each card has its own default. |
 | `error` | `React.ReactNode` |  | Error message shown above the form; also marks the form invalid. |
 | `footer` | `React.ReactNode` |  | Replace the default footer (e.g. "Don't have an account? Sign up"). Pass `null` to hide it. |
+| `headingLevel` | `AuthHeadingLevel` | `1` | Element of the card title (`1` is an `h1`). Use `2` or lower when the card sits inside a page that has its own `h1`. |
 | `loading` | `boolean` |  | Disables the form and shows a spinner on the submit button. |
 | `logo` | `boolean \| React.ReactNode` |  | Show the Sutra mark above the title, or pass a custom logo. Default: true for `card`. |
 | `mailAppHref` | `string` | `"mailto:"` | Link for the "Open mail app" button in the success state. |

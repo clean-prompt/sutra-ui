@@ -4,6 +4,7 @@
 
 - Import: `import { MessageBubble } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/social/messenger` (kit `social`)
+- `data-slot`: `message-bubble`
 - Also accepts the props of HTMLAttributes
 
 ## Props

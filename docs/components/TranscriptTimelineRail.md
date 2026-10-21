@@ -4,6 +4,7 @@
 
 - Import: `import { TranscriptTimelineRail } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/timeline-rail` (kit `workspace`)
+- `data-slot`: `transcript-timeline-rail`
 - Also accepts the props of HTMLAttributes
 
 ## Props

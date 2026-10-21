@@ -4,6 +4,7 @@
 
 - Import: `import { TransferList } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/transfer-list` (patterns)
+- `data-slot`: `transfer-list`
 - Also accepts the props of HTMLAttributes
 
 ## Props
@@ -15,6 +16,7 @@
 | `density` | `Density` |  | Row spacing. Default `normal`. |
 | `emptyMessage` | `React.ReactNode` |  | **Deprecated.** Use `emptyState`. Legacy name of `emptyState`. |
 | `emptyState` | `React.ReactNode` |  | Shown when there are no items. Default "No transfers". |
+| `labels` | `TransferLabels` |  | Texts and accessible names (English by default); pass them to translate the list. |
 | `maxHeight` | `number \| string` |  | Max height of the scrolling list. |
 | `now` | `number` |  | Override "now" (epoch ms) for computed speeds. |
 | `onCancel` | `(id: string) => void` |  | Called with the item id when its cancel button is clicked. |

@@ -1,9 +1,10 @@
 # RotatingNoticeBar
 
-> Global notice strip that rotates through notices with a dot pager, pausing on hover or focus. Renders an `AlertBanner`.
+> Global notice strip that rotates through notices with a dot pager and a pause button, also pausing on hover or focus. Renders an `AlertBanner`.
 
 - Import: `import { RotatingNoticeBar } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/patterns/notice-bar` (patterns)
+- `data-slot`: `rotating-notice-bar`
 - Also accepts the props of HTMLAttributes
 
 ## Props
@@ -14,6 +15,7 @@
 | `autoRotate` | `boolean` | `true` | Default true. Always off under prefers-reduced-motion. |
 | `interval` | `number` | `6` | Seconds per notice. Default 6. |
 | `label` | `string` | `"Notices"` | Accessible name of the notice region. |
+| `labels` | `RotatingNoticeBarLabels` |  | Texts for the controls and their accessible names (English by default); pass them to translate the bar. |
 | `onDismiss` | `(id: string) => void` |  | Persist a dismissal (the bar hides it locally either way). |
 | `onIndexChange` | `(index: number, notice: NoticeItem) => void` |  | Called with the shown index and the notice when the rotation advances or the user pages. |
 | `sticky` | `boolean` |  | Stick to the top. Default false. |

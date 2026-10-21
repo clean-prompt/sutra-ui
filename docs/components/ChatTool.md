@@ -4,6 +4,7 @@
 
 - Import: `import { ChatTool } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-tool` (kit `ai`)
+- `data-slot`: `chat-tool`, `chat-tool-trigger`, `chat-tool-content`
 - Parts: [`ChatToolApproval`](ChatToolApproval.md), [`ChatToolStateBadge`](ChatToolStateBadge.md)
 - Also accepts the props of HTMLAttributes, CollapsibleProps, PrimitivePropsWithRef
 

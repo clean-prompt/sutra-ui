@@ -4,6 +4,7 @@
 
 - Import: `import { SyncStatus } from "@sutra/ui"` (or from `@sutra/ui/suite`)
 - Source: `packages/ui/src/kits/workspace/sync-status` (kit `workspace`)
+- `data-slot`: `sync-status`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
 ## Props

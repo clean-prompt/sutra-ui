@@ -13,7 +13,8 @@
 |---|---|---|---|
 | `requests` (required) | `AccessRequest[]` |  | Pending pairing requests awaiting approval or denial. |
 | `approved` | `ApprovedChannelUser[]` | `[]` | Users already approved; listed with a confirm-to-revoke action. |
-| `emptyHint` | `React.ReactNode` |  | Text shown when there are no pending requests; defaults to a hint about pairing codes. |
+| `emptyHint` | `React.ReactNode` |  | **Deprecated.** Use `emptyState`. Text shown when there are no pending requests. |
+| `emptyState` | `React.ReactNode` |  | Text shown when there are no pending requests; defaults to a hint about pairing codes. |
 | `now` | `number` |  | Reference time for relative stamps (tests / SSR). |
 | `onApprove` | `(id: string) => void \| Promise<void>` |  | Called with the request id when the user approves it; may return a promise. |
 | `onDeny` | `(id: string) => void \| Promise<void>` |  | Called with the request id when the user denies it; may return a promise. |

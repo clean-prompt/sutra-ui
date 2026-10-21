@@ -4,6 +4,7 @@
 
 - Import: `import { HeaderNavContent } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/header-navigation` (patterns)
+- `data-slot`: `header-nav-content`
 - Part of [`HeaderNav`](HeaderNav.md)
 - Also accepts the props of HTMLAttributes, DismissableLayerProps, NavigationMenuContentProps, PrimitivePropsWithRef
 

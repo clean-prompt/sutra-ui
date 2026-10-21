@@ -4,6 +4,7 @@
 
 - Import: `import { CurrentPlanCard } from "@sutra/ui"` (or from `@sutra/ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-current-plan` (kit `billing`)
+- `data-slot`: `current-plan-card`
 - Also accepts the props of HTMLAttributes
 
 ## Props

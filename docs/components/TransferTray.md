@@ -4,6 +4,7 @@
 
 - Import: `import { TransferTray } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/transfer-list` (patterns)
+- `data-slot`: `transfer-tray`
 - Also accepts the props of HTMLAttributes
 
 ## Props
@@ -15,6 +16,7 @@
 | `emptyMessage` | `React.ReactNode` |  | **Deprecated.** Use `emptyState`. Legacy name of `emptyState`. |
 | `emptyState` | `React.ReactNode` |  | Shown when there are no items. Default "No transfers". |
 | `inline` | `boolean` |  | Render in place instead of fixed to the viewport (for previews). |
+| `labels` | `TransferLabels` |  | Texts and accessible names (English by default); pass them to translate the list. |
 | `maxHeight` | `number \| string` | `320` | Max height of the scrolling list. |
 | `minimized` | `boolean` |  | Controlled collapsed state of the tray. Use with `onMinimizedChange`. |
 | `now` | `number` |  | Override "now" (epoch ms) for computed speeds. |

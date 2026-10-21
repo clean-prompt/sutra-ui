@@ -4,6 +4,7 @@
 
 - Import: `import { AppLauncherMenu } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/workspace/app-launcher` (kit `workspace`)
+- `data-slot`: `app-launcher-menu`
 - Part of [`AppLauncher`](AppLauncher.md)
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { PromptSuggestion } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-suggestion` (kit `ai`)
+- `data-slot`: `prompt-suggestion`
 - Parts: [`PromptSuggestionGroup`](PromptSuggestionGroup.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

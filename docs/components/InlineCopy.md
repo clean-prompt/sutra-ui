@@ -4,6 +4,7 @@
 
 - Import: `import { InlineCopy } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/code-block` (patterns)
+- `data-slot`: `inline-copy`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { ConversationList } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/conversation-list` (kit `ai`)
+- `data-slot`: `conversation-list`, `conversation-list-search`, `conversation-list-nav`
 - Also accepts the props of HTMLAttributes
 
 ## Props

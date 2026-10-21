@@ -4,6 +4,7 @@
 
 - Import: `import { JsonViewer } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/json-viewer` (patterns)
+- `data-slot`: `json-viewer`
 - Also accepts the props of HTMLAttributes
 
 ## Props

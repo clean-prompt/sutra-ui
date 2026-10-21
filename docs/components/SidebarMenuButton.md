@@ -4,6 +4,7 @@
 
 - Import: `import { SidebarMenuButton } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/sidebar-navigation` (patterns)
+- `data-slot`: `sidebar-menu-badge`, `sidebar-menu-button`
 - Part of [`SidebarMenu`](SidebarMenu.md)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

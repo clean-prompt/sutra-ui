@@ -4,6 +4,7 @@
 
 - Import: `import { OnboardingChecklist } from "@sutra/ui"` (or from `@sutra/ui/agent`)
 - Source: `packages/ui/src/kits/agent/agent-onboarding` (kit `agent`)
+- `data-slot`: `onboarding-checklist`
 - Also accepts the props of HTMLAttributes
 
 ## Props

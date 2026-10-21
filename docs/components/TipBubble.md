@@ -4,6 +4,7 @@
 
 - Import: `import { TipBubble } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/patterns/coachmarks` (patterns)
+- `data-slot`: `tip-bubble`
 
 ## Props
 

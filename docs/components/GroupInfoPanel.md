@@ -4,6 +4,7 @@
 
 - Import: `import { GroupInfoPanel } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/social/messenger` (kit `social`)
+- `data-slot`: `group-info-panel`
 - Also accepts the props of HTMLAttributes
 
 ## Props

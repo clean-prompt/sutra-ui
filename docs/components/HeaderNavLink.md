@@ -4,6 +4,7 @@
 
 - Import: `import { HeaderNavLink } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/header-navigation` (patterns)
+- `data-slot`: `header-nav-link`
 - Part of [`HeaderNav`](HeaderNav.md)
 - Also accepts the props of HTMLAttributes, AnchorHTMLAttributes, NavigationMenuLinkProps, PrimitivePropsWithRef
 

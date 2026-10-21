@@ -4,6 +4,7 @@
 
 - Import: `import { HeatmapLegend } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/heatmap` (patterns)
+- `data-slot`: `heatmap-legend`
 - Also accepts the props of HTMLAttributes
 
 ## Props

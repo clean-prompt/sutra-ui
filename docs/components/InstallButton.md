@@ -4,6 +4,7 @@
 
 - Import: `import { InstallButton } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/workspace/install-prompt` (kit `workspace`)
+- `data-slot`: `install-button`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
 ## Props

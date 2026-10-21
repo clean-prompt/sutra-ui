@@ -4,7 +4,7 @@
 
 - Import: `import { CreditBalanceCard } from "@sutra/ui"` (or from `@sutra/ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-credits` (kit `billing`)
-- `data-slot`: `credit-balance`, `run-out`
+- `data-slot`: `credit-balance-card`, `credit-balance`, `run-out`
 - Also accepts the props of HTMLAttributes
 
 ## Props

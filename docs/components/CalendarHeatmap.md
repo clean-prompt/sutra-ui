@@ -4,6 +4,7 @@
 
 - Import: `import { CalendarHeatmap } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/heatmap` (patterns)
+- `data-slot`: `calendar-heatmap`
 - Also accepts the props of HTMLAttributes
 
 ## Props

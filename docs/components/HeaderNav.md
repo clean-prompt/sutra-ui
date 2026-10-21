@@ -4,6 +4,7 @@
 
 - Import: `import { HeaderNav } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/header-navigation` (patterns)
+- `data-slot`: `header-nav`
 - Parts: [`HeaderNavActions`](HeaderNavActions.md), [`HeaderNavBrand`](HeaderNavBrand.md), [`HeaderNavContent`](HeaderNavContent.md), [`HeaderNavFeatureLink`](HeaderNavFeatureLink.md), [`HeaderNavItem`](HeaderNavItem.md), [`HeaderNavLink`](HeaderNavLink.md), [`HeaderNavMenu`](HeaderNavMenu.md), [`HeaderNavMobile`](HeaderNavMobile.md), [`HeaderNavTrigger`](HeaderNavTrigger.md)
 - Also accepts the props of HTMLAttributes
 

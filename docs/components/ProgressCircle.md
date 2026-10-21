@@ -12,7 +12,7 @@
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `children` | `React.ReactNode` |  | Custom center content (overrides the value). |
-| `color` | `ProgressColor` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
+| `color` | `ProgressColor \| ToneInput` |  | **Deprecated.** Use `tone`. Legacy name of `tone`. |
 | `gradient` | `boolean` |  | Brand gradient stroke instead of a flat color. |
 | `label` | `string` |  | Accessible name of the progressbar (`aria-label`). |
 | `max` | `number` | `100` | Value that counts as 100%. |

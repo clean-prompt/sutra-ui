@@ -4,7 +4,7 @@
 
 - Import: `import { SchemaForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
 - Source: `packages/ui/src/patterns/schema-form` (patterns)
-- `data-slot`: `schema-form`
+- `data-slot`: `schema-form-section`, `schema-form`, `schema-form-nav`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
 
 ## Props
@@ -17,6 +17,7 @@
 | `defaultValue` | `Record<string, unknown>` |  | Initial form value when uncontrolled. |
 | `disabled` | `boolean` | `false` | Disables every field. |
 | `disabledFields` | `Record<string, string>` | `{}` | Disable fields by path with a reason. |
+| `labels` | `SchemaFormLabels` |  | Texts of the form chrome (English by default); pass them to translate the form. |
 | `navThreshold` | `number` | `8` | Show section navigation + search when there are more top-level fields than this. Default 8. |
 | `onChange` | `(value: Record<string, unknown>) => void` |  | **Deprecated.** Use `onValueChange`. Legacy name of `onValueChange`. |
 | `onSave` | `(value: Record<string, unknown>, changedKeys: string[]) => void \| Promise<void>` |  | Autosave callback with the full value and the changed top-level keys. Throw to mark the fields "Not saved". |

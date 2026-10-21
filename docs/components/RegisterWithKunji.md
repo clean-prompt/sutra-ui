@@ -13,6 +13,7 @@
 |---|---|---|---|
 | `awaitingProps` | `Partial<AwaitingApprovalProps>` |  | Props passed through to the `AwaitingApproval` screen shown when the account is pending. |
 | `firstAdmin` | `boolean` | `false` | First person on the server becomes its admin. |
+| `headingLevel` | `AuthHeadingLevel` | `1` | Element of the card title (`1` is an `h1`). |
 | `joinPolicy` | `"open" \| "invite" \| "approval"` | `"open"` | How new people join. |
 | `onSubmit` | `(values: RegisterWithKunjiValues) => unknown` |  | Create the account. Return `{ pending: true }` (or use `joinPolicy="approval"`) to show `AwaitingApproval`. |
 | `reservedHandles` | `string[]` | `["admin", "root", "system", "support", "kunji"]` | Handles that cannot be taken (checked case-insensitively). |

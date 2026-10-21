@@ -14,7 +14,7 @@
 | `defaultOpen` | `boolean` |  | Initial open state when uncontrolled. |
 | `defaultRole` | `string` | `"member"` | Role selected when the dialog opens. |
 | `description` | `React.ReactNode` | `"Collaborate on notes, tasks and calendars in this workspace."` | Supporting text under the heading. |
-| `inviteLink` | `string` | `"https://sutra.app/join/northwind-7f3k2q"` | Invite link shown in the copy field; the default is a sample URL. |
+| `inviteLink` | `string` |  | Link the "Copy invite link" button copies. Without it the button is hidden. |
 | `members` | `DialogMember[]` |  | Controlled member list when paired with `onMembersChange`. Passed alone it only seeds the list (deprecated: use `defaultMembers` for that). |
 | `onInvite` | `(emails: string[], role: string) => unknown` |  | Called with the entered emails and the chosen role when the user sends the invites. A returned promise shows a spinner; throw to show the error message. |
 | `onMembersChange` | `(members: DialogMember[]) => void` |  | Called with the full member list after a role change or removal. |

@@ -16,7 +16,7 @@
 | `fallback` | `boolean` | `false` | Draws the colour glyph as ink (the filtered glyph the paper style uses) for an emoji that has no drawing, instead of rendering nothing. |
 | `playKey` | `number \| string` |  | Plays the motion once whenever it changes to a truthy value (also on mount), e.g. a counter bumped when a reaction is added. |
 | `size` | `number \| string` | `"1em"` | Edge length: a number is pixels, a string is any CSS length. The drawing scales with it and is still readable at 16. |
-| `title` | `string \| boolean` |  | Names the drawing for assistive technology (`true` uses its built-in name); without it the svg is decorative and `aria-hidden`. |
+| `title` | `string \| boolean` |  | Names the drawing for assistive technology (`true` uses its built-in name, or the glyph itself when it has none); without it the svg is decorative and `aria-hidden`. |
 | `variant` | `InkEmojiVariant` | `"solid"` | How the ink is laid down: `solid` fills the shapes and cuts the features out as holes, `tint` adds a light tint of the ink for the secondary parts (tears, blush, cuffs, the core of a flame), `outline` is the monoline drawing. |
 
 ## Notes

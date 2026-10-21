@@ -4,6 +4,7 @@
 
 - Import: `import { AlertGroup } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ops/alert-group` (kit `ops`)
+- `data-slot`: `alert-group`
 - Also accepts the props of HTMLAttributes
 
 ## Props

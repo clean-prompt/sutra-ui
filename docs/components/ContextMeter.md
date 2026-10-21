@@ -4,6 +4,7 @@
 
 - Import: `import { ContextMeter } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/context-meter` (kit `ai`)
+- `data-slot`: `context-meter`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
 ## Props

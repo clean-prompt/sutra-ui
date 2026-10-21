@@ -4,6 +4,7 @@
 
 - Import: `import { TaskDetailDialog } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-task-dialog` (kit `workspace`)
+- `data-slot`: `task-detail-dialog`
 
 ## Props
 

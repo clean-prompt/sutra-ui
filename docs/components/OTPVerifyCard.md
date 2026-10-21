@@ -15,9 +15,10 @@
 | `autoSubmit` | `boolean` | `true` | Submit automatically when every slot is filled. Default true. |
 | `backHref` | `string` | `"#sign-in"` | Link target of the "Back to sign in" link. |
 | `description` | `React.ReactNode` |  | Supporting text under the heading; each card has its own default. |
-| `email` | `string` | `"maya@sutra.app"` | Where the code was sent (shown in the description). |
+| `email` | `string` |  | Where the code was sent (shown in the description). Without it the description says "your email". |
 | `error` | `React.ReactNode` |  | Error message shown under the input (e.g. a wrong code). |
 | `footer` | `React.ReactNode` |  | Replace the default footer (e.g. "Don't have an account? Sign up"). Pass `null` to hide it. |
+| `headingLevel` | `AuthHeadingLevel` | `1` | Element of the card title (`1` is an `h1`). Use `2` or lower when the card sits inside a page that has its own `h1`. |
 | `length` | `number` | `6` | Number of code digits. |
 | `loading` | `boolean` |  | Disables the input and shows a spinner while the code is checked. |
 | `logo` | `boolean \| React.ReactNode` |  | Show the Sutra mark above the title, or pass a custom logo. Default: true for `card`. |

@@ -4,6 +4,7 @@
 
 - Import: `import { NodeCard } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/kits/ops/node-card` (kit `ops`)
+- `data-slot`: `node-card`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { OfflineBanner } from "@sutra/ui"` (or from `@sutra/ui/suite`)
 - Source: `packages/ui/src/kits/workspace/sync-status` (kit `workspace`)
+- `data-slot`: `offline-banner`
 - Also accepts the props of HTMLAttributes
 
 ## Props

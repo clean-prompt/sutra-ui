@@ -4,6 +4,7 @@
 
 - Import: `import { KanbanBoard } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-board` (kit `workspace`)
+- `data-slot`: `kanban-board`
 - Also accepts the props of HTMLAttributes
 
 ## Props

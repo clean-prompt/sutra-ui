@@ -16,6 +16,7 @@
 | `error` | `React.ReactNode` |  | Error message shown above the form (e.g. a failed sign-in); also marks the form invalid. |
 | `footer` | `React.ReactNode` |  | Replace the default footer (e.g. "Don't have an account? Sign up"). Pass `null` to hide it. |
 | `forgotPasswordHref` | `string` | `"#forgot-password"` | Link target of "Forgot password?". |
+| `headingLevel` | `AuthHeadingLevel` | `1` | Element of the card title (`1` is an `h1`). Use `2` or lower when the card sits inside a page that has its own `h1`. |
 | `loading` | `boolean` |  | Disables the form and shows a spinner on the submit button (use it while you sign in). |
 | `logo` | `boolean \| React.ReactNode` |  | Show the Sutra mark above the title, or pass a custom logo. Default: true for `card`. |
 | `onSocialSignIn` | `(provider: SocialProvider) => unknown` |  | Called with the provider when a social button is clicked. A returned promise shows a spinner on that button. |

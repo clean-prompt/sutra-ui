@@ -4,6 +4,7 @@
 
 - Import: `import { PasswordStrength } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/password-strength` (patterns)
+- `data-slot`: `password-strength`
 - Also accepts the props of HTMLAttributes
 
 ## Props

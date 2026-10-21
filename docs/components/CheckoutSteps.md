@@ -4,7 +4,7 @@
 
 - Import: `import { CheckoutSteps } from "@sutra/ui"` (or from `@sutra/ui/billing`)
 - Source: `packages/ui/src/kits/billing/billing-checkout` (kit `billing`)
-- `data-slot`: `sca-frame`
+- `data-slot`: `checkout-steps`, `sca-frame`
 - Also accepts the props of HTMLAttributes
 
 ## Props

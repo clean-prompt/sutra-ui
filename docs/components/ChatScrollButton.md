@@ -4,6 +4,7 @@
 
 - Import: `import { ChatScrollButton } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/chat-conversation` (kit `ai`)
+- `data-slot`: `chat-scroll-button`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
 ## Props

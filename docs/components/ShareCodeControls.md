@@ -4,6 +4,7 @@
 
 - Import: `import { ShareCodeControls } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/memory-map-share` (kit `workspace`)
+- `data-slot`: `share-code-controls`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -4,6 +4,7 @@
 
 - Import: `import { KanbanPriorityIcon } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-card` (kit `workspace`)
+- `data-slot`: `kanban-priority-icon`
 - Also accepts the props of SVGAttributes
 
 ## Props

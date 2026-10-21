@@ -4,6 +4,7 @@
 
 - Import: `import { PromptInputSubmit } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/kits/ai/prompt-input-toolbar` (kit `ai`)
+- `data-slot`: `prompt-input-submit`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
 ## Props

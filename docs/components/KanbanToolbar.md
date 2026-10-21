@@ -4,6 +4,7 @@
 
 - Import: `import { KanbanToolbar } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
 - Source: `packages/ui/src/kits/workspace/kanban-toolbar` (kit `workspace`)
+- `data-slot`: `kanban-toolbar`
 - Also accepts the props of HTMLAttributes
 
 ## Props

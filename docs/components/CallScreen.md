@@ -4,6 +4,7 @@
 
 - Import: `import { CallScreen } from "@sutra/ui"` (or from `@sutra/ui/social`)
 - Source: `packages/ui/src/kits/social/call-overlay` (kit `social`)
+- `data-slot`: `call-screen`
 - Also accepts the props of HTMLAttributes
 
 ## Props

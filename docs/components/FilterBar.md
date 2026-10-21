@@ -4,6 +4,7 @@
 
 - Import: `import { FilterBar } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
+- `data-slot`: `filter-bar`
 - Parts: [`FilterBarActive`](FilterBarActive.md), [`FilterBarChip`](FilterBarChip.md), [`FilterBarClear`](FilterBarClear.md), [`FilterBarSearch`](FilterBarSearch.md), [`FilterBarToken`](FilterBarToken.md)
 - Also accepts the props of HTMLAttributes
 

@@ -4,6 +4,7 @@
 
 - Import: `import { StatementHero } from "@sutra/ui"`
 - Source: `packages/ui/src/patterns/statement-hero` (patterns)
+- `data-slot`: `statement-hero`
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -17,4 +17,4 @@
 | `range` | `string` |  | Controlled selected range value. Use with `onRangeChange`. |
 | `rangeOptions` | `SelectOption[]` | `defaultRanges` | Choices for the date-range select; omit to hide the select. |
 | `stats` | `PageHeaderStat[]` | `defaultStats` | Metric tiles under the title; each has a `label`, a `value` and an optional `change`. |
-| `title` | `React.ReactNode` | `"Good morning, Maya"` | Page title; the default is sample text, so always set it. |
+| `title` | `React.ReactNode` | `"Overview"` | Page title; the default is sample text, so always set it. |
