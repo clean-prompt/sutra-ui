@@ -58,6 +58,50 @@ describe("treeShakeEdits", () => {
     expect(out).toContain("var n = other();");
   });
 
+  it("tags the placeholder-logo factory so an unused logo can be dropped", () => {
+    const out = transform('var AcmeLogo = createPlaceholderLogo("Acme", mark, "w");\nvar LumenLogo = createPlaceholderLogo("Lumen", mark2, "w");\n');
+    expect(out).toContain('var AcmeLogo = /* @__PURE__ */ createPlaceholderLogo("Acme", mark, "w");');
+    expect(out).toContain('var LumenLogo = /* @__PURE__ */ createPlaceholderLogo("Lumen", mark2, "w");');
+  });
+
+  it("tags side-effect-free data chains, each call on its own", () => {
+    const out = transform(
+      [
+        "var names = Object.keys(map);",
+        "var colors = Object.fromEntries(Object.entries(formats).map(([ext, f]) => [ext, f.color]));",
+        'var cls = ["a", "b"].join(" ");',
+        "var roles = all.filter((r) => r.value !== 1);",
+      ].join("\n")
+    );
+    expect(out).toContain("var names = /* @__PURE__ */ Object.keys(map);");
+    // Annotation on the outer call, on the `.map` call, and a parenthesised one on the receiver `Object.entries(...)`.
+    expect(out).toContain(
+      "var colors = /* @__PURE__ */ Object.fromEntries(/* @__PURE__ */ (/* @__PURE__ */ Object.entries(formats)).map(([ext, f]) => [ext, f.color]));"
+    );
+    expect(out).toContain('var cls = /* @__PURE__ */ ["a", "b"].join(" ");');
+    expect(out).toContain("var roles = /* @__PURE__ */ all.filter((r) => r.value !== 1);");
+    expect(transform(out)).toBe(out);
+  });
+
+  it("does not tag a data chain whose arguments or callbacks can have effects", () => {
+    const cases = [
+      "var a = Object.keys(register(x));",
+      "var b = list.map((x) => registry.add(x));",
+      "var c = list.map((x) => { seen++; return x; });",
+      "var d = list.map((x) => (state.last = x));",
+      "var e = list.map((x) => new Thing(x));",
+      "var f = Object.fromEntries(list.map(sideEffect));",
+      "var g = items.sort();",
+      "var h = [load()].join(',');",
+    ];
+    for (const code of cases) expect(transform(code), code).toBe(code);
+  });
+
+  it("keeps a line-for-line layout when tagging chains (source maps stay valid)", () => {
+    const code = "var colors = Object.fromEntries(\n  Object.entries(formats).map(([e, f]) => [e, f.c])\n);\n";
+    expect(transform(code).split("\n")).toHaveLength(code.split("\n").length);
+  });
+
   it("leaves unknown or dynamic displayName assignments alone", () => {
     const code = 'var F = make();\nF.displayName = "F";\nvar G = React.forwardRef(() => null);\nG.displayName = `${p}G`;\n';
     const out = transform(code);

@@ -9,8 +9,9 @@ import {
   SplitPanePanel,
   type PresenceUser,
 } from "@sutra/ui";
+import { CodeEditor, type CodeEditorHandle } from "@sutra/ui/code-editor";
+import { RichTextEditor } from "@sutra/ui/rich-text-editor";
 import {
-  CodeEditor,
   CommentsPanel,
   DiffViewer,
   DocumentOutline,
@@ -19,14 +20,12 @@ import {
   EditorToolbarButton,
   EditorToolbarMenu,
   EditorToolbarSeparator,
-  RichTextEditor,
   SaveStatus,
   SuggestionDiff,
   VersionHistory,
   extractOutline,
   findActiveHeading,
   getOutlineKey,
-  type CodeEditorHandle,
   type CommentThreadData,
   type DiffMode,
   type DocumentVersion,

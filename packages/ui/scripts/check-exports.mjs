@@ -2,9 +2,31 @@
 // Verifies the published surface after `pnpm build`: every `exports` subpath resolves through the
 // package's own name, its files exist (JS and types), and the module imports under plain Node ESM. `exports` must be
 // explicit (no wildcard), and no `*-internal` module of dist may be resolvable through it.
+// A second phase imports every subpath again in a Node process whose resolver HIDES every optional peer
+// (`peerDependenciesMeta`): a subpath that crashes there, other than the ones in ENTRY_PEERS below, would break
+// an app that installs only some of the peers (this is how `@sutra/ui/editor` once failed without TipTap).
+import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+
+/**
+ * Subpaths that legitimately need an optional peer to import: subpath -> peers (a trailing `/*` matches a scope or a
+ * package family), declared here and nowhere else. They load the engine with a static import. Everything else must
+ * import with every optional peer missing. Keep it in step with ENGINE_ENTRIES in test/api-surface.test.ts.
+ */
+const CM = ["@codemirror/*"];
+const TT = ["@tiptap/*"];
+const ENTRY_PEERS = {
+  "./code-editor": CM,
+  "./rich-text-editor": TT,
+  // The same modules by deep path and by the frozen components/* alias.
+  "./kits/editor/code-editor": CM,
+  "./kits/editor/rich-text-editor": TT,
+  "./components/code-editor": CM,
+  "./components/rich-text-editor": TT,
+};
+const peerMatches = (peer, pattern) => (pattern.endsWith("/*") ? peer.startsWith(pattern.slice(0, -1)) : peer === pattern);
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8"));
@@ -122,8 +144,72 @@ for (const [key, value] of Object.entries(pkg.exports)) {
   if (key.endsWith("-internal") || targets.some((t) => /-internal\.(js|d\.ts)$/.test(t))) fail(`${key}: exports an internal module`);
 }
 
+// ---- no optional peer installed: every subpath must still import (except ENTRY_PEERS) -------------
+const HIDE_HOOK = `
+const peers = JSON.parse(process.env.SUTRA_HIDDEN_PEERS ?? "[]");
+export async function resolve(specifier, context, next) {
+  const peer = peers.find((p) => specifier === p || specifier.startsWith(p + "/"));
+  if (peer) {
+    throw Object.assign(new Error("Cannot find package '" + peer + "' imported from " + context.parentURL + " (hidden optional peer)"), { code: "ERR_MODULE_NOT_FOUND", peer });
+  }
+  return next(specifier, context);
+}`;
+const CHILD = `
+import { register } from "node:module";
+register("data:text/javascript," + encodeURIComponent(process.env.SUTRA_HIDE_HOOK));
+const results = {};
+for (const specifier of JSON.parse(process.env.SUTRA_SPECIFIERS)) {
+  try { await import(specifier); results[specifier] = null; }
+  catch (err) { results[specifier] = { code: err?.code ?? null, peer: err?.peer ?? /Cannot find (?:package|module) '([^']+)'/.exec(String(err?.message))?.[1] ?? null, message: String(err?.message ?? err).split("\\n")[0] }; }
+}
+process.stdout.write("\\n@@RESULT@@" + JSON.stringify(results));`;
+const optionalPeers = Object.entries(pkg.peerDependenciesMeta ?? {}).filter(([, meta]) => meta?.optional).map(([name]) => name);
+let withoutPeers = 0;
+if (optionalPeers.length && targets.length) {
+  const child = spawnSync(process.execPath, ["--input-type=module", "-e", CHILD], {
+    cwd: root,
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024,
+    env: {
+      ...process.env,
+      SUTRA_HIDE_HOOK: HIDE_HOOK,
+      SUTRA_HIDDEN_PEERS: JSON.stringify(optionalPeers),
+      SUTRA_SPECIFIERS: JSON.stringify(targets.map(([subpath]) => pkg.name + subpath.slice(1))),
+    },
+  });
+  const marker = (child.stdout ?? "").lastIndexOf("@@RESULT@@");
+  if (marker < 0) {
+    fail(`peers-hidden phase: the child process produced no result (exit ${child.status}): ${(child.stderr ?? "").split("\n").slice(0, 4).join(" | ")}`);
+  } else {
+    const results = JSON.parse(child.stdout.slice(marker + "@@RESULT@@".length));
+    const declared = new Set(Object.keys(ENTRY_PEERS));
+    for (const key of declared) {
+      if (!targets.some(([subpath]) => subpath === key)) fail(`ENTRY_PEERS lists ${key}, which is not an exports key`);
+    }
+    for (const [subpath] of targets) {
+      const specifier = pkg.name + subpath.slice(1);
+      const result = results[specifier];
+      const allowed = ENTRY_PEERS[subpath];
+      if (result === null) {
+        withoutPeers++;
+        if (allowed) fail(`${specifier}: listed in ENTRY_PEERS but imports fine without ${allowed.join(", ")}; remove it from the map`);
+      } else if (!result) {
+        fail(`${specifier}: not imported in the peers-hidden phase`);
+      } else if (result.peer && allowed?.some((pattern) => peerMatches(result.peer, pattern))) {
+        // expected: this subpath loads its engine with a static import
+      } else if (result.peer) {
+        fail(`${specifier}: needs the optional peer ${result.peer} at import time${allowed ? ` (allowed here: ${allowed.join(", ")})` : ""}. Load it lazily with a dynamic import() or move the module to an entry of its own, then see ENTRY_PEERS`);
+      } else {
+        fail(`${specifier}: import failed with every optional peer hidden: ${result.message}`);
+      }
+    }
+  }
+}
+
 if (failures.length) {
   console.error(`check-exports: ${failures.length} problem(s)\n` + failures.map((f) => `  - ${f}`).join("\n"));
   process.exit(1);
 }
-console.log(`check-exports: ${imported} subpaths resolved and imported from dist, ${hidden} internal modules not resolvable`);
+console.log(
+  `check-exports: ${imported} subpaths resolved and imported from dist, ${withoutPeers} also import with every optional peer hidden (${Object.keys(ENTRY_PEERS).length} declared in ENTRY_PEERS), ${hidden} internal modules not resolvable`
+);

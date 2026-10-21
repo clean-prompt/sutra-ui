@@ -12,7 +12,8 @@
 // Sections follow the layers: Foundations, Assets, Primitives, Patterns, one section per kit, Blocks.
 // Files are sorted within a section. A module is left out of the root when it
 //   - reaches an optional peer (package.json `peerDependenciesMeta[x].optional`) through its imports;
-//     those live only in their own entry (@sutra/ui/editor, @sutra/ui/terminal),
+//     those live only in their own entry (@sutra/ui/code-editor, @sutra/ui/rich-text-editor, @sutra/ui/terminal, @sutra/ui/pdf),
+//     and the entry file stays hand-written like every other (entries/*.ts: the root never lists an entry, so a new engine entry needs no table here),
 //   - is listed in INTERNAL below or named `*-internal` (private helpers shared by sibling modules), or
 //   - is a back-compat barrel (a file made only of `export … from` lines) whose every target is
 //     already exported from the root, so it would add nothing.

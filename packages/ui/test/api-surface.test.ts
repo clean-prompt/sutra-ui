@@ -110,6 +110,41 @@ function reachesOptionalPeer(file: string, seen = new Set<string>()): boolean {
   return hit;
 }
 
+/**
+ * Optional peers a file loads with a static runtime import, directly or through its relative imports. `import type`,
+ * type-only specifiers (erased by the build) and dynamic `import()` do not count: they cannot make an entry crash at import time.
+ */
+const staticPeerMemo = new Map<string, string[]>();
+function staticPeers(file: string, seen = new Set<string>()): string[] {
+  if (staticPeerMemo.has(file)) return staticPeerMemo.get(file)!;
+  if (seen.has(file)) return [];
+  seen.add(file);
+  const sf = ts.createSourceFile(file, fs.readFileSync(file, "utf8"), ts.ScriptTarget.Latest, true);
+  const found = new Set<string>();
+  const visitSpec = (spec: string) => {
+    if (!spec.startsWith(".")) {
+      const peer = OPTIONAL_PEERS.find((p) => spec === p || spec.startsWith(`${p}/`));
+      if (peer) found.add(peer);
+      return;
+    }
+    const target = resolveSpec(file, spec);
+    if (target) staticPeers(target, seen).forEach((p) => found.add(p));
+  };
+  for (const st of sf.statements) {
+    if (ts.isImportDeclaration(st) && ts.isStringLiteral(st.moduleSpecifier)) {
+      const clause = st.importClause;
+      const named = clause?.namedBindings && ts.isNamedImports(clause.namedBindings) ? clause.namedBindings.elements : null;
+      const typeOnly = clause?.isTypeOnly || (clause && !clause.name && named && named.length > 0 && named.every((e) => e.isTypeOnly));
+      if (!typeOnly) visitSpec(st.moduleSpecifier.text);
+    } else if (ts.isExportDeclaration(st) && st.moduleSpecifier && ts.isStringLiteral(st.moduleSpecifier) && !st.isTypeOnly) {
+      visitSpec(st.moduleSpecifier.text);
+    }
+  }
+  const result = [...found].sort();
+  staticPeerMemo.set(file, result);
+  return result;
+}
+
 /** A frozen back-compat barrel: its header comment says so (assets/misc, kits/ai/ai-extras, kanban, counters, primitives-extra). */
 const isBackCompatBarrel = (file: string) => /Back-compat barrel/.test(fs.readFileSync(file, "utf8").slice(0, 200));
 
@@ -184,6 +219,20 @@ describe("public API surface", () => {
         .map((s) => s.name);
       expect(missing, `${rel(file)} exports names the root lacks`).toEqual([]);
     }
+  });
+
+  it("only the engine entries import an optional peer statically; every other entry imports without any peer installed", () => {
+    // `@sutra/ui/editor` must stay engine-free (a CodeMirror-only app imports it); the engines have their own entries.
+    // Keep this list in step with ENTRY_PEERS in scripts/check-exports.mjs (which proves it on the built dist).
+    const ENGINE_ENTRIES = ["code-editor", "rich-text-editor"];
+    const withPeers = entryFiles.filter((f) => staticPeers(f).length > 0).map((f) => path.basename(f, ".ts"));
+    expect(withPeers.sort()).toEqual(ENGINE_ENTRIES);
+    expect(staticPeers(path.join(ENTRIES, "code-editor.ts")).every((p) => p.startsWith("@codemirror/"))).toBe(true);
+    expect(staticPeers(path.join(ENTRIES, "rich-text-editor.ts")).every((p) => p.startsWith("@tiptap/"))).toBe(true);
+    // And neither engine entry is on the root barrel (the root imports no optional peer at all).
+    expect(staticPeers(ROOT_FILE), "the root barrel reaches an optional peer").toEqual([]);
+    const rootText = fs.readFileSync(ROOT_FILE, "utf8");
+    for (const entry of ENGINE_ENTRIES) expect(rootText).not.toMatch(new RegExp(`^export .* from "\\./entries/${entry}"`, "m"));
   });
 
   it("subpath-only entries (format) export no name the root has, apart from shared prop types", () => {

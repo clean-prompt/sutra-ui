@@ -617,7 +617,8 @@ export function DemoPanels({ demoKey, props, code, className }: DemoPanelsProps)
 }
 
 const PEERS: Record<string, string> = {
-  "@sutra/ui/editor": "@codemirror/* and @tiptap/*",
+  "@sutra/ui/code-editor": "@codemirror/*",
+  "@sutra/ui/rich-text-editor": "@tiptap/*",
   "@sutra/ui/terminal": "@xterm/xterm and @xterm/addon-fit",
   "@sutra/ui/pdf": "pdfjs-dist",
 };

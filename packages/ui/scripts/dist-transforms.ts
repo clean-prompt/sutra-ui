@@ -15,8 +15,19 @@ export interface SourceMapLike {
 export const USE_CLIENT = '"use client";';
 const PURE = "/* @__PURE__ */ ";
 
-/** Calls that are safe to drop when their result is unused. */
-const PURE_CALLEES = new Set(["React.forwardRef", "React.memo", "React.createContext", "cva", "cn"]);
+/**
+ * Calls that are safe to drop when their result is unused, whatever their arguments (those are evaluated either way).
+ * `createPlaceholderLogo` is the module-local factory of assets/placeholder-logos: it only builds a forwardRef component,
+ * so an unused logo must not survive in a consumer's bundle (measured: one logo cost all 14 before it was listed).
+ */
+const PURE_CALLEES = new Set(["React.forwardRef", "React.memo", "React.createContext", "cva", "cn", "createPlaceholderLogo"]);
+/**
+ * Built-ins that only read their arguments and return a new value. A top-level `var X = Object.keys(Y)` is tagged only when
+ * every argument is itself a side-effect-free expression (see `pureChain`), because a tagged call is dropped with its arguments' effects.
+ */
+const PURE_DATA_CALLEES = new Set(["Object.keys", "Object.values", "Object.entries", "Object.fromEntries", "Array.from"]);
+/** Non-mutating array and string methods that may continue such a chain (`Object.entries(x).map(…)`). */
+const PURE_METHODS = new Set(["map", "filter", "flatMap", "join", "slice", "concat"]);
 /** Calls whose result is a component or context that may carry a `displayName`. */
 const NAMEABLE_CALLEES = new Set(["React.forwardRef", "React.memo", "React.createContext"]);
 
@@ -74,9 +85,91 @@ function hasPureComment(code: string, pos: number): boolean {
 
 /** A top-level binding whose initializer can be marked pure and can absorb a `displayName`. */
 type Candidate =
-  | { kind: "call"; node: ts.CallExpression; nameable: boolean }
+  | { kind: "call"; node: ts.CallExpression; nameable: boolean; chain: ts.CallExpression[] }
   | { kind: "function"; node: ts.ArrowFunction | ts.FunctionExpression }
   | { kind: "declaration"; node: ts.FunctionDeclaration; index: number };
+
+function hasPureAnnotation(node: ts.Node, sf: ts.SourceFile): boolean {
+  return hasPureComment(sf.text, node.getStart(sf));
+}
+
+/**
+ * The calls of a side-effect-free data expression (`Object.fromEntries(Object.entries(x).map(([k, v]) => [k, v.c]))`), or null
+ * when the expression may have effects. Callbacks are only created here, but dropping the call also drops them, so a callback
+ * must be effect-free too (no assignment, update, delete, new, throw, await, yield, tagged template or call except another
+ * pure one or an esbuild-annotated `jsx(...)`). Every returned call needs its own annotation (the outer one does not cover
+ * the calls in its arguments or its receiver).
+ */
+function pureChain(node: ts.Expression, sf: ts.SourceFile): ts.CallExpression[] | null {
+  const calls: ts.CallExpression[] = [];
+  const value = (e: ts.Node): boolean => {
+    if (ts.isArrowFunction(e) || ts.isFunctionExpression(e)) return bodyPure(e);
+    if (
+      ts.isIdentifier(e) ||
+      ts.isStringLiteral(e) ||
+      ts.isNumericLiteral(e) ||
+      ts.isNoSubstitutionTemplateLiteral(e) ||
+      e.kind === ts.SyntaxKind.TrueKeyword ||
+      e.kind === ts.SyntaxKind.FalseKeyword ||
+      e.kind === ts.SyntaxKind.NullKeyword
+    ) {
+      return true;
+    }
+    if (ts.isParenthesizedExpression(e)) return value(e.expression);
+    if (ts.isPropertyAccessExpression(e)) return value(e.expression);
+    if (ts.isTemplateExpression(e)) return e.templateSpans.every((t) => value(t.expression));
+    if (ts.isArrayLiteralExpression(e)) return e.elements.every(value);
+    if (ts.isSpreadElement(e)) return value(e.expression);
+    if (ts.isObjectLiteralExpression(e)) {
+      return e.properties.every(
+        (p) => (ts.isPropertyAssignment(p) && value(p.initializer)) || ts.isShorthandPropertyAssignment(p) || (ts.isSpreadAssignment(p) && value(p.expression))
+      );
+    }
+    if (ts.isCallExpression(e)) return pureCall(e, true);
+    return false;
+  };
+  const pureCall = (call: ts.CallExpression, record: boolean): boolean => {
+    const callee = call.expression;
+    const known =
+      PURE_DATA_CALLEES.has(calleeName(call, sf)) ||
+      (ts.isPropertyAccessExpression(callee) && PURE_METHODS.has(callee.name.text) && value(callee.expression));
+    if (!known || !call.arguments.every(value)) return false;
+    // A callback must be written inline: a function passed by name could do anything when it is called.
+    const callbacks = ts.isPropertyAccessExpression(callee) && ["map", "filter", "flatMap"].includes(callee.name.text) ? [0] : calleeName(call, sf) === "Array.from" ? [1] : [];
+    const inline = (a: ts.Expression | undefined) => a !== undefined && (ts.isArrowFunction(a) || ts.isFunctionExpression(a));
+    if (callbacks.some((i) => (i === 0 || call.arguments.length > i) && !inline(call.arguments[i]))) return false;
+    if (record) calls.push(call);
+    return true;
+  };
+  /** A callback that cannot do anything when called but compute its result. */
+  const bodyPure = (fn: ts.ArrowFunction | ts.FunctionExpression): boolean => {
+    let ok = true;
+    const visit = (n: ts.Node) => {
+      if (!ok) return;
+      if (
+        ts.isNewExpression(n) ||
+        ts.isDeleteExpression(n) ||
+        ts.isAwaitExpression(n) ||
+        ts.isYieldExpression(n) ||
+        ts.isThrowStatement(n) ||
+        ts.isTaggedTemplateExpression(n) ||
+        (ts.isBinaryExpression(n) && n.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && n.operatorToken.kind <= ts.SyntaxKind.LastAssignment) ||
+        ((ts.isPrefixUnaryExpression(n) || ts.isPostfixUnaryExpression(n)) && (n.operator === ts.SyntaxKind.PlusPlusToken || n.operator === ts.SyntaxKind.MinusMinusToken))
+      ) {
+        ok = false;
+        return;
+      }
+      if (ts.isCallExpression(n) && !hasPureAnnotation(n, sf) && !(PURE_CALLEES.has(calleeName(n, sf)) || pureCall(n, false))) {
+        ok = false;
+        return;
+      }
+      ts.forEachChild(n, visit);
+    };
+    visit(fn.body);
+    return ok;
+  };
+  return ts.isCallExpression(node) && pureCall(node, true) ? calls : null;
+}
 
 function referencesName(node: ts.Node, name: string): boolean {
   if (ts.isIdentifier(node) && node.text === name) return true;
@@ -112,7 +205,10 @@ export function treeShakeEdits(code: string, fileName = "module.js"): Edit[] {
       if (ts.isArrowFunction(init) || ts.isFunctionExpression(init)) {
         candidates.set(d.name.text, { kind: "function", node: init });
       } else if (ts.isCallExpression(init) && PURE_CALLEES.has(calleeName(init, sf))) {
-        candidates.set(d.name.text, { kind: "call", node: init, nameable: NAMEABLE_CALLEES.has(calleeName(init, sf)) });
+        candidates.set(d.name.text, { kind: "call", node: init, nameable: NAMEABLE_CALLEES.has(calleeName(init, sf)), chain: [] });
+      } else if (ts.isCallExpression(init)) {
+        const chain = pureChain(init, sf);
+        if (chain) candidates.set(d.name.text, { kind: "call", node: init, nameable: false, chain });
       }
     }
   });
@@ -151,6 +247,24 @@ export function treeShakeEdits(code: string, fileName = "module.js"): Edit[] {
       edits.push({ start: end, end, text: `, { displayName: ${displayName} })${c.kind === "declaration" ? ";" : ""}` });
     } else if (c.kind === "call" && pure) {
       edits.push({ start, end: start, text: pure });
+    }
+    if (c.kind === "call") {
+      // Inner calls of a data chain: each needs its own annotation. A receiver call (`Object.entries(x)` in
+      // `Object.entries(x).map(…)`) starts where its parent starts, so it is wrapped as `(/* @__PURE__ */ …)`; the plain
+      // annotation of the call that continues it goes in front of that group.
+      const plain = new Set<number>();
+      const receivers: ts.CallExpression[] = [];
+      for (const call of c.chain) {
+        if (call === c.node || hasPureAnnotation(call, sf)) continue;
+        const isReceiver = ts.isPropertyAccessExpression(call.parent) && call.parent.expression === call && ts.isCallExpression(call.parent.parent);
+        if (isReceiver) receivers.push(call);
+        else plain.add(call.getStart(sf));
+      }
+      for (const pos of plain) edits.push({ start: pos, end: pos, text: PURE });
+      for (const call of receivers) {
+        edits.push({ start: call.getStart(sf), end: call.getStart(sf), text: `(${PURE}` });
+        edits.push({ start: call.getEnd(), end: call.getEnd(), text: ")" });
+      }
     }
   }
 

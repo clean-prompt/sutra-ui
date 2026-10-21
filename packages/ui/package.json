@@ -45,6 +45,11 @@
       "import": "./dist/entries/blocks.js",
       "default": "./dist/entries/blocks.js"
     },
+    "./code-editor": {
+      "types": "./dist/entries/code-editor.d.ts",
+      "import": "./dist/entries/code-editor.js",
+      "default": "./dist/entries/code-editor.js"
+    },
     "./core": {
       "types": "./dist/entries/core.d.ts",
       "import": "./dist/entries/core.js",
@@ -124,6 +129,11 @@
       "types": "./dist/entries/pdf.d.ts",
       "import": "./dist/entries/pdf.js",
       "default": "./dist/entries/pdf.js"
+    },
+    "./rich-text-editor": {
+      "types": "./dist/entries/rich-text-editor.d.ts",
+      "import": "./dist/entries/rich-text-editor.js",
+      "default": "./dist/entries/rich-text-editor.js"
     },
     "./security": {
       "types": "./dist/entries/security.d.ts",
