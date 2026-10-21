@@ -12,6 +12,16 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 
 ## [Unreleased]
 
+## [0.2.0-next.1] - 2026-10-22
+
+First pre-release after 0.1.0 (published under the `next` dist-tag; it also tests the release workflow's npm trusted publishing).
+
+### Added
+- `SutradharSting` `discharge`: the endless astra fires an ink wave (`"wave"`, the default) or forked, crackling ink lightning (`"lightning"`) with pulses running out along it; the `mark` variant fires nothing and ignores it.
+
+### Changed
+- The playground shows the library version in the sidebar header and links it to the GitHub release.
+
 ## [0.1.0] - 2026-10-22
 
 ### Added
