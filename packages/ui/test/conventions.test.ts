@@ -64,7 +64,7 @@ const COLOR_ALLOW: Allow = {
   "assets/backgrounds.tsx": [5, "mask stops"],
   "patterns/fade-text.tsx": [2, "mask stops"],
   "primitives/scroll-area.tsx": [8, "mask stops"],
-  "kits/media/media-cards.tsx": [4, "mask stops"],
+  "kits/media/media-cards-shelf.tsx": [4, "mask stops"],
   // match keys, not applied colours
   "kits/editor/code-editor.tsx": [9, "match keys: CodeMirror's default highlight colours, looked up so the theme can swap each for a token"],
   // debt that is left on purpose (listed so the count can only fall)

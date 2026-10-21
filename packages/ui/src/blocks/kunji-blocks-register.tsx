@@ -7,7 +7,7 @@ import { Input } from "../primitives/input";
 import { Field, FieldError, FieldGroup, FieldHint, FieldLabel } from "../primitives/field";
 import { InlineAlert } from "../primitives/inline-alert";
 import { KunjiMark } from "../kits/identity/kunji-sign-in";
-import { formatKunjiSub } from "../kits/identity/kunji-client";
+import { formatKunjiSub } from "../kits/identity/kunji-client-text";
 import { AuthFrame, FormError, type AuthHeadingLevel } from "./auth-frame-internal";
 import { useBlockAction } from "./block-utils";
 import { AwaitingApproval, type AwaitingApprovalProps } from "./kunji-blocks-approval";

@@ -1,274 +1,56 @@
+/*
+ * Process table, one module per family: `-model` (types, `formatProcessBytes`, `sortProcesses`), `-kill` (`KillButton`) and
+ * the `ProcessTable` component here; `-internal` holds the private row bodies and class maps. This path re-exports every public name; inside the
+ * package import the per-part modules.
+ */
 import * as React from "react";
-import { RiArrowRightSLine, RiCloseCircleLine, RiSkullLine } from "@remixicon/react";
+import { RiArrowRightSLine } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density } from "../../lib/cn";
 import { logicalArrow } from "../../lib/direction";
-import { toneClasses } from "../../lib/tone";
-import { formatDuration } from "../../lib/duration";
-import { formatBytes, pluralize, type FormatBytesOptions } from "../../lib/format";
-import { safeISO, toMs, type TimeInput } from "../../lib/time";
+import { formatBytes, pluralize } from "../../lib/format";
+import { safeISO, toMs } from "../../lib/time";
 import {
   buildProcessTree,
   defaultProcessGroupKey,
   processGroupStartedAt,
   processGroupUser,
-  sortProcessList,
   type ProcessColumn,
-  type ProcessGroup,
   type ProcessSort,
-  type ProcessTreeItem,
 } from "../../lib/process-groups";
-import { useAsyncAction } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { usePresence, type PresenceState } from "../../hooks/use-presence";
 import { Button } from "../../primitives/button";
 import { ConfirmDialog } from "../../primitives/dialog";
 import { Monogram } from "../../primitives/monogram";
 import { Skeleton } from "../../primitives/progress";
-import { Spinner } from "../../primitives/spinner";
 import { SimpleTooltip } from "../../primitives/tooltip";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, type TableSortDirection } from "../../primitives/table";
+import { KillButton } from "./process-table-kill";
+import { sortProcesses, type KillSignal, type ProcessInfo, type ProcessQuitOptions, type ProcessTableGroup } from "./process-table-model";
+import {
+  PROCESS_BYTES,
+  type RenderRow,
+  ProcessRows,
+  ProcessTreeBodies,
+  alignFor,
+  childIndent,
+  columnLabel,
+  formatElapsed,
+  groupHeadPadding,
+  nowrapFor,
+  numeric,
+  presenceRowClass,
+  skeletonNameWidths,
+  skeletonWidth,
+  stateTone,
+  type Presence,
+} from "./process-table-internal";
 
-export type KillSignal = "SIGTERM" | "SIGKILL";
-
-/* ------------------------------------------------------------------ */
-/* KillButton                                                          */
-/* ------------------------------------------------------------------ */
-
-export interface KillButtonProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
-  /** Process id, shown in the confirm step and used in labels. */
-  pid: number;
-  /** Process name, used in labels. */
-  name?: string;
-  /**
-   * Called with the chosen signal after the user confirms; may return a promise, and the button shows "Killing…"
-   * until it settles.
-   */
-  onKill: (signal: KillSignal) => void | Promise<unknown>;
-  /** External loading state (e.g. waiting for the process to exit). Shows "Killing…". */
-  loading?: boolean;
-  /** External busy state; shows "Killing…" while true. @deprecated Use `loading`. */
-  pending?: boolean;
-  /** Disables the button. */
-  disabled?: boolean;
-  /** Called when the confirm step opens / closes. */
-  onConfirmingChange?: (signal: KillSignal | null) => void;
-}
-
-/** Two-mode kill control (SIGTERM / SIGKILL) with an inline "Kill 1234? Confirm / Cancel" step. */
-export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
-  ({ className, pid, name, onKill, loading: loadingProp, pending: pendingProp, disabled, onConfirmingChange, ...props }, ref) => {
-    const [confirming, setConfirmingState] = React.useState<KillSignal | null>(null);
-    const kill = useAsyncAction((result: PromiseLike<unknown>) => result);
-    const confirmRef = React.useRef<HTMLButtonElement>(null);
-    const termRef = React.useRef<HTMLButtonElement>(null);
-    const pending = (loadingProp ?? pendingProp) || kill.busy;
-
-    const setConfirming = (s: KillSignal | null) => {
-      setConfirmingState(s);
-      onConfirmingChange?.(s);
-    };
-
-    React.useEffect(() => {
-      if (confirming) confirmRef.current?.focus();
-    }, [confirming]);
-
-    const confirm = () => {
-      if (!confirming) return;
-      const signal = confirming;
-      setConfirming(null);
-      // Only an async kill shows "Killing…"; a synchronous one returns straight to the buttons.
-      const result = onKill(signal);
-      if (result && typeof (result as PromiseLike<unknown>).then === "function") void kill.run(result as PromiseLike<unknown>);
-    };
-
-    const cancel = () => {
-      setConfirming(null);
-      requestAnimationFrame(() => termRef.current?.focus());
-    };
-
-    const who = name ? `${name} (${pid})` : String(pid);
-
-    if (pending) {
-      return (
-        <div ref={ref} role="status" className={cn("inline-flex items-center gap-1.5 text-xs text-muted-foreground", className)} data-slot="kill-button" {...props}>
-          <Spinner size="xs" aria-hidden />
-          <span>Killing…</span>
-        </div>
-      );
-    }
-
-    if (confirming) {
-      return (
-        <div
-          ref={ref}
-          role="group"
-          aria-label={`Confirm kill ${who}`}
-          className={cn("inline-flex items-center gap-1", className)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              e.stopPropagation();
-              cancel();
-            }
-          }}
-          data-slot="kill-button"
-          {...props}
-        >
-          <span className="whitespace-nowrap text-xs font-medium text-foreground">
-            {confirming === "SIGKILL" ? "Force kill" : "Kill"} {pid}?
-          </span>
-          <Button ref={confirmRef} size="xs" variant={confirming === "SIGKILL" ? "destructive" : "destructive-soft"} onClick={confirm}>
-            Confirm
-          </Button>
-          <Button size="xs" variant="ghost" onClick={cancel}>
-            Cancel
-          </Button>
-        </div>
-      );
-    }
-
-    return (
-      <div ref={ref} className={cn("inline-flex items-center gap-1", className)} data-slot="kill-button" {...props}>
-        <SimpleTooltip content="Terminate (SIGTERM)">
-          <button
-            ref={termRef}
-            type="button"
-            disabled={disabled}
-            onClick={() => setConfirming("SIGTERM")}
-            aria-label={`Terminate ${who} (SIGTERM)`}
-            className={cn(
-              "inline-flex size-7 items-center justify-center rounded-control border border-warning/30 bg-warning-soft text-warning-soft-foreground transition-colors hover:bg-warning/25 disabled:pointer-events-none disabled:opacity-50",
-              focusRing
-            )}
-          >
-            <RiCloseCircleLine aria-hidden className="size-3.5" />
-          </button>
-        </SimpleTooltip>
-        <SimpleTooltip content="Force kill (SIGKILL)">
-          <button
-            type="button"
-            disabled={disabled}
-            onClick={() => setConfirming("SIGKILL")}
-            aria-label={`Force kill ${who} (SIGKILL)`}
-            className={cn(
-              "inline-flex size-7 items-center justify-center rounded-control border border-destructive/30 bg-destructive-soft text-destructive-soft-foreground transition-colors hover:bg-destructive/20 disabled:pointer-events-none disabled:opacity-50",
-              focusRing
-            )}
-          >
-            <RiSkullLine aria-hidden className="size-3.5" />
-          </button>
-        </SimpleTooltip>
-      </div>
-    );
-  }
-);
-KillButton.displayName = "KillButton";
+export * from "./process-table-model";
+export * from "./process-table-kill";
 
 /* ------------------------------------------------------------------ */
 /* ProcessTable                                                        */
 /* ------------------------------------------------------------------ */
-
-export interface ProcessInfo {
-  pid: number;
-  name: string;
-  /** Full command line (shown truncated with a tooltip). */
-  command?: string;
-  user?: string;
-  /** CPU percent. */
-  cpu?: number | null;
-  /** Resident memory, bytes. */
-  memory?: number | null;
-  /** GPU memory, bytes. */
-  vram?: number | null;
-  gpuIndex?: number;
-  state?: "running" | "sleeping" | "idle" | "stopped" | "zombie" | (string & {});
-  startedAt?: TimeInput;
-  /** The owning app's name ("Google Chrome" for its helpers). `groupBy="app"` groups by it, falling back to `name`. */
-  app?: string;
-  /** App icon, shown on group rows. */
-  icon?: React.ReactNode;
-}
-
-export type { ProcessColumn, ProcessSort };
-
-/** An app group in a grouped `ProcessTable`: summed CPU and memory, process count and the processes. */
-export type ProcessTableGroup = ProcessGroup<ProcessInfo>;
-
-export interface ProcessQuitOptions {
-  /** Force Quit (may lose unsaved work) rather than a normal Quit. */
-  force: boolean;
-}
-
-/** Memory columns: 1536 → "1.5 KB" (base 1024). */
-const PROCESS_BYTES: FormatBytesOptions = { decimals: 1, wholeAbove: 100 };
-
-/**
- * Human bytes: 1536 → "1.5 KB" (base 1024).
- * @deprecated Use `formatBytes(bytes, { decimals: 1, wholeAbove: 100 })`.
- */
-export function formatProcessBytes(bytes: number | null | undefined): string {
-  return formatBytes(bytes, PROCESS_BYTES);
-}
-
-/** Elapsed time: "45s", "5m", "2h 5m", "3d 4h" (floored). */
-const formatElapsed = (ms: number) => formatDuration(ms, { round: "floor", minUnit: ms < 60_000 ? "s" : "m" });
-
-/** Sort processes by a column (stable, nulls last for desc). */
-export function sortProcesses(processes: ProcessInfo[], sort: ProcessSort | null): ProcessInfo[] {
-  return sortProcessList(processes, sort);
-}
-
-type Presence = PresenceState;
-
-const pidOf = (p: ProcessInfo) => p.pid;
-const treeKeyOf = (item: ProcessTreeItem<ProcessInfo>) => item.key;
-
-const columnLabel: Record<ProcessColumn, string> = {
-  pid: "PID",
-  name: "Command",
-  user: "User",
-  cpu: "CPU",
-  memory: "RAM",
-  vram: "VRAM",
-  state: "State",
-  started: "Started",
-};
-
-const numeric: ProcessColumn[] = ["pid", "cpu", "memory", "vram"];
-const alignFor = (col: ProcessColumn) => (numeric.includes(col) && col !== "pid" ? "right" : "left");
-/** Numbers, sizes and relative times never wrap; only the name column may. */
-const nowrapFor = (col: ProcessColumn) => (col === "name" ? undefined : "whitespace-nowrap");
-
-/** Process states are domain-specific (not `TaskStatus`); only their colours come from the shared tones. */
-const stateTone: Record<string, string> = {
-  running: toneClasses.soft.success,
-  sleeping: toneClasses.soft.neutral,
-  idle: toneClasses.soft.neutral,
-  stopped: toneClasses.soft.warning,
-  zombie: toneClasses.soft.destructive,
-};
-
-/** Matches `TableCell` padding, for the group row's `<th scope="rowgroup">`. */
-const groupHeadPadding: Record<Density, string> = {
-  compact: "px-3 py-1.5",
-  normal: "px-4 py-2.5",
-  relaxed: "px-4 py-4",
-};
-
-/** Child rows indent their label past the group's disclosure chevron. */
-const childIndent: Record<Density, string> = {
-  compact: "ps-9",
-  normal: "ps-10",
-  relaxed: "ps-10",
-};
-
-/** Every tbody but the last keeps its bottom border when groups each get their own tbody. */
-const groupBodyClass = "[&>tr:last-child>td]:border-b [&>tr:last-child>th]:border-b [&:last-of-type>tr:last-child>*]:border-b-0";
-
-const presenceRowClass = (state: Presence) =>
-  cn(
-    state === "enter" && "animate-in fade-in-0 slide-in-from-top-1 duration-300 [&>td]:bg-primary-soft/40",
-    state === "exit" && "pointer-events-none animate-out fade-out-0 opacity-0 duration-300 [&>td]:line-through"
-  );
 
 export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableElement>, "children"> {
   /** Processes to list, each with a pid, name, CPU, memory and start time. */
@@ -324,107 +106,6 @@ export interface ProcessTableProps extends Omit<React.HTMLAttributes<HTMLTableEl
   loading?: boolean;
   /** Placeholder rows while loading with no processes. Default 5. */
   loadingRows?: number;
-}
-
-/** Placeholder widths per column (right-aligned columns push theirs to the end). */
-const skeletonWidth: Record<ProcessColumn, string> = {
-  pid: "w-10",
-  name: "w-36",
-  user: "w-14",
-  cpu: "w-10",
-  memory: "w-14",
-  vram: "w-12",
-  state: "w-14",
-  started: "w-14",
-};
-const skeletonNameWidths = ["w-36", "w-28", "w-40", "w-24", "w-32"];
-
-interface RowContext {
-  /** The group a child row belongs to. */
-  group?: ProcessTableGroup;
-  id?: string;
-}
-
-type RenderRow = (p: ProcessInfo, state: Presence, ctx?: RowContext) => React.ReactNode;
-
-function ProcessRows({
-  items,
-  exitDuration,
-  renderRow,
-  empty,
-}: {
-  items: ProcessInfo[];
-  exitDuration: number;
-  renderRow: RenderRow;
-  empty: React.ReactNode;
-}) {
-  const rows = usePresence(items, pidOf, { exitDuration });
-  if (rows.length === 0) return <>{empty}</>;
-  return <TableBody>{rows.map(({ item, state }) => renderRow(item, state))}</TableBody>;
-}
-
-interface ProcessGroupBodyProps {
-  group: ProcessTableGroup;
-  state: Presence;
-  expanded: boolean;
-  exitDuration: number;
-  idPrefix: string;
-  renderRow: RenderRow;
-  renderGroupRow: (group: ProcessTableGroup, state: Presence, expanded: boolean, childIds: string[]) => React.ReactNode;
-}
-
-function ProcessGroupBody({ group, state, expanded, exitDuration, idPrefix, renderRow, renderGroupRow }: ProcessGroupBodyProps) {
-  const children = usePresence(group.processes, pidOf, { exitDuration });
-  const childId = (p: ProcessInfo) => `${idPrefix}-p${p.pid}`;
-  const visible = expanded ? children : [];
-  return (
-    <tbody data-group={group.key} className={groupBodyClass}>
-      {renderGroupRow(
-        group,
-        state,
-        expanded,
-        visible.filter((c) => c.state !== "exit").map((c) => childId(c.item))
-      )}
-      {visible.map(({ item, state: childState }) =>
-        renderRow(item, state === "exit" ? "exit" : childState, { group, id: childId(item) })
-      )}
-    </tbody>
-  );
-}
-
-function ProcessTreeBodies({
-  items,
-  empty,
-  exitDuration,
-  expanded,
-  idPrefix,
-  renderRow,
-  renderGroupRow,
-}: Omit<ProcessGroupBodyProps, "group" | "state" | "expanded"> & { items: ProcessTreeItem<ProcessInfo>[]; expanded: Set<string>; empty: React.ReactNode }) {
-  const rows = usePresence(items, treeKeyOf, { exitDuration });
-  if (rows.length === 0) return <>{empty}</>;
-  return (
-    <>
-      {rows.map(({ item, state }) =>
-        item.type === "group" ? (
-          <ProcessGroupBody
-            key={item.key}
-            group={item.group}
-            state={state}
-            expanded={expanded.has(item.group.key)}
-            exitDuration={exitDuration}
-            idPrefix={idPrefix}
-            renderRow={renderRow}
-            renderGroupRow={renderGroupRow}
-          />
-        ) : (
-          <tbody key={item.key} className={groupBodyClass}>
-            {renderRow(item.process, state)}
-          </tbody>
-        )
-      )}
-    </>
-  );
 }
 
 /** Quit… / Force Quit… for an app group, each behind a ConfirmDialog. */

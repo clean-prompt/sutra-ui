@@ -425,6 +425,8 @@ export * from "./kits/geo/world-map";
 
 /* Kit: identity (src/kits/identity) */
 // not exported: kits/identity/kunji (back-compat barrel, all targets exported)
+// not exported: kits/identity/kunji-client (back-compat barrel, all targets exported)
+// not exported: kits/identity/kunji-client-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/identity/sign-in-map-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/identity/api-keys";
 export * from "./kits/identity/connected-apps";
@@ -434,7 +436,14 @@ export * from "./kits/identity/device-sessions";
 export * from "./kits/identity/kunji-access-gate";
 export * from "./kits/identity/kunji-auth-problem";
 export * from "./kits/identity/kunji-buttons";
-export * from "./kits/identity/kunji-client";
+export * from "./kits/identity/kunji-client-http";
+export * from "./kits/identity/kunji-client-mock";
+export * from "./kits/identity/kunji-client-poll";
+export * from "./kits/identity/kunji-client-qr";
+export * from "./kits/identity/kunji-client-rp";
+export * from "./kits/identity/kunji-client-session";
+export * from "./kits/identity/kunji-client-text";
+export * from "./kits/identity/kunji-client-types";
 export * from "./kits/identity/kunji-link";
 export * from "./kits/identity/kunji-sign-in";
 export * from "./kits/identity/kunji-sign-in-state";
@@ -450,6 +459,7 @@ export * from "./kits/identity/totp";
 // not exported: kits/media/audio-player-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/media/media-controls (back-compat barrel, all targets exported)
 // not exported: kits/media/media-controls-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/media/video-player-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/media/audio-player";
 export * from "./kits/media/audio-player-model";
 export * from "./kits/media/audio-player-now-playing";
@@ -457,6 +467,10 @@ export * from "./kits/media/audio-player-queue";
 export * from "./kits/media/audio-player-track-row";
 export * from "./kits/media/cast-picker";
 export * from "./kits/media/media-cards";
+export * from "./kits/media/media-cards-collection";
+export * from "./kits/media/media-cards-model";
+export * from "./kits/media/media-cards-poster";
+export * from "./kits/media/media-cards-shelf";
 export * from "./kits/media/media-controls-base";
 export * from "./kits/media/media-controls-element";
 export * from "./kits/media/media-controls-indicators";
@@ -465,13 +479,17 @@ export * from "./kits/media/media-controls-playback";
 export * from "./kits/media/media-controls-seek";
 export * from "./kits/media/media-controls-volume";
 export * from "./kits/media/video-player";
+export * from "./kits/media/video-player-model";
 
 /* Kit: ops (src/kits/ops) */
+// not exported: kits/ops/process-table-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/ops/region-status-map-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/ops/alert-group";
 export * from "./kits/ops/model-row";
 export * from "./kits/ops/node-card";
 export * from "./kits/ops/process-table";
+export * from "./kits/ops/process-table-kill";
+export * from "./kits/ops/process-table-model";
 export * from "./kits/ops/progress-dialog";
 export * from "./kits/ops/region-status-map";
 export * from "./kits/ops/region-status-map-model";
@@ -487,7 +505,12 @@ export * from "./kits/social/messenger-model";
 export * from "./kits/social/presence";
 
 /* Kit: system (src/kits/system) */
+// not exported: kits/system/alert-rules-internal (internal: private helpers shared by sibling modules)
 export * from "./kits/system/alert-rules";
+export * from "./kits/system/alert-rules-dialog";
+export * from "./kits/system/alert-rules-editor";
+export * from "./kits/system/alert-rules-list";
+export * from "./kits/system/alert-rules-muted";
 export * from "./kits/system/containers";
 export * from "./kits/system/dev-servers";
 export * from "./kits/system/device-battery";
@@ -498,7 +521,17 @@ export * from "./kits/system/volume-mixer";
 // not exported: kits/terminal/terminal (imports optional peer @xterm/xterm)
 
 /* Kit: voice (src/kits/voice) */
+// not exported: kits/voice/assistant-orb-art-core-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-draw-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-graph-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-halftone-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-hook-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-ink-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/voice/assistant-orb-art-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-mala-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-rings-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-string-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/voice/assistant-orb-art-thread-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/voice/assistant-orb-canvas-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/voice/assistant-orb-internal (internal: private helpers shared by sibling modules)
 // not exported: kits/voice/translate (back-compat barrel, all targets exported)

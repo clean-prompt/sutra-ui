@@ -20,7 +20,7 @@ import { Spinner } from "../../primitives/spinner";
 import { OTPField } from "../../primitives/input-otp";
 import { FeaturedIcon, type FeaturedIconColor, type IconComponent } from "../../assets/icons";
 import { QRCode } from "./qr-code";
-import type { KunjiClient } from "./kunji-client";
+import type { KunjiClient } from "./kunji-client-types";
 import { useKunjiSignIn, type KunjiSignInState, type KunjiSignInStatus, type UseKunjiSignInOptions } from "./kunji-sign-in-state";
 
 /* ------------------------------------------------------------------ */

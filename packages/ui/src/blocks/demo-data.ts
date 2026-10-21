@@ -15,7 +15,7 @@ export const demoUser = {
   avatarSrc: undefined as string | undefined,
 };
 
-export { createMockKunjiClient, type KunjiMockClientOptions, type KunjiMockOutcome } from "../kits/identity/kunji-client";
+export { createMockKunjiClient, type KunjiMockClientOptions, type KunjiMockOutcome } from "../kits/identity/kunji-client-mock";
 
 /** Sample share-dialog state for demos: the item, its link, who has access and who is looking. The dialog itself has no defaults for these. */
 export const demoShare = {

@@ -7,7 +7,7 @@
  */
 import * as React from "react";
 import { Button } from "../primitives/button";
-import type { KunjiClient } from "../kits/identity/kunji-client";
+import type { KunjiClient } from "../kits/identity/kunji-client-types";
 import { SidebarProvider } from "../patterns/sidebar-navigation";
 import { TabsContent } from "../primitives/tabs";
 import {

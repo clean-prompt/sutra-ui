@@ -8,14 +8,9 @@ import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../../primitives/dialog";
-import {
-  createRpScriptAdapter,
-  type KunjiClient,
-  type KunjiPollResult,
-  type KunjiRpOptions,
-  type KunjiRpScriptAdapter,
-  type KunjiRpSuccessDetail,
-} from "./kunji-client";
+import { createRpScriptAdapter } from "./kunji-client-rp";
+import type { KunjiRpOptions, KunjiRpScriptAdapter, KunjiRpSuccessDetail } from "./kunji-client-rp";
+import type { KunjiClient, KunjiPollResult } from "./kunji-client-types";
 import { KunjiMark, KunjiSignIn, type KunjiSignInProps } from "./kunji-sign-in";
 
 /* ------------------------------------------------------------------ */

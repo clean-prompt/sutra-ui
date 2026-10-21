@@ -2,7 +2,7 @@
 import * as React from "react";
 import { AccountPanel, type AccountPanelProps } from "../kits/identity/device-sessions";
 import { KunjiLink, KunjiLinkedBadge } from "../kits/identity/kunji-link";
-import type { KunjiClient, KunjiPollResult } from "../kits/identity/kunji-client";
+import type { KunjiClient, KunjiPollResult } from "../kits/identity/kunji-client-types";
 
 /* ------------------------------------------------------------------ */
 /* SignedInPanel                                                       */

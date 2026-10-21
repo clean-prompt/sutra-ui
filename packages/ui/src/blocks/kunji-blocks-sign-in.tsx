@@ -7,7 +7,7 @@ import { Field, FieldGroup, FieldHint, FieldLabel } from "../primitives/field";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../primitives/tabs";
 import { Separator } from "../primitives/separator";
 import { KunjiSignIn, type KunjiSignInProps } from "../kits/identity/kunji-sign-in";
-import type { KunjiClient, KunjiPollResult } from "../kits/identity/kunji-client";
+import type { KunjiClient, KunjiPollResult } from "../kits/identity/kunji-client-types";
 import { AuthCenteredPage, type AuthPageBaseProps } from "./auth-pages";
 import { AuthFrame, FormError, type AuthHeadingLevel } from "./auth-frame-internal";
 import { useBlockAction } from "./block-utils";

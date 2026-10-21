@@ -5,8 +5,8 @@ import { renderBlock } from "./helpers/blocks-helpers";
  * and starts no timers. The registry (src/blocks/registry.tsx) creates its mocks lazily, on first render.
  */
 
-vi.mock("../src/kits/identity/kunji-client", async (importOriginal) => {
-  const mod = await importOriginal<typeof import("../src/kits/identity/kunji-client")>();
+vi.mock("../src/kits/identity/kunji-client-mock", async (importOriginal) => {
+  const mod = await importOriginal<typeof import("../src/kits/identity/kunji-client-mock")>();
   return { ...mod, createMockKunjiClient: vi.fn(mod.createMockKunjiClient) };
 });
 
@@ -22,7 +22,7 @@ const blocks = await import("../src/blocks");
 const timersStartedOnImport = timeoutSpy.mock.calls.length + intervalSpy.mock.calls.length;
 timeoutSpy.mockRestore();
 intervalSpy.mockRestore();
-const { createMockKunjiClient } = await import("../src/kits/identity/kunji-client");
+const { createMockKunjiClient } = await import("../src/kits/identity/kunji-client-mock");
 const { createMockPairingAdapter } = await import("../src/blocks/kunji-blocks");
 const mocksCreatedOnImport = vi.mocked(createMockKunjiClient).mock.calls.length + vi.mocked(createMockPairingAdapter).mock.calls.length;
 

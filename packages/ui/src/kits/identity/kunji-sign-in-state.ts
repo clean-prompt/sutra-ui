@@ -2,7 +2,8 @@
 import * as React from "react";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { errorMessage as messageOf } from "../../hooks/use-async-action";
-import { isKunjiAbortError, type KunjiClient, type KunjiPollResult, type KunjiSession } from "./kunji-client";
+import { isKunjiAbortError } from "./kunji-client-poll";
+import type { KunjiClient, KunjiPollResult, KunjiSession } from "./kunji-client-types";
 
 /* ------------------------------------------------------------------ */
 /* useKunjiSignIn                                                      */

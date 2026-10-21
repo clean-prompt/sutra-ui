@@ -7,7 +7,7 @@ import { OTPField } from "../primitives/input-otp";
 import { Spinner } from "../primitives/spinner";
 import { QRCode } from "../kits/identity/qr-code";
 import { KunjiMark } from "../kits/identity/kunji-sign-in";
-import { isKunjiAbortError } from "../kits/identity/kunji-client";
+import { isKunjiAbortError } from "../kits/identity/kunji-client-poll";
 import type { FeaturedIconColor, IconComponent } from "../assets/icons";
 import { AuthFrame, type AuthHeadingLevel } from "./auth-frame-internal";
 import { useCountdown } from "../hooks/use-now";

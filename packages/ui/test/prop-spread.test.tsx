@@ -131,7 +131,7 @@ describe("prop-spread rule: scans", () => {
       "kits/media/video-player.tsx div onFocus",
       "kits/media/media-controls-volume.tsx VolumeSlider onValueChange",
       "kits/media/video-player.tsx div onBlur",
-      "kits/ops/process-table.tsx div onKeyDown",
+      "kits/ops/process-table-kill.tsx div onKeyDown",
       "kits/social/call-overlay.tsx div onKeyDown",
       "kits/social/messenger-composer.tsx form onSubmit",
       "kits/voice/voice.tsx Button onClick",
