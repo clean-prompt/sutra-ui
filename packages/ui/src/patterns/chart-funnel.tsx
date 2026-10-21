@@ -6,7 +6,7 @@ import { chartColorVars } from "../lib/tokens";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { Skeleton } from "../primitives/progress";
 import type { ChartDatum } from "./chart-types";
-import { defaultValueFormatter, r2, toNumber } from "./chart-internal";
+import { r2, toNumber, valueFormatterFor } from "./chart-internal";
 import { surface } from "./chart-cartesian-internal";
 import { resolveChartColor } from "./chart-scale";
 import { ChartContainer, ChartTooltip } from "./chart-container";
@@ -23,6 +23,8 @@ export interface FunnelChartProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   index?: string;
   /** Key of the stage value. Default "value". */
   valueKey?: string;
+  /** BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. */
+  locale?: string;
   /** Formats the step values in the tooltip and labels. Default is the localized number. */
   valueFormatter?: (value: number) => string;
   /**
@@ -66,7 +68,8 @@ export const FunnelChart = React.forwardRef<HTMLDivElement, FunnelChartProps>(
       data,
       index = "label",
       valueKey = "value",
-      valueFormatter = defaultValueFormatter,
+      locale,
+      valueFormatter = valueFormatterFor(locale),
       conversion = "previous",
       color,
       colors,

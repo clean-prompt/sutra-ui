@@ -9,7 +9,7 @@ import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { useSafeId } from "../hooks/use-safe-id";
 import { Skeleton } from "../primitives/progress";
 import type { ChartDatum, ChartReferenceLine, ChartSeries, ChartValue, ChartXAxisOptions, ChartYAxisOptions } from "./chart-types";
-import { ChartLegendSkeleton, defaultValueFormatter, plainFormat, r2, tickFormatter, toNumber } from "./chart-internal";
+import { ChartLegendSkeleton, formatPlain, r2, tickFormatter, toNumber, valueFormatterFor } from "./chart-internal";
 import { surface } from "./chart-cartesian-internal";
 import { formatTimeTick, niceTicks, resolveChartColor, timeTicks } from "./chart-scale";
 import { ChartContainer, ChartLegend, ChartTooltip, type ChartTableData } from "./chart-container";
@@ -38,6 +38,8 @@ export interface ScatterChartProps extends Omit<React.HTMLAttributes<HTMLDivElem
   index: string;
   /** Series to draw; each has a `key`, a `label` and an optional colour and size field. */
   series: ScatterSeries[];
+  /** BCP 47 locale for the default number and date formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. */
+  locale?: string;
   /** Formats y values. */
   valueFormatter?: (value: number, seriesKey: string) => string;
   /** Formats bubble sizes (tooltip and table). */
@@ -101,8 +103,9 @@ export const ScatterChart = React.forwardRef<HTMLDivElement, ScatterChartProps>(
       data,
       index,
       series,
-      valueFormatter = defaultValueFormatter,
-      sizeFormatter = defaultValueFormatter,
+      locale,
+      valueFormatter = valueFormatterFor(locale),
+      sizeFormatter = valueFormatterFor(locale),
       height = 280,
       xAxis = {},
       yAxis = {},
@@ -235,7 +238,7 @@ export const ScatterChart = React.forwardRef<HTMLDivElement, ScatterChartProps>(
       hi = Math.max(hi, r.value);
     }
     const { ticks: yTicks, d0, d1 } = valueDomain(lo, hi, yAxis, false);
-    const yFmt = yAxis.formatter ?? tickFormatter(yTicks);
+    const yFmt = yAxis.formatter ?? tickFormatter(yTicks, locale);
     const clippedY = (y: number) => y < d0 || y > d1;
     const shown = pts.filter((p) => !clippedY(p.y));
 
@@ -249,8 +252,8 @@ export const ScatterChart = React.forwardRef<HTMLDivElement, ScatterChartProps>(
       }
     const fmtX = (x: number, i: number) => {
       if (xAxis.formatter) return xAxis.formatter(timeAxis ? new Date(x) : x, i);
-      if (timeAxis) return detail === "date" ? formatShortDate(x) : formatDateTime(x);
-      return plainFormat.format(x);
+      if (timeAxis) return detail === "date" ? formatShortDate(x, { locale }) : formatDateTime(x, { locale });
+      return formatPlain(x, locale);
     };
     const seriesOf = (p: Pt) => resolved[p.s]!;
     const describe = (p: Pt) => {
@@ -346,11 +349,11 @@ export const ScatterChart = React.forwardRef<HTMLDivElement, ScatterChartProps>(
               if (timeAxis) {
                 const tt = timeTicks(x0, x1, count);
                 xTicks = tt.ticks;
-                xFmt = xAxis.formatter ? (v) => xAxis.formatter!(new Date(v), -1) : (v) => formatTimeTick(v, tt.unit);
+                xFmt = xAxis.formatter ? (v) => xAxis.formatter!(new Date(v), -1) : (v) => formatTimeTick(v, tt.unit, locale);
               } else {
                 const e = (x1 - x0) * 1e-9;
                 xTicks = niceTicks(x0, x1, count).filter((t) => t >= x0 - e && t <= x1 + e);
-                xFmt = xAxis.formatter ? (v) => xAxis.formatter!(v, -1) : tickFormatter(xTicks);
+                xFmt = xAxis.formatter ? (v) => xAxis.formatter!(v, -1) : tickFormatter(xTicks, locale);
               }
               const widest = xTicks.reduce((m, v) => Math.max(m, xFmt(v).length), 0) * 6.4 + 14;
               if (xTicks.length <= 2 || count <= 2 || plot.width / xTicks.length >= widest) break;

@@ -5,7 +5,7 @@ import { clamp } from "../lib/math";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { Skeleton } from "../primitives/progress";
 import type { ChartDatum, ChartReferenceLine, ChartXAxisOptions, ChartYAxisOptions } from "./chart-types";
-import { ChartLegendSkeleton, defaultValueFormatter, r2, tickFormatter, toNumber } from "./chart-internal";
+import { ChartLegendSkeleton, r2, tickFormatter, toNumber, valueFormatterFor } from "./chart-internal";
 import { surface } from "./chart-cartesian-internal";
 import { resolveChartColor } from "./chart-scale";
 import { ChartContainer, ChartLegend, ChartTooltip } from "./chart-container";
@@ -39,6 +39,8 @@ export interface WaterfallChartProps extends Omit<React.HTMLAttributes<HTMLDivEl
   valueKey?: string;
   /** Key of the step type. Default "type". */
   typeKey?: string;
+  /** BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. */
+  locale?: string;
   /** Formats a magnitude: changes get their sign added ("+18", "−18"), totals are formatted as they are. */
   valueFormatter?: (value: number) => string;
   /** Bar colors (token names or any CSS color). Defaults: success, destructive, primary. */
@@ -90,7 +92,8 @@ export const WaterfallChart = React.forwardRef<HTMLDivElement, WaterfallChartPro
       index = "label",
       valueKey = "value",
       typeKey = "type",
-      valueFormatter = defaultValueFormatter,
+      locale,
+      valueFormatter = valueFormatterFor(locale),
       colors,
       kindLabels,
       connectors = true,
@@ -179,7 +182,7 @@ export const WaterfallChart = React.forwardRef<HTMLDivElement, WaterfallChartPro
       hi = Math.max(hi, r.value);
     }
     const { ticks, d0, d1 } = valueDomain(lo, hi, yAxis, true);
-    const yFmt = yAxis.formatter ?? tickFormatter(ticks);
+    const yFmt = yAxis.formatter ?? tickFormatter(ticks, locale);
     const motion = chartMotion(animate);
     const fmtName = (s: (typeof steps)[number]) => (xAxis.formatter ? xAxis.formatter(data[s.i]![index], s.i) : s.label);
 

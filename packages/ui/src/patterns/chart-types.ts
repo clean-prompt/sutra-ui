@@ -92,6 +92,8 @@ export interface CartesianChartProps extends Omit<React.HTMLAttributes<HTMLDivEl
   index: string;
   /** Series to draw: each has a `key` (the field in each row), a `label` and an optional colour. */
   series: ChartSeries[];
+  /** BCP 47 locale for the default number and date formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. */
+  locale?: string;
   /** Formats values in the tooltip and on the value axis. Receives the value and the series key. Default is the localized number. */
   valueFormatter?: (value: number, seriesKey: string) => string;
   /** Plot height in px (legend excluded). Default 240. */

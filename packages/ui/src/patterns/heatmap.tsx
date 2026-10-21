@@ -5,6 +5,7 @@ import { toPercent } from "../lib/math";
 import { useNow } from "../hooks/use-now";
 import { rampColor, resolveColorToken } from "../lib/tone";
 import { addDays, dateKey, formatShortDate, toValidDate } from "../lib/time";
+import { numberFormat } from "./chart-internal";
 import { meterLevel, type MeterThresholds } from "../primitives/meter";
 
 /* ------------------------------------------------------------------ */
@@ -405,6 +406,8 @@ export interface HeatmapGridProps extends Omit<React.HTMLAttributes<HTMLDivEleme
   label?: string;
   /** Default cell label: `Cell ${i}`. */
   cellLabel?: (index: number) => string;
+  /** BCP 47 locale for the default value text (one decimal and a percent sign). Pass one explicitly when the server and the browser must agree (SSR). Defaults to plain digits. */
+  locale?: string;
   /** Formats a cell value for the tooltip and the accessible label. Default is the localized number. */
   formatValue?: (value: number) => string;
   /** Tooltip content; `false` disables. */
@@ -438,7 +441,8 @@ export const HeatmapGrid = React.forwardRef<HTMLDivElement, HeatmapGridProps>(
       shape = "square",
       label = "Heatmap",
       cellLabel = (i) => `Cell ${i}`,
-      formatValue = (v) => `${Number(v.toFixed(1))}%`,
+      locale,
+      formatValue = (v) => (locale ? `${numberFormat(locale, { maximumFractionDigits: 1 }).format(v)}%` : `${Number(v.toFixed(1))}%`),
       tooltip = true,
       legend = false,
       legendLabels,

@@ -13,31 +13,56 @@ export const toNumber = (v: ChartValue): number | null =>
 
 export const r2 = (n: number) => Math.round(n * 100) / 100;
 
-const compactFormat = new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 });
+const numberFormats = new Map<string, Intl.NumberFormat>();
+
+/** One `Intl.NumberFormat` per locale and options, built on first use (never at import time). */
+export function numberFormat(locale: string | undefined, options: Intl.NumberFormatOptions): Intl.NumberFormat {
+  const key = `${locale ?? ""}|${options.notation ?? ""}|${options.maximumFractionDigits}`;
+  let f = numberFormats.get(key);
+  if (!f) {
+    f = new Intl.NumberFormat(locale, options);
+    numberFormats.set(key, f);
+  }
+  return f;
+}
 
 /**
  * Default value-axis labels: compact ("4K", "0.5") while that keeps every tick distinct; otherwise plain
  * numbers with as many decimals as the tick step needs, so 0.05 steps or 1000–1010 don't repeat a label.
+ * `locale` is a BCP 47 tag (runtime default when omitted).
  */
-export function tickFormatter(ticks: number[]): (v: number) => string {
+export function tickFormatter(ticks: number[], locale?: string): (v: number) => string {
   const distinct = (fmt: (v: number) => string) => new Set(ticks.map(fmt)).size === ticks.length;
-  const compact = (v: number) => compactFormat.format(v);
+  const compactNf = numberFormat(locale, { notation: "compact", maximumFractionDigits: 1 });
+  const compact = (v: number) => compactNf.format(v);
   if (distinct(compact)) return compact;
   const step = ticks.length > 1 ? Math.abs(ticks[1]! - ticks[0]!) : 0;
   let digits = step > 0 && Number.isFinite(step) ? clamp(-Math.floor(Math.log10(step)), 0, 20) : 0;
   for (; digits <= 20; digits++) {
-    const nf = new Intl.NumberFormat(undefined, { maximumFractionDigits: digits });
+    const nf = numberFormat(locale, { maximumFractionDigits: digits });
     const fmt = (v: number) => nf.format(v);
     if (distinct(fmt) || digits === 20) return fmt;
   }
   return compact;
 }
-export const plainFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
 
-export const defaultValueFormatter = (v: number) => plainFormat.format(v);
+/** Plain number with up to two decimals in `locale` (runtime default when omitted). */
+export const formatPlain = (v: number, locale?: string) => numberFormat(locale, { maximumFractionDigits: 2 }).format(v);
 
-export function defaultIndexFormatter(v: ChartValue) {
-  if (v instanceof Date) return formatShortDate(v, { year: "never" });
+const valueFormatters = new Map<string, (v: number) => string>();
+
+/** Default tooltip / legend value formatter for `locale`; the same function for the same locale. */
+export function valueFormatterFor(locale?: string): (v: number) => string {
+  const key = locale ?? "";
+  let f = valueFormatters.get(key);
+  if (!f) {
+    f = (v: number) => formatPlain(v, locale);
+    valueFormatters.set(key, f);
+  }
+  return f;
+}
+export function defaultIndexFormatter(v: ChartValue, locale?: string) {
+  if (v instanceof Date) return formatShortDate(v, { locale, year: "never" });
   if (v === null || v === undefined) return "";
   return String(v);
 }

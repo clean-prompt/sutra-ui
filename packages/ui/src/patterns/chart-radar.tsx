@@ -7,7 +7,7 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { useLatestRef } from "../hooks/use-iso-layout-effect";
 import { Skeleton } from "../primitives/progress";
 import type { ChartDatum, ChartSeries } from "./chart-types";
-import { ChartLegendSkeleton, defaultValueFormatter, r2, tickFormatter, toNumber } from "./chart-internal";
+import { ChartLegendSkeleton, r2, tickFormatter, toNumber, valueFormatterFor } from "./chart-internal";
 import { surface } from "./chart-cartesian-internal";
 import { resolveChartColor } from "./chart-scale";
 import { ChartContainer, ChartLegend, ChartTooltip, type ChartTableData } from "./chart-container";
@@ -26,6 +26,8 @@ export interface RadarChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   index: string;
   /** One polygon per series. */
   series: RadarSeries[];
+  /** BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. */
+  locale?: string;
   /** Formats values in the tooltip and on the axis. Receives the value and the series key. Default is the localized number. */
   valueFormatter?: (value: number, seriesKey: string) => string;
   /**
@@ -79,7 +81,8 @@ export const RadarChart = React.forwardRef<HTMLDivElement, RadarChartProps>(
       data,
       index,
       series,
-      valueFormatter = defaultValueFormatter,
+      locale,
+      valueFormatter = valueFormatterFor(locale),
       domain,
       levels = 4,
       shape = "polygon",
@@ -169,7 +172,7 @@ export const RadarChart = React.forwardRef<HTMLDivElement, RadarChartProps>(
         }
       }
     const { ticks, d0, d1 } = valueDomain(lo, hi, { domain, tickCount: Math.max(2, levels + 1) }, true);
-    const fmtTick = tickFormatter(ticks);
+    const fmtTick = tickFormatter(ticks, locale);
     const describe = (i: number) =>
       `${names[i]}: ${visible.map((s) => `${s.label} ${valueOf(i, s.key) === null ? "–" : valueFormatter(valueOf(i, s.key)!, s.key)}`).join(", ")}`;
     const ariaLabel = label ?? `Radar chart of ${resolved.map((s) => s.label).join(", ")} across ${names.join(", ")}`;

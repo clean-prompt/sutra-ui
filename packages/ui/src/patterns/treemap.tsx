@@ -3,6 +3,7 @@ import { cn, focusRing } from "../lib/cn";
 import { ACCENT_COLORS, resolveAccent } from "../lib/accent";
 import { formatShare } from "../lib/breakdown";
 import { clamp } from "../lib/math";
+import { valueFormatterFor } from "./chart-internal";
 import { formatMemory, splitValueUnit } from "../lib/system-monitor";
 import {
   layoutTree,
@@ -65,6 +66,8 @@ export interface TreemapProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   depth?: number;
   /** Gap between tiles in px. Default 2. */
   gap?: number;
+  /** BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. */
+  locale?: string;
   /** Formats tile values in the labels and tooltip. Default is the localized number. */
   valueFormatter?: (value: number) => string;
   /** Column header for values in the screen-reader table. Default "Value". */
@@ -110,8 +113,6 @@ const DEFAULT_PALETTE: readonly string[] = [
   ACCENT_COLORS.teal,
 ];
 
-const plainFormat = new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 });
-const defaultValueFormatter = (v: number) => plainFormat.format(v);
 const keyOf = (path: readonly string[]) => path.join("\u0000");
 const hasChildren = (node: TreemapNode) => (node.children?.length ?? 0) > 0;
 const itemsText = (n: number) => `${n} ${n === 1 ? "item" : "items"}`;
@@ -140,7 +141,8 @@ export const Treemap = React.forwardRef<HTMLDivElement, TreemapProps>(
       defaultWidth = 600,
       depth = 1,
       gap = 2,
-      valueFormatter = defaultValueFormatter,
+      locale,
+      valueFormatter = valueFormatterFor(locale),
       valueLabel = "Value",
       colorFor,
       palette = DEFAULT_PALETTE,

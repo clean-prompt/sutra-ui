@@ -15,7 +15,7 @@ import {
 } from "../lib/time";
 import { Skeleton } from "../primitives/progress";
 import type { CartesianChartProps, ChartDatum, ChartSeries, ChartValue, ChartXAxisType } from "./chart-types";
-import { ChartLegendSkeleton, defaultIndexFormatter, defaultValueFormatter, isMidnight, plainFormat, tickFormatter, toNumber } from "./chart-internal";
+import { ChartLegendSkeleton, defaultIndexFormatter, formatPlain, isMidnight, tickFormatter, toNumber, valueFormatterFor } from "./chart-internal";
 import { formatTimeTick, niceTicks, resolveChartColor, stackSeries, timeTicks } from "./chart-scale";
 import { ChartContainer, ChartLegend, ChartTooltip, type ChartLegendProps, type ChartTableData } from "./chart-container";
 
@@ -70,7 +70,8 @@ export const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternal
       data,
       index,
       series,
-      valueFormatter = defaultValueFormatter,
+      locale,
+      valueFormatter = valueFormatterFor(locale),
       height = 240,
       xAxis = {},
       yAxis = {},
@@ -213,12 +214,12 @@ export const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternal
     const fmtIndex = (i: number) => {
       const raw = data[i]?.[index];
       const x = continuous ? xs[i] : null;
-      if (x === null || x === undefined) return (xAxis.formatter ?? defaultIndexFormatter)(raw, i);
+      if (x === null || x === undefined) return (xAxis.formatter ?? ((v: ChartValue) => defaultIndexFormatter(v, locale)))(raw, i);
       if (xType === "time") {
         if (xAxis.formatter) return xAxis.formatter(new Date(x), i);
-        return timeDetail === "date" ? formatShortDate(x) : formatDateTime(x, { seconds: timeDetail === "seconds" });
+        return timeDetail === "date" ? formatShortDate(x, { locale }) : formatDateTime(x, { locale, seconds: timeDetail === "seconds" });
       }
-      return xAxis.formatter ? xAxis.formatter(raw, i) : plainFormat.format(x);
+      return xAxis.formatter ? xAxis.formatter(raw, i) : formatPlain(x, locale);
     };
 
     const stacks = React.useMemo(() => {
@@ -366,7 +367,7 @@ export const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternal
     const d1 = typeof yMax === "number" ? yMax : ticks[ticks.length - 1]!;
     const eps = (d1 - d0) * 1e-6;
     ticks = ticks.filter((t) => t >= d0 - eps && t <= d1 + eps);
-    const yFmt = yAxis.formatter ?? tickFormatter(ticks);
+    const yFmt = yAxis.formatter ?? tickFormatter(ticks, locale);
 
     const motion = animate ? "motion-safe:transition-all motion-safe:duration-500 motion-safe:ease-out" : "";
 
@@ -445,11 +446,11 @@ export const CartesianChart = React.forwardRef<HTMLDivElement, CartesianInternal
                 if (xType === "time") {
                   const tt = timeTicks(x0, x1, count);
                   values = tt.ticks;
-                  fmt = xAxis.formatter ? (v) => xAxis.formatter!(new Date(v), -1) : (v) => formatTimeTick(v, tt.unit);
+                  fmt = xAxis.formatter ? (v) => xAxis.formatter!(new Date(v), -1) : (v) => formatTimeTick(v, tt.unit, locale);
                 } else {
                   const e = (x1 - x0) * 1e-9;
                   values = niceTicks(x0, x1, count).filter((t) => t >= x0 - e && t <= x1 + e);
-                  const base = tickFormatter(values);
+                  const base = tickFormatter(values, locale);
                   fmt = xAxis.formatter ? (v) => xAxis.formatter!(v, -1) : base;
                 }
                 const widest = values.reduce((m, v) => Math.max(m, fmt(v).length), 0) * 6.4 + 14;

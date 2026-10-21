@@ -6,7 +6,7 @@ import { useControllableState } from "../hooks/use-controllable-state";
 import { BreakdownList } from "../primitives/meter";
 import { Skeleton } from "../primitives/progress";
 import type { ChartDatum } from "./chart-types";
-import { ChartLegendSkeleton, defaultValueFormatter, r2, toNumber } from "./chart-internal";
+import { ChartLegendSkeleton, r2, toNumber, valueFormatterFor } from "./chart-internal";
 import { resolveChartColor } from "./chart-scale";
 import { ChartContainer, ChartLegend, ChartTooltip } from "./chart-container";
 
@@ -25,6 +25,8 @@ export interface DonutChartProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   colors?: string[];
   /** Returns a colour for a segment (a token name or CSS colour), or `undefined` to use the palette colour. */
   colorFor?: (datum: ChartDatum, index: number) => string | undefined;
+  /** BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. */
+  locale?: string;
   /** Formats values in the tooltip, legend and centre. Default is the localized number. */
   valueFormatter?: (value: number) => string;
   /** Diameter in px. Default 200. */
@@ -98,7 +100,8 @@ export const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
       valueKey = "value",
       colors,
       colorFor,
-      valueFormatter = defaultValueFormatter,
+      locale,
+      valueFormatter = valueFormatterFor(locale),
       size = 200,
       thickness,
       padAngle = 1.5,
