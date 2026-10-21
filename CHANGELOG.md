@@ -3,9 +3,9 @@
 All notable changes to `@sutra/ui` are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 `@sutra/ui` is at `0.1.0` and has not been released: everything below is under **Unreleased** and was reconstructed from the
-git history (2026-10-18 to 2026-10-20), grouped by theme instead of by day. While the version is `0.x`, a minor release may add,
+git history (2026-10-18 to 2026-10-21), grouped by theme instead of by day. While the version is `0.x`, a minor release may add,
 rename and deprecate; a rename always keeps the old spelling as a `@deprecated` alias for at least one minor release (see
-`packages/ui/CONVENTIONS.md`, "Canonical vocabulary"). A breaking change is listed under **Migration notes** with what to do.
+`packages/ui/CONVENTIONS.md`, "Vocabulary (props and values)"). A breaking change is listed under **Migration notes** with what to do.
 
 How to read an entry: **Added** is new public API, **Changed** is a behaviour or look that differs from before, **Fixed** is a
 bug, **Deprecated** keeps working and shows a strike-through in editors.
@@ -19,7 +19,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - One vocabulary for the same idea: `tone` (`neutral | primary | success | warning | destructive | info`), task `status`, `density`, `loading`,
   `emptyState`, `onDismiss`, and the `value` / `defaultValue` / `onValueChange` triad. Old spellings still work as deprecated aliases.
 - Components are split by layer: `primitives/` (basic controls), `patterns/` (composed views), `kits/<domain>/` (ai, agent, agent-admin,
-  identity, billing, workspace, ops, media, voice, social, editor, terminal, geo, kunji) and `blocks/`; `test/layering.test.ts` enforces the folders.
+  identity, billing, workspace, ops, media, voice, social, editor, terminal, geo, system; the kunji sign-in lives in `kits/identity` and has its own `@sutra/ui/kunji` entry) and `blocks/`; `test/layering.test.ts` enforces the folders.
 - A generated root barrel (`scripts/gen-index.mjs`), the `@sutra/ui/core` entry (every primitive) and per-category entries; `test/api-surface.test.ts` guards exports.
 - Overlapping components were merged into shared bases with presets (status badges and dots, live status lines, model selects, conversation lists, banners).
 
@@ -76,7 +76,8 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 
 #### Picks of the October design review
 - `SutraMascot` `character`: eight characters (`bead`, `pendant`, `mala`, `bindu`, `knot-pendant`, `bow`, `bun`, `sutradhar`) with every state and shape,
-  `mascotCharacters` and `mascotCharacterLabels` for a picker; `SutradharSting` (`mark`, `astra`) for the brand moments.
+  `mascotCharacters` and `mascotCharacterLabels` for a picker, and a change of state blends into the new pose behind a blink; `SutradharSting` (`mark`, `astra`,
+  `astra-endless`, aimed anywhere from 30 to 330 degrees) for the brand moments.
 - `AssistantOrb` looks: `mala`, `string`, `ink`, `rings`, `graph` and `halftone` next to `orb` and `waveform`; `assistantOrbVariants` and `assistantOrbVariantLabels`.
 - `intro` on `SutraMark` and `SutraLogo`; `playInkEmoji`, `InkEmojiVariant` and `InkEmojiAnimate`.
 - `IdentityAvatar` (`@sutra/ui/social`) for people, agents, machines and apps: a photo or drawn initials, a mascot face for agents and machines, the Bead
@@ -105,6 +106,10 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - Nav items and pages carry `since` and `status` (`new`, `beta`, `deprecated`) badges; the ⌘K palette searches every section, page and demo of `nav.ts` (fuzzy, recent first).
 - This changelog.
 
+- `RotatingNoticeBar` has a pause button; `CoachmarkTour`, `NoticeBar`, `SchemaForm`, `ReorderableList`, `Checklist`, `TallyCounter` and `TransferList` take `labels`; `SutradharSting` takes `paused` and a boolean `title`; `Input` takes `clearLabel`; `AuthFrame` cards take `headingLevel`; `Presence` takes `enterDuration`; `UsageSummary` and `SessionStats` take `locale`.
+- `data-slot` names on the roots and key parts of every pattern, and of the `ai`, `workspace`, `terminal`, `ops`, `social` and `billing` kits that lacked them.
+- Repo: `brand-internal` (the crescent geometry and the two inks, once), `svg-a11y-internal` (one `title` and aria rule for the mascot, sting, `InkEmoji` and the marks), `lib/file-system`, `lib/error`, `hooks/use-mounted-ref`; tests share `test/helpers/`, one `PointerEvent` polyfill, and the nav's "new" badge ages out after 21 days.
+
 ### Changed
 - Components and demos use the canonical names; empty-state strings lose their trailing period, "Log in" became "Sign in", the sticky header sits on `z-40`.
 - `forwardRef` and `displayName` on the remaining leaf components; decorative icons are `aria-hidden`; every test runs under `StrictMode`.
@@ -119,8 +124,6 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
   that breaks through its top, so it has two sharp horns, and the thread comes down through the opening, behind the base and on below. Same variants and props;
   the glyph fills the height of its box, the tile variants use a heavier cut. `design/brand` (marks, lockups, favicon, suite icon) and the playground favicon are
   regenerated from `design/brand/crescent.mjs`; the eight app icons keep the Bead system (a thread across the tile, a bead holding the pictogram).
-
-- Sheet `side="left" | "right"` stay physical (an existing test pins the default `right`); pass `side="start" | "end"` for right-to-left. Numeric strings such as "0 / 500" reorder under bidi: wrap them in `<bdi dir="ltr">`.
 
 ### Deprecated
 - Semantic colour: `tone` values `brand`, `default`, `muted`, `warn`, `danger`, `error`, `critical`, `failure` (use `neutral | primary | success | warning | destructive | info`),
@@ -137,6 +140,14 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - `text-shimmer` keeps its class next to a text colour; `Dropzone` and `FileUpload` keep the picked files on the hidden input when a `name` is given, so native form posts carry them; `Progress formatValue` feeds `aria-valuetext`; `Item asChild` renders `chevron`; `GlyphSpinner` has a `size`; the date pickers pass `locale` to the calendar; JSDoc that disagreed with the code (`VolumeSlider muted`, `ToggleGroup orientation`, `DonutChart animate`, `HeatmapGrid onCellClick`, `Steps`, `NumberInput`) now matches it.
 - `AgentRoom` puts its member list beside the chat by its own width (a container query, from 32rem), not the screen's, so a room in
   a narrow column no longer spills its member list on a tablet.
+- From a third blind review (2026-10-21):
+  - Right-to-left: the `EffortSlider`, the compact `AudioPlayer` seek bar, the tiling resize handle, `SelectionArea` arrows, `FadeText`, the textarea mirror and the marquee selection mapped pointer or key input to the physical side.
+  - Safety: `href` values from agents or data (`ChainOfThoughtSearchResult`, the channel, key-link and blueprint links, the onboarding link, embeds) go through `isSafeHref`.
+  - Effects that restarted on an inline callback (the Kunji access gate and sign-in state, `AwaitingApproval`), refs written during render (`useControllableState`, `useSwipe`, `useZoomPan`), and a pointer drag that did not call `onEnd` when `useDrag` was disabled.
+  - `SchemaForm` flushes a pending autosave on unmount and keeps two changes in one tick; `CoachmarkTour` no longer steals focus on every parent render; `Presence` settles to `idle`; `Rating` clears its hover after a tap.
+  - Feedback, share and invite dialogs no longer show a stale result after they close mid-submit; auth cards mark fields invalid when `error` is set.
+  - `SutradharSting` redraws when reduced motion turns on mid-play; the mascot driver survives a tick that throws; a state change during a blend starts from the pose on screen.
+  - Server rendering: `Input` `aria-keyshortcuts`, `InstallPrompt`, `Heatmap`, `Comments`, `TimelineBar`, `useTypewriter`, `usePresence` and `useSpringValue` no longer read the browser while rendering.
 
 ### Removed
 - `IdentityMark` and its types and helpers (`IdentityMarkProps`, `IdentityMarkKind`, `IdentityMarkState`, `IdentityMarkSize`, `identityHash`,
@@ -145,6 +156,12 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 ### Migration notes
 
 Nothing here needs a code change unless a line says so; each is a difference you can see.
+
+- **Blocks no longer ship demo values as defaults.** `OTPVerifyCard` `email`, `TwoFactorSetupCard` `account`, `ShareDialog` `itemName`, `link`, `currentUserId` and `people`, and `InviteMembersDialog` `inviteLink` have no default (they were `maya@sutra.app`, a `sutra.app` link and sample people); pass your own. The demo values live in `blocks/demo-data` (`demoShare`, `demoInviteLink`). `PageHeaderWithStats` `title` defaults to "Overview".
+- **Auth card refs (a code change).** `LoginCard`, `SignUpCard`, `ForgotPasswordCard`, `ResetPasswordCard` and `OTPVerifyCard` forward `ref` to the root `div` with the other props (it was the inner `form`, typed `HTMLFormElement`), like their siblings.
+- **`Presence`.** `data-presence` moves from `enter` to `idle` when the enter animation ends (or after `enterDuration`, 600 ms); it used to stay on `enter`.
+- **`MeterColor` is `Tone`; `ProgressColor` accepts `ToneInput`.** The old literals keep working.
+- **Mascot `form: "sil"` is gone.** Nothing in the library or the playground used it.
 
 - **`IdentityMark` → `IdentityAvatar` (a code change).** `seed` and `kind` (`person`, `machine`, `app`) carry over; `agent` is new. `state` became `presence`
   (`live` → `online`, `busy` → `busy`, `offline` → `offline`; `away` is new); `picture` became `src`; sizes keep their names. The procedural tick dial is
@@ -169,5 +186,6 @@ Nothing here needs a code change unless a line says so; each is a difference you
   `sessions.tsx` became `device-sessions.tsx`. Import from the package entries (`@sutra/ui`, `@sutra/ui/<entry>`), not from `src` paths. The root exports the same names as before the split.
 - **`DataTable` row selection labels.** The row checkbox is still named "Select row" by default; pass `rowLabel` for a specific name ("Select Aiko Tanaka"). A numbered default would change existing accessible names, so it is left to you.
 - **`Avatar alt=""`.** An empty `alt` now also drops the fallback label (it used to fall back to `name`): use it only for avatars that sit next to the person's name.
-- **`GridItem md`.** `md` is typed 1 to 8 or `"full"` (the tablet grid has 8 columns); 9 to 12 compiled but did nothing. `Sheet side="left" | "right"` stays physical.
+- **`GridItem md`.** `md` is typed 1 to 8 or `"full"` (the tablet grid has 8 columns); 9 to 12 compiled but did nothing. `Sheet side="left" | "right"` stays physical (an existing test pins the default `right`); pass `side="start" | "end"` for right-to-left.
+- **Numeric strings under right-to-left.** Text such as "0 / 500" reorders under bidi: library counters wrap their numbers in `<bdi dir="ltr">`, and your own should too.
 - **Date picker aria labels** stay English even with `locale` (the calendar's month and weekday names, digits and first weekday follow the locale).

@@ -4,8 +4,11 @@ Monorepo for the Sutra personal suite.
 
 | Path | What |
 | --- | --- |
-| `packages/ui` | **@sutra/ui**: design tokens, 289 component modules (primitives, patterns and domain kits), assets and blocks |
-| `apps/playground` | Vite showcase for every component and block |
+| `packages/ui` | **@sutra/ui**: design tokens, components (primitives, patterns and domain kits), hooks, assets and blocks |
+| `apps/playground` | Vite showcase for every component and block; also serves `llms.txt`, `llms-full.txt` and the per-component markdown at `/md/` |
+| `docs/` | Written and generated docs: `notes/<Name>.md` (hand-written per-component notes), `components/` and `hooks/` (generated reference pages), `research/` (historical analyses and plans) |
+| `design/` | Brand and design-review material (`brand/` holds the crescent mark sources, `review/` the October 2026 review sheets, `brand-options/` the earlier logo options); not shipped |
+| `skills/sutra-ui` | A Claude skill for building with Sutra: `SKILL.md` plus `references/` (`components.md`, `entries.md`, `sizing.md` are generated, `conventions.md` is a hand-written digest of CONVENTIONS.md) |
 
 ```bash
 pnpm install
@@ -42,6 +45,10 @@ export function Example() {
 }
 ```
 
+### Claude skill
+
+`skills/sutra-ui` teaches a Claude agent how to find components, call them correctly and follow the conventions. To use it, copy or symlink the folder to `.claude/skills/sutra-ui` (one project) or `~/.claude/skills/sutra-ui` (all projects). It looks components up in `docs/components/<Name>.md` and `docs/hooks/<name>.md` of this repo; in an app outside the repo, point the agent at the `llms.txt` / `llms-full.txt` the playground serves. `pnpm docs:llms` refreshes the generated parts.
+
 ### Theming
 
 Every color, radius and shadow is a CSS variable (`src/styles/sutra.css`). Set these on `<html>` or on any subtree:
@@ -72,7 +79,7 @@ Subpath entries, generated from `src/entries/*.ts` (one barrel per subpath; modu
 
 | Import | Holds | Modules |
 | --- | --- | --- |
-| `@sutra/ui/core` | Every primitive (src/primitives), the basic controls everything else builds on | every module in `src/primitives` (85) |
+| `@sutra/ui/core` | Every primitive (src/primitives), the basic controls everything else builds on | every module in `src/primitives` (the list is generated: `src/entries/core.ts`) |
 | `@sutra/ui/tokens` | Design tokens, class helpers, shared formatters/validators and hooks | `tokens`, `cn`, `time`, `duration`, `format`, `hash`, `text`, `validate`, `math`, `encoding`, `tone`, `status`, `use-controllable-state`, `use-copy`, `use-theme`, `use-now`, `use-media-query`, `use-resize-observer`, `use-iso-layout-effect`, `use-async-action`, `use-safe-id`, `use-active-indicator`, `use-scroll-edges`, `use-debounced-value`, `use-previous`, `use-disclosure`, `use-scroll-sections`, `use-presence`, `use-spring-value`, `use-stagger`, `use-typewriter`, `spring`, `use-drag`, `use-swipe-dismiss`, `use-pan`, `gesture`, `use-flip`, `flip`, `use-view-transition`, `use-scroll-progress`, `use-pointer-vars`, `wheel`, `carousel`, `use-direction`, `direction`, `use-rect-morph`, `burst`, `deck`, `pan-surface`, `morph` |
 | `@sutra/ui/forms` | Form controls | `label`, `field`, `input`, `input-group`, `input-otp`, `textarea`, `number-input`, `tag-input`, `checkbox`, `radio`, `switch`, `select`, `calendar`, `date-picker`, `segmented-control`, `slider`, `rating`, `file-upload`, `dropzone`, `combobox`, `password-strength`, `wheel-picker` |
 | `@sutra/ui/overlays` | Tooltips, popovers, dialogs, menus and the command palette | `tooltip`, `info-tooltip`, `popover`, `dialog`, `dropdown-menu`, `context-menu`, `command-menu` |
@@ -80,7 +87,7 @@ Subpath entries, generated from `src/entries/*.ts` (one barrel per subpath; modu
 | `@sutra/ui/dataviz` | Charts, stat cards, ranked bar lists, metric heroes, treemaps, meters and gauges | `chart` (bar, line, area, donut, funnel, waterfall, scatter, radar), `stat-card`, `bar-list`, `metric-hero`, `treemap`, `meter`, `gauge`, `sparkline`, `animated-number` |
 | `@sutra/ui/motion` | Enter and exit presence, animated lists, split and typed text (hooks `usePresence`, `useSpringValue`, `stagger` and the spring maths are in `@sutra/ui/tokens`) | `presence`, `animated-list`, `split-text`, `typewriter`, `morph-pill`, `shared-element`, `scroll-reveal`, `scroll-stage`, `pointer-fx`, `check-burst`, `morph-dialog` |
 | `@sutra/ui/mobile` | Bottom tab bar, drawer, lightbox, file viewer, split pane, presence | `bottom-tab-bar`, `drawer`, `lightbox`, `file-viewer`, `split-pane`, `presence`, `swipe-row`, `swipe-deck`, `pan-surface` |
-| `@sutra/ui/assets` | Brand marks (the crescent mark, a crescent bead on an upright thread: mono `glyph`, `tile`, `reversed`, theme-following `solid`, `outline`, `badge`), the drawn wordmark, logos, mono / reversed / dyed app icons, `SutraMascot` (eight characters, from the Bead buddy to the full-body Sutradhar, each with eight states), `SutradharSting` (the brand animations: the Sutradhar with the mark or the astra), `Marquee`, flags, file formats (ink on paper in the paper style), emoji reactions with an ink-on-paper set (`InkEmoji`: solid by default, tint or outline, with motion on hover and when someone reacts) and icon wrappers (Remix icons live in @sutra/ui/icons) | `brand`, `mascot`, `sutradhar-sting`, `placeholder-logos`, `icons`, `country-flags`, `emoji-reactions`, `emoji-ink`, `file-format`, `misc` |
+| `@sutra/ui/assets` | Brand marks (the crescent mark, a crescent bead on an upright thread: mono `glyph`, `tile`, `reversed`, theme-following `solid`, `outline`, `badge`), the drawn wordmark, logos, mono / reversed / dyed app icons, `SutraMascot` (eight characters, from the Bead buddy to the full-body Sutradhar, each with eight states), `SutradharSting` (the brand animations: the Sutradhar with the mark, the astra or the endless astra), `Marquee`, flags, file formats (ink on paper in the paper style), emoji reactions with an ink-on-paper set (`InkEmoji`: solid by default, tint or outline, with motion on hover and when someone reacts) and icon wrappers (Remix icons live in @sutra/ui/icons) | `brand`, `mascot`, `sutradhar-sting`, `placeholder-logos`, `icons`, `country-flags`, `emoji-reactions`, `emoji-ink`, `file-format`, `misc` |
 | `@sutra/ui/icons` | Icon, FeaturedIcon and the full Remix Icon set | `icons`, `@remixicon/react` |
 | `@sutra/ui/blocks` | Composed sections and pages | `auth-blocks`, `auth-pages`, `dropdown-menu-blocks`, `header-navigation-blocks`, `sidebar-navigation-blocks`, `section-header-blocks`, `modal-dialog-blocks`, `kunji-blocks`, `marketing-blocks` |
 | `@sutra/ui/ai` | Chat, prompt and streaming-text components | `text-shimmer`, `markdown`, `chain-of-thought`, `chat-attachment`, `chat-conversation`, `chat-list-view`, `conversation-list`, `inline-edit-text`, `chat-loader`, `chat-message`, `chat-message-actions`, `favicon`, `chat-source`, `chat-tool`, `prompt-input`, `prompt-suggestion`, `ai-extras`, `usage-quota`, `model-state`, `model-select`, `embeds` |
@@ -148,7 +155,7 @@ Shared across the package: `radix-ui`, `@remixicon/react`, `class-variance-autho
 | `styles/` | `sutra.css` (tokens, Tailwind theme); `@source "../"` scans the shipped `src`, so `files` must keep `src` | — |
 | `primitives/` | Basic controls (Button, Input, Dialog, Badge …) | the four above + `primitives` |
 | `patterns/` | Composed, domain-neutral views (Markdown, DiffViewer, TilingLayout …) | + `patterns` |
-| `kits/<domain>/` | Domain features: `ai`, `agent`, `agent-admin`, `identity`, `billing`, `workspace`, `ops`, `media`, `voice`, `social`, `editor`, `terminal` | + `patterns`, its own kit, and the kits listed for it in `KIT_DEPS` |
+| `kits/<domain>/` | Domain features: `ai`, `agent`, `agent-admin`, `identity`, `billing`, `workspace`, `ops`, `media`, `voice`, `social`, `editor`, `terminal`, `system`, `geo` | + `patterns`, its own kit, and the kits listed for it in `KIT_DEPS` |
 | `blocks/` | Composed sections and pages; `registry.tsx` + `demo-data.ts` are the demo registry | anything |
 | `entries/` | One barrel per public subpath | anything |
 | `index.ts` | Root barrel, **generated** by `scripts/gen-index.mjs` (as is `entries/core.ts`) | anything |
@@ -169,13 +176,15 @@ Run in `packages/ui` (or from the root with `pnpm --filter @sutra/ui <script>`):
 | `pnpm check:index` | Fail if those generated files are stale |
 | `pnpm check:exports` | After a build: every `exports` subpath resolves, ships its types, and imports under plain Node ESM from `dist` |
 | `pnpm gen:springs` | Regenerate the spring tokens in `styles/sutra.css` and `paper.css` (`--check` runs in `verify`) |
-| `pnpm gen:docs` / `pnpm check:docs` | Regenerate / check the props reference `apps/playground/src/generated/api.json` and the notes `notes.json` (TypeScript compiler API + JSDoc + `docs/notes/*.md`); `test/jsdoc-coverage.test.ts` is the ratchet for missing prop descriptions |
+| `pnpm gen:docs` / `pnpm check:docs` | Regenerate / check (`check:docs` runs both the props check and the llms check; `check:docs:api` only the first; `baseline:docs` rewrites the ratchet baseline) the props reference `apps/playground/src/generated/api.json` and the notes `notes.json` (TypeScript compiler API + JSDoc + `docs/notes/*.md`); `test/jsdoc-coverage.test.ts` is the ratchet for missing prop descriptions |
 | `pnpm gen:llms` | Regenerate `llms.txt`, `llms-full.txt`, `docs/components`, `docs/hooks` and `skills/sutra-ui/references` (`--check` runs in `verify`) |
-| `pnpm verify` | `tsc --noEmit && node scripts/gen-index.mjs --check && node scripts/gen-springs.mjs --check && node scripts/gen-docs.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs` |
+| `pnpm check:llms` | Check the llms outputs and that the conventions digest records the current `CONVENTIONS.md` hash. `pnpm update:conventions-hash` records the hash after you update `skills/sutra-ui/references/conventions.md` |
+| `pnpm rtl:codemod` | Dry-run the physical-to-logical (RTL) codemod; `--write` rewrites, `--scan` lists what remains |
+| `pnpm verify` | `tsc --noEmit && node scripts/gen-index.mjs --check && node scripts/gen-springs.mjs --check && node scripts/gen-docs.mjs --check && node scripts/gen-llms.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs` |
 
 There is no CI config in the repo. **`pnpm verify` is the pre-commit check.** Run from the repo root, it also typechecks and builds the playground.
 
-At the root: `pnpm playground`, `pnpm build`, `pnpm dev` and `pnpm typecheck` (all workspaces), `pnpm docs:gen` / `docs:check` / `docs:baseline` (props reference and the JSDoc ratchet baseline) and `pnpm docs:llms` (generated agent docs: `llms.txt`, per-component markdown, the Claude skill in `skills/sutra-ui`) and `pnpm audit:all` (build, serve and audit every playground page for layout problems in the stock, paper, dark and RTL passes; `--baseline <tag>` fails on new findings; Playwright is a dev dependency, install the browser once with `pnpm --filter playground exec playwright install chromium`).
+At the root: `pnpm playground`, `pnpm build`, `pnpm dev` and `pnpm typecheck` (all workspaces), `pnpm docs:gen` / `docs:check` / `docs:baseline` (props reference and the JSDoc ratchet baseline) `pnpm docs:llms` (generated agent docs: `llms.txt`, per-component markdown, the Claude skill in `skills/sutra-ui`), `pnpm docs:conventions-hash` (record the CONVENTIONS.md hash in the skill's digest), `pnpm rtl:codemod` (the RTL codemod; pass `-- --write`), `pnpm audit:canvas-snap` (pixel-diff safety net for sweeping style changes: `snap <outDir>` takes one screenshot per demo canvas, `diff <A> <B>` compares two runs; needs a running playground via `AUDIT_BASE`) and `pnpm audit:all` (build, serve and audit every playground page for layout problems in the stock, paper, dark and RTL passes; `--baseline <tag>` fails on new findings; Playwright is a dev dependency, install the browser once with `pnpm --filter playground exec playwright install chromium`).
 
 ## Right-to-left
 

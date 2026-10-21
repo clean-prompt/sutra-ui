@@ -8,9 +8,10 @@
 // Inputs: apps/playground/src/generated/api.json (run `pnpm docs:gen` first), docs/notes/*.md and the playground demo sources.
 //
 //   node scripts/gen-llms.mjs                          write everything
-//   node scripts/gen-llms.mjs --check                  exit 1 if anything differs from what would be generated (also checks the skill)
+//   node scripts/gen-llms.mjs --check                  exit 1 if anything differs from what would be generated (also checks the skill, and that the conventions digest records the current CONVENTIONS.md hash)
 //   node scripts/gen-llms.mjs --stats                  print counts and sizes
 //   node scripts/gen-llms.mjs --update-conventions-hash  record the CONVENTIONS.md hash the conventions digest was written against
+//                                                      (`pnpm docs:conventions-hash`; run it after every CONVENTIONS.md edit, once the digest covers the change)
 //
 // The playground serves docs/components and docs/hooks at /md/ (plugins/docs-md.ts) so the links in llms.txt resolve.
 import { createHash } from "node:crypto";
@@ -77,11 +78,11 @@ if (args.has("--stats")) {
   else {
     const m = HASH_RE.exec(readFileSync(DIGEST, "utf8"));
     if (!m || m[1] !== hashOf(CONVENTIONS)) {
-      console.warn("warning: packages/ui/CONVENTIONS.md changed since skills/sutra-ui/references/conventions.md was written: re-read it, update the digest, then run `node packages/ui/scripts/gen-llms.mjs --update-conventions-hash`");
+      problems.push("skills/sutra-ui/references/conventions.md (written against another CONVENTIONS.md: re-read CONVENTIONS.md, update the digest, then run `pnpm docs:conventions-hash`)");
     }
   }
   if (problems.length) {
-    console.error(`generated docs are stale (${problems.length}): run \`pnpm docs:llms\`\n${problems.slice(0, 12).map((p) => `  ${p}`).join("\n")}${problems.length > 12 ? "\n  ..." : ""}`);
+    console.error(`generated docs are stale (${problems.length}): run \`pnpm docs:llms\` (the conventions digest is hand-written: see its line)\n${problems.slice(0, 12).map((p) => `  ${p}`).join("\n")}${problems.length > 12 ? "\n  ..." : ""}`);
     process.exit(1);
   }
   console.log(`llms docs are up to date (${files.size} files)`);

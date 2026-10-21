@@ -36,8 +36,25 @@ export interface NavSection {
   pages: NavPage[];
 }
 
-/** The marker for what the latest waves added: spread it into an item, or pass [label, fresh] to items(). */
-const fresh = { since: "2026-10-20", status: "new" } as const satisfies Pick<NavItem, "since" | "status">;
+/** A "new" marker dated by the day the item first shipped (see `git log --format=%ad --date=short -- <page file>`). */
+const newOn = <D extends string>(since: D) => ({ since, status: "new" }) as const satisfies Pick<NavItem, "since" | "status">;
+/** What the 2026-10-20 waves added: spread it into an item, or pass [label, fresh] to items(). */
+const fresh = newOn("2026-10-20");
+/** What shipped on 2026-10-21 (the crescent logo intro, mascot choices, the orb looks, the identity avatar). */
+const fresh21 = newOn("2026-10-21");
+
+/** How many days an item keeps its "new" badge after `since`; later the badge and the sidebar dot go away (the data stays). */
+export const NEW_FOR_DAYS = 21;
+
+/**
+ * The status to show today: "new" ages out `NEW_FOR_DAYS` days after `since`, the other statuses stay.
+ * A `since` that is not an ISO date (a version) never ages out.
+ */
+export function activeStatus(status: NavStatus | undefined, since?: string, now: Date = new Date()): NavStatus | undefined {
+  if (status !== "new" || !since || !/^\d{4}-\d{2}-\d{2}$/.test(since)) return status;
+  const age = (now.getTime() - Date.parse(`${since}T00:00:00Z`)) / 86_400_000;
+  return age > NEW_FOR_DAYS ? undefined : status;
+}
 
 /** Items from labels (the id is the slug of the label); [label, fresh] adds since and status. */
 const items = (...labels: (string | [label: string, meta: Pick<NavItem, "since" | "status">])[]): NavItem[] =>
@@ -112,9 +129,9 @@ export const nav: NavSection[] = [
         route: "components",
         label: "Assets",
         items: items(
-          "Logo", ["Logo Intro", fresh], "App Icons", "Placeholder Logos", "Featured Icon", "Icons", "Country Flags",
+          "Logo", ["Logo Intro", fresh21], "App Icons", "Placeholder Logos", "Featured Icon", "Icons", "Country Flags",
           "Emoji Reactions", ["Ink Emoji", fresh], "File Format Icons", "Empty State", "Device Frame", "Background Pattern", ["Mascot", fresh], ["Mascot In Chat", fresh],
-          ["Mascot Picker", fresh], ["Mascot Characters", fresh], ["Sutradhar Sting", fresh]
+          ["Mascot Picker", fresh21], ["Mascot Characters", fresh21], ["Sutradhar Sting", fresh21], ["Endless Astra", fresh21]
         ),
       },
     ],
@@ -804,8 +821,8 @@ export const nav: NavSection[] = [
           { id: "speak-button", label: "Speak Button" },
           { id: "audio-level", label: "Audio Level" },
           { id: "assistant-orb", label: "Assistant Orb", ...fresh },
-          { id: "assistant-orb-picker", label: "Choose your orb", ...fresh },
-          { id: "assistant-orb-looks", label: "Orb looks", ...fresh },
+          { id: "assistant-orb-picker", label: "Choose your orb", ...fresh21 },
+          { id: "assistant-orb-looks", label: "Orb looks", ...fresh21 },
         ],
       },
     ],
@@ -819,7 +836,7 @@ export const nav: NavSection[] = [
         id: "social",
         label: "Apps & Social",
         items: items(
-          "App Launcher", "Identity Avatar", "Text Button", "Install Button", "Incoming Call", "Call Screen",
+          "App Launcher", ["Identity Avatar", fresh21], "Text Button", "Install Button", "Incoming Call", "Call Screen",
           "Messenger", "Group Info Panel", "Reorderable List", "Checklist", "Countdown", "Stopwatch",
           "Tally Counter", "Status Cycle", "Recurrence Picker", "Pinned Note"
         ),

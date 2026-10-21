@@ -12,6 +12,9 @@
     "docs:llms": "node packages/ui/scripts/gen-llms.mjs",
     "docs:check": "node packages/ui/scripts/gen-docs.mjs --check && node packages/ui/scripts/gen-llms.mjs --check",
     "docs:baseline": "node packages/ui/scripts/gen-docs.mjs --update-baseline",
+    "docs:conventions-hash": "node packages/ui/scripts/gen-llms.mjs --update-conventions-hash",
+    "rtl:codemod": "pnpm --filter @sutra/ui rtl:codemod",
+    "audit:canvas-snap": "pnpm --filter playground audit:canvas-snap",
     "verify": "pnpm --filter @sutra/ui verify && pnpm --filter playground typecheck && pnpm --filter playground build"
   }
 }

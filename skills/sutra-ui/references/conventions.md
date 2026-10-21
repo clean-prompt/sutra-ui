@@ -1,4 +1,4 @@
-<!-- conventions-hash: 2c2be9c65238 -->
+<!-- conventions-hash: 34e85f246928 -->
 # Sutra UI conventions digest
 
 A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or extend the library. When the two disagree, CONVENTIONS.md wins; re-read it when the hash above no longer matches (`node packages/ui/scripts/gen-llms.mjs --update-conventions-hash` records the new one after you update this file).
@@ -45,6 +45,13 @@ A short version of `packages/ui/CONVENTIONS.md` for people and agents who use or
 - Reduced motion has one net in `sutra.css`: decorative loops and entrances stop, transitions end in 1 ms, overlay movement is stripped, `animate-spin` stays. Do not animate dense tables, log or code viewers, live data fills or anything with its own engine. Presence (`usePresence`, `Presence`, `AnimatedList`), `useFlip`, `useDrag`, `useViewTransition` are the building blocks; gesture components always have a keyboard path.
 - In-app motion switch: `<html data-motion="reduce" | "full">` (none follows the system); `prefersReducedMotion()` / `usePrefersReducedMotion()` read it, so JS and CSS agree.
 - In Tailwind v4 `translate-*`, `scale-*`, `rotate-*` set individual properties: use bare `transition-transform` (or name all four in an arbitrary list).
+
+## Brand, mascot, orb and ink pictograms
+- Styles are token override files: `data-style="paper"` (needs `@sutra/ui/paper.css`) redefines the semantic tokens in a light and a dark block, so components never branch on the style. The ink is the accent there, so `data-brand` and `data-app` do nothing; put `data-style` on `<html>` to reach portalled layers.
+- The Sutra mark is a crescent bead on an upright thread (`SutraMark`, `SutraLogo`, drawn `SutraWordmark`). Default `glyph` is mono and follows the text colour; `tile` and `reversed` use the two brand inks; `solid` follows `--primary`. `intro` plays the logo's one-time CSS intro (still under reduced motion). `SutraAppIcon` is ink on paper by default, `tone="dyed"` puts the app dye in the bead; no gradients or effects. kunji art (`KunjiMark`, `KunjiButton`) is official brand art: never recolour, rotate or stretch it.
+- `SutraMascot` is a family of original characters (`character`: `bead` first, then `pendant`, `mala`, `bindu`, `knot-pendant`, `bow`, `bun`, `sutradhar`; `mascotCharacters` drives a picker so people choose their own) with eight `state`s (idle, listening, thinking, working, speaking, happy, sleeping, error). Ink on paper by default; the bead animates with CSS, the others with one shared rAF loop that writes attributes and runs only on screen; reduced motion keeps each state as a still pose. `SutradharSting` is the brand animation (`mark`, `astra`, `astra-endless`): decorative unless `title` is set, plays once, shows its last frame under reduced motion.
+- `AssistantOrb` (`kits/voice`) is the voice assistant's state animation: `state` idle, listening, thinking, speaking (plus error, muted), `level` 0 to 1 (feed it from `useAudioLevel`), eight `variant` looks (`orb`, `waveform`, `mala`, `string`, `ink`, `rings`, `graph`, `halftone`; `assistantOrbVariants` drives a picker). `useAssistantOrbState` picks the state by priority. Both mascot and orb are original designs: never copy another product's.
+- Pictograms are ink in paper: `FileFormatIcon` and every emoji (`EmojiGlyph`, which keeps the real character in the DOM) are repainted in one ink by `sutra.css` unless `mono={false}` / `ink={false}`. The 198 built-in picker emoji have hand-drawn `InkEmoji` art (`inkVariant` solid, tint or outline; `inkMotion` on hover or loop); new art goes in the matching `assets/emoji-ink-<category>-internal.tsx` (24 box, `currentColor`, no text) and `test/emoji-ink.test.tsx` fails when an emoji has none.
 
 ## Accessibility
 - Roles and aria attributes are part of each component; icon-only buttons need `aria-label`; controls keep at least a 24 x 24 px hit area (`hitArea` from `lib/cn`).

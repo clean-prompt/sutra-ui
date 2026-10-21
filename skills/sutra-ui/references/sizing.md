@@ -135,9 +135,9 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | NumberInput | sm | w 32px |  |  |  |  |
 | NumberInput | md (default) | w 36px |  |  |  |  |
 | NumberInput | lg | w 40px |  |  |  |  |
-| Pagination | sm | h 32px |  | xs (12px) |  |  |
-| Pagination | md (default) | h 36px |  | sm (14px) |  |  |
-| Pagination | lg | h 40px |  | sm (14px) |  |  |
+| Pagination | sm |  |  | xs (12px) |  |  |
+| Pagination | md (default) |  |  | sm (14px) |  |  |
+| Pagination | lg |  |  | sm (14px) |  |  |
 | PaginationEllipsis | sm | h 32px |  | xs (12px) |  |  |
 | PaginationEllipsis | md (default) | h 36px |  | sm (14px) |  |  |
 | PaginationEllipsis | lg | h 40px |  | sm (14px) |  |  |

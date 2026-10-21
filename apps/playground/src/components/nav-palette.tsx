@@ -1,5 +1,6 @@
 import * as React from "react";
 import { CommandGroup, CommandItem, CommandPaletteFromRegistry } from "@sutra/ui";
+import { activeStatus } from "../nav";
 import { NavBadge } from "./nav-badge";
 import { RECENT_PREFIX, SEP, paletteEntries, paletteFilter, type PaletteEntry } from "./nav-search";
 
@@ -55,7 +56,7 @@ export function NavPalette() {
       key={`${prefix}${e.kind}:${e.href}`}
       value={`${prefix}${valueOf(e)}${SEP}${e.href}`}
       description={e.trail}
-      shortcut={e.status ? <NavBadge status={e.status} since={e.since} /> : undefined}
+      shortcut={activeStatus(e.status, e.since) ? <NavBadge status={e.status} since={e.since} /> : undefined}
       onSelect={() => go(e)}
     >
       {e.label}

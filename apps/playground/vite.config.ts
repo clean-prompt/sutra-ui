@@ -39,8 +39,8 @@ export default defineConfig({
       "@xterm/xterm",
       "@xterm/addon-fit",
       "katex",
-      "uqr",
-      "jsqr",
+      // Only list what the playground itself depends on: pnpm's strict node_modules does not resolve packages/ui's own
+      // dependencies (`uqr`, `jsqr`, ...) from here. Vite's crawl finds them through the aliased sources anyway.
     ],
   },
 });
