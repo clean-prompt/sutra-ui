@@ -2,8 +2,8 @@
 
 All notable changes to `@cleanprompt/sutra-ui` are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-`@cleanprompt/sutra-ui` is at `0.1.0` and has not been released: everything below is under **Unreleased** and was reconstructed from the
-git history (2026-10-18 to 2026-10-21), grouped by theme instead of by day. While the version is `0.x`, a minor release may add,
+`0.1.0` is the first release: everything below was reconstructed from the git history (2026-10-18 to 2026-10-21), grouped by theme
+instead of by day. While the version is `0.x`, a minor release may add,
 rename and deprecate; a rename always keeps the old spelling as a `@deprecated` alias for at least one minor release (see
 `packages/ui/CONVENTIONS.md`, "Vocabulary (props and values)"). A breaking change is listed under **Migration notes** with what to do.
 
@@ -11,6 +11,8 @@ How to read an entry: **Added** is new public API, **Changed** is a behaviour or
 bug, **Deprecated** keeps working and shows a strike-through in editors.
 
 ## [Unreleased]
+
+## [0.1.0] - 2026-10-22
 
 ### Added
 
