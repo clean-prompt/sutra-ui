@@ -3,7 +3,7 @@
 > "Waiting for an admin" screen that checks in the background and says so.
 
 - Import: `import { AwaitingApproval } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
-- Source: `packages/ui/src/blocks/kunji-blocks` (blocks)
+- Source: `packages/ui/src/blocks/kunji-blocks-approval` (blocks)
 - `data-slot`: `awaiting-approval`
 - Also accepts the props of HTMLAttributes
 

@@ -3,7 +3,7 @@
 > Authenticator app setup: scan a QR code or copy the secret, then confirm with a 6-digit code.
 
 - Import: `import { TwoFactorSetupCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/auth-blocks` (blocks)
+- Source: `packages/ui/src/blocks/auth-blocks-verify` (blocks)
 - `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes
 

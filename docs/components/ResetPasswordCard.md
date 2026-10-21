@@ -3,7 +3,7 @@
 > Set a new password with strength meter and confirmation; success state afterwards.
 
 - Import: `import { ResetPasswordCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/auth-blocks` (blocks)
+- Source: `packages/ui/src/blocks/auth-blocks-password-reset` (blocks)
 - `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes
 

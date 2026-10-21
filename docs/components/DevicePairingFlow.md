@@ -3,7 +3,7 @@
 > Wallet "link a new device": QR + 8-digit code with a 2-minute TTL, then a "Do these match?" SAS check on both devices.
 
 - Import: `import { DevicePairingFlow } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
-- Source: `packages/ui/src/blocks/kunji-blocks` (blocks)
+- Source: `packages/ui/src/blocks/kunji-blocks-pairing` (blocks)
 - `data-slot`: `pairing-code`, `pairing-sas`, `device-pairing-flow`
 - Also accepts the props of HTMLAttributes
 

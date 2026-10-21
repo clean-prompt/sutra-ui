@@ -3,7 +3,7 @@
 > Icon + title + description cards in a 2–4 column grid, with an optional section header.
 
 - Import: `import { FeatureGrid } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/marketing-blocks` (blocks)
+- Source: `packages/ui/src/blocks/marketing-blocks-features` (blocks)
 - Also accepts the props of HTMLAttributes
 
 ## Props

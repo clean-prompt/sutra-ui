@@ -3,7 +3,7 @@
 > Author header with a horizontally scrolling shelf of their extensions.
 
 - Import: `import { AuthorShelf } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/marketing-blocks` (blocks)
+- Source: `packages/ui/src/blocks/marketing-blocks-card` (blocks)
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -3,7 +3,7 @@
 > Full-page kunji sign-in: brand, the kunji QR as the hero, "Other ways to sign in" and a footer.
 
 - Import: `import { KunjiSignInPage } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
-- Source: `packages/ui/src/blocks/kunji-blocks` (blocks)
+- Source: `packages/ui/src/blocks/kunji-blocks-sign-in` (blocks)
 - Also accepts the props of HTMLAttributes
 
 ## Props

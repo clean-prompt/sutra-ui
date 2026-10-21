@@ -3,7 +3,7 @@
 > Extension detail: breadcrumbs, hero, copyable install command, facts sidebar, capabilities, security note, screenshots, README and more from the author.
 
 - Import: `import { ExtensionDetailPage } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/marketing-blocks` (blocks)
+- Source: `packages/ui/src/blocks/marketing-blocks-detail` (blocks)
 - Also accepts the props of HTMLAttributes
 
 ## Props

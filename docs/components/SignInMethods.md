@@ -3,7 +3,7 @@
 > Sign-in method tabs (kunji QR, username + password, access token) that remember the last one used.
 
 - Import: `import { SignInMethods } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
-- Source: `packages/ui/src/blocks/kunji-blocks` (blocks)
+- Source: `packages/ui/src/blocks/kunji-blocks-sign-in` (blocks)
 - `data-slot`: `sign-in-methods`
 - Also accepts the props of HTMLAttributes
 

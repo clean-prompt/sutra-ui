@@ -3,7 +3,7 @@
 > Email + password sign-in card with remember me, forgot link and SSO buttons.
 
 - Import: `import { LoginCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/auth-blocks` (blocks)
+- Source: `packages/ui/src/blocks/auth-blocks-sign-in` (blocks)
 - `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes
 

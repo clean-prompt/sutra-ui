@@ -3,7 +3,7 @@
 > Account creation card: name, email, password with strength meter and terms checkbox.
 
 - Import: `import { SignUpCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/auth-blocks` (blocks)
+- Source: `packages/ui/src/blocks/auth-blocks-sign-up` (blocks)
 - `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes
 

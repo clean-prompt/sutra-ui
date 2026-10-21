@@ -3,7 +3,7 @@
 > Stack of OAuth buttons (plus optional SAML SSO) for SSO-only sign in.
 
 - Import: `import { SSOOnlyCard } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/auth-blocks` (blocks)
+- Source: `packages/ui/src/blocks/auth-blocks-magic-link` (blocks)
 - `data-slot`: `auth-card`
 - Also accepts the props of HTMLAttributes
 

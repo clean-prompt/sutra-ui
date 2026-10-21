@@ -3,7 +3,7 @@
 > Filterable marketplace: tier/category pills with counts, sort pills, category sections with "View all", load more and empty state.
 
 - Import: `import { MarketplaceGrid } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/marketing-blocks` (blocks)
+- Source: `packages/ui/src/blocks/marketing-blocks-browse` (blocks)
 - `data-slot`: `pill-count`
 - Also accepts the props of HTMLAttributes
 

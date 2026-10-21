@@ -2328,6 +2328,36 @@
       "import": "./dist/blocks/auth-blocks.js",
       "default": "./dist/blocks/auth-blocks.js"
     },
+    "./blocks/auth-blocks-magic-link": {
+      "types": "./dist/blocks/auth-blocks-magic-link.d.ts",
+      "import": "./dist/blocks/auth-blocks-magic-link.js",
+      "default": "./dist/blocks/auth-blocks-magic-link.js"
+    },
+    "./blocks/auth-blocks-model": {
+      "types": "./dist/blocks/auth-blocks-model.d.ts",
+      "import": "./dist/blocks/auth-blocks-model.js",
+      "default": "./dist/blocks/auth-blocks-model.js"
+    },
+    "./blocks/auth-blocks-password-reset": {
+      "types": "./dist/blocks/auth-blocks-password-reset.d.ts",
+      "import": "./dist/blocks/auth-blocks-password-reset.js",
+      "default": "./dist/blocks/auth-blocks-password-reset.js"
+    },
+    "./blocks/auth-blocks-sign-in": {
+      "types": "./dist/blocks/auth-blocks-sign-in.d.ts",
+      "import": "./dist/blocks/auth-blocks-sign-in.js",
+      "default": "./dist/blocks/auth-blocks-sign-in.js"
+    },
+    "./blocks/auth-blocks-sign-up": {
+      "types": "./dist/blocks/auth-blocks-sign-up.d.ts",
+      "import": "./dist/blocks/auth-blocks-sign-up.js",
+      "default": "./dist/blocks/auth-blocks-sign-up.js"
+    },
+    "./blocks/auth-blocks-verify": {
+      "types": "./dist/blocks/auth-blocks-verify.d.ts",
+      "import": "./dist/blocks/auth-blocks-verify.js",
+      "default": "./dist/blocks/auth-blocks-verify.js"
+    },
     "./blocks/auth-pages": {
       "types": "./dist/blocks/auth-pages.d.ts",
       "import": "./dist/blocks/auth-pages.js",
@@ -2358,10 +2388,85 @@
       "import": "./dist/blocks/kunji-blocks.js",
       "default": "./dist/blocks/kunji-blocks.js"
     },
+    "./blocks/kunji-blocks-approval": {
+      "types": "./dist/blocks/kunji-blocks-approval.d.ts",
+      "import": "./dist/blocks/kunji-blocks-approval.js",
+      "default": "./dist/blocks/kunji-blocks-approval.js"
+    },
+    "./blocks/kunji-blocks-mock": {
+      "types": "./dist/blocks/kunji-blocks-mock.d.ts",
+      "import": "./dist/blocks/kunji-blocks-mock.js",
+      "default": "./dist/blocks/kunji-blocks-mock.js"
+    },
+    "./blocks/kunji-blocks-model": {
+      "types": "./dist/blocks/kunji-blocks-model.d.ts",
+      "import": "./dist/blocks/kunji-blocks-model.js",
+      "default": "./dist/blocks/kunji-blocks-model.js"
+    },
+    "./blocks/kunji-blocks-pairing": {
+      "types": "./dist/blocks/kunji-blocks-pairing.d.ts",
+      "import": "./dist/blocks/kunji-blocks-pairing.js",
+      "default": "./dist/blocks/kunji-blocks-pairing.js"
+    },
+    "./blocks/kunji-blocks-register": {
+      "types": "./dist/blocks/kunji-blocks-register.d.ts",
+      "import": "./dist/blocks/kunji-blocks-register.js",
+      "default": "./dist/blocks/kunji-blocks-register.js"
+    },
+    "./blocks/kunji-blocks-sign-in": {
+      "types": "./dist/blocks/kunji-blocks-sign-in.d.ts",
+      "import": "./dist/blocks/kunji-blocks-sign-in.js",
+      "default": "./dist/blocks/kunji-blocks-sign-in.js"
+    },
+    "./blocks/kunji-blocks-signed-in": {
+      "types": "./dist/blocks/kunji-blocks-signed-in.d.ts",
+      "import": "./dist/blocks/kunji-blocks-signed-in.js",
+      "default": "./dist/blocks/kunji-blocks-signed-in.js"
+    },
     "./blocks/marketing-blocks": {
       "types": "./dist/blocks/marketing-blocks.d.ts",
       "import": "./dist/blocks/marketing-blocks.js",
       "default": "./dist/blocks/marketing-blocks.js"
+    },
+    "./blocks/marketing-blocks-browse": {
+      "types": "./dist/blocks/marketing-blocks-browse.d.ts",
+      "import": "./dist/blocks/marketing-blocks-browse.js",
+      "default": "./dist/blocks/marketing-blocks-browse.js"
+    },
+    "./blocks/marketing-blocks-card": {
+      "types": "./dist/blocks/marketing-blocks-card.d.ts",
+      "import": "./dist/blocks/marketing-blocks-card.js",
+      "default": "./dist/blocks/marketing-blocks-card.js"
+    },
+    "./blocks/marketing-blocks-comparison": {
+      "types": "./dist/blocks/marketing-blocks-comparison.d.ts",
+      "import": "./dist/blocks/marketing-blocks-comparison.js",
+      "default": "./dist/blocks/marketing-blocks-comparison.js"
+    },
+    "./blocks/marketing-blocks-demo": {
+      "types": "./dist/blocks/marketing-blocks-demo.d.ts",
+      "import": "./dist/blocks/marketing-blocks-demo.js",
+      "default": "./dist/blocks/marketing-blocks-demo.js"
+    },
+    "./blocks/marketing-blocks-detail": {
+      "types": "./dist/blocks/marketing-blocks-detail.d.ts",
+      "import": "./dist/blocks/marketing-blocks-detail.js",
+      "default": "./dist/blocks/marketing-blocks-detail.js"
+    },
+    "./blocks/marketing-blocks-features": {
+      "types": "./dist/blocks/marketing-blocks-features.d.ts",
+      "import": "./dist/blocks/marketing-blocks-features.js",
+      "default": "./dist/blocks/marketing-blocks-features.js"
+    },
+    "./blocks/marketing-blocks-hero": {
+      "types": "./dist/blocks/marketing-blocks-hero.d.ts",
+      "import": "./dist/blocks/marketing-blocks-hero.js",
+      "default": "./dist/blocks/marketing-blocks-hero.js"
+    },
+    "./blocks/marketing-blocks-model": {
+      "types": "./dist/blocks/marketing-blocks-model.d.ts",
+      "import": "./dist/blocks/marketing-blocks-model.js",
+      "default": "./dist/blocks/marketing-blocks-model.js"
     },
     "./blocks/modal-dialog-blocks": {
       "types": "./dist/blocks/modal-dialog-blocks.d.ts",

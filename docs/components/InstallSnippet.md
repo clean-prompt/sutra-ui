@@ -3,7 +3,7 @@
 > Tabbed install commands per platform or package manager, each copyable.
 
 - Import: `import { InstallSnippet } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/marketing-blocks` (blocks)
+- Source: `packages/ui/src/blocks/marketing-blocks-features` (blocks)
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -3,7 +3,7 @@
 > Product-vs-alternatives matrix with check / cross / partial marks and numbered footnotes.
 
 - Import: `import { ComparisonTable } from "@sutra/ui"` (or from `@sutra/ui/blocks`)
-- Source: `packages/ui/src/blocks/marketing-blocks` (blocks)
+- Source: `packages/ui/src/blocks/marketing-blocks-comparison` (blocks)
 - Also accepts the props of HTMLAttributes
 
 ## Props

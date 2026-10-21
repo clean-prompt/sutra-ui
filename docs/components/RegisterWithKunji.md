@@ -3,7 +3,7 @@
 > First-time kunji registration: handle with live rules, name, invite code, then awaiting approval if needed.
 
 - Import: `import { RegisterWithKunji } from "@sutra/ui"` (or from `@sutra/ui/kunji`)
-- Source: `packages/ui/src/blocks/kunji-blocks` (blocks)
+- Source: `packages/ui/src/blocks/kunji-blocks-register` (blocks)
 - `data-slot`: `register-with-kunji`
 - Also accepts the props of HTMLAttributes
 
