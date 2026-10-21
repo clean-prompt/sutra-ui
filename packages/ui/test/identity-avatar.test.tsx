@@ -16,7 +16,7 @@ import {
   type IdentityAvatarPresence,
 } from "../src/patterns/identity-avatar";
 import { MONOGRAM_GLYPHS, canDrawMonogram, layoutMonogram } from "../src/patterns/identity-avatar-glyphs-internal";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const root = (c: HTMLElement) => c.querySelector<HTMLElement>('[data-slot="identity-avatar"]')!;
 const presences: IdentityAvatarPresence[] = ["online", "busy", "away", "offline"];

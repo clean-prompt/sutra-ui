@@ -30,7 +30,7 @@ import {
   type MarketplaceExtension,
 } from "../src/blocks/marketing-blocks";
 import { blockRegistry } from "../src/blocks/registry";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const plans: BillingPlan[] = [
   { id: "free", name: "Free", priceMonthly: 0, features: [{ label: "1 agent" }, { label: "Community plugins" }, { label: "Audit log", state: "excluded" }] },

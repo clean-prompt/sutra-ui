@@ -3,12 +3,8 @@ import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ExpandCard, MorphDialog } from "../src/patterns/morph-dialog";
-import { axeViolations } from "./a11y";
-
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
+import { axeViolations } from "./helpers/a11y";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
 interface Call {
   el: Element;
@@ -41,7 +37,7 @@ beforeEach(() => {
 afterEach(() => {
   delete (Element.prototype as unknown as { animate?: unknown }).animate;
   vi.restoreAllMocks();
-  window.matchMedia = original;
+  resetMedia();
 });
 
 const finishAll = async () => {

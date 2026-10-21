@@ -9,7 +9,7 @@ import { FanControl, HeatByApp, ThermalSensors, type FanControlFan, type Thermal
 import { AlertRuleList } from "../src/kits/system/alert-rules";
 import { createAlertRule } from "../src/lib/alert-rules";
 import type { DevServerProject } from "../src/lib/system-monitor";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const NOW = Date.UTC(2026, 9, 19, 12, 0, 0);
 

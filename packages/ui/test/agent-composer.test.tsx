@@ -24,26 +24,12 @@ import {
   type QueuedMessage,
   type SideThreadExchange,
 } from "../src/kits/agent/agent-composer";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   vi.useRealTimers();
   vi.restoreAllMocks();
 });
-
-// jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerId: number;
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? "mouse";
-    }
-  }
-  (window as unknown as { PointerEvent: unknown }).PointerEvent = PointerEventPolyfill;
-}
 
 const IMG = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="4" height="4" fill="red"/></svg>')}`;
 
@@ -275,7 +261,7 @@ describe("PromptInputAddContextMenu", () => {
 
 describe("Model pill", () => {
   it("counts down the fast-mode cooldown", () => {
-    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout", "Date"] });
     const onEnd = vi.fn();
     render(<PromptInputModelPill model="Opus" effort="High" fast="cooldown" fastCooldown={3} onFastCooldownEnd={onEnd} />);
     const pill = screen.getByRole("button");

@@ -1,4 +1,4 @@
-import { renderBlock } from "./blocks-helpers";
+import { renderBlock } from "./helpers/blocks-helpers";
 
 /*
  * The blocks barrel must be a plain barrel: importing it builds no mock client or pairing adapter
@@ -64,14 +64,9 @@ describe("deprecated names are still exported from their old paths", () => {
     expect(root.createMockKunjiClient).toBe(registry.createMockKunjiClient);
   });
 
-  it("block-utils still exports demoUser, useAsyncAction and isEmail", async () => {
+  it("block-utils keeps only the internal block helpers", async () => {
     const utils = await import("../src/blocks/block-utils");
-    const demo = await import("../src/blocks/demo-data");
-    const validate = await import("../src/lib/validate");
-    expect(utils.demoUser).toBe(demo.demoUser);
-    expect(utils.isEmail).toBe(validate.isEmail);
-    expect(typeof utils.useAsyncAction).toBe("function");
-    expect(Object.keys(utils).sort()).toEqual(["BlockLink", "demoUser", "isEmail", "sutraAppDescriptions", "useAsyncAction", "useBlockAction"]);
+    expect(Object.keys(utils).sort()).toEqual(["BlockLink", "sutraAppDescriptions", "useBlockAction"]);
   });
 
   it("the registry path carries every demo helper", async () => {

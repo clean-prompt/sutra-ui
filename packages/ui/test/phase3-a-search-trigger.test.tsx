@@ -6,7 +6,7 @@ import { SearchTrigger } from "../src/patterns/search-trigger";
 import { ShortcutProvider } from "../src/patterns/shortcuts";
 import { AppHeader, DocsHeader } from "../src/blocks/header-navigation-blocks";
 import { SidebarProvider } from "../src/patterns/sidebar-navigation";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => vi.restoreAllMocks());
 

@@ -26,7 +26,7 @@ import { DatePicker } from "../src/primitives/date-picker";
 import { Dropzone, isFileAccepted, validateFiles, describeFileConstraints } from "../src/primitives/dropzone";
 import { FileUpload, FileUploadDropzone, FileUploadList, formatBytes } from "../src/patterns/file-upload";
 import { PasswordStrength, getPasswordScore } from "../src/patterns/password-strength";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 // input-otp probes document.elementFromPoint (password-manager badge detection); jsdom lacks it.
 beforeAll(() => {

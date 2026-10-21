@@ -6,7 +6,7 @@ import { Slider } from "../src/primitives/slider";
 import { SparkBar, Sparkline } from "../src/patterns/sparkline";
 import { useRollingSeries, useSampler } from "../src/hooks/use-rolling-series";
 import { ACCENT_COLORS } from "../src/lib/accent";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const ACCENT_TEXT = "data-[state=active]:text-[var(--sutra-accent,var(--primary))]";
 

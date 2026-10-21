@@ -14,7 +14,7 @@ import {
 import { StatCard, StatGroup, statDeltaDirection } from "../src/patterns/stat-card";
 import { Meter, MeterGroup, StackedMeter, meterLevel } from "../src/primitives/meter";
 import { Gauge, RingMeter } from "../src/patterns/gauge";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const days = [
   { day: "Mon", prompt: 120, completion: 40, errors: 2 },

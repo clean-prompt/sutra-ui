@@ -14,7 +14,7 @@ import { FileUploadItem, formatBytes as formatUploadBytes } from "../src/pattern
 import { formatFileSize } from "../src/patterns/file-viewer";
 import { StatusStackRow } from "../src/kits/agent-admin/status-stack";
 import { AgentTodoList } from "../src/kits/agent/agent-tasks";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const IMG = "data:image/png;base64,iVBORw0KGgo=";
 

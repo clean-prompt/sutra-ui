@@ -10,7 +10,7 @@ import { JobStatePill } from "../src/kits/agent-admin/agent-jobs";
 import { ChatToolStateBadge } from "../src/kits/ai/chat-tool";
 import { BackendHealthPill } from "../src/kits/agent-admin/backends";
 import { SubagentStatusGlyph } from "../src/kits/agent-admin/subagents";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("StatusDot: variant + icon", () => {
   it("keeps the solid dot markup by default", () => {

@@ -34,7 +34,7 @@ import { Carousel } from "../src/patterns/carousel";
 import { TreeView } from "../src/patterns/tree-view";
 import { ChartContainer } from "../src/patterns/chart-container";
 import { Marquee } from "../src/assets/marquee";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   document.documentElement.removeAttribute("dir");

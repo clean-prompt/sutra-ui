@@ -2,7 +2,7 @@
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import { SeekBar } from "../src/kits/media/media-controls";
 
 const rect = { left: 0, width: 200, top: 0, height: 20, right: 200, bottom: 20, x: 0, y: 0, toJSON() {} };

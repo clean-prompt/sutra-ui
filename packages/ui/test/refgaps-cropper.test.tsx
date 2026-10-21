@@ -21,21 +21,7 @@ import {
   type CropRect,
 } from "../src/lib/crop";
 import { ImageCropper, cropToBlob, cropToCanvas, imageCropperAspectOptions, type ImageCropperHandle } from "../src/patterns/image-cropper";
-import { axeViolations } from "./a11y";
-
-// jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerId: number;
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? "mouse";
-    }
-  }
-  (window as unknown as { PointerEvent: unknown }).PointerEvent = PointerEventPolyfill;
-}
+import { axeViolations } from "./helpers/a11y";
 
 const B = { width: 800, height: 600 };
 const near = (a: number, b: number, eps = 1e-6) => Math.abs(a - b) <= eps;

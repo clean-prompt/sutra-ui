@@ -5,7 +5,7 @@ import { StatementHero } from "../src/patterns/statement-hero";
 import { Button } from "../src/primitives/button";
 import { Dropzone } from "../src/primitives/dropzone";
 import { SutraMark } from "../src/assets/brand";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const base = {
   title: "Your files, handled quietly",

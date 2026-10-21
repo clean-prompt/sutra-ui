@@ -28,7 +28,7 @@ import {
   TargetPane,
   TransliterationCandidates,
 } from "../src/kits/voice/translate";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   vi.useRealTimers();

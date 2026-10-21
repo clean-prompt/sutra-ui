@@ -12,7 +12,7 @@ import {
 } from "../src/kits/system/dev-servers";
 import { ContainerList, ContainerSummary, groupContainers, summarizeContainers, type ContainerInfo } from "../src/kits/system/containers";
 import { formatMemory, formatRate, formatSpan } from "../src/lib/system-monitor";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const NOW = new Date("2026-10-19T12:00:00Z").getTime();
 const MIN = 60_000;

@@ -17,7 +17,7 @@ import { AgentMessageNotice, AgentRoom, AgentRoomMembers, parseAgentMentions, ty
 import { DelegateToolBody, RunTicker, SubagentTree, subagentRollup, type SubagentNode } from "../src/kits/agent-admin/subagents";
 import { AgentAvatar, AgentAvatarBuilder, CreateAgentDialog, PersonaEditor, randomAvatarSpec, validateAgentName } from "../src/kits/agent-admin/agent-persona";
 import { PermissionPreflightCard, RemoteScreenViewer } from "../src/kits/agent-admin/remote-screen";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => vi.useRealTimers());
 

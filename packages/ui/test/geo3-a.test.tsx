@@ -2,7 +2,7 @@ import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LiveVisitorsMap, type LiveVisitor, type LiveVisitorsMapProps } from "../src/entries/geo";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const NOW = Date.UTC(2026, 9, 19, 12, 0, 0);
 const Icon = () => <svg data-testid="src-icon" />;

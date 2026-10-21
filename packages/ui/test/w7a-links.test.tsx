@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 import { SocialButton } from "../src/primitives/social-button";
 import { TextLink } from "../src/primitives/text-link";
 

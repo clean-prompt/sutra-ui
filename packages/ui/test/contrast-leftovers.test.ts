@@ -3,7 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { seedColorStyle } from "../src/primitives/avatar";
 import { chartColors } from "../src/lib/tokens";
-import { contrast, evalColor, over, stockTokens, type Mode, type RGBA } from "./contrast";
+import { contrast, evalColor, over, stockTokens, type Mode, type RGBA } from "./helpers/contrast";
 
 /** AA leftovers of the improvement plan (A4): each pair that used to fall under 4.5:1 is pinned here. */
 

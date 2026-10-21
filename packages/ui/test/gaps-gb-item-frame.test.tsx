@@ -13,7 +13,7 @@ import {
   ItemTitle,
 } from "../src/primitives/item";
 import { Frame, FrameAction, FrameDescription, FrameFooter, FrameHeader, FramePanel, FrameTitle } from "../src/primitives/frame";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const row = (n: number) => (
   <Item key={n}>

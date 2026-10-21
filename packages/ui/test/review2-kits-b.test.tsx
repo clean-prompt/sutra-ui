@@ -5,7 +5,7 @@ import { ContainerList, type ContainerInfo } from "../src/kits/system/containers
 import { IncomingCall } from "../src/kits/social/call-overlay";
 import { AccessGate, type AccessGateAdapter, type AccessGateRecord } from "../src/kits/identity/kunji";
 import { AwaitingApproval } from "../src/blocks/kunji-blocks";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;

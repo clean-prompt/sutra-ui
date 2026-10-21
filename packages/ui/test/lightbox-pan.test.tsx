@@ -2,7 +2,7 @@
 import * as React from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import { Lightbox, type LightboxItem } from "../src/patterns/lightbox";
 
 const gallery: LightboxItem[] = [

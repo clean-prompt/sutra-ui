@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { SignInMap, analyzeSignIns, detectImpossibleTravel, detectNewLocations, type SignInEvent } from "../src/entries/identity";
 import * as security from "../src/entries/security";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const NOW = Date.UTC(2026, 9, 19, 12, 0, 0);
 const h = (n: number) => NOW - n * 3_600_000;

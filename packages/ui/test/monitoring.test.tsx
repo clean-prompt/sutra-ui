@@ -16,7 +16,7 @@ import {
 } from "../src/kits/ops/request-inspector";
 import { DownloadBadge, ModelStatePill, ModelTable, modelActionsFor, modelFamily, type ModelInfo } from "../src/kits/ops/model-row";
 import { Terminal, TerminalSessionPicker, getTerminalTheme, type TerminalHandle } from "../src/kits/terminal/terminal";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* xterm mock (the component imports it dynamically)                   */

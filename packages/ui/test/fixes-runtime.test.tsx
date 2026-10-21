@@ -7,20 +7,6 @@ import { detectShortcutPlatform } from "../src/patterns/shortcuts";
 import { CallScreen } from "../src/kits/social/call-overlay";
 import { ApiKeyCreateDialog } from "../src/kits/identity/api-keys";
 
-// jsdom may lack PointerEvent; without it fireEvent.pointer* drops pointer fields.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerId: number;
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? "mouse";
-    }
-  }
-  (window as unknown as { PointerEvent: unknown }).PointerEvent = PointerEventPolyfill;
-}
-
 const pointer = { pointerId: 1, pointerType: "mouse", button: 0 };
 const flush = () => act(async () => {});
 

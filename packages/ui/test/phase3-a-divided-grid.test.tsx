@@ -3,7 +3,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { DividedGrid, DividedGridItem, type DividedGridItemData } from "../src/patterns/divided-grid";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const Icon = () => <svg data-testid="icon" />;
 

@@ -37,7 +37,7 @@ import {
 } from "../src/kits/agent-admin/extensions-catalog";
 import { SchemaForm, schemaDefaults, validateAgainstSchema, type SchemaFormSchema } from "../src/patterns/schema-form";
 import { SlotFill, SlotOutlet, SlotProvider, createSlotRegistry, useSlotRegistry } from "../src/kits/agent-admin/slot-outlet";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const flush = () => act(async () => {});
 // jsdom has no scrollTo; LogViewer's auto-follow uses it.

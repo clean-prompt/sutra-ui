@@ -14,10 +14,10 @@ import { Switch } from "../src/primitives/switch";
 import { Tabs, TabsList, TabsTrigger } from "../src/primitives/tabs";
 import { Textarea } from "../src/primitives/textarea";
 import { ToggleGroup, ToggleGroupItem } from "../src/primitives/toggle-group";
-import { attributesAfterSpread, count, sourceFiles, tagAttributes } from "./conventions-scan";
+import { attributesAfterSpread, count, sourceFiles, tagAttributes } from "./helpers/conventions-scan";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { SRC } from "./conventions-scan";
+import { SRC } from "./helpers/conventions-scan";
 
 /**
  * Prop-spread contract (R13).

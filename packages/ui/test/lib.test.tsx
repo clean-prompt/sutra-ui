@@ -41,11 +41,11 @@ import { useIsoLayoutEffect } from "../src/hooks/use-iso-layout-effect";
 import { errorMessage, useAsyncAction, useMountedRef } from "../src/hooks/use-async-action";
 import { useSafeId } from "../src/hooks/use-safe-id";
 import { useCopy } from "../src/hooks/use-copy";
-import { useAsyncAction as useBlockAsyncAction, isEmail as blockIsEmail } from "../src/blocks/block-utils";
+import { useBlockAction as useBlockAsyncAction } from "../src/blocks/block-utils";
 import { CopyButton, CopyField } from "../src/primitives/copy-button";
 import { base32Decode as totpBase32Decode } from "../src/kits/identity/totp";
 import { kunjiBase64Url } from "../src/kits/identity/kunji-client";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /** Wednesday, 14 October 2026, 10:00 local time. */
 const NOW = new Date(2026, 9, 14, 10, 0).getTime();
@@ -543,7 +543,6 @@ describe("lib/validate", () => {
     expect(isEmail("maya@sutra")).toBe(false);
     expect(isEmail("a b@c.d")).toBe(false);
     expect(isEmail(null)).toBe(false);
-    expect(blockIsEmail).toBe(isEmail);
   });
 
   it("isHttpUrl", () => {

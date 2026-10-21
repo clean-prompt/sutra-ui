@@ -16,7 +16,7 @@ import {
   validateCardNumber,
 } from "../src/kits/billing/payment-card";
 import { ActivityFeed, ConnectedAppList, groupEventsByDay, type ConnectedApp, type SecurityEvent } from "../src/kits/identity/connected-apps";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const RFC_SECRET = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ"; // base32("12345678901234567890")
 const T0 = Date.UTC(2026, 0, 1); // divisible by 30 s

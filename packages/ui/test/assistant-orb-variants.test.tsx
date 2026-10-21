@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AssistantOrb, assistantOrbVariantLabels, assistantOrbVariants } from "../src/kits/voice/assistant-orb";
 import { LevelHistory, readOrbArtPalette } from "../src/kits/voice/assistant-orb-art-internal";
 import { assistantOrbLabels, assistantOrbStates, type AssistantOrbState, type OrbArtVariant } from "../src/lib/orb";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const ART: OrbArtVariant[] = ["mala", "string", "ink", "rings", "graph", "halftone"];
 

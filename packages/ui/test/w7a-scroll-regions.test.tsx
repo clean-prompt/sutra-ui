@@ -2,7 +2,7 @@ import * as React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 import { ScrollArea } from "../src/primitives/scroll-area";
 import { Markdown } from "../src/patterns/markdown";
 

@@ -8,7 +8,7 @@ import {
   baseMimeType,
   pickVideoMimeType,
 } from "../src/patterns/camera-capture";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* Fakes: jsdom has no camera, MediaRecorder, canvas or object URLs     */

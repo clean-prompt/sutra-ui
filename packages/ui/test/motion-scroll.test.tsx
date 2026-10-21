@@ -12,12 +12,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SCROLL_REVEAL_RANGE, progressFor, scrollProgressOf, supportsScrollTimeline, useScrollProgress, type UseScrollProgressOptions } from "../src/hooks/use-scroll-progress";
 import { ScrollProgressBar, ScrollReveal } from "../src/patterns/scroll-reveal";
 import { ScrollStage } from "../src/patterns/scroll-stage";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
 const timelines = (on: boolean) => vi.stubGlobal("CSS", { supports: (q: string) => on && q.includes("animation-timeline") });
 
 /** requestAnimationFrame as a queue the test flushes by hand. */
@@ -37,7 +34,7 @@ beforeEach(() => {
   Object.defineProperty(document.documentElement, "clientHeight", { value: 800, configurable: true });
 });
 afterEach(() => {
-  window.matchMedia = original;
+  resetMedia();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });

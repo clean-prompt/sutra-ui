@@ -21,7 +21,7 @@ import { PromptInput, PromptInputRestoredDraft, PromptInputTextarea } from "../s
 import { ApprovalStack } from "../src/kits/ai/approval-stack";
 import { ClarifySettled } from "../src/kits/ai/clarify-settled";
 import { UndeliveredNotice } from "../src/kits/ai/undelivered-notice";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   vi.useRealTimers();

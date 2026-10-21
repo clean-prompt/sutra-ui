@@ -16,7 +16,7 @@ import {
   type ThermalSensor,
 } from "../src/kits/system/thermals";
 import { Gauge } from "../src/patterns/gauge";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* MetricReadout                                                       */

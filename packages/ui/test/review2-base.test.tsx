@@ -7,7 +7,7 @@ import { RangeSlider, Slider } from "../src/primitives/slider";
 import { useTheme } from "../src/hooks/use-theme";
 import { useOnlineStatus } from "../src/hooks/use-online-status";
 import { TallyCounter } from "../src/patterns/tally-counter";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("Slider ref and className", () => {
   it("lands ref and className on the same outer element", async () => {

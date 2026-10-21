@@ -6,7 +6,7 @@ import type { KeyBinding } from "@codemirror/view";
 import { EditorView } from "@codemirror/view";
 import { CodeEditor, type CodeEditorHandle } from "../src/kits/editor/code-editor";
 import { RichTextEditor, RichTextToolbar, type RichTextEditorInstance } from "../src/kits/editor/rich-text-editor";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* jsdom has no layout: CodeMirror and ProseMirror measure through Range/Element rects. */
 const emptyRect = { x: 0, y: 0, top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0, toJSON: () => ({}) } as DOMRect;

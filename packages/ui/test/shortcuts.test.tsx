@@ -16,7 +16,7 @@ import {
 import { SidebarProvider, useSidebar } from "../src/patterns/sidebar-navigation";
 import { ShortcutKeys } from "../src/primitives/shortcut-keys";
 import { SimpleTooltip, TooltipProvider } from "../src/primitives/tooltip";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 function press(key: string, init: KeyboardEventInit = {}, target: Element | Document = document.body) {
   fireEvent.keyDown(target, { key, ...init });

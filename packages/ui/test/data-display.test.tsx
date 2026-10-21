@@ -7,7 +7,7 @@ import { Avatar } from "../src/primitives/avatar";
 import { AvatarGroup } from "../src/primitives/avatar-group";
 import { Separator } from "../src/primitives/separator";
 import { DataTable, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, type DataTableColumn } from "../src/primitives/table";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 interface Person {
   id: string;

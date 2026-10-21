@@ -35,7 +35,7 @@ import {
   type Session,
 } from "../src/kits/identity/device-sessions";
 import { ChatHeader, MessengerHeader } from "../src/kits/social/messenger";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /** Browser-normalised form of a CSS colour, for comparing inline styles. */
 function norm(color: string) {

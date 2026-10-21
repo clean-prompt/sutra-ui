@@ -13,6 +13,7 @@ import { compile } from "tailwindcss";
 import { prefersReducedMotion, usePrefersReducedMotion } from "../src/hooks/use-media-query";
 import { usePresence } from "../src/hooks/use-presence";
 import { Carousel } from "../src/patterns/carousel";
+import { reduceMotion as system, resetMedia } from "./helpers/media";
 
 const raw = readFileSync(path.join(__dirname, "../src/styles/sutra.css"), "utf8");
 const css = raw.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -32,11 +33,6 @@ function blockAfter(source: string, header: string, from = 0): string {
 }
 const squash = (s: string) => s.replace(/\s+/g, " ").trim();
 
-const original = window.matchMedia;
-/** The system preference, as `matchMedia` reports it. */
-const system = (reduce: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: reduce && query.includes("reduce") })) as typeof window.matchMedia;
-};
 const setMotion = (value: string | null) => {
   if (value === null) document.documentElement.removeAttribute("data-motion");
   else document.documentElement.setAttribute("data-motion", value);
@@ -46,7 +42,7 @@ const flush = () => act(async () => void (await Promise.resolve()));
 beforeEach(() => system(false));
 afterEach(() => {
   cleanup(); // unmount first: the observer would report the reset below to a component outside act()
-  window.matchMedia = original;
+  resetMedia();
   setMotion(null);
 });
 

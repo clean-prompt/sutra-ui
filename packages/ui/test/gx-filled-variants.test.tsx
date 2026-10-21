@@ -7,7 +7,7 @@ import { Combobox } from "../src/primitives/combobox";
 import { DatePicker, DateRangePicker, DateTimePicker } from "../src/primitives/date-picker";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "../src/primitives/input-group";
 import { cn } from "../src/lib/cn";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const fruits = [
   { value: "apple", label: "Apple" },

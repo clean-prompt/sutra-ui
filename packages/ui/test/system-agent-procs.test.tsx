@@ -7,7 +7,7 @@ import {
   formatAgentRunTime,
   type AgentProcessSession,
 } from "../src/kits/agent/agent-processes";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /** Decimal megabytes, matching formatMemory (the system screens use base-1000 units). */
 const MB = 1_000_000;

@@ -1,10 +1,10 @@
 /** UndoAction: counted undo window on the wall clock, commit only at the end, pause, controlled arming (Toast pairing), live region, axe. */
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UndoAction } from "../src/primitives/undo-action";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 beforeEach(() => vi.useFakeTimers());
 afterEach(() => {

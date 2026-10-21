@@ -1,9 +1,9 @@
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ShareDialog } from "../src/blocks/modal-dialog-blocks";
-import { blockCategoryLabels, blockRegistry } from "../src/blocks/registry";
-import { axeViolations } from "./a11y";
-import { OPENABLE, renderBlock } from "./blocks-helpers";
+import { blockCategoryLabels, blockRegistry, demoShare } from "../src/blocks/registry";
+import { axeViolations } from "./helpers/a11y";
+import { OPENABLE, renderBlock } from "./helpers/blocks-helpers";
 
 describe("blockRegistry", () => {
   it("has unique ids and a label for every category", () => {
@@ -75,6 +75,7 @@ describe("ShareDialog", () => {
     const onAllowCommentsChange = vi.fn();
     render(
       <ShareDialog
+        {...demoShare}
         defaultOpen
         onRoleChange={onRoleChange}
         onExpiryChange={onExpiryChange}
@@ -115,7 +116,7 @@ describe("ShareDialog", () => {
     const user = userEvent.setup();
     const onLeave = vi.fn();
     const onInvite = vi.fn();
-    render(<ShareDialog defaultOpen currentUserId="p3" onLeave={onLeave} onInvite={onInvite} defaultAccess="restricted" />);
+    render(<ShareDialog {...demoShare} defaultOpen currentUserId="p3" onLeave={onLeave} onInvite={onInvite} defaultAccess="restricted" />);
     const dialog = screen.getByRole("dialog");
     expect(within(dialog).getByText("(you)")).toBeInTheDocument();
     expect(within(dialog).queryByRole("combobox", { name: "Link expiry" })).not.toBeInTheDocument();

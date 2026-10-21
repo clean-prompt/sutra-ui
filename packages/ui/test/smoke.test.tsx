@@ -8,7 +8,7 @@ import { formatBytes } from "../src/lib/format";
 import { base32Decode } from "../src/lib/encoding";
 import { base32Decode as totpBase32Decode } from "../src/kits/identity/totp";
 import { splitDuration as countdownSplitDuration } from "../src/patterns/countdown";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("test harness", () => {
   it("renders and runs axe", async () => {

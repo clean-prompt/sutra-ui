@@ -5,7 +5,7 @@ import { CountryFlag, getFlagEmoji } from "../src/assets/country-flags";
 import { EmojiReaction, EmojiReactionBar } from "../src/assets/emoji-reactions";
 import { FileFormatIcon, getFileCategory, getFileExtension } from "../src/assets/file-format";
 import { AcmeLogo, LogoCloud, placeholderLogos } from "../src/assets/placeholder-logos";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* EmojiReaction                                                       */

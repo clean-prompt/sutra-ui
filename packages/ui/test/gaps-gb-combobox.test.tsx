@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Combobox, type ComboboxOption } from "../src/primitives/combobox";
 import { TagInput } from "../src/primitives/tag-input";
 import { usePendingRemoval } from "../src/hooks/use-pending-removal";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const fruits: ComboboxOption[] = [
   { value: "apple", label: "Apple" },

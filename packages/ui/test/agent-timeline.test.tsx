@@ -23,7 +23,7 @@ import {
   ThinkingToggle,
   formatTokenLabel,
 } from "../src/kits/ai/chain-of-thought";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   vi.useRealTimers();

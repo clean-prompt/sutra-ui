@@ -8,7 +8,7 @@ import { StatCard, TopItemCard } from "../src/patterns/stat-card";
 import { StorageMap, Treemap, type StorageMapItem, type TreemapNode } from "../src/patterns/treemap";
 import { AreaChart, BarChart, DonutChart, LineChart } from "../src/patterns/chart";
 import { Gauge, RingMeter } from "../src/patterns/gauge";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const busy = (c: HTMLElement) => c.querySelector('[aria-busy="true"]');
 const skeletons = (c: HTMLElement) => c.querySelectorAll(".bg-muted[aria-hidden], [aria-hidden] .bg-muted");

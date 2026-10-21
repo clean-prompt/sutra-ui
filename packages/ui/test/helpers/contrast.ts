@@ -6,7 +6,7 @@ import path from "node:path";
 export type RGBA = [number, number, number, number];
 export type Mode = "light" | "dark";
 
-const STYLES = path.resolve(__dirname, "../src/styles");
+const STYLES = path.resolve(__dirname, "../../src/styles");
 const strip = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
 function declarations(css: string, match: (selector: string) => boolean): Map<string, string> {

@@ -12,7 +12,7 @@ import {
   type TransferItemData,
 } from "../src/patterns/transfer-list";
 import { ProgressDialog, useStreamingTask, type StreamingTaskEvent } from "../src/kits/ops/progress-dialog";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 // jsdom has no Element#scrollTo; useStickToBottom calls it.
 Element.prototype.scrollTo ??= function () {} as typeof Element.prototype.scrollTo;

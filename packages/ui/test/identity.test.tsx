@@ -9,7 +9,7 @@ import { EmptyState, Note } from "../src/primitives/empty-state";
 import { BootScreen, LockScreen } from "../src/patterns/loading-screen";
 import { AccountPanel, SessionList, formatSessionLastActive, type Session } from "../src/kits/identity/device-sessions";
 import { ThemeToggle } from "../src/patterns/theme-toggle";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 beforeAll(() => {
   if (!document.elementFromPoint) document.elementFromPoint = () => null;

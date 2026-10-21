@@ -10,7 +10,7 @@ import {
   type FileWithPath,
 } from "../src/primitives/dropzone";
 import { FileUpload, FileUploadDropzone, FileUploadList, FileUploadTrigger } from "../src/patterns/file-upload";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */

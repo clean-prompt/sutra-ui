@@ -10,21 +10,7 @@ import {
   useMarqueeSelection,
 } from "../src/hooks/use-marquee-selection";
 import { SelectionArea, useSelectionArea, type SelectionAreaProps } from "../src/patterns/selection-area";
-import { axeViolations } from "./a11y";
-
-// jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerId: number;
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? "mouse";
-    }
-  }
-  (window as unknown as { PointerEvent: unknown }).PointerEvent = PointerEventPolyfill;
-}
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */

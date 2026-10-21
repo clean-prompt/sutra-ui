@@ -2,7 +2,7 @@
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import { SplitPane, SplitPaneHandle, SplitPanePanel } from "../src/patterns/split-pane";
 
 const rect = (width: number, height: number) => ({ left: 100, top: 50, width, height, right: 100 + width, bottom: 50 + height, x: 100, y: 50, toJSON() {} }) as DOMRect;

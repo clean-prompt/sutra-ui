@@ -10,7 +10,7 @@ import {
   sortProcessGroups,
   sortProcessList,
 } from "../src/lib/process-groups";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const GB = 1024 ** 3;
 const MB = 1024 ** 2;

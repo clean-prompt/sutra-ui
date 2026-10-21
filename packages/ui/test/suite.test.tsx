@@ -17,7 +17,7 @@ import { ConflictResolver, OfflineBanner, SyncStatus, type SyncState } from "../
 import { TodayTimeline, layoutTimeline, type TimelineItem } from "../src/kits/workspace/today-timeline";
 import { formatRelativeTime } from "../src/lib/relative-time";
 import { ShortcutProvider } from "../src/patterns/shortcuts";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /** Wednesday, 14 October 2026, 10:00 local time. */
 const NOW = new Date(2026, 9, 14, 10, 0);

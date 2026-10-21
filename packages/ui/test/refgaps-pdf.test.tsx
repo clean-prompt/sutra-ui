@@ -6,7 +6,7 @@ import { PdfThumbnail, PdfViewer, pdfRenderer, PDF_CSP_SAFE_OPTIONS } from "../s
 import { FileViewer } from "../src/patterns/file-viewer";
 import { execFileSync } from "node:child_process";
 import * as path from "node:path";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* pdf.js mock                                                         */

@@ -38,7 +38,7 @@ import {
 } from "../src/kits/agent-admin/agent-jobs";
 import { GoalStatusRow, HeartbeatStatusRow, LoopStatusRow, StatusStack, StatusStackRow } from "../src/kits/agent-admin/status-stack";
 import { WebhookRouteEditor, WebhookRouteList, type WebhookRoute } from "../src/kits/agent-admin/webhooks";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const T0 = Date.UTC(2026, 0, 1, 8, 0); // Thu 1 Jan 2026 08:00 UTC
 const MIN = 60_000;

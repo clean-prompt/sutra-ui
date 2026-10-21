@@ -1,7 +1,7 @@
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { WaterfallChart } from "../src/patterns/chart";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const steps = [
   { label: "Start", value: 120, type: "total" },

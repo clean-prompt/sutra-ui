@@ -5,15 +5,12 @@
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import { useDrag, type DragInfo, type UseDragOptions } from "../src/hooks/use-drag";
 import { useSwipeDismiss } from "../src/hooks/use-swipe-dismiss";
 import { usePan } from "../src/hooks/use-pan";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
 let clock = 0;
 let frames = new Map<number, FrameRequestCallback>();
 let frameId = 0;
@@ -39,7 +36,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   vi.restoreAllMocks();
-  window.matchMedia = original;
+  resetMedia();
 });
 
 const touch = { pointerId: 1, pointerType: "touch", isPrimary: true } as const;

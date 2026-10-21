@@ -13,7 +13,7 @@ import { RotatingNoticeBar, useNoticeQueue, type NoticeItem } from "../src/patte
 import { CoachmarkTour, TipBubble, type CoachmarkStep } from "../src/patterns/coachmarks";
 import { KeybindEditor, recordKeyCombo, type KeybindItem } from "../src/patterns/keybind-editor";
 import { TranscriptTimelineRail, type TimelineRailTurn } from "../src/kits/workspace/timeline-rail";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* WorkspaceProfileSwitcher                                            */

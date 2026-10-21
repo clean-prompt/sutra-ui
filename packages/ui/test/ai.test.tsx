@@ -13,7 +13,7 @@ import { PromptInput, PromptInputSubmit, PromptInputTextarea, PromptInputToolbar
 import { PromptSuggestion, PromptSuggestionGroup } from "../src/kits/ai/prompt-suggestion";
 import { CodeBlock } from "../src/patterns/code-block";
 import { TextShimmer } from "../src/primitives/text-shimmer";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   vi.useRealTimers();

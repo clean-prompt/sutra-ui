@@ -2,7 +2,7 @@ import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Globe, type GeoArc, type GeoMarker, type GlobeApi, type WorldMapDatum } from "../src/entries/geo";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* Default view centres 10° E, 20° N: Europe and Africa face the viewer, Australia and the Pacific are hidden. */
 const markers: GeoMarker[] = [
@@ -16,20 +16,6 @@ const data: WorldMapDatum[] = [
   { code: "AU", value: 50 },
 ];
 const arcs: GeoArc[] = [{ id: "a1", from: { lat: 51.5, lng: -0.13 }, to: { lat: 40.71, lng: -74 }, label: "London to New York", animated: true }];
-
-// jsdom has no PointerEvent; without it fireEvent drops clientX and pointerId.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerId: number;
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? "mouse";
-    }
-  }
-  window.PointerEvent = PointerEventPolyfill as unknown as typeof PointerEvent;
-}
 
 /* ---- rAF and clock ---- */
 

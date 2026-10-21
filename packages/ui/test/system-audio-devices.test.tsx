@@ -7,7 +7,7 @@ import { VolumeSlider } from "../src/primitives/volume-slider";
 import { BatteryLevel, batteryLevelState, formatBatteryLevel } from "../src/primitives/battery-level";
 import { VolumeMixer, type VolumeMixerApp } from "../src/kits/system/volume-mixer";
 import { DeviceBatteryList, summarizeDeviceBatteries, type BatteryDevice } from "../src/kits/system/device-battery";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* Slider getValueText                                                 */

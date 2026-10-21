@@ -11,11 +11,8 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runViewTransition, supportsViewTransitions, useViewTransition, viewTransitionName } from "../src/hooks/use-view-transition";
 import { SharedElement } from "../src/patterns/shared-element";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
 const doc = document as unknown as { startViewTransition?: unknown };
 
 /** A browser: the update runs after the "snapshot" (a microtask), `finished` resolves after it. */
@@ -31,7 +28,7 @@ function stubBrowser() {
 }
 afterEach(() => {
   delete doc.startViewTransition;
-  window.matchMedia = original;
+  resetMedia();
   vi.restoreAllMocks();
 });
 

@@ -7,7 +7,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { StepWizard, type StepWizardStep } from "../src/patterns/step-wizard";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const original = window.matchMedia;
 afterEach(() => {

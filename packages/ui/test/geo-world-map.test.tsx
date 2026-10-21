@@ -2,7 +2,7 @@ import * as React from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { GeoMarkerLayer, WorldMap, type GeoArc, type GeoMarker, type WorldMapDatum } from "../src/entries/geo";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const data: WorldMapDatum[] = [
   { code: "us", value: 1200 },

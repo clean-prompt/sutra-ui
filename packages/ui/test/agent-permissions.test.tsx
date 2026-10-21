@@ -7,7 +7,7 @@ import { EffortSlider, PermissionModeSwitcher } from "../src/kits/agent/agent-mo
 import { PlanReviewCard, truncatePlanQuote } from "../src/kits/agent/plan-review";
 import { CheckpointMarker, RewindButton, RewindDialog } from "../src/kits/agent/rewind";
 import { QuestionCard, type QuestionItem } from "../src/kits/ai/ai-extras";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   vi.useRealTimers();

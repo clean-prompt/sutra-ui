@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useScrollSections } from "../src/hooks/use-scroll-sections";
 import { SectionRail } from "../src/patterns/section-rail";
 import { BlogTableOfContents } from "../src/patterns/blog-content";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /** A controllable IntersectionObserver: tests decide which elements are "in view". */
 type Observed = { cb: IntersectionObserverCallback; els: Element[]; init?: IntersectionObserverInit; disconnected: boolean };

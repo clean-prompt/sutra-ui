@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { breakdownValue, formatShare, topWithOther, withShares } from "../src/lib/breakdown";
 import { BreakdownList, StackedMeter } from "../src/primitives/meter";
 import { DonutChart } from "../src/patterns/chart";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 interface App {
   name: string;

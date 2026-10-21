@@ -12,7 +12,7 @@ import {
   type RegionLink,
   type StatusRegion,
 } from "../src/entries/ops";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const regions: StatusRegion[] = [
   { id: "use1", name: "Virginia", code: "us-east-1", country: "US", point: { lat: 38.9, lng: -77.4 }, status: "healthy", latencyMs: 38, load: 71, nodes: 48 },

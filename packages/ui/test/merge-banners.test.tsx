@@ -12,7 +12,7 @@ import { GuidedSetupSteps, RotatingQRPairing } from "../src/kits/agent-admin/cha
 import { StepIndicator, Steps } from "../src/primitives/step-indicator";
 import { OnboardingChecklist } from "../src/kits/agent/agent-onboarding";
 import { QRCodePlaceholder } from "../src/assets/misc";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("BannerAction", () => {
   it("is the one action type behind AlertBannerAction and NoticeAction", () => {

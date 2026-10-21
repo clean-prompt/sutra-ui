@@ -2,7 +2,7 @@ import * as React from "react";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 import { DataTable, Table, TableBody, TableCell, TableRow, type DataTableColumn } from "../src/primitives/table";
 
 afterEach(() => {

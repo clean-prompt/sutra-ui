@@ -1,17 +1,14 @@
 /** SwipeRow: follows the finger, reveals and commits actions, rubber band, spring release, keys and buttons, controlled, a11y. */
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SwipeRow, type SwipeAction } from "../src/patterns/swipe-row";
 import { Item, ItemContent, ItemGroup, ItemTitle } from "../src/primitives/item";
 import { swipeRowRelease } from "../src/lib/gesture";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
 let clock = 0;
 let frames = new Map<number, FrameRequestCallback>();
 let frameId = 0;
@@ -41,7 +38,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   vi.restoreAllMocks();
-  window.matchMedia = original;
+  resetMedia();
 });
 
 const touch = { pointerId: 1, pointerType: "touch", isPrimary: true } as const;

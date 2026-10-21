@@ -6,7 +6,7 @@ import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MorphPill } from "../src/patterns/morph-pill";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 type S = "idle" | "picker" | "timer";
 const states = {

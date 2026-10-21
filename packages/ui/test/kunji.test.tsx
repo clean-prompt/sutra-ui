@@ -40,7 +40,7 @@ import {
   validateKunjiHandle,
 } from "../src/blocks/kunji-blocks";
 import { blockRegistry } from "../src/blocks";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */

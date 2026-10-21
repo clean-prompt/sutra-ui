@@ -24,7 +24,7 @@ import {
   memoryMapLegend,
   type MemoryNode,
 } from "../src/kits/workspace/memory-map";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 // LogViewer scrolls its tail; jsdom has no Element.scrollTo.
 Element.prototype.scrollTo ??= function () {};

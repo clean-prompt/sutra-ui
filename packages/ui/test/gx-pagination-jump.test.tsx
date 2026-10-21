@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { Pagination, PaginationEllipsis } from "../src/primitives/pagination";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("PaginationEllipsis onJump", () => {
   it("stays a decorative marker without onJump", () => {

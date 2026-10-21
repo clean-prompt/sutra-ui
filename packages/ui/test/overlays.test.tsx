@@ -53,7 +53,7 @@ import {
   useCommandMenuShortcut,
 } from "../src/patterns/command-menu";
 import { Button } from "../src/primitives/button";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /** Promise whose resolution is controlled by the test. */
 function deferred() {

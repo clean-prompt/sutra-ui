@@ -8,7 +8,7 @@ import { ShortcutProvider, ShortcutsDialog, useShortcut } from "../src/patterns/
 import { ProviderKeysGroups } from "../src/kits/agent-admin/llm-providers";
 import { ToolsetProviderDrawer, type ToolsetProvider } from "../src/kits/agent-admin/tool-toggles";
 import { McpServerForm } from "../src/kits/agent-admin/mcp";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const flush = () => act(async () => {});
 

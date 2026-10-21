@@ -20,7 +20,7 @@ import {
   type AlertSample,
 } from "../src/lib/alert-rules";
 import { AlertRuleDialog, AlertRuleEditor, AlertRuleList, MutedAppsList } from "../src/kits/system/alert-rules";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const NOW = new Date("2026-10-19T12:00:00Z").getTime();
 const MIN = 60_000;

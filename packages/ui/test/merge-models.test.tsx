@@ -14,7 +14,7 @@ import { ModelPicker, ModelStateGlyph as PickerGlyph, modelStateLabels as picker
 import { DownloadBadge, ModelStatePill as RowPill, ModelTable, modelActionsFor, type ModelInfo } from "../src/kits/ops/model-row";
 import { PromptInputModelSelect } from "../src/kits/ai/prompt-input";
 import { ProviderModelPicker, type RoutingProvider } from "../src/kits/agent-admin/model-routing";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("model state vocabulary", () => {
   it("normalizes legacy spellings and unknown values", () => {

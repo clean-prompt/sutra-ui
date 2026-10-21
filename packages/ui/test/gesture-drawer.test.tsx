@@ -1,5 +1,5 @@
 /** Drawer on useDrag: no React render per move, imperative translate and scrim fade, touch-action, windowed velocity, cancel, reopen. */
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import * as React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";

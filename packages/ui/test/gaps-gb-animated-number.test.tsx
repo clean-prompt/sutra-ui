@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { AnimatedNumber } from "../src/patterns/animated-number";
 import { StatCard, StatValue } from "../src/patterns/stat-card";
 import { numberDigitGlyphs, splitNumberParts } from "../src/lib/number-parts";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const columns = (c: HTMLElement) => [...c.querySelectorAll<HTMLElement>('[data-slot="animated-number-digit"]')];
 const digits = (c: HTMLElement) => columns(c).map((el) => el.getAttribute("data-digit"));

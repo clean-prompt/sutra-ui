@@ -10,7 +10,7 @@ import { PaginationStatus } from "../src/primitives/pagination";
 import { getPageWindow } from "../src/lib/pagination";
 import { Rating } from "../src/primitives/rating";
 import { Countdown } from "../src/patterns/countdown";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const tokens = (s: string) => new Set(s.split(/\s+/).filter(Boolean));
 

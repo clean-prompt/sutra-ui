@@ -7,7 +7,7 @@ import { ProcessTable, type ProcessInfo } from "../src/kits/ops/process-table";
 import { MetricReadout, MetricReadoutGroup } from "../src/primitives/metric-readout";
 import { BatteryLevel } from "../src/primitives/battery-level";
 import { Meter, StackedMeter } from "../src/primitives/meter";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const NOW = Date.UTC(2026, 9, 19, 12, 0, 0);
 

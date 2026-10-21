@@ -33,7 +33,7 @@ import {
   type LocalModelListing,
   type SetupStage,
 } from "../src/kits/agent-admin/local-models";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const NOW = Date.UTC(2026, 9, 18, 12);
 const HOUR = 3_600_000;

@@ -13,7 +13,7 @@ import { ConversationSidebarList } from "../src/kits/ai/conversation-sidebar";
 import { AgentStatusDot } from "../src/kits/agent/agent-sessions";
 import { detectSlashTrigger } from "../src/kits/ai/slash-menu";
 import { MentionInput } from "../src/kits/workspace/entity-mention";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const IME = { isComposing: true, keyCode: 229 };
 

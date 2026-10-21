@@ -6,7 +6,7 @@ import { TimePicker } from "../src/primitives/time-picker";
 import { DatePicker, DateRangePicker, DateTimePicker } from "../src/primitives/date-picker";
 import { DialogProvider, useConfirm, useDialogs, type DialogsApi } from "../src/primitives/confirm";
 import { Field, FieldLabel } from "../src/primitives/field";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const seg = (name: string) => screen.getByRole("spinbutton", { name });
 const key = (el: Element, k: string) => fireEvent.keyDown(el, { key: k });

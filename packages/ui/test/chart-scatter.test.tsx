@@ -2,7 +2,7 @@ import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ScatterChart } from "../src/patterns/chart";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const runs = [
   { cost: 10, score: 60, tokens: 100, speed: 30 },

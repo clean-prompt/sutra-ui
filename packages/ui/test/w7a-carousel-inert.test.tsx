@@ -2,7 +2,7 @@ import * as React from "react";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { Carousel } from "../src/patterns/carousel";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /** An IntersectionObserver whose reports the test sends by hand (ratios by slide index). */
 let reports: Array<(ratios: number[]) => void> = [];

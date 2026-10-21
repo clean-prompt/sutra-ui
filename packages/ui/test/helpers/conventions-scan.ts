@@ -3,7 +3,7 @@ import path from "node:path";
 
 /** Static scans over `src` used by `conventions.test.ts` (no parser: regular expressions plus a small JSX opening-tag reader). */
 
-export const SRC = path.resolve(__dirname, "../src");
+export const SRC = path.resolve(__dirname, "../../src");
 
 function walk(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]));

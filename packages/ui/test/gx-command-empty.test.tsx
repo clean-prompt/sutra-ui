@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "../src/patterns/command-menu";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const palette = (items = true) => (
   <Command>

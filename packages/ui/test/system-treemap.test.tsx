@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { layoutTree, resolveTreemapPath, squarify, treemapNeighbor, treemapValue, type TreemapRect } from "../src/lib/treemap";
 import { StorageMap, Treemap, type StorageMapItem, type TreemapNode } from "../src/patterns/treemap";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const area = (r: TreemapRect) => r.width * r.height;
 const ratio = (r: TreemapRect) => Math.max(r.width / r.height, r.height / r.width);

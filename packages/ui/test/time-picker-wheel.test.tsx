@@ -9,7 +9,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { TimePicker } from "../src/primitives/time-picker";
 import { DirectionProvider } from "../src/primitives/direction-provider";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const original = window.matchMedia;
 /** A coarse (touch) primary pointer. */

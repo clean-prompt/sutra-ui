@@ -7,7 +7,7 @@ import { Progress, ProgressCircle, ProgressSegments } from "../src/primitives/pr
 import { Spinner } from "../src/primitives/spinner";
 import { StatusBadge, StatusDot } from "../src/primitives/status-badge";
 import { StepIndicator, Steps } from "../src/primitives/step-indicator";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("Chip", () => {
   it("is a plain button (no aria-pressed) when not selectable", () => {

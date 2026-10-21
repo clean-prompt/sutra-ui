@@ -27,7 +27,7 @@ import {
 import { SocialButton } from "../src/primitives/social-button";
 import { SplitButton } from "../src/primitives/split-button";
 import { TabDropdown } from "../src/primitives/tab-dropdown";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* Primitives that have no page-specific test file of their own. */
 

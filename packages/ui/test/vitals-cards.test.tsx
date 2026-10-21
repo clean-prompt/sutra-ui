@@ -7,7 +7,7 @@ import { StatCard, StatValue, TopItemCard } from "../src/patterns/stat-card";
 import { BarList, type BarListItem } from "../src/patterns/bar-list";
 import { MetricHero } from "../src/patterns/metric-hero";
 import { StatusBadge } from "../src/primitives/status-badge";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("StatCard (vitals props)", () => {
   it("links the whole card through the label, with a decorative chevron and accent", async () => {

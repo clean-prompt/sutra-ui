@@ -8,12 +8,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { usePresence } from "../src/hooks/use-presence";
 import { Presence } from "../src/patterns/presence";
 import { AnimatedList } from "../src/patterns/animated-list";
-import { axeViolations } from "./a11y";
-
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
+import { axeViolations } from "./helpers/a11y";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -21,7 +17,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   vi.useRealTimers();
-  window.matchMedia = original;
+  resetMedia();
 });
 
 const idOf = (s: string) => s;

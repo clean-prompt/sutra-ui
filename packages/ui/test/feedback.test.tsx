@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { AlertBanner } from "../src/primitives/alert-banner";
 import { InlineAlert, InlineAlertDescription, InlineAlertTitle } from "../src/primitives/inline-alert";
 import { Snackbar, Toaster, toast } from "../src/primitives/toast";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("Toaster + toast()", () => {
   // jsdom lacks setPointerCapture, which sonner calls on pointerdown.

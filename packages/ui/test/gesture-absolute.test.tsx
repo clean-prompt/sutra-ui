@@ -5,7 +5,7 @@
 import * as React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import { useDrag, type DragBinding, type DragInfo, type UseDragOptions } from "../src/hooks/use-drag";
 import { trackPoint, unscaleTravel } from "../src/lib/gesture";
 

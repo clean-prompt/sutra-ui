@@ -4,12 +4,8 @@ import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CheckBurst, type CheckBurstApi } from "../src/patterns/check-burst";
 import { BURST_MAX, burstKeyframes, burstParticles, clampBurstCount } from "../src/lib/burst";
-import { axeViolations } from "./a11y";
-
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
+import { axeViolations } from "./helpers/a11y";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
 describe("burst geometry", () => {
   it("clamps the count to a whole number from 0 to the maximum", () => {
@@ -59,7 +55,7 @@ describe("CheckBurst", () => {
   afterEach(() => {
     delete (HTMLElement.prototype as unknown as { animate?: unknown }).animate;
     delete (Element.prototype as unknown as { animate?: unknown }).animate;
-    window.matchMedia = original;
+    resetMedia();
   });
 
   it("plays nothing on mount, even when it starts active", () => {

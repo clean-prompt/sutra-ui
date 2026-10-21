@@ -1,7 +1,7 @@
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { FunnelChart } from "../src/patterns/chart";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const stages = [
   { label: "Visited", value: 12000 },

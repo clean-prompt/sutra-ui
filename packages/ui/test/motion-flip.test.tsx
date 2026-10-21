@@ -9,7 +9,8 @@ import { FLIP_MAX, flipInverseKeyframes, flipKeyframes, flipMoves, parseCssTime,
 import { useFlip } from "../src/hooks/use-flip";
 import { AnimatedList } from "../src/patterns/animated-list";
 import { ReorderableList } from "../src/patterns/reorderable-list";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
 const keyOf = (el: Element) => el.textContent?.trim().slice(0, 1);
 const rect = (x: number, y: number, width = 100, height = 20): FlipRect => ({ x, y, width, height });
@@ -69,11 +70,6 @@ describe("lib/flip", () => {
 
 /* ------------------------------------------------------------------ */
 
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
-
 /** Rows are laid out one under the other in DOM order (20 px each); a row is an `li` whose text starts with its key. */
 let animations: { el: Element; frames: Keyframe[]; options: KeyframeAnimationOptions; cancel: ReturnType<typeof vi.fn>; finish: () => void }[] = [];
 
@@ -93,7 +89,7 @@ beforeEach(() => {
   };
 });
 afterEach(() => {
-  window.matchMedia = original;
+  resetMedia();
   delete (Element.prototype as { animate?: unknown }).animate;
   delete (Element.prototype as { getBoundingClientRect?: unknown }).getBoundingClientRect;
   // restore jsdom's own rect function from the prototype chain

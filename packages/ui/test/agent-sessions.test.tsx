@@ -28,7 +28,7 @@ import {
 } from "../src/kits/agent/agent-transcript";
 import { ContextUsageBreakdown, SessionStats, UsageLimitBars, formatResetCaption } from "../src/kits/ai/agent-usage";
 import { ConnectionState, OnboardingChecklist, PasteCodeAuth } from "../src/kits/agent/agent-onboarding";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   vi.useRealTimers();

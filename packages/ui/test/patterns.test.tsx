@@ -6,7 +6,7 @@ import { FadeText } from "../src/patterns/fade-text";
 import { FanMenu } from "../src/patterns/fan-menu";
 import { SparkBar, Sparkline } from "../src/patterns/sparkline";
 import { ZoomPan } from "../src/patterns/zoom-pan";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* Patterns that have no page-specific test file of their own. */
 

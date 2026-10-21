@@ -8,7 +8,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { wheelEdgeEnabled, wheelNearestEnabled, wheelScrollTop, wheelIndex, wheelStepEnabled, typeAheadIndex, wheelRange } from "../src/lib/wheel";
 import { WheelPicker, WheelPickerGroup } from "../src/primitives/wheel-picker";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("lib/wheel", () => {
   it("wheelIndex rounds the scroll position to a row and clamps to the list", () => {

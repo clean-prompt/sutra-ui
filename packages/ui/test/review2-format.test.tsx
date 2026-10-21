@@ -38,7 +38,7 @@ import { formatDayLabel, formatRelative } from "../src/lib/time";
 import { formatClock, formatDuration, splitDuration as splitDurationLib } from "../src/lib/duration";
 import { formatBytes as formatBytesLib } from "../src/lib/format";
 import { base32Decode as base32DecodeLib } from "../src/lib/encoding";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const NOW = new Date(2026, 2, 10, 12, 0, 0).getTime();
 const S = 1000, M = 60 * S, H = 60 * M, D = 24 * H;

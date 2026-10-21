@@ -25,21 +25,7 @@ import {
   formatTypingText,
   type PresenceUser,
 } from "../src/kits/social/presence";
-import { axeViolations } from "./a11y";
-
-// jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerId: number;
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? "mouse";
-    }
-  }
-  (window as unknown as { PointerEvent: unknown }).PointerEvent = PointerEventPolyfill;
-}
+import { axeViolations } from "./helpers/a11y";
 
 const pointer = { pointerId: 1, pointerType: "touch", button: 0 };
 

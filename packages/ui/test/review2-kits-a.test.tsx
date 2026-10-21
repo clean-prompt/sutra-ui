@@ -1,7 +1,7 @@
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 import { UsageLimitBars, formatResetCaption } from "../src/kits/ai/agent-usage";
 import { AgentSessionList, formatAgentRelativeTime } from "../src/kits/agent/agent-sessions";
 import { ConflictResolver, SyncStatus } from "../src/kits/workspace/sync-status";
@@ -10,20 +10,6 @@ import { MemoryMap, type MemoryNode } from "../src/kits/workspace/memory-map";
 import { PromptInputModelPill } from "../src/kits/ai/prompt-input";
 import { ArtifactViewer } from "../src/kits/agent/artifacts";
 import { TilingLayout, type LayoutNode } from "../src/patterns/tiling-layout";
-
-// jsdom may lack PointerEvent; without it fireEvent.pointer* drops button/clientX.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerId: number;
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? "mouse";
-    }
-  }
-  (window as unknown as { PointerEvent: unknown }).PointerEvent = PointerEventPolyfill;
-}
 
 const BASE = new Date("2026-10-19T12:00:00Z").getTime();
 const MIN = 60_000;
@@ -234,7 +220,7 @@ describe("PromptInputModelPill cooldown end", () => {
     });
 
   it("does not fire onFastCooldownEnd when the cooldown is turned off mid-way", () => {
-    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout", "Date"] });
     const onEnd = vi.fn();
     const { rerender } = render(<PromptInputModelPill model="Opus" fast="cooldown" fastCooldown={5} onFastCooldownEnd={onEnd} />);
     tick(2000);
@@ -244,7 +230,7 @@ describe("PromptInputModelPill cooldown end", () => {
   });
 
   it("does not fire when the cooldown is canceled by clearing the seconds", () => {
-    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout", "Date"] });
     const onEnd = vi.fn();
     const { rerender } = render(<PromptInputModelPill model="Opus" fast="cooldown" fastCooldown={5} onFastCooldownEnd={onEnd} />);
     tick(2000);
@@ -254,7 +240,7 @@ describe("PromptInputModelPill cooldown end", () => {
   });
 
   it("does not fire when the cooldown seconds are cleared while still in cooldown", () => {
-    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout", "Date"] });
     const onEnd = vi.fn();
     const { rerender } = render(<PromptInputModelPill model="Opus" fast="cooldown" fastCooldown={5} onFastCooldownEnd={onEnd} />);
     tick(2000);
@@ -264,7 +250,7 @@ describe("PromptInputModelPill cooldown end", () => {
   });
 
   it("does not fire on unmount mid-way", () => {
-    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout", "Date"] });
     const onEnd = vi.fn();
     const { unmount } = render(<PromptInputModelPill model="Opus" fast="cooldown" fastCooldown={3} onFastCooldownEnd={onEnd} />);
     tick(1000);
@@ -274,7 +260,7 @@ describe("PromptInputModelPill cooldown end", () => {
   });
 
   it("fires once when a restarted cooldown completes, using the latest callback", () => {
-    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout", "Date"] });
     const first = vi.fn();
     const second = vi.fn();
     const { rerender } = render(<PromptInputModelPill model="Opus" fast="cooldown" fastCooldown={3} onFastCooldownEnd={first} />);

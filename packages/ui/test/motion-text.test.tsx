@@ -11,17 +11,14 @@ import { useSpringValue } from "../src/hooks/use-spring-value";
 import { useTypewriter } from "../src/hooks/use-typewriter";
 import { SplitText } from "../src/patterns/split-text";
 import { Typewriter } from "../src/patterns/typewriter";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
-  window.matchMedia = original;
+  resetMedia();
 });
 
 describe("stagger", () => {

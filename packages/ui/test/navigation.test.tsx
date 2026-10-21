@@ -28,7 +28,7 @@ import {
   HeaderNavTrigger,
 } from "../src/patterns/header-navigation";
 import { PageHeader, SectionHeader } from "../src/patterns/section-header";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* Tabs                                                                */

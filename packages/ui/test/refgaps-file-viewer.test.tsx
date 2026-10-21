@@ -2,7 +2,7 @@ import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { FileViewer, type FileRenderer, type ViewerFile } from "../src/patterns/file-viewer";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const photos: ViewerFile[] = [
   { name: "one.png", url: "/one.png" },

@@ -5,7 +5,7 @@ import { ButtonGroup, ButtonGroupItem, ButtonGroupSeparator } from "../src/primi
 import { CloseButton } from "../src/primitives/close-button";
 import { FloatingActionButton } from "../src/primitives/fab";
 import { TextLink } from "../src/primitives/text-link";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 describe("Button", () => {
   it("defaults to type=button and fires onClick", async () => {

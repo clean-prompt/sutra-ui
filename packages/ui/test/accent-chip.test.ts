@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { accentClasses } from "../src/lib/accent";
 import { chartColors } from "../src/lib/tokens";
-import { contrast, evalColor, stockTokens, type Mode } from "./contrast";
+import { contrast, evalColor, stockTokens, type Mode } from "./helpers/contrast";
 
 /** `accentClasses.chip` (provider and source chips): a 15% tint of the accent with text that passes AA in both themes. */
 

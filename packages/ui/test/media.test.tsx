@@ -29,21 +29,7 @@ import {
 } from "../src/kits/media/audio-player";
 import { AlbumCard, EpisodeCard, MediaHero, MediaShelf, PlaylistCard, PosterCard } from "../src/kits/media/media-cards";
 import { CastPicker, DeviceIcon, resolveDeviceKind, type CastDevice } from "../src/kits/media/cast-picker";
-import { axeViolations } from "./a11y";
-
-// jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY and pointerType.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerId: number;
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? "mouse";
-    }
-  }
-  (window as unknown as { PointerEvent: unknown }).PointerEvent = PointerEventPolyfill;
-}
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* HTMLMediaElement stubs (jsdom does not implement playback)          */

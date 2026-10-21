@@ -11,19 +11,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { pointerVarsFor, usePointerVars, type UsePointerVarsOptions } from "../src/hooks/use-pointer-vars";
 import { Magnetic, SpotlightCard, TiltCard } from "../src/patterns/pointer-fx";
-import { axeViolations } from "./a11y";
-
-// jsdom may lack PointerEvent; without it fireEvent.pointer* drops clientX/clientY and pointerType.
-if (typeof window.PointerEvent === "undefined") {
-  class PointerEventPolyfill extends MouseEvent {
-    pointerType: string;
-    constructor(type: string, init: PointerEventInit = {}) {
-      super(type, init);
-      this.pointerType = init.pointerType ?? "";
-    }
-  }
-  (window as unknown as { PointerEvent: unknown }).PointerEvent = PointerEventPolyfill;
-}
+import { axeViolations } from "./helpers/a11y";
 
 const original = window.matchMedia;
 /** A browser with these media queries matching (substring match on the query). */

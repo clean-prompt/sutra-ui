@@ -18,7 +18,7 @@ import {
 import { Checklist, ReorderableList, reorderArray, reorderBy, useReorder, type ChecklistEntry } from "../src/patterns/reorderable-list";
 import { Countdown, Stopwatch, TallyCounter, formatCompactDuration, splitDuration, useStopwatch } from "../src/patterns/counters";
 import { RecurrencePicker, StatusCycle, describeRecurrence, toRRule, type StatusCycleOption } from "../src/patterns/status-cycle";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* AppLauncher                                                         */

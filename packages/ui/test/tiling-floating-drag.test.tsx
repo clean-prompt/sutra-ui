@@ -2,7 +2,7 @@
 import * as React from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import { FloatingPanes } from "../src/patterns/tiling-layout-floating";
 
 const pt = (x: number, y: number, extra: object = {}) => ({ pointerId: 1, pointerType: "mouse", button: 0, clientX: x, clientY: y, ...extra });

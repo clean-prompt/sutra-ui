@@ -5,7 +5,7 @@ import { ChainOfThoughtSearchResult, ChainOfThoughtSearchResults } from "../src/
 import { ChatSource, ChatSourceList } from "../src/kits/ai/chat-source";
 import { Favicon, FaviconProvider, googleFaviconResolver } from "../src/primitives/favicon";
 import { blockRegistry } from "../src/blocks/registry";
-import { renderBlock } from "./blocks-helpers";
+import { renderBlock } from "./helpers/blocks-helpers";
 
 /**
  * Sutra must make zero network requests by default. These tests guard that
@@ -21,8 +21,8 @@ const URL_ALLOWLIST: { file: string; url: string; reason: string }[] = [
   { file: "primitives/input.tsx", url: "https://", reason: "JSDoc example for the `prefix` addon" },
   { file: "primitives/input-group.tsx", url: "https://", reason: "JSDoc example for InputGroupText" },
   { file: "blocks/header-navigation-blocks.tsx", url: "https://github.com", reason: "default <a href> for the DocsHeader GitHub link (navigation, not a request)" },
-  { file: "blocks/modal-dialog-blocks-invite.tsx", url: "https://sutra.app/join/northwind-7f3k2q", reason: "demo invite link text shown in an input" },
-  { file: "blocks/modal-dialog-blocks-share.tsx", url: "https://sutra.app/n/q4-launch-plan-8d2f", reason: "demo share link text shown in an input" },
+  { file: "blocks/demo-data.ts", url: "https://sutra.app/join/northwind-7f3k2q", reason: "demo invite link text shown in an input" },
+  { file: "blocks/demo-data.ts", url: "https://sutra.app/n/q4-launch-plan-8d2f", reason: "demo share link text shown in an input" },
   { file: "kits/identity/kunji-client.ts", url: "https://kunji.cc/rp.js", reason: "KUNJI_RP_SCRIPT_URL: only loaded by the opt-in createRpScriptAdapter().load(); never used by KunjiSignIn" },
   { file: "kits/identity/kunji-client.ts", url: "https://app.kunji.cc", reason: "KUNJI_WALLET_URL: <a href> target of the same-device \"Open kunji\" deep link (navigation, not a request)" },
   { file: "kits/identity/kunji-client.ts", url: "https://${audience}/kunji/callback", reason: "protocol-derived default callback URL the wallet POSTs to; compared, never fetched by the browser" },

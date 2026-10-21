@@ -8,7 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../src/prim
 import { ToggleButton, ToggleGroup, ToggleGroupItem } from "../src/primitives/toggle-group";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../src/primitives/accordion";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "../src/primitives/dialog";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /** jsdom has no TransitionEvent, so build one that carries `propertyName`. */
 function endTransition(el: Element, propertyName: string) {

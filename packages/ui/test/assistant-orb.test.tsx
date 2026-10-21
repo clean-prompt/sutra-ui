@@ -5,7 +5,7 @@ import { AssistantOrb, useAssistantOrbState } from "../src/kits/voice/assistant-
 import { drawWave, readWavePalette } from "../src/kits/voice/assistant-orb-canvas-internal";
 import { createFrameLoop } from "../src/kits/voice/assistant-orb-internal";
 import { assistantOrbLabels, assistantOrbStates, orbParams, orbStillLevel, waveLayers, type AssistantOrbState } from "../src/lib/orb";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 /* ------------------------------------------------------------------ */
 /* Environment: a manual frame queue, controllable observers, a canvas */

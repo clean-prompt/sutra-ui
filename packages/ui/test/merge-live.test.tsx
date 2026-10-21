@@ -5,7 +5,7 @@ import { AgentStatusLine, ToolTimeline, ToolTimelineDot, ToolTimelineItem } from
 import { ContextBanner, SpinnerVerbs } from "../src/kits/agent/agent-transcript";
 import { PresenceAvatars, PresenceIndicator, TypingIndicator } from "../src/kits/social/presence";
 import { StatusStrip } from "../src/kits/ai/status-strip";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => {
   vi.useRealTimers();

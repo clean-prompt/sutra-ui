@@ -16,7 +16,7 @@ import type { UsageLimitWindow } from "../src/kits/ai/agent-usage";
 import { StatCard } from "../src/patterns/stat-card";
 import { RingMeter } from "../src/patterns/gauge";
 import { Meter } from "../src/primitives/meter";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const H = 3_600_000;
 const D = 24 * H;

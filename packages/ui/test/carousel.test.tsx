@@ -8,7 +8,8 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activeSlide, autoplayInterval, stepSlide } from "../src/lib/carousel";
 import { Carousel } from "../src/patterns/carousel";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
+import { reduceMotion, resetMedia } from "./helpers/media";
 
 describe("lib/carousel", () => {
   it("activeSlide is the most visible slide, the first on a tie, -1 when none shows", () => {
@@ -41,11 +42,6 @@ describe("lib/carousel", () => {
 
 /* ------------------------------------------------------------------ */
 
-const original = window.matchMedia;
-const reduceMotion = (on: boolean) => {
-  window.matchMedia = ((query: string) => ({ ...original(query), matches: on && query.includes("reduce") })) as typeof window.matchMedia;
-};
-
 /** An IntersectionObserver whose reports the test sends by hand. */
 type Report = (ratios: number[]) => void;
 let reports: Report[] = [];
@@ -75,7 +71,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   vi.useRealTimers();
-  window.matchMedia = original;
+  resetMedia();
   globalThis.IntersectionObserver = RealIO;
 });
 

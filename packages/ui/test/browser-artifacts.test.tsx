@@ -32,7 +32,7 @@ import {
   type ChangedFile,
   type WorktreeBranch,
 } from "../src/kits/agent/git-review";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 afterEach(() => vi.useRealTimers());
 

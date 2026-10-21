@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../src/primitives/field";
 import { RangeSlider, Slider } from "../src/primitives/slider";
 

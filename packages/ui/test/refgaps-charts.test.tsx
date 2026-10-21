@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AreaChart, BarChart, LineChart, formatTimeTick, timeTicks } from "../src/patterns/chart";
 import { formatClockTime, formatDateTime, formatShortDate, HOUR_MS, MINUTE_MS, DAY_MS } from "../src/lib/time";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 // jsdom: the chart is 600px wide; the plot spans x 40 … 592 (552px).
 const LEFT = 40;

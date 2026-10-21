@@ -2,7 +2,7 @@
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import "./gesture-pointer";
+import "./helpers/gesture-pointer";
 import { useZoomPan } from "../src/hooks/use-zoom-pan";
 import { ZoomPan } from "../src/patterns/zoom-pan";
 

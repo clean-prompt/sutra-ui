@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Marquee } from "../src/assets/marquee";
 import { AcmeLogo, LogoCloud, placeholderLogos } from "../src/assets/placeholder-logos";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const track = (c: HTMLElement) => c.querySelector<HTMLElement>('[data-slot="marquee-track"]')!;
 const lists = (c: HTMLElement) => [...c.querySelectorAll<HTMLElement>('[data-slot="marquee-list"]')];

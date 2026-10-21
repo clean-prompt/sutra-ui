@@ -1,6 +1,8 @@
 import "@testing-library/jest-dom/vitest";
 import { afterEach } from "vitest";
 import { cleanup, configure } from "@testing-library/react";
+// jsdom has no PointerEvent: one shared polyfill for every test (fireEvent.pointer* then keeps clientX, pointerId, pointerType).
+import "./helpers/gesture-pointer";
 
 // Render every test inside <StrictMode>, like apps do in development. StrictMode mounts,
 // unmounts and remounts components and double-invokes effects, which surfaces cleanup bugs
