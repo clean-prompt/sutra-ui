@@ -4,7 +4,7 @@ import { cn } from "../../lib/cn";
 import { type StickToBottomState, type UseStickToBottomOptions, useStickToBottom } from "../../hooks/use-stick-to-bottom";
 import { Button, type ButtonProps } from "../../primitives/button";
 import { EmptyState } from "../../primitives/empty-state";
-import { assignRef as setRef } from "../../lib/refs";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 
 export { useStickToBottom, type StickToBottomState, type UseStickToBottomOptions } from "../../hooks/use-stick-to-bottom";
 
@@ -41,13 +41,7 @@ export interface ChatConversationContentProps extends React.HTMLAttributes<HTMLD
 export const ChatConversationContent = React.forwardRef<HTMLDivElement, ChatConversationContentProps>(
   ({ viewportClassName, className, ...props }, ref) => {
     const { scrollRef, contentRef } = useChatConversation();
-    const setViewport = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        scrollRef(node);
-        setRef(ref, node);
-      },
-      [scrollRef, ref]
-    );
+    const setViewport = useMergedRefs<HTMLDivElement>(scrollRef, ref);
     return (
       <div
         ref={setViewport}

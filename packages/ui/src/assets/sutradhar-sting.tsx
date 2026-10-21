@@ -3,6 +3,7 @@ import { cn } from "../lib/cn";
 import { useSafeId } from "../hooks/use-safe-id";
 import { usePrefersReducedMotion } from "../hooks/use-media-query";
 import { useIsoLayoutEffect, useLatestRef } from "../hooks/use-iso-layout-effect";
+import { useMergedRefs } from "../hooks/use-merged-refs";
 import { useFrameTicker } from "./mascot-driver-internal";
 import { drawFrame, newDrawState, nodesToMarkup, signature } from "./mascot-kit-internal";
 import { accessibleName, svgA11y } from "./svg-a11y-internal";
@@ -101,14 +102,7 @@ export const SutradharSting = React.forwardRef<SVGSVGElement, SutradharStingProp
     }, [def, px, aimDeg, id]);
     const groupRef = React.useRef<SVGGElement>(null);
     const svgRef = React.useRef<SVGSVGElement | null>(null);
-    const setRefs = React.useCallback(
-      (node: SVGSVGElement | null) => {
-        svgRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      },
-      [ref]
-    );
+    const setRefs = useMergedRefs<SVGSVGElement>(svgRef, ref);
     /* a play: requested on mount (autoPlay) and by every new replayKey; it ends on the lockup unless it loops */
     const [play, setPlay] = React.useState(0);
     const requested = React.useRef<string | number | undefined | null>(null);

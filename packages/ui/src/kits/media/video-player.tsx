@@ -26,7 +26,7 @@ import { PlaybackRateMenu, TrackCycleChip, type MediaTrackOption } from "./media
 import { PlayPauseButton, SkipButton } from "./media-controls-playback";
 import { SeekBar } from "./media-controls-seek";
 import { VolumeControl } from "./media-controls-volume";
-import { assignRef } from "../../lib/refs";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 import type { VideoPlayerProps } from "./video-player-model";
 import { INTERACTIVE, type WebkitVideo, type WebkitDocument, type WebkitElement } from "./video-player-internal";
 
@@ -89,21 +89,8 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
     const localVideo = React.useRef<HTMLVideoElement | null>(null);
     const media = useMediaElement(localVideo, { autoPlay, src });
 
-    const setRootRef = React.useCallback(
-      (node: HTMLDivElement | null) => {
-        rootRef.current = node;
-        setRoot(node);
-        assignRef(ref, node);
-      },
-      [ref]
-    );
-    const setVideoRef = React.useCallback(
-      (node: HTMLVideoElement | null) => {
-        localVideo.current = node;
-        assignRef(videoRef, node);
-      },
-      [videoRef]
-    );
+    const setRootRef = useMergedRefs<HTMLDivElement>(rootRef, setRoot, ref);
+    const setVideoRef = useMergedRefs<HTMLVideoElement>(localVideo, videoRef);
 
     React.useEffect(() => {
       if (localVideo.current && initialMuted) localVideo.current.muted = true;

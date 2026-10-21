@@ -2,7 +2,7 @@ import * as React from "react";
 import type { PDFDocumentLoadingTask, RenderTask } from "pdfjs-dist";
 import { cn } from "../../lib/cn";
 import { clamp } from "../../lib/math";
-import { assignRef } from "../../lib/refs";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { FileFormatIcon } from "../../assets/file-format";
 import { Skeleton } from "../../primitives/progress";
@@ -62,6 +62,7 @@ export const PdfThumbnail = React.forwardRef<HTMLDivElement, PdfThumbnailProps>(
     ref
   ) => {
     const rootRef = React.useRef<HTMLDivElement>(null);
+    const setRoot = useMergedRefs<HTMLDivElement>(rootRef, ref);
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
     const hasSource = Boolean(url || data || blob);
     const [visible, setVisible] = React.useState(!lazy || typeof IntersectionObserver === "undefined");
@@ -124,10 +125,7 @@ export const PdfThumbnail = React.forwardRef<HTMLDivElement, PdfThumbnailProps>(
     const failed = state.status === "error" || (!hasSource && !loading);
     return (
       <div
-        ref={(node) => {
-          rootRef.current = node;
-          assignRef(ref, node);
-        }}
+        ref={setRoot}
         data-slot="pdf-thumbnail"
         data-state={failed ? "error" : state.status}
         role={alt ? "img" : undefined}

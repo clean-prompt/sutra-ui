@@ -3,7 +3,7 @@ import { RiHashtag, RiSlashCommands2, RiUser3Line } from "@remixicon/react";
 import { normalizeTaskStatus } from "../../lib/status";
 import { cn, focusRing } from "../../lib/cn";
 import { formatDateTime, formatShortDate, toValidDate } from "../../lib/time";
-import { assignRef } from "../../lib/refs";
+import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { SutraAppIcon, sutraAppMeta, sutraApps, type SutraApp } from "../../assets/brand";
 import { HoverCard, HoverCardContent, HoverCardTrigger, Popover, PopoverAnchor, PopoverContent } from "../../primitives/popover";
@@ -392,10 +392,10 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
     const fieldRef = React.useRef<HTMLTextAreaElement | HTMLInputElement | null>(null);
     const overlayRef = React.useRef<HTMLDivElement>(null);
     const pendingCaret = React.useRef<number | null>(null);
-    const setRefs = (node: HTMLTextAreaElement | HTMLInputElement | null) => {
-      fieldRef.current = node;
-      assignRef(forwardedRef, node as HTMLTextAreaElement | null);
-    };
+    const setRefs = useMergedRefs<HTMLTextAreaElement | HTMLInputElement>(
+      fieldRef,
+      forwardedRef as React.Ref<HTMLTextAreaElement | HTMLInputElement>
+    );
 
     const [active, setActive] = React.useState<{ trigger: MentionTrigger; start: number; query: string } | null>(null);
     const [items, setItems] = React.useState<MentionSuggestion[]>([]);
