@@ -5,8 +5,8 @@ on:
     tags: ["v*"]
 
 permissions:
-  contents: read
-  id-token: write # npm provenance
+  contents: write # create the GitHub Release
+  id-token: write # npm provenance and trusted publishing (OIDC)
 
 jobs:
   publish:
@@ -34,6 +34,11 @@ jobs:
 
       - run: pnpm verify
 
+      # Trusted publishing needs npm 11.5.1 or newer; Node 22 ships an older npm.
+      - run: npm install --global npm@latest
+
+      # With a trusted publisher configured for this repository and workflow on npmjs.com, npm signs in through OIDC and no
+      # token is needed. Until then (or if OIDC is not set up) it falls back to the NPM_TOKEN secret when there is one.
       - name: Publish (pre-releases go to the "next" dist-tag)
         working-directory: packages/ui
         env:
@@ -43,4 +48,25 @@ jobs:
             *-*) tag="next" ;;
             *) tag="latest" ;;
           esac
-          pnpm publish --access public --provenance --no-git-checks --tag "$tag"
+          npm publish --access public --provenance --tag "$tag"
+
+      # The release notes are the matching CHANGELOG section. A Release that already exists (made by hand) is left alone.
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          awk -v v="$version" '
+            index($0, "## [" v "]") == 1 { on = 1; next }
+            on && /^## \[/ { exit }
+            on { print }
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "See CHANGELOG.md for what changed in $version." > release-notes.md
+          fi
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release $GITHUB_REF_NAME already exists; leaving it as it is."
+            exit 0
+          fi
+          flags=""
+          case "$version" in *-*) flags="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" --title "$version" --notes-file release-notes.md $flags
