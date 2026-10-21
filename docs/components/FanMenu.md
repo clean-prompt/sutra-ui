@@ -2,7 +2,7 @@
 
 > A hub button that fans out circular action discs along an arc (e.g. voice modes). Keyboard accessible as a menu.
 
-- Import: `import { FanMenu } from "@sutra/ui"`
+- Import: `import { FanMenu } from "@sutra/ui"` (or from `@sutra/ui/overlays`)
 - Source: `packages/ui/src/patterns/fan-menu` (patterns)
 - `data-slot`: `fan-menu`
 - Also accepts the props of HTMLAttributes
@@ -29,7 +29,6 @@
 
 ```tsx
 import * as React from "react";
-import { FanMenu } from "@sutra/ui";
 import {
   RiChatVoiceLine,
   RiHeadphoneLine,
@@ -37,6 +36,7 @@ import {
   RiTranslate2,
   RiVoiceprintLine,
 } from "@sutra/ui/icons";
+import { FanMenu } from "@sutra/ui/overlays";
 
 function FanMenuDemo() {
   const [mode, setMode] = React.useState("dictate");

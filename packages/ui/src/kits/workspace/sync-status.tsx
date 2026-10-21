@@ -19,7 +19,6 @@ import { SimpleTooltip } from "../../primitives/tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../primitives/dialog";
 
 export type SyncState = "synced" | "syncing" | "offline" | "error" | "conflict";
-export { formatRelativeTime } from "../../lib/relative-time";
 export { useOnlineStatus } from "../../hooks/use-online-status";
 
 export const syncStateLabels: Record<SyncState, string> = {

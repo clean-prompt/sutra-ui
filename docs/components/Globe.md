@@ -64,8 +64,8 @@
 
 ```tsx
 import { Text } from "@sutra/ui/core";
+import { formatCompact } from "@sutra/ui/format";
 import { Globe } from "@sutra/ui/geo";
-import { formatCompact } from "@sutra/ui/tokens";
 
 function AttacksDemo() {
   const total = attacks.reduce((s, a) => s + a.count, 0);

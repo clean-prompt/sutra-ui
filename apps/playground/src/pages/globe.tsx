@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Avatar, Badge, Button, CountryFlag, Label, SimpleSelect, StatusDot, Switch, Text, cn, formatCompact } from "@sutra/ui";
+import { Avatar, Badge, Button, CountryFlag, Label, SimpleSelect, StatusDot, Switch, Text, cn } from "@sutra/ui";
+import { formatCompact } from "@sutra/ui/format";
 import { Globe, countryName, formatGeoPoint, type GeoRotation, type GlobeApi } from "@sutra/ui/geo";
 import { RiCloseLine } from "@sutra/ui/icons";
 import { Demo, PageIntro } from "../components/demo";

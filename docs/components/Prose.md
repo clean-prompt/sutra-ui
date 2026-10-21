@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `BlogContent`.
 
-- Import: `import { Prose } from "@sutra/ui"`
+- Import: `import { Prose } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/blog-content` (patterns)
 - Also accepts the props of HTMLAttributes
 

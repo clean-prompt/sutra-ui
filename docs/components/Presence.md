@@ -25,7 +25,7 @@ An exiting child is `inert` and `aria-hidden` (out of the tab order and the acce
 
 ```tsx
 import * as React from "react";
-import { CodeBlock } from "@sutra/ui";
+import { CodeBlock } from "@sutra/ui/ai";
 import { Button } from "@sutra/ui/core";
 import { Presence } from "@sutra/ui/motion";
 

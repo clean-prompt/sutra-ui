@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../src/primitives/tabs";
 import { TabMenu } from "../src/patterns/tab-menu";
-import { Pagination, getPaginationRange, usePagination } from "../src/primitives/pagination";
+import { Pagination, usePagination } from "../src/primitives/pagination";
+import { getPaginationRange } from "../src/lib/pagination";
 import { Breadcrumbs } from "../src/primitives/breadcrumbs";
 import { TreeView, type TreeNode } from "../src/patterns/tree-view";
 import {

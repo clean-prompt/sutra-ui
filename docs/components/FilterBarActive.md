@@ -2,7 +2,7 @@
 
 > Row of applied filter tokens. Pass `filters` or `FilterBarToken` children.
 
-- Import: `import { FilterBarActive } from "@sutra/ui"`
+- Import: `import { FilterBarActive } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - `data-slot`: `filter-bar-active`
 - Part of [`FilterBar`](FilterBar.md)

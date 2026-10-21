@@ -2,7 +2,7 @@
 
 > Typographic container that styles raw HTML or Markdown output.
 
-- Import: `import { BlogContent } from "@sutra/ui"`
+- Import: `import { BlogContent } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/blog-content` (patterns)
 - `data-slot`: `blog-content`
 - Also accepts the props of HTMLAttributes
@@ -18,7 +18,7 @@
 ## Example (live: `#/components/content/blog-content` in the playground)
 
 ```tsx
-import { BlogContent, BlogPostHeader } from "@sutra/ui";
+import { BlogContent, BlogPostHeader } from "@sutra/ui/navigation";
 
         <article className="w-full max-w-[68ch] space-y-10">
           <BlogPostHeader

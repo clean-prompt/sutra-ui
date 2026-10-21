@@ -2,7 +2,7 @@
 
 > Code block with tabs, e.g. npm / pnpm / yarn or several files.
 
-- Import: `import { CodeBlockTabs } from "@sutra/ui"`
+- Import: `import { CodeBlockTabs } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/patterns/code-block` (patterns)
 - `data-slot`: `code-block-tabs`
 - Part of [`CodeBlock`](CodeBlock.md)

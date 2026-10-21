@@ -7788,21 +7788,21 @@ Server render: part of it fills in after mount. The first render is the final va
 
 > Typographic container that styles raw HTML or Markdown output.
 
-- Import: `import { BlogContent } from "@sutra/ui"` ([full page](md/BlogContent.md))
+- Import: `import { BlogContent } from "@sutra/ui/navigation"` ([full page](md/BlogContent.md))
 - Props: `as`, `fullWidth`, `size` (* required)
 
 ## BlogPostHeader
 
 > Article heading: category, title, subtitle and meta row.
 
-- Import: `import { BlogPostHeader } from "@sutra/ui"` ([full page](md/BlogPostHeader.md))
+- Import: `import { BlogPostHeader } from "@sutra/ui/navigation"` ([full page](md/BlogPostHeader.md))
 - Props: `title`*, `align`, `author`, `category`, `date`, `readTime`, `subtitle` (* required)
 
 ## BlogTableOfContents
 
 > "On this page" navigation that highlights the heading in view: a `SectionRail` fed with the post's headings.
 
-- Import: `import { BlogTableOfContents } from "@sutra/ui"` ([full page](md/BlogTableOfContents.md))
+- Import: `import { BlogTableOfContents } from "@sutra/ui/navigation"` ([full page](md/BlogTableOfContents.md))
 - Props: `headings`*, `activeId`, `rootMargin`, `smoothScroll`, `title` (* required)
 
 ## BootScreen
@@ -8121,7 +8121,7 @@ Server render: same markup as the client. Plain markup from `items` or `defaultI
 
 > Syntax-highlighted code with filename, copy, line numbers and highlights.
 
-- Import: `import { CodeBlock } from "@sutra/ui"` ([full page](md/CodeBlock.md))
+- Import: `import { CodeBlock } from "@sutra/ui/ai"` ([full page](md/CodeBlock.md))
 - Parts: `CodeBlockTabs`
 - Props: `actions`, `children`, `code`, `copyable`, `defaultWrap`, `filename`, `hideHeader`, `highlightLines`, `language`, `maxHeight`, `onWrapChange`, `showLineNumbers`, `showWrapToggle`, `startLine`, `theme`, `wrap` (* required)
 
@@ -8246,7 +8246,7 @@ Server render: part of it fills in after mount. The remaining time is computed f
 
 > Scramble-then-decode text reveal. Exposed as `role="img"` labelled with the final text, so screen readers never hear the scramble; reduced motion shows it instantly.
 
-- Import: `import { DecodeText } from "@sutra/ui"` ([full page](md/DecodeText.md))
+- Import: `import { DecodeText } from "@sutra/ui/motion"` ([full page](md/DecodeText.md))
 - Props: `text`*, `charset`, `duration`, `interval`, `onComplete`, `play`, `trigger` (* required)
 
 ## DiffCard
@@ -8347,14 +8347,14 @@ Server render: same markup as the client. The ring is drawn from `size` alone, s
 
 > Truncates text with a soft gradient fade instead of an ellipsis; the fade only appears when the text overflows.
 
-- Import: `import { FadeText } from "@sutra/ui"` ([full page](md/FadeText.md))
+- Import: `import { FadeText } from "@sutra/ui/motion"` ([full page](md/FadeText.md))
 - Props: `fade`, `lines`, `showTitle` (* required)
 
 ## FanMenu
 
 > A hub button that fans out circular action discs along an arc (e.g. voice modes). Keyboard accessible as a menu.
 
-- Import: `import { FanMenu } from "@sutra/ui"` ([full page](md/FanMenu.md))
+- Import: `import { FanMenu } from "@sutra/ui/overlays"` ([full page](md/FanMenu.md))
 - Props: `icon`*, `items`*, `label`*, `defaultOpen`, `direction`, `discSize`, `hubSize`, `onOpenChange`, `onSelect`, `open`, `radius`, `showLabels`, `spread` (* required)
 
 ## FilePreviewCard
@@ -8423,7 +8423,7 @@ Server render: part of it fills in after mount. Without `directory` the markup i
 
 > Toolbar row for lists and tables: search, filter chips and actions.
 
-- Import: `import { FilterBar } from "@sutra/ui"` ([full page](md/FilterBar.md))
+- Import: `import { FilterBar } from "@sutra/ui/forms"` ([full page](md/FilterBar.md))
 - Parts: `FilterBarActive`, `FilterBarChip`, `FilterBarClear`, `FilterBarSearch`, `FilterBarToken`
 
 **When to use:** The toolbar above a list or table: a search field, dashed "+ Filter" chips that open a multi-select checklist, a row of removable tokens for the applied filters, and a "Clear all" button. The parts hold no shared state, so you wire them to your own filter state.
@@ -8474,7 +8474,7 @@ Server render: same markup as the client. Plain markup from props (`useId` for t
 
 > Alias of `FilterBarChip`.
 
-- Import: `import { FilterPill } from "@sutra/ui"` ([full page](md/FilterPill.md))
+- Import: `import { FilterPill } from "@sutra/ui/forms"` ([full page](md/FilterPill.md))
 - Props: `label`*, `options`*, `align`, `defaultValue`, `icon`, `maxDisplay`, `onValueChange`, `searchable`, `value` (* required)
 
 ## FloatingPanes
@@ -8701,7 +8701,7 @@ Server render: part of it fills in after mount. With a `src` the server renders 
 
 > Single-line command with a copy button, e.g. `npm i
 
-- Import: `import { InlineCopy } from "@sutra/ui"` ([full page](md/InlineCopy.md))
+- Import: `import { InlineCopy } from "@sutra/ui/ai"` ([full page](md/InlineCopy.md))
 - Props: `value`*, `prompt`, `size`, `theme` (* required)
 
 ## JsonInline
@@ -8984,7 +8984,7 @@ Server render: same markup as the client. react-markdown and KaTeX produce their
 
 > Alias of `BlogContent`.
 
-- Import: `import { Prose } from "@sutra/ui"` ([full page](md/Prose.md))
+- Import: `import { Prose } from "@sutra/ui/navigation"` ([full page](md/Prose.md))
 - Props: `as`, `fullWidth`, `size` (* required)
 
 ## RadarChart
@@ -9254,7 +9254,7 @@ Server render: same markup as the client. The first render is the same on the se
 
 > A selectable region: drag on empty space to rubber-band select (Shift adds, Mod toggles), click items to select, Shift-click for ranges, Mod+A selects all, Escape clears, Space toggles the focused item and the arrow keys move focus. Items get their props from `getItemProps(id)` (via `useSelectionArea()` or the render-prop argument).
 
-- Import: `import { SelectionArea } from "@sutra/ui"` ([full page](md/SelectionArea.md))
+- Import: `import { SelectionArea } from "@sutra/ui/forms"` ([full page](md/SelectionArea.md))
 - Props: `accent`, `autoScroll`, `children`, `clearOnClick`, `defaultValue`, `disabled`, `formatAnnouncement`, `items`, `mode`, `onValueChange`, `selectOnClick`, `threshold`, `touch`, `value` (* required)
 
 ## SettingsDangerZone
@@ -9515,7 +9515,7 @@ Server render: same markup as the client. Plain markup from props with a `useId`
 
 > A centred statement section: big mark, headline, short subtitle, one action and a hint.
 
-- Import: `import { StatementHero } from "@sutra/ui"` ([full page](md/StatementHero.md))
+- Import: `import { StatementHero } from "@sutra/ui/blocks"` ([full page](md/StatementHero.md))
 - Props: `title`*, `action`, `align`, `animated`, `as`, `description`, `float`, `hint`, `media`, `size` (* required)
 
 ## StatGroup
@@ -9789,7 +9789,7 @@ Server render: part of it fills in after mount. The server and the hydrating cli
 #### Gotchas
 
 - Uncontrolled, it stores the mode under `storageKey` (default `"sutra-theme"`; `null` turns it off) and a saved value that is in `modes` wins over `defaultValue`. Controlled with `value` and `onValueChange`, it stores nothing: you persist.
-- `applyToDocument` (default true) toggles `dark` on `<html>` and sets `color-scheme`; set it to false when the app applies the theme itself. Two instances do not sync with each other.
+- `applyToDocument` (default true) toggles `dark` on `<html>` and sets `color-scheme`; set it to false when the app applies the theme itself. It writes only the mode, through the same store as `useTheme`, so a `useTheme` caller follows the toggle at once and the toggle never rewrites the brand, neutral, radius or style. Two toggles do not sync with each other.
 - `modes` is the cycle order (default `light`, `dark`, `system`); `["light", "dark"]` makes a two-state toggle. With no saved or default value the start is `system` when offered, else whatever `<html>` shows.
 - `system` follows the operating system live and resolves to light or dark (exposed as `data-resolved` on the icon button); its icon is always the computer, not the resolved sun or moon.
 
@@ -10034,7 +10034,7 @@ Server render: same markup as the client. The whole tree is plain markup from `n
 
 > Zoom & pan viewport for images, diagrams or SVG, with a controls overlay.
 
-- Import: `import { ZoomPan } from "@sutra/ui"` ([full page](md/ZoomPan.md))
+- Import: `import { ZoomPan } from "@sutra/ui/mobile"` ([full page](md/ZoomPan.md))
 - Props: `contentClassName`, `controls`, `controlsPosition`, `defaultScale`, `label`, `maxScale`, `minScale`, `onChange`, `onValueChange`, `panStep`, `step`, `wheelRequiresModifier` (* required)
 
 ## Kits, blocks and assets
@@ -10135,7 +10135,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `ChatTool` (`@sutra/ui/ai`): Collapsible tool-call card with state badge, input and output. Children replace the default body.
 - `CheckoutSteps` (`@sutra/ui/billing`): Multi-step checkout: plan → payment → confirm (with 3-D Secure step-up) → success or failure with retry.
 - `CheckpointMarker` (`@sutra/ui/agent`): Thin transcript divider ("Checkpoint · 3 files changed") with a rewind action.
-- `ClarifySettled` (`@sutra/ui`): Collapsed summary of an answered clarifying-question card, expandable to the Q → A list.
+- `ClarifySettled` (`@sutra/ui/ai`): Collapsed summary of an answered clarifying-question card, expandable to the Q → A list.
 - `CobaltLogo` (`@sutra/ui/assets`): Cobalt — fictional placeholder logo.
 - `CodeEditor` (`@sutra/ui/editor`): CodeMirror 6 editor themed with Sutra tokens: markdown highlighting, line numbers, wrapping, search, Mod-B / Mod-I emphasis, controlled or…
 - `ComparisonTable` (`@sutra/ui/blocks`): Product-vs-alternatives matrix with check / cross / partial marks and numbered footnotes.
@@ -10498,7 +10498,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `TurnStickyHeader` (`@sutra/ui/agent`): User prompt pinned at the top of the scroll area while its turn scrolls; click to jump to the turn start.
 - `TwoFactorSetupCard` (`@sutra/ui/blocks`): Authenticator app setup: scan a QR code or copy the secret, then confirm with a 6-digit code.
 - `TypingIndicator` (`@sutra/ui/mobile`): Polite live region announcing who is typing, with bouncing dots (`Spinner variant="dots"`).
-- `UndeliveredNotice` (`@sutra/ui`): Inline notice when an answer or message couldn't be delivered, with Retry.
+- `UndeliveredNotice` (`@sutra/ui/ai`): Inline notice when an answer or message couldn't be delivered, with Retry.
 - `UpgradeDialog` (`@sutra/ui/blocks`): Plan comparison dialog with a monthly/yearly toggle and feature checklists.
 - `UsageInvoiceTable` (`@sutra/ui/billing`): Invoice history: date, description, amount, paid/due/failed status and download / pay actions.
 - `UsageLimitBars` (`@sutra/ui/agent`): Rolling usage-limit bars with threshold coloring, reset captions, a window toggle and per-model attribution.
@@ -10522,6 +10522,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 ## Hooks
 
 - `useActiveIndicator` (`@sutra/ui/tokens`): Measures the active item of a tab strip / segmented control for a sliding indicator.
+- `useAddedKeys` (`@sutra/ui/tokens`): The keys that the latest change of `keys` added: empty on the first render and again after a change that only removed or reordered.
 - `useAgentNow` (`@sutra/ui/agent`): Current time, re-rendered every `interval` ms while `active`.
 - `useAssistantOrbState` (`@sutra/ui/voice`): The orb state for what a voice session is doing, by priority: error, speaking, thinking, listening, muted, idle.
 - `useAsyncAction` (`@sutra/ui/tokens`): Tracks a possibly-async action: `busy`, `error`, and a stable `run`.
@@ -10529,6 +10530,7 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `useBreakpoint` (`@sutra/ui/tokens`): True when the viewport is at least the named breakpoint's width (`min-width`, from the tokens).
 - `useCamera` (`@sutra/ui/tokens`): Opens a camera with getUserMedia and tracks permission and errors.
 - `useCaretAnchor` (`@sutra/ui/ai`): Position a fixed popup under (or above) the caret of a field, re-measured on scroll/resize.
+- `useChangeKey` (`@sutra/ui/tokens`): A counter that is 0 until `value` changes, then goes up by one per change.
 - `useChatConversation` (`@sutra/ui/ai`): Access the enclosing ChatConversation's scroll state.
 - `useChatMessage` (`@sutra/ui/ai`): Read the enclosing message's role, variant and streaming state.
 - `useCommandMenuShortcut` (`@sutra/ui/overlays`): Toggles a command menu with ⌘/Ctrl + `key` (default "k"). Registers in the shortcut registry when a `ShortcutProvider` is present;…
@@ -10554,16 +10556,13 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `useHasShortcutProvider` (`@sutra/ui/suite`): True when rendered inside a `ShortcutProvider`.
 - `useHasTooltipProvider` (`@sutra/ui/overlays`): True when rendered inside a `TooltipProvider`.
 - `useInstallPrompt` (`@sutra/ui/social`): Captures `beforeinstallprompt` and tracks whether the PWA is installed.
-- `useIsoLayoutEffect` (`@sutra/ui/tokens`): `useLayoutEffect` in the browser, `useEffect` on the server (no SSR warning).
 - `useKunjiSignIn` (`@sutra/ui/kunji`): State machine for kunji sign-in: idle → loading → ready → scanned → success | expired | denied | notLinked | error.
-- `useLatestRef` (`@sutra/ui/tokens`): A ref that always holds the latest value (updated before effects run), for stable callbacks.
 - `useLightbox` (`@sutra/ui/mobile`): Imperative control for a `Lightbox`: `const lb = useLightbox(); lb.openAt(2); <Lightbox items={…} {...lb.props} />`.
 - `useMarqueeSelection` (`@sutra/ui/tokens`): Rubber-band selection: drag on empty space inside `containerRef` to draw a rectangle and select the items it touches.
 - `useMediaElement` (`@sutra/ui/media`): Subscribes to an `HTMLMediaElement` (or any `MediaElementLike`) and exposes its state plus imperative actions.
 - `useMediaPortalContainer` (`@sutra/ui/media`): The element media menus portal into, or null for `document.body`.
 - `useMediaQuery` (`@sutra/ui/tokens`): Whether a CSS media query matches, kept in sync (SSR-safe via `useSyncExternalStore`).
 - `useMergedRefs` (`@sutra/ui/tokens`): `mergeRefs` with a stable identity while the refs themselves don't change (avoids ref churn on every render).
-- `useMountedRef` (`@sutra/ui/tokens`): A ref that is true while mounted: set on (re)mount, false after unmount (StrictMode-safe).
 - `useNoticeQueue` (`@sutra/ui/workspace`): Queue state for `RotatingNoticeBar`: dedupe by id, priority sort and a dismissed set.
 - `useNow` (`@sutra/ui/tokens`): Current time in epoch ms, re-rendering every `interval` ms while `active` (or the `fixed` time).
 - `useObjectUrl` (`@sutra/ui/tokens`): An object URL for a Blob or File, revoked when the source changes or the component unmounts.
@@ -10580,15 +10579,17 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `useRegistryCommands` (`@sutra/ui/overlays`): Registry shortcuts as runnable commands, grouped. Empty outside a `ShortcutProvider`.
 - `useReorder` (`@sutra/ui/social`): Controlled/uncontrolled list state with move helpers.
 - `useResizeObserver` (`@sutra/ui/tokens`): Calls `callback` whenever the element resizes (no-op where `ResizeObserver` is missing).
+- `useReturnFocus` (`@sutra/ui/tokens`): Hand focus back to whatever had it when a modal opened. Radix only restores focus to a `Dialog.Trigger`, so a dialog opened from a hotkey,…
 - `useRollingSeries` (`@sutra/ui/tokens`): A fixed-size buffer of the most recent values, for live charts. When `T` is itself an array, wrap single values: `push([value])`.
 - `useRootDirection` (`@sutra/ui/tokens`): For wrappers of Radix roots, which always write a `dir` attribute (ltr when told nothing): the direction in effect where the root sits,…
 - `useSafeId` (`@sutra/ui/tokens`): Stable unique id containing only `[A-Za-z0-9_-]`, safe in SVG `url(#id)`, CSS selectors and `href="#id"`.
 - `useSampler` (`@sutra/ui/tokens`): Calls `read` every `interval` ms and keeps the last `capacity` results, for live charts.
 - `useScheduleNow` (`@sutra/ui/agent-admin`): Re-render every `intervalMs` while `enabled`; returns the current timestamp.
+- `useScrollable` (`@sutra/ui/tokens`): True while the element's content overflows its box. A scrolling region needs a keyboard tab stop so the arrow keys can scroll it (WCAG…
 - `useScrollEdges` (`@sutra/ui/tokens`): Scroll-edge detection for fades and prev/next buttons; updates on scroll and on resize of the container or its content.
 - `useScrollProgress` (`@sutra/ui/tokens`): The script fallback of the scroll-driven utilities. In browsers with `animation-timeline` the CSS does everything and this hook does…
 - `useScrollSections` (`@sutra/ui/tokens`): Scroll-spy for a list of sections: tracks which element is in view with one `IntersectionObserver`, and scrolls to one on request…
-- `useSelectionArea` (`@sutra/ui`): Selection state and item props from the nearest `SelectionArea`.
+- `useSelectionArea` (`@sutra/ui/forms`): Selection state and item props from the nearest `SelectionArea`.
 - `useShortcut` (`@sutra/ui/suite`): Bind `keys` to `handler`. Pass `null` keys (or `enabled: false`) to disable.
 - `useShortcutManager` (`@sutra/ui/suite`): The nearest `ShortcutManager`, or null outside a `ShortcutProvider`.
 - `useShortcutPlatform` (`@sutra/ui/suite`): Platform used for `mod` and glyphs: the `platform` given to the `ShortcutProvider`, else detected.
@@ -10609,10 +10610,10 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `useSwipe` (`@sutra/ui/mobile`): Detects a flick (decided when the pointer lifts, so it never fights native scrolling).
 - `useSwipeDismiss` (`@sutra/ui/tokens`): Drag along one axis and let go: past the distance (or fast enough) it dismisses, otherwise it springs back.
 - `useTextareaMirror` (`@sutra/ui/ai`): Keeps a mirror element laid out exactly like a textarea (font, padding, borders, wrapping, scrollbar gutter, size and scroll offset) so…
-- `useTheme` (`@sutra/ui/tokens`): Read and write Sutra theme attributes on <html>. `initial` seeds the state on mount only (like `useState`); fields it leaves out are read…
+- `useTheme` (`@sutra/ui/tokens`): Read and write Sutra theme attributes on <html>. `initial` seeds the theme on mount only (like `useState`); fields it leaves out are read…
 - `useThinkingExpandAll` (`@sutra/ui/ai`): The nearest ThinkingExpandAllProvider state, or null outside one.
 - `useTranscriptBookmarks` (`@sutra/ui/agent`): Bookmark state helper: list, membership and toggle.
 - `useTypewriter` (`@sutra/ui/tokens`): Types one line, or several in turn, one character at a time (graphemes are not split).
 - `useViewTransition` (`@sutra/ui/tokens`): Returns `(update, options?) => Promise<void>` that applies a state change as a view transition: the browser snapshots the page, React…
 - `useVirtualRows` (`@sutra/ui/ops`): Fixed-height windowing: which rows of a long list are inside (or near) the viewport.
-- `useZoomPan` (`@sutra/ui`): Zoom/pan state + handlers: wheel and pinch zoom around the pointer, drag to pan, double-click reset, keyboard +/−/0/arrows.
+- `useZoomPan` (`@sutra/ui/mobile`): Zoom/pan state + handlers: wheel and pinch zoom around the pointer, drag to pan, double-click reset, keyboard +/−/0/arrows.

@@ -2,7 +2,7 @@
 
 > "On this page" navigation that highlights the heading in view: a `SectionRail` fed with the post's headings.
 
-- Import: `import { BlogTableOfContents } from "@sutra/ui"`
+- Import: `import { BlogTableOfContents } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/blog-content` (patterns)
 - Also accepts the props of HTMLAttributes
 

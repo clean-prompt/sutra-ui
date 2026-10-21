@@ -3,11 +3,9 @@ import { render, screen } from "@testing-library/react";
 import * as root from "../src";
 import { Button } from "../src";
 import * as tokensEntry from "../src/entries/tokens";
-import { splitDuration } from "../src/lib/duration";
-import { formatBytes } from "../src/lib/format";
-import { base32Decode } from "../src/lib/encoding";
 import { base32Decode as totpBase32Decode } from "../src/kits/identity/totp";
 import { splitDuration as countdownSplitDuration } from "../src/patterns/countdown";
+import { formatBytes as uploadFormatBytes } from "../src/patterns/file-upload";
 import { axeViolations } from "./helpers/a11y";
 
 describe("test harness", () => {
@@ -19,15 +17,24 @@ describe("test harness", () => {
 });
 
 describe("barrels", () => {
-  it("exports the shared helpers from the root and @sutra/ui/tokens", () => {
-    for (const name of ["formatRelative", "formatDuration", "formatCompact", "hashString", "initials", "isSafeHref", "clamp", "base64UrlEncode", "useNow", "useMediaQuery", "useAsyncAction", "useSafeId", "CopyButton", "CopyField", "toValidDate"]) {
+  it("exports the documented helpers from the root and @sutra/ui/tokens", () => {
+    for (const name of ["cn", "colorForSeed", "initials", "isSafeHref", "isEmail", "useNow", "useMediaQuery", "useAsyncAction", "useSafeId", "CopyButton", "CopyField"]) {
       expect(root).toHaveProperty(name);
     }
-    expect(tokensEntry.formatBytes).toBe(formatBytes);
-    expect(tokensEntry.splitDuration).toBe(splitDuration);
-    expect(tokensEntry.base32Decode).toBe(base32Decode);
-    // Root keeps the older component bindings for these names.
+    for (const name of ["cn", "colorForSeed", "initials", "isSafeHref", "useNow", "useAsyncAction"]) expect(tokensEntry).toHaveProperty(name);
+  });
+
+  it("keeps the generic lib plumbing off the root and @sutra/ui/tokens", () => {
+    for (const name of ["clamp", "pad2", "toMs", "hashString", "formatRelative", "formatDuration", "formatCompact", "base64UrlEncode", "toValidDate", "useLatestRef", "useIsoLayoutEffect", "useMountedRef", "errorMessage", "getPaginationRange"]) {
+      expect(root).not.toHaveProperty(name);
+      expect(tokensEntry).not.toHaveProperty(name);
+    }
+  });
+
+  it("the root names with a component and a lib version are the component versions (the lib ones are not exported)", () => {
     expect(root.base32Decode).toBe(totpBase32Decode);
     expect(root.splitDuration).toBe(countdownSplitDuration);
+    expect(root.formatBytes).toBe(uploadFormatBytes);
+    for (const name of ["formatBytes", "splitDuration", "base32Decode"]) expect(tokensEntry).not.toHaveProperty(name);
   });
 });

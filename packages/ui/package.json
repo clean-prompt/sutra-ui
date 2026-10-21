@@ -15,175 +15,2023 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
-    "./icons": {
-      "types": "./dist/entries/icons.d.ts",
-      "import": "./dist/entries/icons.js",
-      "default": "./dist/entries/icons.js"
-    },
-    "./ai": {
-      "types": "./dist/entries/ai.d.ts",
-      "import": "./dist/entries/ai.js",
-      "default": "./dist/entries/ai.js"
-    },
-    "./suite": {
-      "types": "./dist/entries/suite.d.ts",
-      "import": "./dist/entries/suite.js",
-      "default": "./dist/entries/suite.js"
-    },
-    "./dataviz": {
-      "types": "./dist/entries/dataviz.d.ts",
-      "import": "./dist/entries/dataviz.js",
-      "default": "./dist/entries/dataviz.js"
-    },
-    "./motion": {
-      "types": "./dist/entries/motion.d.ts",
-      "import": "./dist/entries/motion.js",
-      "default": "./dist/entries/motion.js"
-    },
-    "./identity": {
-      "types": "./dist/entries/identity.d.ts",
-      "import": "./dist/entries/identity.js",
-      "default": "./dist/entries/identity.js"
-    },
-    "./ops": {
-      "types": "./dist/entries/ops.d.ts",
-      "import": "./dist/entries/ops.js",
-      "default": "./dist/entries/ops.js"
-    },
-    "./mobile": {
-      "types": "./dist/entries/mobile.d.ts",
-      "import": "./dist/entries/mobile.js",
-      "default": "./dist/entries/mobile.js"
-    },
-    "./workspace": {
-      "types": "./dist/entries/workspace.d.ts",
-      "import": "./dist/entries/workspace.js",
-      "default": "./dist/entries/workspace.js"
-    },
-    "./system": {
-      "types": "./dist/entries/system.d.ts",
-      "import": "./dist/entries/system.js",
-      "default": "./dist/entries/system.js"
-    },
-    "./billing": {
-      "types": "./dist/entries/billing.d.ts",
-      "import": "./dist/entries/billing.js",
-      "default": "./dist/entries/billing.js"
+    "./agent": {
+      "types": "./dist/entries/agent.d.ts",
+      "import": "./dist/entries/agent.js",
+      "default": "./dist/entries/agent.js"
     },
     "./agent-admin": {
       "types": "./dist/entries/agent-admin.d.ts",
       "import": "./dist/entries/agent-admin.js",
       "default": "./dist/entries/agent-admin.js"
     },
-    "./agent": {
-      "types": "./dist/entries/agent.d.ts",
-      "import": "./dist/entries/agent.js",
-      "default": "./dist/entries/agent.js"
-    },
-    "./kunji": {
-      "types": "./dist/entries/kunji.d.ts",
-      "import": "./dist/entries/kunji.js",
-      "default": "./dist/entries/kunji.js"
-    },
-    "./security": {
-      "types": "./dist/entries/security.d.ts",
-      "import": "./dist/entries/security.js",
-      "default": "./dist/entries/security.js"
-    },
-    "./media": {
-      "types": "./dist/entries/media.d.ts",
-      "import": "./dist/entries/media.js",
-      "default": "./dist/entries/media.js"
-    },
-    "./editor": {
-      "types": "./dist/entries/editor.d.ts",
-      "import": "./dist/entries/editor.js",
-      "default": "./dist/entries/editor.js"
-    },
-    "./terminal": {
-      "types": "./dist/entries/terminal.d.ts",
-      "import": "./dist/entries/terminal.js",
-      "default": "./dist/entries/terminal.js"
-    },
-    "./pdf": {
-      "types": "./dist/entries/pdf.d.ts",
-      "import": "./dist/entries/pdf.js",
-      "default": "./dist/entries/pdf.js"
-    },
-    "./geo": {
-      "types": "./dist/entries/geo.d.ts",
-      "import": "./dist/entries/geo.js",
-      "default": "./dist/entries/geo.js"
-    },
-    "./voice": {
-      "types": "./dist/entries/voice.d.ts",
-      "import": "./dist/entries/voice.js",
-      "default": "./dist/entries/voice.js"
-    },
-    "./social": {
-      "types": "./dist/entries/social.d.ts",
-      "import": "./dist/entries/social.js",
-      "default": "./dist/entries/social.js"
-    },
-    "./blocks": {
-      "types": "./dist/entries/blocks.d.ts",
-      "import": "./dist/entries/blocks.js",
-      "default": "./dist/entries/blocks.js"
+    "./ai": {
+      "types": "./dist/entries/ai.d.ts",
+      "import": "./dist/entries/ai.js",
+      "default": "./dist/entries/ai.js"
     },
     "./assets": {
       "types": "./dist/entries/assets.d.ts",
       "import": "./dist/entries/assets.js",
       "default": "./dist/entries/assets.js"
     },
-    "./forms": {
-      "types": "./dist/entries/forms.d.ts",
-      "import": "./dist/entries/forms.js",
-      "default": "./dist/entries/forms.js"
+    "./billing": {
+      "types": "./dist/entries/billing.d.ts",
+      "import": "./dist/entries/billing.js",
+      "default": "./dist/entries/billing.js"
     },
-    "./overlays": {
-      "types": "./dist/entries/overlays.d.ts",
-      "import": "./dist/entries/overlays.js",
-      "default": "./dist/entries/overlays.js"
-    },
-    "./navigation": {
-      "types": "./dist/entries/navigation.d.ts",
-      "import": "./dist/entries/navigation.js",
-      "default": "./dist/entries/navigation.js"
-    },
-    "./tokens": {
-      "types": "./dist/entries/tokens.d.ts",
-      "import": "./dist/entries/tokens.js",
-      "default": "./dist/entries/tokens.js"
+    "./blocks": {
+      "types": "./dist/entries/blocks.d.ts",
+      "import": "./dist/entries/blocks.js",
+      "default": "./dist/entries/blocks.js"
     },
     "./core": {
       "types": "./dist/entries/core.d.ts",
       "import": "./dist/entries/core.js",
       "default": "./dist/entries/core.js"
     },
-    "./primitives/*": {
-      "types": "./dist/primitives/*.d.ts",
-      "import": "./dist/primitives/*.js",
-      "default": "./dist/primitives/*.js"
+    "./dataviz": {
+      "types": "./dist/entries/dataviz.d.ts",
+      "import": "./dist/entries/dataviz.js",
+      "default": "./dist/entries/dataviz.js"
     },
-    "./patterns/*": {
-      "types": "./dist/patterns/*.d.ts",
-      "import": "./dist/patterns/*.js",
-      "default": "./dist/patterns/*.js"
+    "./editor": {
+      "types": "./dist/entries/editor.d.ts",
+      "import": "./dist/entries/editor.js",
+      "default": "./dist/entries/editor.js"
     },
-    "./kits/*": {
-      "types": "./dist/kits/*.d.ts",
-      "import": "./dist/kits/*.js",
-      "default": "./dist/kits/*.js"
+    "./format": {
+      "types": "./dist/entries/format.d.ts",
+      "import": "./dist/entries/format.js",
+      "default": "./dist/entries/format.js"
     },
-    "./blocks/*": {
-      "types": "./dist/blocks/*.d.ts",
-      "import": "./dist/blocks/*.js",
-      "default": "./dist/blocks/*.js"
+    "./forms": {
+      "types": "./dist/entries/forms.d.ts",
+      "import": "./dist/entries/forms.js",
+      "default": "./dist/entries/forms.js"
     },
-    "./assets/*": {
-      "types": "./dist/assets/*.d.ts",
-      "import": "./dist/assets/*.js",
-      "default": "./dist/assets/*.js"
+    "./geo": {
+      "types": "./dist/entries/geo.d.ts",
+      "import": "./dist/entries/geo.js",
+      "default": "./dist/entries/geo.js"
+    },
+    "./icons": {
+      "types": "./dist/entries/icons.d.ts",
+      "import": "./dist/entries/icons.js",
+      "default": "./dist/entries/icons.js"
+    },
+    "./identity": {
+      "types": "./dist/entries/identity.d.ts",
+      "import": "./dist/entries/identity.js",
+      "default": "./dist/entries/identity.js"
+    },
+    "./kunji": {
+      "types": "./dist/entries/kunji.d.ts",
+      "import": "./dist/entries/kunji.js",
+      "default": "./dist/entries/kunji.js"
+    },
+    "./media": {
+      "types": "./dist/entries/media.d.ts",
+      "import": "./dist/entries/media.js",
+      "default": "./dist/entries/media.js"
+    },
+    "./mobile": {
+      "types": "./dist/entries/mobile.d.ts",
+      "import": "./dist/entries/mobile.js",
+      "default": "./dist/entries/mobile.js"
+    },
+    "./motion": {
+      "types": "./dist/entries/motion.d.ts",
+      "import": "./dist/entries/motion.js",
+      "default": "./dist/entries/motion.js"
+    },
+    "./navigation": {
+      "types": "./dist/entries/navigation.d.ts",
+      "import": "./dist/entries/navigation.js",
+      "default": "./dist/entries/navigation.js"
+    },
+    "./ops": {
+      "types": "./dist/entries/ops.d.ts",
+      "import": "./dist/entries/ops.js",
+      "default": "./dist/entries/ops.js"
+    },
+    "./overlays": {
+      "types": "./dist/entries/overlays.d.ts",
+      "import": "./dist/entries/overlays.js",
+      "default": "./dist/entries/overlays.js"
+    },
+    "./pdf": {
+      "types": "./dist/entries/pdf.d.ts",
+      "import": "./dist/entries/pdf.js",
+      "default": "./dist/entries/pdf.js"
+    },
+    "./security": {
+      "types": "./dist/entries/security.d.ts",
+      "import": "./dist/entries/security.js",
+      "default": "./dist/entries/security.js"
+    },
+    "./social": {
+      "types": "./dist/entries/social.d.ts",
+      "import": "./dist/entries/social.js",
+      "default": "./dist/entries/social.js"
+    },
+    "./suite": {
+      "types": "./dist/entries/suite.d.ts",
+      "import": "./dist/entries/suite.js",
+      "default": "./dist/entries/suite.js"
+    },
+    "./system": {
+      "types": "./dist/entries/system.d.ts",
+      "import": "./dist/entries/system.js",
+      "default": "./dist/entries/system.js"
+    },
+    "./terminal": {
+      "types": "./dist/entries/terminal.d.ts",
+      "import": "./dist/entries/terminal.js",
+      "default": "./dist/entries/terminal.js"
+    },
+    "./tokens": {
+      "types": "./dist/entries/tokens.d.ts",
+      "import": "./dist/entries/tokens.js",
+      "default": "./dist/entries/tokens.js"
+    },
+    "./voice": {
+      "types": "./dist/entries/voice.d.ts",
+      "import": "./dist/entries/voice.js",
+      "default": "./dist/entries/voice.js"
+    },
+    "./workspace": {
+      "types": "./dist/entries/workspace.d.ts",
+      "import": "./dist/entries/workspace.js",
+      "default": "./dist/entries/workspace.js"
+    },
+    "./styles.css": "./src/styles/sutra.css",
+    "./paper.css": "./src/styles/paper.css",
+    "./package.json": "./package.json",
+    "./assets/backgrounds": {
+      "types": "./dist/assets/backgrounds.d.ts",
+      "import": "./dist/assets/backgrounds.js",
+      "default": "./dist/assets/backgrounds.js"
+    },
+    "./assets/brand": {
+      "types": "./dist/assets/brand.d.ts",
+      "import": "./dist/assets/brand.js",
+      "default": "./dist/assets/brand.js"
+    },
+    "./assets/country-flags": {
+      "types": "./dist/assets/country-flags.d.ts",
+      "import": "./dist/assets/country-flags.js",
+      "default": "./dist/assets/country-flags.js"
+    },
+    "./assets/device-frame": {
+      "types": "./dist/assets/device-frame.d.ts",
+      "import": "./dist/assets/device-frame.js",
+      "default": "./dist/assets/device-frame.js"
+    },
+    "./assets/device-icons": {
+      "types": "./dist/assets/device-icons.d.ts",
+      "import": "./dist/assets/device-icons.js",
+      "default": "./dist/assets/device-icons.js"
+    },
+    "./assets/emoji-ink": {
+      "types": "./dist/assets/emoji-ink.d.ts",
+      "import": "./dist/assets/emoji-ink.js",
+      "default": "./dist/assets/emoji-ink.js"
+    },
+    "./assets/emoji-reactions": {
+      "types": "./dist/assets/emoji-reactions.d.ts",
+      "import": "./dist/assets/emoji-reactions.js",
+      "default": "./dist/assets/emoji-reactions.js"
+    },
+    "./assets/empty-state-illustration": {
+      "types": "./dist/assets/empty-state-illustration.d.ts",
+      "import": "./dist/assets/empty-state-illustration.js",
+      "default": "./dist/assets/empty-state-illustration.js"
+    },
+    "./assets/file-format": {
+      "types": "./dist/assets/file-format.d.ts",
+      "import": "./dist/assets/file-format.js",
+      "default": "./dist/assets/file-format.js"
+    },
+    "./assets/icons": {
+      "types": "./dist/assets/icons.d.ts",
+      "import": "./dist/assets/icons.js",
+      "default": "./dist/assets/icons.js"
+    },
+    "./assets/marquee": {
+      "types": "./dist/assets/marquee.d.ts",
+      "import": "./dist/assets/marquee.js",
+      "default": "./dist/assets/marquee.js"
+    },
+    "./assets/mascot": {
+      "types": "./dist/assets/mascot.d.ts",
+      "import": "./dist/assets/mascot.js",
+      "default": "./dist/assets/mascot.js"
+    },
+    "./assets/misc": {
+      "types": "./dist/assets/misc.d.ts",
+      "import": "./dist/assets/misc.js",
+      "default": "./dist/assets/misc.js"
+    },
+    "./assets/placeholder-logos": {
+      "types": "./dist/assets/placeholder-logos.d.ts",
+      "import": "./dist/assets/placeholder-logos.js",
+      "default": "./dist/assets/placeholder-logos.js"
+    },
+    "./assets/qr-placeholder": {
+      "types": "./dist/assets/qr-placeholder.d.ts",
+      "import": "./dist/assets/qr-placeholder.js",
+      "default": "./dist/assets/qr-placeholder.js"
+    },
+    "./assets/sutradhar-sting": {
+      "types": "./dist/assets/sutradhar-sting.d.ts",
+      "import": "./dist/assets/sutradhar-sting.js",
+      "default": "./dist/assets/sutradhar-sting.js"
+    },
+    "./primitives/accordion": {
+      "types": "./dist/primitives/accordion.d.ts",
+      "import": "./dist/primitives/accordion.js",
+      "default": "./dist/primitives/accordion.js"
+    },
+    "./primitives/alert-banner": {
+      "types": "./dist/primitives/alert-banner.d.ts",
+      "import": "./dist/primitives/alert-banner.js",
+      "default": "./dist/primitives/alert-banner.js"
+    },
+    "./primitives/app-store-badge": {
+      "types": "./dist/primitives/app-store-badge.d.ts",
+      "import": "./dist/primitives/app-store-badge.js",
+      "default": "./dist/primitives/app-store-badge.js"
+    },
+    "./primitives/aspect-ratio": {
+      "types": "./dist/primitives/aspect-ratio.d.ts",
+      "import": "./dist/primitives/aspect-ratio.js",
+      "default": "./dist/primitives/aspect-ratio.js"
+    },
+    "./primitives/avatar": {
+      "types": "./dist/primitives/avatar.d.ts",
+      "import": "./dist/primitives/avatar.js",
+      "default": "./dist/primitives/avatar.js"
+    },
+    "./primitives/avatar-group": {
+      "types": "./dist/primitives/avatar-group.d.ts",
+      "import": "./dist/primitives/avatar-group.js",
+      "default": "./dist/primitives/avatar-group.js"
+    },
+    "./primitives/badge": {
+      "types": "./dist/primitives/badge.d.ts",
+      "import": "./dist/primitives/badge.js",
+      "default": "./dist/primitives/badge.js"
+    },
+    "./primitives/battery-level": {
+      "types": "./dist/primitives/battery-level.d.ts",
+      "import": "./dist/primitives/battery-level.js",
+      "default": "./dist/primitives/battery-level.js"
+    },
+    "./primitives/breadcrumbs": {
+      "types": "./dist/primitives/breadcrumbs.d.ts",
+      "import": "./dist/primitives/breadcrumbs.js",
+      "default": "./dist/primitives/breadcrumbs.js"
+    },
+    "./primitives/button": {
+      "types": "./dist/primitives/button.d.ts",
+      "import": "./dist/primitives/button.js",
+      "default": "./dist/primitives/button.js"
+    },
+    "./primitives/button-group": {
+      "types": "./dist/primitives/button-group.d.ts",
+      "import": "./dist/primitives/button-group.js",
+      "default": "./dist/primitives/button-group.js"
+    },
+    "./primitives/calendar": {
+      "types": "./dist/primitives/calendar.d.ts",
+      "import": "./dist/primitives/calendar.js",
+      "default": "./dist/primitives/calendar.js"
+    },
+    "./primitives/checkbox": {
+      "types": "./dist/primitives/checkbox.d.ts",
+      "import": "./dist/primitives/checkbox.js",
+      "default": "./dist/primitives/checkbox.js"
+    },
+    "./primitives/chip": {
+      "types": "./dist/primitives/chip.d.ts",
+      "import": "./dist/primitives/chip.js",
+      "default": "./dist/primitives/chip.js"
+    },
+    "./primitives/close-button": {
+      "types": "./dist/primitives/close-button.d.ts",
+      "import": "./dist/primitives/close-button.js",
+      "default": "./dist/primitives/close-button.js"
+    },
+    "./primitives/collapse": {
+      "types": "./dist/primitives/collapse.d.ts",
+      "import": "./dist/primitives/collapse.js",
+      "default": "./dist/primitives/collapse.js"
+    },
+    "./primitives/collapsible": {
+      "types": "./dist/primitives/collapsible.d.ts",
+      "import": "./dist/primitives/collapsible.js",
+      "default": "./dist/primitives/collapsible.js"
+    },
+    "./primitives/combobox": {
+      "types": "./dist/primitives/combobox.d.ts",
+      "import": "./dist/primitives/combobox.js",
+      "default": "./dist/primitives/combobox.js"
+    },
+    "./primitives/confirm": {
+      "types": "./dist/primitives/confirm.d.ts",
+      "import": "./dist/primitives/confirm.js",
+      "default": "./dist/primitives/confirm.js"
+    },
+    "./primitives/context-menu": {
+      "types": "./dist/primitives/context-menu.d.ts",
+      "import": "./dist/primitives/context-menu.js",
+      "default": "./dist/primitives/context-menu.js"
+    },
+    "./primitives/copy-button": {
+      "types": "./dist/primitives/copy-button.d.ts",
+      "import": "./dist/primitives/copy-button.js",
+      "default": "./dist/primitives/copy-button.js"
+    },
+    "./primitives/date-picker": {
+      "types": "./dist/primitives/date-picker.d.ts",
+      "import": "./dist/primitives/date-picker.js",
+      "default": "./dist/primitives/date-picker.js"
+    },
+    "./primitives/date-picker-datetime": {
+      "types": "./dist/primitives/date-picker-datetime.d.ts",
+      "import": "./dist/primitives/date-picker-datetime.js",
+      "default": "./dist/primitives/date-picker-datetime.js"
+    },
+    "./primitives/date-picker-range": {
+      "types": "./dist/primitives/date-picker-range.d.ts",
+      "import": "./dist/primitives/date-picker-range.js",
+      "default": "./dist/primitives/date-picker-range.js"
+    },
+    "./primitives/dialog": {
+      "types": "./dist/primitives/dialog.d.ts",
+      "import": "./dist/primitives/dialog.js",
+      "default": "./dist/primitives/dialog.js"
+    },
+    "./primitives/direction-provider": {
+      "types": "./dist/primitives/direction-provider.d.ts",
+      "import": "./dist/primitives/direction-provider.js",
+      "default": "./dist/primitives/direction-provider.js"
+    },
+    "./primitives/drawer": {
+      "types": "./dist/primitives/drawer.d.ts",
+      "import": "./dist/primitives/drawer.js",
+      "default": "./dist/primitives/drawer.js"
+    },
+    "./primitives/dropdown-menu": {
+      "types": "./dist/primitives/dropdown-menu.d.ts",
+      "import": "./dist/primitives/dropdown-menu.js",
+      "default": "./dist/primitives/dropdown-menu.js"
+    },
+    "./primitives/dropzone": {
+      "types": "./dist/primitives/dropzone.d.ts",
+      "import": "./dist/primitives/dropzone.js",
+      "default": "./dist/primitives/dropzone.js"
+    },
+    "./primitives/empty-state": {
+      "types": "./dist/primitives/empty-state.d.ts",
+      "import": "./dist/primitives/empty-state.js",
+      "default": "./dist/primitives/empty-state.js"
+    },
+    "./primitives/fab": {
+      "types": "./dist/primitives/fab.d.ts",
+      "import": "./dist/primitives/fab.js",
+      "default": "./dist/primitives/fab.js"
+    },
+    "./primitives/favicon": {
+      "types": "./dist/primitives/favicon.d.ts",
+      "import": "./dist/primitives/favicon.js",
+      "default": "./dist/primitives/favicon.js"
+    },
+    "./primitives/field": {
+      "types": "./dist/primitives/field.d.ts",
+      "import": "./dist/primitives/field.js",
+      "default": "./dist/primitives/field.js"
+    },
+    "./primitives/frame": {
+      "types": "./dist/primitives/frame.d.ts",
+      "import": "./dist/primitives/frame.js",
+      "default": "./dist/primitives/frame.js"
+    },
+    "./primitives/glyph-spinner": {
+      "types": "./dist/primitives/glyph-spinner.d.ts",
+      "import": "./dist/primitives/glyph-spinner.js",
+      "default": "./dist/primitives/glyph-spinner.js"
+    },
+    "./primitives/info-tooltip": {
+      "types": "./dist/primitives/info-tooltip.d.ts",
+      "import": "./dist/primitives/info-tooltip.js",
+      "default": "./dist/primitives/info-tooltip.js"
+    },
+    "./primitives/inline-alert": {
+      "types": "./dist/primitives/inline-alert.d.ts",
+      "import": "./dist/primitives/inline-alert.js",
+      "default": "./dist/primitives/inline-alert.js"
+    },
+    "./primitives/inline-edit-text": {
+      "types": "./dist/primitives/inline-edit-text.d.ts",
+      "import": "./dist/primitives/inline-edit-text.js",
+      "default": "./dist/primitives/inline-edit-text.js"
+    },
+    "./primitives/input": {
+      "types": "./dist/primitives/input.d.ts",
+      "import": "./dist/primitives/input.js",
+      "default": "./dist/primitives/input.js"
+    },
+    "./primitives/input-group": {
+      "types": "./dist/primitives/input-group.d.ts",
+      "import": "./dist/primitives/input-group.js",
+      "default": "./dist/primitives/input-group.js"
+    },
+    "./primitives/input-otp": {
+      "types": "./dist/primitives/input-otp.d.ts",
+      "import": "./dist/primitives/input-otp.js",
+      "default": "./dist/primitives/input-otp.js"
+    },
+    "./primitives/item": {
+      "types": "./dist/primitives/item.d.ts",
+      "import": "./dist/primitives/item.js",
+      "default": "./dist/primitives/item.js"
+    },
+    "./primitives/key-value": {
+      "types": "./dist/primitives/key-value.d.ts",
+      "import": "./dist/primitives/key-value.js",
+      "default": "./dist/primitives/key-value.js"
+    },
+    "./primitives/label": {
+      "types": "./dist/primitives/label.d.ts",
+      "import": "./dist/primitives/label.js",
+      "default": "./dist/primitives/label.js"
+    },
+    "./primitives/layout": {
+      "types": "./dist/primitives/layout.d.ts",
+      "import": "./dist/primitives/layout.js",
+      "default": "./dist/primitives/layout.js"
+    },
+    "./primitives/mesh-gradient": {
+      "types": "./dist/primitives/mesh-gradient.d.ts",
+      "import": "./dist/primitives/mesh-gradient.js",
+      "default": "./dist/primitives/mesh-gradient.js"
+    },
+    "./primitives/meter": {
+      "types": "./dist/primitives/meter.d.ts",
+      "import": "./dist/primitives/meter.js",
+      "default": "./dist/primitives/meter.js"
+    },
+    "./primitives/metric-readout": {
+      "types": "./dist/primitives/metric-readout.d.ts",
+      "import": "./dist/primitives/metric-readout.js",
+      "default": "./dist/primitives/metric-readout.js"
+    },
+    "./primitives/monogram": {
+      "types": "./dist/primitives/monogram.d.ts",
+      "import": "./dist/primitives/monogram.js",
+      "default": "./dist/primitives/monogram.js"
+    },
+    "./primitives/number-input": {
+      "types": "./dist/primitives/number-input.d.ts",
+      "import": "./dist/primitives/number-input.js",
+      "default": "./dist/primitives/number-input.js"
+    },
+    "./primitives/pagination": {
+      "types": "./dist/primitives/pagination.d.ts",
+      "import": "./dist/primitives/pagination.js",
+      "default": "./dist/primitives/pagination.js"
+    },
+    "./primitives/popover": {
+      "types": "./dist/primitives/popover.d.ts",
+      "import": "./dist/primitives/popover.js",
+      "default": "./dist/primitives/popover.js"
+    },
+    "./primitives/port-badge": {
+      "types": "./dist/primitives/port-badge.d.ts",
+      "import": "./dist/primitives/port-badge.js",
+      "default": "./dist/primitives/port-badge.js"
+    },
+    "./primitives/progress": {
+      "types": "./dist/primitives/progress.d.ts",
+      "import": "./dist/primitives/progress.js",
+      "default": "./dist/primitives/progress.js"
+    },
+    "./primitives/radio": {
+      "types": "./dist/primitives/radio.d.ts",
+      "import": "./dist/primitives/radio.js",
+      "default": "./dist/primitives/radio.js"
+    },
+    "./primitives/rating": {
+      "types": "./dist/primitives/rating.d.ts",
+      "import": "./dist/primitives/rating.js",
+      "default": "./dist/primitives/rating.js"
+    },
+    "./primitives/scroll-area": {
+      "types": "./dist/primitives/scroll-area.d.ts",
+      "import": "./dist/primitives/scroll-area.js",
+      "default": "./dist/primitives/scroll-area.js"
+    },
+    "./primitives/segmented-control": {
+      "types": "./dist/primitives/segmented-control.d.ts",
+      "import": "./dist/primitives/segmented-control.js",
+      "default": "./dist/primitives/segmented-control.js"
+    },
+    "./primitives/select": {
+      "types": "./dist/primitives/select.d.ts",
+      "import": "./dist/primitives/select.js",
+      "default": "./dist/primitives/select.js"
+    },
+    "./primitives/separator": {
+      "types": "./dist/primitives/separator.d.ts",
+      "import": "./dist/primitives/separator.js",
+      "default": "./dist/primitives/separator.js"
+    },
+    "./primitives/shortcut-keys": {
+      "types": "./dist/primitives/shortcut-keys.d.ts",
+      "import": "./dist/primitives/shortcut-keys.js",
+      "default": "./dist/primitives/shortcut-keys.js"
+    },
+    "./primitives/slide-to-confirm": {
+      "types": "./dist/primitives/slide-to-confirm.d.ts",
+      "import": "./dist/primitives/slide-to-confirm.js",
+      "default": "./dist/primitives/slide-to-confirm.js"
+    },
+    "./primitives/slider": {
+      "types": "./dist/primitives/slider.d.ts",
+      "import": "./dist/primitives/slider.js",
+      "default": "./dist/primitives/slider.js"
+    },
+    "./primitives/social-button": {
+      "types": "./dist/primitives/social-button.d.ts",
+      "import": "./dist/primitives/social-button.js",
+      "default": "./dist/primitives/social-button.js"
+    },
+    "./primitives/spinner": {
+      "types": "./dist/primitives/spinner.d.ts",
+      "import": "./dist/primitives/spinner.js",
+      "default": "./dist/primitives/spinner.js"
+    },
+    "./primitives/split-button": {
+      "types": "./dist/primitives/split-button.d.ts",
+      "import": "./dist/primitives/split-button.js",
+      "default": "./dist/primitives/split-button.js"
+    },
+    "./primitives/status-badge": {
+      "types": "./dist/primitives/status-badge.d.ts",
+      "import": "./dist/primitives/status-badge.js",
+      "default": "./dist/primitives/status-badge.js"
+    },
+    "./primitives/step-indicator": {
+      "types": "./dist/primitives/step-indicator.d.ts",
+      "import": "./dist/primitives/step-indicator.js",
+      "default": "./dist/primitives/step-indicator.js"
+    },
+    "./primitives/switch": {
+      "types": "./dist/primitives/switch.d.ts",
+      "import": "./dist/primitives/switch.js",
+      "default": "./dist/primitives/switch.js"
+    },
+    "./primitives/tab-dropdown": {
+      "types": "./dist/primitives/tab-dropdown.d.ts",
+      "import": "./dist/primitives/tab-dropdown.js",
+      "default": "./dist/primitives/tab-dropdown.js"
+    },
+    "./primitives/table": {
+      "types": "./dist/primitives/table.d.ts",
+      "import": "./dist/primitives/table.js",
+      "default": "./dist/primitives/table.js"
+    },
+    "./primitives/tabs": {
+      "types": "./dist/primitives/tabs.d.ts",
+      "import": "./dist/primitives/tabs.js",
+      "default": "./dist/primitives/tabs.js"
+    },
+    "./primitives/tag-input": {
+      "types": "./dist/primitives/tag-input.d.ts",
+      "import": "./dist/primitives/tag-input.js",
+      "default": "./dist/primitives/tag-input.js"
+    },
+    "./primitives/text-link": {
+      "types": "./dist/primitives/text-link.d.ts",
+      "import": "./dist/primitives/text-link.js",
+      "default": "./dist/primitives/text-link.js"
+    },
+    "./primitives/text-shimmer": {
+      "types": "./dist/primitives/text-shimmer.d.ts",
+      "import": "./dist/primitives/text-shimmer.js",
+      "default": "./dist/primitives/text-shimmer.js"
+    },
+    "./primitives/textarea": {
+      "types": "./dist/primitives/textarea.d.ts",
+      "import": "./dist/primitives/textarea.js",
+      "default": "./dist/primitives/textarea.js"
+    },
+    "./primitives/time-picker": {
+      "types": "./dist/primitives/time-picker.d.ts",
+      "import": "./dist/primitives/time-picker.js",
+      "default": "./dist/primitives/time-picker.js"
+    },
+    "./primitives/toast": {
+      "types": "./dist/primitives/toast.d.ts",
+      "import": "./dist/primitives/toast.js",
+      "default": "./dist/primitives/toast.js"
+    },
+    "./primitives/toggle-group": {
+      "types": "./dist/primitives/toggle-group.d.ts",
+      "import": "./dist/primitives/toggle-group.js",
+      "default": "./dist/primitives/toggle-group.js"
+    },
+    "./primitives/tooltip": {
+      "types": "./dist/primitives/tooltip.d.ts",
+      "import": "./dist/primitives/tooltip.js",
+      "default": "./dist/primitives/tooltip.js"
+    },
+    "./primitives/typography": {
+      "types": "./dist/primitives/typography.d.ts",
+      "import": "./dist/primitives/typography.js",
+      "default": "./dist/primitives/typography.js"
+    },
+    "./primitives/undo-action": {
+      "types": "./dist/primitives/undo-action.d.ts",
+      "import": "./dist/primitives/undo-action.js",
+      "default": "./dist/primitives/undo-action.js"
+    },
+    "./primitives/volume-slider": {
+      "types": "./dist/primitives/volume-slider.d.ts",
+      "import": "./dist/primitives/volume-slider.js",
+      "default": "./dist/primitives/volume-slider.js"
+    },
+    "./primitives/wheel-picker": {
+      "types": "./dist/primitives/wheel-picker.d.ts",
+      "import": "./dist/primitives/wheel-picker.js",
+      "default": "./dist/primitives/wheel-picker.js"
+    },
+    "./patterns/agent-avatar": {
+      "types": "./dist/patterns/agent-avatar.d.ts",
+      "import": "./dist/patterns/agent-avatar.js",
+      "default": "./dist/patterns/agent-avatar.js"
+    },
+    "./patterns/animated-list": {
+      "types": "./dist/patterns/animated-list.d.ts",
+      "import": "./dist/patterns/animated-list.js",
+      "default": "./dist/patterns/animated-list.js"
+    },
+    "./patterns/animated-number": {
+      "types": "./dist/patterns/animated-number.d.ts",
+      "import": "./dist/patterns/animated-number.js",
+      "default": "./dist/patterns/animated-number.js"
+    },
+    "./patterns/bar-list": {
+      "types": "./dist/patterns/bar-list.d.ts",
+      "import": "./dist/patterns/bar-list.js",
+      "default": "./dist/patterns/bar-list.js"
+    },
+    "./patterns/blog-content": {
+      "types": "./dist/patterns/blog-content.d.ts",
+      "import": "./dist/patterns/blog-content.js",
+      "default": "./dist/patterns/blog-content.js"
+    },
+    "./patterns/bottom-tab-bar": {
+      "types": "./dist/patterns/bottom-tab-bar.d.ts",
+      "import": "./dist/patterns/bottom-tab-bar.js",
+      "default": "./dist/patterns/bottom-tab-bar.js"
+    },
+    "./patterns/camera-capture": {
+      "types": "./dist/patterns/camera-capture.d.ts",
+      "import": "./dist/patterns/camera-capture.js",
+      "default": "./dist/patterns/camera-capture.js"
+    },
+    "./patterns/carousel": {
+      "types": "./dist/patterns/carousel.d.ts",
+      "import": "./dist/patterns/carousel.js",
+      "default": "./dist/patterns/carousel.js"
+    },
+    "./patterns/chart": {
+      "types": "./dist/patterns/chart.d.ts",
+      "import": "./dist/patterns/chart.js",
+      "default": "./dist/patterns/chart.js"
+    },
+    "./patterns/chart-cartesian": {
+      "types": "./dist/patterns/chart-cartesian.d.ts",
+      "import": "./dist/patterns/chart-cartesian.js",
+      "default": "./dist/patterns/chart-cartesian.js"
+    },
+    "./patterns/chart-container": {
+      "types": "./dist/patterns/chart-container.d.ts",
+      "import": "./dist/patterns/chart-container.js",
+      "default": "./dist/patterns/chart-container.js"
+    },
+    "./patterns/chart-donut": {
+      "types": "./dist/patterns/chart-donut.d.ts",
+      "import": "./dist/patterns/chart-donut.js",
+      "default": "./dist/patterns/chart-donut.js"
+    },
+    "./patterns/chart-funnel": {
+      "types": "./dist/patterns/chart-funnel.d.ts",
+      "import": "./dist/patterns/chart-funnel.js",
+      "default": "./dist/patterns/chart-funnel.js"
+    },
+    "./patterns/chart-radar": {
+      "types": "./dist/patterns/chart-radar.d.ts",
+      "import": "./dist/patterns/chart-radar.js",
+      "default": "./dist/patterns/chart-radar.js"
+    },
+    "./patterns/chart-scale": {
+      "types": "./dist/patterns/chart-scale.d.ts",
+      "import": "./dist/patterns/chart-scale.js",
+      "default": "./dist/patterns/chart-scale.js"
+    },
+    "./patterns/chart-scatter": {
+      "types": "./dist/patterns/chart-scatter.d.ts",
+      "import": "./dist/patterns/chart-scatter.js",
+      "default": "./dist/patterns/chart-scatter.js"
+    },
+    "./patterns/chart-types": {
+      "types": "./dist/patterns/chart-types.d.ts",
+      "import": "./dist/patterns/chart-types.js",
+      "default": "./dist/patterns/chart-types.js"
+    },
+    "./patterns/chart-waterfall": {
+      "types": "./dist/patterns/chart-waterfall.d.ts",
+      "import": "./dist/patterns/chart-waterfall.js",
+      "default": "./dist/patterns/chart-waterfall.js"
+    },
+    "./patterns/check-burst": {
+      "types": "./dist/patterns/check-burst.d.ts",
+      "import": "./dist/patterns/check-burst.js",
+      "default": "./dist/patterns/check-burst.js"
+    },
+    "./patterns/coachmarks": {
+      "types": "./dist/patterns/coachmarks.d.ts",
+      "import": "./dist/patterns/coachmarks.js",
+      "default": "./dist/patterns/coachmarks.js"
+    },
+    "./patterns/code-block": {
+      "types": "./dist/patterns/code-block.d.ts",
+      "import": "./dist/patterns/code-block.js",
+      "default": "./dist/patterns/code-block.js"
+    },
+    "./patterns/command-menu": {
+      "types": "./dist/patterns/command-menu.d.ts",
+      "import": "./dist/patterns/command-menu.js",
+      "default": "./dist/patterns/command-menu.js"
+    },
+    "./patterns/comments": {
+      "types": "./dist/patterns/comments.d.ts",
+      "import": "./dist/patterns/comments.js",
+      "default": "./dist/patterns/comments.js"
+    },
+    "./patterns/countdown": {
+      "types": "./dist/patterns/countdown.d.ts",
+      "import": "./dist/patterns/countdown.js",
+      "default": "./dist/patterns/countdown.js"
+    },
+    "./patterns/counters": {
+      "types": "./dist/patterns/counters.d.ts",
+      "import": "./dist/patterns/counters.js",
+      "default": "./dist/patterns/counters.js"
+    },
+    "./patterns/cron": {
+      "types": "./dist/patterns/cron.d.ts",
+      "import": "./dist/patterns/cron.js",
+      "default": "./dist/patterns/cron.js"
+    },
+    "./patterns/decode-text": {
+      "types": "./dist/patterns/decode-text.d.ts",
+      "import": "./dist/patterns/decode-text.js",
+      "default": "./dist/patterns/decode-text.js"
+    },
+    "./patterns/diff-viewer": {
+      "types": "./dist/patterns/diff-viewer.d.ts",
+      "import": "./dist/patterns/diff-viewer.js",
+      "default": "./dist/patterns/diff-viewer.js"
+    },
+    "./patterns/divided-grid": {
+      "types": "./dist/patterns/divided-grid.d.ts",
+      "import": "./dist/patterns/divided-grid.js",
+      "default": "./dist/patterns/divided-grid.js"
+    },
+    "./patterns/fade-text": {
+      "types": "./dist/patterns/fade-text.d.ts",
+      "import": "./dist/patterns/fade-text.js",
+      "default": "./dist/patterns/fade-text.js"
+    },
+    "./patterns/fan-menu": {
+      "types": "./dist/patterns/fan-menu.d.ts",
+      "import": "./dist/patterns/fan-menu.js",
+      "default": "./dist/patterns/fan-menu.js"
+    },
+    "./patterns/file-upload": {
+      "types": "./dist/patterns/file-upload.d.ts",
+      "import": "./dist/patterns/file-upload.js",
+      "default": "./dist/patterns/file-upload.js"
+    },
+    "./patterns/file-viewer": {
+      "types": "./dist/patterns/file-viewer.d.ts",
+      "import": "./dist/patterns/file-viewer.js",
+      "default": "./dist/patterns/file-viewer.js"
+    },
+    "./patterns/filter-bar": {
+      "types": "./dist/patterns/filter-bar.d.ts",
+      "import": "./dist/patterns/filter-bar.js",
+      "default": "./dist/patterns/filter-bar.js"
+    },
+    "./patterns/gauge": {
+      "types": "./dist/patterns/gauge.d.ts",
+      "import": "./dist/patterns/gauge.js",
+      "default": "./dist/patterns/gauge.js"
+    },
+    "./patterns/header-navigation": {
+      "types": "./dist/patterns/header-navigation.d.ts",
+      "import": "./dist/patterns/header-navigation.js",
+      "default": "./dist/patterns/header-navigation.js"
+    },
+    "./patterns/heatmap": {
+      "types": "./dist/patterns/heatmap.d.ts",
+      "import": "./dist/patterns/heatmap.js",
+      "default": "./dist/patterns/heatmap.js"
+    },
+    "./patterns/identity-avatar": {
+      "types": "./dist/patterns/identity-avatar.d.ts",
+      "import": "./dist/patterns/identity-avatar.js",
+      "default": "./dist/patterns/identity-avatar.js"
+    },
+    "./patterns/image-cropper": {
+      "types": "./dist/patterns/image-cropper.d.ts",
+      "import": "./dist/patterns/image-cropper.js",
+      "default": "./dist/patterns/image-cropper.js"
+    },
+    "./patterns/inline-citation": {
+      "types": "./dist/patterns/inline-citation.d.ts",
+      "import": "./dist/patterns/inline-citation.js",
+      "default": "./dist/patterns/inline-citation.js"
+    },
+    "./patterns/json-viewer": {
+      "types": "./dist/patterns/json-viewer.d.ts",
+      "import": "./dist/patterns/json-viewer.js",
+      "default": "./dist/patterns/json-viewer.js"
+    },
+    "./patterns/keybind-editor": {
+      "types": "./dist/patterns/keybind-editor.d.ts",
+      "import": "./dist/patterns/keybind-editor.js",
+      "default": "./dist/patterns/keybind-editor.js"
+    },
+    "./patterns/lightbox": {
+      "types": "./dist/patterns/lightbox.d.ts",
+      "import": "./dist/patterns/lightbox.js",
+      "default": "./dist/patterns/lightbox.js"
+    },
+    "./patterns/loading-screen": {
+      "types": "./dist/patterns/loading-screen.d.ts",
+      "import": "./dist/patterns/loading-screen.js",
+      "default": "./dist/patterns/loading-screen.js"
+    },
+    "./patterns/log-viewer": {
+      "types": "./dist/patterns/log-viewer.d.ts",
+      "import": "./dist/patterns/log-viewer.js",
+      "default": "./dist/patterns/log-viewer.js"
+    },
+    "./patterns/markdown": {
+      "types": "./dist/patterns/markdown.d.ts",
+      "import": "./dist/patterns/markdown.js",
+      "default": "./dist/patterns/markdown.js"
+    },
+    "./patterns/metric-hero": {
+      "types": "./dist/patterns/metric-hero.d.ts",
+      "import": "./dist/patterns/metric-hero.js",
+      "default": "./dist/patterns/metric-hero.js"
+    },
+    "./patterns/morph-dialog": {
+      "types": "./dist/patterns/morph-dialog.d.ts",
+      "import": "./dist/patterns/morph-dialog.js",
+      "default": "./dist/patterns/morph-dialog.js"
+    },
+    "./patterns/morph-pill": {
+      "types": "./dist/patterns/morph-pill.d.ts",
+      "import": "./dist/patterns/morph-pill.js",
+      "default": "./dist/patterns/morph-pill.js"
+    },
+    "./patterns/notice-bar": {
+      "types": "./dist/patterns/notice-bar.d.ts",
+      "import": "./dist/patterns/notice-bar.js",
+      "default": "./dist/patterns/notice-bar.js"
+    },
+    "./patterns/pan-surface": {
+      "types": "./dist/patterns/pan-surface.d.ts",
+      "import": "./dist/patterns/pan-surface.js",
+      "default": "./dist/patterns/pan-surface.js"
+    },
+    "./patterns/password-strength": {
+      "types": "./dist/patterns/password-strength.d.ts",
+      "import": "./dist/patterns/password-strength.js",
+      "default": "./dist/patterns/password-strength.js"
+    },
+    "./patterns/pointer-fx": {
+      "types": "./dist/patterns/pointer-fx.d.ts",
+      "import": "./dist/patterns/pointer-fx.js",
+      "default": "./dist/patterns/pointer-fx.js"
+    },
+    "./patterns/presence": {
+      "types": "./dist/patterns/presence.d.ts",
+      "import": "./dist/patterns/presence.js",
+      "default": "./dist/patterns/presence.js"
+    },
+    "./patterns/recurrence-picker": {
+      "types": "./dist/patterns/recurrence-picker.d.ts",
+      "import": "./dist/patterns/recurrence-picker.js",
+      "default": "./dist/patterns/recurrence-picker.js"
+    },
+    "./patterns/reorderable-list": {
+      "types": "./dist/patterns/reorderable-list.d.ts",
+      "import": "./dist/patterns/reorderable-list.js",
+      "default": "./dist/patterns/reorderable-list.js"
+    },
+    "./patterns/schema-form": {
+      "types": "./dist/patterns/schema-form.d.ts",
+      "import": "./dist/patterns/schema-form.js",
+      "default": "./dist/patterns/schema-form.js"
+    },
+    "./patterns/scroll-reveal": {
+      "types": "./dist/patterns/scroll-reveal.d.ts",
+      "import": "./dist/patterns/scroll-reveal.js",
+      "default": "./dist/patterns/scroll-reveal.js"
+    },
+    "./patterns/scroll-stage": {
+      "types": "./dist/patterns/scroll-stage.d.ts",
+      "import": "./dist/patterns/scroll-stage.js",
+      "default": "./dist/patterns/scroll-stage.js"
+    },
+    "./patterns/search-trigger": {
+      "types": "./dist/patterns/search-trigger.d.ts",
+      "import": "./dist/patterns/search-trigger.js",
+      "default": "./dist/patterns/search-trigger.js"
+    },
+    "./patterns/section-header": {
+      "types": "./dist/patterns/section-header.d.ts",
+      "import": "./dist/patterns/section-header.js",
+      "default": "./dist/patterns/section-header.js"
+    },
+    "./patterns/section-rail": {
+      "types": "./dist/patterns/section-rail.d.ts",
+      "import": "./dist/patterns/section-rail.js",
+      "default": "./dist/patterns/section-rail.js"
+    },
+    "./patterns/selection-area": {
+      "types": "./dist/patterns/selection-area.d.ts",
+      "import": "./dist/patterns/selection-area.js",
+      "default": "./dist/patterns/selection-area.js"
+    },
+    "./patterns/settings": {
+      "types": "./dist/patterns/settings.d.ts",
+      "import": "./dist/patterns/settings.js",
+      "default": "./dist/patterns/settings.js"
+    },
+    "./patterns/shared-element": {
+      "types": "./dist/patterns/shared-element.d.ts",
+      "import": "./dist/patterns/shared-element.js",
+      "default": "./dist/patterns/shared-element.js"
+    },
+    "./patterns/shortcuts": {
+      "types": "./dist/patterns/shortcuts.d.ts",
+      "import": "./dist/patterns/shortcuts.js",
+      "default": "./dist/patterns/shortcuts.js"
+    },
+    "./patterns/sidebar-navigation": {
+      "types": "./dist/patterns/sidebar-navigation.d.ts",
+      "import": "./dist/patterns/sidebar-navigation.js",
+      "default": "./dist/patterns/sidebar-navigation.js"
+    },
+    "./patterns/sparkline": {
+      "types": "./dist/patterns/sparkline.d.ts",
+      "import": "./dist/patterns/sparkline.js",
+      "default": "./dist/patterns/sparkline.js"
+    },
+    "./patterns/split-pane": {
+      "types": "./dist/patterns/split-pane.d.ts",
+      "import": "./dist/patterns/split-pane.js",
+      "default": "./dist/patterns/split-pane.js"
+    },
+    "./patterns/split-text": {
+      "types": "./dist/patterns/split-text.d.ts",
+      "import": "./dist/patterns/split-text.js",
+      "default": "./dist/patterns/split-text.js"
+    },
+    "./patterns/stat-card": {
+      "types": "./dist/patterns/stat-card.d.ts",
+      "import": "./dist/patterns/stat-card.js",
+      "default": "./dist/patterns/stat-card.js"
+    },
+    "./patterns/statement-hero": {
+      "types": "./dist/patterns/statement-hero.d.ts",
+      "import": "./dist/patterns/statement-hero.js",
+      "default": "./dist/patterns/statement-hero.js"
+    },
+    "./patterns/status-cycle": {
+      "types": "./dist/patterns/status-cycle.d.ts",
+      "import": "./dist/patterns/status-cycle.js",
+      "default": "./dist/patterns/status-cycle.js"
+    },
+    "./patterns/step-wizard": {
+      "types": "./dist/patterns/step-wizard.d.ts",
+      "import": "./dist/patterns/step-wizard.js",
+      "default": "./dist/patterns/step-wizard.js"
+    },
+    "./patterns/stopwatch": {
+      "types": "./dist/patterns/stopwatch.d.ts",
+      "import": "./dist/patterns/stopwatch.js",
+      "default": "./dist/patterns/stopwatch.js"
+    },
+    "./patterns/swipe-deck": {
+      "types": "./dist/patterns/swipe-deck.d.ts",
+      "import": "./dist/patterns/swipe-deck.js",
+      "default": "./dist/patterns/swipe-deck.js"
+    },
+    "./patterns/swipe-row": {
+      "types": "./dist/patterns/swipe-row.d.ts",
+      "import": "./dist/patterns/swipe-row.js",
+      "default": "./dist/patterns/swipe-row.js"
+    },
+    "./patterns/tab-menu": {
+      "types": "./dist/patterns/tab-menu.d.ts",
+      "import": "./dist/patterns/tab-menu.js",
+      "default": "./dist/patterns/tab-menu.js"
+    },
+    "./patterns/tally-counter": {
+      "types": "./dist/patterns/tally-counter.d.ts",
+      "import": "./dist/patterns/tally-counter.js",
+      "default": "./dist/patterns/tally-counter.js"
+    },
+    "./patterns/text-button": {
+      "types": "./dist/patterns/text-button.d.ts",
+      "import": "./dist/patterns/text-button.js",
+      "default": "./dist/patterns/text-button.js"
+    },
+    "./patterns/theme-toggle": {
+      "types": "./dist/patterns/theme-toggle.d.ts",
+      "import": "./dist/patterns/theme-toggle.js",
+      "default": "./dist/patterns/theme-toggle.js"
+    },
+    "./patterns/tiling-layout": {
+      "types": "./dist/patterns/tiling-layout.d.ts",
+      "import": "./dist/patterns/tiling-layout.js",
+      "default": "./dist/patterns/tiling-layout.js"
+    },
+    "./patterns/tiling-layout-floating": {
+      "types": "./dist/patterns/tiling-layout-floating.d.ts",
+      "import": "./dist/patterns/tiling-layout-floating.js",
+      "default": "./dist/patterns/tiling-layout-floating.js"
+    },
+    "./patterns/tiling-layout-presets": {
+      "types": "./dist/patterns/tiling-layout-presets.d.ts",
+      "import": "./dist/patterns/tiling-layout-presets.js",
+      "default": "./dist/patterns/tiling-layout-presets.js"
+    },
+    "./patterns/tiling-layout-zone-editor": {
+      "types": "./dist/patterns/tiling-layout-zone-editor.d.ts",
+      "import": "./dist/patterns/tiling-layout-zone-editor.js",
+      "default": "./dist/patterns/tiling-layout-zone-editor.js"
+    },
+    "./patterns/tiling-model": {
+      "types": "./dist/patterns/tiling-model.d.ts",
+      "import": "./dist/patterns/tiling-model.js",
+      "default": "./dist/patterns/tiling-model.js"
+    },
+    "./patterns/timeline-bar": {
+      "types": "./dist/patterns/timeline-bar.d.ts",
+      "import": "./dist/patterns/timeline-bar.js",
+      "default": "./dist/patterns/timeline-bar.js"
+    },
+    "./patterns/transfer-list": {
+      "types": "./dist/patterns/transfer-list.d.ts",
+      "import": "./dist/patterns/transfer-list.js",
+      "default": "./dist/patterns/transfer-list.js"
+    },
+    "./patterns/tree-view": {
+      "types": "./dist/patterns/tree-view.d.ts",
+      "import": "./dist/patterns/tree-view.js",
+      "default": "./dist/patterns/tree-view.js"
+    },
+    "./patterns/treemap": {
+      "types": "./dist/patterns/treemap.d.ts",
+      "import": "./dist/patterns/treemap.js",
+      "default": "./dist/patterns/treemap.js"
+    },
+    "./patterns/typewriter": {
+      "types": "./dist/patterns/typewriter.d.ts",
+      "import": "./dist/patterns/typewriter.js",
+      "default": "./dist/patterns/typewriter.js"
+    },
+    "./patterns/zoom-pan": {
+      "types": "./dist/patterns/zoom-pan.d.ts",
+      "import": "./dist/patterns/zoom-pan.js",
+      "default": "./dist/patterns/zoom-pan.js"
+    },
+    "./kits/agent-admin/agent-jobs": {
+      "types": "./dist/kits/agent-admin/agent-jobs.d.ts",
+      "import": "./dist/kits/agent-admin/agent-jobs.js",
+      "default": "./dist/kits/agent-admin/agent-jobs.js"
+    },
+    "./kits/agent-admin/agent-jobs-blueprints": {
+      "types": "./dist/kits/agent-admin/agent-jobs-blueprints.d.ts",
+      "import": "./dist/kits/agent-admin/agent-jobs-blueprints.js",
+      "default": "./dist/kits/agent-admin/agent-jobs-blueprints.js"
+    },
+    "./kits/agent-admin/agent-jobs-delivery": {
+      "types": "./dist/kits/agent-admin/agent-jobs-delivery.d.ts",
+      "import": "./dist/kits/agent-admin/agent-jobs-delivery.js",
+      "default": "./dist/kits/agent-admin/agent-jobs-delivery.js"
+    },
+    "./kits/agent-admin/agent-jobs-form": {
+      "types": "./dist/kits/agent-admin/agent-jobs-form.d.ts",
+      "import": "./dist/kits/agent-admin/agent-jobs-form.js",
+      "default": "./dist/kits/agent-admin/agent-jobs-form.js"
+    },
+    "./kits/agent-admin/agent-jobs-list": {
+      "types": "./dist/kits/agent-admin/agent-jobs-list.d.ts",
+      "import": "./dist/kits/agent-admin/agent-jobs-list.js",
+      "default": "./dist/kits/agent-admin/agent-jobs-list.js"
+    },
+    "./kits/agent-admin/agent-jobs-model": {
+      "types": "./dist/kits/agent-admin/agent-jobs-model.d.ts",
+      "import": "./dist/kits/agent-admin/agent-jobs-model.js",
+      "default": "./dist/kits/agent-admin/agent-jobs-model.js"
+    },
+    "./kits/agent-admin/agent-persona": {
+      "types": "./dist/kits/agent-admin/agent-persona.d.ts",
+      "import": "./dist/kits/agent-admin/agent-persona.js",
+      "default": "./dist/kits/agent-admin/agent-persona.js"
+    },
+    "./kits/agent-admin/agent-room": {
+      "types": "./dist/kits/agent-admin/agent-room.d.ts",
+      "import": "./dist/kits/agent-admin/agent-room.js",
+      "default": "./dist/kits/agent-admin/agent-room.js"
+    },
+    "./kits/agent-admin/backends": {
+      "types": "./dist/kits/agent-admin/backends.d.ts",
+      "import": "./dist/kits/agent-admin/backends.js",
+      "default": "./dist/kits/agent-admin/backends.js"
+    },
+    "./kits/agent-admin/capabilities": {
+      "types": "./dist/kits/agent-admin/capabilities.d.ts",
+      "import": "./dist/kits/agent-admin/capabilities.js",
+      "default": "./dist/kits/agent-admin/capabilities.js"
+    },
+    "./kits/agent-admin/channels": {
+      "types": "./dist/kits/agent-admin/channels.d.ts",
+      "import": "./dist/kits/agent-admin/channels.js",
+      "default": "./dist/kits/agent-admin/channels.js"
+    },
+    "./kits/agent-admin/extensions-catalog": {
+      "types": "./dist/kits/agent-admin/extensions-catalog.d.ts",
+      "import": "./dist/kits/agent-admin/extensions-catalog.js",
+      "default": "./dist/kits/agent-admin/extensions-catalog.js"
+    },
+    "./kits/agent-admin/llm-providers": {
+      "types": "./dist/kits/agent-admin/llm-providers.d.ts",
+      "import": "./dist/kits/agent-admin/llm-providers.js",
+      "default": "./dist/kits/agent-admin/llm-providers.js"
+    },
+    "./kits/agent-admin/local-models": {
+      "types": "./dist/kits/agent-admin/local-models.d.ts",
+      "import": "./dist/kits/agent-admin/local-models.js",
+      "default": "./dist/kits/agent-admin/local-models.js"
+    },
+    "./kits/agent-admin/mcp": {
+      "types": "./dist/kits/agent-admin/mcp.d.ts",
+      "import": "./dist/kits/agent-admin/mcp.js",
+      "default": "./dist/kits/agent-admin/mcp.js"
+    },
+    "./kits/agent-admin/model-routing": {
+      "types": "./dist/kits/agent-admin/model-routing.d.ts",
+      "import": "./dist/kits/agent-admin/model-routing.js",
+      "default": "./dist/kits/agent-admin/model-routing.js"
+    },
+    "./kits/agent-admin/remote-screen": {
+      "types": "./dist/kits/agent-admin/remote-screen.d.ts",
+      "import": "./dist/kits/agent-admin/remote-screen.js",
+      "default": "./dist/kits/agent-admin/remote-screen.js"
+    },
+    "./kits/agent-admin/secret-row": {
+      "types": "./dist/kits/agent-admin/secret-row.d.ts",
+      "import": "./dist/kits/agent-admin/secret-row.js",
+      "default": "./dist/kits/agent-admin/secret-row.js"
+    },
+    "./kits/agent-admin/slot-outlet": {
+      "types": "./dist/kits/agent-admin/slot-outlet.d.ts",
+      "import": "./dist/kits/agent-admin/slot-outlet.js",
+      "default": "./dist/kits/agent-admin/slot-outlet.js"
+    },
+    "./kits/agent-admin/status-stack": {
+      "types": "./dist/kits/agent-admin/status-stack.d.ts",
+      "import": "./dist/kits/agent-admin/status-stack.js",
+      "default": "./dist/kits/agent-admin/status-stack.js"
+    },
+    "./kits/agent-admin/subagents": {
+      "types": "./dist/kits/agent-admin/subagents.d.ts",
+      "import": "./dist/kits/agent-admin/subagents.js",
+      "default": "./dist/kits/agent-admin/subagents.js"
+    },
+    "./kits/agent-admin/tool-toggles": {
+      "types": "./dist/kits/agent-admin/tool-toggles.d.ts",
+      "import": "./dist/kits/agent-admin/tool-toggles.js",
+      "default": "./dist/kits/agent-admin/tool-toggles.js"
+    },
+    "./kits/agent-admin/webhooks": {
+      "types": "./dist/kits/agent-admin/webhooks.d.ts",
+      "import": "./dist/kits/agent-admin/webhooks.js",
+      "default": "./dist/kits/agent-admin/webhooks.js"
+    },
+    "./kits/agent/agent-browser": {
+      "types": "./dist/kits/agent/agent-browser.d.ts",
+      "import": "./dist/kits/agent/agent-browser.js",
+      "default": "./dist/kits/agent/agent-browser.js"
+    },
+    "./kits/agent/agent-composer": {
+      "types": "./dist/kits/agent/agent-composer.d.ts",
+      "import": "./dist/kits/agent/agent-composer.js",
+      "default": "./dist/kits/agent/agent-composer.js"
+    },
+    "./kits/agent/agent-mode": {
+      "types": "./dist/kits/agent/agent-mode.d.ts",
+      "import": "./dist/kits/agent/agent-mode.js",
+      "default": "./dist/kits/agent/agent-mode.js"
+    },
+    "./kits/agent/agent-onboarding": {
+      "types": "./dist/kits/agent/agent-onboarding.d.ts",
+      "import": "./dist/kits/agent/agent-onboarding.js",
+      "default": "./dist/kits/agent/agent-onboarding.js"
+    },
+    "./kits/agent/agent-processes": {
+      "types": "./dist/kits/agent/agent-processes.d.ts",
+      "import": "./dist/kits/agent/agent-processes.js",
+      "default": "./dist/kits/agent/agent-processes.js"
+    },
+    "./kits/agent/agent-sessions": {
+      "types": "./dist/kits/agent/agent-sessions.d.ts",
+      "import": "./dist/kits/agent/agent-sessions.js",
+      "default": "./dist/kits/agent/agent-sessions.js"
+    },
+    "./kits/agent/agent-tasks": {
+      "types": "./dist/kits/agent/agent-tasks.d.ts",
+      "import": "./dist/kits/agent/agent-tasks.js",
+      "default": "./dist/kits/agent/agent-tasks.js"
+    },
+    "./kits/agent/agent-transcript": {
+      "types": "./dist/kits/agent/agent-transcript.d.ts",
+      "import": "./dist/kits/agent/agent-transcript.js",
+      "default": "./dist/kits/agent/agent-transcript.js"
+    },
+    "./kits/agent/artifacts": {
+      "types": "./dist/kits/agent/artifacts.d.ts",
+      "import": "./dist/kits/agent/artifacts.js",
+      "default": "./dist/kits/agent/artifacts.js"
+    },
+    "./kits/agent/git-review": {
+      "types": "./dist/kits/agent/git-review.d.ts",
+      "import": "./dist/kits/agent/git-review.js",
+      "default": "./dist/kits/agent/git-review.js"
+    },
+    "./kits/agent/plan-review": {
+      "types": "./dist/kits/agent/plan-review.d.ts",
+      "import": "./dist/kits/agent/plan-review.js",
+      "default": "./dist/kits/agent/plan-review.js"
+    },
+    "./kits/agent/rewind": {
+      "types": "./dist/kits/agent/rewind.d.ts",
+      "import": "./dist/kits/agent/rewind.js",
+      "default": "./dist/kits/agent/rewind.js"
+    },
+    "./kits/agent/tool-timeline": {
+      "types": "./dist/kits/agent/tool-timeline.d.ts",
+      "import": "./dist/kits/agent/tool-timeline.js",
+      "default": "./dist/kits/agent/tool-timeline.js"
+    },
+    "./kits/ai/agent-usage": {
+      "types": "./dist/kits/ai/agent-usage.d.ts",
+      "import": "./dist/kits/ai/agent-usage.js",
+      "default": "./dist/kits/ai/agent-usage.js"
+    },
+    "./kits/ai/ai-extras": {
+      "types": "./dist/kits/ai/ai-extras.d.ts",
+      "import": "./dist/kits/ai/ai-extras.js",
+      "default": "./dist/kits/ai/ai-extras.js"
+    },
+    "./kits/ai/approval-stack": {
+      "types": "./dist/kits/ai/approval-stack.d.ts",
+      "import": "./dist/kits/ai/approval-stack.js",
+      "default": "./dist/kits/ai/approval-stack.js"
+    },
+    "./kits/ai/chain-of-thought": {
+      "types": "./dist/kits/ai/chain-of-thought.d.ts",
+      "import": "./dist/kits/ai/chain-of-thought.js",
+      "default": "./dist/kits/ai/chain-of-thought.js"
+    },
+    "./kits/ai/chat-attachment": {
+      "types": "./dist/kits/ai/chat-attachment.d.ts",
+      "import": "./dist/kits/ai/chat-attachment.js",
+      "default": "./dist/kits/ai/chat-attachment.js"
+    },
+    "./kits/ai/chat-conversation": {
+      "types": "./dist/kits/ai/chat-conversation.d.ts",
+      "import": "./dist/kits/ai/chat-conversation.js",
+      "default": "./dist/kits/ai/chat-conversation.js"
+    },
+    "./kits/ai/chat-list-view": {
+      "types": "./dist/kits/ai/chat-list-view.d.ts",
+      "import": "./dist/kits/ai/chat-list-view.js",
+      "default": "./dist/kits/ai/chat-list-view.js"
+    },
+    "./kits/ai/chat-loader": {
+      "types": "./dist/kits/ai/chat-loader.d.ts",
+      "import": "./dist/kits/ai/chat-loader.js",
+      "default": "./dist/kits/ai/chat-loader.js"
+    },
+    "./kits/ai/chat-message": {
+      "types": "./dist/kits/ai/chat-message.d.ts",
+      "import": "./dist/kits/ai/chat-message.js",
+      "default": "./dist/kits/ai/chat-message.js"
+    },
+    "./kits/ai/chat-message-actions": {
+      "types": "./dist/kits/ai/chat-message-actions.d.ts",
+      "import": "./dist/kits/ai/chat-message-actions.js",
+      "default": "./dist/kits/ai/chat-message-actions.js"
+    },
+    "./kits/ai/chat-source": {
+      "types": "./dist/kits/ai/chat-source.d.ts",
+      "import": "./dist/kits/ai/chat-source.js",
+      "default": "./dist/kits/ai/chat-source.js"
+    },
+    "./kits/ai/chat-tool": {
+      "types": "./dist/kits/ai/chat-tool.d.ts",
+      "import": "./dist/kits/ai/chat-tool.js",
+      "default": "./dist/kits/ai/chat-tool.js"
+    },
+    "./kits/ai/clarify-settled": {
+      "types": "./dist/kits/ai/clarify-settled.d.ts",
+      "import": "./dist/kits/ai/clarify-settled.js",
+      "default": "./dist/kits/ai/clarify-settled.js"
+    },
+    "./kits/ai/context-meter": {
+      "types": "./dist/kits/ai/context-meter.d.ts",
+      "import": "./dist/kits/ai/context-meter.js",
+      "default": "./dist/kits/ai/context-meter.js"
+    },
+    "./kits/ai/conversation-list": {
+      "types": "./dist/kits/ai/conversation-list.d.ts",
+      "import": "./dist/kits/ai/conversation-list.js",
+      "default": "./dist/kits/ai/conversation-list.js"
+    },
+    "./kits/ai/conversation-sidebar": {
+      "types": "./dist/kits/ai/conversation-sidebar.d.ts",
+      "import": "./dist/kits/ai/conversation-sidebar.js",
+      "default": "./dist/kits/ai/conversation-sidebar.js"
+    },
+    "./kits/ai/embeds": {
+      "types": "./dist/kits/ai/embeds.d.ts",
+      "import": "./dist/kits/ai/embeds.js",
+      "default": "./dist/kits/ai/embeds.js"
+    },
+    "./kits/ai/job-banner": {
+      "types": "./dist/kits/ai/job-banner.d.ts",
+      "import": "./dist/kits/ai/job-banner.js",
+      "default": "./dist/kits/ai/job-banner.js"
+    },
+    "./kits/ai/model-picker": {
+      "types": "./dist/kits/ai/model-picker.d.ts",
+      "import": "./dist/kits/ai/model-picker.js",
+      "default": "./dist/kits/ai/model-picker.js"
+    },
+    "./kits/ai/model-select": {
+      "types": "./dist/kits/ai/model-select.d.ts",
+      "import": "./dist/kits/ai/model-select.js",
+      "default": "./dist/kits/ai/model-select.js"
+    },
+    "./kits/ai/model-state": {
+      "types": "./dist/kits/ai/model-state.d.ts",
+      "import": "./dist/kits/ai/model-state.js",
+      "default": "./dist/kits/ai/model-state.js"
+    },
+    "./kits/ai/permission-prompt": {
+      "types": "./dist/kits/ai/permission-prompt.d.ts",
+      "import": "./dist/kits/ai/permission-prompt.js",
+      "default": "./dist/kits/ai/permission-prompt.js"
+    },
+    "./kits/ai/primitives-extra": {
+      "types": "./dist/kits/ai/primitives-extra.d.ts",
+      "import": "./dist/kits/ai/primitives-extra.js",
+      "default": "./dist/kits/ai/primitives-extra.js"
+    },
+    "./kits/ai/prompt-input": {
+      "types": "./dist/kits/ai/prompt-input.d.ts",
+      "import": "./dist/kits/ai/prompt-input.js",
+      "default": "./dist/kits/ai/prompt-input.js"
+    },
+    "./kits/ai/prompt-input-attachments": {
+      "types": "./dist/kits/ai/prompt-input-attachments.d.ts",
+      "import": "./dist/kits/ai/prompt-input-attachments.js",
+      "default": "./dist/kits/ai/prompt-input-attachments.js"
+    },
+    "./kits/ai/prompt-input-model": {
+      "types": "./dist/kits/ai/prompt-input-model.d.ts",
+      "import": "./dist/kits/ai/prompt-input-model.js",
+      "default": "./dist/kits/ai/prompt-input-model.js"
+    },
+    "./kits/ai/prompt-input-textarea": {
+      "types": "./dist/kits/ai/prompt-input-textarea.d.ts",
+      "import": "./dist/kits/ai/prompt-input-textarea.js",
+      "default": "./dist/kits/ai/prompt-input-textarea.js"
+    },
+    "./kits/ai/prompt-input-toolbar": {
+      "types": "./dist/kits/ai/prompt-input-toolbar.d.ts",
+      "import": "./dist/kits/ai/prompt-input-toolbar.js",
+      "default": "./dist/kits/ai/prompt-input-toolbar.js"
+    },
+    "./kits/ai/prompt-suggestion": {
+      "types": "./dist/kits/ai/prompt-suggestion.d.ts",
+      "import": "./dist/kits/ai/prompt-suggestion.js",
+      "default": "./dist/kits/ai/prompt-suggestion.js"
+    },
+    "./kits/ai/question-card": {
+      "types": "./dist/kits/ai/question-card.d.ts",
+      "import": "./dist/kits/ai/question-card.js",
+      "default": "./dist/kits/ai/question-card.js"
+    },
+    "./kits/ai/slash-menu": {
+      "types": "./dist/kits/ai/slash-menu.d.ts",
+      "import": "./dist/kits/ai/slash-menu.js",
+      "default": "./dist/kits/ai/slash-menu.js"
+    },
+    "./kits/ai/status-strip": {
+      "types": "./dist/kits/ai/status-strip.d.ts",
+      "import": "./dist/kits/ai/status-strip.js",
+      "default": "./dist/kits/ai/status-strip.js"
+    },
+    "./kits/ai/text-caret": {
+      "types": "./dist/kits/ai/text-caret.d.ts",
+      "import": "./dist/kits/ai/text-caret.js",
+      "default": "./dist/kits/ai/text-caret.js"
+    },
+    "./kits/ai/undelivered-notice": {
+      "types": "./dist/kits/ai/undelivered-notice.d.ts",
+      "import": "./dist/kits/ai/undelivered-notice.js",
+      "default": "./dist/kits/ai/undelivered-notice.js"
+    },
+    "./kits/ai/usage-quota": {
+      "types": "./dist/kits/ai/usage-quota.d.ts",
+      "import": "./dist/kits/ai/usage-quota.js",
+      "default": "./dist/kits/ai/usage-quota.js"
+    },
+    "./kits/ai/usage-summary": {
+      "types": "./dist/kits/ai/usage-summary.d.ts",
+      "import": "./dist/kits/ai/usage-summary.js",
+      "default": "./dist/kits/ai/usage-summary.js"
+    },
+    "./kits/billing/billing": {
+      "types": "./dist/kits/billing/billing.d.ts",
+      "import": "./dist/kits/billing/billing.js",
+      "default": "./dist/kits/billing/billing.js"
+    },
+    "./kits/billing/billing-banner": {
+      "types": "./dist/kits/billing/billing-banner.d.ts",
+      "import": "./dist/kits/billing/billing-banner.js",
+      "default": "./dist/kits/billing/billing-banner.js"
+    },
+    "./kits/billing/billing-checkout": {
+      "types": "./dist/kits/billing/billing-checkout.d.ts",
+      "import": "./dist/kits/billing/billing-checkout.js",
+      "default": "./dist/kits/billing/billing-checkout.js"
+    },
+    "./kits/billing/billing-credits": {
+      "types": "./dist/kits/billing/billing-credits.d.ts",
+      "import": "./dist/kits/billing/billing-credits.js",
+      "default": "./dist/kits/billing/billing-credits.js"
+    },
+    "./kits/billing/billing-current-plan": {
+      "types": "./dist/kits/billing/billing-current-plan.d.ts",
+      "import": "./dist/kits/billing/billing-current-plan.js",
+      "default": "./dist/kits/billing/billing-current-plan.js"
+    },
+    "./kits/billing/billing-format": {
+      "types": "./dist/kits/billing/billing-format.d.ts",
+      "import": "./dist/kits/billing/billing-format.js",
+      "default": "./dist/kits/billing/billing-format.js"
+    },
+    "./kits/billing/billing-invoices": {
+      "types": "./dist/kits/billing/billing-invoices.d.ts",
+      "import": "./dist/kits/billing/billing-invoices.js",
+      "default": "./dist/kits/billing/billing-invoices.js"
+    },
+    "./kits/billing/billing-plans": {
+      "types": "./dist/kits/billing/billing-plans.d.ts",
+      "import": "./dist/kits/billing/billing-plans.js",
+      "default": "./dist/kits/billing/billing-plans.js"
+    },
+    "./kits/billing/payment-card": {
+      "types": "./dist/kits/billing/payment-card.d.ts",
+      "import": "./dist/kits/billing/payment-card.js",
+      "default": "./dist/kits/billing/payment-card.js"
+    },
+    "./kits/editor/code-editor": {
+      "types": "./dist/kits/editor/code-editor.d.ts",
+      "import": "./dist/kits/editor/code-editor.js",
+      "default": "./dist/kits/editor/code-editor.js"
+    },
+    "./kits/editor/document-outline": {
+      "types": "./dist/kits/editor/document-outline.d.ts",
+      "import": "./dist/kits/editor/document-outline.js",
+      "default": "./dist/kits/editor/document-outline.js"
+    },
+    "./kits/editor/editor-status": {
+      "types": "./dist/kits/editor/editor-status.d.ts",
+      "import": "./dist/kits/editor/editor-status.js",
+      "default": "./dist/kits/editor/editor-status.js"
+    },
+    "./kits/editor/editor-toolbar": {
+      "types": "./dist/kits/editor/editor-toolbar.d.ts",
+      "import": "./dist/kits/editor/editor-toolbar.js",
+      "default": "./dist/kits/editor/editor-toolbar.js"
+    },
+    "./kits/editor/pdf-viewer": {
+      "types": "./dist/kits/editor/pdf-viewer.d.ts",
+      "import": "./dist/kits/editor/pdf-viewer.js",
+      "default": "./dist/kits/editor/pdf-viewer.js"
+    },
+    "./kits/editor/rich-text-editor": {
+      "types": "./dist/kits/editor/rich-text-editor.d.ts",
+      "import": "./dist/kits/editor/rich-text-editor.js",
+      "default": "./dist/kits/editor/rich-text-editor.js"
+    },
+    "./kits/editor/version-history": {
+      "types": "./dist/kits/editor/version-history.d.ts",
+      "import": "./dist/kits/editor/version-history.js",
+      "default": "./dist/kits/editor/version-history.js"
+    },
+    "./kits/geo/geo-marker-layer": {
+      "types": "./dist/kits/geo/geo-marker-layer.d.ts",
+      "import": "./dist/kits/geo/geo-marker-layer.js",
+      "default": "./dist/kits/geo/geo-marker-layer.js"
+    },
+    "./kits/geo/geo-model": {
+      "types": "./dist/kits/geo/geo-model.d.ts",
+      "import": "./dist/kits/geo/geo-model.js",
+      "default": "./dist/kits/geo/geo-model.js"
+    },
+    "./kits/geo/globe": {
+      "types": "./dist/kits/geo/globe.d.ts",
+      "import": "./dist/kits/geo/globe.js",
+      "default": "./dist/kits/geo/globe.js"
+    },
+    "./kits/geo/live-visitors-map": {
+      "types": "./dist/kits/geo/live-visitors-map.d.ts",
+      "import": "./dist/kits/geo/live-visitors-map.js",
+      "default": "./dist/kits/geo/live-visitors-map.js"
+    },
+    "./kits/geo/world-data": {
+      "types": "./dist/kits/geo/world-data.d.ts",
+      "import": "./dist/kits/geo/world-data.js",
+      "default": "./dist/kits/geo/world-data.js"
+    },
+    "./kits/geo/world-map": {
+      "types": "./dist/kits/geo/world-map.d.ts",
+      "import": "./dist/kits/geo/world-map.js",
+      "default": "./dist/kits/geo/world-map.js"
+    },
+    "./kits/identity/api-keys": {
+      "types": "./dist/kits/identity/api-keys.d.ts",
+      "import": "./dist/kits/identity/api-keys.js",
+      "default": "./dist/kits/identity/api-keys.js"
+    },
+    "./kits/identity/connected-apps": {
+      "types": "./dist/kits/identity/connected-apps.d.ts",
+      "import": "./dist/kits/identity/connected-apps.js",
+      "default": "./dist/kits/identity/connected-apps.js"
+    },
+    "./kits/identity/consent": {
+      "types": "./dist/kits/identity/consent.d.ts",
+      "import": "./dist/kits/identity/consent.js",
+      "default": "./dist/kits/identity/consent.js"
+    },
+    "./kits/identity/credential-card": {
+      "types": "./dist/kits/identity/credential-card.d.ts",
+      "import": "./dist/kits/identity/credential-card.js",
+      "default": "./dist/kits/identity/credential-card.js"
+    },
+    "./kits/identity/device-sessions": {
+      "types": "./dist/kits/identity/device-sessions.d.ts",
+      "import": "./dist/kits/identity/device-sessions.js",
+      "default": "./dist/kits/identity/device-sessions.js"
+    },
+    "./kits/identity/kunji": {
+      "types": "./dist/kits/identity/kunji.d.ts",
+      "import": "./dist/kits/identity/kunji.js",
+      "default": "./dist/kits/identity/kunji.js"
+    },
+    "./kits/identity/kunji-access-gate": {
+      "types": "./dist/kits/identity/kunji-access-gate.d.ts",
+      "import": "./dist/kits/identity/kunji-access-gate.js",
+      "default": "./dist/kits/identity/kunji-access-gate.js"
+    },
+    "./kits/identity/kunji-auth-problem": {
+      "types": "./dist/kits/identity/kunji-auth-problem.d.ts",
+      "import": "./dist/kits/identity/kunji-auth-problem.js",
+      "default": "./dist/kits/identity/kunji-auth-problem.js"
+    },
+    "./kits/identity/kunji-buttons": {
+      "types": "./dist/kits/identity/kunji-buttons.d.ts",
+      "import": "./dist/kits/identity/kunji-buttons.js",
+      "default": "./dist/kits/identity/kunji-buttons.js"
+    },
+    "./kits/identity/kunji-client": {
+      "types": "./dist/kits/identity/kunji-client.d.ts",
+      "import": "./dist/kits/identity/kunji-client.js",
+      "default": "./dist/kits/identity/kunji-client.js"
+    },
+    "./kits/identity/kunji-link": {
+      "types": "./dist/kits/identity/kunji-link.d.ts",
+      "import": "./dist/kits/identity/kunji-link.js",
+      "default": "./dist/kits/identity/kunji-link.js"
+    },
+    "./kits/identity/kunji-sign-in": {
+      "types": "./dist/kits/identity/kunji-sign-in.d.ts",
+      "import": "./dist/kits/identity/kunji-sign-in.js",
+      "default": "./dist/kits/identity/kunji-sign-in.js"
+    },
+    "./kits/identity/kunji-sign-in-state": {
+      "types": "./dist/kits/identity/kunji-sign-in-state.d.ts",
+      "import": "./dist/kits/identity/kunji-sign-in-state.js",
+      "default": "./dist/kits/identity/kunji-sign-in-state.js"
+    },
+    "./kits/identity/qr-code": {
+      "types": "./dist/kits/identity/qr-code.d.ts",
+      "import": "./dist/kits/identity/qr-code.js",
+      "default": "./dist/kits/identity/qr-code.js"
+    },
+    "./kits/identity/qr-scanner": {
+      "types": "./dist/kits/identity/qr-scanner.d.ts",
+      "import": "./dist/kits/identity/qr-scanner.js",
+      "default": "./dist/kits/identity/qr-scanner.js"
+    },
+    "./kits/identity/recovery-key": {
+      "types": "./dist/kits/identity/recovery-key.d.ts",
+      "import": "./dist/kits/identity/recovery-key.js",
+      "default": "./dist/kits/identity/recovery-key.js"
+    },
+    "./kits/identity/secret": {
+      "types": "./dist/kits/identity/secret.d.ts",
+      "import": "./dist/kits/identity/secret.js",
+      "default": "./dist/kits/identity/secret.js"
+    },
+    "./kits/identity/sign-in-map": {
+      "types": "./dist/kits/identity/sign-in-map.d.ts",
+      "import": "./dist/kits/identity/sign-in-map.js",
+      "default": "./dist/kits/identity/sign-in-map.js"
+    },
+    "./kits/identity/sign-in-map-model": {
+      "types": "./dist/kits/identity/sign-in-map-model.d.ts",
+      "import": "./dist/kits/identity/sign-in-map-model.js",
+      "default": "./dist/kits/identity/sign-in-map-model.js"
+    },
+    "./kits/identity/totp": {
+      "types": "./dist/kits/identity/totp.d.ts",
+      "import": "./dist/kits/identity/totp.js",
+      "default": "./dist/kits/identity/totp.js"
+    },
+    "./kits/media/audio-player": {
+      "types": "./dist/kits/media/audio-player.d.ts",
+      "import": "./dist/kits/media/audio-player.js",
+      "default": "./dist/kits/media/audio-player.js"
+    },
+    "./kits/media/cast-picker": {
+      "types": "./dist/kits/media/cast-picker.d.ts",
+      "import": "./dist/kits/media/cast-picker.js",
+      "default": "./dist/kits/media/cast-picker.js"
+    },
+    "./kits/media/media-cards": {
+      "types": "./dist/kits/media/media-cards.d.ts",
+      "import": "./dist/kits/media/media-cards.js",
+      "default": "./dist/kits/media/media-cards.js"
+    },
+    "./kits/media/media-controls": {
+      "types": "./dist/kits/media/media-controls.d.ts",
+      "import": "./dist/kits/media/media-controls.js",
+      "default": "./dist/kits/media/media-controls.js"
+    },
+    "./kits/media/video-player": {
+      "types": "./dist/kits/media/video-player.d.ts",
+      "import": "./dist/kits/media/video-player.js",
+      "default": "./dist/kits/media/video-player.js"
+    },
+    "./kits/ops/alert-group": {
+      "types": "./dist/kits/ops/alert-group.d.ts",
+      "import": "./dist/kits/ops/alert-group.js",
+      "default": "./dist/kits/ops/alert-group.js"
+    },
+    "./kits/ops/model-row": {
+      "types": "./dist/kits/ops/model-row.d.ts",
+      "import": "./dist/kits/ops/model-row.js",
+      "default": "./dist/kits/ops/model-row.js"
+    },
+    "./kits/ops/node-card": {
+      "types": "./dist/kits/ops/node-card.d.ts",
+      "import": "./dist/kits/ops/node-card.js",
+      "default": "./dist/kits/ops/node-card.js"
+    },
+    "./kits/ops/process-table": {
+      "types": "./dist/kits/ops/process-table.d.ts",
+      "import": "./dist/kits/ops/process-table.js",
+      "default": "./dist/kits/ops/process-table.js"
+    },
+    "./kits/ops/progress-dialog": {
+      "types": "./dist/kits/ops/progress-dialog.d.ts",
+      "import": "./dist/kits/ops/progress-dialog.js",
+      "default": "./dist/kits/ops/progress-dialog.js"
+    },
+    "./kits/ops/region-status-map": {
+      "types": "./dist/kits/ops/region-status-map.d.ts",
+      "import": "./dist/kits/ops/region-status-map.js",
+      "default": "./dist/kits/ops/region-status-map.js"
+    },
+    "./kits/ops/region-status-map-model": {
+      "types": "./dist/kits/ops/region-status-map-model.d.ts",
+      "import": "./dist/kits/ops/region-status-map-model.js",
+      "default": "./dist/kits/ops/region-status-map-model.js"
+    },
+    "./kits/ops/request-inspector": {
+      "types": "./dist/kits/ops/request-inspector.d.ts",
+      "import": "./dist/kits/ops/request-inspector.js",
+      "default": "./dist/kits/ops/request-inspector.js"
+    },
+    "./kits/social/call-overlay": {
+      "types": "./dist/kits/social/call-overlay.d.ts",
+      "import": "./dist/kits/social/call-overlay.js",
+      "default": "./dist/kits/social/call-overlay.js"
+    },
+    "./kits/social/messenger": {
+      "types": "./dist/kits/social/messenger.d.ts",
+      "import": "./dist/kits/social/messenger.js",
+      "default": "./dist/kits/social/messenger.js"
+    },
+    "./kits/social/presence": {
+      "types": "./dist/kits/social/presence.d.ts",
+      "import": "./dist/kits/social/presence.js",
+      "default": "./dist/kits/social/presence.js"
+    },
+    "./kits/system/alert-rules": {
+      "types": "./dist/kits/system/alert-rules.d.ts",
+      "import": "./dist/kits/system/alert-rules.js",
+      "default": "./dist/kits/system/alert-rules.js"
+    },
+    "./kits/system/containers": {
+      "types": "./dist/kits/system/containers.d.ts",
+      "import": "./dist/kits/system/containers.js",
+      "default": "./dist/kits/system/containers.js"
+    },
+    "./kits/system/dev-servers": {
+      "types": "./dist/kits/system/dev-servers.d.ts",
+      "import": "./dist/kits/system/dev-servers.js",
+      "default": "./dist/kits/system/dev-servers.js"
+    },
+    "./kits/system/device-battery": {
+      "types": "./dist/kits/system/device-battery.d.ts",
+      "import": "./dist/kits/system/device-battery.js",
+      "default": "./dist/kits/system/device-battery.js"
+    },
+    "./kits/system/thermals": {
+      "types": "./dist/kits/system/thermals.d.ts",
+      "import": "./dist/kits/system/thermals.js",
+      "default": "./dist/kits/system/thermals.js"
+    },
+    "./kits/system/volume-mixer": {
+      "types": "./dist/kits/system/volume-mixer.d.ts",
+      "import": "./dist/kits/system/volume-mixer.js",
+      "default": "./dist/kits/system/volume-mixer.js"
+    },
+    "./kits/terminal/terminal": {
+      "types": "./dist/kits/terminal/terminal.d.ts",
+      "import": "./dist/kits/terminal/terminal.js",
+      "default": "./dist/kits/terminal/terminal.js"
+    },
+    "./kits/voice/assistant-orb": {
+      "types": "./dist/kits/voice/assistant-orb.d.ts",
+      "import": "./dist/kits/voice/assistant-orb.js",
+      "default": "./dist/kits/voice/assistant-orb.js"
+    },
+    "./kits/voice/translate": {
+      "types": "./dist/kits/voice/translate.d.ts",
+      "import": "./dist/kits/voice/translate.js",
+      "default": "./dist/kits/voice/translate.js"
+    },
+    "./kits/voice/voice": {
+      "types": "./dist/kits/voice/voice.d.ts",
+      "import": "./dist/kits/voice/voice.js",
+      "default": "./dist/kits/voice/voice.js"
+    },
+    "./kits/workspace/app-launcher": {
+      "types": "./dist/kits/workspace/app-launcher.d.ts",
+      "import": "./dist/kits/workspace/app-launcher.js",
+      "default": "./dist/kits/workspace/app-launcher.js"
+    },
+    "./kits/workspace/backlinks": {
+      "types": "./dist/kits/workspace/backlinks.d.ts",
+      "import": "./dist/kits/workspace/backlinks.js",
+      "default": "./dist/kits/workspace/backlinks.js"
+    },
+    "./kits/workspace/entity-mention": {
+      "types": "./dist/kits/workspace/entity-mention.d.ts",
+      "import": "./dist/kits/workspace/entity-mention.js",
+      "default": "./dist/kits/workspace/entity-mention.js"
+    },
+    "./kits/workspace/install-prompt": {
+      "types": "./dist/kits/workspace/install-prompt.d.ts",
+      "import": "./dist/kits/workspace/install-prompt.js",
+      "default": "./dist/kits/workspace/install-prompt.js"
+    },
+    "./kits/workspace/kanban": {
+      "types": "./dist/kits/workspace/kanban.d.ts",
+      "import": "./dist/kits/workspace/kanban.js",
+      "default": "./dist/kits/workspace/kanban.js"
+    },
+    "./kits/workspace/kanban-board": {
+      "types": "./dist/kits/workspace/kanban-board.d.ts",
+      "import": "./dist/kits/workspace/kanban-board.js",
+      "default": "./dist/kits/workspace/kanban-board.js"
+    },
+    "./kits/workspace/kanban-card": {
+      "types": "./dist/kits/workspace/kanban-card.d.ts",
+      "import": "./dist/kits/workspace/kanban-card.js",
+      "default": "./dist/kits/workspace/kanban-card.js"
+    },
+    "./kits/workspace/kanban-model": {
+      "types": "./dist/kits/workspace/kanban-model.d.ts",
+      "import": "./dist/kits/workspace/kanban-model.js",
+      "default": "./dist/kits/workspace/kanban-model.js"
+    },
+    "./kits/workspace/kanban-task-dialog": {
+      "types": "./dist/kits/workspace/kanban-task-dialog.d.ts",
+      "import": "./dist/kits/workspace/kanban-task-dialog.js",
+      "default": "./dist/kits/workspace/kanban-task-dialog.js"
+    },
+    "./kits/workspace/kanban-toolbar": {
+      "types": "./dist/kits/workspace/kanban-toolbar.d.ts",
+      "import": "./dist/kits/workspace/kanban-toolbar.js",
+      "default": "./dist/kits/workspace/kanban-toolbar.js"
+    },
+    "./kits/workspace/memory-map": {
+      "types": "./dist/kits/workspace/memory-map.d.ts",
+      "import": "./dist/kits/workspace/memory-map.js",
+      "default": "./dist/kits/workspace/memory-map.js"
+    },
+    "./kits/workspace/memory-map-legend": {
+      "types": "./dist/kits/workspace/memory-map-legend.d.ts",
+      "import": "./dist/kits/workspace/memory-map-legend.js",
+      "default": "./dist/kits/workspace/memory-map-legend.js"
+    },
+    "./kits/workspace/memory-map-model": {
+      "types": "./dist/kits/workspace/memory-map-model.d.ts",
+      "import": "./dist/kits/workspace/memory-map-model.js",
+      "default": "./dist/kits/workspace/memory-map-model.js"
+    },
+    "./kits/workspace/memory-map-scrubber": {
+      "types": "./dist/kits/workspace/memory-map-scrubber.d.ts",
+      "import": "./dist/kits/workspace/memory-map-scrubber.js",
+      "default": "./dist/kits/workspace/memory-map-scrubber.js"
+    },
+    "./kits/workspace/memory-map-share": {
+      "types": "./dist/kits/workspace/memory-map-share.d.ts",
+      "import": "./dist/kits/workspace/memory-map-share.js",
+      "default": "./dist/kits/workspace/memory-map-share.js"
+    },
+    "./kits/workspace/orchestration-panel": {
+      "types": "./dist/kits/workspace/orchestration-panel.d.ts",
+      "import": "./dist/kits/workspace/orchestration-panel.js",
+      "default": "./dist/kits/workspace/orchestration-panel.js"
+    },
+    "./kits/workspace/quick-capture": {
+      "types": "./dist/kits/workspace/quick-capture.d.ts",
+      "import": "./dist/kits/workspace/quick-capture.js",
+      "default": "./dist/kits/workspace/quick-capture.js"
+    },
+    "./kits/workspace/sync-status": {
+      "types": "./dist/kits/workspace/sync-status.d.ts",
+      "import": "./dist/kits/workspace/sync-status.js",
+      "default": "./dist/kits/workspace/sync-status.js"
+    },
+    "./kits/workspace/timeline-rail": {
+      "types": "./dist/kits/workspace/timeline-rail.d.ts",
+      "import": "./dist/kits/workspace/timeline-rail.js",
+      "default": "./dist/kits/workspace/timeline-rail.js"
+    },
+    "./kits/workspace/today-timeline": {
+      "types": "./dist/kits/workspace/today-timeline.d.ts",
+      "import": "./dist/kits/workspace/today-timeline.js",
+      "default": "./dist/kits/workspace/today-timeline.js"
+    },
+    "./kits/workspace/workspace-switcher": {
+      "types": "./dist/kits/workspace/workspace-switcher.d.ts",
+      "import": "./dist/kits/workspace/workspace-switcher.js",
+      "default": "./dist/kits/workspace/workspace-switcher.js"
+    },
+    "./blocks/auth-blocks": {
+      "types": "./dist/blocks/auth-blocks.d.ts",
+      "import": "./dist/blocks/auth-blocks.js",
+      "default": "./dist/blocks/auth-blocks.js"
+    },
+    "./blocks/auth-pages": {
+      "types": "./dist/blocks/auth-pages.d.ts",
+      "import": "./dist/blocks/auth-pages.js",
+      "default": "./dist/blocks/auth-pages.js"
+    },
+    "./blocks/block-utils": {
+      "types": "./dist/blocks/block-utils.d.ts",
+      "import": "./dist/blocks/block-utils.js",
+      "default": "./dist/blocks/block-utils.js"
+    },
+    "./blocks/demo-data": {
+      "types": "./dist/blocks/demo-data.d.ts",
+      "import": "./dist/blocks/demo-data.js",
+      "default": "./dist/blocks/demo-data.js"
+    },
+    "./blocks/dropdown-menu-blocks": {
+      "types": "./dist/blocks/dropdown-menu-blocks.d.ts",
+      "import": "./dist/blocks/dropdown-menu-blocks.js",
+      "default": "./dist/blocks/dropdown-menu-blocks.js"
+    },
+    "./blocks/header-navigation-blocks": {
+      "types": "./dist/blocks/header-navigation-blocks.d.ts",
+      "import": "./dist/blocks/header-navigation-blocks.js",
+      "default": "./dist/blocks/header-navigation-blocks.js"
+    },
+    "./blocks/kunji-blocks": {
+      "types": "./dist/blocks/kunji-blocks.d.ts",
+      "import": "./dist/blocks/kunji-blocks.js",
+      "default": "./dist/blocks/kunji-blocks.js"
+    },
+    "./blocks/marketing-blocks": {
+      "types": "./dist/blocks/marketing-blocks.d.ts",
+      "import": "./dist/blocks/marketing-blocks.js",
+      "default": "./dist/blocks/marketing-blocks.js"
+    },
+    "./blocks/modal-dialog-blocks": {
+      "types": "./dist/blocks/modal-dialog-blocks.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks.js",
+      "default": "./dist/blocks/modal-dialog-blocks.js"
+    },
+    "./blocks/modal-dialog-blocks-delete": {
+      "types": "./dist/blocks/modal-dialog-blocks-delete.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks-delete.js",
+      "default": "./dist/blocks/modal-dialog-blocks-delete.js"
+    },
+    "./blocks/modal-dialog-blocks-feedback": {
+      "types": "./dist/blocks/modal-dialog-blocks-feedback.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks-feedback.js",
+      "default": "./dist/blocks/modal-dialog-blocks-feedback.js"
+    },
+    "./blocks/modal-dialog-blocks-invite": {
+      "types": "./dist/blocks/modal-dialog-blocks-invite.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks-invite.js",
+      "default": "./dist/blocks/modal-dialog-blocks-invite.js"
+    },
+    "./blocks/modal-dialog-blocks-new-item": {
+      "types": "./dist/blocks/modal-dialog-blocks-new-item.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks-new-item.js",
+      "default": "./dist/blocks/modal-dialog-blocks-new-item.js"
+    },
+    "./blocks/modal-dialog-blocks-onboarding": {
+      "types": "./dist/blocks/modal-dialog-blocks-onboarding.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks-onboarding.js",
+      "default": "./dist/blocks/modal-dialog-blocks-onboarding.js"
+    },
+    "./blocks/modal-dialog-blocks-share": {
+      "types": "./dist/blocks/modal-dialog-blocks-share.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks-share.js",
+      "default": "./dist/blocks/modal-dialog-blocks-share.js"
+    },
+    "./blocks/modal-dialog-blocks-shortcuts": {
+      "types": "./dist/blocks/modal-dialog-blocks-shortcuts.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks-shortcuts.js",
+      "default": "./dist/blocks/modal-dialog-blocks-shortcuts.js"
+    },
+    "./blocks/modal-dialog-blocks-upgrade": {
+      "types": "./dist/blocks/modal-dialog-blocks-upgrade.d.ts",
+      "import": "./dist/blocks/modal-dialog-blocks-upgrade.js",
+      "default": "./dist/blocks/modal-dialog-blocks-upgrade.js"
+    },
+    "./blocks/registry": {
+      "types": "./dist/blocks/registry.d.ts",
+      "import": "./dist/blocks/registry.js",
+      "default": "./dist/blocks/registry.js"
+    },
+    "./blocks/section-header-blocks": {
+      "types": "./dist/blocks/section-header-blocks.d.ts",
+      "import": "./dist/blocks/section-header-blocks.js",
+      "default": "./dist/blocks/section-header-blocks.js"
+    },
+    "./blocks/sidebar-navigation-blocks": {
+      "types": "./dist/blocks/sidebar-navigation-blocks.d.ts",
+      "import": "./dist/blocks/sidebar-navigation-blocks.js",
+      "default": "./dist/blocks/sidebar-navigation-blocks.js"
     },
     "./components/accordion": {
       "types": "./dist/primitives/accordion.d.ts",
@@ -739,11 +2587,6 @@
       "types": "./dist/kits/workspace/kanban-card.d.ts",
       "import": "./dist/kits/workspace/kanban-card.js",
       "default": "./dist/kits/workspace/kanban-card.js"
-    },
-    "./components/kanban-internal": {
-      "types": "./dist/kits/workspace/kanban-internal.d.ts",
-      "import": "./dist/kits/workspace/kanban-internal.js",
-      "default": "./dist/kits/workspace/kanban-internal.js"
     },
     "./components/kanban-model": {
       "types": "./dist/kits/workspace/kanban-model.d.ts",
@@ -1354,10 +3197,7 @@
       "types": "./dist/patterns/zoom-pan.d.ts",
       "import": "./dist/patterns/zoom-pan.js",
       "default": "./dist/patterns/zoom-pan.js"
-    },
-    "./styles.css": "./src/styles/sutra.css",
-    "./paper.css": "./src/styles/paper.css",
-    "./package.json": "./package.json"
+    }
   },
   "files": [
     "dist",

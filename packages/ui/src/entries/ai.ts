@@ -1,4 +1,4 @@
-/* @sutra/ui/ai: chat, prompt and streaming-text components. */
+/* @sutra/ui/ai: chat, prompt and streaming-text components, plus the code block. */
 export * from "../primitives/text-shimmer";
 export * from "../patterns/markdown";
 export * from "../kits/ai/chain-of-thought";
@@ -15,7 +15,18 @@ export * from "../kits/ai/chat-source";
 export * from "../kits/ai/chat-tool";
 export * from "../kits/ai/prompt-input";
 export * from "../kits/ai/prompt-suggestion";
-export * from "../kits/ai/ai-extras";
+export * from "../kits/ai/text-caret";
+export * from "../kits/ai/context-meter";
+export * from "../kits/ai/status-strip";
+export * from "../kits/ai/job-banner";
+export * from "../kits/ai/question-card";
+export * from "../kits/ai/slash-menu";
+export * from "../kits/ai/model-picker";
+export * from "../kits/ai/usage-summary";
+export * from "../kits/ai/conversation-sidebar";
+export * from "../kits/ai/clarify-settled";
+export * from "../kits/ai/undelivered-notice";
+export * from "../patterns/code-block";
 export * from "../kits/ai/usage-quota";
 export * from "../kits/ai/model-state";
 export * from "../kits/ai/model-select";

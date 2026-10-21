@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Verifies the published surface after `pnpm build`: every `exports` subpath resolves through the
-// package's own name, its files exist (JS and types), and the module imports under plain Node ESM.
+// package's own name, its files exist (JS and types), and the module imports under plain Node ESM. `exports` must be
+// explicit (no wildcard), and no `*-internal` module of dist may be resolvable through it.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -21,6 +22,7 @@ function walk(dir) {
 /** Expand a conditional export into concrete [subpath, jsTarget, typesTarget] triples. */
 function expand(key, value) {
   if (!key.includes("*")) return [[key, value.import, value.types]];
+  fail(`${key}: wildcard exports are not allowed (they would publish the *-internal modules); run \`pnpm gen:index\``);
   const [jsPre, jsPost] = value.import.split("*");
   const [tPre, tPost] = value.types.split("*");
   const matches = walk(abs(jsPre))
@@ -100,8 +102,28 @@ for (const [subpath, js, types] of targets) {
   }
 }
 
+// ---- private modules: no `*-internal` file of dist is reachable through `exports` ----------------
+let hidden = 0;
+const distRoot = abs("dist");
+for (const file of walk(distRoot).filter((f) => f.endsWith("-internal.js"))) {
+  const sub = path.relative(distRoot, file).split(path.sep).join("/").replace(/\.js$/, "");
+  const specifier = `${pkg.name}/${sub}`;
+  let resolved = null;
+  try {
+    resolved = import.meta.resolve(specifier);
+  } catch {
+    hidden++;
+    continue;
+  }
+  fail(`${specifier}: an internal module resolves through package exports (${resolved})`);
+}
+for (const [key, value] of Object.entries(pkg.exports)) {
+  const targets = typeof value === "string" ? [value] : Object.values(value);
+  if (key.endsWith("-internal") || targets.some((t) => /-internal\.(js|d\.ts)$/.test(t))) fail(`${key}: exports an internal module`);
+}
+
 if (failures.length) {
   console.error(`check-exports: ${failures.length} problem(s)\n` + failures.map((f) => `  - ${f}`).join("\n"));
   process.exit(1);
 }
-console.log(`check-exports: ${imported} subpaths resolved and imported from dist`);
+console.log(`check-exports: ${imported} subpaths resolved and imported from dist, ${hidden} internal modules not resolvable`);

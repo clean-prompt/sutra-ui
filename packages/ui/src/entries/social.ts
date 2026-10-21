@@ -6,5 +6,7 @@ export * from "../kits/workspace/install-prompt";
 export * from "../kits/social/call-overlay";
 export * from "../kits/social/messenger";
 export * from "../patterns/reorderable-list";
-export * from "../patterns/counters";
+export * from "../patterns/countdown";
+export * from "../patterns/stopwatch";
+export * from "../patterns/tally-counter";
 export * from "../patterns/status-cycle";

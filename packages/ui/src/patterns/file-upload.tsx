@@ -42,7 +42,7 @@ const UP_TO_TB = ["B", "KB", "MB", "GB", "TB"];
 /**
  * Formats a byte count as a short human string, e.g. `1.4 MB` (`"0 B"` for zero, negative or non-numeric input).
  * Keeps `"1.50 MB"` at `decimals = 2` but drops an all-zero fraction (`"2 KB"`); TB is the largest unit.
- * The root `formatBytes` is this one; `@sutra/ui/tokens` exports the lib version (`"—"` for bad input, signed, up to EB).
+ * The root `formatBytes` is this one; the richer `lib/format` version (`"—"` for bad input, signed, up to EB) is internal.
  */
 export function formatBytes(bytes: number, decimals = 1) {
   return formatBytesLib(bytes, { decimals, trimZeros: "whole", units: UP_TO_TB, negative: "zero", invalid: "0 B" });

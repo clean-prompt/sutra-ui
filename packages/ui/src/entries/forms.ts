@@ -1,4 +1,4 @@
-/* @sutra/ui/forms: form controls. */
+/* @sutra/ui/forms: form controls, the filter bar and the drag-selection area. */
 export * from "../primitives/label";
 export * from "../primitives/field";
 export * from "../primitives/input";
@@ -23,3 +23,5 @@ export * from "../primitives/dropzone";
 export * from "../primitives/combobox";
 export * from "../patterns/password-strength";
 export * from "../primitives/wheel-picker";
+export * from "../patterns/filter-bar";
+export * from "../patterns/selection-area";

@@ -4,7 +4,7 @@
 
 **Deprecated:** Use `FilterBarChip` (the dashed "+ Filter" button; it is not a pill).
 
-- Import: `import { FilterPill } from "@sutra/ui"`
+- Import: `import { FilterPill } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

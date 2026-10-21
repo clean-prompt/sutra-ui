@@ -2,8 +2,8 @@
  * Review 2, group "format": one implementation of each time, duration and byte format in src/lib.
  * - Every component wrapper keeps its old output (BASELINE was recorded from the pre-refactor code over these inputs).
  * - The new lib options are unit-tested.
- * - The three root overrides (formatBytes, splitDuration, base32Decode) stay, because the lib versions differ for
- *   some legacy inputs; the tests pin those differences.
+ * - The component versions of formatBytes, splitDuration and base32Decode are the public (root) ones, because the lib
+ *   versions differ for some legacy inputs and are not exported; the tests pin those differences.
  */
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
@@ -322,7 +322,7 @@ describe("lib/format formatBytes options", () => {
   });
 });
 
-describe("root overrides (kept: the lib versions differ for legacy inputs)", () => {
+describe("root names (the component versions; the lib versions differ for legacy inputs and are internal)", () => {
   it("the root exports the component versions", () => {
     expect(root.formatBytes).toBe(formatBytes);
     expect(root.splitDuration).toBe(splitDuration);

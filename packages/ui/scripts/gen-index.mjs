@@ -1,9 +1,13 @@
 #!/usr/bin/env node
-// Generates src/index.ts (the root `@sutra/ui` barrel) and src/entries/core.ts (`@sutra/ui/core`,
-// every primitive) from the folder structure.
+// Generates src/index.ts (the root `@sutra/ui` barrel), src/entries/core.ts (`@sutra/ui/core`, every
+// primitive) and the `exports` map of package.json from the folder structure.
 //
 //   node scripts/gen-index.mjs           rewrite the generated files
-//   node scripts/gen-index.mjs --check   exit 1 if either file differs from what would be generated
+//   node scripts/gen-index.mjs --check   exit 1 if any of them differs from what would be generated
+//
+// package.json `exports` is explicit, never a wildcard: the entries (src/entries/*.ts), the CSS files, one deep path per
+// module of assets/primitives/patterns/kits/blocks, and the frozen `components/<name>` aliases (scripts/components-aliases.json).
+// SUBPATH_ONLY entries (format) stay out of the root. A `*-internal` module gets no subpath at all, so it cannot be imported from outside the package.
 //
 // Sections follow the layers: Foundations, Assets, Primitives, Patterns, one section per kit, Blocks.
 // Files are sorted within a section. A module is left out of the root when it
@@ -22,10 +26,10 @@ const SRC = path.join(ROOT, "src");
 const SOURCE_EXTS = [".ts", ".tsx"];
 
 /**
- * Foundations: the lib/ and hooks/ modules the root re-exports are exactly those of the
- * `@sutra/ui/tokens` entry (src/entries/tokens.ts). Other lib/hooks modules are internal helpers.
+ * Foundations: the lib/ and hooks/ names the root re-exports are exactly those of the `@sutra/ui/tokens` entry
+ * (src/entries/tokens.ts, an explicit list). Other lib/hooks modules and names are internal helpers.
  */
-const FOUNDATIONS_ENTRY = "entries/tokens.ts";
+const FOUNDATIONS_ENTRY = "entries/tokens";
 
 /** Modules the root does not `export *` from even though they sit in a public layer: id -> reason. */
 export const INTERNAL = {
@@ -36,15 +40,11 @@ export const INTERNAL = {
 };
 
 /**
- * Root-name overrides. When two modules re-exported with `export *` both export a name, ES modules
- * drop it as ambiguous; an explicit `export { name } from` picks the winner. The root keeps the older
- * component versions (different defaults); the lib versions are exported from `@sutra/ui/tokens`.
+ * Subpath-only entries: importable as `@sutra/ui/<name>` but never part of the root barrel (their names are generic enough
+ * to collide with an app's own). The root is built from the layer folders and `entries/tokens` only, and `planIndex` throws if
+ * one of these ever lands in a root section. test/api-surface.test.ts checks their names against the root.
  */
-export const OVERRIDES = {
-  formatBytes: "patterns/file-upload", // vs lib/format
-  splitDuration: "patterns/countdown", // vs lib/duration
-  base32Decode: "kits/identity/totp", // vs lib/encoding
-};
+export const SUBPATH_ONLY = ["format"];
 
 // ---- module discovery -------------------------------------------------------------------------
 
@@ -58,6 +58,19 @@ function listModules(relDir) {
     .filter((e) => e.isFile() && SOURCE_EXTS.includes(path.extname(e.name)) && !/\.(test|d)\.tsx?$/.test(e.name))
     .map((e) => stripExt(`${relDir}/${e.name}`))
     .sort();
+}
+
+/** Every module under a folder, recursively (module ids relative to src, sorted). */
+function listModulesDeep(relDir) {
+  const out = [];
+  const walk = (rel) => {
+    for (const e of readdirSync(path.join(SRC, rel), { withFileTypes: true })) {
+      if (e.isDirectory()) walk(`${rel}/${e.name}`);
+      else if (SOURCE_EXTS.includes(path.extname(e.name)) && !/\.(test|d)\.tsx?$/.test(e.name)) out.push(stripExt(`${rel}/${e.name}`));
+    }
+  };
+  walk(relDir);
+  return out.sort();
 }
 
 function listDirs(relDir) {
@@ -146,13 +159,8 @@ function barrelTargets(id) {
 /** Plan the root barrel: sections of module ids plus what was left out and why. */
 export function planIndex() {
   const reachesPeer = optionalPeerScanner();
-  const foundations = specifiers(path.join(SRC, FOUNDATIONS_ENTRY))
-    .filter((s) => s.startsWith("."))
-    .map((s) => resolveRelative(path.join(SRC, FOUNDATIONS_ENTRY), s))
-    .sort();
-
   const sections = [
-    { title: "Foundations: lib/ and hooks/ modules (the same set as @sutra/ui/tokens)", modules: foundations },
+    { title: "Foundations: the lib/ and hooks/ names of @sutra/ui/tokens (an explicit list)", modules: [FOUNDATIONS_ENTRY] },
     { title: "Assets: src/assets", modules: listModules("assets") },
     { title: "Primitives: src/primitives", modules: listModules("primitives") },
     { title: "Patterns: src/patterns", modules: listModules("patterns") },
@@ -175,6 +183,7 @@ export function planIndex() {
   const included = new Set(sections.flatMap((s) => s.modules));
   for (const section of sections) {
     section.modules = section.modules.filter((id) => {
+      if (id === FOUNDATIONS_ENTRY) return true;
       const targets = barrelTargets(id);
       if (!targets || !targets.every((t) => t && included.has(t))) return true;
       section.excluded.push({ id, reason: "back-compat barrel, all targets exported" });
@@ -184,8 +193,9 @@ export function planIndex() {
     excluded.push(...section.excluded);
   }
 
-  for (const [name, id] of Object.entries(OVERRIDES)) {
-    if (!included.has(id)) throw new Error(`gen-index: override ${name} points at ${id}, which is not in the root`);
+  for (const name of SUBPATH_ONLY) {
+    if (!fileOf(`entries/${name}`)) throw new Error(`gen-index: SUBPATH_ONLY lists entries/${name}, which does not exist`);
+    if (sections.some((section) => section.modules.includes(`entries/${name}`))) throw new Error(`gen-index: entries/${name} is subpath-only and must not be in the root`);
   }
   return { sections, excluded };
 }
@@ -207,10 +217,6 @@ export function generateIndex(plan = planIndex()) {
     }
     for (const id of section.modules) out.push(`export * from "./${id}";`);
   }
-  out.push("", "/* Root-name overrides: names exported by two modules above (see OVERRIDES in scripts/gen-index.mjs) */");
-  for (const [name, id] of Object.entries(OVERRIDES).sort(([a], [b]) => a.localeCompare(b))) {
-    out.push(`export { ${name} } from "./${id}";`);
-  }
   return out.join("\n") + "\n";
 }
 
@@ -222,10 +228,51 @@ export function generateCore(plan = planIndex()) {
   return out.join("\n") + "\n";
 }
 
+const conditional = (id) => ({ types: `./dist/${id}.d.ts`, import: `./dist/${id}.js`, default: `./dist/${id}.js` });
+
+/** Modules that get no subpath in `exports`: the `*-internal` helpers. (INTERNAL only keeps a module out of the root.) */
+export const isPrivateModule = (id) => id.endsWith("-internal");
+
+/** The folders whose modules are importable by deep path (`@sutra/ui/<folder>/<file>`). */
+const DEEP_LAYERS = ["assets", "primitives", "patterns", "kits", "blocks"];
+
+/** The frozen back-compat aliases `@sutra/ui/components/<name>` -> module id (scripts/components-aliases.json). */
+function componentAliases() {
+  return JSON.parse(readFileSync(path.join(ROOT, "scripts/components-aliases.json"), "utf8"));
+}
+
+/** package.json `exports`: explicit keys only, in a stable order. */
+export function generateExports() {
+  const out = { ".": conditional("index") };
+  for (const id of listModules("entries").map((m) => m.slice("entries/".length)).sort()) out[`./${id}`] = conditional(`entries/${id}`);
+  out["./styles.css"] = "./src/styles/sutra.css";
+  out["./paper.css"] = "./src/styles/paper.css";
+  out["./package.json"] = "./package.json";
+  for (const layer of DEEP_LAYERS) {
+    for (const id of listModulesDeep(layer)) {
+      if (isPrivateModule(id) || id === "blocks/index") continue;
+      out[`./${id}`] = conditional(id);
+    }
+  }
+  for (const [name, id] of Object.entries(componentAliases()).sort(([a], [b]) => a.localeCompare(b))) {
+    if (isPrivateModule(id) || !fileOf(id)) throw new Error(`gen-index: components/${name} points at ${id}, which is private or missing`);
+    out[`./components/${name}`] = conditional(id);
+  }
+  return out;
+}
+
+/** package.json with a regenerated `exports` (every other field untouched). */
+export function generatePackageJson() {
+  const file = path.join(ROOT, "package.json");
+  const pkg = JSON.parse(readFileSync(file, "utf8"));
+  pkg.exports = generateExports();
+  return JSON.stringify(pkg, null, 2) + "\n";
+}
+
 /** Every generated file: path relative to the package root -> contents. */
 export function generateFiles() {
   const plan = planIndex();
-  return { "src/index.ts": generateIndex(plan), "src/entries/core.ts": generateCore(plan) };
+  return { "src/index.ts": generateIndex(plan), "src/entries/core.ts": generateCore(plan), "package.json": generatePackageJson() };
 }
 
 /** Generated files whose contents on disk differ from what would be generated. */
@@ -243,7 +290,7 @@ if (isMain) {
       console.error(`gen-index: out of date: ${stale.join(", ")}. Run \`pnpm gen:index\` (node scripts/gen-index.mjs).`);
       process.exit(1);
     }
-    console.log("gen-index: src/index.ts and src/entries/core.ts are up to date");
+    console.log("gen-index: src/index.ts, src/entries/core.ts and package.json exports are up to date");
   } else {
     for (const [rel, next] of Object.entries(generateFiles())) {
       const file = path.join(ROOT, rel);

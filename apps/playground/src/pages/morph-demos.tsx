@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Button, InlineCode, MorphPill, Text, formatClock, useCountdown } from "@sutra/ui";
+import { Button, InlineCode, MorphPill, Text, useCountdown } from "@sutra/ui";
+import { formatClock } from "@sutra/ui/format";
 import { RiCheckLine, RiCloseLine, RiPauseLine, RiPlayLine, RiTimerLine } from "@sutra/ui/icons";
 import { Demo, DemoLabel } from "../components/demo";
 

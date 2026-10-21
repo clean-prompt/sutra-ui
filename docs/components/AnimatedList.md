@@ -25,7 +25,7 @@
 ## Example (live: `#/foundations/colors/animated-list` in the playground)
 
 ```tsx
-import { CodeBlock } from "@sutra/ui";
+import { CodeBlock } from "@sutra/ui/ai";
 
 function MotionLists() {
   return (

@@ -2,7 +2,7 @@
 
 > Article heading: category, title, subtitle and meta row.
 
-- Import: `import { BlogPostHeader } from "@sutra/ui"`
+- Import: `import { BlogPostHeader } from "@sutra/ui"` (or from `@sutra/ui/navigation`)
 - Source: `packages/ui/src/patterns/blog-content` (patterns)
 - `data-slot`: `blog-post-header`
 - Also accepts the props of HTMLAttributes

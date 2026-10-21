@@ -2,7 +2,7 @@
 
 > Single-line command with a copy button, e.g. `npm i
 
-- Import: `import { InlineCopy } from "@sutra/ui"`
+- Import: `import { InlineCopy } from "@sutra/ui"` (or from `@sutra/ui/ai`)
 - Source: `packages/ui/src/patterns/code-block` (patterns)
 - `data-slot`: `inline-copy`
 - Also accepts the props of HTMLAttributes

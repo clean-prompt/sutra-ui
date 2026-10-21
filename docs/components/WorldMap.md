@@ -50,8 +50,8 @@
 ```tsx
 import * as React from "react";
 import { Text } from "@sutra/ui/core";
+import { formatCompact } from "@sutra/ui/format";
 import { WorldMap, countryName } from "@sutra/ui/geo";
-import { formatCompact } from "@sutra/ui/tokens";
 
 function TrafficDemo() {
   const [country, setCountry] = React.useState<string | null>("US");

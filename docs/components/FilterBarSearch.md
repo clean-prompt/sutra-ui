@@ -2,7 +2,7 @@
 
 > Compact search input with a clear button.
 
-- Import: `import { FilterBarSearch } from "@sutra/ui"`
+- Import: `import { FilterBarSearch } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - Part of [`FilterBar`](FilterBar.md)
 - Also accepts the props of HTMLAttributes, InputHTMLAttributes

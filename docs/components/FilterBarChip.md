@@ -2,7 +2,7 @@
 
 > Dashed "+ Filter" button that opens a multi-select checklist.
 
-- Import: `import { FilterBarChip } from "@sutra/ui"`
+- Import: `import { FilterBarChip } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - `data-slot`: `filter-bar-chip`
 - Part of [`FilterBar`](FilterBar.md)

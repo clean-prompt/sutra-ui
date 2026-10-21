@@ -11,7 +11,7 @@
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `applyToDocument` | `boolean` | `true` | Toggle the `dark` class / color-scheme on <html>. Default true. |
+| `applyToDocument` | `boolean` | `true` | Toggle the `dark` class / color-scheme on <html> (through the same store as `useTheme`). Default true. |
 | `defaultValue` | `ThemeToggleMode` |  | Initial theme mode when uncontrolled. |
 | `modes` | `ThemeToggleMode[]` | `["light", "dark", "system"]` | Modes offered, in cycle order. `["light", "dark"]` makes a two-state toggle. |
 | `onValueChange` | `(mode: ThemeToggleMode) => void` |  | Called with the new mode when the user toggles it. |
@@ -58,7 +58,7 @@ Server render: part of it fills in after mount. The server and the hydrating cli
 ### Gotchas
 
 - Uncontrolled, it stores the mode under `storageKey` (default `"sutra-theme"`; `null` turns it off) and a saved value that is in `modes` wins over `defaultValue`. Controlled with `value` and `onValueChange`, it stores nothing: you persist.
-- `applyToDocument` (default true) toggles `dark` on `<html>` and sets `color-scheme`; set it to false when the app applies the theme itself. Two instances do not sync with each other.
+- `applyToDocument` (default true) toggles `dark` on `<html>` and sets `color-scheme`; set it to false when the app applies the theme itself. It writes only the mode, through the same store as `useTheme`, so a `useTheme` caller follows the toggle at once and the toggle never rewrites the brand, neutral, radius or style. Two toggles do not sync with each other.
 - `modes` is the cycle order (default `light`, `dark`, `system`); `["light", "dark"]` makes a two-state toggle. With no saved or default value the start is `system` when offered, else whatever `<html>` shows.
 - `system` follows the operating system live and resolves to light or dark (exposed as `data-resolved` on the icon button); its icon is always the computer, not the resolved sun or moon.
 

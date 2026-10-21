@@ -4,8 +4,10 @@ import * as path from "node:path";
 import ts from "typescript";
 
 /**
- * Public API guard: package.json `exports` <-> src/entries, entries <-> root, no orphan modules,
- * src/index.ts matches scripts/gen-index.mjs, and the root's names match test/__snapshots__/api-root.json.
+ * Public API guard: package.json `exports` <-> src/entries, entries <-> root, no orphan modules, no entry on a frozen
+ * back-compat barrel, every documented hook reachable from an entry, no generic helper leaked, `exports` explicit (no
+ * wildcard, no `*-internal`), src/index.ts and package.json `exports` match scripts/gen-index.mjs, and the root's names
+ * match test/__snapshots__/api-root.json.
  * After an intended root API change, run `npx vitest run test/api-surface.test.ts -u` to update the snapshot.
  */
 
@@ -18,10 +20,31 @@ const pkg = JSON.parse(fs.readFileSync(path.join(PKG, "package.json"), "utf8"));
 /** Modules in src/primitives, src/patterns and src/kits that are deliberately reachable from no public barrel. */
 const INTERNAL_MODULES = [
   "kits/agent-admin/secret-row",
-  // Back-compat barrel: every name it re-exports reaches the root through the real modules, so
-  // gen-index leaves it out; old imports keep working via @sutra/ui/components/primitives-extra.
+  // Frozen back-compat barrels (see CONVENTIONS): every name they re-export reaches the root and the entries through the
+  // real modules, so gen-index leaves them out and no entry may import them. Old deep imports keep working.
+  "kits/ai/ai-extras",
   "kits/ai/primitives-extra",
+  "kits/workspace/kanban",
+  "patterns/counters",
 ];
+
+/**
+ * Generic helpers that are internal on purpose: no root name, no entry name (the formatting and date helpers are not here: they
+ * are public, but only from the subpath-only `@sutra/ui/format` entry). Import them by relative path inside the
+ * package. (Making one public means documenting it and listing it in src/entries/tokens.ts; then remove it here.)
+ */
+const INTERNAL_NAMES = [
+  "clamp", "roundTo", "toPercent", "pad2", "hashString", "mulberry32", "seededRandom", "pickForSeed", "escapeRegExp", "slugify",
+  "capitalize", "truncateMiddle", "graphemes", "matchRanges", "hostnameOf", "base64UrlEncode", "base64UrlDecode", "base32Encode",
+  "normalizeDensity", "rampColor", "isTerminalStatus", "getPaginationRange", "errorMessage", "useLatestRef", "useIsoLayoutEffect",
+  "useMountedRef", "useFollowListProp", "usePendingRemoval",
+];
+
+/** Names the subpath-only entries share with the root on purpose: types that public props name (they also live in `tokens`). */
+const SHARED_WITH_ROOT = ["DateInput", "TimeInput"];
+
+/** Hooks in src/hooks that are internal plumbing (every other one must reach an entry). */
+const INTERNAL_HOOKS = ["useFollowListProp", "usePendingRemoval", "useLatestRef", "useIsoLayoutEffect", "useMountedRef"];
 
 const toPosix = (p: string) => p.split(path.sep).join("/");
 const rel = (file: string) => toPosix(path.relative(SRC, file)).replace(/\.tsx?$/, "");
@@ -67,6 +90,8 @@ function reExportTargets(file: string): string[] {
     .filter((f): f is string => f !== null);
 }
 
+let SUBPATH_ONLY: string[] = [];
+
 const OPTIONAL_PEERS = Object.entries(pkg.peerDependenciesMeta ?? {})
   .filter(([, meta]) => (meta as { optional?: boolean }).optional)
   .map(([name]) => name);
@@ -85,6 +110,9 @@ function reachesOptionalPeer(file: string, seen = new Set<string>()): boolean {
   return hit;
 }
 
+/** A frozen back-compat barrel: its header comment says so (assets/misc, kits/ai/ai-extras, kanban, counters, primitives-extra). */
+const isBackCompatBarrel = (file: string) => /Back-compat barrel/.test(fs.readFileSync(file, "utf8").slice(0, 200));
+
 const ROOT_FILE = path.join(SRC, "index.ts");
 const entryFiles = filesIn(ENTRIES);
 
@@ -93,7 +121,8 @@ let program: ts.Program;
 let checker: ts.TypeChecker;
 const exportsOf = new Map<string, ts.Symbol[]>();
 
-beforeAll(() => {
+beforeAll(async () => {
+  SUBPATH_ONLY = (await import(path.join(PKG, "scripts/gen-index.mjs"))).SUBPATH_ONLY;
   const config = ts.getParsedCommandLineOfConfigFile(path.join(PKG, "tsconfig.json"), {}, {
     ...ts.sys,
     onUnRecoverableConfigFileDiagnostic: () => {},
@@ -143,6 +172,7 @@ describe("public API surface", () => {
   it("every entry's names are also root names (except optional-peer modules and external packages)", () => {
     const root = new Set(names(ROOT_FILE));
     for (const file of entryFiles) {
+      if (SUBPATH_ONLY.includes(path.basename(file, ".ts"))) continue; // checked the other way round below
       const missing = exportsOf
         .get(file)!
         .filter((symbol) => {
@@ -156,10 +186,30 @@ describe("public API surface", () => {
     }
   });
 
-  it("every primitive, pattern and kit module is reachable from the root or an entry", () => {
+  it("subpath-only entries (format) export no name the root has, apart from shared prop types", () => {
+    expect(SUBPATH_ONLY).toContain("format");
+    const root = new Set(names(ROOT_FILE));
+    for (const entry of SUBPATH_ONLY) {
+      const file = path.join(ENTRIES, `${entry}.ts`);
+      expect(fs.existsSync(file), `src/entries/${entry}.ts`).toBe(true);
+      expect(names(file).length).toBeGreaterThan(20);
+      const leaked = names(file).filter((n) => root.has(n) && !SHARED_WITH_ROOT.includes(n));
+      expect(leaked, `${entry} names that are also on the root`).toEqual([]);
+      expect(fs.readFileSync(ROOT_FILE, "utf8"), "root must not export the entry").not.toMatch(new RegExp(`entries/${entry}"`));
+    }
+  });
+
+  it("no entry imports a frozen back-compat barrel", () => {
+    const offenders = entryFiles.flatMap((file) =>
+      reExportTargets(file).filter(isBackCompatBarrel).map((target) => `${rel(file)} -> ${rel(target)}`)
+    );
+    expect(offenders, "re-export the real modules from the entry instead").toEqual([]);
+  });
+
+  it("every primitive, pattern and kit module is reachable from the root or an entry (not through a frozen barrel)", () => {
     const reachable = new Set<string>();
     const visit = (file: string) => {
-      if (reachable.has(file)) return;
+      if (reachable.has(file) || isBackCompatBarrel(file)) return;
       reachable.add(file);
       reExportTargets(file).forEach(visit);
     };
@@ -170,7 +220,7 @@ describe("public API surface", () => {
     expect(orphans.sort()).toEqual([...INTERNAL_MODULES].sort());
   });
 
-  it("src/index.ts and src/entries/core.ts are what scripts/gen-index.mjs generates", () => {
+  it("src/index.ts, src/entries/core.ts and package.json exports are what scripts/gen-index.mjs generates", () => {
     let output = "";
     try {
       execFileSync(process.execPath, [path.join(PKG, "scripts/gen-index.mjs"), "--check"], { encoding: "utf8", stdio: "pipe" });
@@ -189,6 +239,46 @@ describe("public API surface", () => {
       .map((s) => s.name);
     const coreNames = new Set(names(core));
     expect(fromPrimitives.filter((n) => !coreNames.has(n))).toEqual([]);
+  });
+
+  it("every documented hook is reachable from a subpath entry, and so is every hook in src/hooks except the internal plumbing", () => {
+    const api = JSON.parse(fs.readFileSync(path.resolve(PKG, "../../apps/playground/src/generated/api.json"), "utf8")) as { hooks: Record<string, unknown> };
+    const inEntries = new Set(entryFiles.flatMap((file) => names(file)));
+    const root = new Set(names(ROOT_FILE));
+    const documented = Object.keys(api.hooks);
+    expect(documented.length).toBeGreaterThan(80);
+    expect(documented.filter((n) => !inEntries.has(n)), "documented hooks no entry exports").toEqual([]);
+
+    const declared = filesIn(path.join(SRC, "hooks")).flatMap((f) =>
+      [...fs.readFileSync(f, "utf8").matchAll(/^export (?:function|const) (use[A-Z]\w*)/gm)].map((m) => m[1]!)
+    );
+    expect(declared.length).toBeGreaterThan(40);
+    expect(declared.filter((n) => !inEntries.has(n) && !INTERNAL_HOOKS.includes(n)), "hooks in src/hooks that reach no entry").toEqual([]);
+    expect(INTERNAL_HOOKS.filter((n) => inEntries.has(n) || root.has(n)), "INTERNAL_HOOKS that are exported").toEqual([]);
+  });
+
+  it("the internal generic helpers are exported from neither the root nor any entry", () => {
+    const leaked = [ROOT_FILE, ...entryFiles].flatMap((file) =>
+      names(file).filter((n) => INTERNAL_NAMES.includes(n)).map((n) => `${file === ROOT_FILE ? "index" : rel(file)}: ${n}`)
+    );
+    expect(leaked).toEqual([]);
+  });
+
+  it("package.json exports are explicit: no wildcard, no *-internal module, every target exists in src", () => {
+    const keys = Object.keys(pkg.exports as Record<string, unknown>);
+    expect(keys.filter((k) => k.includes("*")), "wildcard export keys").toEqual([]);
+    expect(keys.filter((k) => k.endsWith("-internal")), "internal modules with a subpath").toEqual([]);
+    const missing = Object.entries(pkg.exports as Record<string, string | { import?: string }>).flatMap(([key, value]) => {
+      const target = typeof value === "string" ? value : value.import!;
+      const m = /^\.\/dist\/(.+)\.js$/.exec(target);
+      if (!m) return fs.existsSync(path.join(PKG, target)) ? [] : [key];
+      return SOURCE_EXTS.some((e) => fs.existsSync(path.join(SRC, m[1] + e))) ? [] : [key];
+    });
+    expect(missing, "exports keys whose source module is missing").toEqual([]);
+    // Every non-internal module of a deep layer has a subpath (nothing is hidden by accident).
+    const deep = ["assets", "primitives", "patterns", "kits", "blocks"].flatMap((d) => filesIn(path.join(SRC, d)).map(rel));
+    const unreachable = deep.filter((id) => !id.endsWith("-internal") && id !== "blocks/index" && !keys.includes(`./${id}`));
+    expect(unreachable).toEqual([]);
   });
 
   it("root export names match the committed snapshot (no silent drops)", async () => {

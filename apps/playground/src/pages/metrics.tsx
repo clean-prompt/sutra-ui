@@ -17,7 +17,6 @@ import {
   TabsList,
   TabsTrigger,
   TopItemCard,
-  topWithOther,
   useSampler,
   type Accent,
   type BarListItem,
@@ -125,6 +124,13 @@ function useLiveReadings() {
 }
 
 const last = (data: number[]) => data[data.length - 1] ?? 0;
+/** The `limit` largest items by value, then one "Other" item summarising the rest (left out when nothing is left). */
+function topWithOther<T>(items: readonly T[], { value, limit, other }: { value: (item: T) => number; limit: number; other: (rest: T[], total: number) => T }): T[] {
+  const ranked = [...items].sort((a, b) => value(b) - value(a));
+  const rest = ranked.slice(limit);
+  return rest.length ? [...ranked.slice(0, limit), other(rest, rest.reduce((sum, item) => sum + value(item), 0))] : ranked;
+}
+
 const avg = (data: number[]) => (data.length ? data.reduce((a, b) => a + b, 0) / data.length : 0);
 const peak = (data: number[]) => (data.length ? Math.max(...data) : 0);
 

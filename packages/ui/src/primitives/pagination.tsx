@@ -10,7 +10,7 @@ import { Skeleton } from "./progress";
 import { Input, inputVariants } from "./input";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 
-export { getPaginationRange, type PaginationRangeItem, type UsePaginationOptions, type PageWindow } from "../lib/pagination";
+export { type PaginationRangeItem, type UsePaginationOptions, type PageWindow } from "../lib/pagination";
 export { usePagination } from "../hooks/use-pagination";
 
 /** Most dots the `dots` variant shows; past that it shows a window of pages around the current one. */

@@ -2,7 +2,7 @@
 
 > A single applied filter: "Status: Active ×".
 
-- Import: `import { FilterBarToken } from "@sutra/ui"`
+- Import: `import { FilterBarToken } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - `data-slot`: `filter-bar-token`
 - Part of [`FilterBar`](FilterBar.md)

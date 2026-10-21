@@ -79,7 +79,7 @@ const RUN_TIME_OPTIONS: FormatDurationOptions = {
 
 /**
  * Coarse elapsed time for agent sessions: "<1 min", "48 min", "2 hr 5 min", "3 d 4 hr" (floored).
- * @deprecated Use `formatDuration(ms, { round: "floor", minUnit: "m", keepZeros: false, space: true, zero: "<1 min", unitLabels: { d: "d", h: "hr", m: "min" } })` from `@sutra/ui/tokens`.
+ * @deprecated Use `formatDuration(ms, { round: "floor", minUnit: "m", keepZeros: false, space: true, zero: "<1 min", unitLabels: { d: "d", h: "hr", m: "min" } })` from `lib/duration`.
  */
 export function formatAgentRunTime(ms: number): string {
   return formatDuration(ms, RUN_TIME_OPTIONS);

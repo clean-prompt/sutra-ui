@@ -2,7 +2,7 @@
 
 > Toolbar row for lists and tables: search, filter chips and actions.
 
-- Import: `import { FilterBar } from "@sutra/ui"`
+- Import: `import { FilterBar } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - `data-slot`: `filter-bar`
 - Parts: [`FilterBarActive`](FilterBarActive.md), [`FilterBarChip`](FilterBarChip.md), [`FilterBarClear`](FilterBarClear.md), [`FilterBarSearch`](FilterBarSearch.md), [`FilterBarToken`](FilterBarToken.md)

@@ -2,7 +2,7 @@
 
 > "Clear all" text button for resetting filters.
 
-- Import: `import { FilterBarClear } from "@sutra/ui"`
+- Import: `import { FilterBarClear } from "@sutra/ui"` (or from `@sutra/ui/forms`)
 - Source: `packages/ui/src/patterns/filter-bar` (patterns)
 - `data-slot`: `filter-bar-clear`
 - Part of [`FilterBar`](FilterBar.md)
