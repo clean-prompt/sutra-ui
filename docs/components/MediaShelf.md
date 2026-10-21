@@ -3,7 +3,7 @@
 > Horizontal media shelf: title + "See all", scroll-snap row with edge fades and prev/next, optional grid from a breakpoint.
 
 - Import: `import { MediaShelf } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/media-cards` (kit `media`)
+- Source: `packages/ui/src/kits/media/media-cards-shelf` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

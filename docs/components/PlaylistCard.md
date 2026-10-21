@@ -3,7 +3,7 @@
 > Playlist variant of AlbumCard: optional 2×2 cover mosaic and a track-count subtitle.
 
 - Import: `import { PlaylistCard } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/media-cards` (kit `media`)
+- Source: `packages/ui/src/kits/media/media-cards-collection` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

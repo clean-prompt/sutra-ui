@@ -3,7 +3,7 @@
 > 2:3 poster with fallback, hover play, quiet actions, status/language badges, watch progress and busy overlay.
 
 - Import: `import { PosterCard } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/media-cards` (kit `media`)
+- Source: `packages/ui/src/kits/media/media-cards-poster` (kit `media`)
 - `data-slot`: `media-status`, `media-actions`, `media-progress`, `media-busy`
 - Also accepts the props of HTMLAttributes
 

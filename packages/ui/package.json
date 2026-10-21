@@ -1923,6 +1923,46 @@
       "import": "./dist/kits/identity/kunji-client.js",
       "default": "./dist/kits/identity/kunji-client.js"
     },
+    "./kits/identity/kunji-client-http": {
+      "types": "./dist/kits/identity/kunji-client-http.d.ts",
+      "import": "./dist/kits/identity/kunji-client-http.js",
+      "default": "./dist/kits/identity/kunji-client-http.js"
+    },
+    "./kits/identity/kunji-client-mock": {
+      "types": "./dist/kits/identity/kunji-client-mock.d.ts",
+      "import": "./dist/kits/identity/kunji-client-mock.js",
+      "default": "./dist/kits/identity/kunji-client-mock.js"
+    },
+    "./kits/identity/kunji-client-poll": {
+      "types": "./dist/kits/identity/kunji-client-poll.d.ts",
+      "import": "./dist/kits/identity/kunji-client-poll.js",
+      "default": "./dist/kits/identity/kunji-client-poll.js"
+    },
+    "./kits/identity/kunji-client-qr": {
+      "types": "./dist/kits/identity/kunji-client-qr.d.ts",
+      "import": "./dist/kits/identity/kunji-client-qr.js",
+      "default": "./dist/kits/identity/kunji-client-qr.js"
+    },
+    "./kits/identity/kunji-client-rp": {
+      "types": "./dist/kits/identity/kunji-client-rp.d.ts",
+      "import": "./dist/kits/identity/kunji-client-rp.js",
+      "default": "./dist/kits/identity/kunji-client-rp.js"
+    },
+    "./kits/identity/kunji-client-session": {
+      "types": "./dist/kits/identity/kunji-client-session.d.ts",
+      "import": "./dist/kits/identity/kunji-client-session.js",
+      "default": "./dist/kits/identity/kunji-client-session.js"
+    },
+    "./kits/identity/kunji-client-text": {
+      "types": "./dist/kits/identity/kunji-client-text.d.ts",
+      "import": "./dist/kits/identity/kunji-client-text.js",
+      "default": "./dist/kits/identity/kunji-client-text.js"
+    },
+    "./kits/identity/kunji-client-types": {
+      "types": "./dist/kits/identity/kunji-client-types.d.ts",
+      "import": "./dist/kits/identity/kunji-client-types.js",
+      "default": "./dist/kits/identity/kunji-client-types.js"
+    },
     "./kits/identity/kunji-link": {
       "types": "./dist/kits/identity/kunji-link.d.ts",
       "import": "./dist/kits/identity/kunji-link.js",
@@ -2008,6 +2048,26 @@
       "import": "./dist/kits/media/media-cards.js",
       "default": "./dist/kits/media/media-cards.js"
     },
+    "./kits/media/media-cards-collection": {
+      "types": "./dist/kits/media/media-cards-collection.d.ts",
+      "import": "./dist/kits/media/media-cards-collection.js",
+      "default": "./dist/kits/media/media-cards-collection.js"
+    },
+    "./kits/media/media-cards-model": {
+      "types": "./dist/kits/media/media-cards-model.d.ts",
+      "import": "./dist/kits/media/media-cards-model.js",
+      "default": "./dist/kits/media/media-cards-model.js"
+    },
+    "./kits/media/media-cards-poster": {
+      "types": "./dist/kits/media/media-cards-poster.d.ts",
+      "import": "./dist/kits/media/media-cards-poster.js",
+      "default": "./dist/kits/media/media-cards-poster.js"
+    },
+    "./kits/media/media-cards-shelf": {
+      "types": "./dist/kits/media/media-cards-shelf.d.ts",
+      "import": "./dist/kits/media/media-cards-shelf.js",
+      "default": "./dist/kits/media/media-cards-shelf.js"
+    },
     "./kits/media/media-controls": {
       "types": "./dist/kits/media/media-controls.d.ts",
       "import": "./dist/kits/media/media-controls.js",
@@ -2053,6 +2113,11 @@
       "import": "./dist/kits/media/video-player.js",
       "default": "./dist/kits/media/video-player.js"
     },
+    "./kits/media/video-player-model": {
+      "types": "./dist/kits/media/video-player-model.d.ts",
+      "import": "./dist/kits/media/video-player-model.js",
+      "default": "./dist/kits/media/video-player-model.js"
+    },
     "./kits/ops/alert-group": {
       "types": "./dist/kits/ops/alert-group.d.ts",
       "import": "./dist/kits/ops/alert-group.js",
@@ -2072,6 +2137,16 @@
       "types": "./dist/kits/ops/process-table.d.ts",
       "import": "./dist/kits/ops/process-table.js",
       "default": "./dist/kits/ops/process-table.js"
+    },
+    "./kits/ops/process-table-kill": {
+      "types": "./dist/kits/ops/process-table-kill.d.ts",
+      "import": "./dist/kits/ops/process-table-kill.js",
+      "default": "./dist/kits/ops/process-table-kill.js"
+    },
+    "./kits/ops/process-table-model": {
+      "types": "./dist/kits/ops/process-table-model.d.ts",
+      "import": "./dist/kits/ops/process-table-model.js",
+      "default": "./dist/kits/ops/process-table-model.js"
     },
     "./kits/ops/progress-dialog": {
       "types": "./dist/kits/ops/progress-dialog.d.ts",
@@ -2132,6 +2207,26 @@
       "types": "./dist/kits/system/alert-rules.d.ts",
       "import": "./dist/kits/system/alert-rules.js",
       "default": "./dist/kits/system/alert-rules.js"
+    },
+    "./kits/system/alert-rules-dialog": {
+      "types": "./dist/kits/system/alert-rules-dialog.d.ts",
+      "import": "./dist/kits/system/alert-rules-dialog.js",
+      "default": "./dist/kits/system/alert-rules-dialog.js"
+    },
+    "./kits/system/alert-rules-editor": {
+      "types": "./dist/kits/system/alert-rules-editor.d.ts",
+      "import": "./dist/kits/system/alert-rules-editor.js",
+      "default": "./dist/kits/system/alert-rules-editor.js"
+    },
+    "./kits/system/alert-rules-list": {
+      "types": "./dist/kits/system/alert-rules-list.d.ts",
+      "import": "./dist/kits/system/alert-rules-list.js",
+      "default": "./dist/kits/system/alert-rules-list.js"
+    },
+    "./kits/system/alert-rules-muted": {
+      "types": "./dist/kits/system/alert-rules-muted.d.ts",
+      "import": "./dist/kits/system/alert-rules-muted.js",
+      "default": "./dist/kits/system/alert-rules-muted.js"
     },
     "./kits/system/containers": {
       "types": "./dist/kits/system/containers.d.ts",

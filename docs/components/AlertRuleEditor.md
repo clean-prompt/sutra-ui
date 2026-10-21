@@ -3,7 +3,7 @@
 > Form to create or edit an alert rule: metric, comparator, threshold, window, scope, muted apps and a live preview.
 
 - Import: `import { AlertRuleEditor } from "@sutra/ui"` (or from `@sutra/ui/system`)
-- Source: `packages/ui/src/kits/system/alert-rules` (kit `system`)
+- Source: `packages/ui/src/kits/system/alert-rules-editor` (kit `system`)
 - `data-slot`: `alert-rule-editor`, `alert-rule-preview`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
 

@@ -3,7 +3,7 @@
 > Square album art with a hover play FAB, title and subtitle.
 
 - Import: `import { AlbumCard } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/media-cards` (kit `media`)
+- Source: `packages/ui/src/kits/media/media-cards-collection` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
 ## Props
