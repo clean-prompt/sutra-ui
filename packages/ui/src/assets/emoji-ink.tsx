@@ -5,6 +5,7 @@ import { useSafeId } from "../hooks/use-safe-id";
 import { prefersReducedMotion } from "../hooks/use-media-query";
 import { inkArt, inkEmojiNames, normalizeEmoji, solidInkArt } from "./emoji-ink-internal";
 import { renderSolid } from "./emoji-ink-solid-internal";
+import { accessibleName } from "./svg-a11y-internal";
 
 /** The emoji that have a hand-drawn ink version (`InkEmoji`), the eight reaction presets first. */
 export const inkEmojiSet: readonly string[] = Object.keys(inkEmojiNames);
@@ -85,7 +86,7 @@ export interface InkEmojiProps extends Omit<React.SVGAttributes<SVGSVGElement>, 
    * @default "1em"
    */
   size?: number | string;
-  /** Names the drawing for assistive technology (`true` uses its built-in name); without it the svg is decorative and `aria-hidden`. */
+  /** Names the drawing for assistive technology (`true` uses its built-in name, or the glyph itself when it has none); without it the svg is decorative and `aria-hidden`. */
   title?: string | boolean;
   /** Draws the colour glyph as ink (the filtered glyph the paper style uses) for an emoji that has no drawing, instead of rendering nothing. */
   fallback?: boolean;
@@ -138,21 +139,23 @@ export const InkEmoji = React.forwardRef<SVGSVGElement, InkEmojiProps>(
     }, [geo, playKey]);
     if (!art) {
       if (!fallback) return null;
+      /* no drawing, so no built-in name: `title` true names it by the glyph, which assistive technology reads as the emoji's name */
+      const glyphName = accessibleName(title, nameOf(emoji) ?? emoji);
       return (
         <span
           data-slot="emoji"
           data-ink="true"
           className={cn("inline-block leading-none", className)}
           style={{ fontSize: typeof size === "number" ? `${size}px` : size }}
-          aria-hidden={title ? undefined : true}
-          aria-label={typeof title === "string" ? title : undefined}
-          role={title ? "img" : undefined}
+          aria-hidden={glyphName ? undefined : true}
+          aria-label={glyphName}
+          role={glyphName ? "img" : undefined}
         >
           <span data-part="glyph">{emoji}</span>
         </span>
       );
     }
-    const label = title === true ? nameOf(emoji) : title || undefined;
+    const label = accessibleName(title, nameOf(emoji));
     const length = typeof size === "number" ? `${size}px` : size;
     if (geo) {
       return (

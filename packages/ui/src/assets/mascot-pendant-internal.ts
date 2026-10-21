@@ -9,7 +9,7 @@
  * (it lags: overlap), `kink` bends the thread.
  */
 import {
-  CUT, TAU, bang, blink, clamp, dots, down, ein, eout, f, faceKids, hear, keys, merge, mod, poly, pt, ring, rot, sine, sparkles,
+  CUT, TAU, bang, blink, clamp, dots, down, ein, eout, f, faceKids, hear, keys, maskArea, merge, mod, poly, pt, ring, rot, sine, sparkles,
   spring, sstep, stroke, sweat, talk, zees, type Face, type FNode, type FrameCtx, type Pt,
 } from "./mascot-kit-internal";
 
@@ -26,7 +26,7 @@ export function pendantFrame(V: PendantVariant) {
   const above = V.knot === "above";
   return function frame(c: FrameCtx): FNode[] {
     const s = c.state, t = c.t, tt = c.tt, still = c.still, k = c.k;
-    const tile = c.form === "tile", sil = c.form === "sil";
+    const tile = c.form === "tile";
     const INK = c.ink;
     const PY = tile ? -2 : -HANG;
     const BY = above ? (tile ? 35 : 36.5) : tile ? 29.5 : 32.2;
@@ -174,32 +174,29 @@ export function pendantFrame(V: PendantVariant) {
     const tailEnd: Pt = [K[0] + td[0] * tailLen, K[1] + td[1] * tailLen];
     /* down(a) swings right for a > 0, which is a counter-clockwise turn */
     const beadT = "rotate(" + f(-bAng) + " " + pt(C) + ")";
-    const box = { maskUnits: "userSpaceOnUse", x: -60, y: -90, width: 184, height: 220 };
-    const white = { x: -60, y: -90, width: 184, height: 220, fill: "white" };
+    const { box, white } = maskArea(-60, -90, 184, 220);
 
     let nodes: FNode[] = [];
     const gap = 2.2;
-    if (!sil) {
-      const cut: FNode[] = [
-        ["rect", "tmr", white],
-        ["ellipse", "tmc", { cx: C[0], cy: C[1], rx: rx + gap, ry: ry + gap, transform: beadT, fill: CUT }],
-      ];
-      if (s === "thinking") {
-        /* twist marks: thin paper cuts across the thread above the bead, sliding as it turns */
-        for (let i = 0; i < 3; i++) {
-          const dd = (tile ? 4 : HANG + 1.5) + mod(i * 3.4 + marks * 5, 10.2);
-          const m0: Pt = [32 + u[0] * dd, PY + u[1] * dd];
-          const md = rot(4.2, 0, ang - 32);
-          cut.push(["path", "tmk" + i, merge(stroke(1.1), { d: "M" + pt([m0[0] - md[0], m0[1] - md[1]]) + "L" + pt([m0[0] + md[0], m0[1] + md[1]]) })]);
-        }
+    const cut: FNode[] = [
+      ["rect", "tmr", white],
+      ["ellipse", "tmc", { cx: C[0], cy: C[1], rx: rx + gap, ry: ry + gap, transform: beadT, fill: CUT }],
+    ];
+    if (s === "thinking") {
+      /* twist marks: thin paper cuts across the thread above the bead, sliding as it turns */
+      for (let i = 0; i < 3; i++) {
+        const dd = (tile ? 4 : HANG + 1.5) + mod(i * 3.4 + marks * 5, 10.2);
+        const m0: Pt = [32 + u[0] * dd, PY + u[1] * dd];
+        const md = rot(4.2, 0, ang - 32);
+        cut.push(["path", "tmk" + i, merge(stroke(1.1), { d: "M" + pt([m0[0] - md[0], m0[1] - md[1]]) + "L" + pt([m0[0] + md[0], m0[1] + md[1]]) })]);
       }
-      nodes.push(["mask", "tm", box, cut]);
-      nodes.push(["mask", "fm", box, [
-        ["rect", "fmr", white],
-        ["g", "fg", { transform: "translate(" + pt(C) + ") rotate(" + f(-bAng) + ") scale(" + f(sx) + " " + f(syy) + ") translate(0 -0.9)" }, faceKids("f", F)],
-      ]]);
     }
-    nodes.push(["path", "thread", merge(stroke(tw, INK), sil ? { d: threadD } : { d: threadD, mask: "url(#@tm)" })]);
+    nodes.push(["mask", "tm", box, cut]);
+    nodes.push(["mask", "fmask", box, [
+      ["rect", "fmr", white],
+      ["g", "fg", { transform: "translate(" + pt(C) + ") rotate(" + f(-bAng) + ") scale(" + f(sx) + " " + f(syy) + ") translate(0 -0.9)" }, faceKids("f", F)],
+    ]]);
+    nodes.push(["path", "thread", merge(stroke(tw, INK), { d: threadD, mask: "url(#@tm)" })]);
     if (!V.bun) {
       nodes.push(["path", "tail", merge(stroke(tw * 0.9, INK), { d: "M" + pt(K) + "L" + pt(tailEnd) })]);
       nodes.push(["circle", "knot", { cx: K[0], cy: K[1], r: KR, fill: INK }]);
@@ -209,30 +206,24 @@ export function pendantFrame(V: PendantVariant) {
       const pa = rot(4.6, 2.2, -bAng), pb = rot(-9.4, -4.4, -bAng);
       const p1: Pt = [bc[0] + pa[0], bc[1] + pa[1]], p2: Pt = [bc[0] + pb[0], bc[1] + pb[1]];
       const headCut = { cx: C[0], cy: C[1], rx: rx + gap, ry: ry + gap, transform: beadT, fill: CUT };
-      if (!sil) {
-        nodes.push(["mask", "bm", box, [["rect", "bmr", white], ["ellipse", "bmh", headCut], ["path", "bmp", merge(stroke(1.9 + 2 * 1.6), { d: "M" + pt(p1) + "L" + pt(p2) })]]]);
-        nodes.push(["mask", "pm", box, [["rect", "pmr", white], ["ellipse", "pmh", headCut]]]);
-      }
-      nodes.push(["g", "bung", sil ? {} : { mask: "url(#@bm)" }, [["circle", "bun", { cx: bc[0], cy: bc[1], r: brr, fill: INK }]]]);
-      if (!sil) {
-        nodes.push(["g", "ping", { mask: "url(#@pm)" }, [
-          ["path", "pin", merge(stroke(1.9, INK), { d: "M" + pt(p1) + "L" + pt(p2) })],
-          ["circle", "pinh", { cx: p2[0], cy: p2[1], r: 1.7, fill: INK }],
-        ]]);
-      }
+      nodes.push(["mask", "bm", box, [["rect", "bmr", white], ["ellipse", "bmh", headCut], ["path", "bmp", merge(stroke(1.9 + 2 * 1.6), { d: "M" + pt(p1) + "L" + pt(p2) })]]]);
+      nodes.push(["mask", "pm", box, [["rect", "pmr", white], ["ellipse", "pmh", headCut]]]);
+      nodes.push(["g", "bung", { mask: "url(#@bm)" }, [["circle", "bun", { cx: bc[0], cy: bc[1], r: brr, fill: INK }]]]);
+      nodes.push(["g", "ping", { mask: "url(#@pm)" }, [
+        ["path", "pin", merge(stroke(1.9, INK), { d: "M" + pt(p1) + "L" + pt(p2) })],
+        ["circle", "pinh", { cx: p2[0], cy: p2[1], r: 1.7, fill: INK }],
+      ]]);
     }
     /* the mask sits on an untransformed wrapper: a mask in userSpaceOnUse follows the masked element's own transform */
-    nodes.push(["g", "beadg", sil ? {} : { mask: "url(#@fm)" }, [["ellipse", "bead", { cx: C[0], cy: C[1], rx, ry, transform: beadT, fill: c.bead }]]]);
+    nodes.push(["g", "beadg", { mask: "url(#@fmask)" }, [["ellipse", "bead", { cx: C[0], cy: C[1], rx, ry, transform: beadT, fill: c.bead }]]]);
 
-    if (!sil) {
-      const top = C[1] - ry;
-      if (s === "listening") nodes = nodes.concat(hear("x", INK, C[0] + rx * 0.2, C[1] - 1, rx * 0.8, t, still));
-      if (s === "thinking") nodes = nodes.concat(dots("x", INK, C[0] + rx + 1.2, top + 2.6, t, still));
-      if (s === "happy") nodes = nodes.concat(sparkles("x", INK, tile ? [[14, 15, 0.8], [52, 13, 0.62]] : [[12, 9, 0.95], [7, 30, 0.62], [57, 7, 0.75]], t, still));
-      if (s === "sleeping") nodes = nodes.concat(zees("x", INK, C[0] + rx * 0.62 + 4, top + 5, t, still, tile ? 0.8 : 1));
-      if (s === "error") nodes = nodes.concat(bang("x", INK, tile ? 50 : 53, tile ? 17 : 15, tt, still, tile ? 0.85 : 1));
-      if (s === "working") nodes = nodes.concat(sweat("x", INK, C[0] - rx * 0.86 - 2.4, C[1] - ry * 0.62, t, still, tile ? 0.85 : 1));
-    }
+    const top = C[1] - ry;
+    if (s === "listening") nodes = nodes.concat(hear("x", INK, C[0] + rx * 0.2, C[1] - 1, rx * 0.8, t, still));
+    if (s === "thinking") nodes = nodes.concat(dots("x", INK, C[0] + rx + 1.2, top + 2.6, t, still));
+    if (s === "happy") nodes = nodes.concat(sparkles("x", INK, tile ? [[14, 15, 0.8], [52, 13, 0.62]] : [[12, 9, 0.95], [7, 30, 0.62], [57, 7, 0.75]], t, still));
+    if (s === "sleeping") nodes = nodes.concat(zees("x", INK, C[0] + rx * 0.62 + 4, top + 5, t, still, tile ? 0.8 : 1));
+    if (s === "error") nodes = nodes.concat(bang("x", INK, tile ? 50 : 53, tile ? 17 : 15, tt, still, tile ? 0.85 : 1));
+    if (s === "working") nodes = nodes.concat(sweat("x", INK, C[0] - rx * 0.86 - 2.4, C[1] - ry * 0.62, t, still, tile ? 0.85 : 1));
     return nodes;
   };
 }

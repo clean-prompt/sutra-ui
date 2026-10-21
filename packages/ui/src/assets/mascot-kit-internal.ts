@@ -7,6 +7,13 @@
  * the review designs of October 2026 (design/review/mascot.js) ported as they were approved.
  */
 
+/** What the mascot is doing (the public `SutraMascot` re-exports these names; they live here so the art modules need not import the component). */
+export const mascotStates = ["idle", "listening", "thinking", "working", "speaking", "happy", "sleeping", "error"] as const;
+export type MascotState = (typeof mascotStates)[number];
+/** The characters, in picker order: the bead buddy first (the default), then the others the owner chose in October 2026. */
+export const mascotCharacters = ["bead", "pendant", "mala", "bindu", "knot-pendant", "bow", "bun", "sutradhar"] as const;
+export type MascotCharacter = (typeof mascotCharacters)[number];
+
 export type Pt = [number, number];
 export type Attrs = Record<string, string | number>;
 /** [tag, key, attributes, children]. Keys are unique within one drawing; mask and clipPath ids are `<uid>-<key>`. */
@@ -19,8 +26,8 @@ export interface FrameCtx {
   tt: number;
   /** The still pose (reduced motion, server render, paused before the first frame). */
   still: boolean;
-  /** bare: the character alone; tile: composed for a round or squircle tile; sil: pure ink, no face (silhouette). */
-  form: "bare" | "tile" | "sil";
+  /** bare: the character alone; tile: composed for a round or squircle tile. */
+  form: "bare" | "tile";
   /** Rendered size in px (64 when the size is a CSS length): small sizes get heavier lines. */
   size: number;
   /** Optical weight for faces at small sizes. */
@@ -130,6 +137,10 @@ export const pt = (p: Pt) => f(p[0]) + " " + f(p[1]);
 export function merge(a: Attrs, b: Attrs): Attrs {
   return { ...a, ...b };
 }
+/** A mask's region (user space) and the white rect that fills it, so everything shows except what is cut out in black. */
+export function maskArea(x: number, y: number, width: number, height: number): { box: Attrs; white: Attrs } {
+  return { box: { maskUnits: "userSpaceOnUse", x, y, width, height }, white: { x, y, width, height, fill: "white" } };
+}
 export function stroke(w: number, paint: string = CUT): Attrs {
   return { fill: "none", stroke: paint, "stroke-width": w, "stroke-linecap": "round", "stroke-linejoin": "round" };
 }
@@ -155,7 +166,7 @@ export function poly(pts: Pt[]) {
   return d;
 }
 /** A point on a uniform Catmull-Rom segment (matches `smooth`). */
-export function crAt(p0: Pt, p1: Pt, p2: Pt, p3: Pt, u: number): Pt {
+function crAt(p0: Pt, p1: Pt, p2: Pt, p3: Pt, u: number): Pt {
   const u2 = u * u, u3 = u2 * u;
   const c = (q: 0 | 1) => 0.5 * (2 * p1[q] + (-p0[q] + p2[q]) * u + (2 * p0[q] - 5 * p1[q] + 4 * p2[q] - p3[q]) * u2 + (-p0[q] + 3 * p1[q] - 3 * p2[q] + p3[q]) * u3);
   return [c(0), c(1)];
@@ -231,6 +242,7 @@ export interface Face {
   small?: boolean;
 }
 
+/* the bead's CSS-animated face (Eye, Mouth in mascot-art-internal.tsx) is drawn separately, with its own geometry */
 function eyeNode(key: string, kind: EyeKind, i: number, bl: number, k: number, paint: string, F: Face): FNode {
   const big = F.eyeBig ? F.eyeBig[i] : 1;
   switch (kind) {
@@ -314,6 +326,23 @@ function mouthNode(key: string, kind: MouthKind, open: number, k: number, paint:
       return ["path", key, merge(stroke(w, paint), { d: "M" + f(-3.9 * k) + " " + f(0.1 * k) + "Q" + f(0.2 * k) + " " + f(4.1 * k) + " " + f(4.1 * k) + " " + f(-0.5 * k) })];
   }
 }
+/**
+ * How far every face's eyes are shut (0 open, 1 shut) while a frame is drawn: the frame driver blinks through a state change.
+ * Module-level state on purpose, so no character has to thread a lid through its pose: it is only ever set by `withEyesShut`,
+ * around a synchronous frame function (it is restored in a `finally`, so nothing async or re-entrant may read it).
+ */
+let lidShut = 0;
+/** Draw with every face's eyes shut by `amount` (0 to 1), so a change of expression happens behind a blink. */
+export function withEyesShut<T>(amount: number, draw: () => T): T {
+  const was = lidShut;
+  lidShut = amount;
+  try {
+    return draw();
+  } finally {
+    lidShut = was;
+  }
+}
+
 /** The eyes, brows and mouth of a face (cut-outs when `paint` is the mask's black, drawn lines otherwise). */
 export function faceKids(p: string, F: Face): FNode[] {
   const k = F.k ?? 1, ex = F.ex ?? 5.8, my = F.my ?? 7.6, Rh = F.R ?? 16, paint = F.paint ?? CUT;
@@ -323,8 +352,10 @@ export function faceKids(p: string, F: Face): FNode[] {
     const side = i ? 1 : -1;
     const th = Math.asin(clamp((side * ex) / Rh, -0.95, 0.95)) + turn;
     const x = Rh * Math.sin(th) + lx, sq = Math.max(0.2, Math.cos(th));
-    let g: FNode[] = [eyeNode(p + "e" + i, F.eyes, i, bl, k, paint, F)];
-    if (F.lashes) g = g.concat(lashNodes(p + "l" + i, F.eyes, side, bl, k, paint, F.eyeBig ? F.eyeBig[i] : 1, F.small));
+    /* the eye and its lashes sit in a lid that squashes them shut for a blink; the brow stays */
+    let lid: FNode[] = [eyeNode(p + "e" + i, F.eyes, i, bl, k, paint, F)];
+    if (F.lashes) lid = lid.concat(lashNodes(p + "l" + i, F.eyes, side, bl, k, paint, F.eyeBig ? F.eyeBig[i] : 1, F.small));
+    const g: FNode[] = [["g", p + "lid" + i, { transform: "scale(1 " + f(1 - 0.92 * lidShut) + ")" }, lid]];
     if (F.brows) g.push(browNode(p + "b" + i, F.brows, side, k, paint));
     kids.push(["g", p + "eg" + i, { transform: "translate(" + f(x) + " " + f(ly + (F.eyeDy ? F.eyeDy[i] : 0)) + ") scale(" + f(sq) + " 1)" }, g]);
   }
@@ -349,6 +380,7 @@ export function zees(p: string, ink: string, x: number, y: number, t: number, st
   }
   return out;
 }
+/* the bead's own sparkle and small marks live in mascot-art-internal.tsx (SPARKLE, zees, dots, bang) with different geometry; see the note there */
 const SPARK = "M0 -4.3C.55 -.8 .8 -.55 4.3 0C.8 .55 .55 .8 0 4.3C-.55 .8 -.8 .55 -4.3 0C-.8 -.55 -.55 -.8 0 -4.3Z";
 export function sparkles(p: string, ink: string, spots: Array<[number, number, number]>, t: number, still: boolean): FNode[] {
   return spots.map((s, i): FNode => {
@@ -398,7 +430,7 @@ export function sweat(p: string, ink: string, x: number, y: number, t: number, s
 /* ------------------------------------------------------------------ */
 
 /** Mask and clipPath ids are `<uid>-<key>`; attribute values say `#@` for "this drawing's id prefix". */
-export const resolveRef = (v: string, uid: string) => v.replace(/#@/g, "#" + uid + "-");
+const resolveRef = (v: string, uid: string) => v.replace(/#@/g, "#" + uid + "-");
 const value = (v: string | number, uid: string) => (typeof v === "number" ? f(v) : resolveRef(v, uid));
 
 /** The node tree as SVG markup (elements carry `data-k` so the driver can find them again). */
@@ -422,7 +454,7 @@ export function signature(nodes: FNode[]): string {
   return s;
 }
 /** Write a frame into markup made from the same signature: only the attributes whose value changed. */
-export function patchNodes(index: Map<string, Element>, last: Map<string, string>, nodes: FNode[], uid: string) {
+function patchNodes(index: Map<string, Element>, last: Map<string, string>, nodes: FNode[], uid: string) {
   for (const [, key, attrs, kids] of nodes) {
     const el = index.get(key);
     if (el) {
@@ -440,7 +472,7 @@ export function patchNodes(index: Map<string, Element>, last: Map<string, string
 }
 
 /** What a driven drawing remembers between frames: which element is which, and the last value written to each attribute. */
-export interface DrawState {
+interface DrawState {
   g: Element | null;
   markup: string;
   sig: string;
@@ -474,4 +506,114 @@ export function drawFrame(g: Element, st: DrawState, base: { markup: string; sig
     return;
   }
   patchNodes(st.index, st.last, nodes, uid);
+}
+
+/* ------------------------------------------------------------------ */
+/* A change of state: one pose blended into the next                   */
+/* ------------------------------------------------------------------ */
+
+/** The attributes blended number by number; the others swap. */
+const MIXED = new Set(["d", "cx", "cy", "r", "rx", "ry", "x", "y", "x1", "y1", "x2", "y2", "width", "height", "points", "transform", "opacity", "stroke-width"]);
+const NUM = /-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi;
+
+/** Do two attribute values share a form (the same text around the same count of numbers), so they can blend number by number? */
+const sameForm = (a: string | number, b: string | number) => {
+  if (typeof a === "number" && typeof b === "number") return true;
+  const sa = String(a), sb = String(b);
+  return (sa.match(NUM)?.length ?? 0) === (sb.match(NUM)?.length ?? 0) && sa.replace(NUM, "#") === sb.replace(NUM, "#");
+};
+/** `a` blended `k` of the way to `b` (values of the same form). */
+function mixValue(a: string | number, b: string | number, k: number): string | number {
+  if (a === b) return b;
+  if (typeof a === "number" && typeof b === "number") return a + (b - a) * k;
+  const na = String(a).match(NUM) ?? [];
+  let i = 0;
+  return String(b).replace(NUM, (y) => f(Number(na[i++]) + (Number(y) - Number(na[i - 1])) * k));
+}
+/** A transform that does nothing, in the form of `t` (so a transform only one frame has can blend from or to none). */
+const noTransform = (t: string) =>
+  t.replace(/([a-zA-Z]+)\(([^)]*)\)/g, (_, fn: string, args: string) => {
+    let i = 0;
+    const kind = fn.toLowerCase();
+    return fn + "(" + args.replace(NUM, (n) => {
+      const at = i++;
+      return kind === "scale" ? "1" : kind === "rotate" ? (at === 0 ? "0" : n) : kind === "matrix" ? (at === 0 || at === 3 ? "1" : "0") : "0";
+    }) + ")";
+  });
+/** A node and everything in it with its keys marked, so it can be drawn beside its successor while one fades into the other. */
+const ghost = ([tag, key, attrs, kids]: FNode, opacity: number): FNode => {
+  const out: Attrs = { ...attrs, opacity: f((attrs.opacity === undefined ? 1 : Number(attrs.opacity)) * opacity) };
+  return kids ? [tag, key + "~", out, kids.map((n) => ghost(n, 1))] : [tag, key + "~", out];
+};
+const faded = (attrs: Attrs, k: number): Attrs => ({ ...attrs, opacity: f((attrs.opacity === undefined ? 1 : Number(attrs.opacity)) * k) });
+/** A node faded to `k`; a mask fades what it cuts (its white base stays), since a mask element's own opacity does nothing. */
+const fade = ([tag, key, attrs, kids]: FNode, k: number): FNode =>
+  tag === "mask" && kids ? [tag, key, attrs, kids.map((c) => (c[2].fill === "white" ? c : fade(c, k)))] : kids ? [tag, key, faded(attrs, k), kids] : [tag, key, faded(attrs, k)];
+
+/**
+ * The drawing `k` (0 to 1) of the way from frame `a` to frame `b`, for a smooth change of state. Each node of `b` blends from
+ * the node with the same key in `a`: geometry and opacity number by number (a transform only one of them has blends from or to
+ * none); a node whose shape changes form (an eye that becomes an arc, a thread that gains a kink) cross-fades from the old
+ * shape to the new; other attributes (a colour) swap once `swapped`, which the driver times to the shut eyes of a blink. Nodes
+ * new in `b` fade in; nodes only `a` has fade out where they were.
+ */
+export function blendFrames(a: FNode[], b: FNode[], k: number, swapped: boolean): FNode[] {
+  const after = new Set<string>();
+  const walk = (nodes: FNode[]) => {
+    for (const n of nodes) {
+      after.add(n[1]);
+      if (n[3]) walk(n[3]);
+    }
+  };
+  walk(b);
+  const before = new Map<string, FNode>();
+  const index = (nodes: FNode[]) => {
+    for (const n of nodes) {
+      before.set(n[1], n);
+      if (n[3]) index(n[3]);
+    }
+  };
+  index(a);
+  const mix = (nodes: FNode[], was: FNode[] = []): FNode[] => {
+    const out: FNode[] = [];
+    for (const node of nodes) {
+      const [tag, key, attrs, kids] = node;
+      const old = before.get(key);
+      if (!old) {
+        out.push(fade(node, k));
+        continue;
+      }
+      const from = old[2];
+      let morphs = old[0] === tag;
+      const blended: Attrs = {};
+      for (const name of new Set([...Object.keys(attrs), ...Object.keys(from)])) {
+        let x = from[name], y = attrs[name];
+        if (name === "transform" && (x === undefined || y === undefined)) [x, y] = [x ?? noTransform(String(y)), y ?? noTransform(String(x))];
+        if (name === "opacity") [x, y] = [x ?? 1, y ?? 1];
+        /* an attribute only the old frame has (a mask that now fades out) stays to the end of the blend */
+        if (y === undefined) {
+          if (!MIXED.has(name)) blended[name] = x;
+          continue;
+        }
+        if (x === undefined) blended[name] = y;
+        else if (MIXED.has(name) && sameForm(x, y)) blended[name] = mixValue(x, y, k);
+        else if (MIXED.has(name) && name !== "opacity") morphs = false;
+        else blended[name] = swapped ? y : x;
+      }
+      if (morphs) out.push(kids ? [tag, key, blended, mix(kids, old[3])] : [tag, key, blended]);
+      else {
+        /* the shape changes form: the new one fades in over the old, which fades out */
+        out.push(fade(node, k));
+        out.push(ghost(old, 1 - k));
+      }
+    }
+    /* what only the old frame had fades out where it was (less anything that moved into the new frame elsewhere) */
+    for (const n of was) {
+      if (after.has(n[1])) continue;
+      out.push(fade(prune(n), 1 - k));
+    }
+    return out;
+  };
+  const prune = (n: FNode): FNode => (n[3] ? [n[0], n[1], n[2], n[3].filter((c) => !after.has(c[1])).map(prune)] : n);
+  return mix(b, a);
 }

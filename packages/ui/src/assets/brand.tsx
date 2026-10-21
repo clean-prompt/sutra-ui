@@ -1,6 +1,8 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
 import { useSafeId } from "../hooks/use-safe-id";
+import { CRESCENT_BOLD, CRESCENT_FINE, INK, PAPER } from "./brand-internal";
+import { accessibleName, svgA11y } from "./svg-a11y-internal";
 
 type SvgBaseProps = Omit<React.ComponentPropsWithoutRef<"svg">, "children"> & {
   /** Rendered pixel size (width and height). */
@@ -9,36 +11,15 @@ type SvgBaseProps = Omit<React.ComponentPropsWithoutRef<"svg">, "children"> & {
   title?: string;
 };
 
-function a11y(title: string | undefined, titleId: string) {
-  return title
-    ? ({ role: "img", "aria-labelledby": titleId } as const)
-    : ({ "aria-hidden": true, focusable: "false" } as const);
-}
-
-/** The two inks of the brand: warm near-black on warm paper. Tiles and app icons use them literally so the artwork never shifts with a theme. */
-const INK = "#1c1915";
-const PAPER = "#f7f5f0";
-
 /**
  * The Sutra mark (64×64 space; chosen 2026-10-21, review option L10 "Crescent"): a crescent bead on an upright thread. The bead
  * is a disc with an oval bite that breaks through its top, so it has two sharp horns; the thread comes down through the opening,
  * runs behind the base and on below. Three filled shapes: the crescent, the thread above it (it stops a paper gap above the
  * floor of the bowl) and the thread below it (it starts a paper gap under the base). `fine` fills the height of the box (the
  * glyph); `bold` is the same drawing smaller with a heavier thread, for tiles and small sizes (the favicon). The geometry is
- * computed in design/brand/crescent.mjs, which prints these strings.
+ * computed in `brand-internal.ts`, the one source the Sutradhar sting shares (design/brand/crescent.mjs prints the same strings).
  */
-const BEAD = {
-  fine: {
-    bead: "M25.07 15.18A17 17 0 1 0 38.93 15.18A8.5 13 0 1 1 25.07 15.18Z",
-    above: "M29.8 5.1A2.2 2.2 0 0 1 34.2 5.1V33.19A3.76 3.76 0 0 1 29.8 33.19Z",
-    below: "M29.8 49.37A18.8 18.8 0 0 0 34.2 49.37V58.9A2.2 2.2 0 0 1 29.8 58.9Z",
-  },
-  bold: {
-    bead: "M26.45 18.53A13.6 13.6 0 1 0 37.55 18.53A6.8 10.4 0 1 1 26.45 18.53Z",
-    above: "M29.7 10.45A2.3 2.3 0 0 1 34.3 10.45V32.18A2.85 2.85 0 0 1 29.7 32.18Z",
-    below: "M29.7 45.97A15.2 15.2 0 0 0 34.3 45.97V53.55A2.3 2.3 0 0 1 29.7 53.55Z",
-  },
-} as const;
+const BEAD = { fine: CRESCENT_FINE, bold: CRESCENT_BOLD } as const;
 
 /* ------------------------------------------------------------------ */
 /* SutraMark                                                           */
@@ -87,6 +68,7 @@ export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
   ({ variant = "glyph", size = 32, title, intro = false, className, ...props }, ref) => {
     const id = useSafeId("sutra-mark");
     const titleId = `${id}-title`;
+    const name = accessibleName(title, undefined);
     const { geometry, scale, paint } = MARK_LOOK[variant] ?? MARK_LOOK.glyph;
     const shapes = BEAD[geometry];
     const beadTransform = scale === 1 ? undefined : `translate(32 32) scale(${scale}) translate(-32 -32)`;
@@ -101,10 +83,10 @@ export const SutraMark = React.forwardRef<SVGSVGElement, SutraMarkProps>(
         className={cn("shrink-0", className)}
         data-slot="sutra-mark"
         data-intro={intro ? "" : undefined}
-        {...a11y(title, titleId)}
+        {...svgA11y(name, titleId)}
         {...props}
       >
-        {title ? <title id={titleId}>{title}</title> : null}
+        {name ? <title id={titleId}>{name}</title> : null}
         {variant === "tile" ? (
           <>
             <rect width="64" height="64" rx="14.3" fill={PAPER} />
@@ -377,6 +359,7 @@ export const SutraAppIcon = React.forwardRef<SVGSVGElement, SutraAppIconProps>(
   ({ app, shape = "rounded", tone = "mono", size = 40, title, className, ...props }, ref) => {
     const id = useSafeId(`sutra-app-${app}`);
     const titleId = `${id}-title`;
+    const name = accessibleName(title, undefined);
     const rx = TILE_RX[shape];
     const picto = appPictograms[app];
     const tile = tone === "reversed" ? INK : PAPER;
@@ -392,10 +375,10 @@ export const SutraAppIcon = React.forwardRef<SVGSVGElement, SutraAppIconProps>(
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={cn("shrink-0", className)}
-        {...a11y(title, titleId)}
+        {...svgA11y(name, titleId)}
         {...props}
       >
-        {title ? <title id={titleId}>{title}</title> : null}
+        {name ? <title id={titleId}>{name}</title> : null}
         <rect width="64" height="64" rx={rx} fill={tile} />
         {tone === "reversed" ? null : (
           <rect x="0.5" y="0.5" width="63" height="63" rx={rx - 0.5} stroke={INK} strokeOpacity="0.14" />

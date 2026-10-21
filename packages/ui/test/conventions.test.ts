@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { COLOR_LITERAL, DARK_VARIANT, LEGACY_TONE, PALETTE_CLASS, SRC, count, sourceFiles, unlabelledIconButtons } from "./conventions-scan";
+import { COLOR_LITERAL, DARK_VARIANT, LEGACY_TONE, PALETTE_CLASS, SRC, count, sourceFiles, unlabelledIconButtons } from "./helpers/conventions-scan";
 
 /**
  * Convention checks as tests (R5). Each scan has a ratchet allowlist: `file: [count, why]`.
@@ -38,8 +38,8 @@ function expectRatchet(re: RegExp, allow: Allow) {
 
 const COLOR_ALLOW: Allow = {
   // brand and third-party art (the colours are the point)
-  "assets/brand.tsx": [30, "Sutra brand art: the two brand inks"],
-  "assets/mascot.tsx": [2, "Sutra brand art: the two brand inks of the tile forms (the same pair as SutraAppIcon)"],
+  "assets/brand.tsx": [28, "Sutra brand art: the two brand inks"],
+  "assets/brand-internal.ts": [2, "Sutra brand art: the two brand inks, declared once for the marks, the mascot and the sting"],
   "assets/country-flags.tsx": [163, "national flag colours"],
   "assets/file-format.tsx": [115, "file-type brand colours"],
   "assets/device-frame.tsx": [10, "device and traffic-light art"],

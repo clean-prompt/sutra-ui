@@ -8,7 +8,7 @@ import {
   sutraApps,
   type SutraMarkVariant,
 } from "../src/assets/brand";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const all: SutraMarkVariant[] = ["glyph", "tile", "reversed", "solid", "outline", "badge"];
 

@@ -5,11 +5,16 @@
  *   @import "tailwindcss";
  *   @import "@sutra/ui/styles.css";
  *
- * Theme switches (set on <html> or any subtree):
- *   class="dark" | data-theme="dark"         dark mode
+ * Theme switches (set on <html>):
+ *   class="dark" | data-theme="dark"         dark mode (also works on a subtree)
  *   data-brand="indigo|blue|sky|cyan|lime|green|yellow|orange|red|violet|rose"
  *   data-neutral="zinc|slate|gray|stone"
- *   data-radius="rounded|pill|square"
+ *   data-radius="rounded|pill|square"        (also works on a subtree)
+ *
+ * data-brand and data-neutral retune the primitive scales (--b-*, --n-*) wherever they are set, but the semantic tokens
+ * (--primary: var(--b-500), --background: var(--n-0) ...) are declared on :root and resolve there, so on a subtree they do not
+ * follow. Set both on <html>; for a section with its own accent use data-app, which re-derives the brand tokens (see the
+ * "Suite: per-app accents" block).
  */
 @import "tw-animate-css";
 
@@ -1843,6 +1848,20 @@
   0% { opacity: 0; transform: scale(0.3); }
   40% { opacity: 1; transform: scale(1.3); }
   100% { opacity: 1; transform: scale(1); }
+}
+
+/* A change of state: the new face opens from a blink (`swap` re-keys the lids), so the expression changes behind shut eyes.
+   Not while paused: a paused mascot keeps its eyes open. */
+.sutra-mascot:not([data-paused]) [data-part="lid"][data-swap] {
+  animation-name: sutra-mascot-reopen;
+  animation-duration: calc(var(--sutra-mascot-unit) * 0.4);
+  animation-timing-function: var(--sutra-ease);
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+}
+@keyframes sutra-mascot-reopen {
+  0%, 20% { transform: scaleY(0.08); }
+  100% { transform: scaleY(1); }
 }
 
 /* Reduced motion: a still pose per state. Same two triggers as the net near the top of this file (the system request unless the

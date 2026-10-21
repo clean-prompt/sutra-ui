@@ -6,7 +6,7 @@
  * mouth is smaller (0.72 of the shared face).
  */
 import {
-  bang, blink, clamp, dots, eio, ein, eout, f, faceKids, hear, keys, lerp, merge, mod, pt, ring, rot, sine, smooth, sparkles,
+  bang, blink, clamp, dots, eio, ein, eout, f, faceKids, hear, keys, lerp, maskArea, merge, mod, pt, ring, rot, sine, smooth, sparkles,
   spring, sstep, stroke, talk, zees, type Face, type FNode, type FrameCtx, type Pt,
 } from "./mascot-kit-internal";
 
@@ -28,7 +28,7 @@ const CURL_SCALE = 1.18;
 
 export function binduFrame(c: FrameCtx): FNode[] {
   const s = c.state, t = c.t, tt = c.tt, still = c.still, k = c.k;
-  const tile = c.form === "tile", sil = c.form === "sil";
+  const tile = c.form === "tile";
   const INK = c.ink;
   const R = 14.2, y0 = tile ? 57 : 58.5, cx0 = 32, HT = 29.5;
   let sy = 1, lean = 0, rk = 0, up = 0, dx = 0, crot = 0, csc = 1, wind = 0, stiff = 0;
@@ -142,16 +142,15 @@ export function binduFrame(c: FrameCtx): FNode[] {
   const rockT = rk ? "rotate(" + f(rk) + " " + f(cx) + " " + f(gy) + ")" : "";
   const tileT = tile ? "translate(32 37.5) scale(0.98) translate(-32 -38)" : "";
   const nodes: FNode[] = [];
-  if (!sil) {
-    nodes.push(["mask", "fm", { maskUnits: "userSpaceOnUse", x: -40, y: -40, width: 144, height: 144 }, [
-      ["rect", "fmr", { x: -40, y: -40, width: 144, height: 144, fill: "white" }],
-      ["g", "fg", { transform: "translate(" + f(cx + lean * 0.25) + " " + f(cy - 1.2 * sy) + ") scale(" + f(1 / Math.sqrt(sy)) + " " + f(sy) + ")" }, faceKids("f", F)],
-    ]]);
-  }
+  const { box, white } = maskArea(-40, -40, 144, 144);
+  nodes.push(["mask", "fmask", box, [
+    ["rect", "fmr", white],
+    ["g", "fg", { transform: "translate(" + f(cx + lean * 0.25) + " " + f(cy - 1.2 * sy) + ") scale(" + f(1 / Math.sqrt(sy)) + " " + f(sy) + ")" }, faceKids("f", F)],
+  ]]);
   let kids: FNode[] = [];
   kids.push(["path", "curl", merge(stroke(tw, INK), { d: smooth(cc) })]);
-  kids.push(["g", "bodyg", sil ? {} : { mask: "url(#@fm)" }, [["path", "body", { d: dropPath(cx, cy, rx, ry, tx, ty + 0.4, tw / 2), fill: c.bead }]]]);
-  if (s === "error" && !sil) {
+  kids.push(["g", "bodyg", { mask: "url(#@fmask)" }, [["path", "body", { d: dropPath(cx, cy, rx, ry, tx, ty + 0.4, tw / 2), fill: c.bead }]]]);
+  if (s === "error") {
     /* the droplet swells at the side, lets go and falls, stretching as it drops */
     const dp = drip ?? 0;
     const dg = clamp(dp / 0.3), fall = clamp((dp - 0.3) / 0.7);
@@ -159,7 +158,7 @@ export function binduFrame(c: FrameCtx): FNode[] {
     const dr = 2.6 * (0.35 + 0.65 * dg), st = 1 + 0.5 * fall;
     kids.push(["path", "drip", { d: "M0 -3.6C1.8 -1.2 2.6 .2 2.6 1.2A2.6 2.6 0 0 1 -2.6 1.2C-2.6 .2 -1.8 -1.2 0 -3.6Z", fill: c.bead, transform: "translate(" + f(dxp) + " " + f(dyp) + ") scale(" + f(dr / 2.6) + " " + f((dr / 2.6) * st) + ")", opacity: f(1 - sstep((fall - 0.85) / 0.15)) }]);
   }
-  if (s === "working" && !sil) {
+  if (s === "working") {
     /* ink dots left behind, sliding away and shrinking */
     for (let j = 0; j < 3; j++) {
       const u = (j + (trail ?? 0)) / 3;
@@ -167,13 +166,11 @@ export function binduFrame(c: FrameCtx): FNode[] {
       kids.push(["circle", "tr" + j, { cx: cx - R - 2 - u * 15, cy: y0 - r3, r: r3, fill: c.bead, opacity: f(1 - sstep((u - 0.7) / 0.3)) }]);
     }
   }
-  if (!sil) {
-    if (X === "hear") kids = kids.concat(hear("x", INK, cx + rx * 0.3, cy - 2, rx * 0.72, t, still));
-    if (X === "dots") kids = kids.concat(dots("x", INK, cx + rx * 0.7 + 3, ty + 3, t, still));
-    if (X === "sparkles") kids = kids.concat(sparkles("x", INK, [[12, 20, 0.85], [53, 16, 0.7], [56, 40, 0.55]], t, still));
-    if (X === "zees") kids = kids.concat(zees("x", INK, cx + rx * 0.62 + 2, cy - ry - 3, t, still, 0.95));
-    if (X === "bang") kids = kids.concat(bang("x", INK, 54, 17, tt, still, 0.9));
-  }
+  if (X === "hear") kids = kids.concat(hear("x", INK, cx + rx * 0.3, cy - 2, rx * 0.72, t, still));
+  if (X === "dots") kids = kids.concat(dots("x", INK, cx + rx * 0.7 + 3, ty + 3, t, still));
+  if (X === "sparkles") kids = kids.concat(sparkles("x", INK, [[12, 20, 0.85], [53, 16, 0.7], [56, 40, 0.55]], t, still));
+  if (X === "zees") kids = kids.concat(zees("x", INK, cx + rx * 0.62 + 2, cy - ry - 3, t, still, 0.95));
+  if (X === "bang") kids = kids.concat(bang("x", INK, 54, 17, tt, still, 0.9));
   const wrapT = (tileT + " " + rockT).trim();
   nodes.push(["g", "all", wrapT ? { transform: wrapT } : {}, kids]);
   return nodes;

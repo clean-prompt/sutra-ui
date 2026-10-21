@@ -5,13 +5,13 @@
  * tile form is curled already.
  */
 import {
-  CUT, along, bang, blink, clamp, crSample, dots, eio, eout, f, faceKids, hear, keys, lengths, lerp, merge, mod, pt, ring,
+  CUT, along, bang, blink, clamp, crSample, dots, eio, eout, f, faceKids, hear, keys, lengths, lerp, maskArea, merge, mod, pt, ring,
   ringPath, sine, smooth, sparkles, spring, sstep, stroke, sweat, talk, zees, type Face, type FNode, type FrameCtx, type Pt,
 } from "./mascot-kit-internal";
 
 export function malaFrame(c: FrameCtx): FNode[] {
   const s = c.state, t = c.t, tt = c.tt, still = c.still, k = c.k;
-  const tile = c.form === "tile", sil = c.form === "sil";
+  const tile = c.form === "tile";
   const INK = c.ink;
   const rh = tile ? 15 : 12.8;
   const rb = tile ? [5.4, 4.7, 4] : [6.2, 5.4, 4.6];
@@ -157,29 +157,24 @@ export function malaFrame(c: FrameCtx): FNode[] {
   const tail: Pt = [tl[0] + off[2][0], tl[1] + off[2][1]];
   const tw = c.size >= 96 ? 2.6 : c.size >= 64 ? 3 : c.size >= 48 ? 3.3 : 3.7;
   const gap = 1.3;
-  const box = { maskUnits: "userSpaceOnUse", x: -40, y: -40, width: 144, height: 144 };
-  const white = { x: -40, y: -40, width: 144, height: 144, fill: "white" };
+  const { box, white } = maskArea(-40, -40, 144, 144);
 
   let nodes: FNode[] = [];
   const threadD = smooth([H, ...beads, tail]);
-  if (!sil) {
-    const tcut: FNode[] = [["rect", "tmr", white], ["ellipse", "tmh", { cx: H[0], cy: H[1], rx: rh + gap, ry: rh * hs + gap, fill: CUT }]];
-    for (let i = 0; i < 3; i++) tcut.push(["circle", "tmb" + i, { cx: beads[i][0], cy: beads[i][1], r: rb[i] * scl[i] + gap, fill: CUT }]);
-    nodes.push(["mask", "tm", box, tcut]);
-    nodes.push(["mask", "fm", box, [["rect", "fmr", white], ["g", "fg", { transform: "translate(" + pt(H) + ") rotate(" + f(hr) + ") scale(" + f(1 / hs) + " " + f(hs) + ") translate(0 -0.6)" }, faceKids("f", F)]]]);
-  }
-  nodes.push(["path", "thread", merge(stroke(tw, INK), sil ? { d: threadD } : { d: threadD, mask: "url(#@tm)" })]);
+  const tcut: FNode[] = [["rect", "tmr", white], ["ellipse", "tmh", { cx: H[0], cy: H[1], rx: rh + gap, ry: rh * hs + gap, fill: CUT }]];
+  for (let i = 0; i < 3; i++) tcut.push(["circle", "tmb" + i, { cx: beads[i][0], cy: beads[i][1], r: rb[i] * scl[i] + gap, fill: CUT }]);
+  nodes.push(["mask", "tm", box, tcut]);
+  nodes.push(["mask", "fmask", box, [["rect", "fmr", white], ["g", "fg", { transform: "translate(" + pt(H) + ") rotate(" + f(hr) + ") scale(" + f(1 / hs) + " " + f(hs) + ") translate(0 -0.6)" }, faceKids("f", F)]]]);
+  nodes.push(["path", "thread", merge(stroke(tw, INK), { d: threadD, mask: "url(#@tm)" })]);
   for (let i = 0; i < 3; i++) nodes.push(["path", "b" + i, { d: ringPath(beads[i][0], beads[i][1], rb[i] * scl[i], 0), fill: c.bead }]);
-  nodes.push(["g", "hg", sil ? {} : { mask: "url(#@fm)" }, [["ellipse", "head", { cx: H[0], cy: H[1], rx: rh / hs, ry: rh * hs, transform: "rotate(" + f(hr) + " " + pt(H) + ")", fill: c.bead }]]]);
+  nodes.push(["g", "hg", { mask: "url(#@fmask)" }, [["ellipse", "head", { cx: H[0], cy: H[1], rx: rh / hs, ry: rh * hs, transform: "rotate(" + f(hr) + " " + pt(H) + ")", fill: c.bead }]]]);
 
-  if (!sil) {
-    const top = H[1] - rh;
-    if (X === "hear") nodes = nodes.concat(hear("x", INK, H[0] + rh * 0.15, H[1] - 1, rh * 0.85, t, still));
-    if (X === "dots") nodes = nodes.concat(dots("x", INK, H[0] + rh * 0.55 + 2, top + 1.2, t, still));
-    if (X === "sweat") nodes = nodes.concat(sweat("x", INK, H[0] - rh * 0.72 - 1.4, H[1] - rh * 0.78, t, still, tile ? 0.85 : 0.95));
-    if (X === "sparkles") nodes = nodes.concat(sparkles("x", INK, tile ? [[54, 14, 0.7], [12, 50, 0.6]] : [[26, 12, 0.85], [60, 9, 0.7], [10, 27, 0.6]], t, still));
-    if (X === "zees") nodes = nodes.concat(zees("x", INK, H[0] + rh * 0.55 + 3, top + 3.5, t, still, tile ? 0.75 : 0.9));
-    if (X === "bang") nodes = nodes.concat(bang("x", INK, tile ? 55 : 59, tile ? 16 : 13, tt, still, tile ? 0.8 : 0.9));
-  }
+  const top = H[1] - rh;
+  if (X === "hear") nodes = nodes.concat(hear("x", INK, H[0] + rh * 0.15, H[1] - 1, rh * 0.85, t, still));
+  if (X === "dots") nodes = nodes.concat(dots("x", INK, H[0] + rh * 0.55 + 2, top + 1.2, t, still));
+  if (X === "sweat") nodes = nodes.concat(sweat("x", INK, H[0] - rh * 0.72 - 1.4, H[1] - rh * 0.78, t, still, tile ? 0.85 : 0.95));
+  if (X === "sparkles") nodes = nodes.concat(sparkles("x", INK, tile ? [[54, 14, 0.7], [12, 50, 0.6]] : [[26, 12, 0.85], [60, 9, 0.7], [10, 27, 0.6]], t, still));
+  if (X === "zees") nodes = nodes.concat(zees("x", INK, H[0] + rh * 0.55 + 3, top + 3.5, t, still, tile ? 0.75 : 0.9));
+  if (X === "bang") nodes = nodes.concat(bang("x", INK, tile ? 55 : 59, tile ? 16 : 13, tt, still, tile ? 0.8 : 0.9));
   return nodes;
 }

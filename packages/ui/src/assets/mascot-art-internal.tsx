@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { MascotState } from "./mascot";
+import type { MascotState } from "./mascot-kit-internal";
 
 /**
  * The drawing of the Sutra mascot, in the 64 x 64 space of the Bead mark. A solid bead (centre 32,33, radius 18.5) strung on a thread:
@@ -40,6 +40,8 @@ export const MASCOT_FACE: Record<MascotState, { eyes: EyeKind; mouth: MouthKind;
 const BLACK = "black";
 const arcProps = { fill: "none", stroke: BLACK, strokeWidth: 2.3, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
+/* the frame-drawn characters draw their faces with the kit's eyeNode and mouthNode (mascot-kit-internal.ts), which differ in geometry
+   from these: this face is the original bead's, moved by the CSS keyframes in styles/sutra.css (deferred: unify the two) */
 function Eye({ kind }: { kind: EyeKind }) {
   switch (kind) {
     case "wide":
@@ -78,14 +80,17 @@ function Mouth({ kind }: { kind: MouthKind }) {
 }
 
 /** The cut-outs of the bead's mask (black = see-through): eyes, mouth and, when worried, brows. */
-export function MascotFace({ state }: { state: MascotState }) {
+export function MascotFace({ state, swap = 0 }: { state: MascotState; swap?: number }) {
   const face = MASCOT_FACE[state];
   return (
     <>
       <g data-part="eyes" data-eyes={face.eyes}>
         {EYE_X.map((x) => (
           <g key={x} transform={`translate(${x} ${EYE_Y})`}>
-            <Eye kind={face.eyes} />
+            {/* a lid round each eye: after a change of state (`swap` counts them) the new face opens from a blink */}
+            <g key={swap} data-part="lid" data-swap={swap ? "" : undefined}>
+              <Eye kind={face.eyes} />
+            </g>
           </g>
         ))}
       </g>
@@ -107,6 +112,7 @@ const onRing = (r: number, deg: number) => {
 };
 const ringArc = (r: number, from: number, to: number) => `M${onRing(r, from)}A${r} ${r} 0 0 1 ${onRing(r, to)}`;
 
+/* the kit has its own SPARK, zees, dots and bang for the frame-drawn characters (mascot-kit-internal.ts), with different geometry */
 const SPARKLE = "M0 -4.2Q.6 -.6 4.2 0Q.6 .6 0 4.2Q-.6 .6 -4.2 0Q-.6 -.6 0 -4.2Z";
 
 /** The little extras that say what the mascot is doing (rings, thought dots, sparks, stars, z marks, a bang). Drawn in `ink`. */

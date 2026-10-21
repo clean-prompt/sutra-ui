@@ -2,6 +2,8 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { useSafeId } from "../hooks/use-safe-id";
 import { sutraAppMeta, type SutraApp } from "./brand";
+import { INK, PAPER } from "./brand-internal";
+import { accessibleName, svgA11y } from "./svg-a11y-internal";
 import {
   BEAD_R,
   BEAD_X,
@@ -13,11 +15,12 @@ import {
   THREAD_W,
   threadRight,
 } from "./mascot-art-internal";
-import { MascotFrameArt, characterFrames } from "./mascot-frames-internal";
+import { MascotFrameArt, frameOf } from "./mascot-frames-internal";
+import { mascotCharacters, mascotStates, type MascotCharacter, type MascotState } from "./mascot-kit-internal";
 
-/** What the mascot is doing: each state has its own face, extras and motion. */
-export const mascotStates = ["idle", "listening", "thinking", "working", "speaking", "happy", "sleeping", "error"] as const;
-export type MascotState = (typeof mascotStates)[number];
+/** What the mascot is doing (idle, listening, thinking, working, speaking, happy, sleeping, error): each state has its own face, extras and motion. */
+export { mascotStates };
+export type { MascotState };
 
 /** The accessible name of each state, used when `title` is `true` ("Sutra is listening"). */
 export const mascotStateLabels: Record<MascotState, string> = {
@@ -32,8 +35,8 @@ export const mascotStateLabels: Record<MascotState, string> = {
 };
 
 /** The characters, in picker order: the bead buddy first (the default), then the others the owner chose in October 2026. */
-export const mascotCharacters = ["bead", "pendant", "mala", "bindu", "knot-pendant", "bow", "bun", "sutradhar"] as const;
-export type MascotCharacter = (typeof mascotCharacters)[number];
+export { mascotCharacters };
+export type { MascotCharacter };
 
 /** The name of each character, for a picker ("Choose your Sutra"). */
 export const mascotCharacterLabels: Record<MascotCharacter, string> = {
@@ -62,7 +65,8 @@ export interface SutraMascotProps extends Omit<React.ComponentPropsWithoutRef<"s
   character?: MascotCharacter;
   /**
    * What the mascot is doing. The face and the extras around it change with the state (so it reads without motion), and the
-   * animation swaps in place without remounting. `happy` and `error` are one-shot reactions that play again when the state is set again.
+   * animation swaps in place without remounting: the pose blends into the new state with a blink (instant under reduced
+   * motion). `happy` and `error` are one-shot reactions that play again when the state is set again.
    * @default "idle"
    */
   state?: MascotState;
@@ -95,15 +99,14 @@ export interface SutraMascotProps extends Omit<React.ComponentPropsWithoutRef<"s
   replayKey?: string | number;
 }
 
-/** The two inks of the brand (as in `SutraAppIcon`): the tile forms use them literally so the artwork never shifts with a theme. */
-const INK = "#1c1915";
-const PAPER = "#f7f5f0";
+/* the tile forms use the two inks of the brand literally (as `SutraAppIcon` does), so the artwork never shifts with a theme */
 const TILE_RX = { circle: 32, squircle: 19 } as const;
 
 /**
  * The Sutra mascot: a friendly bead on a thread, with a face that follows `state` (idle, listening, thinking, working, speaking,
  * happy, sleeping, error). Flat shapes, ink on paper; the motion is CSS keyframes that stand still under reduced motion while
- * the expression stays. Decorative unless `title` is set.
+ * the expression stays. Decorative unless `title` is set. The art is direction-agnostic: it is drawn the same in left-to-right and
+ * right-to-left layouts (the characters face left and the listening arcs open to the right on purpose, like a logo), so it is never mirrored.
  */
 export const SutraMascot = React.forwardRef<SVGSVGElement, SutraMascotProps>(
   (
@@ -125,16 +128,23 @@ export const SutraMascot = React.forwardRef<SVGSVGElement, SutraMascotProps>(
   ) => {
     const id = useSafeId("sutra-mascot");
     const current: MascotState = mascotStates.includes(state) ? state : "idle";
+    const frame = character !== "bead" ? frameOf(character) : undefined;
+    /* the bead counts its changes of state, so each new face opens from a blink (the frame-drawn characters blink in their own driver) */
+    const [faceOf, setFaceOf] = React.useState(current);
+    const [swap, setSwap] = React.useState(0);
+    if (!frame && faceOf !== current) {
+      setFaceOf(current);
+      setSwap((n) => n + 1);
+    }
     const tile = shape === "circle" || shape === "squircle";
     const ink = tile ? INK : "currentColor";
     const bead = tone === "dyed" && app && sutraAppMeta[app] ? sutraAppMeta[app].dye : ink;
-    const name = typeof title === "string" ? title : title === true ? mascotStateLabels[current] : undefined;
+    const name = accessibleName(title, mascotStateLabels[current]);
     const titleId = `${id}-title`;
     const beadMask = `${id}-bead`;
     const threadMask = `${id}-thread`;
     const clip = `${id}-clip`;
-    const labelled = name ? ({ role: "img", "aria-labelledby": titleId } as const) : ({ "aria-hidden": true, focusable: "false" } as const);
-    const frame = character !== "bead" ? characterFrames[character] : undefined;
+    const labelled = svgA11y(name, titleId);
     if (frame) {
       /* a frame-drawn character: the same root and tile as the bead, its own art (clipped to the box: a pendant's thread runs off the top) */
       const art = (
@@ -220,7 +230,7 @@ export const SutraMascot = React.forwardRef<SVGSVGElement, SutraMascotProps>(
         <defs>
           <mask id={beadMask} maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64">
             <rect width="64" height="64" fill="white" />
-            <MascotFace state={current} />
+            <MascotFace state={current} swap={swap} />
             <path
               data-part="thread-l-gap"
               d={THREAD_LEFT}

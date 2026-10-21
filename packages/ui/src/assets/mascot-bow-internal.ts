@@ -5,7 +5,7 @@
  * it stays a bow. The head moves (x, y, rot, sy); the bow wobbles a beat behind it (`sway`, degrees), its tails a little more.
  */
 import {
-  CUT, bang, blink, dots, eio, ein, eout, f, faceKids, hear, keys, merge, mod, pt, ring, rot, sine, sparkles, spring, sstep,
+  CUT, bang, blink, dots, eio, ein, eout, f, faceKids, hear, keys, maskArea, merge, mod, pt, ring, rot, sine, sparkles, spring, sstep,
   stroke, sweat, talk, zees, type Attrs, type Face, type FNode, type FrameCtx, type Pt,
 } from "./mascot-kit-internal";
 
@@ -30,7 +30,7 @@ function bowNodes(p: string, x: number, y: number, deg: number, sc: number, sway
 
 export function bowFrame(c: FrameCtx): FNode[] {
   const s = c.state, t = c.t, tt = c.tt, still = c.still, k = c.k;
-  const tile = c.form === "tile", sil = c.form === "sil";
+  const tile = c.form === "tile";
   const INK = c.ink;
   const R = tile ? 17.6 : 17;
   const C0: Pt = tile ? [33.5, 31] : [33, 32.5];
@@ -130,32 +130,27 @@ export function bowFrame(c: FrameCtx): FNode[] {
   const bpos = smallBow ? W([-R * 0.5, -R * 1.04]) : W([-R * 0.58, -R * 0.84]);
   const bdeg = (smallBow ? -16 : -32) + hr + sway * 0.45 + (s === "sleeping" ? -14 : 0);
   const bsc = (tile ? 1.02 : 0.98) * (smallBow ? (c.size < 32 ? 1.5 : 1.36) : 1);
-  const holes = !smallBow && !sil;
+  const holes = !smallBow;
   const stubEnd = W([R + (tile ? 30 : 7.6), 1.2]), stubStart = W([R * 0.3, 1.2]);
-  const box = { maskUnits: "userSpaceOnUse", x: -40, y: -40, width: 144, height: 144 };
-  const white = { x: -40, y: -40, width: 144, height: 144, fill: "white" };
+  const { box, white } = maskArea(-40, -40, 144, 144);
   const headT = "rotate(" + f(hr) + " " + pt(Cc) + ")";
   let nodes: FNode[] = [];
-  if (!sil) {
-    nodes.push(["mask", "tm", box, [["rect", "tmr", white], ["ellipse", "tmc", { cx: Cc[0], cy: Cc[1], rx: R * sx + gap, ry: R * sy + gap, transform: headT, fill: CUT }]]]);
-    nodes.push(["mask", "fm", box, [
-      ["rect", "fmr", white],
-      ["g", "fg", { transform: "translate(" + pt(Cc) + ") rotate(" + f(hr) + ") scale(" + f(sx) + " " + f(sy) + ") translate(0 -0.8)" }, faceKids("f", F)],
-      ["g", "fbw", {}, bowNodes("fh", bpos[0], bpos[1], bdeg, bsc, sway, false, CUT, (2 * gap) / bsc)],
-    ]]);
-  }
+  nodes.push(["mask", "tm", box, [["rect", "tmr", white], ["ellipse", "tmc", { cx: Cc[0], cy: Cc[1], rx: R * sx + gap, ry: R * sy + gap, transform: headT, fill: CUT }]]]);
+  nodes.push(["mask", "fmask", box, [
+    ["rect", "fmr", white],
+    ["g", "fg", { transform: "translate(" + pt(Cc) + ") rotate(" + f(hr) + ") scale(" + f(sx) + " " + f(sy) + ") translate(0 -0.8)" }, faceKids("f", F)],
+    ["g", "fbw", {}, bowNodes("fh", bpos[0], bpos[1], bdeg, bsc, sway, false, CUT, (2 * gap) / bsc)],
+  ]]);
   const threadD = "M" + pt(stubStart) + "L" + pt(stubEnd);
-  nodes.push(["path", "thread", merge(stroke(tw, INK), sil ? { d: threadD } : { d: threadD, mask: "url(#@tm)" })]);
-  nodes.push(["g", "headg", sil ? {} : { mask: "url(#@fm)" }, [["ellipse", "head", { cx: Cc[0], cy: Cc[1], rx: R * sx, ry: R * sy, transform: headT, fill: c.bead }]]]);
+  nodes.push(["path", "thread", merge(stroke(tw, INK), { d: threadD, mask: "url(#@tm)" })]);
+  nodes.push(["g", "headg", { mask: "url(#@fmask)" }, [["ellipse", "head", { cx: Cc[0], cy: Cc[1], rx: R * sx, ry: R * sy, transform: headT, fill: c.bead }]]]);
   nodes = nodes.concat(bowNodes("bw", bpos[0], bpos[1], bdeg, bsc, sway, holes, INK, 0));
-  if (!sil) {
-    const top = Cc[1] - R * sy;
-    if (X === "hear") nodes = nodes.concat(hear("x", INK, Cc[0] + R * 0.25, Cc[1] - 6.5, R * 0.75, t, still));
-    if (X === "dots") nodes = nodes.concat(dots("x", INK, Cc[0] + R * 0.62 + 1.5, top + 2.2, t, still));
-    if (X === "sweat") nodes = nodes.concat(sweat("x", INK, Cc[0] + R * 0.82 + 2.6, Cc[1] - R * 0.78, t, still, 0.95));
-    if (X === "sparkles") nodes = nodes.concat(sparkles("x", INK, tile ? [[56, 14, 0.7], [12, 46, 0.6]] : [[58, 12, 0.8], [8, 44, 0.65], [59, 46, 0.55]], t, still));
-    if (X === "zees") nodes = nodes.concat(zees("x", INK, Cc[0] + R * 0.62 + 2.5, top + 4, t, still, 0.9));
-    if (X === "bang") nodes = nodes.concat(bang("x", INK, 57, 12, tt, still, 0.9));
-  }
+  const top = Cc[1] - R * sy;
+  if (X === "hear") nodes = nodes.concat(hear("x", INK, Cc[0] + R * 0.25, Cc[1] - 6.5, R * 0.75, t, still));
+  if (X === "dots") nodes = nodes.concat(dots("x", INK, Cc[0] + R * 0.62 + 1.5, top + 2.2, t, still));
+  if (X === "sweat") nodes = nodes.concat(sweat("x", INK, Cc[0] + R * 0.82 + 2.6, Cc[1] - R * 0.78, t, still, 0.95));
+  if (X === "sparkles") nodes = nodes.concat(sparkles("x", INK, tile ? [[56, 14, 0.7], [12, 46, 0.6]] : [[58, 12, 0.8], [8, 44, 0.65], [59, 46, 0.55]], t, still));
+  if (X === "zees") nodes = nodes.concat(zees("x", INK, Cc[0] + R * 0.62 + 2.5, top + 4, t, still, 0.9));
+  if (X === "bang") nodes = nodes.concat(bang("x", INK, 57, 12, tt, still, 0.9));
   return nodes;
 }

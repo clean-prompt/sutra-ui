@@ -12,9 +12,22 @@ type Tick = (now: number) => void;
 const ticks = new Set<Tick>();
 let raf = 0;
 
+/** Ticks that have already thrown (each is reported once, so a broken drawing does not flood the console at 60 a second). */
+const reported = new WeakSet<Tick>();
+
+/* a drawing that throws must not stop the others (or the next frame): the error is reported, the tick stays on the frame */
 function frame(now: number) {
   raf = 0;
-  ticks.forEach((tick) => tick(now));
+  ticks.forEach((tick) => {
+    try {
+      tick(now);
+    } catch (error) {
+      if (reported.has(tick)) return;
+      reported.add(tick);
+      if (typeof reportError === "function") reportError(error);
+      else console.error(error);
+    }
+  });
   if (ticks.size) raf = requestAnimationFrame(frame);
 }
 function join(tick: Tick) {

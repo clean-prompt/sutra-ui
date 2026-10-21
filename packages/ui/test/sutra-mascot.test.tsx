@@ -11,7 +11,7 @@ import { render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SutraMascot, mascotStateLabels, mascotStates, type MascotState } from "../src/assets/mascot";
 import { sutraAppMeta, sutraApps } from "../src/assets/brand";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const svgOf = (container: HTMLElement) => container.querySelector("svg") as SVGSVGElement;
 const part = (root: ParentNode, name: string) => Array.from(root.querySelectorAll(`[data-part="${name}"]`));

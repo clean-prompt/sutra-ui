@@ -10,7 +10,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SutraMascot, mascotCharacterLabels, mascotCharacters, mascotStateLabels, mascotStates, type MascotCharacter } from "../src/assets/mascot";
 import { sutraAppMeta } from "../src/assets/brand";
 import { activeFrameCount } from "../src/assets/mascot-driver-internal";
-import { axeViolations } from "./a11y";
+import { characterFrames } from "../src/assets/mascot-frames-internal";
+import type { FNode } from "../src/assets/mascot-kit-internal";
+import { axeViolations } from "./helpers/a11y";
 
 const drawn = mascotCharacters.filter((c) => c !== "bead") as Exclude<MascotCharacter, "bead">[];
 const svgOf = (container: HTMLElement) => container.querySelector("svg") as SVGSVGElement;
@@ -127,7 +129,26 @@ describe("accessible name", () => {
   });
 });
 
+/** Every key in a frame's node tree, in order. */
+const keysOf = (nodes: FNode[], out: string[] = []) => {
+  for (const [, key, , kids] of nodes) {
+    out.push(key);
+    if (kids) keysOf(kids, out);
+  }
+  return out;
+};
+
 describe("frame loop", () => {
+  it("keys every element of every frame once, so the frame driver patches the right one", () => {
+    for (const [name, frame] of Object.entries(characterFrames))
+      for (const state of mascotStates)
+        for (const form of ["bare", "tile"] as const)
+          for (const tt of [0, 0.7, 1.9, 3.3]) {
+            const keys = keysOf(frame({ state, t: tt, tt, still: false, form, size: 96, k: 1, ink: "#111", bead: "#222" }));
+            expect(keys.filter((k, i) => keys.indexOf(k) !== i), `${name} ${state} ${form} at ${tt} s`).toEqual([]);
+          }
+  });
+
   it("joins the shared frame while motion is allowed, and leaves it when paused or unmounted", () => {
     const raf = vi.spyOn(window, "requestAnimationFrame");
     const { rerender, unmount } = render(<SutraMascot character="bindu" />);
@@ -154,10 +175,11 @@ describe("frame loop", () => {
   it("moves the drawing on a frame without rendering React again, and keeps the svg on a state change", async () => {
     const { container, rerender } = render(<SutraMascot character="pendant" state="happy" />);
     const svg = svgOf(container);
-    const bead = () => art(svg).querySelector('[data-k="bead"]')!.getAttribute("cx");
-    const before = bead();
+    /* the first frame goes in at mount (so the still markup never shows); the next ones move the drawing */
+    const drawing = () => art(svg).innerHTML;
+    const before = drawing();
     await act(() => new Promise((r) => setTimeout(r, 120)));
-    expect(bead()).not.toBe(before);
+    expect(drawing()).not.toBe(before);
     rerender(<SutraMascot character="pendant" state="sleeping" replayKey={1} />);
     expect(svgOf(container)).toBe(svg);
     expect(svg).toHaveAttribute("data-state", "sleeping");

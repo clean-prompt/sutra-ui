@@ -1,7 +1,7 @@
 ---
 component: SutradharSting
 module: assets/sutradhar-sting
-use: A short logo sting with Sutradhar (the full-figure mascot) and the Sutra mark, the crescent bead on its thread. `mark`: he walks in with a bare thread, the bead drops onto it and becomes the mark, he plants it and smiles. `astra`: he summons a hand astra (the crescent bead on a short thread), charges it, swings it into the aim and fires an ink wave into empty space. Both end on a still lockup. Use it on a splash screen, an onboarding step or a launch moment.
+use: A short logo sting with Sutradhar (the full-figure mascot) and the Sutra mark, the crescent bead on its thread. `mark`: he walks in with a bare thread, the bead drops onto it and becomes the mark, he plants it and smiles. `astra`: he summons a hand astra (the crescent bead on a short thread), charges it until ink lightning crackles round the bead, swings it into the aim and fires an ink wave into empty space. Both end on a still lockup. `astra-endless`: the same astra on a wide stage that never stops once fired: the lightning keeps crackling, arcs and beads flow out along the wave, and the wave streams across the whole stage. Use it on a splash screen, an onboarding step or a launch moment.
 instead: SutraMark = the static mark; SutraMascot = a status character that shows what the assistant is doing; AssistantOrb = the voice assistant
 server: ssr-safe
 ---
@@ -14,7 +14,7 @@ Not focusable. Offer your own button to replay it (change `replayKey`) and to sk
 - The sting carries no information; never make a task wait on it without a way to skip.
 
 ## Reduced motion
-`autoPlay` (default) plays once when it first comes on screen; `false` shows the lockup until `replayKey` changes; `loop` plays again after a short hold and never calls `onComplete`. It runs on the mascot's shared frame driver (one `requestAnimationFrame` for the page, attribute writes only, no React render per frame) because the sequence is geometry CSS keyframes cannot express: a walk, two-bone arms, a bead dropping onto a turning thread, a wave of five layered sines. It pauses off screen, and draws its first frame before paint so the lockup never flashes first. Under `prefers-reduced-motion` or `data-motion="reduce"` only the lockup is shown, no frame is requested, and `onComplete` is called at once.
+`autoPlay` (default) plays once when it first comes on screen; `false` shows the lockup until `replayKey` changes; a play ends on its last frame, which is the lockup, so it settles without a jump; `loop` plays again after a short hold, fading out and back in instead of cutting, and never calls `onComplete`; `astra-endless` keeps streaming for as long as it is on screen (it calls `onComplete` once, when its stream reaches full length) and holds the stream still under reduced motion. It runs on the mascot's shared frame driver (one `requestAnimationFrame` for the page, attribute writes only, no React render per frame) because the sequence is geometry CSS keyframes cannot express: a walk, two-bone arms, a bead dropping onto a turning thread, a wave of five layered sines. It pauses off screen, and draws its first frame before paint so the lockup never flashes first. Under `prefers-reduced-motion` or `data-motion="reduce"` only the lockup is shown, no frame is requested, and `onComplete` is called at once.
 
 ## Server rendering
 The final lockup is the markup, the same on the server and the client; mask ids come from `useSafeId`.
@@ -23,8 +23,8 @@ The final lockup is the markup, the same on the server and the client; mask ids 
 - `sutradhar-sting`: the svg root (`data-variant`, `data-playing` while it plays)
 
 ## Gotchas
-- `size` is the height; the width follows the drawing (6:5 for `mark`, 16:13 for `astra`). The drawing is clipped to its box, and the astra's wave is sized to stay inside it at every aim.
-- `aim` (astra only) is in protractor degrees: 90 straight up, 180 level to the left, clamped to 135 to 180, default 150. The astra is held in one hand and fires into empty space: there is no target.
+- `size` is the height; the width follows the drawing (6:5 for `mark`, 16:13 for `astra`, 32:13 for `astra-endless`). The drawing is clipped to its box, and the wave is sized to stay inside it at every aim; add `h-auto max-w-full` to let a wide one shrink on a phone.
+- `aim` is in protractor degrees: 90 straight up, 180 level to the left, 270 straight down, clamped to 30 to 330 (default 150 for `astra`, 172 for `astra-endless`). Aimed to the right he turns round; aimed steeply up or down the view pulls back just enough to keep the whole wave on the stage, and for a downward shot he rises off the ground as he swings. The astra is held in one hand and fires into empty space: there is no target.
 - The figure and the mark are ink in `currentColor`, so they follow the text colour on paper, dark and the paper style.
 
 ## Example

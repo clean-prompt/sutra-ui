@@ -22,7 +22,7 @@ import {
   type MascotShape,
 } from "@sutra/ui";
 import { RiPauseLine, RiPlayLine, RiRestartLine } from "@sutra/ui/icons";
-import { SutradharSting, type SutradharStingVariant } from "@sutra/ui/assets/sutradhar-sting";
+import { SutradharSting } from "@sutra/ui/assets/sutradhar-sting";
 import { Demo, DemoLabel } from "../components/demo";
 
 const stateNames: Record<MascotState, string> = {
@@ -51,18 +51,27 @@ function StatesStrip({ size, shape }: { size: number; shape: MascotShape }) {
 }
 
 function StatePicker() {
+  const [character, setCharacter] = React.useState<MascotCharacter>("bead");
   const [state, setState] = React.useState<MascotState>("idle");
   const [paused, setPaused] = React.useState(false);
   const [replay, setReplay] = React.useState(0);
   return (
     <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
       <div className="flex w-44 shrink-0 flex-col items-center gap-2">
-        <SutraMascot state={state} size={160} paused={paused} replayKey={replay} title />
+        <SutraMascot character={character} state={state} size={160} paused={paused} replayKey={replay} title />
         <p role="status" className="text-center text-sm font-medium">
           {mascotStateLabels[state]}
         </p>
       </div>
       <div className="min-w-0 space-y-3">
+        {/* switching state blends the pose into the next one with a blink; try it on every character */}
+        <div role="group" aria-label="Character" className="flex flex-wrap gap-2">
+          {mascotCharacters.map((c) => (
+            <Button key={c} size="sm" variant={c === character ? "primary" : "ghost"} aria-pressed={c === character} onClick={() => setCharacter(c)}>
+              {mascotCharacterLabels[c]}
+            </Button>
+          ))}
+        </div>
         <div role="group" aria-label="Mascot state" className="flex flex-wrap gap-2">
           {mascotStates.map((s) => (
             <Button key={s} size="sm" variant={s === state ? "primary" : "outline"} aria-pressed={s === state} onClick={() => setState(s)}>
@@ -79,7 +88,8 @@ function StatePicker() {
           </Button>
         </div>
         <Text size="sm" className="text-muted-foreground">
-          Happy and error are one-shot reactions: Replay plays them again while the state stays the same.
+          A change of state blends into the next pose with a blink. Happy and error are one-shot reactions: Replay plays them again
+          while the state stays the same.
         </Text>
       </div>
     </div>
@@ -93,6 +103,7 @@ export function MascotDemo() {
       <MascotPickerDemo />
       <MascotCharactersDemo />
       <SutradharStingDemo />
+      <EndlessAstraDemo />
     </>
   );
 }
@@ -374,12 +385,12 @@ export function SutradharStingDemo() {
   const [replay, setReplay] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
   const [aim, setAim] = React.useState(150);
-  const [done, setDone] = React.useState<Record<SutradharStingVariant, number>>({ mark: 0, astra: 0 });
+  const [done, setDone] = React.useState<Record<"mark" | "astra", number>>({ mark: 0, astra: 0 });
   return (
     <Demo
       id="sutradhar-sting"
       title="Sutradhar sting"
-      description="A short logo sting that ends on a still lockup: Sutradhar forms the crescent mark on its thread, or wields it as a hand astra and fires an ink wave into empty space. It plays once on screen, pauses off screen, and shows only the lockup under reduced motion."
+      description="A short logo sting that ends on a still lockup: Sutradhar forms the crescent mark on its thread, or wields it as a hand astra crackling with ink lightning and fires an ink wave into empty space. It plays once on screen, pauses off screen, and shows only the lockup under reduced motion."
       align="start"
       canvasClassName="flex-col items-stretch gap-6"
     >
@@ -394,12 +405,12 @@ export function SutradharStingDemo() {
           <span id="sting-aim">Aim</span>
           <Slider
             aria-labelledby="sting-aim"
-            min={135}
-            max={180}
+            min={30}
+            max={330}
             step={1}
             value={[aim]}
             onValueChange={(v) => setAim(v[0] ?? 150)}
-            getValueText={(v) => v + " degrees: 90 is straight up, 180 is level to the left"}
+            getValueText={(v) => v + " degrees: 90 is straight up, 180 is level to the left, 270 is straight down"}
             className="w-40"
           />
           <span className="tabular-nums">{aim}°</span>
@@ -426,6 +437,58 @@ export function SutradharStingDemo() {
           </figure>
         ))}
       </div>
+    </Demo>
+  );
+}
+
+/** The endless astra: once fired the stream never stops; replay it and set its aim (30 to 330). */
+export function EndlessAstraDemo() {
+  const [replay, setReplay] = React.useState(0);
+  const [aim, setAim] = React.useState(172);
+  const [streaming, setStreaming] = React.useState(0);
+  return (
+    <Demo
+      id="endless-astra"
+      title="Endless astra"
+      description="The astra on a wide stage that never stops once fired: lightning keeps crackling round the bead, arcs and beads flow out along the ink wave, and the wave streams on across the whole stage and thins away at its far end. It runs while on screen, pauses off screen, and holds the stream still under reduced motion."
+      align="start"
+      canvasClassName="flex-col items-stretch gap-6"
+    >
+      <div className="flex flex-wrap items-center gap-3">
+        <Button size="sm" variant="soft" onClick={() => setReplay((n) => n + 1)}>
+          <RiRestartLine aria-hidden /> Replay
+        </Button>
+        <div className="flex min-w-56 items-center gap-3 text-sm text-muted-foreground">
+          <span id="endless-aim">Aim</span>
+          <Slider
+            aria-labelledby="endless-aim"
+            min={30}
+            max={330}
+            step={1}
+            value={[aim]}
+            onValueChange={(v) => setAim(v[0] ?? 172)}
+            getValueText={(v) => v + " degrees: 90 is straight up, 180 is level to the left, 270 is straight down"}
+            className="w-40"
+          />
+          <span className="tabular-nums">{aim}°</span>
+        </div>
+      </div>
+      <figure className="m-0 space-y-2">
+        <div className="grid place-items-center rounded-lg border p-4">
+          <SutradharSting
+            variant="astra-endless"
+            aim={aim}
+            replayKey={replay}
+            size={180}
+            title="Sutradhar holds an endless stream from the astra"
+            onComplete={() => setStreaming((n) => n + 1)}
+            className="h-auto max-w-full"
+          />
+        </div>
+        <figcaption className="text-xs text-muted-foreground">
+          The stream reached full length {streaming} {streaming === 1 ? "time" : "times"} and keeps flowing.
+        </figcaption>
+      </figure>
     </Demo>
   );
 }

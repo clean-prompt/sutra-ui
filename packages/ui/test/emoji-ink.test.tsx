@@ -14,7 +14,7 @@ import { EmojiGlyph, InkEmoji, hasInkEmoji, inkEmojiNames, inkEmojiSet } from ".
 import { EmojiPicker, EmojiReaction, EmojiReactionBar, emojiCategories, reactionPresets } from "../src/assets/emoji-reactions";
 import { DirectionProvider } from "../src/primitives/direction-provider";
 import { CommentThread } from "../src/patterns/comments";
-import { axeViolations } from "./a11y";
+import { axeViolations } from "./helpers/a11y";
 
 const css = readFileSync(path.join(__dirname, "../src/styles/sutra.css"), "utf8");
 const section = css.slice(css.indexOf("Emoji (assets/emoji-reactions): ink on paper"));

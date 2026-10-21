@@ -6,7 +6,7 @@
  * sitting with hands on the knees, a shrug. The tile form is a head-and-shoulders crop.
  */
 import {
-  CUT, TAU, bang, blink, dots, ein, eout, f, faceKids, hear, keys, lerp, merge, pt, ring, rot, sine, smooth, sparkles, spring,
+  CUT, TAU, bang, blink, dots, ein, eout, f, faceKids, hear, keys, lerp, maskArea, merge, pt, ring, rot, sine, smooth, sparkles, spring,
   stroke, sweat, talk, zees, type Face, type FNode, type FrameCtx, type Pt,
 } from "./mascot-kit-internal";
 
@@ -44,11 +44,11 @@ export interface FigurePose {
   prop?: (arms: Array<[Pt, Pt]>) => FNode[];
 }
 
-const FIG = { hr: 10.5, brx: 8.2, bry: 9.6, ua: 7.4, la: 7.2, ul: 7.2, ll: 7.4 };
+/** The figure's proportions: head radius, body radii, arm and leg segments. */
+export const FIG = { hr: 10.5, brx: 8.2, bry: 9.6, ua: 7.4, la: 7.2, ul: 7.2, ll: 7.4 };
 
 /** The figure in a pose; returns its nodes and where its head, body, arms and shoulders ended up. */
-export function figure(c: Pick<FrameCtx, "form" | "size" | "k" | "ink" | "bead">, P: FigurePose) {
-  const sil = c.form === "sil";
+export function figure(c: Pick<FrameCtx, "size" | "k" | "ink" | "bead">, P: FigurePose) {
   const INK = c.ink;
   const tw = c.size >= 160 ? 2.8 : c.size >= 96 ? 3.1 : c.size >= 64 ? 3.4 : c.size >= 48 ? 3.8 : 4.4;
   const gap = 1.6;
@@ -65,18 +65,15 @@ export function figure(c: Pick<FrameCtx, "form" | "size" | "k" | "ink" | "bead">
   const arms = [0, 1].map((i) => reach2(sh[i], P.hands[i], FIG.ua, FIG.la, P.bend[i]));
   const legs = [0, 1].map((i) => reach2(hp[i], P.feet[i], FIG.ul, FIG.ll, P.kbend[i]));
   let nodes: FNode[] = [];
-  const box = { maskUnits: "userSpaceOnUse", x: -60, y: -60, width: 260, height: 220 };
-  const white = { x: -60, y: -60, width: 260, height: 220, fill: "white" };
+  const { box, white } = maskArea(-60, -60, 260, 220);
   const rotB = "rotate(" + f(lean) + " " + pt(bc) + ")";
-  if (!sil) {
-    nodes.push(["mask", "lm", box, [
-      ["rect", "lmr", white],
-      ["ellipse", "lmb", { cx: bc[0], cy: bc[1], rx: brx + gap, ry: bry + gap, transform: rotB, fill: CUT }],
-      ["circle", "lmh", { cx: H[0], cy: H[1], r: FIG.hr + gap, fill: CUT }],
-    ]]);
-    const F: Face = { ...P.F, k: c.k, R: FIG.hr };
-    nodes.push(["mask", "fm", box, [["rect", "fmr", white], ["g", "fg", { transform: "translate(" + pt(H) + ") rotate(" + f((P.hr ?? 0) + lean) + ") scale(0.8) translate(0 -0.6)" }, faceKids("f", F)]]]);
-  }
+  nodes.push(["mask", "lm", box, [
+    ["rect", "lmr", white],
+    ["ellipse", "lmb", { cx: bc[0], cy: bc[1], rx: brx + gap, ry: bry + gap, transform: rotB, fill: CUT }],
+    ["circle", "lmh", { cx: H[0], cy: H[1], r: FIG.hr + gap, fill: CUT }],
+  ]]);
+  const F: Face = { ...P.F, k: c.k, R: FIG.hr };
+  nodes.push(["mask", "fmask", box, [["rect", "fmr", white], ["g", "fg", { transform: "translate(" + pt(H) + ") rotate(" + f((P.hr ?? 0) + lean) + ") scale(0.8) translate(0 -0.6)" }, faceKids("f", F)]]]);
   const limbs: FNode[] = [];
   const front: Array<[number, string, Pt]> = [];
   /* the neck: the thread the two beads are strung on */
@@ -87,8 +84,8 @@ export function figure(c: Pick<FrameCtx, "form" | "size" | "k" | "ink" | "bead">
     else limbs.push(["path", "arm" + i, merge(stroke(tw, INK), { d })]);
   });
   legs.forEach((l, i) => limbs.push(["path", "leg" + i, merge(stroke(tw, INK), { d: smooth([hp[i], l[0], l[1]]) })]));
-  nodes.push(["g", "limbs", sil ? {} : { mask: "url(#@lm)" }, limbs]);
-  if (front.length && !sil) {
+  nodes.push(["g", "limbs", { mask: "url(#@lm)" }, limbs]);
+  if (front.length) {
     const bcut: FNode[] = [["rect", "bmr", white]];
     front.forEach((fa) => {
       bcut.push(["path", "bma" + fa[0], merge(stroke(tw + 2 * gap), { d: fa[1] })]);
@@ -96,9 +93,9 @@ export function figure(c: Pick<FrameCtx, "form" | "size" | "k" | "ink" | "bead">
     });
     nodes.push(["mask", "bm", box, bcut]);
   }
-  nodes.push(["g", "bodyg", front.length && !sil ? { mask: "url(#@bm)" } : {}, [["ellipse", "body", { cx: bc[0], cy: bc[1], rx: brx, ry: bry, transform: rotB, fill: c.bead }]]]);
+  nodes.push(["g", "bodyg", front.length ? { mask: "url(#@bm)" } : {}, [["ellipse", "body", { cx: bc[0], cy: bc[1], rx: brx, ry: bry, transform: rotB, fill: c.bead }]]]);
   front.forEach((fa) => nodes.push(["path", "farm" + fa[0], merge(stroke(tw, INK), { d: fa[1] })]));
-  nodes.push(["g", "headg", sil ? {} : { mask: "url(#@fm)" }, [["circle", "head", { cx: H[0], cy: H[1], r: FIG.hr, fill: c.bead }]]]);
+  nodes.push(["g", "headg", { mask: "url(#@fmask)" }, [["circle", "head", { cx: H[0], cy: H[1], r: FIG.hr, fill: c.bead }]]]);
   legs.forEach((l, i) => nodes.push(["ellipse", "foot" + i, { cx: l[1][0] + (i ? 1.2 : -1.2), cy: l[1][1] + 0.4, rx: 3.5, ry: 2.3, fill: INK }]));
   if (P.prop) nodes = nodes.concat(P.prop(arms));
   arms.forEach((a, i) => nodes.push(["circle", "hand" + i, { cx: a[1][0], cy: a[1][1], r: 2.7, fill: INK }]));
@@ -107,7 +104,7 @@ export function figure(c: Pick<FrameCtx, "form" | "size" | "k" | "ink" | "bead">
 
 export function sutradharFrame(c: FrameCtx): FNode[] {
   const s = c.state, t = c.t, tt = c.tt, still = c.still;
-  const tile = c.form === "tile", sil = c.form === "sil";
+  const tile = c.form === "tile";
   const INK = c.ink;
   const by = 37;
   const P: FigurePose = { bx: 32, by, lean: 0, sy: 1, hr: 0, hdy: 0, hands: [[20.5, 45.5], [43.5, 45.5]], bend: [1, -1], feet: [[27.5, 59.5], [36.5, 59.5]], kbend: [-1, 1], F: { eyes: "open", mouth: "smile", lx: 0.4, ly: 0.2, blink: 1, open: 0, turn: 0.3, ex: 4.6, my: 6.4 } };
@@ -226,15 +223,13 @@ export function sutradharFrame(c: FrameCtx): FNode[] {
   P.feet = [fl, fr];
   const out = figure(c, P);
   let nodes = out.nodes;
-  if (!sil) {
-    const H = out.H;
-    if (X === "hear") nodes = nodes.concat(hear("x", INK, H[0] + 13, H[1] + 1, 4, t, still));
-    if (X === "dots") nodes = nodes.concat(dots("x", INK, H[0] + 9.5, H[1] - 8.5, t, still));
-    if (X === "sweat") nodes = nodes.concat(sweat("x", INK, H[0] + 11, H[1] - 5, t, still, 0.8));
-    if (X === "sparkles") nodes = nodes.concat(sparkles("x", INK, [[12, 14, 0.7], [57, 26, 0.55], [9, 36, 0.5]], t, still));
-    if (X === "zees") nodes = nodes.concat(zees("x", INK, H[0] + 9, H[1] - 6, t, still, 0.8));
-    if (X === "bang") nodes = nodes.concat(bang("x", INK, 52, 12, tt, still, 0.85));
-  }
+  const H = out.H;
+  if (X === "hear") nodes = nodes.concat(hear("x", INK, H[0] + 13, H[1] + 1, 4, t, still));
+  if (X === "dots") nodes = nodes.concat(dots("x", INK, H[0] + 9.5, H[1] - 8.5, t, still));
+  if (X === "sweat") nodes = nodes.concat(sweat("x", INK, H[0] + 11, H[1] - 5, t, still, 0.8));
+  if (X === "sparkles") nodes = nodes.concat(sparkles("x", INK, [[12, 14, 0.7], [57, 26, 0.55], [9, 36, 0.5]], t, still));
+  if (X === "zees") nodes = nodes.concat(zees("x", INK, H[0] + 9, H[1] - 6, t, still, 0.8));
+  if (X === "bang") nodes = nodes.concat(bang("x", INK, 52, 12, tt, still, 0.85));
   if (tile) return [["g", "tile", { transform: "translate(32 35) scale(1.42) translate(-32 -22.5)" }, nodes]];
   return nodes;
 }
