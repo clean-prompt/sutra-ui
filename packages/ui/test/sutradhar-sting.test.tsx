@@ -374,3 +374,75 @@ describe("the astra's aim, 30 to 330 degrees", () => {
     expect(stageAt(4)).toBe(astraStage(v, 1)); /* hovering as he fires */
   });
 });
+
+describe("the lightning discharge", () => {
+  const bolt = (frame: typeof astraFrame, tt: number, aim: number) =>
+    scene(frame({ tt, still: tt === 99, size: 160, ink: "#111", aim, discharge: "lightning" }));
+  const shown = (nodes: FNode[], key: string) => {
+    const n = nodes.find(([, k]) => k === key);
+    return !!n && Number(n[2].opacity) > 0 && n[2].d !== "M0 0";
+  };
+  /* how far the main bolt reaches from the head, along the aim */
+  const reach = (nodes: FNode[]) => {
+    const xs = pointsOf(String(nodes.find(([, k]) => k === "lb")![2].d)).map(([x]) => x);
+    return Math.max(...xs) - Math.min(...xs);
+  };
+
+  it("fires a forked bolt in place of the wave: nothing before it fires, a full strike at once, a quieter bolt on the lockup", () => {
+    expect(bolt(astraFrame, 3.3, 180).some(([, k]) => /^wv\d$/.test(k))).toBe(false);
+    expect(shown(bolt(astraFrame, 2.5, 180), "lb")).toBe(false);
+    const strike = bolt(astraFrame, 3.25, 180), lockup = bolt(astraFrame, 99, 180);
+    expect(shown(strike, "lb")).toBe(true);
+    expect(strike.filter(([, k, a]) => /^lf\d$/.test(k) && Number(a.opacity) > 0).length).toBeGreaterThanOrEqual(5);
+    expect(reach(lockup)).toBeLessThan(reach(strike) * 0.75);
+    expect(bolt(astraEndlessFrame, 12.7, 172).filter(([, k, a]) => /^lp\d$/.test(k) && Number(a.r) > 0).length).toBeGreaterThan(0);
+  });
+
+  it("crackles: the same moment draws the same bolt, the next tick a new one; the lockup is its last frame", () => {
+    const at = (tt: number) => JSON.stringify(bolt(astraFrame, tt, 150));
+    expect(at(3.4)).toBe(at(3.4));
+    expect(at(3.4)).not.toBe(at(3.46));
+    const markup = (tt: number, still: boolean) => nodesToMarkup(astraFrame({ tt, still, size: 160, ink: "#111", aim: 150, discharge: "lightning" }), "u");
+    expect(markup(99, true)).toBe(markup(ASTRA_STING.len, false));
+  });
+
+  it("keeps the bolt on the stage at every aim", () => {
+    for (const [endlessToo, aims] of [[false, [30, 60, 90, 150, 180, 240, 270, 300]], [true, [90, 172, 270]]] as const)
+      for (const aim of aims) {
+        const v = astraView(aim, endlessToo);
+        const [w, h] = endlessToo ? [256, 104] : [128, 104];
+        for (const tt of [3.25, 3.6, 99]) {
+          const nodes = bolt(endlessToo ? astraEndlessFrame : astraFrame, tt, aim);
+          for (const [, k, a] of nodes) {
+            if (!/^l[bsft]\d?$/.test(k) || Number(a.opacity) <= 0 || a.d === "M0 0") continue;
+            for (const [x, y] of pointsOf(String(a.d))) {
+              const X0 = v.anchor[0] + v.scale * (x - v.anchor[0]) - v.left, Y = v.anchor[1] + v.scale * (y - v.anchor[1]) - v.lift;
+              const X = v.mirror ? v.width - X0 : X0;
+              expect(X > -1 && X < w + 1 && Y > -1 && Y < h + 1, `${k} at aim ${aim}, ${tt} s: ${X.toFixed(1)}, ${Y.toFixed(1)}`).toBe(true);
+            }
+          }
+        }
+      }
+  });
+
+  it("keys every element of every lightning frame once", () => {
+    for (const frame of [astraFrame, astraEndlessFrame])
+      for (const tt of [2.2, 3.1, 3.25, 4.2, 12.7, 99]) {
+        const keys = keysOf(frame({ tt, still: tt === 99, size: 160, ink: "#111", aim: 160, discharge: "lightning" }));
+        expect(keys.filter((k, i) => keys.indexOf(k) !== i)).toEqual([]);
+      }
+  });
+
+  it("is a prop of the astras: it changes their drawing and name, and the mark ignores it", () => {
+    const look = (variant: "mark" | "astra", discharge: "wave" | "lightning") => {
+      const { container, unmount } = render(<SutradharSting variant={variant} discharge={discharge} autoPlay={false} title />);
+      const out = [strip(art(container).innerHTML), svgOf(container).querySelector("title")!.textContent];
+      unmount();
+      return out;
+    };
+    const [wave] = look("astra", "wave"), [lit, name] = look("astra", "lightning");
+    expect(lit).not.toBe(wave);
+    expect(name).toBe("Sutradhar fires lightning from a hand astra");
+    expect(look("mark", "lightning")).toEqual(look("mark", "wave"));
+  });
+});

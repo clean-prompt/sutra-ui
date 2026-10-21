@@ -8,6 +8,7 @@ import {
   ChatMessageHeader,
   RadioCard,
   RadioGroup,
+  SegmentedControl,
   Slider,
   SutraMascot,
   Text,
@@ -380,17 +381,34 @@ export function MascotCharactersDemo() {
   );
 }
 
-/** The two stings with Sutradhar and the Sutra mark: replay, loop and (for the astra) the aim. */
+/** What the astra fires: the ink wave or ink lightning. */
+function DischargePicker({ value, onChange }: { value: "wave" | "lightning"; onChange: (v: "wave" | "lightning") => void }) {
+  return (
+    <SegmentedControl
+      size="sm"
+      aria-label="What the astra fires"
+      value={value}
+      onValueChange={(v) => v && onChange(v as "wave" | "lightning")}
+      options={[
+        { value: "wave", label: "Wave" },
+        { value: "lightning", label: "Lightning" },
+      ]}
+    />
+  );
+}
+
+/** The two stings with Sutradhar and the Sutra mark: replay, loop and (for the astra) the aim and what it fires. */
 export function SutradharStingDemo() {
   const [replay, setReplay] = React.useState(0);
   const [loop, setLoop] = React.useState(false);
   const [aim, setAim] = React.useState(150);
+  const [discharge, setDischarge] = React.useState<"wave" | "lightning">("lightning");
   const [done, setDone] = React.useState<Record<"mark" | "astra", number>>({ mark: 0, astra: 0 });
   return (
     <Demo
       id="sutradhar-sting"
       title="Sutradhar sting"
-      description="A short logo sting that ends on a still lockup: Sutradhar forms the crescent mark on its thread, or wields it as a hand astra crackling with ink lightning and fires an ink wave into empty space. It plays once on screen, pauses off screen, and shows only the lockup under reduced motion."
+      description="A short logo sting that ends on a still lockup: Sutradhar forms the crescent mark on its thread, or wields it as a hand astra crackling with ink lightning and fires an ink wave, or a forked bolt of ink lightning, into empty space. It plays once on screen, pauses off screen, and shows only the lockup under reduced motion."
       align="start"
       canvasClassName="flex-col items-stretch gap-6"
     >
@@ -401,6 +419,7 @@ export function SutradharStingDemo() {
         <Button size="sm" variant={loop ? "primary" : "soft"} aria-pressed={loop} onClick={() => setLoop((v) => !v)}>
           Loop
         </Button>
+        <DischargePicker value={discharge} onChange={setDischarge} />
         <div className="flex min-w-56 items-center gap-3 text-sm text-muted-foreground">
           <span id="sting-aim">Aim</span>
           <Slider
@@ -423,10 +442,11 @@ export function SutradharStingDemo() {
               <SutradharSting
                 variant={variant}
                 aim={aim}
+                discharge={discharge}
                 loop={loop}
                 replayKey={replay}
                 size={200}
-                title={variant === "mark" ? "Sutradhar plants the Sutra mark" : "Sutradhar fires the astra"}
+                title={variant === "mark" ? "Sutradhar plants the Sutra mark" : discharge === "lightning" ? "Sutradhar fires lightning from the astra" : "Sutradhar fires the astra"}
                 onComplete={() => setDone((d) => ({ ...d, [variant]: d[variant] + 1 }))}
                 className="max-w-full"
               />
@@ -445,12 +465,13 @@ export function SutradharStingDemo() {
 export function EndlessAstraDemo() {
   const [replay, setReplay] = React.useState(0);
   const [aim, setAim] = React.useState(172);
+  const [discharge, setDischarge] = React.useState<"wave" | "lightning">("lightning");
   const [streaming, setStreaming] = React.useState(0);
   return (
     <Demo
       id="endless-astra"
       title="Endless astra"
-      description="The astra on a wide stage that never stops once fired: lightning keeps crackling round the bead, arcs and beads flow out along the ink wave, and the wave streams on across the whole stage and thins away at its far end. It runs while on screen, pauses off screen, and holds the stream still under reduced motion."
+      description="The astra on a wide stage that never stops once fired: lightning keeps crackling round the bead, arcs and beads flow out along the ink wave, and the wave streams on across the whole stage and thins away at its far end; or it fires endless ink lightning, forked and crackling, with pulses running out along it. It runs while on screen, pauses off screen, and holds the stream still under reduced motion."
       align="start"
       canvasClassName="flex-col items-stretch gap-6"
     >
@@ -458,6 +479,7 @@ export function EndlessAstraDemo() {
         <Button size="sm" variant="soft" onClick={() => setReplay((n) => n + 1)}>
           <RiRestartLine aria-hidden /> Replay
         </Button>
+        <DischargePicker value={discharge} onChange={setDischarge} />
         <div className="flex min-w-56 items-center gap-3 text-sm text-muted-foreground">
           <span id="endless-aim">Aim</span>
           <Slider
@@ -478,9 +500,10 @@ export function EndlessAstraDemo() {
           <SutradharSting
             variant="astra-endless"
             aim={aim}
+            discharge={discharge}
             replayKey={replay}
             size={180}
-            title="Sutradhar holds an endless stream from the astra"
+            title={discharge === "lightning" ? "Sutradhar holds endless lightning from the astra" : "Sutradhar holds an endless stream from the astra"}
             onComplete={() => setStreaming((n) => n + 1)}
             className="h-auto max-w-full"
           />

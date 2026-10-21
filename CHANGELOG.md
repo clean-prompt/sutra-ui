@@ -79,7 +79,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 #### Picks of the October design review
 - `SutraMascot` `character`: eight characters (`bead`, `pendant`, `mala`, `bindu`, `knot-pendant`, `bow`, `bun`, `sutradhar`) with every state and shape,
   `mascotCharacters` and `mascotCharacterLabels` for a picker, and a change of state blends into the new pose behind a blink; `SutradharSting` (`mark`, `astra`,
-  `astra-endless`, aimed anywhere from 30 to 330 degrees) for the brand moments.
+  `astra-endless`, aimed anywhere from 30 to 330 degrees, firing an ink wave or, with `discharge="lightning"`, forked ink lightning) for the brand moments.
 - `AssistantOrb` looks: `mala`, `string`, `ink`, `rings`, `graph` and `halftone` next to `orb` and `waveform`; `assistantOrbVariants` and `assistantOrbVariantLabels`.
 - `intro` on `SutraMark` and `SutraLogo`; `playInkEmoji`, `InkEmojiVariant` and `InkEmojiAnimate`.
 - `IdentityAvatar` (`@cleanprompt/sutra-ui/social`) for people, agents, machines and apps: a photo or drawn initials, a mascot face for agents and machines, the Bead

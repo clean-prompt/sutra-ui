@@ -23,6 +23,8 @@ export interface StingCtx {
   ink: string;
   /** The astra's aim in protractor degrees (90 up, 180 level to the left, 270 down), 30 to 330. */
   aim: number;
+  /** What the astra fires: an ink wave (default) or ink lightning. */
+  discharge?: "wave" | "lightning";
 }
 
 /* ------------------------------------------------------------------ */
@@ -260,6 +262,67 @@ export function astraEndlessFrame(c: StingCtx): FNode[] {
 }
 
 const BRIDGES = 6, BEADS = 4;
+
+const FORKS = 6, PULSES = 4;
+/**
+ * The astra's lightning (the `lightning` discharge, in place of the wave): a forked ink bolt out of the head along `dir`, with
+ * two fainter strands beside it and a faint glow, forks and tip sparks that thin to a point, and (on the endless stream) pulses
+ * running out along it. It strikes `reach` (0 to 1) of its length `L` with strength `power`, and crackles: `tick` redraws
+ * its kinks about 22 times a second (a fixed tick holds it still). The same nodes every frame.
+ */
+function lightning(O: Pt, dir: Pt, L: number, reach: number, power: number, tick: number, flicker: boolean, pulses: number, t: number, ink: string, wk: number): FNode[] {
+  const nrm: Pt = [-dir[1], dir[0]];
+  const len = L * reach;
+  const on = len > 1.5 && power > 0.02;
+  const rnd = seeded(tick * 7919 + 37);
+  const p = Math.min(1.3, power);
+  /* a strand: kinks every 4 to 5 units, a sideways walk that starts on the axis at the head and comes back to it at the tip */
+  const strand = (jit: number, lean: number): Pt[] => {
+    const n = Math.max(4, Math.round(len / 4.6));
+    let drift = 0;
+    const pts: Pt[] = [];
+    for (let q = 0; q <= n; q++) {
+      const v = q / n;
+      drift = q === 0 ? 0 : drift * 0.5 + (rnd() - 0.5) * 2 * jit;
+      const off = (drift + lean * Math.sin(Math.PI * v)) * Math.min(1, v * 5) * (1 - 0.6 * v * v);
+      pts.push([O[0] + dir[0] * v * len + nrm[0] * off, O[1] + dir[1] * v * len + nrm[1] * off]);
+    }
+    return pts;
+  };
+  const main = strand(1.6 + 0.9 * p, 0);
+  const sides = [strand(2.2 + p, 2.4), strand(2.4 + p, -2.6)];
+  const flick = () => (flicker ? 0.75 + 0.25 * rnd() : 1);
+  const nodes: FNode[] = [];
+  nodes.push(["path", "lglow", { d: on ? taper(main, (7 + 3 * p) * wk) : "M0 0", fill: ink, opacity: f(on ? 0.08 * Math.min(1, p) : 0) }]);
+  sides.forEach((pts, i) => nodes.push(["path", "ls" + i, { d: on ? taper(pts, (i ? 1 : 1.3) * wk) : "M0 0", fill: ink, opacity: f(on ? (i ? 0.35 : 0.55) * Math.min(1, p) * flick() : 0) }]));
+  nodes.push(["path", "lb", { d: on ? taper(main, (2.1 + 0.9 * Math.min(1, p)) * wk) : "M0 0", fill: ink, opacity: f(on ? flick() : 0) }]);
+  /* forks off the main bolt, more of them the stronger it strikes; short enough to stay inside the room the wave had */
+  const count = Math.round(clamp(p / 1.1) * FORKS);
+  for (let k = 0; k < FORKS; k++) {
+    const at = main[Math.min(main.length - 2, Math.max(1, Math.round((0.15 + (0.65 * (k + rnd() * 0.6)) / FORKS) * (main.length - 1))))];
+    const side = k % 2 ? 1 : -1;
+    const ang = Math.atan2(dir[1], dir[0]) + side * (0.35 + 0.4 * rnd());
+    const fl = Math.min(14, L * (0.1 + 0.16 * rnd())) * Math.min(1, reach * 1.4);
+    const pts = zigzag(rnd, at, ang, fl, 3, 1.1);
+    const vis = on && k < count;
+    nodes.push(["path", "lf" + k, { d: vis ? taper(pts, 1.25 * wk) : "M0 0", fill: ink, opacity: f(vis ? 0.9 * flick() : 0) }]);
+  }
+  /* sparks splaying off the tip, where the bolt spends itself in the air */
+  const tip = main[main.length - 1];
+  for (let k = 0; k < 3; k++) {
+    const ang = Math.atan2(dir[1], dir[0]) + (k - 1) * 0.75 + (rnd() - 0.5) * 0.4;
+    const pts = zigzag(rnd, tip, ang, 2.6 + 2.2 * rnd(), 2, 0.8);
+    nodes.push(["path", "lt" + k, { d: on ? taper(pts, 1.05 * wk) : "M0 0", fill: ink, opacity: f(on ? 0.85 * Math.min(1, p) : 0) }]);
+  }
+  /* the endless stream: pulses running out along the bolt, gone before its tip */
+  for (let k = 0; k < pulses; k++) {
+    const u = (t * 0.55 + k / pulses) % 1;
+    const q = main[Math.min(main.length - 1, Math.round(u * (main.length - 1)))];
+    const vis = on && u > 0.06 && u < 0.85;
+    nodes.push(["circle", "lp" + k, { cx: f(q[0]), cy: f(q[1]), r: f(vis ? 1.9 : 0), fill: ink, opacity: f(vis ? sstep((u - 0.06) / 0.08) * (1 - sstep((u - 0.65) / 0.2)) : 0) }]);
+  }
+  return nodes;
+}
 
 /* the astra's proportions: the crescent bead on a short thread, from the fist (the grip ends just below it, the bead's base
    7.2 above it) */
@@ -510,71 +573,79 @@ function astraScene(c: StingCtx, endless: boolean): FNode[] {
     return [O[0] + dAim[0] * u * Lw + nrm[0] * y, O[1] + dAim[1] * u * Lw + nrm[1] * y];
   };
   const wk = Math.max(1, Math.sqrt(120 / Math.max(40, c.size * view.scale)));
-  /* the endless stream glows: a faint wash between its outer strands, narrowing away where the wave thins */
-  if (endless) {
-    const n = Math.round(40 * Math.max(1, km)), top: Pt[] = [], bottom: Pt[] = [];
-    for (let q = 0; q <= n; q++) {
-      const u = (q / n) * Math.max(0.001, span), v = q / n;
-      const across = WAVES.map((L) => waveAt(L, u)).map((p) => (p[0] - O[0]) * nrm[0] + (p[1] - O[1]) * nrm[1]);
-      const keep = 1 - sstep((v - 0.6) / 0.4), mid = (Math.max(...across) + Math.min(...across)) / 2;
-      const hiY = mid + (Math.max(...across) + 1.5 - mid) * keep, loY = mid + (Math.min(...across) - 1.5 - mid) * keep;
-      const base: Pt = [O[0] + dAim[0] * u * Lw, O[1] + dAim[1] * u * Lw];
-      top.push([base[0] + nrm[0] * hiY, base[1] + nrm[1] * hiY]);
-      bottom.push([base[0] + nrm[0] * loY, base[1] + nrm[1] * loY]);
+  if (c.discharge === "lightning") {
+    /* lightning instead of the wave: it strikes out at once, crackles hard, then (the astra) settles to a shorter, quieter bolt;
+       the endless one keeps striking at full length */
+    const reach = fire < 0 ? 0 : still ? 1 : endless ? clamp(fire / 0.25) : lerp(clamp(fire / 0.12), 0.6, sstep((fire - 1.05) / 0.7));
+    const strength = fire < 0 ? 0 : still ? 1 : endless ? (1 + 0.12 * Math.sin(T * 5.3)) * lerp(1.3, 1, sstep((fire - 0.4) / 0.6)) : lerp(1.3, 0.75, sstep((fire - 0.6) / 0.8));
+    nodes = nodes.concat(lightning(O, dAim, Lw, reach, strength, still ? 4 : Math.floor(T * 22), !still && fire >= 0, endless ? PULSES : 0, T, INK, wk));
+  } else {
+    /* the endless stream glows: a faint wash between its outer strands, narrowing away where the wave thins */
+    if (endless) {
+      const n = Math.round(40 * Math.max(1, km)), top: Pt[] = [], bottom: Pt[] = [];
+      for (let q = 0; q <= n; q++) {
+        const u = (q / n) * Math.max(0.001, span), v = q / n;
+        const across = WAVES.map((L) => waveAt(L, u)).map((p) => (p[0] - O[0]) * nrm[0] + (p[1] - O[1]) * nrm[1]);
+        const keep = 1 - sstep((v - 0.6) / 0.4), mid = (Math.max(...across) + Math.min(...across)) / 2;
+        const hiY = mid + (Math.max(...across) + 1.5 - mid) * keep, loY = mid + (Math.min(...across) - 1.5 - mid) * keep;
+        const base: Pt = [O[0] + dAim[0] * u * Lw, O[1] + dAim[1] * u * Lw];
+        top.push([base[0] + nrm[0] * hiY, base[1] + nrm[1] * hiY]);
+        bottom.push([base[0] + nrm[0] * loY, base[1] + nrm[1] * loY]);
+      }
+      const vis = span > 0.01;
+      nodes.push(["path", "glow", { d: vis ? poly(top.concat(bottom.reverse())) + "Z" : "M0 0", fill: INK, opacity: f(vis ? 0.07 * Math.min(1, power) : 0) }]);
     }
-    const vis = span > 0.01;
-    nodes.push(["path", "glow", { d: vis ? poly(top.concat(bottom.reverse())) + "Z" : "M0 0", fill: INK, opacity: f(vis ? 0.07 * Math.min(1, power) : 0) }]);
-  }
-  WAVES.forEach((L, i) => {
-    const n = endless ? Math.round(40 * Math.max(1, km)) : 40, c0: Pt[] = [];
-    for (let q = 0; q <= n; q++) c0.push(waveAt(L, (q / n) * Math.max(0.001, span)));
-    const left: Pt[] = [], right: Pt[] = [];
-    for (let q = 0; q <= n; q++) {
-      const p0 = c0[Math.max(0, q - 1)], p1 = c0[Math.min(n, q + 1)];
-      const tl = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]) || 1;
-      const nx = -(p1[1] - p0[1]) / tl, ny = (p1[0] - p0[0]) / tl;
-      const v = q / n;
-      /* the endless wave holds its weight until its last 30 percent */
-      const hw = endless
-        ? (L.w / 2) * (0.55 + 0.45 * sstep(v / 0.06)) * (1 - sstep((v - 0.7) / 0.3))
-        : (L.w / 2) * (0.55 + 0.45 * sstep(v / 0.1)) * (1 - sstep((v - 0.42) / 0.58));
-      left.push([c0[q][0] + nx * hw, c0[q][1] + ny * hw]);
-      right.push([c0[q][0] - nx * hw, c0[q][1] - ny * hw]);
+    WAVES.forEach((L, i) => {
+      const n = endless ? Math.round(40 * Math.max(1, km)) : 40, c0: Pt[] = [];
+      for (let q = 0; q <= n; q++) c0.push(waveAt(L, (q / n) * Math.max(0.001, span)));
+      const left: Pt[] = [], right: Pt[] = [];
+      for (let q = 0; q <= n; q++) {
+        const p0 = c0[Math.max(0, q - 1)], p1 = c0[Math.min(n, q + 1)];
+        const tl = Math.hypot(p1[0] - p0[0], p1[1] - p0[1]) || 1;
+        const nx = -(p1[1] - p0[1]) / tl, ny = (p1[0] - p0[0]) / tl;
+        const v = q / n;
+        /* the endless wave holds its weight until its last 30 percent */
+        const hw = endless
+          ? (L.w / 2) * (0.55 + 0.45 * sstep(v / 0.06)) * (1 - sstep((v - 0.7) / 0.3))
+          : (L.w / 2) * (0.55 + 0.45 * sstep(v / 0.1)) * (1 - sstep((v - 0.42) / 0.58));
+        left.push([c0[q][0] + nx * hw, c0[q][1] + ny * hw]);
+        right.push([c0[q][0] - nx * hw, c0[q][1] - ny * hw]);
+      }
+      const vis = span > 0.01;
+      nodes.push(["path", "wv" + i, { d: vis ? poly(left.concat(right.reverse())) + "Z" : "M0 0", fill: INK, opacity: f(vis ? L.op : 0) }]);
+    });
+    /* flecks thrown off the wave front as it fires */
+    for (let m = 0; m < 6; m++) {
+      const tm = fire < 0 || still ? -1 : fire;
+      const along2 = Lw * clamp(tm / 0.85) * (0.55 + 0.08 * m);
+      const side = [5, -6, 9, -9, 3, -4][m] * (0.4 + tm);
+      const fx = O[0] + dAim[0] * along2 + nrm[0] * side, fy = O[1] + dAim[1] * along2 + nrm[1] * side;
+      const vis2 = tm > 0.05 && tm < 0.9 ? 1 - sstep((tm - 0.5) / 0.4) : 0;
+      nodes.push(["path", "fl" + m, { d: "M0 -1.5L1.3 1L-1.2 1Z", fill: INK, transform: "translate(" + f(fx) + " " + f(fy) + ") rotate(" + f(m * 53 + tm * 500) + ")", opacity: f(vis2) }]);
     }
-    const vis = span > 0.01;
-    nodes.push(["path", "wv" + i, { d: vis ? poly(left.concat(right.reverse())) + "Z" : "M0 0", fill: INK, opacity: f(vis ? L.op : 0) }]);
-  });
-  /* flecks thrown off the wave front as it fires */
-  for (let m = 0; m < 6; m++) {
-    const tm = fire < 0 || still ? -1 : fire;
-    const along2 = Lw * clamp(tm / 0.85) * (0.55 + 0.08 * m);
-    const side = [5, -6, 9, -9, 3, -4][m] * (0.4 + tm);
-    const fx = O[0] + dAim[0] * along2 + nrm[0] * side, fy = O[1] + dAim[1] * along2 + nrm[1] * side;
-    const vis2 = tm > 0.05 && tm < 0.9 ? 1 - sstep((tm - 0.5) / 0.4) : 0;
-    nodes.push(["path", "fl" + m, { d: "M0 -1.5L1.3 1L-1.2 1Z", fill: INK, transform: "translate(" + f(fx) + " " + f(fy) + ") rotate(" + f(m * 53 + tm * 500) + ")", opacity: f(vis2) }]);
-  }
-  /* the endless flow: lightning jumping across the wave between its outer strands and beads gliding out along its main
-     strand, all running outward and gone before the wave thins */
-  if (endless) {
-    const flow = still ? 1 : sstep((fire - 0.5) / 0.6);
-    const fadeAt = (u: number) => sstep((u - 0.07) / 0.06) * (1 - sstep((u - 0.5) / 0.22));
-    for (let k = 0; k < BRIDGES; k++) {
-      const u = still ? 0.12 + (k / BRIDGES) * 0.52 : (T * 0.42 + k / BRIDGES) % 1;
-      /* the outermost strands at this point of the wave */
-      const across = WAVES.map((L) => waveAt(L, u)).sort((a, b) => (a[0] - b[0]) * nrm[0] + (a[1] - b[1]) * nrm[1]);
-      const lo = across[0], hi = across[across.length - 1];
-      const gap = Math.hypot(hi[0] - lo[0], hi[1] - lo[1]);
-      const vis = fire >= 0 && u < span && u > 0.07 && gap > 3.5;
-      const rnd = seeded((still ? 5 : Math.floor(T * 22)) * 131 + k * 977);
-      const pts = zigzag(rnd, lo, Math.atan2(hi[1] - lo[1], hi[0] - lo[0]), gap, 4, 1.3);
-      pts[pts.length - 1] = hi;
-      nodes.push(["path", "rb" + k, { d: vis ? taper(pts, 1.7 * wk) : "M0 0", fill: INK, opacity: f(vis ? 0.95 * fadeAt(u) * flow : 0) }]);
-    }
-    for (let k = 0; k < BEADS; k++) {
-      const u = still ? 0.2 + (k / BEADS) * 0.4 : (T * 0.3 + k / BEADS) % 1;
-      const p = waveAt(WAVES[0], u), p2 = waveAt(WAVES[0], u + 0.004);
-      const vis = fire >= 0 && u < span && u > 0.07;
-      nodes.push(["ellipse", "bd" + k, { cx: f(p[0]), cy: f(p[1]), rx: f(vis ? 2.5 : 0), ry: f(vis ? 1.6 : 0), transform: "rotate(" + f((Math.atan2(p2[1] - p[1], p2[0] - p[0]) * 180) / Math.PI) + " " + pt(p) + ")", fill: INK, opacity: f(vis ? fadeAt(u) * flow : 0) }]);
+    /* the endless flow: lightning jumping across the wave between its outer strands and beads gliding out along its main
+       strand, all running outward and gone before the wave thins */
+    if (endless) {
+      const flow = still ? 1 : sstep((fire - 0.5) / 0.6);
+      const fadeAt = (u: number) => sstep((u - 0.07) / 0.06) * (1 - sstep((u - 0.5) / 0.22));
+      for (let k = 0; k < BRIDGES; k++) {
+        const u = still ? 0.12 + (k / BRIDGES) * 0.52 : (T * 0.42 + k / BRIDGES) % 1;
+        /* the outermost strands at this point of the wave */
+        const across = WAVES.map((L) => waveAt(L, u)).sort((a, b) => (a[0] - b[0]) * nrm[0] + (a[1] - b[1]) * nrm[1]);
+        const lo = across[0], hi = across[across.length - 1];
+        const gap = Math.hypot(hi[0] - lo[0], hi[1] - lo[1]);
+        const vis = fire >= 0 && u < span && u > 0.07 && gap > 3.5;
+        const rnd = seeded((still ? 5 : Math.floor(T * 22)) * 131 + k * 977);
+        const pts = zigzag(rnd, lo, Math.atan2(hi[1] - lo[1], hi[0] - lo[0]), gap, 4, 1.3);
+        pts[pts.length - 1] = hi;
+        nodes.push(["path", "rb" + k, { d: vis ? taper(pts, 1.7 * wk) : "M0 0", fill: INK, opacity: f(vis ? 0.95 * fadeAt(u) * flow : 0) }]);
+      }
+      for (let k = 0; k < BEADS; k++) {
+        const u = still ? 0.2 + (k / BEADS) * 0.4 : (T * 0.3 + k / BEADS) % 1;
+        const p = waveAt(WAVES[0], u), p2 = waveAt(WAVES[0], u + 0.004);
+        const vis = fire >= 0 && u < span && u > 0.07;
+        nodes.push(["ellipse", "bd" + k, { cx: f(p[0]), cy: f(p[1]), rx: f(vis ? 2.5 : 0), ry: f(vis ? 1.6 : 0), transform: "rotate(" + f((Math.atan2(p2[1] - p[1], p2[0] - p[0]) * 180) / Math.PI) + " " + pt(p) + ")", fill: INK, opacity: f(vis ? fadeAt(u) * flow : 0) }]);
+      }
     }
   }
   /* the charge: lightning crackles round the bead, bursts as it fires and keeps crackling while the wave streams (and on

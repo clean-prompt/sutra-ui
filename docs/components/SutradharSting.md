@@ -13,6 +13,7 @@
 |---|---|---|---|
 | `aim` | `number` |  | The astra's aim in degrees, measured like a protractor: 90 points straight up, 180 level to the left, 270 straight down. Clamped to 30 to 330; left out, `astra` aims at 150 and `astra-endless` at 172. Aimed to the right (under 90 or over 270) he turns round and faces where he fires; aimed steeply up or down the view pulls back just enough to keep the whole wave on the stage, and for a downward shot he rises off the ground as he swings. `mark` does not use it. |
 | `autoPlay` | `boolean` | `true` | Play once when the sting first comes on screen. False shows the final lockup until `replayKey` changes. |
+| `discharge` | `"wave" \| "lightning"` | `"wave"` | What the astra fires (both astra variants): `wave`, the layered ink wave, or `lightning`, a forked ink bolt that strikes out at once and crackles (the astra's settles to a shorter, quieter bolt on its lockup; the endless one keeps striking with pulses running along it). `mark` does not use it. |
 | `loop` | `boolean` | `false` | Play again after a short hold on the lockup, for as long as it is on screen. `astra-endless` never stops, so it has no use for it. |
 | `onComplete` | `() => void` |  | Called when a play reaches its lockup (also at once under reduced motion, where only the lockup is shown); for `astra-endless`, once its stream runs at full length (it keeps playing). |
 | `paused` | `boolean` | `false` | Freeze the animation where it is (the clock stops; resume to carry on from there). Use it for off-screen or background stings. |
@@ -23,7 +24,7 @@
 
 ## Notes
 
-**When to use:** A short logo sting with Sutradhar (the full-figure mascot) and the Sutra mark, the crescent bead on its thread. `mark`: he walks in with a bare thread, the bead drops onto it and becomes the mark, he plants it and smiles. `astra`: he summons a hand astra (the crescent bead on a short thread), charges it until ink lightning crackles round the bead, swings it into the aim and fires an ink wave into empty space. Both end on a still lockup. `astra-endless`: the same astra on a wide stage that never stops once fired: the lightning keeps crackling, arcs and beads flow out along the wave, and the wave streams across the whole stage. Use it on a splash screen, an onboarding step or a launch moment.
+**When to use:** A short logo sting with Sutradhar (the full-figure mascot) and the Sutra mark, the crescent bead on its thread. `mark`: he walks in with a bare thread, the bead drops onto it and becomes the mark, he plants it and smiles. `astra`: he summons a hand astra (the crescent bead on a short thread), charges it until ink lightning crackles round the bead, swings it into the aim and fires an ink wave into empty space. Both end on a still lockup. `astra-endless`: the same astra on a wide stage that never stops once fired: the lightning keeps crackling, arcs and beads flow out along the wave, and the wave streams across the whole stage. Either astra can fire ink lightning instead of the wave (`discharge="lightning"`): a forked bolt that strikes out at once and crackles, settling to a shorter bolt on the astra's lockup and striking on with pulses running along it on the endless one. Use it on a splash screen, an onboarding step or a launch moment.
 
 **Use instead when:**
 - `SutraMark`: the static mark

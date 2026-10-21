@@ -30,6 +30,13 @@ export interface SutradharStingProps extends Omit<React.ComponentPropsWithoutRef
    */
   aim?: number;
   /**
+   * What the astra fires (both astra variants): `wave`, the layered ink wave, or `lightning`, a forked ink bolt that strikes out
+   * at once and crackles (the astra's settles to a shorter, quieter bolt on its lockup; the endless one keeps striking with
+   * pulses running along it). `mark` does not use it.
+   * @default "wave"
+   */
+  discharge?: "wave" | "lightning";
+  /**
    * Play once when the sting first comes on screen. False shows the final lockup until `replayKey` changes.
    * @default true
    */
@@ -75,6 +82,11 @@ const STING_LABELS: Record<SutradharStingVariant, string> = {
   astra: "Sutradhar fires a hand astra",
   "astra-endless": "Sutradhar fires an endless astra",
 };
+/** The same, for the astras when they fire lightning. */
+const LIGHTNING_LABELS: Partial<Record<SutradharStingVariant, string>> = {
+  astra: "Sutradhar fires lightning from a hand astra",
+  "astra-endless": "Sutradhar fires endless lightning from a hand astra",
+};
 /** How long a looping sting rests on its lockup before it plays again, and how long it fades out and back in. */
 const HOLD = 1.6;
 const LOOP_FADE = 0.3;
@@ -87,7 +99,7 @@ const LOOP_FADE = 0.3;
  * layouts (Sutradhar walks in from the left and the astra's aim is a protractor angle, like a logo), so it is never mirrored.
  */
 export const SutradharSting = React.forwardRef<SVGSVGElement, SutradharStingProps>(
-  ({ variant = "mark", aim, autoPlay = true, loop = false, replayKey, onComplete, size = 160, paused = false, title, className, style, ...props }, ref) => {
+  ({ variant = "mark", aim, discharge = "wave", autoPlay = true, loop = false, replayKey, onComplete, size = 160, paused = false, title, className, style, ...props }, ref) => {
     const id = useSafeId("sutradhar-sting");
     const titleId = `${id}-title`;
     const reduced = usePrefersReducedMotion();
@@ -95,11 +107,13 @@ export const SutradharSting = React.forwardRef<SVGSVGElement, SutradharStingProp
     /* the mark does not use the aim, so a change of it must not redraw (or restart) it */
     const aimDeg = def === STINGS.mark ? 0 : Math.min(330, Math.max(def.aim[0], Number.isFinite(aim) ? (aim as number) : def.aim[1]));
     const px = typeof size === "number" ? size : 160;
-    const base: Omit<StingCtx, "tt" | "still"> = { size: px, ink: "currentColor", aim: aimDeg };
+    /* (the mark fires nothing, so the discharge must not redraw it either) */
+    const fires = def === STINGS.mark ? "wave" : discharge === "lightning" ? "lightning" : "wave";
+    const base: Omit<StingCtx, "tt" | "still"> = { size: px, ink: "currentColor", aim: aimDeg, discharge: fires };
     const lockup = React.useMemo(() => {
-      const nodes = def.frame({ size: px, ink: "currentColor", aim: aimDeg, tt: 99, still: true });
+      const nodes = def.frame({ size: px, ink: "currentColor", aim: aimDeg, discharge: fires, tt: 99, still: true });
       return { markup: nodesToMarkup(nodes, id), sig: signature(nodes) };
-    }, [def, px, aimDeg, id]);
+    }, [def, px, aimDeg, fires, id]);
     const groupRef = React.useRef<SVGGElement>(null);
     const svgRef = React.useRef<SVGSVGElement | null>(null);
     const setRefs = useMergedRefs<SVGSVGElement>(svgRef, ref);
@@ -151,7 +165,7 @@ export const SutradharSting = React.forwardRef<SVGSVGElement, SutradharStingProp
       if (!playing) return;
       clock.current = { elapsed: 0, last: 0, ended: false, streaming: false };
       first.current();
-    }, [playing, play, def, aimDeg, first]);
+    }, [playing, play, def, aimDeg, fires, first]);
     /* motion turned off (also by the in-app switch) while a frame is on screen: the lockup goes back in, as the mascot does, so
        the drawing never freezes on a frame from the middle of the play */
     useIsoLayoutEffect(() => {
@@ -199,7 +213,7 @@ export const SutradharSting = React.forwardRef<SVGSVGElement, SutradharStingProp
     const [w, h] = def.box;
     const height = size;
     const width = typeof size === "number" ? Math.round((size * w) / h) : `calc(${size} * ${w / h})`;
-    const name = accessibleName(title, STING_LABELS[variant] ?? STING_LABELS.mark);
+    const name = accessibleName(title, (fires === "lightning" && LIGHTNING_LABELS[variant]) || (STING_LABELS[variant] ?? STING_LABELS.mark));
     const named = svgA11y(name, titleId);
     return (
       <svg
@@ -219,7 +233,7 @@ export const SutradharSting = React.forwardRef<SVGSVGElement, SutradharStingProp
         style={style}
       >
         {name ? <title id={titleId}>{name}</title> : null}
-        <g ref={groupRef} data-part="art" key={`${variant}-${aimDeg}`} dangerouslySetInnerHTML={{ __html: lockup.markup }} />
+        <g ref={groupRef} data-part="art" key={`${variant}-${aimDeg}-${fires}`} dangerouslySetInnerHTML={{ __html: lockup.markup }} />
       </svg>
     );
   }
