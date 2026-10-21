@@ -11,6 +11,7 @@ import {
 import { cn, type Size } from "../lib/cn";
 import { useAddedKeys } from "../hooks/use-added-keys";
 import { useControllableState } from "../hooks/use-controllable-state";
+import { useIsoLayoutEffect } from "../hooks/use-iso-layout-effect";
 import { useMergedRefs } from "../hooks/use-merged-refs";
 import { usePendingRemoval } from "../hooks/use-pending-removal";
 import { useField, useFieldContext } from "./field";
@@ -267,10 +268,21 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
     }
   };
 
-  // Async results come and go: remember every option seen so a selected value keeps its label once it leaves the results.
+  // Async results come and go: a selected value must keep its label once its option leaves `options`. Labels are read from
+  // `options` first (so the first render already has them); `knownRef` only serves selected values that are missing from
+  // `options`. It holds the options of the values selected as of the last commit and is rewritten in a layout effect (no
+  // ref write in render), so it never retains values that were deselected or that no longer matter.
   const knownRef = React.useRef(new Map<string, ComboboxOption>());
-  for (const o of options) knownRef.current.set(o.value, o);
-  const byValue = React.useMemo(() => new Map([...knownRef.current, ...options.map((o): [string, ComboboxOption] => [o.value, o])]), [options]);
+  const optionByValue = React.useMemo(() => new Map(options.map((o): [string, ComboboxOption] => [o.value, o])), [options]);
+  const lookup = (v: string): ComboboxOption | undefined => optionByValue.get(v) ?? knownRef.current.get(v);
+  useIsoLayoutEffect(() => {
+    const next = new Map<string, ComboboxOption>();
+    for (const v of selected) {
+      const o = optionByValue.get(v) ?? knownRef.current.get(v);
+      if (o) next.set(v, o);
+    }
+    knownRef.current = next;
+  });
   const visibleOptions = React.useMemo(
     () => (typeof filter === "function" ? options.filter((o) => filter(o, search)) : options),
     [options, filter, search]
@@ -303,7 +315,7 @@ export const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>((props, 
   };
 
   const selectedOptions = selected.map(
-    (v) => byValue.get(v) ?? ({ value: v, label: v } as ComboboxOption)
+    (v) => lookup(v) ?? ({ value: v, label: v } as ComboboxOption)
   );
   const single = !multiple ? selectedOptions[0] : undefined;
   const addedValues = useAddedKeys(selected);
