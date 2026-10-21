@@ -3,7 +3,7 @@
 > Live agent activity above the composer: what the agent is doing (thinking, running a tool, waiting for permission or an answer) with elapsed time and token count. Renders nothing when idle.
 
 - Import: `import { AgentStatusLine } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/tool-timeline-status-line` (kit `agent`)
 - `data-slot`: `agent-status-line`, `spinner-verb`, `agent-status-meta`
 - Also accepts the props of HTMLAttributes
 

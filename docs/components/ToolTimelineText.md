@@ -3,8 +3,8 @@
 > Assistant narration between tool calls.
 
 - Import: `import { ToolTimelineText } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
-- `data-slot`: `tool-timeline-text`, `tool-timeline-rail`
+- Source: `packages/ui/src/kits/agent/tool-timeline-steps` (kit `agent`)
+- `data-slot`: `tool-timeline-text`
 - Part of [`ToolTimeline`](ToolTimeline.md)
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
 

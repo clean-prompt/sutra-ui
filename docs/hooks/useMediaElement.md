@@ -3,7 +3,7 @@
 > Subscribes to an `HTMLMediaElement` (or any `MediaElementLike`) and exposes its state plus imperative actions. Autoplay refusals fall back to muted playback and raise `autoplayMuted`.
 
 - Import: `import { useMediaElement } from "@sutra/ui/media"`
-- Source: `packages/ui/src/kits/media/media-controls`
+- Source: `packages/ui/src/kits/media/media-controls-element`
 
 ## Signature
 

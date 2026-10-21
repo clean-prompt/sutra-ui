@@ -3,7 +3,7 @@
 > MCP server summary with transport, status, tool count, last error and Test / Connect / Disable / Remove / Logs actions.
 
 - Import: `import { McpServerCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/mcp` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/mcp-server-card` (kit `agent-admin`)
 - `data-slot`: `mcp-server-card`
 - Also accepts the props of HTMLAttributes
 

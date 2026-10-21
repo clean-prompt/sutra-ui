@@ -3,7 +3,7 @@
 > Docked mini-chat for quick side questions that don't interrupt the main conversation. Resizable from its top edge.
 
 - Import: `import { SideThread } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/agent-composer` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/agent-composer-side-thread` (kit `agent`)
 - `data-slot`: `side-thread`
 - Also accepts the props of HTMLAttributes
 

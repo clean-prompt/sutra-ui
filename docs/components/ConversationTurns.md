@@ -3,7 +3,7 @@
 > Interpreter mode: two speakers left/right with live state, and a log of original + translated turns.
 
 - Import: `import { ConversationTurns } from "@sutra/ui"` (or from `@sutra/ui/voice`)
-- Source: `packages/ui/src/kits/voice/translate` (kit `voice`)
+- Source: `packages/ui/src/kits/voice/translate-conversation` (kit `voice`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -3,7 +3,7 @@
 > Hosted vs local radio cards with pros and cons.
 
 - Import: `import { ConnectionMethodChooser } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/mcp` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/mcp-connectors` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes, RadioGroupProps, PrimitivePropsWithRef
 
 ## Props

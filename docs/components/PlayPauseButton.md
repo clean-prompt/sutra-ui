@@ -3,7 +3,7 @@
 > Round play/pause toggle whose icon morphs between the two states.
 
 - Import: `import { PlayPauseButton } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/media-controls` (kit `media`)
+- Source: `packages/ui/src/kits/media/media-controls-playback` (kit `media`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
 ## Props

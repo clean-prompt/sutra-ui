@@ -3,8 +3,8 @@
 > One compact tool call row: icon, bold name, mono argument, meta and an expandable body (children).
 
 - Import: `import { ToolTimelineItem } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
-- `data-slot`: `tool-exit-code`, `tool-timeline-item`, `tool-timeline-rail`
+- Source: `packages/ui/src/kits/agent/tool-timeline-steps` (kit `agent`)
+- `data-slot`: `tool-exit-code`, `tool-timeline-item`
 - Part of [`ToolTimeline`](ToolTimeline.md)
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
 

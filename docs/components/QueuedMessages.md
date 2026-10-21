@@ -3,7 +3,7 @@
 > Messages typed while the agent is busy: inline edit, remove, send now (interrupt), reorder, and a collapsible "n queued" pill.
 
 - Import: `import { QueuedMessages } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/agent-composer` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/agent-composer-queue` (kit `agent`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

@@ -3,7 +3,7 @@
 > Source/target language row: recent chips, full picker and a swap button.
 
 - Import: `import { LanguageBar } from "@sutra/ui"` (or from `@sutra/ui/voice`)
-- Source: `packages/ui/src/kits/voice/translate` (kit `voice`)
+- Source: `packages/ui/src/kits/voice/translate-picker` (kit `voice`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

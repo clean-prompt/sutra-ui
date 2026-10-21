@@ -3,7 +3,7 @@
 > Catalog of connectors: category picker and a grid of cards with ways and install/connect.
 
 - Import: `import { ConnectorDirectory } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/mcp` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/mcp-connectors` (kit `agent-admin`)
 - `data-slot`: `connector-directory`
 - Also accepts the props of HTMLAttributes
 

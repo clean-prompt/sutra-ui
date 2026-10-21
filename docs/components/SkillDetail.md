@@ -3,7 +3,7 @@
 > Skill detail: header with actions, SKILL.md preview, frontmatter and security scan tabs.
 
 - Import: `import { SkillDetail } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/extensions-catalog` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/extensions-catalog-skill` (kit `agent-admin`)
 - `data-slot`: `skill-detail`
 - Also accepts the props of HTMLAttributes
 

@@ -3,7 +3,7 @@
 > Status dot on the timeline rail (a `StatusDot` placed on the rail): success, failure, progress (pulsing), warning or pending (dashed ring).
 
 - Import: `import { ToolTimelineDot } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/tool-timeline-steps` (kit `agent`)
 - `data-slot`: `tool-timeline-dot`
 - Part of [`ToolTimeline`](ToolTimeline.md)
 - Also accepts the props of HTMLAttributes

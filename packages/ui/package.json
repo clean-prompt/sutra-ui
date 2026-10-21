@@ -1188,6 +1188,31 @@
       "import": "./dist/kits/agent-admin/extensions-catalog.js",
       "default": "./dist/kits/agent-admin/extensions-catalog.js"
     },
+    "./kits/agent-admin/extensions-catalog-card": {
+      "types": "./dist/kits/agent-admin/extensions-catalog-card.d.ts",
+      "import": "./dist/kits/agent-admin/extensions-catalog-card.js",
+      "default": "./dist/kits/agent-admin/extensions-catalog-card.js"
+    },
+    "./kits/agent-admin/extensions-catalog-install": {
+      "types": "./dist/kits/agent-admin/extensions-catalog-install.d.ts",
+      "import": "./dist/kits/agent-admin/extensions-catalog-install.js",
+      "default": "./dist/kits/agent-admin/extensions-catalog-install.js"
+    },
+    "./kits/agent-admin/extensions-catalog-installed": {
+      "types": "./dist/kits/agent-admin/extensions-catalog-installed.d.ts",
+      "import": "./dist/kits/agent-admin/extensions-catalog-installed.js",
+      "default": "./dist/kits/agent-admin/extensions-catalog-installed.js"
+    },
+    "./kits/agent-admin/extensions-catalog-scan": {
+      "types": "./dist/kits/agent-admin/extensions-catalog-scan.d.ts",
+      "import": "./dist/kits/agent-admin/extensions-catalog-scan.js",
+      "default": "./dist/kits/agent-admin/extensions-catalog-scan.js"
+    },
+    "./kits/agent-admin/extensions-catalog-skill": {
+      "types": "./dist/kits/agent-admin/extensions-catalog-skill.d.ts",
+      "import": "./dist/kits/agent-admin/extensions-catalog-skill.js",
+      "default": "./dist/kits/agent-admin/extensions-catalog-skill.js"
+    },
     "./kits/agent-admin/llm-providers": {
       "types": "./dist/kits/agent-admin/llm-providers.d.ts",
       "import": "./dist/kits/agent-admin/llm-providers.js",
@@ -1203,10 +1228,55 @@
       "import": "./dist/kits/agent-admin/mcp.js",
       "default": "./dist/kits/agent-admin/mcp.js"
     },
+    "./kits/agent-admin/mcp-connectors": {
+      "types": "./dist/kits/agent-admin/mcp-connectors.d.ts",
+      "import": "./dist/kits/agent-admin/mcp-connectors.js",
+      "default": "./dist/kits/agent-admin/mcp-connectors.js"
+    },
+    "./kits/agent-admin/mcp-model": {
+      "types": "./dist/kits/agent-admin/mcp-model.d.ts",
+      "import": "./dist/kits/agent-admin/mcp-model.js",
+      "default": "./dist/kits/agent-admin/mcp-model.js"
+    },
+    "./kits/agent-admin/mcp-server-card": {
+      "types": "./dist/kits/agent-admin/mcp-server-card.d.ts",
+      "import": "./dist/kits/agent-admin/mcp-server-card.js",
+      "default": "./dist/kits/agent-admin/mcp-server-card.js"
+    },
+    "./kits/agent-admin/mcp-server-form": {
+      "types": "./dist/kits/agent-admin/mcp-server-form.d.ts",
+      "import": "./dist/kits/agent-admin/mcp-server-form.js",
+      "default": "./dist/kits/agent-admin/mcp-server-form.js"
+    },
     "./kits/agent-admin/model-routing": {
       "types": "./dist/kits/agent-admin/model-routing.d.ts",
       "import": "./dist/kits/agent-admin/model-routing.js",
       "default": "./dist/kits/agent-admin/model-routing.js"
+    },
+    "./kits/agent-admin/model-routing-chains": {
+      "types": "./dist/kits/agent-admin/model-routing-chains.d.ts",
+      "import": "./dist/kits/agent-admin/model-routing-chains.js",
+      "default": "./dist/kits/agent-admin/model-routing-chains.js"
+    },
+    "./kits/agent-admin/model-routing-ensemble": {
+      "types": "./dist/kits/agent-admin/model-routing-ensemble.d.ts",
+      "import": "./dist/kits/agent-admin/model-routing-ensemble.js",
+      "default": "./dist/kits/agent-admin/model-routing-ensemble.js"
+    },
+    "./kits/agent-admin/model-routing-model": {
+      "types": "./dist/kits/agent-admin/model-routing-model.d.ts",
+      "import": "./dist/kits/agent-admin/model-routing-model.js",
+      "default": "./dist/kits/agent-admin/model-routing-model.js"
+    },
+    "./kits/agent-admin/model-routing-picker": {
+      "types": "./dist/kits/agent-admin/model-routing-picker.d.ts",
+      "import": "./dist/kits/agent-admin/model-routing-picker.js",
+      "default": "./dist/kits/agent-admin/model-routing-picker.js"
+    },
+    "./kits/agent-admin/model-routing-visibility": {
+      "types": "./dist/kits/agent-admin/model-routing-visibility.d.ts",
+      "import": "./dist/kits/agent-admin/model-routing-visibility.js",
+      "default": "./dist/kits/agent-admin/model-routing-visibility.js"
     },
     "./kits/agent-admin/remote-screen": {
       "types": "./dist/kits/agent-admin/remote-screen.d.ts",
@@ -1252,6 +1322,26 @@
       "types": "./dist/kits/agent/agent-composer.d.ts",
       "import": "./dist/kits/agent/agent-composer.js",
       "default": "./dist/kits/agent/agent-composer.js"
+    },
+    "./kits/agent/agent-composer-attachments": {
+      "types": "./dist/kits/agent/agent-composer-attachments.d.ts",
+      "import": "./dist/kits/agent/agent-composer-attachments.js",
+      "default": "./dist/kits/agent/agent-composer-attachments.js"
+    },
+    "./kits/agent/agent-composer-queue": {
+      "types": "./dist/kits/agent/agent-composer-queue.d.ts",
+      "import": "./dist/kits/agent/agent-composer-queue.js",
+      "default": "./dist/kits/agent/agent-composer-queue.js"
+    },
+    "./kits/agent/agent-composer-side-thread": {
+      "types": "./dist/kits/agent/agent-composer-side-thread.d.ts",
+      "import": "./dist/kits/agent/agent-composer-side-thread.js",
+      "default": "./dist/kits/agent/agent-composer-side-thread.js"
+    },
+    "./kits/agent/agent-composer-toolbar": {
+      "types": "./dist/kits/agent/agent-composer-toolbar.d.ts",
+      "import": "./dist/kits/agent/agent-composer-toolbar.js",
+      "default": "./dist/kits/agent/agent-composer-toolbar.js"
     },
     "./kits/agent/agent-mode": {
       "types": "./dist/kits/agent/agent-mode.d.ts",
@@ -1307,6 +1397,21 @@
       "types": "./dist/kits/agent/tool-timeline.d.ts",
       "import": "./dist/kits/agent/tool-timeline.js",
       "default": "./dist/kits/agent/tool-timeline.js"
+    },
+    "./kits/agent/tool-timeline-bodies": {
+      "types": "./dist/kits/agent/tool-timeline-bodies.d.ts",
+      "import": "./dist/kits/agent/tool-timeline-bodies.js",
+      "default": "./dist/kits/agent/tool-timeline-bodies.js"
+    },
+    "./kits/agent/tool-timeline-status-line": {
+      "types": "./dist/kits/agent/tool-timeline-status-line.d.ts",
+      "import": "./dist/kits/agent/tool-timeline-status-line.js",
+      "default": "./dist/kits/agent/tool-timeline-status-line.js"
+    },
+    "./kits/agent/tool-timeline-steps": {
+      "types": "./dist/kits/agent/tool-timeline-steps.d.ts",
+      "import": "./dist/kits/agent/tool-timeline-steps.js",
+      "default": "./dist/kits/agent/tool-timeline-steps.js"
     },
     "./kits/ai/agent-usage": {
       "types": "./dist/kits/ai/agent-usage.d.ts",
@@ -1718,6 +1823,41 @@
       "import": "./dist/kits/media/media-controls.js",
       "default": "./dist/kits/media/media-controls.js"
     },
+    "./kits/media/media-controls-base": {
+      "types": "./dist/kits/media/media-controls-base.d.ts",
+      "import": "./dist/kits/media/media-controls-base.js",
+      "default": "./dist/kits/media/media-controls-base.js"
+    },
+    "./kits/media/media-controls-element": {
+      "types": "./dist/kits/media/media-controls-element.d.ts",
+      "import": "./dist/kits/media/media-controls-element.js",
+      "default": "./dist/kits/media/media-controls-element.js"
+    },
+    "./kits/media/media-controls-indicators": {
+      "types": "./dist/kits/media/media-controls-indicators.d.ts",
+      "import": "./dist/kits/media/media-controls-indicators.js",
+      "default": "./dist/kits/media/media-controls-indicators.js"
+    },
+    "./kits/media/media-controls-menus": {
+      "types": "./dist/kits/media/media-controls-menus.d.ts",
+      "import": "./dist/kits/media/media-controls-menus.js",
+      "default": "./dist/kits/media/media-controls-menus.js"
+    },
+    "./kits/media/media-controls-playback": {
+      "types": "./dist/kits/media/media-controls-playback.d.ts",
+      "import": "./dist/kits/media/media-controls-playback.js",
+      "default": "./dist/kits/media/media-controls-playback.js"
+    },
+    "./kits/media/media-controls-seek": {
+      "types": "./dist/kits/media/media-controls-seek.d.ts",
+      "import": "./dist/kits/media/media-controls-seek.js",
+      "default": "./dist/kits/media/media-controls-seek.js"
+    },
+    "./kits/media/media-controls-volume": {
+      "types": "./dist/kits/media/media-controls-volume.d.ts",
+      "import": "./dist/kits/media/media-controls-volume.js",
+      "default": "./dist/kits/media/media-controls-volume.js"
+    },
     "./kits/media/video-player": {
       "types": "./dist/kits/media/video-player.d.ts",
       "import": "./dist/kits/media/video-player.js",
@@ -1822,6 +1962,36 @@
       "types": "./dist/kits/voice/translate.d.ts",
       "import": "./dist/kits/voice/translate.js",
       "default": "./dist/kits/voice/translate.js"
+    },
+    "./kits/voice/translate-conversation": {
+      "types": "./dist/kits/voice/translate-conversation.d.ts",
+      "import": "./dist/kits/voice/translate-conversation.js",
+      "default": "./dist/kits/voice/translate-conversation.js"
+    },
+    "./kits/voice/translate-dictionary": {
+      "types": "./dist/kits/voice/translate-dictionary.d.ts",
+      "import": "./dist/kits/voice/translate-dictionary.js",
+      "default": "./dist/kits/voice/translate-dictionary.js"
+    },
+    "./kits/voice/translate-languages": {
+      "types": "./dist/kits/voice/translate-languages.d.ts",
+      "import": "./dist/kits/voice/translate-languages.js",
+      "default": "./dist/kits/voice/translate-languages.js"
+    },
+    "./kits/voice/translate-panes": {
+      "types": "./dist/kits/voice/translate-panes.d.ts",
+      "import": "./dist/kits/voice/translate-panes.js",
+      "default": "./dist/kits/voice/translate-panes.js"
+    },
+    "./kits/voice/translate-picker": {
+      "types": "./dist/kits/voice/translate-picker.d.ts",
+      "import": "./dist/kits/voice/translate-picker.js",
+      "default": "./dist/kits/voice/translate-picker.js"
+    },
+    "./kits/voice/translate-transliteration": {
+      "types": "./dist/kits/voice/translate-transliteration.d.ts",
+      "import": "./dist/kits/voice/translate-transliteration.js",
+      "default": "./dist/kits/voice/translate-transliteration.js"
     },
     "./kits/voice/voice": {
       "types": "./dist/kits/voice/voice.d.ts",

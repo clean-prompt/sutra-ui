@@ -3,7 +3,7 @@
 > Trigger button showing the current model; opens the picker in a popover.
 
 - Import: `import { ProviderModelPickerPopover } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/model-routing-picker` (kit `agent-admin`)
 - Part of [`ProviderModelPicker`](ProviderModelPicker.md)
 - Also accepts the props of HTMLAttributes
 

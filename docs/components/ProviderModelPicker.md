@@ -3,7 +3,7 @@
 > Two-column provider → model picker with search highlighting and arrow-key navigation between columns.
 
 - Import: `import { ProviderModelPicker } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/model-routing-picker` (kit `agent-admin`)
 - `data-slot`: `provider-model-picker`, `provider-setup-cta`
 - Parts: [`ProviderModelPickerDialog`](ProviderModelPickerDialog.md), [`ProviderModelPickerPopover`](ProviderModelPickerPopover.md)
 - Also accepts the props of HTMLAttributes

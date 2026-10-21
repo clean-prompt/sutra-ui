@@ -3,7 +3,7 @@
 > Ordered primary + fallback models: reorder, add through the picker, remove.
 
 - Import: `import { FallbackChainEditor } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/model-routing-chains` (kit `agent-admin`)
 - `data-slot`: `fallback-chain-editor`
 - Also accepts the props of HTMLAttributes
 

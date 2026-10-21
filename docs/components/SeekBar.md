@@ -3,7 +3,7 @@
 > Media scrubber with buffered and played layers, hover time preview, chapters and keyboard seeking.
 
 - Import: `import { SeekBar } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/media-controls` (kit `media`)
+- Source: `packages/ui/src/kits/media/media-controls-seek` (kit `media`)
 - `data-slot`: `seek-buffered`, `seek-played`, `seek-chapter`, `seek-preview`
 - Also accepts the props of HTMLAttributes
 

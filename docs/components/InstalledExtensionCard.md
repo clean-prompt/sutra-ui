@@ -3,7 +3,7 @@
 > Installed plugin row: source, version, runtime status, auth, enable / update (consent) / open / hide / remove, slots and setup.
 
 - Import: `import { InstalledExtensionCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/extensions-catalog` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/extensions-catalog-installed` (kit `agent-admin`)
 - `data-slot`: `installed-extension-card`
 - Also accepts the props of HTMLAttributes
 

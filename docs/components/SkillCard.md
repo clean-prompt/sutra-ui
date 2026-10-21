@@ -3,7 +3,7 @@
 > Skill list card: name, description, provenance, category, toolset icons and an enable switch.
 
 - Import: `import { SkillCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/extensions-catalog` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/extensions-catalog-skill` (kit `agent-admin`)
 - `data-slot`: `skill-card`
 - Also accepts the props of HTMLAttributes
 

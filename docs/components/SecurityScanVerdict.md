@@ -3,7 +3,7 @@
 > Security scan result: verdict, policy, per-severity counts and findings with file:line.
 
 - Import: `import { SecurityScanVerdict } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/extensions-catalog` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/extensions-catalog-scan` (kit `agent-admin`)
 - `data-slot`: `security-scan-verdict`
 - Also accepts the props of HTMLAttributes
 

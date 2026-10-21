@@ -3,7 +3,7 @@
 > Plugin/skill catalog entry with tier, trust, capabilities, platforms, stars and install/update states.
 
 - Import: `import { CatalogCard } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/extensions-catalog` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/extensions-catalog-card` (kit `agent-admin`)
 - `data-slot`: `catalog-card`
 - Also accepts the props of HTMLAttributes
 

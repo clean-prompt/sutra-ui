@@ -3,7 +3,7 @@
 > Dropdown for playback speed (0.5× – 2×).
 
 - Import: `import { PlaybackRateMenu } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/media-controls` (kit `media`)
+- Source: `packages/ui/src/kits/media/media-controls-menus` (kit `media`)
 
 ## Props
 

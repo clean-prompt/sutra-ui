@@ -3,7 +3,7 @@
 > IME on/off toggle for transliteration input.
 
 - Import: `import { TransliterationToggle } from "@sutra/ui"` (or from `@sutra/ui/voice`)
-- Source: `packages/ui/src/kits/voice/translate` (kit `voice`)
+- Source: `packages/ui/src/kits/voice/translate-transliteration` (kit `voice`)
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 
 ## Props

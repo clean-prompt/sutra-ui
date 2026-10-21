@@ -3,7 +3,7 @@
 > IME-style candidate popup under the caret: pick by number, click, or arrows + Enter/Space; Esc keeps the raw text.
 
 - Import: `import { TransliterationCandidates } from "@sutra/ui"` (or from `@sutra/ui/voice`)
-- Source: `packages/ui/src/kits/voice/translate` (kit `voice`)
+- Source: `packages/ui/src/kits/voice/translate-transliteration` (kit `voice`)
 - `data-slot`: `transliteration-candidates`
 - Also accepts the props of HTMLAttributes
 

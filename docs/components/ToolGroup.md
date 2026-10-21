@@ -3,8 +3,8 @@
 > Folds consecutive low-signal calls into one row ("Explored 6 files"), expandable to list them.
 
 - Import: `import { ToolGroup } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
-- `data-slot`: `tool-group`, `tool-timeline-rail`
+- Source: `packages/ui/src/kits/agent/tool-timeline-steps` (kit `agent`)
+- `data-slot`: `tool-group`
 - Also accepts the props of HTMLAttributes, LiHTMLAttributes
 
 ## Props

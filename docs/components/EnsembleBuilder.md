@@ -3,7 +3,7 @@
 > Mixture-of-agents preset: reference models, an aggregator and rounds, with a recursion guard.
 
 - Import: `import { EnsembleBuilder } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/model-routing-ensemble` (kit `agent-admin`)
 - `data-slot`: `ensemble-builder`, `ensemble-error`, `ensemble-summary`
 - Also accepts the props of HTMLAttributes
 

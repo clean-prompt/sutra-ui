@@ -3,7 +3,7 @@
 > Per-provider show/hide switches for models, custom model ids and reset.
 
 - Import: `import { ModelVisibilityManager } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/model-routing-visibility` (kit `agent-admin`)
 - `data-slot`: `model-visibility-manager`, `visibility-count`
 - Also accepts the props of HTMLAttributes
 

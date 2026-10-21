@@ -3,7 +3,7 @@
 > stdio / HTTP / SSE badge with a distinct tone each.
 
 - Import: `import { McpTransportBadge } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/mcp` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/mcp-server-card` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

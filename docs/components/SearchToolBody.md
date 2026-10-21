@@ -3,7 +3,7 @@
 > Search body: the pattern and a list of file:line matches.
 
 - Import: `import { SearchToolBody } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/tool-timeline-bodies` (kit `agent`)
 - `data-slot`: `search-tool-body`
 - Also accepts the props of HTMLAttributes
 

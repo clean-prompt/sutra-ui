@@ -3,7 +3,7 @@
 > Composer footer layout: add context, mode and effort on the left; model, voice and send on the right; narrow widths collapse extras into an overflow popover. This is the slot-based, agent-specific layout; `PromptInputToolbar` (prompt-input) is the plain flex row for a basic `PromptInput`. Use `ComposerToolbar` when you need the named slots or overflow collapse, `PromptInputToolbar` otherwise.
 
 - Import: `import { ComposerToolbar } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/agent-composer` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/agent-composer-toolbar` (kit `agent`)
 - `data-slot`: `composer-toolbar`
 - Also accepts the props of HTMLAttributes
 

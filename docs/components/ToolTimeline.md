@@ -3,7 +3,7 @@
 > Vertical rail of agent steps. Children are ToolTimelineItem, ToolGroup or ToolTimelineText (other nodes are wrapped as text).
 
 - Import: `import { ToolTimeline } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/tool-timeline-steps` (kit `agent`)
 - `data-slot`: `tool-timeline`
 - Parts: [`ToolTimelineDot`](ToolTimelineDot.md), [`ToolTimelineItem`](ToolTimelineItem.md), [`ToolTimelineText`](ToolTimelineText.md)
 - Also accepts the props of HTMLAttributes, OlHTMLAttributes

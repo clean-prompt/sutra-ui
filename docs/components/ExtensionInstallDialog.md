@@ -3,7 +3,7 @@
 > Install a plugin from the catalog or a git URL: source verification warning, advanced details, progress log and result.
 
 - Import: `import { ExtensionInstallDialog } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/extensions-catalog` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/extensions-catalog-install` (kit `agent-admin`)
 
 ## Props
 

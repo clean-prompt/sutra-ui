@@ -3,7 +3,7 @@
 > Searchable language list (English/native name/code) with Detect, Recent and keyboard navigation.
 
 - Import: `import { LanguagePicker } from "@sutra/ui"` (or from `@sutra/ui/voice`)
-- Source: `packages/ui/src/kits/voice/translate` (kit `voice`)
+- Source: `packages/ui/src/kits/voice/translate-picker` (kit `voice`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

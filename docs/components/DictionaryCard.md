@@ -3,7 +3,7 @@
 > Dictionary entry: word, phonetic, frequency and senses grouped by part of speech with examples.
 
 - Import: `import { DictionaryCard } from "@sutra/ui"` (or from `@sutra/ui/voice`)
-- Source: `packages/ui/src/kits/voice/translate` (kit `voice`)
+- Source: `packages/ui/src/kits/voice/translate-dictionary` (kit `voice`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

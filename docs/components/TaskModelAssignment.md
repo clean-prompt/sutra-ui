@@ -3,7 +3,7 @@
 > Matrix of auxiliary tasks → model, with Auto default, reset-to-auto confirmation and "Use for all".
 
 - Import: `import { TaskModelAssignment } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/model-routing-chains` (kit `agent-admin`)
 - `data-slot`: `task-model-assignment`
 - Also accepts the props of HTMLAttributes
 

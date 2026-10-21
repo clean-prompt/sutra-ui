@@ -3,7 +3,7 @@
 > Add/edit an MCP server: stdio (command, args, env) or HTTP/SSE (url, headers, auth), with JSON paste + validation.
 
 - Import: `import { McpServerForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/mcp` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/mcp-server-form` (kit `agent-admin`)
 - `data-slot`: `mcp-server-form`
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
 

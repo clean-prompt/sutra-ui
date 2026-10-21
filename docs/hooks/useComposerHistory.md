@@ -3,7 +3,7 @@
 > Shell-style prompt history for composers: ↑/↓ recall previous prompts when the caret is at the start / end.
 
 - Import: `import { useComposerHistory } from "@sutra/ui/agent"`
-- Source: `packages/ui/src/kits/agent/agent-composer`
+- Source: `packages/ui/src/hooks/use-composer-history`
 
 ## Signature
 

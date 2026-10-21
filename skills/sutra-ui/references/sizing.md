@@ -292,9 +292,9 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | KunjiButton | sm | h 32px | x 12px | sm (14px) | 16px |  |
 | KunjiButton | md (default) | h 40px | x 20px | 15px | 18px |  |
 | KunjiButton | lg | h 48px | x 20px | base (16px) | 20px |  |
-| NowPlayingBars | sm (default) | 12px square |  |  |  | under 24px, hit area extended |
-| NowPlayingBars | md | 16px square |  |  |  | under 24px, hit area extended |
-| NowPlayingBars | lg | 20px square |  |  |  | under 24px, hit area extended |
+| NowPlayingBars | sm (default) | 12px square |  |  |  | under 24px |
+| NowPlayingBars | md | 16px square |  |  |  | under 24px |
+| NowPlayingBars | lg | 20px square |  |  |  | under 24px |
 | PaymentCard | sm | see source |  |  |  |  |
 | PaymentCard | md (default) | see source |  |  |  |  |
 | PaymentCard | lg | see source |  |  |  |  |
@@ -314,23 +314,23 @@ What each size step of a component sets, read from its cva `size` variant or siz
 | QuotaRing | md (default) | see source |  |  |  |  |
 | QuotaRing | lg | see source |  |  |  |  |
 | RepeatButton | sm | 32px square |  |  | 16px |  |
-| RepeatButton | md (default) | 36px square |  |  | 18px |  |
-| RepeatButton | lg | 44px square |  |  | 24px |  |
+| RepeatButton | md (default) | 40px square |  |  | 20px |  |
+| RepeatButton | lg | 48px square |  |  | 24px |  |
+| RepeatButton | xl | 64px square |  |  | 32px |  |
 | SaveStatus | sm (default) |  |  | xs (12px) |  |  |
 | SaveStatus | md |  |  | sm (14px) |  |  |
 | SeekBar | sm | h 16px, w 12px |  |  |  | under 24px, hit area extended |
 | SeekBar | md (default) | h 20px, w 14px |  |  |  | under 24px, hit area extended |
 | ShuffleButton | sm | 32px square |  |  | 16px |  |
-| ShuffleButton | md (default) | 36px square |  |  | 18px |  |
-| ShuffleButton | lg | 44px square |  |  | 24px |  |
+| ShuffleButton | md (default) | 40px square |  |  | 20px |  |
+| ShuffleButton | lg | 48px square |  |  | 24px |  |
+| ShuffleButton | xl | 64px square |  |  | 32px |  |
 | SkipButton | sm | 32px square |  |  | 16px |  |
-| SkipButton | md (default) | 36px square |  |  | 18px |  |
-| SkipButton | lg | 44px square |  |  | 24px |  |
+| SkipButton | md (default) | 40px square |  |  | 20px |  |
+| SkipButton | lg | 48px square |  |  | 24px |  |
+| SkipButton | xl | 64px square |  |  | 32px |  |
 | TOTPCode | sm |  |  | lg (18px) |  |  |
 | TOTPCode | md (default) |  |  | 2xl (24px) |  |  |
-| VolumeControl | sm | 32px square |  |  | 16px |  |
-| VolumeControl | md (default) | 36px square |  |  | 18px |  |
-| VolumeControl | lg | 44px square |  |  | 24px |  |
 | EmojiReaction | sm | h 24px | x 8px | sm (14px) |  |  |
 | EmojiReaction | md (default) | h 28px | x 10px | base (16px) |  |  |
 | EmojiReactionBar | sm | h 24px, w 32px |  |  |  |  |

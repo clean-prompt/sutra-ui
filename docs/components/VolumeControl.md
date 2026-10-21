@@ -3,7 +3,7 @@
 > Mute toggle plus a volume slider that expands on hover/focus (or pops up vertically). A preset over `VolumeSlider`: media button style, 0–1 volume, arrow keys on the toggle, and the reveal / popover layout.
 
 - Import: `import { VolumeControl } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/media-controls` (kit `media`)
+- Source: `packages/ui/src/kits/media/media-controls-volume` (kit `media`)
 - `data-slot`: `volume-popover`, `volume-slider-reveal`
 - Also accepts the props of HTMLAttributes
 
@@ -22,8 +22,3 @@
 | `step` | `number` | `0.05` | Volume change per arrow key. Default 0.05. |
 | `tone` | `MediaTone` | `"default"` | `default` follows the theme; `overlay` is for controls drawn over video. |
 | `volume` | `number` |  | 0–1. |
-
-## Variants
-
-- `tone`: `default`, `overlay` (default "default")
-- `size`: `sm`, `md`, `lg` (default "md")

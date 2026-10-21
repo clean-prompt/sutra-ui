@@ -3,7 +3,7 @@
 > `ProviderModelPicker` in a modal dialog; closes after a selection.
 
 - Import: `import { ProviderModelPickerDialog } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/model-routing` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/model-routing-picker` (kit `agent-admin`)
 - Part of [`ProviderModelPicker`](ProviderModelPicker.md)
 - Also accepts the props of HTMLAttributes
 

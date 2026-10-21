@@ -3,7 +3,7 @@
 > Height-capped container with a bottom fade and Show more / Show less.
 
 - Import: `import { ExpandableContent } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/tool-timeline` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/tool-timeline-bodies` (kit `agent`)
 - `data-slot`: `expandable-content`
 - Also accepts the props of HTMLAttributes
 

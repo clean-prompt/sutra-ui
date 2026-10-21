@@ -3,7 +3,7 @@
 > Source text pane: auto-growing textarea, counter, clear, did-you-mean strip, voice/speak slots, RTL.
 
 - Import: `import { SourcePane } from "@sutra/ui"` (or from `@sutra/ui/voice`)
-- Source: `packages/ui/src/kits/voice/translate` (kit `voice`)
+- Source: `packages/ui/src/kits/voice/translate-panes` (kit `voice`)
 - `data-slot`: `did-you-mean`
 - Also accepts the props of HTMLAttributes
 
