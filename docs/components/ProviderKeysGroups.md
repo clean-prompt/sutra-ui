@@ -3,7 +3,7 @@
 > Environment keys grouped into provider cards (sorted by priority) plus a custom keys section.
 
 - Import: `import { ProviderKeysGroups } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/llm-providers` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/llm-providers-keys` (kit `agent-admin`)
 - `data-slot`: `provider-keys-groups`, `provider-key-group`
 - Also accepts the props of HTMLAttributes
 

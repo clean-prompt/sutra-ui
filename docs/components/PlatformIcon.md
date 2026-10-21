@@ -3,7 +3,7 @@
 > Monochrome glyph tile for a messaging platform (original shapes, not brand logos).
 
 - Import: `import { PlatformIcon } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/channels` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/channels-icon` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

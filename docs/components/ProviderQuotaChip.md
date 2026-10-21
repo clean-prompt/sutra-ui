@@ -3,7 +3,7 @@
 > Compact remaining-quota bar with threshold colors and a reset-time tooltip.
 
 - Import: `import { ProviderQuotaChip } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/llm-providers` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/llm-providers-logo` (kit `agent-admin`)
 - `data-slot`: `provider-quota-chip`
 - Also accepts the props of HTMLAttributes
 

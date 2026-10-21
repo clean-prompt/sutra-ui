@@ -3,7 +3,7 @@
 > "+12 −3" change summary with a tiny proportional bar.
 
 - Import: `import { DiffStat } from "@sutra/ui"` (or from `@sutra/ui/editor`)
-- Source: `packages/ui/src/patterns/diff-viewer` (patterns)
+- Source: `packages/ui/src/patterns/diff-viewer-card` (patterns)
 - `data-slot`: `diff-stat`
 - Also accepts the props of HTMLAttributes
 

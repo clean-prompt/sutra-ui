@@ -1,7 +1,6 @@
 ---
 component: SchemaForm
 module: patterns/schema-form
-covers: NestedValueEditor
 use: A settings form generated from a JSON-Schema-like object: typed controls, nested sections, array fields with add and remove, validation, section navigation with search, and either an explicit Save button or debounced autosave with per-field status. `NestedValueEditor` edits one schema value on its own.
 instead: Field = hand-built forms with your own controls and layout; Input = a single text field; InlineEditText = edit one value in place; JsonViewer = read-only structured data; McpServerForm = a ready-made form for one known shape
 server: ssr-safe

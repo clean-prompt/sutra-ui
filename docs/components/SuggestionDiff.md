@@ -3,7 +3,7 @@
 > AI proposal review: word diff of a suggestion with Accept / Discard and per-change accept / reject.
 
 - Import: `import { SuggestionDiff } from "@sutra/ui"` (or from `@sutra/ui/editor`)
-- Source: `packages/ui/src/patterns/diff-viewer` (patterns)
+- Source: `packages/ui/src/patterns/diff-viewer-suggestion` (patterns)
 - `data-slot`: `suggestion-diff`
 - Also accepts the props of HTMLAttributes
 

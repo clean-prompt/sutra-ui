@@ -4,7 +4,7 @@
 
 - Import: `import { PdfViewer } from "@sutra/ui/pdf"`
 - Source: `packages/ui/src/kits/editor/pdf-viewer` (kit `editor`)
-- `data-slot`: `pdf-error-message`, `pdf-pages`, `pdf-viewer`, `pdf-toolbar`, `pdf-text-layer`
+- `data-slot`: `pdf-error-message`, `pdf-pages`, `pdf-viewer`, `pdf-toolbar`
 - Also accepts the props of HTMLAttributes
 
 ## Props

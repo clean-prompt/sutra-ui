@@ -25,12 +25,13 @@
 | `legend` | `boolean \| "top" \| "bottom"` |  | Default: shown below for 2+ series. |
 | `legendInteractive` | `boolean` | `true` | Allow toggling/isolating series from the legend. Default true. |
 | `loading` | `boolean` |  | Data is on its way: with no data, a placeholder plot (and legend) of the same size; with data, the root is marked busy. |
+| `locale` | `string` |  | BCP 47 locale for the default number and date formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. |
 | `onActivePointChange` | `(point: { seriesKey: string; index: number } \| null) => void` |  | The point under the pointer or keyboard focus: its series key and index in `data`, or null. |
 | `onHiddenSeriesChange` | `(hidden: string[]) => void` |  | Called with the hidden series keys when a legend entry is toggled. |
 | `pointSize` | `number` | `4.5` | Radius in px of points that have no `sizeKey`. Default 4.5. |
 | `referenceLines` | `ChartReferenceLine[]` | `[]` | Threshold lines: horizontal at a value, or vertical (`axis: "x"`) at an x value. |
-| `sizeFormatter` | `(value: number, seriesKey: string) => string` | `defaultValueFormatter` | Formats bubble sizes (tooltip and table). |
+| `sizeFormatter` | `(value: number, seriesKey: string) => string` | `valueFormatterFor(locale)` | Formats bubble sizes (tooltip and table). |
 | `tooltip` | `boolean` | `true` | Shows a tooltip with the hovered point. |
-| `valueFormatter` | `(value: number, seriesKey: string) => string` | `defaultValueFormatter` | Formats y values. |
+| `valueFormatter` | `(value: number, seriesKey: string) => string` | `valueFormatterFor(locale)` | Formats y values. |
 | `xAxis` | `ScatterXAxisOptions` | `{}` | X-axis options (hide, domain, tick count, formatter). |
 | `yAxis` | `ChartYAxisOptions` | `{}` | Value axis. Unlike bar and area charts it fits the data: it only includes 0 when `min` says so. |

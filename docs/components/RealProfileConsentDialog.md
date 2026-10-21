@@ -3,7 +3,7 @@
 > Asks before letting the agent use the user's real browser profile (cookies, logins) instead of a clean one.
 
 - Import: `import { RealProfileConsentDialog } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/agent-browser` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/agent-browser-consent` (kit `agent`)
 
 ## Props
 

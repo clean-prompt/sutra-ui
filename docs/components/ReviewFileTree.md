@@ -3,7 +3,7 @@
 > Changed files as a directory tree with colored A / M / D / R status letters and single selection.
 
 - Import: `import { ReviewFileTree } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/git-review` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/git-review-tree` (kit `agent`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

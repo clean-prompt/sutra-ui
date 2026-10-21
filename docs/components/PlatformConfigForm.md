@@ -3,7 +3,7 @@
 > Env-var style settings form for a channel, with per-platform ID validation and paste-splitting allowlists.
 
 - Import: `import { PlatformConfigForm } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/channels` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/channels-config-form` (kit `agent-admin`)
 - Also accepts the props of HTMLAttributes, FormHTMLAttributes
 
 ## Props

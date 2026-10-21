@@ -23,9 +23,10 @@
 | `index` | `string` | `"label"` | Key of the stage name. Default "label". |
 | `label` | `string` |  | Accessible name. Defaults to a description built from the stages. |
 | `loading` | `boolean` |  | Data is on its way: with no data, a placeholder funnel of the same size; with data, the root is marked busy. |
+| `locale` | `string` |  | BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. |
 | `onActiveIndexChange` | `(index: number \| null) => void` |  | Called with the hovered step index (or `null` when the pointer leaves); use it to sync other views. |
 | `tooltip` | `boolean` | `true` | Shows a tooltip with the step value and the drop-off from the previous step. |
-| `valueFormatter` | `(value: number) => string` | `defaultValueFormatter` | Formats the step values in the tooltip and labels. Default is the localized number. |
+| `valueFormatter` | `(value: number) => string` | `valueFormatterFor(locale)` | Formats the step values in the tooltip and labels. Default is the localized number. |
 | `valueKey` | `string` | `"value"` | Key of the stage value. Default "value". |
 
 ## Example (live: `#/components/dataviz/funnel-chart` in the playground)

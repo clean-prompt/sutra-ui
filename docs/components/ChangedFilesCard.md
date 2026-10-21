@@ -3,7 +3,7 @@
 > Transcript card summarizing changed files ("N files changed +X −Y") with a Review action.
 
 - Import: `import { ChangedFilesCard } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/git-review` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/git-review-changes` (kit `agent`)
 - `data-slot`: `changed-files-card`
 - Also accepts the props of HTMLAttributes
 

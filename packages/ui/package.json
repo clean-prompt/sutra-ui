@@ -808,6 +808,21 @@
       "import": "./dist/patterns/diff-viewer.js",
       "default": "./dist/patterns/diff-viewer.js"
     },
+    "./patterns/diff-viewer-card": {
+      "types": "./dist/patterns/diff-viewer-card.d.ts",
+      "import": "./dist/patterns/diff-viewer-card.js",
+      "default": "./dist/patterns/diff-viewer-card.js"
+    },
+    "./patterns/diff-viewer-model": {
+      "types": "./dist/patterns/diff-viewer-model.d.ts",
+      "import": "./dist/patterns/diff-viewer-model.js",
+      "default": "./dist/patterns/diff-viewer-model.js"
+    },
+    "./patterns/diff-viewer-suggestion": {
+      "types": "./dist/patterns/diff-viewer-suggestion.d.ts",
+      "import": "./dist/patterns/diff-viewer-suggestion.js",
+      "default": "./dist/patterns/diff-viewer-suggestion.js"
+    },
     "./patterns/divided-grid": {
       "types": "./dist/patterns/divided-grid.d.ts",
       "import": "./dist/patterns/divided-grid.js",
@@ -832,6 +847,11 @@
       "types": "./dist/patterns/file-viewer.d.ts",
       "import": "./dist/patterns/file-viewer.js",
       "default": "./dist/patterns/file-viewer.js"
+    },
+    "./patterns/file-viewer-model": {
+      "types": "./dist/patterns/file-viewer-model.d.ts",
+      "import": "./dist/patterns/file-viewer-model.js",
+      "default": "./dist/patterns/file-viewer-model.js"
     },
     "./patterns/filter-bar": {
       "types": "./dist/patterns/filter-bar.d.ts",
@@ -893,6 +913,11 @@
       "import": "./dist/patterns/log-viewer.js",
       "default": "./dist/patterns/log-viewer.js"
     },
+    "./patterns/log-viewer-model": {
+      "types": "./dist/patterns/log-viewer-model.d.ts",
+      "import": "./dist/patterns/log-viewer-model.js",
+      "default": "./dist/patterns/log-viewer-model.js"
+    },
     "./patterns/markdown": {
       "types": "./dist/patterns/markdown.d.ts",
       "import": "./dist/patterns/markdown.js",
@@ -952,6 +977,21 @@
       "types": "./dist/patterns/schema-form.d.ts",
       "import": "./dist/patterns/schema-form.js",
       "default": "./dist/patterns/schema-form.js"
+    },
+    "./patterns/schema-form-editor": {
+      "types": "./dist/patterns/schema-form-editor.d.ts",
+      "import": "./dist/patterns/schema-form-editor.js",
+      "default": "./dist/patterns/schema-form-editor.js"
+    },
+    "./patterns/schema-form-model": {
+      "types": "./dist/patterns/schema-form-model.d.ts",
+      "import": "./dist/patterns/schema-form-model.js",
+      "default": "./dist/patterns/schema-form-model.js"
+    },
+    "./patterns/schema-form-types": {
+      "types": "./dist/patterns/schema-form-types.d.ts",
+      "import": "./dist/patterns/schema-form-types.js",
+      "default": "./dist/patterns/schema-form-types.js"
     },
     "./patterns/scroll-reveal": {
       "types": "./dist/patterns/scroll-reveal.d.ts",
@@ -1183,6 +1223,31 @@
       "import": "./dist/kits/agent-admin/channels.js",
       "default": "./dist/kits/agent-admin/channels.js"
     },
+    "./kits/agent-admin/channels-access": {
+      "types": "./dist/kits/agent-admin/channels-access.d.ts",
+      "import": "./dist/kits/agent-admin/channels-access.js",
+      "default": "./dist/kits/agent-admin/channels-access.js"
+    },
+    "./kits/agent-admin/channels-config-form": {
+      "types": "./dist/kits/agent-admin/channels-config-form.d.ts",
+      "import": "./dist/kits/agent-admin/channels-config-form.js",
+      "default": "./dist/kits/agent-admin/channels-config-form.js"
+    },
+    "./kits/agent-admin/channels-icon": {
+      "types": "./dist/kits/agent-admin/channels-icon.d.ts",
+      "import": "./dist/kits/agent-admin/channels-icon.js",
+      "default": "./dist/kits/agent-admin/channels-icon.js"
+    },
+    "./kits/agent-admin/channels-model": {
+      "types": "./dist/kits/agent-admin/channels-model.d.ts",
+      "import": "./dist/kits/agent-admin/channels-model.js",
+      "default": "./dist/kits/agent-admin/channels-model.js"
+    },
+    "./kits/agent-admin/channels-pairing": {
+      "types": "./dist/kits/agent-admin/channels-pairing.d.ts",
+      "import": "./dist/kits/agent-admin/channels-pairing.js",
+      "default": "./dist/kits/agent-admin/channels-pairing.js"
+    },
     "./kits/agent-admin/extensions-catalog": {
       "types": "./dist/kits/agent-admin/extensions-catalog.d.ts",
       "import": "./dist/kits/agent-admin/extensions-catalog.js",
@@ -1217,6 +1282,31 @@
       "types": "./dist/kits/agent-admin/llm-providers.d.ts",
       "import": "./dist/kits/agent-admin/llm-providers.js",
       "default": "./dist/kits/agent-admin/llm-providers.js"
+    },
+    "./kits/agent-admin/llm-providers-connect": {
+      "types": "./dist/kits/agent-admin/llm-providers-connect.d.ts",
+      "import": "./dist/kits/agent-admin/llm-providers-connect.js",
+      "default": "./dist/kits/agent-admin/llm-providers-connect.js"
+    },
+    "./kits/agent-admin/llm-providers-endpoint": {
+      "types": "./dist/kits/agent-admin/llm-providers-endpoint.d.ts",
+      "import": "./dist/kits/agent-admin/llm-providers-endpoint.js",
+      "default": "./dist/kits/agent-admin/llm-providers-endpoint.js"
+    },
+    "./kits/agent-admin/llm-providers-keys": {
+      "types": "./dist/kits/agent-admin/llm-providers-keys.d.ts",
+      "import": "./dist/kits/agent-admin/llm-providers-keys.js",
+      "default": "./dist/kits/agent-admin/llm-providers-keys.js"
+    },
+    "./kits/agent-admin/llm-providers-logo": {
+      "types": "./dist/kits/agent-admin/llm-providers-logo.d.ts",
+      "import": "./dist/kits/agent-admin/llm-providers-logo.js",
+      "default": "./dist/kits/agent-admin/llm-providers-logo.js"
+    },
+    "./kits/agent-admin/llm-providers-model": {
+      "types": "./dist/kits/agent-admin/llm-providers-model.d.ts",
+      "import": "./dist/kits/agent-admin/llm-providers-model.js",
+      "default": "./dist/kits/agent-admin/llm-providers-model.js"
     },
     "./kits/agent-admin/local-models": {
       "types": "./dist/kits/agent-admin/local-models.d.ts",
@@ -1318,6 +1408,26 @@
       "import": "./dist/kits/agent/agent-browser.js",
       "default": "./dist/kits/agent/agent-browser.js"
     },
+    "./kits/agent/agent-browser-annotations": {
+      "types": "./dist/kits/agent/agent-browser-annotations.d.ts",
+      "import": "./dist/kits/agent/agent-browser-annotations.js",
+      "default": "./dist/kits/agent/agent-browser-annotations.js"
+    },
+    "./kits/agent/agent-browser-consent": {
+      "types": "./dist/kits/agent/agent-browser-consent.d.ts",
+      "import": "./dist/kits/agent/agent-browser-consent.js",
+      "default": "./dist/kits/agent/agent-browser-consent.js"
+    },
+    "./kits/agent/agent-browser-console": {
+      "types": "./dist/kits/agent/agent-browser-console.d.ts",
+      "import": "./dist/kits/agent/agent-browser-console.js",
+      "default": "./dist/kits/agent/agent-browser-console.js"
+    },
+    "./kits/agent/agent-browser-model": {
+      "types": "./dist/kits/agent/agent-browser-model.d.ts",
+      "import": "./dist/kits/agent/agent-browser-model.js",
+      "default": "./dist/kits/agent/agent-browser-model.js"
+    },
     "./kits/agent/agent-composer": {
       "types": "./dist/kits/agent/agent-composer.d.ts",
       "import": "./dist/kits/agent/agent-composer.js",
@@ -1378,10 +1488,60 @@
       "import": "./dist/kits/agent/artifacts.js",
       "default": "./dist/kits/agent/artifacts.js"
     },
+    "./kits/agent/artifacts-card": {
+      "types": "./dist/kits/agent/artifacts-card.d.ts",
+      "import": "./dist/kits/agent/artifacts-card.js",
+      "default": "./dist/kits/agent/artifacts-card.js"
+    },
+    "./kits/agent/artifacts-library": {
+      "types": "./dist/kits/agent/artifacts-library.d.ts",
+      "import": "./dist/kits/agent/artifacts-library.js",
+      "default": "./dist/kits/agent/artifacts-library.js"
+    },
+    "./kits/agent/artifacts-model": {
+      "types": "./dist/kits/agent/artifacts-model.d.ts",
+      "import": "./dist/kits/agent/artifacts-model.js",
+      "default": "./dist/kits/agent/artifacts-model.js"
+    },
+    "./kits/agent/artifacts-preview": {
+      "types": "./dist/kits/agent/artifacts-preview.d.ts",
+      "import": "./dist/kits/agent/artifacts-preview.js",
+      "default": "./dist/kits/agent/artifacts-preview.js"
+    },
+    "./kits/agent/artifacts-viewer": {
+      "types": "./dist/kits/agent/artifacts-viewer.d.ts",
+      "import": "./dist/kits/agent/artifacts-viewer.js",
+      "default": "./dist/kits/agent/artifacts-viewer.js"
+    },
     "./kits/agent/git-review": {
       "types": "./dist/kits/agent/git-review.d.ts",
       "import": "./dist/kits/agent/git-review.js",
       "default": "./dist/kits/agent/git-review.js"
+    },
+    "./kits/agent/git-review-changes": {
+      "types": "./dist/kits/agent/git-review-changes.d.ts",
+      "import": "./dist/kits/agent/git-review-changes.js",
+      "default": "./dist/kits/agent/git-review-changes.js"
+    },
+    "./kits/agent/git-review-model": {
+      "types": "./dist/kits/agent/git-review-model.d.ts",
+      "import": "./dist/kits/agent/git-review-model.js",
+      "default": "./dist/kits/agent/git-review-model.js"
+    },
+    "./kits/agent/git-review-ship": {
+      "types": "./dist/kits/agent/git-review-ship.d.ts",
+      "import": "./dist/kits/agent/git-review-ship.js",
+      "default": "./dist/kits/agent/git-review-ship.js"
+    },
+    "./kits/agent/git-review-tree": {
+      "types": "./dist/kits/agent/git-review-tree.d.ts",
+      "import": "./dist/kits/agent/git-review-tree.js",
+      "default": "./dist/kits/agent/git-review-tree.js"
+    },
+    "./kits/agent/git-review-worktree": {
+      "types": "./dist/kits/agent/git-review-worktree.d.ts",
+      "import": "./dist/kits/agent/git-review-worktree.js",
+      "default": "./dist/kits/agent/git-review-worktree.js"
     },
     "./kits/agent/plan-review": {
       "types": "./dist/kits/agent/plan-review.d.ts",
@@ -1663,6 +1823,16 @@
       "import": "./dist/kits/editor/pdf-viewer.js",
       "default": "./dist/kits/editor/pdf-viewer.js"
     },
+    "./kits/editor/pdf-viewer-model": {
+      "types": "./dist/kits/editor/pdf-viewer-model.d.ts",
+      "import": "./dist/kits/editor/pdf-viewer-model.js",
+      "default": "./dist/kits/editor/pdf-viewer-model.js"
+    },
+    "./kits/editor/pdf-viewer-thumbnail": {
+      "types": "./dist/kits/editor/pdf-viewer-thumbnail.d.ts",
+      "import": "./dist/kits/editor/pdf-viewer-thumbnail.js",
+      "default": "./dist/kits/editor/pdf-viewer-thumbnail.js"
+    },
     "./kits/editor/rich-text-editor": {
       "types": "./dist/kits/editor/rich-text-editor.d.ts",
       "import": "./dist/kits/editor/rich-text-editor.js",
@@ -1808,6 +1978,26 @@
       "import": "./dist/kits/media/audio-player.js",
       "default": "./dist/kits/media/audio-player.js"
     },
+    "./kits/media/audio-player-model": {
+      "types": "./dist/kits/media/audio-player-model.d.ts",
+      "import": "./dist/kits/media/audio-player-model.js",
+      "default": "./dist/kits/media/audio-player-model.js"
+    },
+    "./kits/media/audio-player-now-playing": {
+      "types": "./dist/kits/media/audio-player-now-playing.d.ts",
+      "import": "./dist/kits/media/audio-player-now-playing.js",
+      "default": "./dist/kits/media/audio-player-now-playing.js"
+    },
+    "./kits/media/audio-player-queue": {
+      "types": "./dist/kits/media/audio-player-queue.d.ts",
+      "import": "./dist/kits/media/audio-player-queue.js",
+      "default": "./dist/kits/media/audio-player-queue.js"
+    },
+    "./kits/media/audio-player-track-row": {
+      "types": "./dist/kits/media/audio-player-track-row.d.ts",
+      "import": "./dist/kits/media/audio-player-track-row.js",
+      "default": "./dist/kits/media/audio-player-track-row.js"
+    },
     "./kits/media/cast-picker": {
       "types": "./dist/kits/media/cast-picker.d.ts",
       "import": "./dist/kits/media/cast-picker.js",
@@ -1912,6 +2102,26 @@
       "types": "./dist/kits/social/messenger.d.ts",
       "import": "./dist/kits/social/messenger.js",
       "default": "./dist/kits/social/messenger.js"
+    },
+    "./kits/social/messenger-bubble": {
+      "types": "./dist/kits/social/messenger-bubble.d.ts",
+      "import": "./dist/kits/social/messenger-bubble.js",
+      "default": "./dist/kits/social/messenger-bubble.js"
+    },
+    "./kits/social/messenger-composer": {
+      "types": "./dist/kits/social/messenger-composer.d.ts",
+      "import": "./dist/kits/social/messenger-composer.js",
+      "default": "./dist/kits/social/messenger-composer.js"
+    },
+    "./kits/social/messenger-list": {
+      "types": "./dist/kits/social/messenger-list.d.ts",
+      "import": "./dist/kits/social/messenger-list.js",
+      "default": "./dist/kits/social/messenger-list.js"
+    },
+    "./kits/social/messenger-model": {
+      "types": "./dist/kits/social/messenger-model.d.ts",
+      "import": "./dist/kits/social/messenger-model.js",
+      "default": "./dist/kits/social/messenger-model.js"
     },
     "./kits/social/presence": {
       "types": "./dist/kits/social/presence.d.ts",
@@ -2102,6 +2312,16 @@
       "types": "./dist/kits/workspace/workspace-switcher.d.ts",
       "import": "./dist/kits/workspace/workspace-switcher.js",
       "default": "./dist/kits/workspace/workspace-switcher.js"
+    },
+    "./kits/workspace/workspace-switcher-connections": {
+      "types": "./dist/kits/workspace/workspace-switcher-connections.d.ts",
+      "import": "./dist/kits/workspace/workspace-switcher-connections.js",
+      "default": "./dist/kits/workspace/workspace-switcher-connections.js"
+    },
+    "./kits/workspace/workspace-switcher-status": {
+      "types": "./dist/kits/workspace/workspace-switcher-status.d.ts",
+      "import": "./dist/kits/workspace/workspace-switcher-status.js",
+      "default": "./dist/kits/workspace/workspace-switcher-status.js"
     },
     "./blocks/auth-blocks": {
       "types": "./dist/blocks/auth-blocks.d.ts",

@@ -3,7 +3,7 @@
 > Collapsible page console with level toggles and a text filter.
 
 - Import: `import { BrowserConsole } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/agent-browser` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/agent-browser-console` (kit `agent`)
 - `data-slot`: `browser-console`
 - Also accepts the props of HTMLAttributes
 

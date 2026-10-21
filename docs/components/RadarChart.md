@@ -28,8 +28,9 @@
 | `levelLabels` | `boolean` | `true` | Print the ring values between the first two spokes. Default true. |
 | `levels` | `number` | `4` | Approximate number of grid rings. Default 4. |
 | `loading` | `boolean` |  | Data is on its way: with no data, a placeholder radar (and legend) of the same size; with data, the root is marked busy. |
+| `locale` | `string` |  | BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. |
 | `onActiveIndexChange` | `(index: number \| null) => void` |  | The spoke under the pointer or keyboard focus (index in `data`), or null. |
 | `onHiddenSeriesChange` | `(hidden: string[]) => void` |  | Called with the hidden series keys when a legend entry is toggled. |
 | `shape` | `"polygon" \| "circle"` | `"polygon"` | Grid rings as polygons (default) or circles. Fewer than three spokes always use circles. |
 | `tooltip` | `boolean` | `true` | Shows a tooltip with every series at the hovered axis. |
-| `valueFormatter` | `(value: number, seriesKey: string) => string` | `defaultValueFormatter` | Formats values in the tooltip and on the axis. Receives the value and the series key. Default is the localized number. |
+| `valueFormatter` | `(value: number, seriesKey: string) => string` | `valueFormatterFor(locale)` | Formats values in the tooltip and on the axis. Receives the value and the series key. Default is the localized number. |

@@ -3,7 +3,7 @@
 > Branch name chip: icon, head-truncated name, optional status dot and copy button.
 
 - Import: `import { BranchPill } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/git-review` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/git-review-changes` (kit `agent`)
 - `data-slot`: `branch-pill`
 - Also accepts the props of HTMLAttributes
 

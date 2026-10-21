@@ -3,8 +3,8 @@
 > Compact diff preview card: file header with stats, capped unified diff, expand and optional accept / reject.
 
 - Import: `import { DiffCard } from "@sutra/ui"` (or from `@sutra/ui/editor`)
-- Source: `packages/ui/src/patterns/diff-viewer` (patterns)
-- `data-slot`: `diff-card`, `diff-expand`
+- Source: `packages/ui/src/patterns/diff-viewer-card` (patterns)
+- `data-slot`: `diff-card`
 - Also accepts the props of HTMLAttributes
 
 ## Props

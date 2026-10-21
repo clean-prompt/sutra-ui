@@ -3,7 +3,7 @@
 > Scrolling conversation with day separators, an unread divider and grouped bubbles.
 
 - Import: `import { MessageList } from "@sutra/ui"` (or from `@sutra/ui/social`)
-- Source: `packages/ui/src/kits/social/messenger` (kit `social`)
+- Source: `packages/ui/src/kits/social/messenger-list` (kit `social`)
 - `data-slot`: `message-list`
 - Also accepts the props of HTMLAttributes
 

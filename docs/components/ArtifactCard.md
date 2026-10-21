@@ -3,7 +3,7 @@
 > Promoted artifact from a code fence or tool: kind, versions, streaming state, actions and a safe preview.
 
 - Import: `import { ArtifactCard } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/artifacts` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/artifacts-card` (kit `agent`)
 - `data-slot`: `artifact-card`
 - Also accepts the props of HTMLAttributes
 

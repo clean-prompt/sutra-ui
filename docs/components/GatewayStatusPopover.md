@@ -3,7 +3,7 @@
 > Status-bar gateway indicator with a popover of uptime, version, controls and a live log tail.
 
 - Import: `import { GatewayStatusPopover } from "@sutra/ui"` (or from `@sutra/ui/workspace`)
-- Source: `packages/ui/src/kits/workspace/workspace-switcher` (kit `workspace`)
+- Source: `packages/ui/src/kits/workspace/workspace-switcher-status` (kit `workspace`)
 - `data-slot`: `gateway-status-popover`
 - Also accepts the props of HTMLAttributes, ButtonHTMLAttributes
 

@@ -23,12 +23,13 @@
 | `label` | `string` |  | Accessible name. Defaults to a description built from the steps. |
 | `legend` | `boolean \| "top" \| "bottom"` |  | Increase / decrease / total key. Default: shown below when more than one kind is present. |
 | `loading` | `boolean` |  | Data is on its way: with no data, a placeholder plot (and legend) of the same size; with data, the root is marked busy. |
+| `locale` | `string` |  | BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. |
 | `onActiveIndexChange` | `(index: number \| null) => void` |  | Called with the hovered step index (or `null` when the pointer leaves); use it to sync other views. |
 | `referenceLines` | `ChartReferenceLine[]` | `[]` | Horizontal threshold lines (`axis: "y"` only). |
 | `showValues` | `boolean \| "auto"` | `"auto"` | Value labels above the bars: `"auto"` (default) shows them when they fit. |
 | `tooltip` | `boolean` | `true` | Shows a tooltip with the step value and the running total. |
 | `typeKey` | `string` | `"type"` | Key of the step type. Default "type". |
-| `valueFormatter` | `(value: number) => string` | `defaultValueFormatter` | Formats a magnitude: changes get their sign added ("+18", "−18"), totals are formatted as they are. |
+| `valueFormatter` | `(value: number) => string` | `valueFormatterFor(locale)` | Formats a magnitude: changes get their sign added ("+18", "−18"), totals are formatted as they are. |
 | `valueKey` | `string` | `"value"` | Key of the step value. Default "value". |
 | `xAxis` | `Pick<ChartXAxisOptions, "hide" \| "formatter" \| "label" \| "tickCount">` | `{}` | Step name axis: `hide`, `formatter`, `label` (table header) and `tickCount` (a maximum). |
 | `yAxis` | `ChartYAxisOptions` | `{}` | Value-axis options: formatter, domain, tick count, hidden. |

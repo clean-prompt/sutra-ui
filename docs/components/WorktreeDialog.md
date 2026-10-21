@@ -3,7 +3,7 @@
 > Create a git worktree: name, base branch picker (recent / local / remote), path preview and session switch.
 
 - Import: `import { WorktreeDialog } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/git-review` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/git-review-worktree` (kit `agent`)
 - `data-slot`: `worktree-path`
 
 ## Props

@@ -3,7 +3,7 @@
 > Lets the user pin numbered comments on a page for the agent, then send them in one batch.
 
 - Import: `import { AnnotationLayer } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/agent-browser` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/agent-browser-annotations` (kit `agent`)
 - `data-slot`: `annotation-layer`, `annotation-surface`, `annotation-pin`
 - Also accepts the props of HTMLAttributes
 

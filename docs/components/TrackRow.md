@@ -3,7 +3,7 @@
 > Track list row: number/now-playing bars, hover play, artwork, title/artist, album, duration and menu slot.
 
 - Import: `import { TrackRow } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/audio-player` (kit `media`)
+- Source: `packages/ui/src/kits/media/audio-player-track-row` (kit `media`)
 - Also accepts the props of HTMLAttributes
 
 ## Props

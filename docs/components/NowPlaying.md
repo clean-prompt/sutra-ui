@@ -3,7 +3,7 @@
 > Full-screen expanded player sheet: slides up, swipe down (from the top of its scroll) to dismiss.
 
 - Import: `import { NowPlaying } from "@sutra/ui"` (or from `@sutra/ui/media`)
-- Source: `packages/ui/src/kits/media/audio-player` (kit `media`)
+- Source: `packages/ui/src/kits/media/audio-player-now-playing` (kit `media`)
 - `data-slot`: `now-playing-scroll`
 
 ## Props

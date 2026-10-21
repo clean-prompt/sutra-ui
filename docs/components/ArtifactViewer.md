@@ -3,7 +3,7 @@
 > Full artifact panel: Preview / Code tabs, version history and fullscreen.
 
 - Import: `import { ArtifactViewer } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/artifacts` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/artifacts-viewer` (kit `agent`)
 - `data-slot`: `artifact-viewer`
 - Also accepts the props of HTMLAttributes
 

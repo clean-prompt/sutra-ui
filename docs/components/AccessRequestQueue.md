@@ -3,7 +3,7 @@
 > Pending pairing requests with approve / deny, plus approved users with confirm-to-revoke.
 
 - Import: `import { AccessRequestQueue } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/channels` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/channels-access` (kit `agent-admin`)
 - `data-slot`: `access-request-queue`
 - Also accepts the props of HTMLAttributes
 

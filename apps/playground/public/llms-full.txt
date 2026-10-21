@@ -7768,14 +7768,14 @@ Server render: part of it fills in after mount. The first render is the final va
 > Area chart: single or multi-series, optionally stacked, with gradient fills.
 
 - Import: `import { AreaChart } from "@sutra/ui/dataviz"` ([full page](md/AreaChart.md))
-- Props: `data`*, `index`*, `series`*, `animate`, `connectNulls`, `curve`, `defaultHiddenSeries`, `emptyState`, `gradient`, `grid`, `height`, `hiddenSeries`, `label`, `legend`, `legendInteractive`, `loading`, `onActiveIndexChange`, `onHiddenSeriesChange`, `referenceLines`, `stacked`, `strokeWidth`, `tooltip`, `valueFormatter`, `xAxis`, `yAxis` (* required)
+- Props: `data`*, `index`*, `series`*, `animate`, `connectNulls`, `curve`, `defaultHiddenSeries`, `emptyState`, `gradient`, `grid`, `height`, `hiddenSeries`, `label`, `legend`, `legendInteractive`, `loading`, `locale`, `onActiveIndexChange`, `onHiddenSeriesChange`, `referenceLines`, `stacked`, `strokeWidth`, `tooltip`, `valueFormatter`, `xAxis`, `yAxis` (* required)
 
 ## BarChart
 
 > Bar / column chart: grouped or stacked, vertical or horizontal, with conditional colors.
 
 - Import: `import { BarChart } from "@sutra/ui/dataviz"` ([full page](md/BarChart.md))
-- Props: `data`*, `index`*, `series`*, `animate`, `colorFor`, `defaultHiddenSeries`, `emptyState`, `grid`, `height`, `hiddenSeries`, `label`, `layout`, `legend`, `legendInteractive`, `loading`, `maxBarSize`, `onActiveIndexChange`, `onHiddenSeriesChange`, `radius`, `referenceLines`, `stacked`, `tooltip`, `valueFormatter`, `xAxis`, `yAxis` (* required)
+- Props: `data`*, `index`*, `series`*, `animate`, `colorFor`, `defaultHiddenSeries`, `emptyState`, `grid`, `height`, `hiddenSeries`, `label`, `layout`, `legend`, `legendInteractive`, `loading`, `locale`, `maxBarSize`, `onActiveIndexChange`, `onHiddenSeriesChange`, `radius`, `referenceLines`, `stacked`, `tooltip`, `valueFormatter`, `xAxis`, `yAxis` (* required)
 
 ## BarList
 
@@ -8283,7 +8283,7 @@ Server render: part of it fills in after mount. The remaining time is computed f
 > Donut (ring) chart with segments, center label, toggleable legend and tooltip.
 
 - Import: `import { DonutChart } from "@sutra/ui/dataviz"` ([full page](md/DonutChart.md))
-- Props: `data`*, `index`*, `animate`, `centerLabel`, `centerValue`, `colorFor`, `colors`, `defaultHiddenSeries`, `emptyState`, `hiddenSeries`, `iconFor`, `label`, `legend`, `legendInteractive`, `legendValues`, `loading`, `onHiddenSeriesChange`, `padAngle`, `size`, `thickness`, `tooltip`, `valueFormatter`, `valueKey` (* required)
+- Props: `data`*, `index`*, `animate`, `centerLabel`, `centerValue`, `colorFor`, `colors`, `defaultHiddenSeries`, `emptyState`, `hiddenSeries`, `iconFor`, `label`, `legend`, `legendInteractive`, `legendValues`, `loading`, `locale`, `onHiddenSeriesChange`, `padAngle`, `size`, `thickness`, `tooltip`, `valueFormatter`, `valueKey` (* required)
 
 **When to use:** A ring split into segments for the parts of a whole, with the total (or a value you choose) in the centre, a legend that hides and shows segments, and a tooltip with name, value and share.
 
@@ -8489,7 +8489,7 @@ Server render: same markup as the client. Plain markup from props (`useId` for t
 > Funnel chart: stage names and values at the left, the narrowing shape at the right, keyboard and tooltip readouts.
 
 - Import: `import { FunnelChart } from "@sutra/ui/dataviz"` ([full page](md/FunnelChart.md))
-- Props: `data`*, `animate`, `color`, `colorFor`, `colors`, `connected`, `conversion`, `emptyState`, `height`, `index`, `label`, `loading`, `onActiveIndexChange`, `tooltip`, `valueFormatter`, `valueKey` (* required)
+- Props: `data`*, `animate`, `color`, `colorFor`, `colors`, `connected`, `conversion`, `emptyState`, `height`, `index`, `label`, `loading`, `locale`, `onActiveIndexChange`, `tooltip`, `valueFormatter`, `valueKey` (* required)
 
 ## Gauge
 
@@ -8552,7 +8552,7 @@ Server render: same markup as the client. A static SVG computed from the props (
 > Generic value → color cell grid (per-core CPU, per-GPU load, matrices) with keyboard navigation.
 
 - Import: `import { HeatmapGrid } from "@sutra/ui/ops"` ([full page](md/HeatmapGrid.md))
-- Props: `data`*, `cellHeight`, `cellLabel`, `cellSize`, `colorStops`, `columns`, `formatValue`, `gap`, `label`, `legend`, `legendLabels`, `max`, `min`, `onCellClick`, `scale`, `shape`, `showIndices`, `steps`, `thresholds`, `tooltip` (* required)
+- Props: `data`*, `cellHeight`, `cellLabel`, `cellSize`, `colorStops`, `columns`, `formatValue`, `gap`, `label`, `legend`, `legendLabels`, `locale`, `max`, `min`, `onCellClick`, `scale`, `shape`, `showIndices`, `steps`, `thresholds`, `tooltip` (* required)
 
 **When to use:** A grid of cells coloured by value, in square tiles or vertical fill bars (per-core CPU, per-GPU load, matrices), with a tooltip and keyboard navigation. `HeatmapLegend` is the "Less to More" key that the grid shows with `legend`.
 
@@ -8802,7 +8802,7 @@ Server render: same markup as the client. A closed viewer renders only its child
 > Multi-series line chart with optional dots and reference (threshold) lines.
 
 - Import: `import { LineChart } from "@sutra/ui/dataviz"` ([full page](md/LineChart.md))
-- Props: `data`*, `index`*, `series`*, `animate`, `connectNulls`, `curve`, `defaultHiddenSeries`, `dots`, `emptyState`, `grid`, `height`, `hiddenSeries`, `label`, `legend`, `legendInteractive`, `loading`, `onActiveIndexChange`, `onHiddenSeriesChange`, `referenceLines`, `strokeWidth`, `tooltip`, `valueFormatter`, `xAxis`, `yAxis` (* required)
+- Props: `data`*, `index`*, `series`*, `animate`, `connectNulls`, `curve`, `defaultHiddenSeries`, `dots`, `emptyState`, `grid`, `height`, `hiddenSeries`, `label`, `legend`, `legendInteractive`, `loading`, `locale`, `onActiveIndexChange`, `onHiddenSeriesChange`, `referenceLines`, `strokeWidth`, `tooltip`, `valueFormatter`, `xAxis`, `yAxis` (* required)
 
 **When to use:** Cartesian charts over rows of data. `LineChart` draws lines, `AreaChart` filled (optionally stacked) areas, `BarChart` grouped, stacked or horizontal bars; all three take `data`, `index` and `series`, and share axes, legend, tooltip, time axis and reference lines.
 
@@ -8869,8 +8869,6 @@ Server render: part of it fills in after mount. The full SVG renders on the serv
 - Props: `appName`, `description`, `footer`, `fullscreen`, `icon`, `lockedUntil`, `lockoutSeconds`, `maxAttempts`, `mode`, `onPasskey`, `onRecover`, `onUnlock`, `passkeyLabel`, `pinLength`, `title` (* required)
 
 ## LogViewer
-
-> Live log tail on the dark code surface: level colors, ANSI, filters, pause buffer, virtualized rows.
 
 - Import: `import { LogViewer } from "@sutra/ui/ops"` ([full page](md/LogViewer.md))
 - Props: `aria-label`, `defaultFilter`, `defaultLevels`, `defaultPaused`, `defaultRegex`, `defaultShowLineNumbers`, `defaultShowTimestamps`, `defaultSource`, `defaultWrap`, `downloadName`, `emptyMessage`, `emptyState`, `entries`, `filter`, `filterBySource`, `height`, `hideToolbar`, `levels`, `lines`, `maxLines`, `onFilterChange`, `onLevelsChange`, `onPausedChange`, `onReconnect`, `onRegexChange`, `onShowLineNumbersChange`, `onShowTimestampsChange`, `onSourceChange`, `onWrapChange`, `paused`, `regex`, `rowHeight`, `showLineNumbers`, `showTimestamps`, `source`, `sources`, `status`, `toolbarExtra`, `virtualizeThreshold`, `wrap` (* required)
@@ -8952,6 +8950,37 @@ Server render: same markup as the client. react-markdown and KaTeX produce their
 - Import: `import { NestedValueEditor } from "@sutra/ui/agent-admin"` ([full page](md/NestedValueEditor.md))
 - Props: `schema`*, `value`*, `ariaLabel`, `bare`, `name`, `onChange`, `onValueChange`, `path`, `required` (* required)
 
+**When to use:** The recursive editor that SchemaForm renders for each field: one schema value as a control, a nested object section or an array with add and remove. Use it on its own to edit a single JSON-Schema-like value outside a full form.
+
+**Use instead when:**
+- `SchemaForm`: a whole form with sections, validation, navigation and Save or autosave
+- `Input`: one plain text field
+- `JsonViewer`: read-only structured data
+
+#### Keyboard
+
+There are no custom keys: every control keeps its own (Tab and Shift+Tab through them, Space on a switch, arrows on a segmented control or the select list, Enter on the add and remove buttons).
+
+#### Screen readers
+
+- A primitive has a real `<label>`; `required` adds a hidden-from-AT asterisk, and descriptions and errors are linked with `aria-describedby`.
+- An object is a `fieldset` with a `legend`; an array is a `group` named by its label, and its items have "Remove" buttons named after the item. With `bare`, the label row is left out, so pass `ariaLabel` to name the control.
+- A field with `x-disabled-reason` is disabled and shows the reason as text.
+
+#### Reduced motion
+
+Only the "Saved" tick pops (`animate-pop`), which the global net stops; the controls carry their own short transitions.
+
+#### Server rendering
+
+Server render: same markup as the client. It renders in full from `schema` and `value`; ids come from the path, so server and client agree. Nothing depends on the browser until you type.
+
+#### Gotchas
+
+- Standalone it has no form around it: errors, save status and disabled fields come from the nearest `SchemaForm`, so outside one every field shows its own state with no errors. Hold the value yourself and pass `onValueChange`.
+- `path` is the dotted position inside the form (it builds the ids and the error and status keys); leave it empty for a root value, and use `name` for the label when the schema has no `title`.
+- Control type follows the schema, as in `SchemaForm`: boolean is a switch, a short `enum` a segmented control, a longer one a select. `onChange` is the deprecated name of `onValueChange`.
+
 ## PageHeader
 
 > Page-level header: breadcrumbs, back button, h1 title, actions and tabs.
@@ -8992,7 +9021,7 @@ Server render: same markup as the client. react-markdown and KaTeX produce their
 > Radar (spider) chart: polygon rings, labelled spokes, toggleable series, spoke-by-spoke keyboard and a tooltip per spoke.
 
 - Import: `import { RadarChart } from "@sutra/ui/dataviz"` ([full page](md/RadarChart.md))
-- Props: `data`*, `index`*, `series`*, `animate`, `defaultHiddenSeries`, `domain`, `dots`, `emptyState`, `fill`, `height`, `hiddenSeries`, `label`, `legend`, `legendInteractive`, `levelLabels`, `levels`, `loading`, `onActiveIndexChange`, `onHiddenSeriesChange`, `shape`, `tooltip`, `valueFormatter` (* required)
+- Props: `data`*, `index`*, `series`*, `animate`, `defaultHiddenSeries`, `domain`, `dots`, `emptyState`, `fill`, `height`, `hiddenSeries`, `label`, `legend`, `legendInteractive`, `levelLabels`, `levels`, `loading`, `locale`, `onActiveIndexChange`, `onHiddenSeriesChange`, `shape`, `tooltip`, `valueFormatter` (* required)
 
 ## RecurrencePicker
 
@@ -9068,7 +9097,7 @@ Server render: same markup as the client. The list renders from `items` with pla
 > Scatter (and bubble) chart: nearest-point hover, keyboard stepping in x order, toggleable series and reference lines.
 
 - Import: `import { ScatterChart } from "@sutra/ui/dataviz"` ([full page](md/ScatterChart.md))
-- Props: `data`*, `index`*, `series`*, `animate`, `bubbleSize`, `defaultHiddenSeries`, `emptyState`, `grid`, `height`, `hiddenSeries`, `label`, `legend`, `legendInteractive`, `loading`, `onActivePointChange`, `onHiddenSeriesChange`, `pointSize`, `referenceLines`, `sizeFormatter`, `tooltip`, `valueFormatter`, `xAxis`, `yAxis` (* required)
+- Props: `data`*, `index`*, `series`*, `animate`, `bubbleSize`, `defaultHiddenSeries`, `emptyState`, `grid`, `height`, `hiddenSeries`, `label`, `legend`, `legendInteractive`, `loading`, `locale`, `onActivePointChange`, `onHiddenSeriesChange`, `pointSize`, `referenceLines`, `sizeFormatter`, `tooltip`, `valueFormatter`, `xAxis`, `yAxis` (* required)
 
 ## SchemaForm
 
@@ -9895,7 +9924,7 @@ Server render: part of it fills in after mount. Markup is computed from `items`.
 > Squarified treemap: tiles sized by value, coloured by category, with hover/focus tooltips, arrow-key navigation, drill-down (Enter, click) and up (Backspace, Escape, breadcrumb), an optional legend and a screen-reader table.
 
 - Import: `import { Treemap } from "@sutra/ui/dataviz"` ([full page](md/Treemap.md))
-- Props: `data`*, `breadcrumb`, `colorFor`, `defaultPath`, `defaultWidth`, `depth`, `emptyState`, `gap`, `height`, `label`, `legend`, `loading`, `minLabelSize`, `onPathChange`, `onSelect`, `palette`, `path`, `tooltip`, `valueFormatter`, `valueLabel` (* required)
+- Props: `data`*, `breadcrumb`, `colorFor`, `defaultPath`, `defaultWidth`, `depth`, `emptyState`, `gap`, `height`, `label`, `legend`, `loading`, `locale`, `minLabelSize`, `onPathChange`, `onSelect`, `palette`, `path`, `tooltip`, `valueFormatter`, `valueLabel` (* required)
 
 **When to use:** Tiles sized by value to compare many parts of a hierarchy at a glance (disk usage, bundle size, spend), with drill-down into groups, a tooltip and a screen-reader table. `StorageMap` wraps it for disks, with a used and free header and macOS, App data, Yours and Other categories.
 
@@ -10021,7 +10050,7 @@ Server render: same markup as the client. The whole tree is plain markup from `n
 > Waterfall chart: floating bars that climb and fall from the running total, with totals, connectors and a signed table.
 
 - Import: `import { WaterfallChart } from "@sutra/ui/dataviz"` ([full page](md/WaterfallChart.md))
-- Props: `data`*, `animate`, `colors`, `connectors`, `emptyState`, `grid`, `height`, `index`, `kindLabels`, `label`, `legend`, `loading`, `onActiveIndexChange`, `referenceLines`, `showValues`, `tooltip`, `typeKey`, `valueFormatter`, `valueKey`, `xAxis`, `yAxis` (* required)
+- Props: `data`*, `animate`, `colors`, `connectors`, `emptyState`, `grid`, `height`, `index`, `kindLabels`, `label`, `legend`, `loading`, `locale`, `onActiveIndexChange`, `referenceLines`, `showValues`, `tooltip`, `typeKey`, `valueFormatter`, `valueKey`, `xAxis`, `yAxis` (* required)
 
 ## ZoneEditor
 

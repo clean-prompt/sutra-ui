@@ -27,12 +27,13 @@
 | `legendInteractive` | `boolean` | `true` | Let legend entries toggle segments. Default true. |
 | `legendValues` | `boolean \| "value" \| "percent" \| "both"` | `false` | Show values in the legend: it becomes a `BreakdownList` (one row per segment, value right-aligned). `true` / `"value"`: the formatted value; `"percent"`: the share of the visible total; `"both"`: value and percent. Default false (the compact chip legend). |
 | `loading` | `boolean` |  | Data is on its way: with no data, a placeholder ring (and legend) of the same size; with data, the root is marked busy. |
+| `locale` | `string` |  | BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. |
 | `onHiddenSeriesChange` | `(hidden: string[]) => void` |  | Called with the hidden segment names when a legend entry is toggled. |
 | `padAngle` | `number` | `1.5` | Gap between segments in degrees. Default 1.5. |
 | `size` | `number` | `200` | Diameter in px. Default 200. |
 | `thickness` | `number` |  | Ring thickness in px. Default size × 0.14. |
 | `tooltip` | `boolean` | `true` | Shows a tooltip with the name, value and share on hover or focus. |
-| `valueFormatter` | `(value: number) => string` | `defaultValueFormatter` | Formats values in the tooltip, legend and centre. Default is the localized number. |
+| `valueFormatter` | `(value: number) => string` | `valueFormatterFor(locale)` | Formats values in the tooltip, legend and centre. Default is the localized number. |
 | `valueKey` | `string` | `"value"` | Key of the segment value. Default "value". |
 
 ## Notes

@@ -27,6 +27,7 @@
 | `legend` | `boolean \| "top" \| "bottom"` |  | Default: shown below for 2+ series. |
 | `legendInteractive` | `boolean` |  | Allow toggling/isolating series from the legend. Default true. |
 | `loading` | `boolean` |  | Data is on its way: with no data, a placeholder plot (and legend) of the same size; with data, the root is marked busy. |
+| `locale` | `string` |  | BCP 47 locale for the default number and date formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. |
 | `onActiveIndexChange` | `(index: number \| null) => void` |  | Called with the hovered index (or `null` when the pointer leaves); use it to sync other views. |
 | `onHiddenSeriesChange` | `(hidden: string[]) => void` |  | Called with the hidden series keys when a legend entry is toggled. |
 | `referenceLines` | `ChartReferenceLine[]` |  | Horizontal threshold / target lines. |

@@ -4,7 +4,7 @@
 
 - Import: `import { FileViewer } from "@sutra/ui"` (or from `@sutra/ui/mobile`)
 - Source: `packages/ui/src/patterns/file-viewer` (patterns)
-- `data-slot`: `file-viewer-nav`, `file-viewer-position`, `file-viewer-panel`, `file-viewer`, `file-viewer-actions`, `file-viewer-thumbnails`
+- `data-slot`: `file-viewer-nav`, `file-viewer-position`, `file-viewer-panel`, `file-viewer`
 
 ## Props
 

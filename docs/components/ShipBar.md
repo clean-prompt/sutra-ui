@@ -3,7 +3,7 @@
 > Bottom git action bar: branch, ahead/behind, commit message and a Commit / Commit & push / Create PR split button.
 
 - Import: `import { ShipBar } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/git-review` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/git-review-ship` (kit `agent`)
 - `data-slot`: `ship-bar`, `ship-disabled-reason`
 - Also accepts the props of HTMLAttributes
 

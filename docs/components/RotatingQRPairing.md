@@ -3,7 +3,7 @@
 > Live pairing QR: polls a rotating payload, crossfades on change, counts down and walks through pairing phases. Built on `QRCodeCard`.
 
 - Import: `import { RotatingQRPairing } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/channels` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/channels-pairing` (kit `agent-admin`)
 - `data-slot`: `rotating-qr-pairing`
 - Also accepts the props of HTMLAttributes
 

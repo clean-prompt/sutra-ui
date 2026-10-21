@@ -3,7 +3,7 @@
 > Renders artifact content safely: code, markdown, SVG/image via `<img>`, HTML in a `sandbox=""` iframe.
 
 - Import: `import { ArtifactPreview } from "@sutra/ui"` (or from `@sutra/ui/agent`)
-- Source: `packages/ui/src/kits/agent/artifacts` (kit `agent`)
+- Source: `packages/ui/src/kits/agent/artifacts-preview` (kit `agent`)
 - `data-slot`: `artifact-preview`
 - Also accepts the props of HTMLAttributes
 

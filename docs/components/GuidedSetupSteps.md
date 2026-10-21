@@ -3,7 +3,7 @@
 > Numbered onboarding checklist with copyable values, external links and "I did this" checks. Built on `Steps orientation="vertical"`.
 
 - Import: `import { GuidedSetupSteps } from "@sutra/ui"` (or from `@sutra/ui/agent-admin`)
-- Source: `packages/ui/src/kits/agent-admin/channels` (kit `agent-admin`)
+- Source: `packages/ui/src/kits/agent-admin/channels-pairing` (kit `agent-admin`)
 - `data-slot`: `guided-setup-steps`
 - Also accepts the props of HTMLAttributes
 

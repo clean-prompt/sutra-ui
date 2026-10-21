@@ -3,7 +3,7 @@
 > Delivery state glyph: clock, single tick, double tick, blue double tick, or a warning.
 
 - Import: `import { MessageStatusIcon } from "@sutra/ui"` (or from `@sutra/ui/social`)
-- Source: `packages/ui/src/kits/social/messenger` (kit `social`)
+- Source: `packages/ui/src/kits/social/messenger-bubble` (kit `social`)
 - `data-slot`: `message-status-icon`
 - Also accepts the props of HTMLAttributes
 

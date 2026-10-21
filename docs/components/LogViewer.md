@@ -1,7 +1,5 @@
 # LogViewer
 
-> Live log tail on the dark code surface: level colors, ANSI, filters, pause buffer, virtualized rows.
-
 - Import: `import { LogViewer } from "@sutra/ui"` (or from `@sutra/ui/ops`)
 - Source: `packages/ui/src/patterns/log-viewer` (patterns)
 - `data-slot`: `log-viewer`

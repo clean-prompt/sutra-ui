@@ -17,11 +17,12 @@
 | `cellSize` | `number` |  | Fixed cell size in px; default stretches to fill the width. |
 | `colorStops` | `HeatmapColorStop[]` |  | Custom step stops (overrides `scale`). |
 | `columns` | `number` | `10` | Cells per row. Default 10. |
-| `formatValue` | `(value: number) => string` | `(v) => `${Number(v.toFixed(1))}%`` | Formats a cell value for the tooltip and the accessible label. Default is the localized number. |
+| `formatValue` | `(value: number) => string` | `(v) => (locale ? `${numberFormat(locale, { maximumFractionDigits: 1 }).format(v)}%` : `${Number(v.toFixed(1))}%`)` | Formats a cell value for the tooltip and the accessible label. Default is the localized number. |
 | `gap` | `number` | `3` | Gap between cells in px. Default 3. |
 | `label` | `string` | `"Heatmap"` | Accessible name of the grid. |
 | `legend` | `boolean` | `false` | Shows a "less to more" legend under the grid. |
 | `legendLabels` | `[React.ReactNode, React.ReactNode]` |  | Texts for the low and high ends of the legend: `[low, high]`. |
+| `locale` | `string` |  | BCP 47 locale for the default value text (one decimal and a percent sign). Pass one explicitly when the server and the browser must agree (SSR). Defaults to plain digits. |
 | `max` | `number` | `100` | Value that maps to the strongest step; defaults to the largest value in the data. |
 | `min` | `number` | `0` | Value that maps to the emptiest step; defaults to the smallest value in the data (0 when all are positive). |
 | `onCellClick` | `(cell: HeatmapGridCell, index: number) => void` |  | Called with the cell and its index when a cell is clicked, or activated with Enter or Space. Cells stay `gridcell`s with roving focus (they do not become buttons) and get a pointer cursor. |

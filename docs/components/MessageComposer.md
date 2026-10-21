@@ -3,7 +3,7 @@
 > Message input: auto-growing textarea, attach and emoji buttons, Enter to send (Shift+Enter for a new line).
 
 - Import: `import { MessageComposer } from "@sutra/ui"` (or from `@sutra/ui/social`)
-- Source: `packages/ui/src/kits/social/messenger` (kit `social`)
+- Source: `packages/ui/src/kits/social/messenger-composer` (kit `social`)
 - `data-slot`: `message-composer`
 - Also accepts the props of HTMLAttributes
 

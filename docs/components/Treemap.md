@@ -23,13 +23,14 @@
 | `label` | `string` | `"Treemap"` | Accessible name of the map and caption of its screen-reader table. Default "Treemap". |
 | `legend` | `boolean` | `false` | Show a category legend (`BreakdownList`) under the map. Default false. |
 | `loading` | `boolean` |  | Data is on its way: with nothing to draw, placeholder tiles (and legend rows) fill the map; otherwise the root is marked busy. |
+| `locale` | `string` |  | BCP 47 locale for the default number formatting. Pass one explicitly when the server and the browser must agree (SSR). Defaults to the runtime locale. |
 | `minLabelSize` | `{ width: number; height: number }` | `{ width: 44, height: 22 }` | Tiles narrower or shorter than this (px) hide their label. Default `{ width: 44, height: 22 }`. |
 | `onPathChange` | `(path: string[]) => void` |  | Called with the new path when the user drills in or out. |
 | `onSelect` | `(node: TreemapNode, path: string[]) => void` |  | Called when a tile is clicked or activated with Enter/Space (before drilling into it). |
 | `palette` | `readonly string[]` | `DEFAULT_PALETTE` | Category colours, cycled by the index of the top-level node. Defaults to a set of `ACCENT_COLORS`. |
 | `path` | `string[]` |  | Drill path: child ids from the root down to the node shown. |
 | `tooltip` | `boolean` | `true` | Show a tooltip for the hovered or focused tile. Default true. |
-| `valueFormatter` | `(value: number) => string` | `defaultValueFormatter` | Formats tile values in the labels and tooltip. Default is the localized number. |
+| `valueFormatter` | `(value: number) => string` | `valueFormatterFor(locale)` | Formats tile values in the labels and tooltip. Default is the localized number. |
 | `valueLabel` | `string` | `"Value"` | Column header for values in the screen-reader table. Default "Value". |
 
 ## Notes
