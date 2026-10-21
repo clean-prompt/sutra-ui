@@ -4,6 +4,7 @@ import { cn } from "../../lib/cn";
 import { clamp } from "../../lib/math";
 import { normalizeTaskStatus, type TaskStatusInput } from "../../lib/status";
 import type { Tone } from "../../lib/tone";
+import { errorMessage } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { Button } from "../../primitives/button";
 import { Progress } from "../../primitives/progress";
@@ -95,8 +96,7 @@ const initialSnapshot: TaskSnapshot = { state: "idle", progress: 0, logs: [] };
 const isAsyncIterable = (v: unknown): v is AsyncIterable<StreamingTaskEvent> =>
   v != null && typeof (v as AsyncIterable<unknown>)[Symbol.asyncIterator] === "function";
 
-const errorText = (e: unknown) =>
-  e instanceof Error ? e.message : typeof e === "string" ? e : e == null ? "Something went wrong" : String(e);
+const errorText = (e: unknown) => errorMessage(e, "Something went wrong");
 
 function parseMessage(event: unknown): StreamingTaskEvent | null {
   const data = event && typeof event === "object" && "data" in event ? (event as { data: unknown }).data : event;
@@ -390,7 +390,7 @@ export function ProgressDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={requestOpenChange}>
-        <DialogContent size={size} className={className} data-state-task={state}>
+        <DialogContent size={size} className={className} data-slot="progress-dialog" data-state-task={state}>
           <DialogHeader icon={tone?.icon} tone={tone?.tone}>
             <DialogTitle>{title}</DialogTitle>
             {description ? <DialogDescription>{description}</DialogDescription> : null}

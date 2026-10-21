@@ -102,6 +102,7 @@ export const CurrentPlanCard = React.forwardRef<HTMLElement, CurrentPlanCardProp
         ref={ref}
         aria-labelledby={titleId}
         className={cn("flex flex-col gap-5 rounded-box border border-border bg-card p-5 shadow-xs", className)}
+        data-slot="current-plan-card"
         {...props}
       >
         <div className="flex flex-wrap items-start justify-between gap-4">

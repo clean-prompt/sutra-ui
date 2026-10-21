@@ -8,7 +8,7 @@ import {
   RiAlarmWarningLine,
 } from "@remixicon/react";
 import { cn, focusRing, normalizeDensity, type Density, hitArea } from "../../lib/cn";
-import { logicalArrow } from "../../lib/direction";
+import { directionOf, logicalArrow } from "../../lib/direction";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useMergedRefs } from "../../hooks/use-merged-refs";
 import { clamp } from "../../lib/math";
@@ -353,18 +353,24 @@ export const EffortSlider = React.forwardRef<HTMLDivElement, EffortSliderProps>(
       setValue(levels[clamped].value);
     };
 
+    /** Level under a pointer x: segments run from the inline start, so RTL measures from the right edge. */
+    const levelAtX = (clientX: number) => {
+      const el = trackRef.current;
+      const rect = el?.getBoundingClientRect();
+      if (!el || !rect || rect.width === 0) return null;
+      const fromStart = directionOf(el) === "rtl" ? rect.right - clientX : clientX - rect.left;
+      return Math.floor((fromStart / rect.width) * levels.length);
+    };
+
     const indexFromPointer = (e: React.PointerEvent) => {
       const seg = (e.target as HTMLElement).closest?.("[data-effort-index]");
       if (seg && trackRef.current?.contains(seg)) return Number(seg.getAttribute("data-effort-index"));
-      const rect = trackRef.current?.getBoundingClientRect();
-      if (!rect || rect.width === 0) return null;
-      return Math.floor(((e.clientX - rect.left) / rect.width) * levels.length);
+      return levelAtX(e.clientX);
     };
 
     const fromX = (clientX: number) => {
-      const rect = trackRef.current?.getBoundingClientRect();
-      if (!rect || rect.width === 0) return;
-      setIndex(Math.floor(((clientX - rect.left) / rect.width) * levels.length));
+      const i = levelAtX(clientX);
+      if (i != null) setIndex(i);
     };
 
     const slider = (

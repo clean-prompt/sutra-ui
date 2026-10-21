@@ -333,11 +333,6 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
       const s = baseScale() * z.k;
       return { x: (sx - width / 2 - z.x) / s, y: (sy - height / 2 - z.y) / s };
     };
-    const toScreen = (p: MemoryPoint) => {
-      const z = zoomRef.current;
-      const s = baseScale() * z.k;
-      return { x: width / 2 + z.x + p.x * s, y: height / 2 + z.y + p.y * s };
-    };
     const hitTest = (sx: number, sy: number): MemoryNode | null => {
       const w = toWorld(sx, sy);
       const tol = 4 / (baseScale() * zoomRef.current.k);
@@ -535,7 +530,7 @@ export const MemoryMap = React.forwardRef<HTMLDivElement, MemoryMapProps>(
     );
 
     return (
-      <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
+      <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} data-slot="memory-map" {...props}>
         <div className="flex flex-wrap items-center gap-2">
           {showLegend && (
             <MemoryMapLegend

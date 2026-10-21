@@ -191,6 +191,18 @@ function useShallowStable<T>(list: T[] | undefined): T[] | undefined {
   return same ? prev : list;
 }
 
+/** Runs `apply` after a commit in which `deps` differ from the last ones seen (the first render's count as seen). */
+function useReconfigureOnChange(deps: readonly unknown[], apply: () => void) {
+  const seen = React.useRef(deps);
+  React.useEffect(() => {
+    const prev = seen.current;
+    if (prev.length === deps.length && prev.every((d, i) => Object.is(d, deps[i]))) return;
+    seen.current = deps;
+    apply();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+}
+
 /* ------------------------------------------------------------------ */
 /* CodeEditor                                                          */
 /* ------------------------------------------------------------------ */
@@ -472,49 +484,22 @@ export const CodeEditor = React.forwardRef<CodeEditorHandle, CodeEditorProps>(
     const reconfigure = (c: Compartment, ext: Extension) => {
       viewRef.current?.dispatch({ effects: c.reconfigure(ext) });
     };
-    const first = React.useRef(true);
-    React.useEffect(() => {
-      if (first.current) return;
+    // Each option is compared with the value last applied (or the one the view was built with), never with a "first run" flag,
+    // so a remount (StrictMode, Activity) neither skips a real change nor reapplies an unchanged one.
+    useReconfigureOnChange([language, stableKeyBindings], () => {
       reconfigure(compartments.lang, langExt(language));
       reconfigure(compartments.keys, keysExt(language, stableKeyBindings));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [language, stableKeyBindings]);
-    React.useEffect(() => {
-      if (!first.current) reconfigure(compartments.extra, stableExtensions ?? []);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [stableExtensions]);
-    React.useEffect(() => {
-      if (!first.current) reconfigure(compartments.gutter, gutterExt(lineNumbers));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [lineNumbers]);
-    React.useEffect(() => {
-      if (!first.current) reconfigure(compartments.wrap, wrap ? EditorView.lineWrapping : []);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [wrap]);
-    React.useEffect(() => {
-      if (!first.current) reconfigure(compartments.placeholder, placeholder ? placeholderExt(placeholder) : []);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [placeholder]);
-    React.useEffect(() => {
-      if (!first.current)
-        reconfigure(compartments.readOnly, [EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)]);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [readOnly]);
-    React.useEffect(() => {
-      if (!first.current) reconfigure(compartments.search, searchExt(searchEnabled));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchEnabled]);
-    React.useEffect(() => {
-      if (!first.current) reconfigure(compartments.history, historyExt(historyEnabled));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [historyEnabled]);
-    React.useEffect(() => {
-      if (!first.current) reconfigure(compartments.attrs, attrsExt(spellCheck, label));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [spellCheck, label]);
-    React.useEffect(() => {
-      first.current = false;
-    }, []);
+    });
+    useReconfigureOnChange([stableExtensions], () => reconfigure(compartments.extra, stableExtensions ?? []));
+    useReconfigureOnChange([lineNumbers], () => reconfigure(compartments.gutter, gutterExt(lineNumbers)));
+    useReconfigureOnChange([wrap], () => reconfigure(compartments.wrap, wrap ? EditorView.lineWrapping : []));
+    useReconfigureOnChange([placeholder], () => reconfigure(compartments.placeholder, placeholder ? placeholderExt(placeholder) : []));
+    useReconfigureOnChange([readOnly], () =>
+      reconfigure(compartments.readOnly, [EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)])
+    );
+    useReconfigureOnChange([searchEnabled], () => reconfigure(compartments.search, searchExt(searchEnabled)));
+    useReconfigureOnChange([historyEnabled], () => reconfigure(compartments.history, historyExt(historyEnabled)));
+    useReconfigureOnChange([spellCheck, label], () => reconfigure(compartments.attrs, attrsExt(spellCheck, label)));
 
     // Controlled value: replace the document when the prop diverges (without echoing onChange).
     React.useEffect(() => {

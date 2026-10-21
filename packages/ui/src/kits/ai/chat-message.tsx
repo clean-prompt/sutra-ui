@@ -50,6 +50,7 @@ export const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
       <ChatMessageContext.Provider value={ctx}>
         <div
           ref={ref}
+          data-slot="chat-message"
           data-role={role}
           data-variant={variant}
           data-streaming={streaming || undefined}
@@ -74,6 +75,7 @@ export const ChatMessageBody = React.forwardRef<HTMLDivElement, React.HTMLAttrib
     return (
       <div
         ref={ref}
+        data-slot="chat-message-body"
         className={cn(
           "flex min-w-0 flex-col gap-1.5",
           role === "user" && variant === "bubble" ? "max-w-[85%] items-end" : "flex-1",
@@ -114,6 +116,7 @@ export const ChatMessageAvatar = React.forwardRef<HTMLSpanElement, ChatMessageAv
     return (
       <Avatar
         ref={ref}
+        data-slot="chat-message-avatar"
         size={s.size}
         src={src}
         name={name}
@@ -154,6 +157,7 @@ export const ChatMessageContent = React.forwardRef<HTMLDivElement, ChatMessageCo
     return (
       <div
         ref={ref}
+        data-slot="chat-message-content"
         className={cn(
           "min-w-0 text-[15px] leading-7 text-foreground",
           bubble && "rounded-2xl rounded-ee-md bg-muted px-4 py-2.5",
@@ -192,6 +196,7 @@ export const ChatMessageHeader = React.forwardRef<HTMLDivElement, ChatMessageHea
     return (
       <div
         ref={ref}
+        data-slot="chat-message-header"
         className={cn(
           "flex min-h-6 items-center gap-2 text-sm",
           role === "user" && variant === "bubble" && "flex-row-reverse",
@@ -222,6 +227,7 @@ export const ChatMessageFooter = React.forwardRef<HTMLDivElement, React.HTMLAttr
     return (
       <div
         ref={ref}
+        data-slot="chat-message-footer"
         className={cn(
           "flex min-h-7 items-center gap-1 text-xs text-muted-foreground",
           role === "user" && variant === "bubble" && "justify-end",

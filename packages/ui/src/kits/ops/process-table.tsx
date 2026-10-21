@@ -90,7 +90,7 @@ export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
 
     if (pending) {
       return (
-        <div ref={ref} role="status" className={cn("inline-flex items-center gap-1.5 text-xs text-muted-foreground", className)} {...props}>
+        <div ref={ref} role="status" className={cn("inline-flex items-center gap-1.5 text-xs text-muted-foreground", className)} data-slot="kill-button" {...props}>
           <Spinner size="xs" aria-hidden />
           <span>Killing…</span>
         </div>
@@ -110,6 +110,7 @@ export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
               cancel();
             }
           }}
+          data-slot="kill-button"
           {...props}
         >
           <span className="whitespace-nowrap text-xs font-medium text-foreground">
@@ -126,7 +127,7 @@ export const KillButton = React.forwardRef<HTMLDivElement, KillButtonProps>(
     }
 
     return (
-      <div ref={ref} className={cn("inline-flex items-center gap-1", className)} {...props}>
+      <div ref={ref} className={cn("inline-flex items-center gap-1", className)} data-slot="kill-button" {...props}>
         <SimpleTooltip content="Terminate (SIGTERM)">
           <button
             ref={termRef}
@@ -785,6 +786,7 @@ export const ProcessTable = React.forwardRef<HTMLTableElement, ProcessTableProps
         stickyHeader={maxHeight !== undefined}
         maxHeight={maxHeight}
         className={className}
+        data-slot="process-table"
         {...props}
       >
         <caption className="sr-only">{caption}</caption>

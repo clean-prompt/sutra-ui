@@ -80,6 +80,7 @@ export const DownloadBadge = React.forwardRef<HTMLSpanElement, DownloadBadgeProp
             </>
           ) : undefined
         }
+        data-slot="download-badge"
         {...props}
       >
         <span className="tabular-nums">{label}</span>
@@ -209,7 +210,7 @@ export const ModelRow = React.forwardRef<HTMLTableRowElement, ModelRowProps>(
     const blockedReason = model.blocked ? (typeof model.blocked === "string" ? model.blocked : "Won't fit in free VRAM") : null;
     return (
       <>
-        <TableRow ref={ref} data-model={model.name} data-state={model.state} className={cn("group/model", className)} {...props}>
+        <TableRow ref={ref} data-model={model.name} data-state={model.state} className={cn("group/model", className)} data-slot="model-row" {...props}>
           <TableCell>
             <div className="flex min-w-0 flex-col gap-0.5">
               <div className="flex flex-wrap items-center gap-1.5">
@@ -423,7 +424,7 @@ export const ModelTable = React.forwardRef<HTMLDivElement, ModelTableProps>(
     const filterLabel: Record<ModelFilter, string> = { all: "All", serving: "Serving", cached: "Downloaded", missing: "Not downloaded" };
 
     return (
-      <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
+      <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} data-slot="model-table" {...props}>
         {!hideFilters ? (
           <div role="group" aria-label="Filter models" className="flex flex-wrap gap-1">
             {(Object.keys(filterLabel) as ModelFilter[]).map((f) => (

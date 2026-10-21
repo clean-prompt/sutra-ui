@@ -161,6 +161,7 @@ export const IncomingCall = React.forwardRef<HTMLDivElement, IncomingCallProps>(
             if (e.key === "Escape") onDecline?.();
           }}
           className={cn(cardClass, className)}
+          data-slot="incoming-call"
           {...props}
         >
           {content}
@@ -180,6 +181,7 @@ export const IncomingCall = React.forwardRef<HTMLDivElement, IncomingCallProps>(
           <AlertDialogPrimitive.Overlay
             ref={ref}
             className={cn("fixed inset-0 z-50 flex items-center justify-center bg-overlay p-4 backdrop-blur-sm", className)}
+            data-slot="incoming-call"
             {...props}
           >
             <AlertDialogPrimitive.Content
@@ -264,7 +266,7 @@ export const CallQualityIndicator = React.forwardRef<HTMLSpanElement, CallQualit
 ) {
   const bars = qualityBars[quality];
   return (
-    <span ref={ref} role="img" aria-label={`Connection ${quality}`} data-quality={quality} className={cn("inline-flex h-3.5 items-end gap-0.5", className)} {...props}>
+    <span ref={ref} role="img" aria-label={`Connection ${quality}`} data-quality={quality} className={cn("inline-flex h-3.5 items-end gap-0.5", className)} data-slot="call-quality-indicator" {...props}>
       {[1, 2, 3, 4].map((i) => (
         <span
           key={i}
@@ -411,18 +413,33 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
     const localRef = useStreamVideo(localStream);
 
     const stageRef = React.useRef<HTMLDivElement>(null);
-    const [drag, setDrag] = React.useState<{ x: number; y: number; dx: number; dy: number } | null>(null);
+    // The drag offset is written to the element as `--sutra-drag-x/-y` (no React state per pointer move); `dragging` flips only
+    // when a drag starts or ends, for the cursor and the transition.
+    const dragRef = React.useRef<{ x: number; y: number; dx: number; dy: number } | null>(null);
+    const [dragging, setDragging] = React.useState(false);
 
+    const endPipDrag = (el: HTMLElement) => {
+      dragRef.current = null;
+      el.style.removeProperty("--sutra-drag-x");
+      el.style.removeProperty("--sutra-drag-y");
+      setDragging(false);
+    };
     const onPipPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
       if (e.button !== 0) return;
       e.currentTarget.setPointerCapture?.(e.pointerId);
-      setDrag({ x: e.clientX, y: e.clientY, dx: 0, dy: 0 });
+      dragRef.current = { x: e.clientX, y: e.clientY, dx: 0, dy: 0 };
+      setDragging(true);
     };
     const onPipPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+      const drag = dragRef.current;
       if (!drag) return;
-      setDrag({ ...drag, dx: e.clientX - drag.x, dy: e.clientY - drag.y });
+      drag.dx = e.clientX - drag.x;
+      drag.dy = e.clientY - drag.y;
+      e.currentTarget.style.setProperty("--sutra-drag-x", `${drag.dx}px`);
+      e.currentTarget.style.setProperty("--sutra-drag-y", `${drag.dy}px`);
     };
     const onPipPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+      const drag = dragRef.current;
       if (!drag) return;
       const rect = stageRef.current?.getBoundingClientRect();
       if (rect && rect.width > 0 && (Math.abs(drag.dx) > 4 || Math.abs(drag.dy) > 4)) {
@@ -430,7 +447,11 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
         const top = e.clientY - rect.top < rect.height / 2;
         setCorner(`${top ? "top" : "bottom"}-${left ? "left" : "right"}` as CallPipCorner);
       }
-      setDrag(null);
+      endPipDrag(e.currentTarget);
+    };
+    // Capture can be taken away without a pointercancel (the element unmounts the capture, a touch is re-targeted): end the drag.
+    const onPipLostCapture = (e: React.PointerEvent<HTMLDivElement>) => {
+      if (e.target === e.currentTarget && dragRef.current) endPipDrag(e.currentTarget);
     };
     const onPipKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
       const [v, h] = corner.split("-") as ["top" | "bottom", "left" | "right"];
@@ -449,6 +470,7 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
         role="region"
         aria-label={`Call with ${name}`}
         className={cn("relative isolate flex min-h-96 w-full flex-col overflow-hidden rounded-box bg-code text-white", className)}
+        data-slot="call-screen"
         {...props}
       >
         <div ref={stageRef} className="absolute inset-0 -z-10">
@@ -489,16 +511,17 @@ export const CallScreen = React.forwardRef<HTMLDivElement, CallScreenProps>(
             onPointerDown={onPipPointerDown}
             onPointerMove={onPipPointerMove}
             onPointerUp={onPipPointerUp}
-            onPointerCancel={() => setDrag(null)}
+            onPointerCancel={(e) => endPipDrag(e.currentTarget)}
+            onLostPointerCapture={onPipLostCapture}
             onKeyDown={onPipKeyDown}
             className={cn(
               "absolute z-10 aspect-[3/4] w-24 cursor-grab touch-none overflow-hidden rounded-xl border border-white/20 bg-code-border shadow-xl sm:w-32",
               "transition-[top,left,right,bottom] duration-300 ease-out-quart",
-              drag && "cursor-grabbing transition-none",
+              dragging && "cursor-grabbing transition-none",
               pipCornerClass[corner],
               focusRing
             )}
-            style={drag ? { transform: `translate(${drag.dx}px, ${drag.dy}px)` } : undefined}
+            style={{ transform: "translate(var(--sutra-drag-x, 0px), var(--sutra-drag-y, 0px))" }}
           >
             {cameraOff ? (
               <div className="flex size-full items-center justify-center text-white/70">

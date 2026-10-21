@@ -81,6 +81,10 @@ export function useKunjiSignIn({
   const successTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const callbacks = useLatestRef({ onSuccess, onError, onStatusChange });
   const sessionRef = React.useRef<KunjiSession | undefined>(undefined);
+  // The success result waiting for its animation delay; an unmount flushes it instead of dropping the sign-in.
+  const pendingSuccess = React.useRef<KunjiPollResult | null>(null);
+  // Held in a ref so an inline `client` (new identity every parent render) neither restarts the session nor loops the effect.
+  const clientRef = useLatestRef(client);
 
   const disarmSlow = React.useCallback(() => clearTimeout(slowTimer.current), []);
   const armSlow = React.useCallback(() => {
@@ -104,7 +108,11 @@ export function useKunjiSignIn({
       setState((s) => ({ ...s, status, result, slow: false, codeStatus: s.codeStatus === "submitting" ? "idle" : s.codeStatus }));
       if (status === "success") {
         clearTimeout(successTimer.current);
-        successTimer.current = setTimeout(() => callbacks.current.onSuccess?.(result), successDelay);
+        pendingSuccess.current = result;
+        successTimer.current = setTimeout(() => {
+          pendingSuccess.current = null;
+          callbacks.current.onSuccess?.(result);
+        }, successDelay);
       }
     },
     [disarmSlow, successDelay]
@@ -113,7 +121,9 @@ export function useKunjiSignIn({
   const start = React.useCallback(() => {
     ctrl.current?.abort();
     clearTimeout(successTimer.current);
+    pendingSuccess.current = null;
     const c = new AbortController();
+    const client = clientRef.current;
     ctrl.current = c;
     sessionRef.current = undefined;
     setState({ ...initialState, status: "loading" });
@@ -150,12 +160,13 @@ export function useKunjiSignIn({
         callbacks.current.onError?.(e);
       }
     })();
-  }, [client, armSlow, disarmSlow, finish, pollInterval]);
+  }, [clientRef, armSlow, disarmSlow, finish, pollInterval]);
 
   const cancel = React.useCallback(() => {
     ctrl.current?.abort();
     disarmSlow();
     clearTimeout(successTimer.current);
+    pendingSuccess.current = null;
     setState(initialState);
   }, [disarmSlow]);
 
@@ -166,6 +177,7 @@ export function useKunjiSignIn({
       setState((s) => ({ ...s, code: session.code, codeStatus: "ready" }));
       return;
     }
+    const client = clientRef.current;
     if (!client.requestCode) return;
     const signal = ctrl.current?.signal;
     setState((s) => ({ ...s, codeStatus: "loading", codeError: undefined }));
@@ -177,10 +189,11 @@ export function useKunjiSignIn({
         if (!signal?.aborted && !isKunjiAbortError(e)) setState((s) => ({ ...s, codeStatus: "error", codeError: messageOf(e, "Couldn't get a code.") }));
       }
     );
-  }, [client]);
+  }, [clientRef]);
 
   const submitCode = React.useCallback(
     (code: string) => {
+      const client = clientRef.current;
       if (!client.submitCode) return;
       const c = ctrl.current;
       const signal = c?.signal;
@@ -205,7 +218,7 @@ export function useKunjiSignIn({
         }
       );
     },
-    [client, finish]
+    [clientRef, finish]
   );
 
   React.useEffect(() => {
@@ -218,10 +231,15 @@ export function useKunjiSignIn({
       ctrl.current?.abort();
       clearTimeout(slowTimer.current);
       clearTimeout(successTimer.current);
+      // Unmounting during the success animation (e.g. the parent swaps the view on `onStatusChange("success")`) must not lose
+      // the sign-in: deliver it now instead of waiting for a timer that no longer runs.
+      const pending = pendingSuccess.current;
+      pendingSuccess.current = null;
+      if (pending) callbacks.current.onSuccess?.(pending);
     };
-    // Restart only when the client changes.
+    // Starts once on mount; a new `client` identity is read through the ref and never restarts the session.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client]);
+  }, []);
 
   return {
     state,

@@ -159,10 +159,22 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
     const fileRef = React.useRef<HTMLInputElement>(null);
     const decoderRef = React.useRef<Promise<FrameDecoder> | null>(null);
     const doneRef = React.useRef(false);
+    const aliveRef = React.useRef(true);
     const [done, setDone] = React.useState(false);
     const [initialFacingMode] = React.useState(initialFacing);
     const [uploadMessage, setUploadMessage] = React.useState<string | null>(null);
     const [lastResult, setLastResult] = React.useState<string | null>(null);
+
+    // Both refs are re-established in effects, so they are right again after a StrictMode / Activity remount.
+    React.useEffect(() => {
+      aliveRef.current = true;
+      return () => {
+        aliveRef.current = false;
+      };
+    }, []);
+    React.useEffect(() => {
+      doneRef.current = done;
+    }, [done]);
 
     const onResultRef = useLatestRef(onResult);
     const onErrorRef = useLatestRef(onError);
@@ -284,9 +296,11 @@ export const QRScanner = React.forwardRef<HTMLDivElement, QRScannerProps>(
       try {
         const [decode, image] = await Promise.all([getDecoder(), loadImage(file)]);
         const text = await decode(image);
+        if (!aliveRef.current) return;
         if (text) deliver(text);
         else setUploadMessage("No QR code was found in that image.");
       } catch (err) {
+        if (!aliveRef.current) return;
         setUploadMessage("That image couldn't be read.");
         onErrorRef.current?.(err);
       }

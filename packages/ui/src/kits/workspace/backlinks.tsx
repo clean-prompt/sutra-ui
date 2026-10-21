@@ -62,7 +62,7 @@ export const BacklinkSnippet = React.forwardRef<HTMLParagraphElement, BacklinkSn
       );
     }
     return (
-      <p ref={ref} className={cn("line-clamp-2 text-sm text-muted-foreground", className)} {...props}>
+      <p ref={ref} className={cn("line-clamp-2 text-sm text-muted-foreground", className)} data-slot="backlink-snippet" {...props}>
         {parts}
       </p>
     );
@@ -117,7 +117,7 @@ export const Backlinks = React.forwardRef<HTMLElement, BacklinksProps>(
 
     return (
       <CollapsiblePrimitive.Root asChild open={open} onOpenChange={setOpen}>
-        <section ref={ref} aria-labelledby={headingId} className={cn("rounded-box border border-border bg-card", className)} {...props}>
+        <section ref={ref} aria-labelledby={headingId} className={cn("rounded-box border border-border bg-card", className)} data-slot="backlinks" {...props}>
           <h2 id={headingId} className="m-0">
             <CollapsiblePrimitive.Trigger
               className={cn(

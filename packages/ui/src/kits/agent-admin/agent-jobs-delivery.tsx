@@ -62,6 +62,7 @@ export const DeliveryPlatformIcon = React.forwardRef<HTMLSpanElement, DeliveryPl
   return (
     <span
       ref={ref}
+      data-slot="delivery-platform-icon"
       aria-hidden
       className={cn("inline-flex shrink-0 items-center justify-center rounded-md", size === "sm" ? "size-5 [&_svg]:size-3" : "size-7 [&_svg]:size-4", meta.tint, className)}
       {...props}
@@ -126,7 +127,7 @@ export const DeliveryTargetPicker = React.forwardRef<HTMLFieldSetElement, Delive
     const warnId = `${id}-warn`;
 
     return (
-      <fieldset ref={ref} disabled={disabled} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
+      <fieldset ref={ref} data-slot="delivery-target-picker" disabled={disabled} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
         <legend className="mb-2 text-sm font-medium text-foreground">{legend}</legend>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {platforms.map((p) => {

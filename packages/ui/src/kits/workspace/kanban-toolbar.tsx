@@ -42,7 +42,7 @@ export const KanbanToolbar = React.forwardRef<HTMLDivElement, KanbanToolbarProps
       assignees: selectedAssignees.includes(id) ? selectedAssignees.filter((a) => a !== id) : [...selectedAssignees, id],
     });
   return (
-    <div ref={ref} role="toolbar" aria-label="Board filters" className={cn("flex flex-wrap items-center gap-2", className)} {...props}>
+    <div ref={ref} role="toolbar" aria-label="Board filters" className={cn("flex flex-wrap items-center gap-2", className)} data-slot="kanban-toolbar" {...props}>
       {boardSwitcher}
       <SearchInput
         size="sm"

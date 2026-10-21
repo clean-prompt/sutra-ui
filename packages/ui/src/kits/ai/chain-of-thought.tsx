@@ -8,6 +8,7 @@ import { useControllableState } from "../../hooks/use-controllable-state";
 import { useNow } from "../../hooks/use-now";
 import { formatDuration } from "../../lib/duration";
 import { formatTokens } from "../../lib/format";
+import { isSafeHref } from "../../lib/validate";
 import { normalizeTaskStatus, type TaskStatusInput } from "../../lib/status";
 import { Spinner } from "../../primitives/spinner";
 import { TextShimmer } from "../../primitives/text-shimmer";
@@ -335,7 +336,7 @@ export const ChainOfThoughtSearchResult = React.forwardRef<HTMLAnchorElement, Ch
     return (
       <a
         ref={ref}
-        href={href}
+        href={isSafeHref(href) ? href : undefined}
         target="_blank"
         rel="noopener noreferrer"
         title={title ?? domain}

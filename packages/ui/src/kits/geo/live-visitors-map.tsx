@@ -21,6 +21,7 @@ import {
   liveVisitorMarker,
   liveVisitorSourceCounts,
 } from "./live-visitors-map-internal";
+import { EMPTY } from "./world-map-internal";
 
 /* ------------------------------------------------------------------------------------------------
  * Types
@@ -114,8 +115,6 @@ export interface LiveVisitorsMapProps extends Omit<React.HTMLAttributes<HTMLElem
   /** Classes for the map column. */
   mapClassName?: string;
 }
-
-const EMPTY: readonly never[] = [];
 
 /* ------------------------------------------------------------------------------------------------
  * LiveVisitorsMap

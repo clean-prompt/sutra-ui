@@ -8,6 +8,7 @@ import {
   RiRefreshLine,
 } from "@remixicon/react";
 import { cn, hitArea } from "../../lib/cn";
+import { errorMessage } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { DAY_MS, MINUTE_MS, formatRelative, formatShortDate, toMs, type TimeInput } from "../../lib/time";
@@ -435,7 +436,7 @@ export function ApiKeyCreateDialog({
       setSecret(typeof result === "string" ? result : result.secret);
     } catch (err) {
       if (token !== requestRef.current) return;
-      setError(err instanceof Error ? err.message : "Couldn't create the key.");
+      setError(errorMessage(err, "Couldn't create the key."));
     } finally {
       if (token === requestRef.current) setBusy(false);
     }

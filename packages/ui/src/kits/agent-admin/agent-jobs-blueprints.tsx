@@ -13,6 +13,7 @@ import { NumberInput } from "../../primitives/number-input";
 import { SimpleSelect, type SelectOption } from "../../primitives/select";
 import { describeSchedule } from "../../patterns/cron";
 import { toSelectOptions } from "./agent-jobs-internal";
+import { isSafeHref } from "../../lib/validate";
 
 /* ------------------------------------------------------------------ */
 /* Blueprints                                                          */
@@ -237,7 +238,7 @@ export const BlueprintCard = React.forwardRef<HTMLElement, BlueprintCardProps>(
         {variant === "open" ? (
           <div className="flex flex-col gap-2">
             {command ? <CliCommandRow command={command} /> : null}
-            {blueprint.appHref ? (
+            {blueprint.appHref && isSafeHref(blueprint.appHref) ? (
               <Button asChild size="sm" variant="secondary" className="self-start">
                 <a href={blueprint.appHref} onClick={() => onOpen?.(blueprint)}>
                   <RiExternalLinkLine aria-hidden />

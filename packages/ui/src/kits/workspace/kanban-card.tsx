@@ -29,6 +29,7 @@ export const KanbanPriorityIcon = React.forwardRef<SVGSVGElement, KanbanPriority
         role="img"
         aria-label={`Priority: ${priorityLabel[priority]}`}
         className={cn("size-4 shrink-0", priority === "urgent" ? "text-destructive" : "text-muted-foreground", className)}
+        data-slot="kanban-priority-icon"
         {...props}
       >
         {priority === "urgent" ? (
@@ -113,7 +114,7 @@ export const KanbanRunBadge = React.forwardRef<HTMLSpanElement, KanbanRunBadgePr
   const s = normalizeTaskStatus(status);
   const b = runBadge[s];
   return (
-    <Badge ref={ref} size="sm" color={b.color} className={className} data-run-status={status} {...props}>
+    <Badge ref={ref} size="sm" color={b.color} className={className} data-run-status={status} data-slot="kanban-run-badge" {...props}>
       {s === "running" ? (
         <span className="inline-flex items-center gap-1">
           <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-current motion-reduce:animate-none" />
@@ -198,6 +199,7 @@ export const KanbanCard = React.forwardRef<HTMLDivElement, KanbanCardProps>(
           card.runStatus && normalizeTaskStatus(card.runStatus) === "failed" && "border-destructive/40",
           className
         )}
+        data-slot="kanban-card"
         {...props}
       >
         <button

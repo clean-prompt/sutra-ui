@@ -196,7 +196,7 @@ export const MessageStatusIcon = React.forwardRef<HTMLSpanElement, MessageStatus
   // the glyph and only fades its colour.
   const glyph = useChangeKey(Icon);
   return (
-    <span ref={ref} data-status={status} className={cn("inline-flex items-center", className)} {...props}>
+    <span ref={ref} data-status={status} className={cn("inline-flex items-center", className)} data-slot="message-status-icon" {...props}>
       <Icon
         key={glyph}
         aria-hidden
@@ -281,6 +281,7 @@ export const MessageBubble = React.forwardRef<HTMLDivElement, MessageBubbleProps
         data-position={position}
         data-status={status}
         className={cn("flex w-full items-end gap-2", out ? "justify-end" : "justify-start", lastInGroup ? "mb-2" : "mb-0.5", className)}
+        data-slot="message-bubble"
         {...props}
       >
         {!out && avatar !== undefined ? <div className="w-8 shrink-0">{lastInGroup ? avatar : null}</div> : null}
@@ -442,6 +443,7 @@ export const MessageList = React.forwardRef<HTMLDivElement, MessageListProps>(
           pinnedRef.current = el.scrollHeight - el.scrollTop - el.clientHeight <= 48;
           onScroll?.(e);
         }}
+        data-slot="message-list"
         {...props}
       >
         {entries.map((entry) => {
@@ -575,6 +577,7 @@ export const MessageComposer = React.forwardRef<HTMLTextAreaElement, MessageComp
           e.preventDefault();
           send();
         }}
+        data-slot="message-composer"
         {...props}
       >
         {replyingTo ? (
@@ -692,7 +695,7 @@ export const MessengerHeader = React.forwardRef<HTMLElement, MessengerHeaderProp
     const status: AvatarStatus | undefined = online ? "online" : undefined;
 
     return (
-      <header ref={ref} className={cn("flex items-center gap-2 border-b border-border bg-background px-2 py-2", className)} {...props}>
+      <header ref={ref} className={cn("flex items-center gap-2 border-b border-border bg-background px-2 py-2", className)} data-slot="messenger-header" {...props}>
         {onBack ? (
           <Button variant="ghost" size="icon" aria-label="Back" onClick={onBack}>
             <RiArrowLeftSLine className="rtl:-scale-x-100" aria-hidden />
@@ -824,7 +827,7 @@ export const GroupInfoPanel = React.forwardRef<HTMLElement, GroupInfoPanelProps>
     const sorted = [...members].sort((a, b) => roleRank(a.role) - roleRank(b.role) || a.name.localeCompare(b.name));
 
     return (
-      <aside ref={ref} aria-label={`${name} info`} className={cn("flex w-full flex-col gap-5 bg-background p-4", className)} {...props}>
+      <aside ref={ref} aria-label={`${name} info`} className={cn("flex w-full flex-col gap-5 bg-background p-4", className)} data-slot="group-info-panel" {...props}>
         <div className="flex flex-col items-center gap-2 text-center">
           <Avatar size="2xl" name={name} src={avatarSrc} shape="square" />
           <div>

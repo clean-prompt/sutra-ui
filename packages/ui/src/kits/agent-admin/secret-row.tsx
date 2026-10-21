@@ -6,6 +6,7 @@ import { Badge } from "../../primitives/badge";
 import { Button } from "../../primitives/button";
 import { PasswordInput } from "../../primitives/input";
 import { SecretField, SecretText } from "../identity/secret";
+import { isSafeHref } from "../../lib/validate";
 
 export interface SecretRowProps {
   /** Key name (env variable or credential key); used for data attributes and the inline layout's labels. */
@@ -105,7 +106,7 @@ export function SecretRow({
     );
   }
 
-  const link = getKeyUrl ? (
+  const link = getKeyUrl && isSafeHref(getKeyUrl) ? (
     <a href={getKeyUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-0.5 text-xs font-medium text-primary hover:underline">
       Get a key
       <RiExternalLinkLine aria-hidden className="size-3" />

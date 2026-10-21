@@ -5,7 +5,7 @@ import { RiArrowDownSLine, RiCheckLine, RiFlashlightFill } from "@remixicon/reac
 import { cn } from "../../lib/cn";
 import { Button, type ButtonProps } from "../../primitives/button";
 import { useControllableState } from "../../hooks/use-controllable-state";
-import { useLatestRef } from "../../hooks/use-iso-layout-effect";
+import { useCountdown } from "../../hooks/use-now";
 import { ModelSelectOption, type PickerModel } from "./model-select";
 
 /** A `PickerModel` for the composer menu; `state`, `provider`, `cost` and the other shared fields render through the shared row. */
@@ -19,19 +19,18 @@ export interface PromptInputModel extends PickerModel {
 export type PromptInputFastMode = "on" | "off" | "cooldown";
 
 function useCooldownSeconds(seconds: number | undefined, active: boolean, onEnd?: () => void) {
-  const [remaining, setRemaining] = React.useState(Math.max(0, Math.ceil(seconds ?? 0)));
-  const endRef = useLatestRef(onEnd);
-  React.useEffect(() => setRemaining(Math.max(0, Math.ceil(seconds ?? 0))), [seconds, active]);
-  React.useEffect(() => {
-    if (!active || remaining <= 0) return;
-    // onEnd fires only from the tick that reaches zero; turning the cooldown off or clearing the seconds cancels it.
-    const t = setTimeout(() => {
-      setRemaining(remaining - 1);
-      if (remaining === 1) endRef.current?.();
-    }, 1000);
-    return () => clearTimeout(t);
-  }, [active, remaining, endRef]);
-  return remaining;
+  const total = Math.max(0, Math.ceil(seconds ?? 0));
+  const running = active && total > 0;
+  // The deadline is anchored when the length or the active flag changes, then read from the wall clock (no drift).
+  const key = `${total}:${running}`;
+  const [anchor, setAnchor] = React.useState(() => ({ key, at: Date.now() }));
+  let at = anchor.at;
+  if (anchor.key !== key) {
+    at = Date.now();
+    setAnchor({ key, at });
+  }
+  const { remainingMs } = useCountdown(running ? at + total * 1000 : undefined, { interval: 250, onExpire: onEnd });
+  return running ? Math.min(total, Math.ceil(remainingMs / 1000)) : total;
 }
 
 export interface PromptInputModelPillProps extends ButtonProps {

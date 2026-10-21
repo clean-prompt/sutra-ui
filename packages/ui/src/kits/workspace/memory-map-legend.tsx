@@ -19,7 +19,7 @@ export const MemoryGlyphIcon = React.forwardRef<SVGSVGElement, MemoryGlyphIconPr
     const p = new SvgPath();
     glyphPath(p, glyph, 6, 6, 4.4);
     return (
-      <svg ref={ref} viewBox="0 0 12 12" width={size} height={size} aria-hidden className={cn("shrink-0", className)} {...props}>
+      <svg ref={ref} viewBox="0 0 12 12" width={size} height={size} aria-hidden className={cn("shrink-0", className)} data-slot="memory-glyph-icon" {...props}>
         <path d={p.d} fill={color} />
       </svg>
     );
@@ -43,7 +43,7 @@ export interface MemoryMapLegendProps extends Omit<React.HTMLAttributes<HTMLDivE
 /** Kind → color/glyph legend; doubles as a kind filter when `onToggleKind` is set. */
 export const MemoryMapLegend = React.forwardRef<HTMLDivElement, MemoryMapLegendProps>(
   ({ items, hiddenKinds = [], onToggleKind, className, ...props }, ref) => (
-    <div ref={ref} role="group" aria-label="Legend: filter by kind" className={cn("flex flex-wrap items-center gap-1", className)} {...props}>
+    <div ref={ref} role="group" aria-label="Legend: filter by kind" className={cn("flex flex-wrap items-center gap-1", className)} data-slot="memory-map-legend" {...props}>
       {items.map((it) => {
         const hidden = hiddenKinds.includes(it.kind);
         const body = (

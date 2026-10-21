@@ -142,7 +142,7 @@ export function TaskDetailDialog({
   const [open, setOpen] = useControllableState({ value: openProp, defaultValue: defaultOpen, onChange: onOpenChange });
   return (
     <Dialog open={open && !!task} onOpenChange={setOpen}>
-      <DialogContent size="xl" className="gap-0 overflow-hidden p-0">
+      <DialogContent size="xl" data-slot="task-detail-dialog" className="gap-0 overflow-hidden p-0">
         {task && (
           <TaskDetailBody
             task={task}

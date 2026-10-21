@@ -28,6 +28,7 @@ import { Avatar } from "../../primitives/avatar";
 import { EmptyState } from "../../primitives/empty-state";
 import { QRCode, QRCodeCard } from "../identity/qr-code";
 import { Steps } from "../../primitives/step-indicator";
+import { isSafeHref } from "../../lib/validate";
 import { ConfirmDialog, Dialog, DialogBody, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../primitives/dialog";
 
 /* ------------------------------------------------------------------ */
@@ -980,7 +981,7 @@ export const GuidedSetupSteps = React.forwardRef<HTMLOListElement, GuidedSetupSt
                 {(s.copyValue || s.href) && (
                   <div className="flex flex-wrap items-center gap-2">
                     {s.copyValue && <StepCopy value={s.copyValue} label={s.copyLabel} />}
-                    {s.href && (
+                    {s.href && isSafeHref(s.href) && (
                       <a
                         href={s.href}
                         target="_blank"
@@ -1055,12 +1056,14 @@ export interface AccessRequestQueueProps extends React.HTMLAttributes<HTMLDivEle
   /** Reference time for relative stamps (tests / SSR). */
   now?: number;
   /** Text shown when there are no pending requests; defaults to a hint about pairing codes. */
+  emptyState?: React.ReactNode;
+  /** Text shown when there are no pending requests. @deprecated Use `emptyState`. */
   emptyHint?: React.ReactNode;
 }
 
 /** Pending pairing requests with approve / deny, plus approved users with confirm-to-revoke. */
 export const AccessRequestQueue = React.forwardRef<HTMLDivElement, AccessRequestQueueProps>(
-  ({ requests, approved = [], onApprove, onDeny, onRevoke, now, emptyHint, className, ...props }, ref) => {
+  ({ requests, approved = [], onApprove, onDeny, onRevoke, now, emptyState, emptyHint, className, ...props }, ref) => {
     const pendingId = React.useId();
     const approvedId = React.useId();
     const ref0 = now ?? Date.now();
@@ -1081,7 +1084,7 @@ export const AccessRequestQueue = React.forwardRef<HTMLDivElement, AccessRequest
               variant="dashed"
               icon={<RiShieldUserLine aria-hidden />}
               title="No pending requests"
-              description={emptyHint ?? "When someone messages your agent, they get a pairing code that shows up here."}
+              description={emptyState ?? emptyHint ?? "When someone messages your agent, they get a pairing code that shows up here."}
             />
           ) : (
             <ul className="divide-y divide-border overflow-hidden rounded-box border border-border bg-card">

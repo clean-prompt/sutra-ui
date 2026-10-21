@@ -110,6 +110,7 @@ export const SyncStatus = React.forwardRef<HTMLButtonElement, SyncStatusProps>(
                 focusRing,
                 className
               )}
+              data-slot="sync-status"
               {...props}
             >
               {status === "synced" || status === "syncing" ? (
@@ -190,6 +191,7 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
             : undefined
         }
         className={className}
+        data-slot="offline-banner"
         {...props}
       >
         <p className="min-w-0">
@@ -328,7 +330,7 @@ export const ConflictResolver = React.forwardRef<HTMLDivElement, ConflictResolve
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent ref={ref} size="xl" className={className}>
+      <DialogContent ref={ref} size="xl" data-slot="conflict-resolver" className={className}>
         <DialogHeader icon={<RiGitMergeLine aria-hidden />} tone="warning">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

@@ -39,7 +39,7 @@ export const ClarifySettled = React.forwardRef<HTMLDivElement, ClarifySettledPro
     const answered = items.filter((i) => !i.skipped).length;
     const summary = title ?? `Answered ${answered} ${answered === 1 ? "question" : "questions"}${items.length > answered ? ` · ${items.length - answered} skipped` : ""}`;
     return (
-      <div ref={ref} data-state={open ? "open" : "closed"} className={cn("rounded-box border border-border bg-card text-sm", className)} {...props}>
+      <div ref={ref} data-slot="clarify-settled" data-state={open ? "open" : "closed"} className={cn("rounded-box border border-border bg-card text-sm", className)} {...props}>
         <button
           type="button"
           aria-expanded={open}

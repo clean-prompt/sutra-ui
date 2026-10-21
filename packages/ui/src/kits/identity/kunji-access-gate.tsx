@@ -5,6 +5,7 @@ import { cn } from "../../lib/cn";
 import { toValidDate } from "../../lib/time";
 import { useAsyncAction } from "../../hooks/use-async-action";
 import { useControllableState } from "../../hooks/use-controllable-state";
+import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { Textarea } from "../../primitives/textarea";
@@ -111,19 +112,27 @@ export const AccessGate = React.forwardRef<HTMLDivElement, AccessGateProps>(
     const { run, busy, error } = useAsyncAction((fn: () => Promise<void>) => fn());
     const purposeId = React.useId();
     const status = record.status;
-    const check = adapter.check;
+    // Held in refs so an inline adapter (new identity every parent render) doesn't restart the interval.
+    const checkRef = useLatestRef(adapter.check);
+    const setRecordRef = useLatestRef(setRecord);
+    const canCheck = !!adapter.check;
 
     React.useEffect(() => {
-      if (status !== "pending" || !check) return;
+      if (status !== "pending" || !canCheck) return;
       const ctrl = new AbortController();
       let inFlight = false;
       const id = setInterval(() => {
         if (inFlight) return;
         inFlight = true;
+        const check = checkRef.current;
+        if (!check) {
+          inFlight = false;
+          return;
+        }
         check(ctrl.signal)
           .then(
             (r) => {
-              if (!ctrl.signal.aborted && r.status !== "pending") setRecord(r);
+              if (!ctrl.signal.aborted && r.status !== "pending") setRecordRef.current(r);
             },
             () => {}
           )
@@ -135,7 +144,7 @@ export const AccessGate = React.forwardRef<HTMLDivElement, AccessGateProps>(
         ctrl.abort();
         clearInterval(id);
       };
-    }, [status, check, pollInterval, setRecord]);
+    }, [status, canCheck, pollInterval, checkRef, setRecordRef]);
 
 
     const submit = (e: React.FormEvent) => {

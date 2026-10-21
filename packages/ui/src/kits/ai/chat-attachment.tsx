@@ -166,6 +166,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
     const removeButton = onRemove && (
       <button
         type="button"
+        data-slot="chat-attachment-remove"
         onClick={onRemove}
         aria-label={`Remove ${name}`}
         title="Remove"
@@ -189,6 +190,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
     const retryIcon = hasError && onRetry && variant !== "card" && (
       <button
         type="button"
+        data-slot="chat-attachment-retry"
         onClick={onRetry}
         aria-label={retryLabel}
         title="Retry"
@@ -236,6 +238,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
       return onPreview ? (
         <button
           type="button"
+          data-slot="chat-attachment-thumb"
           aria-label={`Preview ${name}`}
           onClick={onPreview}
           className={cn(boxClass, "cursor-zoom-in", focusRing)}
@@ -245,7 +248,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
           {errorOverlay}
         </button>
       ) : (
-        <span className={boxClass}>
+        <span data-slot="chat-attachment-thumb" className={boxClass}>
           {content}
           {overlay}
           {errorOverlay}
@@ -255,6 +258,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
 
     const common = {
       ref,
+      "data-slot": "chat-attachment",
       "data-variant": variant,
       "data-state": hasError ? "error" : uploading ? "uploading" : "done",
       title: name,
@@ -317,6 +321,7 @@ export const ChatAttachment = React.forwardRef<HTMLDivElement, ChatAttachmentPro
             {hasError && onRetry ? (
               <button
                 type="button"
+                data-slot="chat-attachment-retry"
                 onClick={onRetry}
                 aria-label={retryLabel}
                 className={cn(hitArea, "shrink-0 rounded-xs font-medium text-foreground underline-offset-2 hover:underline", focusRing)}
@@ -339,6 +344,7 @@ export const ChatAttachmentList = React.forwardRef<HTMLDivElement, React.HTMLAtt
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
+      data-slot="chat-attachment-list"
       className={cn("scrollbar-none -m-1.5 flex items-center gap-2 overflow-x-auto p-1.5 [&>*]:shrink-0", className)}
       {...props}
     />

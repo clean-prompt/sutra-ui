@@ -38,6 +38,8 @@ export interface UsageSummaryProps extends React.HTMLAttributes<HTMLDivElement> 
   defaultRange?: UsageRange;
   /** Called with the range when the user picks another one. */
   onRangeChange?: (range: UsageRange) => void;
+  /** BCP 47 locale used to format the counts. Default "en-US". */
+  locale?: string;
 }
 
 /** Latency: "850ms", "1.5s", "2.3m", "1.2h". */
@@ -47,7 +49,7 @@ const finishLabels: Record<string, string> = { stop: "Completed", length: "Hit l
 
 /** Usage dashboard: range switch, KPI tiles, daily bars, per-model bars, wait vs generate and finish reasons. */
 export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
-  ({ days, range: rangeProp, defaultRange = "7", onRangeChange, className, ...props }, ref) => {
+  ({ days, range: rangeProp, defaultRange = "7", onRangeChange, locale = "en-US", className, ...props }, ref) => {
     const uid = React.useId();
     const [range, setRange] = useControllableState<UsageRange>({ value: rangeProp, defaultValue: defaultRange, onChange: onRangeChange });
     const slice = days.slice(-Number(range));
@@ -70,7 +72,7 @@ export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
     const chartData = slice.map((d) => ({ day: d.date.slice(5), requests: d.requests }));
 
     return (
-      <div ref={ref} data-range={range} className={cn("space-y-5", className)} {...props}>
+      <div ref={ref} data-slot="usage-summary" data-range={range} className={cn("space-y-5", className)} {...props}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm font-semibold text-foreground">Usage</p>
           <SegmentedControl
@@ -87,7 +89,7 @@ export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
           />
         </div>
         <StatGroup columns={4}>
-          <StatCard size="sm" label="Requests" value={totals.requests.toLocaleString("en-US")} data-stat="requests" />
+          <StatCard size="sm" label="Requests" value={totals.requests.toLocaleString(locale)} data-stat="requests" />
           <StatCard size="sm" label="Tokens" value={formatTokenCount(totals.tokens)} data-stat="tokens" />
           <StatCard size="sm" label="Avg latency" value={formatLatency(avgLatency)} data-stat="latency" />
           <StatCard size="sm" label="Active days" value={String(slice.filter((d) => d.requests > 0).length)} data-stat="days" />
@@ -106,7 +108,7 @@ export const UsageSummary = React.forwardRef<HTMLDivElement, UsageSummaryProps>(
                 <li key={name} className="space-y-1">
                   <div className="flex justify-between gap-2 text-sm">
                     <span className="truncate text-foreground">{name}</span>
-                    <span className="font-mono tabular-nums text-muted-foreground">{n.toLocaleString("en-US")}</span>
+                    <span className="font-mono tabular-nums text-muted-foreground">{n.toLocaleString(locale)}</span>
                   </div>
                   <div aria-hidden="true" className="h-1.5 overflow-hidden rounded-full bg-muted">
                     <div className="h-full rounded-full bg-primary" style={{ width: `${modelMax ? (n / modelMax) * 100 : 0}%` }} />

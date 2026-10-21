@@ -26,6 +26,7 @@ export const ChatSource = React.forwardRef<HTMLAnchorElement, ChatSourceProps>(
       <SourceHoverCard source={{ href, title, snippet, favicon }} disabled={disablePreview}>
         <a
           ref={ref}
+          data-slot="chat-source"
           href={safeHref(href)}
           target="_blank"
           rel="noopener noreferrer"
@@ -68,8 +69,9 @@ export const ChatSourceList = React.forwardRef<HTMLDivElement, ChatSourceListPro
     const domains = sources.map((s) => domainOf(s.href));
     const stack = Array.from(new Set(domains)).slice(0, maxIcons);
     return (
-      <Collapsible.Root ref={ref} className={cn("w-full", className)} {...props}>
+      <Collapsible.Root ref={ref} data-slot="chat-source-list" className={cn("w-full", className)} {...props}>
         <Collapsible.Trigger
+          data-slot="chat-source-trigger"
           className={cn(
             "group/sources inline-flex h-8 items-center gap-2 rounded-control border border-border bg-background ps-1.5 pe-2.5 text-xs font-medium text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-foreground",
             focusRing
@@ -86,7 +88,7 @@ export const ChatSourceList = React.forwardRef<HTMLDivElement, ChatSourceListPro
             className="size-4 chevron-turn group-data-[state=open]/sources:rotate-180"
           />
         </Collapsible.Trigger>
-        <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+        <Collapsible.Content data-slot="chat-source-content" className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
           <ol className="mt-2 flex flex-col gap-0.5 rounded-box border border-border bg-card p-1 shadow-xs">
             {sources.map((source, i) => (
               <li key={`${source.href}-${i}`}>

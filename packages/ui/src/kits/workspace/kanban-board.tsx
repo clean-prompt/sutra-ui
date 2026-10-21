@@ -583,7 +583,7 @@ export const KanbanBoard = React.forwardRef<HTMLDivElement, KanbanBoardProps>(
     };
 
     return (
-      <div ref={setRootRef} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
+      <div ref={setRootRef} className={cn("flex min-w-0 flex-col gap-3", className)} data-slot="kanban-board" {...props}>
         {!hideToolbar && (
           <KanbanToolbar
             board={board}

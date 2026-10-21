@@ -14,7 +14,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { clamp } from "../../lib/math";
-import { formatRelative as formatRelativeLib, safeISO, toValidDate, type FormatRelativeOptions } from "../../lib/time";
+import { formatRelative as formatRelativeLib, isValidDate, safeISO, toValidDate, type FormatRelativeOptions } from "../../lib/time";
 import { useNow } from "../../hooks/use-now";
 import { Button, type ButtonProps } from "../../primitives/button";
 import { useChangeKey } from "../../hooks/use-change-key";
@@ -64,6 +64,7 @@ export const ChatMessageActions = React.forwardRef<HTMLDivElement, ChatMessageAc
     const toolbar = (
       <div
         ref={ref}
+        data-slot="chat-message-actions"
         role="toolbar"
         aria-label="Message actions"
         className={cn(
@@ -101,6 +102,7 @@ export const ChatMessageAction = React.forwardRef<HTMLButtonElement, ChatMessage
   ({ label, pressed, variant = "ghost", className, title, ...props }, ref) => (
     <Button
       ref={ref}
+      data-slot="chat-message-action"
       variant={variant}
       size="icon-xs"
       aria-label={label}
@@ -184,7 +186,7 @@ export const ChatFeedbackActions = React.forwardRef<HTMLDivElement, ChatFeedback
     const changes = useChangeKey(feedback);
     const pop = changes > 0 ? "animate-pop" : undefined;
     return (
-      <div ref={ref} role="group" aria-label="Rate this response" className={cn("flex items-center gap-0.5", className)} {...props}>
+      <div ref={ref} data-slot="chat-feedback-actions" role="group" aria-label="Rate this response" className={cn("flex items-center gap-0.5", className)} {...props}>
         <ChatMessageAction
           label="Good response"
           pressed={feedback === "up"}
@@ -257,6 +259,7 @@ export const ChatBranchSwitcher = React.forwardRef<HTMLDivElement, ChatBranchSwi
     return (
       <div
         ref={ref}
+        data-slot="chat-branch-switcher"
         role="group"
         aria-label="Response versions"
         className={cn("flex items-center text-xs text-muted-foreground", className)}
@@ -393,7 +396,7 @@ export const ChatReactions = React.forwardRef<HTMLDivElement, ChatReactionsProps
     };
     if (readOnly && list.length === 0) return null;
     return (
-      <div ref={ref} role="group" aria-label="Reactions" className={cn("flex flex-wrap items-center gap-1", className)} {...props}>
+      <div ref={ref} data-slot="chat-reactions" role="group" aria-label="Reactions" className={cn("flex flex-wrap items-center gap-1", className)} {...props}>
         {list.map((r) => (
           <EmojiReaction
             key={r.emoji}
@@ -465,11 +468,14 @@ export const MessageTimestampHover = React.forwardRef<HTMLElement, MessageTimest
     const relative = formatRelative ? formatRelative(d, now) : formatRelativeLib(d, { ...MESSAGE_TIME, now });
     const full = formatFull
       ? formatFull(d)
-      : d.toLocaleString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" });
+      : isValidDate(d)
+        ? d.toLocaleString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" })
+        : "—";
     return (
       <SimpleTooltip content={full}>
         <time
           ref={ref as React.Ref<HTMLTimeElement>}
+          data-slot="message-timestamp"
           dateTime={safeISO(d)}
           tabIndex={0}
           className={cn(

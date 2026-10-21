@@ -200,7 +200,8 @@ export class GlobeEngine {
     this.proj = proj;
     this.baseScale = proj.d3.scale();
     this.apply();
-    this.invalidate();
+    // Called from a layout effect: redraw and notify at once so React re-renders the paths and markers before paint.
+    this.draw();
   }
 
   /* ---- subscriptions (useSyncExternalStore) ---- */

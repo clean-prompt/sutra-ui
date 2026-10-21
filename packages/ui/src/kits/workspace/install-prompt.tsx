@@ -40,11 +40,14 @@ export function useInstallPrompt(): UseInstallPromptResult {
   const deferred = React.useRef<BeforeInstallPromptEvent | null>(null);
   const [canInstall, setCanInstall] = React.useState(false);
   const standalone = useMediaQuery("(display-mode: standalone)");
-  const [installedFlag, setInstalled] = React.useState(detectIOSStandalone);
+  // Browser-only facts are read after mount, so the server and the first client render agree (no hydration mismatch).
+  const [installedFlag, setInstalled] = React.useState(false);
   const installed = installedFlag || standalone;
-  const [isIOS] = React.useState(detectIOS);
+  const [isIOS, setIsIOS] = React.useState(false);
 
   React.useEffect(() => {
+    if (detectIOSStandalone()) setInstalled(true);
+    setIsIOS(detectIOS());
     const onPrompt = (event: Event) => {
       event.preventDefault();
       deferred.current = event as BeforeInstallPromptEvent;
@@ -100,7 +103,7 @@ export const InstallButton = React.forwardRef<HTMLButtonElement, InstallButtonPr
       return (
         <Popover>
           <PopoverTrigger asChild>
-            <Button ref={ref} variant={variant} leadingIcon={icon} {...props}>
+            <Button ref={ref} variant={variant} leadingIcon={icon} data-slot="install-button" {...props}>
               {label}
             </Button>
           </PopoverTrigger>
@@ -141,6 +144,7 @@ export const InstallButton = React.forwardRef<HTMLButtonElement, InstallButtonPr
           const outcome = await promptInstall();
           onOutcome?.(outcome);
         }}
+        data-slot="install-button"
         {...props}
       >
         {label}

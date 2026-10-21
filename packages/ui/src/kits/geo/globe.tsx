@@ -246,10 +246,10 @@ export const Globe = React.forwardRef<HTMLDivElement, GlobeProps>(
       });
     });
 
-    const proj = React.useMemo(() => {
-      const p = createProjection("orthographic", { width, height, padding });
-      engine.setProjection(p);
-      return p;
+    // The engine is mutable, so the fitted projection is handed over in a layout effect (never while rendering); it runs before
+    // `mount()` below, which draws, and a size change redraws on the next frame.
+    useIsoLayoutEffect(() => {
+      engine.setProjection(createProjection("orthographic", { width, height, padding }));
     }, [engine, width, height, padding]);
 
     useIsoLayoutEffect(() => {

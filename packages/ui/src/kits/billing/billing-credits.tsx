@@ -90,6 +90,7 @@ export const CreditBalanceCard = React.forwardRef<HTMLElement, CreditBalanceCard
         aria-labelledby={titleId}
         data-low={low || undefined}
         className={cn("flex flex-col gap-4 rounded-box border border-border bg-card p-5 shadow-xs", className)}
+        data-slot="credit-balance-card"
         {...props}
       >
         <div className="flex items-start justify-between gap-4">
@@ -295,6 +296,7 @@ export const CreditAutoReload = React.forwardRef<HTMLElement, CreditAutoReloadPr
         ref={ref}
         aria-labelledby={titleId}
         className={cn("flex flex-col gap-4 rounded-box border border-border bg-card p-5 shadow-xs", className)}
+        data-slot="credit-auto-reload"
         {...props}
       >
         <div className="flex items-start justify-between gap-4">

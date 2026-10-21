@@ -77,7 +77,7 @@ export const NameCheckboxPicker = React.forwardRef<HTMLFieldSetElement, NameChec
     };
 
     return (
-      <fieldset ref={ref} disabled={disabled} className={cn("flex min-w-0 flex-col gap-2", className)} {...props}>
+      <fieldset ref={ref} data-slot="name-checkbox-picker" disabled={disabled} className={cn("flex min-w-0 flex-col gap-2", className)} {...props}>
         <legend className="mb-2 flex w-full items-center justify-between gap-2 text-sm font-medium text-foreground">
           <span>{label}</span>
         </legend>
@@ -259,7 +259,7 @@ export const AgentJobForm = React.forwardRef<HTMLFormElement, AgentJobFormProps>
     const isEdit = !!(value?.id ?? defaultValue?.id);
 
     return (
-      <form ref={ref} noValidate onSubmit={handleSubmit} className={cn("flex flex-col gap-5", className)} {...props}>
+      <form ref={ref} data-slot="agent-job-form" noValidate onSubmit={handleSubmit} className={cn("flex flex-col gap-5", className)} {...props}>
         <Field invalid={!!show("name")} required>
           <FieldLabel>Name</FieldLabel>
           <Input ref={nameRef} value={draft.name} placeholder="Morning briefing" onChange={(e) => patch({ name: e.target.value })} />

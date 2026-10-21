@@ -210,6 +210,7 @@ export const PresenceIndicator = React.forwardRef<HTMLSpanElement, PresenceIndic
         connectionTone[status],
         className
       )}
+      data-slot="presence-indicator"
       {...props}
     >
       {status === "live" ? (

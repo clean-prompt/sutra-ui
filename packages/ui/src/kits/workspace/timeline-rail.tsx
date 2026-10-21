@@ -171,6 +171,7 @@ export const TranscriptTimelineRail = React.forwardRef<HTMLDivElement, Transcrip
         aria-orientation="vertical"
         aria-label={label}
         className={cn("relative flex h-full w-6 shrink-0 justify-center py-2", className)}
+        data-slot="transcript-timeline-rail"
         {...props}
       >
         <span aria-hidden className="absolute inset-y-2 start-1/2 w-px -translate-x-1/2 rtl:translate-x-1/2 bg-border" />

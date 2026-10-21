@@ -478,6 +478,7 @@ export function QuickCapture({
       }}
     >
       <DialogContent
+        data-slot="quick-capture"
         showClose={false}
         className="gap-0 overflow-hidden p-0 sm:top-[18dvh] sm:max-w-xl sm:-translate-y-0 sm:pb-0"
       >

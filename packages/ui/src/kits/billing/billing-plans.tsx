@@ -151,7 +151,7 @@ export const PlanPicker = React.forwardRef<HTMLDivElement, PlanPickerProps>(
     const losses = pending && current ? planFeatureLosses(current, pending) : [];
 
     return (
-      <div ref={ref} className={cn("flex flex-col gap-6", className)} {...props}>
+      <div ref={ref} className={cn("flex flex-col gap-6", className)} data-slot="plan-picker" {...props}>
         {!hideIntervalToggle && (
           <div className="flex flex-wrap items-center justify-center gap-3">
             <SegmentedControl
@@ -348,7 +348,7 @@ function ComparisonValue({ value }: { value: PlanComparisonValue }) {
 /** Feature × plan matrix with grouped sections, check/dash/value cells and a sticky header. */
 export const PlanComparisonTable = React.forwardRef<HTMLTableElement, PlanComparisonTableProps>(
   ({ plans, sections, maxHeight = 560, caption = "Plan comparison", className, ...props }, ref) => (
-    <Table ref={ref} stickyHeader maxHeight={maxHeight} className={className} {...props}>
+    <Table ref={ref} stickyHeader maxHeight={maxHeight} className={className} data-slot="plan-comparison-table" {...props}>
       <caption className="sr-only">{caption}</caption>
       <TableHeader>
         <TableRow>

@@ -107,6 +107,7 @@ export const EntityChip = React.forwardRef<HTMLElement, EntityChipProps>(
     );
 
     const shared = {
+      "data-slot": "entity-chip",
       "data-entity-type": type,
       "data-entity-id": id,
       "data-status": status,
@@ -225,7 +226,7 @@ export interface MentionTextProps extends React.HTMLAttributes<HTMLSpanElement> 
 /** Renders stored mention text with inline EntityChips. */
 export const MentionText = React.forwardRef<HTMLSpanElement, MentionTextProps>(
   ({ value, getHref, renderMention, chipSize = "sm", className, ...props }, ref) => (
-    <span ref={ref} className={cn("whitespace-pre-wrap break-words", className)} {...props}>
+    <span ref={ref} className={cn("whitespace-pre-wrap break-words", className)} data-slot="mention-text" {...props}>
       {parseMentions(value).map((seg, i) =>
         seg.kind === "text" ? (
           <React.Fragment key={i}>{seg.text}</React.Fragment>
@@ -634,6 +635,7 @@ export const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputPr
                 id={id}
                 rows={rows}
                 {...fieldA11y}
+                data-slot="mention-input"
                 {...props}
                 disabled={disabled}
                 value={display}

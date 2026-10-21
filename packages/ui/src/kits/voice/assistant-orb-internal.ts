@@ -1,6 +1,10 @@
 import * as React from "react";
 import { effectiveLevel, orbStillLevel, shouldRipple, smoothLevel, type AssistantOrbState } from "../../lib/orb";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
+import { clamp } from "../../lib/math";
+
+/** A level reading clamped to 0..1; anything that is not a finite number counts as silence. */
+export const clampLevel = (level: number | undefined) => (typeof level === "number" && Number.isFinite(level) ? clamp(level, 0, 1) : 0);
 
 /** A requestAnimationFrame loop that starts on `wake()` and ends when `tick` says it is done, so nothing runs at rest. */
 export interface FrameLoop {

@@ -89,6 +89,7 @@ export const BillingBanner = React.forwardRef<HTMLDivElement, BillingBannerProps
           )
         }
         className={className}
+        data-slot="billing-banner"
         {...props}
       >
         <InlineAlertTitle className="font-semibold">{title ?? bannerTitle(kind, daysLeft)}</InlineAlertTitle>

@@ -15,7 +15,6 @@ import {
   RiPlugLine,
   RiRefreshLine,
   RiServerLine,
-  RiSubtractLine,
   RiThumbDownLine,
   RiThumbUpLine,
   RiToolsLine,
@@ -39,140 +38,9 @@ import { TagInput } from "../../primitives/tag-input";
 import { Textarea } from "../../primitives/textarea";
 import { CapabilityMonogram } from "./capabilities";
 
-/* ------------------------------------------------------------------ */
-/* KeyValueRowsInput                                                   */
-/* ------------------------------------------------------------------ */
+import { KeyValueRowsInput, type KeyValueRowsEntry } from "./key-value-rows-internal";
 
-export interface KeyValueRowsEntry {
-  key: string;
-  value: string;
-}
-
-const SECRET_KEY_RE = /(key|token|secret|password|passwd|auth|credential|bearer)/i;
-
-/** True when an env/header name looks like it holds a secret. */
-export function looksSecretKey(key: string) {
-  return SECRET_KEY_RE.test(key);
-}
-
-export interface KeyValueRowsInputProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue" | "onChange"> {
-  /** Controlled rows as `{ key, value }` entries. */
-  value?: KeyValueRowsEntry[];
-  /** Initial rows when `value` is not controlled. */
-  defaultValue?: KeyValueRowsEntry[];
-  /** Called with the full row list when the user edits, adds or removes a row. */
-  onValueChange?: (rows: KeyValueRowsEntry[]) => void;
-  /** Mask values: always, never, or `"auto"` (keys that look like secrets). Default "auto". */
-  secret?: boolean | "auto";
-  /** Placeholder of the key field in each row. */
-  keyPlaceholder?: string;
-  /** Placeholder of the value field in each row. */
-  valuePlaceholder?: string;
-  /** Label of the button that appends an empty row. */
-  addLabel?: string;
-  /** Accessible name for the group, also used to label row inputs. */
-  label?: string;
-  /** Disables every field and the add and remove buttons. */
-  disabled?: boolean;
-}
-
-/** Repeatable key/value rows with add/remove, duplicate-key detection and optional value masking. */
-export const KeyValueRowsInput = React.forwardRef<HTMLDivElement, KeyValueRowsInputProps>(
-  (
-    {
-      value: valueProp,
-      defaultValue = [],
-      onValueChange,
-      secret = "auto",
-      keyPlaceholder = "KEY",
-      valuePlaceholder = "value",
-      addLabel = "Add row",
-      label = "Variables",
-      disabled,
-      className,
-      ...props
-    },
-    ref
-  ) => {
-    const [rows, setRows] = useControllableState<KeyValueRowsEntry[]>({ value: valueProp, defaultValue, onChange: onValueChange });
-    const counts = new Map<string, number>();
-    for (const r of rows) if (r.key.trim()) counts.set(r.key.trim(), (counts.get(r.key.trim()) ?? 0) + 1);
-    const patch = (i: number, p: Partial<KeyValueRowsEntry>) => setRows(rows.map((r, j) => (j === i ? { ...r, ...p } : r)));
-    return (
-      <div ref={ref} role="group" aria-label={label} data-slot="key-value-rows" className={cn("space-y-2", className)} {...props}>
-        {rows.map((r, i) => {
-          const dup = (counts.get(r.key.trim()) ?? 0) > 1;
-          const masked = secret === true || (secret === "auto" && looksSecretKey(r.key));
-          const n = i + 1;
-          return (
-            <div key={i} className="flex items-start gap-2" data-row={i}>
-              <div className="w-2/5 min-w-0">
-                <Input
-                  size="sm"
-                  value={r.key}
-                  onChange={(e) => patch(i, { key: e.target.value })}
-                  placeholder={keyPlaceholder}
-                  aria-label={`${label} ${n} key`}
-                  invalid={dup}
-                  disabled={disabled}
-                  className="font-mono"
-                  spellCheck={false}
-                />
-                {dup && <p className="mt-1 text-xs text-destructive">Duplicate key</p>}
-              </div>
-              <div className="min-w-0 flex-1">
-                {masked ? (
-                  <PasswordInput
-                    size="sm"
-                    value={r.value}
-                    onChange={(e) => patch(i, { value: e.target.value })}
-                    placeholder={valuePlaceholder}
-                    aria-label={`${label} ${n} value`}
-                    disabled={disabled}
-                    autoComplete="off"
-                    className="font-mono"
-                  />
-                ) : (
-                  <Input
-                    size="sm"
-                    value={r.value}
-                    onChange={(e) => patch(i, { value: e.target.value })}
-                    placeholder={valuePlaceholder}
-                    aria-label={`${label} ${n} value`}
-                    disabled={disabled}
-                    className="font-mono"
-                    spellCheck={false}
-                  />
-                )}
-              </div>
-              <Button
-                type="button"
-                size="icon-sm"
-                variant="ghost"
-                aria-label={`Remove ${label} ${n}`}
-                disabled={disabled}
-                onClick={() => setRows(rows.filter((_, j) => j !== i))}
-              >
-                <RiSubtractLine aria-hidden />
-              </Button>
-            </div>
-          );
-        })}
-        <Button
-          type="button"
-          size="xs"
-          variant="ghost"
-          leadingIcon={<RiAddLine aria-hidden />}
-          disabled={disabled}
-          onClick={() => setRows([...rows, { key: "", value: "" }])}
-        >
-          {addLabel}
-        </Button>
-      </div>
-    );
-  }
-);
-KeyValueRowsInput.displayName = "KeyValueRowsInput";
+export { KeyValueRowsInput, looksSecretKey, type KeyValueRowsEntry, type KeyValueRowsInputProps } from "./key-value-rows-internal";
 
 /* ------------------------------------------------------------------ */
 /* MCP config model + parsing                                          */
@@ -393,7 +261,7 @@ export const McpServerForm = React.forwardRef<HTMLFormElement, McpServerFormProp
         });
         setPasteOpen(false);
       } catch (e) {
-        setPasteMsg({ ok: false, text: e instanceof Error ? e.message : "Could not parse" });
+        setPasteMsg({ ok: false, text: errorMessage(e, "Could not parse") });
       }
     };
 
@@ -662,7 +530,7 @@ export const McpServerCard = React.forwardRef<HTMLDivElement, McpServerCardProps
       try {
         setResult(await onTest());
       } catch (e) {
-        setResult({ ok: false, error: e instanceof Error ? e.message : "Test failed" });
+        setResult({ ok: false, error: errorMessage(e, "Test failed") });
       } finally {
         setTesting(false);
       }
@@ -1129,7 +997,7 @@ function AccountAlias({
       await onRename?.(account.id, next);
       setEditing(false);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Couldn't rename");
+      setError(errorMessage(e, "Couldn't rename"));
     }
   };
   if (!editing) {

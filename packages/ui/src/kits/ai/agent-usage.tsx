@@ -366,6 +366,8 @@ export interface SessionStatsProps extends Omit<React.HTMLAttributes<HTMLDListEl
   cost?: number;
   /** ISO 4217 code used to format `cost`. Default "USD". */
   currency?: string;
+  /** BCP 47 locale used to format `cost`. Default "en-US". */
+  locale?: string;
   /** Time spent waiting on the API, in ms; the row is hidden when unset. */
   apiDurationMs?: number;
   /** Elapsed wall-clock time of the session, in ms; the row is hidden when unset. */
@@ -380,12 +382,12 @@ export interface SessionStatsProps extends Omit<React.HTMLAttributes<HTMLDListEl
 
 /** Cost, API vs wall duration and code changes, as a key/value summary. */
 export const SessionStats = React.forwardRef<HTMLDListElement, SessionStatsProps>(
-  ({ cost, currency = "USD", apiDurationMs, wallDurationMs, linesAdded, linesRemoved, extra = [], className, ...props }, ref) => {
+  ({ cost, currency = "USD", locale = "en-US", apiDurationMs, wallDurationMs, linesAdded, linesRemoved, extra = [], className, ...props }, ref) => {
     const rows: SessionStatsItem[] = [];
     if (cost != null) {
       rows.push({
         label: "Total cost",
-        value: formatCost(cost, { currency, locale: "en-US", maxFraction: cost < 1 ? 4 : 2, tiny: 0 }),
+        value: formatCost(cost, { currency, locale, maxFraction: cost < 1 ? 4 : 2, tiny: 0 }),
       });
     }
     if (apiDurationMs != null) rows.push({ label: "API duration", value: formatDuration(apiDurationMs, { ms: true, pad: true }) });

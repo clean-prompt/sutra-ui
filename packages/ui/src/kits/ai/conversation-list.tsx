@@ -194,7 +194,7 @@ export const ConversationRow = React.forwardRef<HTMLLIElement, ConversationRowPr
     const startEditing = () => setEditing(true);
 
     return (
-      <li ref={ref} data-active={active || undefined} className={cn(conversationRowClass({ active }), className)} {...props}>
+      <li ref={ref} data-slot="conversation-row" data-active={active || undefined} className={cn(conversationRowClass({ active }), className)} {...props}>
         {editing ? (
           <div className="flex-1 p-0.5">
             <InlineEditText
@@ -413,7 +413,7 @@ export const ConversationGroupHeader = React.forwardRef<HTMLDivElement, Conversa
     });
     const showRenameButton = renameButton ?? !!onRename;
     return (
-      <div ref={ref} className={cn("group/folder flex items-center gap-0.5 rounded-control", className)} {...props}>
+      <div ref={ref} data-slot="conversation-group-header" className={cn("group/folder flex items-center gap-0.5 rounded-control", className)} {...props}>
         {editing ? (
           <div className="flex-1 p-0.5">
             <InlineEditText
@@ -684,12 +684,13 @@ export const ConversationList = React.forwardRef<HTMLDivElement, ConversationLis
       live.length === 0 && archived.length === 0 && !(groupBy === "folder" && !q && folders.length > 0);
 
     return (
-      <div ref={ref} className={cn("flex min-h-0 flex-col gap-2 text-sm", className)} {...props}>
+      <div ref={ref} data-slot="conversation-list" className={cn("flex min-h-0 flex-col gap-2 text-sm", className)} {...props}>
         {searchable && (
           <div className="relative px-2">
             <RiSearchLine aria-hidden className="pointer-events-none absolute start-4.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="search"
+              data-slot="conversation-list-search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={searchPlaceholder}
@@ -702,6 +703,7 @@ export const ConversationList = React.forwardRef<HTMLDivElement, ConversationLis
           </div>
         )}
         <nav
+          data-slot="conversation-list-nav"
           aria-label={ariaLabelledby ? undefined : ariaLabel}
           aria-labelledby={ariaLabelledby}
           className="scrollbar-thin flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-2 pb-2"

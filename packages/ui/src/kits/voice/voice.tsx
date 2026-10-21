@@ -5,7 +5,7 @@ import { clamp } from "../../lib/math";
 import { normalizeTone, toneClasses, type ToneInput } from "../../lib/tone";
 import { formatClock } from "../../lib/duration";
 import { useNow } from "../../hooks/use-now";
-import { useMountedRef } from "../../hooks/use-async-action";
+import { errorMessage, useMountedRef } from "../../hooks/use-async-action";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
 import { Button, type ButtonProps } from "../../primitives/button";
 
@@ -154,7 +154,7 @@ export function useSpeechRecognition(options: UseSpeechRecognitionOptions = {}):
       rec.start();
       setListening(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "start-failed");
+      setError(errorMessage(err, "start-failed"));
       setListening(false);
     }
   }, [lang, continuous, interimResults]);

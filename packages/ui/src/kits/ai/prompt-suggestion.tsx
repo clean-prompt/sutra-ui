@@ -43,6 +43,7 @@ export const PromptSuggestion = React.forwardRef<HTMLButtonElement, PromptSugges
       return (
         <button
           ref={ref}
+          data-slot="prompt-suggestion"
           type={type ?? "button"}
           className={cn(
             "flex h-9 w-full items-center gap-2.5 rounded-control px-3 text-start text-sm text-muted-foreground transition-colors hover:bg-accent [&_svg]:size-4 [&_svg]:shrink-0",
@@ -61,6 +62,7 @@ export const PromptSuggestion = React.forwardRef<HTMLButtonElement, PromptSugges
       return (
         <button
           ref={ref}
+          data-slot="prompt-suggestion"
           type={type ?? "button"}
           className={cn(
             "group/suggestion flex w-full items-center gap-3 rounded-control px-3 py-2.5 text-start text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-4 [&_svg]:shrink-0",
@@ -82,6 +84,7 @@ export const PromptSuggestion = React.forwardRef<HTMLButtonElement, PromptSugges
     return (
       <button
         ref={ref}
+        data-slot="prompt-suggestion"
         type={type ?? "button"}
         className={cn(
           "inline-flex h-9 max-w-full items-center gap-2 rounded-control border border-border bg-background px-3.5 text-sm text-foreground shadow-xs",
@@ -112,6 +115,7 @@ export const PromptSuggestionGroup = React.forwardRef<HTMLDivElement, PromptSugg
       <div
         ref={ref}
         role="group"
+        data-slot="prompt-suggestion-group"
         data-variant={variant}
         className={cn(
           variant === "wrap"

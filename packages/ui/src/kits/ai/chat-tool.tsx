@@ -111,11 +111,13 @@ export const ChatTool = React.forwardRef<HTMLDivElement, ChatToolProps>(
     return (
       <Collapsible.Root
         ref={ref}
+        data-slot="chat-tool"
         data-tool-state={state}
         className={cn("w-full overflow-hidden rounded-box border border-border bg-card shadow-xs", className)}
         {...props}
       >
         <Collapsible.Trigger
+          data-slot="chat-tool-trigger"
           disabled={!hasBody}
           className={cn(
             "group/tool flex w-full items-center gap-2.5 px-3 py-2.5 text-start text-sm transition-colors enabled:hover:bg-subtle",
@@ -141,7 +143,7 @@ export const ChatTool = React.forwardRef<HTMLDivElement, ChatToolProps>(
           )}
         </Collapsible.Trigger>
         {hasBody && (
-          <Collapsible.Content className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+          <Collapsible.Content data-slot="chat-tool-content" className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
             <div className="flex flex-col gap-3 border-t border-border px-3 py-3">
               {children ?? (
                 <>
@@ -261,6 +263,7 @@ export const ChatToolApproval = React.forwardRef<HTMLDivElement, ChatToolApprova
     <div
       ref={ref}
       role="group"
+      data-slot="chat-tool-approval"
       data-status={status}
       className={cn(
         "w-full overflow-hidden rounded-box border bg-card shadow-xs",

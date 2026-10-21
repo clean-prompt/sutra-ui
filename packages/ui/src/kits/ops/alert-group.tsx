@@ -155,6 +155,7 @@ export const AlertGroup = React.forwardRef<HTMLElement, AlertGroupProps>(
                 : "border-border bg-card",
             className
           )}
+          data-slot="alert-group"
           {...props}
         >
           <div className="flex items-center gap-2 pe-2">

@@ -15,6 +15,8 @@ import { Button } from "../../primitives/button";
 import { Spinner } from "../../primitives/spinner";
 import { Progress } from "../../primitives/progress";
 import { Steps } from "../../primitives/step-indicator";
+import { isSafeHref } from "../../lib/validate";
+import { errorMessage } from "../../hooks/use-async-action";
 
 /* ------------------------------------------------------------------ */
 /* OnboardingChecklist                                                 */
@@ -53,6 +55,7 @@ export const OnboardingChecklist = React.forwardRef<HTMLDivElement, OnboardingCh
     return (
       <div
         ref={ref}
+        data-slot="onboarding-checklist"
         role="region"
         aria-labelledby={titleId}
         className={cn("w-full rounded-box border border-border bg-card p-4 shadow-xs", className)}
@@ -166,6 +169,7 @@ export const ConnectionState = React.forwardRef<HTMLDivElement, ConnectionStateP
     return (
       <div
         ref={ref}
+        data-slot="connection-state"
         role={isError ? "alert" : "status"}
         data-state={state}
         className={cn(
@@ -286,7 +290,7 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
         setLocalStatus("success");
       } catch (err) {
         setLocalStatus("error");
-        setLocalError(err instanceof Error ? err.message : "Sign-in failed. Try again.");
+        setLocalError(errorMessage(err, "Sign-in failed. Try again."));
       }
     };
 
@@ -302,7 +306,7 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
 
     if (status === "success") {
       return (
-        <div ref={ref} role="status" className={cn("flex w-full items-center gap-2 rounded-box border border-border bg-card p-4 text-sm", className)} {...props}>
+        <div ref={ref} data-slot="paste-code-auth" role="status" className={cn("flex w-full items-center gap-2 rounded-box border border-border bg-card p-4 text-sm", className)} {...props}>
           <span aria-hidden className="flex size-6 items-center justify-center rounded-full bg-success text-success-foreground">
             <RiCheckLine aria-hidden className="size-4" />
           </span>
@@ -313,7 +317,7 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
 
     const busy = status === "submitting";
     return (
-      <div ref={ref} className={cn("w-full space-y-4 rounded-box border border-border bg-card p-4 shadow-xs", className)} {...props}>
+      <div ref={ref} data-slot="paste-code-auth" className={cn("w-full space-y-4 rounded-box border border-border bg-card p-4 shadow-xs", className)} {...props}>
         <h3 className="text-sm font-semibold text-foreground">{title}</h3>
         <ol className="space-y-4">
           <li className="flex gap-3">
@@ -333,7 +337,7 @@ export const PasteCodeAuth = React.forwardRef<HTMLDivElement, PasteCodeAuthProps
                   </Button>
                 ) : (
                   <Button variant="secondary" size="sm" asChild>
-                    <a href={url} target="_blank" rel="noreferrer noopener">
+                    <a href={isSafeHref(url) ? url : undefined} target="_blank" rel="noreferrer noopener">
                       Open
                       <RiExternalLinkLine aria-hidden />
                     </a>

@@ -195,7 +195,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
 
     if (items.length === 0) {
       return (
-        <div ref={ref} className={cn("rounded-box border border-border bg-card", className)} {...props}>
+        <div ref={ref} className={cn("rounded-box border border-border bg-card", className)} data-slot="today-timeline" {...props}>
           {title && <div className="border-b border-border px-4 py-3 text-sm font-semibold">{title}</div>}
           {emptyState ?? (
             <div className="flex flex-col items-center gap-1.5 px-6 py-12 text-center">
@@ -213,6 +213,7 @@ export const TodayTimeline = React.forwardRef<HTMLDivElement, TodayTimelineProps
         ref={ref}
         data-density={density}
         className={cn("flex flex-col rounded-box border border-border bg-card text-sm", className)}
+        data-slot="today-timeline"
         {...props}
       >
         {title && <div className="border-b border-border px-4 py-3 text-sm font-semibold">{title}</div>}

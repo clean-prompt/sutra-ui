@@ -84,6 +84,7 @@ export const OrchestrationPanel = React.forwardRef<HTMLElement, OrchestrationPan
         ref={ref}
         aria-labelledby={headingId}
         className={cn("flex flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs", className)}
+        data-slot="orchestration-panel"
         {...props}
       >
         <h3 id={headingId} className="flex items-center gap-1.5 text-sm font-semibold">

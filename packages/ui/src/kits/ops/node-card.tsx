@@ -71,7 +71,7 @@ export const NodeMetricTile = React.forwardRef<HTMLDivElement, NodeMetricTilePro
       valueText ??
       (value == null ? "—" : max === 100 && !unit ? `${trim(value)}%` : `${trim(value)} / ${trim(max)}${unit ? ` ${unit}` : ""}`);
     return (
-      <div ref={ref} className={cn("min-w-0 rounded-md border border-border bg-subtle p-2.5", className)} {...props}>
+      <div ref={ref} className={cn("min-w-0 rounded-md border border-border bg-subtle p-2.5", className)} data-slot="node-metric-tile" {...props}>
         <div className="mb-1.5 flex items-center justify-between gap-2">
           <span className="inline-flex min-w-0 items-center gap-1 text-2xs font-semibold uppercase tracking-wider text-muted-foreground [&_svg]:size-3">
             {icon}
@@ -134,7 +134,7 @@ export interface NodeMiniChartProps extends Omit<React.HTMLAttributes<HTMLDivEle
 /** Compact labelled area sparkline for node history (CPU, network …). */
 export const NodeMiniChart = React.forwardRef<HTMLDivElement, NodeMiniChartProps>(
   ({ className, label, data, value, color = "primary", height = 36, min = 0, max, ...props }, ref) => (
-    <div ref={ref} className={cn("min-w-0 rounded-md border border-border bg-subtle px-2.5 pt-2", className)} {...props}>
+    <div ref={ref} className={cn("min-w-0 rounded-md border border-border bg-subtle px-2.5 pt-2", className)} data-slot="node-mini-chart" {...props}>
       <div className="flex items-center justify-between text-2xs">
         <span className="font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
         {value != null ? <span className="font-mono tabular-nums text-foreground">{value}</span> : null}
@@ -263,6 +263,7 @@ export const NodeCard = React.forwardRef<HTMLDivElement, NodeCardProps>(
           status === "error" && "border-destructive/40",
           className
         )}
+        data-slot="node-card"
         {...props}
       >
         <div className="flex items-start gap-3 p-4 pb-3">
@@ -361,6 +362,7 @@ export const NodeGrid = React.forwardRef<HTMLDivElement, NodeGridProps>(
       ref={ref}
       className={cn("grid", gap === "sm" ? "gap-2" : gap === "lg" ? "gap-6" : "gap-4", className)}
       style={{ gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${minCardWidth}px), 1fr))`, ...style }}
+      data-slot="node-grid"
       {...props}
     />
   )
@@ -423,6 +425,7 @@ export const GpuCard = React.forwardRef<HTMLDivElement, GpuCardProps>(
         role="group"
         aria-labelledby={headingId}
         className={cn("flex min-w-0 flex-col gap-3 rounded-box border border-border bg-card p-4 shadow-xs", className)}
+        data-slot="gpu-card"
         {...props}
       >
         <div className="flex items-start justify-between gap-3">
@@ -516,6 +519,7 @@ export const ResourceHero = React.forwardRef<HTMLDivElement, ResourceHeroProps>(
       <div
         ref={ref}
         className={cn("flex flex-col gap-4 rounded-box border border-border bg-card p-5 shadow-xs sm:p-6", className)}
+        data-slot="resource-hero"
         {...props}
       >
         <div className="flex flex-wrap items-start gap-4">

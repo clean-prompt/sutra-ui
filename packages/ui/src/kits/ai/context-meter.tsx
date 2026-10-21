@@ -105,6 +105,7 @@ export const ContextMeter = React.forwardRef<HTMLButtonElement, ContextMeterProp
           <button
             ref={ref}
             type="button"
+            data-slot="context-meter"
             data-level={level}
             aria-label={`Context window ${pctText} full`}
             className={cn(

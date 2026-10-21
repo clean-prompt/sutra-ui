@@ -628,7 +628,7 @@ export const AgentSessionList = React.forwardRef<HTMLDivElement, AgentSessionLis
     const empty = visible.length === 0 && (filtering || groups.length === 0);
 
     return (
-      <div ref={ref} className={cn("flex min-h-0 w-full flex-col gap-2 text-sm", className)} {...props}>
+      <div ref={ref} data-slot="agent-session-list" className={cn("flex min-h-0 w-full flex-col gap-2 text-sm", className)} {...props}>
         <div className="flex flex-wrap items-center gap-1">
           <h2 id={titleId} className="me-auto px-1 text-sm font-semibold text-foreground">
             {title}

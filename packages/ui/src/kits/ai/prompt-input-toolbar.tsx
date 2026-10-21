@@ -10,7 +10,7 @@ import { usePromptInput } from "./prompt-input-internal";
 /** Bottom row of the composer: tools on the left, submit on the right. */
 export const PromptInputToolbar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("flex items-center justify-between gap-2 px-2.5 pb-2.5", className)} {...props} />
+    <div ref={ref} data-slot="prompt-input-toolbar" className={cn("flex items-center justify-between gap-2 px-2.5 pb-2.5", className)} {...props} />
   )
 );
 PromptInputToolbar.displayName = "PromptInputToolbar";
@@ -18,7 +18,7 @@ PromptInputToolbar.displayName = "PromptInputToolbar";
 /** Left-hand group of toolbar buttons. */
 export const PromptInputTools = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("flex min-w-0 items-center gap-1", className)} {...props} />
+    <div ref={ref} data-slot="prompt-input-tools" className={cn("flex min-w-0 items-center gap-1", className)} {...props} />
   )
 );
 PromptInputTools.displayName = "PromptInputTools";
@@ -37,6 +37,7 @@ export const PromptInputButton = React.forwardRef<HTMLButtonElement, PromptInput
     return (
       <Button
         ref={ref}
+        data-slot="prompt-input-button"
         variant={variant}
         size={size ?? (iconOnly ? "icon-sm" : "sm")}
         aria-label={label}
@@ -74,6 +75,7 @@ export const PromptInputAttachButton = React.forwardRef<HTMLButtonElement, Promp
       <>
         <PromptInputButton
           ref={ref}
+          data-slot="prompt-input-attach-button"
           label={label}
           disabled={disabled ?? !acceptsFiles}
           onClick={(e) => {
@@ -121,6 +123,7 @@ export const PromptInputSubmit = React.forwardRef<HTMLButtonElement, PromptInput
     return (
       <Button
         ref={ref}
+        data-slot="prompt-input-submit"
         type={stopping ? "button" : "submit"}
         variant="primary"
         size="icon-sm"

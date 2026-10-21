@@ -440,6 +440,7 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>(
         )}
         style={style}
         dir="ltr"
+        data-slot="terminal"
         {...props}
       >
         {!hideHeader ? (
@@ -568,7 +569,7 @@ export const TerminalSessionPicker = React.forwardRef<HTMLDivElement, TerminalSe
     };
 
     return (
-      <div ref={ref} className={cn("flex min-w-0 flex-col gap-2", className)} {...props}>
+      <div ref={ref} className={cn("flex min-w-0 flex-col gap-2", className)} data-slot="terminal-session-picker" {...props}>
         {loading ? (
           <div role="status" className="flex items-center gap-2 px-2 py-3 text-xs text-muted-foreground">
             <Spinner size="xs" aria-hidden /> Loading sessions…

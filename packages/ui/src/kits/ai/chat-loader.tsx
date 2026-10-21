@@ -48,6 +48,7 @@ export const ChatLoader = React.forwardRef<HTMLDivElement, ChatLoaderProps>(
     return (
       <div
         ref={ref}
+        data-slot="chat-loader"
         role="status"
         aria-live="polite"
         className={cn("inline-flex min-h-7 items-center gap-2.5 text-muted-foreground", textSize[size], className)}

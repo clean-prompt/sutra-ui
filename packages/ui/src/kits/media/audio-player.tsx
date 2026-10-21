@@ -17,6 +17,7 @@ import {
 } from "@remixicon/react";
 import { cn, focusRing } from "../../lib/cn";
 import { formatClock } from "../../lib/duration";
+import { logicalArrow } from "../../lib/direction";
 import { reorderArray } from "../../lib/reorder";
 import { Progress } from "../../primitives/progress";
 import { useControllableState } from "../../hooks/use-controllable-state";
@@ -502,20 +503,41 @@ export const MiniPlayer = React.forwardRef<HTMLDivElement, MiniPlayerProps>((all
       className={cn("relative touch-pan-x", layout === "auto" && "@3xl:hidden")}
       {...swipe}
     >
-      <Progress
-        size="xs"
-        value={pct}
-        aria-label="Playback progress"
-        aria-valuemax={Math.round(total)}
-        aria-valuenow={Math.round(Math.min(currentTime, total))}
-        aria-valuetext={total > 0 ? `${formatClock(currentTime)} of ${formatClock(total)}` : formatClock(currentTime)}
-        onClick={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          if (rect.width > 0 && total > 0) onSeek?.(((e.clientX - rect.left) / rect.width) * total);
-        }}
-        className="absolute inset-x-0 top-0 cursor-pointer rounded-none"
-        indicatorClassName="rounded-none duration-200"
-      />
+      {/* An LTR island like the full layout's SeekBar: the fill, the click position and the arrow keys all read left to right. */}
+      <div dir="ltr" className="absolute inset-x-0 top-0">
+        <Progress
+          size="xs"
+          value={pct}
+          {...(onSeek && total > 0 ? { role: "slider", tabIndex: 0 } : null)}
+          aria-label="Playback progress"
+          aria-valuemin={0}
+          aria-valuemax={Math.round(total)}
+          aria-valuenow={Math.round(Math.min(currentTime, total))}
+          aria-valuetext={total > 0 ? `${formatClock(currentTime)} of ${formatClock(total)}` : formatClock(currentTime)}
+          onClick={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            if (rect.width > 0 && total > 0) onSeek?.(Math.max(0, Math.min(total, ((e.clientX - rect.left) / rect.width) * total)));
+          }}
+          onKeyDown={(e) => {
+            if (!onSeek || total <= 0) return;
+            const big = Math.max(5, total / 10);
+            const key = logicalArrow(e);
+            const next =
+              key === "ArrowLeft" || key === "ArrowDown" ? currentTime - 5
+              : key === "ArrowRight" || key === "ArrowUp" ? currentTime + 5
+              : key === "PageDown" ? currentTime - big
+              : key === "PageUp" ? currentTime + big
+              : key === "Home" ? 0
+              : key === "End" ? total
+              : null;
+            if (next === null) return;
+            e.preventDefault();
+            onSeek(Math.max(0, Math.min(total, next)));
+          }}
+          className={cn("cursor-pointer rounded-none", onSeek && total > 0 && focusRing)}
+          indicatorClassName="rounded-none duration-200"
+        />
+      </div>
       <div className="flex items-center gap-2 px-3 pb-2 pt-3">
         {onExpand ? (
           <button

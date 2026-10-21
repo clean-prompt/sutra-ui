@@ -191,6 +191,7 @@ export const PromptInput = React.forwardRef<HTMLFormElement, PromptInputProps>(
       <PromptInputContext.Provider value={ctx}>
         <form
           ref={ref}
+          data-slot="prompt-input"
           data-loading={loading || undefined}
           data-dragging={dragging || undefined}
           aria-disabled={disabled || undefined}

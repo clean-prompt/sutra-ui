@@ -87,7 +87,7 @@ export const ShareCodeControls = React.forwardRef<HTMLDivElement, ShareCodeContr
   const [loaded, setLoaded] = React.useState(false);
   const ids = { code: React.useId(), input: React.useId(), error: React.useId() };
   return (
-    <div ref={ref} className={cn("flex flex-col gap-3", className)} {...props}>
+    <div ref={ref} className={cn("flex flex-col gap-3", className)} data-slot="share-code-controls" {...props}>
       <div className="flex flex-col gap-1.5">
         <label htmlFor={ids.code} className="text-sm font-medium">
           Share code

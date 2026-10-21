@@ -83,6 +83,7 @@ export const ModelStateGlyph = React.forwardRef<SVGSVGElement, ModelStateGlyphPr
   return (
     <svg
       ref={ref}
+      data-slot="model-state-glyph"
       role="img"
       aria-label={label}
       width={size}

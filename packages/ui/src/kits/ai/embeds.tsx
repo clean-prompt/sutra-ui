@@ -604,7 +604,7 @@ export const RichEmbed = React.forwardRef<HTMLDivElement, RichEmbedProps>(
                 <div className="truncate text-xs text-muted-foreground">{domain}</div>
               </div>
               <a
-                href={url}
+                href={isSafeHref(url) ? url : undefined}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
                 aria-label={`Open on ${domain}`}

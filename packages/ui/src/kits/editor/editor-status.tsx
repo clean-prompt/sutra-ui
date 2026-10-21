@@ -9,7 +9,7 @@ import {
 } from "@remixicon/react";
 import { cn } from "../../lib/cn";
 import { pluralize } from "../../lib/format";
-import { formatRelative } from "../../lib/time";
+import { formatRelative, toValidDate } from "../../lib/time";
 import { useChangeKey } from "../../hooks/use-change-key";
 import { useNow } from "../../hooks/use-now";
 import { Button } from "../../primitives/button";
@@ -127,7 +127,7 @@ export const SaveStatus = React.forwardRef<HTMLDivElement, SaveStatusProps>(
     const text = { ...defaultLabels, ...labels };
     const relative = status === "saved" && savedAt != null && !labels?.saved;
     const label = relative ? formatSavedAgo(savedAt, now ?? tick) : text[status];
-    const savedTitle = savedAt != null ? new Date(savedAt).toLocaleString() : undefined;
+    const savedTitle = savedAt != null ? toValidDate(savedAt)?.toLocaleString() : undefined;
     const btn = size === "sm" ? "xs" : "sm";
 
     // The icon pops in when the status changes, never on the first render. The spinner keeps its own animation.

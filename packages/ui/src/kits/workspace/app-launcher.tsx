@@ -229,7 +229,7 @@ export const AppLauncher = React.forwardRef<HTMLDivElement, AppLauncherProps>(
     };
 
     return (
-      <div ref={ref} className={cn("flex flex-col gap-3", className)} {...props}>
+      <div ref={ref} className={cn("flex flex-col gap-3", className)} data-slot="app-launcher" {...props}>
         {searchable ? (
           <SearchInput
             size="sm"
@@ -349,7 +349,7 @@ export function AppLauncherMenu({
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent align={align} size="auto" className={cn("w-80 p-3", className)} aria-label={label}>
+      <PopoverContent align={align} size="auto" data-slot="app-launcher-menu" className={cn("w-80 p-3", className)} aria-label={label}>
         <AppLauncher
           items={items}
           columns={3}

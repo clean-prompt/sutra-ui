@@ -39,7 +39,10 @@ export function formatAgentElapsed(ms: number) {
 
 export { formatAgentTokens };
 
-/** Current time, re-rendered every `interval` ms while `active`. */
+/**
+ * Current time, re-rendered every `interval` ms while `active`.
+ * @deprecated Use `useNow({ active, interval })` from `hooks/use-now`.
+ */
 export function useAgentNow(active = true, interval = 1000) {
   return useNow({ active, interval });
 }
@@ -330,7 +333,7 @@ export interface AgentRosterRowProps extends React.HTMLAttributes<HTMLLIElement>
 export const AgentRosterRow = React.forwardRef<HTMLLIElement, AgentRosterRowProps>(
   ({ agent, now: nowProp, onOpenTranscript, onStop, className, ...props }, ref) => {
     const live = agent.status === "running" || agent.status === "waiting";
-    const ticking = useAgentNow(nowProp === undefined && live && agent.endedAt == null);
+    const ticking = useNow({ active: nowProp === undefined && live && agent.endedAt == null });
     const now = nowProp ?? ticking;
     const start = toMs(agent.startedAt) ?? now;
     const end = toMs(agent.endedAt) ?? now;
@@ -574,7 +577,7 @@ export const BackgroundTaskRow = React.forwardRef<HTMLDivElement, BackgroundTask
   ) => {
     const lifecycle = status === "killed" ? "killed" : normalizeTaskStatus(status);
     const running = lifecycle === "running";
-    const ticking = useAgentNow(nowProp === undefined && running && endedAt == null);
+    const ticking = useNow({ active: nowProp === undefined && running && endedAt == null });
     const now = nowProp ?? ticking;
     const start = toMs(startedAt) ?? now;
     const end = toMs(endedAt) ?? now;

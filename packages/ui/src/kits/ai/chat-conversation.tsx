@@ -25,7 +25,7 @@ export const ChatConversation = React.forwardRef<HTMLDivElement, ChatConversatio
     const state = useStickToBottom({ threshold, resize, initial });
     return (
       <ChatConversationContext.Provider value={state}>
-        <div ref={ref} className={cn("relative min-h-0 flex-1 overflow-hidden", className)} {...props} />
+        <div ref={ref} data-slot="chat-conversation" className={cn("relative min-h-0 flex-1 overflow-hidden", className)} {...props} />
       </ChatConversationContext.Provider>
     );
   }
@@ -51,6 +51,7 @@ export const ChatConversationContent = React.forwardRef<HTMLDivElement, ChatConv
     return (
       <div
         ref={setViewport}
+        data-slot="chat-conversation-viewport"
         role="log"
         aria-live="polite"
         aria-relevant="additions"
@@ -58,6 +59,7 @@ export const ChatConversationContent = React.forwardRef<HTMLDivElement, ChatConv
       >
         <div
           ref={contentRef}
+          data-slot="chat-conversation-content"
           className={cn(
             "mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-6",
             // The newest message rises in; earlier ones stay put. motion-safe because the global reduced-motion net acts on the element that carries the class, not on the child this variant reaches. A decorative last child (a Skeleton is aria-hidden) keeps its own loop.
@@ -84,6 +86,7 @@ export const ChatScrollButton = React.forwardRef<HTMLButtonElement, ChatScrollBu
     return (
       <Button
         ref={ref}
+        data-slot="chat-scroll-button"
         variant="secondary"
         size="icon-sm"
         aria-label={label}

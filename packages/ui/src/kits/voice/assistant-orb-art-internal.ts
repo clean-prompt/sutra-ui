@@ -31,7 +31,7 @@ import {
   type OrbLevelAt,
 } from "../../lib/orb-art-internal";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
-import { createFrameLoop, type FrameLoop, type OrbVisibility } from "./assistant-orb-internal";
+import { clampLevel, createFrameLoop, type FrameLoop, type OrbVisibility } from "./assistant-orb-internal";
 
 const TAU = Math.PI * 2;
 
@@ -945,7 +945,6 @@ function drawHalftone(ctx: CanvasRenderingContext2D, w: number, h: number, f: Ar
 /* The hook                                                            */
 /* ------------------------------------------------------------------ */
 
-const clampLevel = (level: number | undefined) => (typeof level === "number" && Number.isFinite(level) ? clamp(level, 0, 1) : 0);
 
 /** Pixel ratio cap of the ink looks (they redraw every frame; 2 is crisp and keeps the fill cost down). */
 export const ART_MAX_DPR = 2;

@@ -173,6 +173,7 @@ export const WorkspaceProfileSwitcher = React.forwardRef<HTMLButtonElement, Work
               focusRing,
               className
             )}
+            data-slot="workspace-profile-switcher"
             {...props}
           >
             {current ? (
@@ -347,6 +348,7 @@ export const ProfileScopeBanner = React.forwardRef<HTMLDivElement, ProfileScopeB
         )
       }
       className={cn("z-40", sticky && "sticky top-0", className)}
+      data-slot="profile-scope-banner"
       {...props}
     >
       <p className="min-w-0">
@@ -510,7 +512,7 @@ export const ConnectionRegistry = React.forwardRef<HTMLDivElement, ConnectionReg
     const fieldId = (name: string) => `${uid}-${name}`;
 
     return (
-      <div ref={ref} className={cn("flex flex-col gap-4", className)} {...props}>
+      <div ref={ref} className={cn("flex flex-col gap-4", className)} data-slot="connection-registry" {...props}>
         <div className="flex items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-semibold text-foreground">Remote gateways</h3>
@@ -851,6 +853,7 @@ export const GatewayStatusPopover = React.forwardRef<HTMLButtonElement, GatewayS
               focusRing,
               className
             )}
+            data-slot="gateway-status-popover"
             {...props}
           >
             <span aria-hidden className={cn("size-2 shrink-0 rounded-full", meta.dot)} />

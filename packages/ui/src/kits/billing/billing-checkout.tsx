@@ -143,7 +143,7 @@ export const CheckoutSteps = React.forwardRef<HTMLDivElement, CheckoutStepsProps
     };
 
     return (
-      <div ref={ref} data-step={step} className={cn("flex w-full max-w-lg flex-col gap-6 rounded-box border border-border bg-card p-6 shadow-xs", className)} {...props}>
+      <div ref={ref} data-step={step} className={cn("flex w-full max-w-lg flex-col gap-6 rounded-box border border-border bg-card p-6 shadow-xs", className)} data-slot="checkout-steps" {...props}>
         <Steps
           aria-label="Checkout progress"
           current={stepIndex[step]}

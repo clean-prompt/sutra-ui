@@ -1,6 +1,5 @@
 import * as React from "react";
 import { resolveCssColor } from "../../lib/css-color";
-import { clamp } from "../../lib/math";
 import {
   orbStillLevel,
   smoothLevel,
@@ -13,7 +12,7 @@ import {
   type WavePulse,
 } from "../../lib/orb";
 import { useLatestRef } from "../../hooks/use-iso-layout-effect";
-import { createFrameLoop, type FrameLoop, type OrbVisibility } from "./assistant-orb-internal";
+import { clampLevel, createFrameLoop, type FrameLoop, type OrbVisibility } from "./assistant-orb-internal";
 
 /** Colours of the wave layers, resolved from the theme tokens. */
 export interface WavePalette {
@@ -104,8 +103,6 @@ export function drawWave(ctx: CanvasRenderingContext2D, { width, height, dpr, la
 
 /** The clock a still frame is drawn at: the thinking pulse sits in the middle and the layers are spread out. */
 const STILL_CLOCK = 0.95;
-
-const clampLevel = (level: number | undefined) => (typeof level === "number" && Number.isFinite(level) ? clamp(level, 0, 1) : 0);
 
 /**
  * Runs the waveform on a canvas: sizes it with a ResizeObserver (DPR-aware), re-reads the palette when the theme changes

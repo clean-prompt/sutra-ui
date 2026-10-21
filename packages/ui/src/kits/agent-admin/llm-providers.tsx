@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   RiAddLine,
-  RiCloseLine,
   RiExternalLinkLine,
   RiKey2Line,
   RiLinkM,
@@ -37,6 +36,7 @@ import { Label } from "../../primitives/label";
 import { SimpleSelect } from "../../primitives/select";
 import { SecretField } from "../identity/secret";
 import { SecretRow } from "./secret-row";
+import { KeyValueRowsInput } from "./key-value-rows-internal";
 import { Spinner } from "../../primitives/spinner";
 import { InlineAlert } from "../../primitives/inline-alert";
 
@@ -612,7 +612,7 @@ function ApiKeyPanel({
   const [saved, setSaved] = React.useState(false);
   const { run, busy, reset } = useAsyncAction((value: string) => onValidate?.(value), {
     onSuccess: (r) => setResult(typeof r === "boolean" ? { ok: r } : (r ?? { ok: true })),
-    onError: (e) => setResult({ ok: false, message: e instanceof Error ? e.message : undefined }),
+    onError: (e) => setResult({ ok: false, message: errorMessage(e, "") || undefined }),
   });
 
   const validate = () => {
@@ -839,7 +839,7 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
       onSuccess: (r) => {
         if (r) setResult(r);
       },
-      onError: (e) => setResult({ ok: false, error: e instanceof Error ? e.message : "Connection failed" }),
+      onError: (e) => setResult({ ok: false, error: errorMessage(e, "Connection failed") }),
     });
 
     const test = () => {
@@ -917,41 +917,16 @@ export const CustomEndpointForm = React.forwardRef<HTMLFormElement, CustomEndpoi
         </div>
         <fieldset className="grid grid-cols-1 gap-2">
           <legend className="mb-1.5 text-sm font-medium text-foreground">Headers</legend>
-          {values.headers.length === 0 && <p className="text-xs text-muted-foreground">No extra headers</p>}
-          {values.headers.map((h, i) => (
-            <div key={i} className="flex items-center gap-2" data-slot="endpoint-header-row">
-              <Input
-                aria-label={`Header ${i + 1} name`}
-                value={h.key}
-                placeholder="X-Header"
-                size="sm"
-                className="font-mono"
-                onChange={(e) => set("headers", values.headers.map((x, j) => (j === i ? { ...x, key: e.target.value } : x)))}
-              />
-              <Input
-                aria-label={`Header ${i + 1} value`}
-                value={h.value}
-                placeholder="value"
-                size="sm"
-                className="font-mono"
-                onChange={(e) => set("headers", values.headers.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)))}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Remove header ${i + 1}`}
-                onClick={() => set("headers", values.headers.filter((_, j) => j !== i))}
-              >
-                <RiCloseLine aria-hidden />
-              </Button>
-            </div>
-          ))}
-          <div>
-            <Button type="button" variant="ghost" size="sm" leadingIcon={<RiAddLine aria-hidden />} onClick={() => set("headers", [...values.headers, { key: "", value: "" }])}>
-              Add header
-            </Button>
-          </div>
+          <KeyValueRowsInput
+            label="Header"
+            keyLabel="name"
+            rowSlot="endpoint-header-row"
+            keyPlaceholder="X-Header"
+            addLabel="Add header"
+            emptyState={<p className="text-xs text-muted-foreground">No extra headers</p>}
+            value={values.headers}
+            onValueChange={(headers) => set("headers", headers)}
+          />
         </fieldset>
         {result && (
           <InlineAlert variant={result.ok ? "success" : "destructive"} data-slot="endpoint-test-result">

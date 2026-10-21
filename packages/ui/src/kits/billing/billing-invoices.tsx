@@ -50,7 +50,7 @@ const invoiceStatus: Record<InvoiceStatus, { label: string; tone: Tone }> = {
 /** Invoice history: date, description, amount, paid/due/failed status and download / pay actions. */
 export const UsageInvoiceTable = React.forwardRef<HTMLTableElement, UsageInvoiceTableProps>(
   ({ invoices, locale = "en-US", onDownload, onPay, emptyState, emptyLabel, className, ...props }, ref) => (
-    <Table ref={ref} className={className} {...props}>
+    <Table ref={ref} className={className} data-slot="usage-invoice-table" {...props}>
       <caption className="sr-only">Invoices</caption>
       <TableHeader>
         <TableRow>

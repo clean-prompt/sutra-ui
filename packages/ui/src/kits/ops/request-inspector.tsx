@@ -154,6 +154,7 @@ export const RequestIdCopy = React.forwardRef<HTMLButtonElement, RequestIdCopyPr
         focusRing,
         className
       )}
+      data-slot="request-id-copy"
       {...props}
     >
       <span className="truncate">{id}</span>
@@ -269,7 +270,7 @@ export const RequestInspector = React.forwardRef<HTMLDivElement, RequestInspecto
       });
 
     return (
-      <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
+      <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} data-slot="request-inspector" {...props}>
         {!hideHeader ? (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
             {record.method ? <span className="rounded-xs bg-muted px-1.5 py-0.5 font-mono text-2xs font-semibold">{record.method}</span> : null}
@@ -445,7 +446,7 @@ export const RequestLogTable = React.forwardRef<HTMLDivElement, RequestLogTableP
     };
 
     return (
-      <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} {...props}>
+      <div ref={ref} className={cn("flex min-w-0 flex-col gap-3", className)} data-slot="request-log-table" {...props}>
         <div className="flex flex-wrap items-center gap-2">
           <SimpleSelect
             size="sm"

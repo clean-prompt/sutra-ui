@@ -168,6 +168,7 @@ export const TimeScrubber = React.forwardRef<HTMLDivElement, TimeScrubberProps>(
           togglePlay();
         }}
         className={cn("flex flex-col gap-2 rounded-box p-1 outline-none focus-visible:ring-2 focus-visible:ring-ring/50", className)}
+        data-slot="time-scrubber"
         {...props}
       >
         <div aria-hidden className="flex h-10 items-end gap-px px-2">

@@ -39,6 +39,7 @@ export const UndeliveredNotice = React.forwardRef<HTMLDivElement, UndeliveredNot
   ) => (
     <div
       ref={ref}
+      data-slot="undelivered-notice"
       role="alert"
       className={cn("flex items-start gap-2.5 rounded-box border border-warning/40 bg-warning-soft px-3 py-2 text-sm text-warning-soft-foreground", className)}
       {...props}
