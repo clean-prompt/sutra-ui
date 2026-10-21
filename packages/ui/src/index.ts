@@ -228,6 +228,7 @@ export * from "./patterns/settings";
 export * from "./patterns/shared-element";
 export * from "./patterns/shortcuts";
 export * from "./patterns/sidebar-navigation";
+export * from "./patterns/slash-menu";
 export * from "./patterns/sparkline";
 export * from "./patterns/split-pane";
 export * from "./patterns/split-text";
@@ -351,6 +352,7 @@ export * from "./kits/agent-admin/webhooks";
 // not exported: kits/ai/ai-extras (back-compat barrel, all targets exported)
 // not exported: kits/ai/primitives-extra (back-compat barrel, all targets exported)
 // not exported: kits/ai/prompt-input-internal (internal: private helpers shared by sibling modules)
+// not exported: kits/ai/slash-menu (back-compat barrel, all targets exported)
 export * from "./kits/ai/agent-usage";
 export * from "./kits/ai/approval-stack";
 export * from "./kits/ai/chain-of-thought";
@@ -379,7 +381,6 @@ export * from "./kits/ai/prompt-input-textarea";
 export * from "./kits/ai/prompt-input-toolbar";
 export * from "./kits/ai/prompt-suggestion";
 export * from "./kits/ai/question-card";
-export * from "./kits/ai/slash-menu";
 export * from "./kits/ai/status-strip";
 export * from "./kits/ai/text-caret";
 export * from "./kits/ai/undelivered-notice";

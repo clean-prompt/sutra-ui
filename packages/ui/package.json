@@ -1053,6 +1053,11 @@
       "import": "./dist/patterns/sidebar-navigation.js",
       "default": "./dist/patterns/sidebar-navigation.js"
     },
+    "./patterns/slash-menu": {
+      "types": "./dist/patterns/slash-menu.d.ts",
+      "import": "./dist/patterns/slash-menu.js",
+      "default": "./dist/patterns/slash-menu.js"
+    },
     "./patterns/sparkline": {
       "types": "./dist/patterns/sparkline.d.ts",
       "import": "./dist/patterns/sparkline.js",
@@ -3539,9 +3544,9 @@
       "default": "./dist/patterns/sidebar-navigation.js"
     },
     "./components/slash-menu": {
-      "types": "./dist/kits/ai/slash-menu.d.ts",
-      "import": "./dist/kits/ai/slash-menu.js",
-      "default": "./dist/kits/ai/slash-menu.js"
+      "types": "./dist/patterns/slash-menu.d.ts",
+      "import": "./dist/patterns/slash-menu.js",
+      "default": "./dist/patterns/slash-menu.js"
     },
     "./components/slider": {
       "types": "./dist/primitives/slider.d.ts",

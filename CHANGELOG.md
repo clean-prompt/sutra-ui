@@ -140,6 +140,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - **`@sutra/ui/editor` needs no optional peer.** It used to re-export `CodeEditor` and `RichTextEditor`, so an app with only CodeMirror (or only Tiptap) crashed with `ERR_MODULE_NOT_FOUND` on import; it now holds the toolbar, outline, status, diff, history and comments, and each engine has its own entry.
 - Build output tags `createPlaceholderLogo` calls and side-effect-free `Object.keys/values/entries/fromEntries`, `Array.from` and array-method chains as pure, so unused exports tree-shake: importing one placeholder logo no longer pulls all 14, and one ink-emoji export drops from 104 KB to under 1 KB minified.
 - The table checkbox, the globe's keyboard handler, the slash menu, the video player, the process-table confirm step and the call card compose a consumer's `onClick`, `onKeyDown`, `onMouseDown`, `onPointerDown`, `onFocus` or `onBlur` with their own instead of being replaced by it. Checkbox-like controls in the table, combobox, filter bar and tree view use `rounded-xs`, so they follow `data-radius` like `Checkbox` does. Five files stopped importing the frozen `assets/misc` barrel (a test now guards it).
+- `SlashMenu` lives in `patterns/slash-menu` (it needs nothing from the `ai` kit); every export, `@sutra/ui/ai`, `@sutra/ui/kits/ai/slash-menu` and `@sutra/ui/components/slash-menu` keep working, and the `workspace` kit no longer depends on `ai`. The playground's non-routed demo panels moved from `pages/` to `demos/`.
 
 ### Deprecated
 - Semantic colour: `tone` values `brand`, `default`, `muted`, `warn`, `danger`, `error`, `critical`, `failure` (use `neutral | primary | success | warning | destructive | info`),
@@ -166,6 +167,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
   - Server rendering: `Input` `aria-keyshortcuts`, `InstallPrompt`, `Heatmap`, `Comments`, `TimelineBar`, `useTypewriter`, `usePresence` and `useSpringValue` no longer read the browser while rendering.
 - `TransliterationToggle` and `TransliterationCandidates` compose a consumer's `onClick` and `onMouseDown` with their own instead of being replaced by them (calling `preventDefault` in `onClick` vetoes the toggle).
 - `DateRangePicker` and `DateTimePicker` showed a stale month and draft when a parent opened them with a controlled `open`; they now re-sync from `value` whenever they open.
+- Components built on `useMergedRefs` (Drawer, Dialog, SplitPane, Combobox, ScrollReveal and others) now pass a React 19 cleanup-returning ref through: its cleanup runs on unmount, and it no longer gets a stray `null` call. `Combobox` reads the label of a selected value from `options` on the first render, keeps its remembered options only for the values that are still selected, and no longer writes a ref while rendering.
 
 ### Removed
 - `IdentityMark` and its types and helpers (`IdentityMarkProps`, `IdentityMarkKind`, `IdentityMarkState`, `IdentityMarkSize`, `identityHash`,

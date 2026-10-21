@@ -3,7 +3,7 @@
 > Inline command / mention listbox anchored to the caret of a composer textarea.
 
 - Import: `import { SlashMenu } from "@sutra/ui"` (or from `@sutra/ui/ai`)
-- Source: `packages/ui/src/kits/ai/slash-menu` (kit `ai`)
+- Source: `packages/ui/src/patterns/slash-menu` (patterns)
 - `data-slot`: `slash-menu`
 - Also accepts the props of HTMLAttributes
 

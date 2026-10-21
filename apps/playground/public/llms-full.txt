@@ -9364,6 +9364,13 @@ Server render: same markup as the client. The first render is the same on the se
 - Parts: `SidebarContent`, `SidebarFooter`, `SidebarGroup`, `SidebarGroupLabel`, `SidebarHeader`, `SidebarInset`, `SidebarMenu`, `SidebarMenuButton`, `SidebarMenuItem`, `SidebarMenuSub`, `SidebarMenuSubButton`, `SidebarProvider`, `SidebarSeparator`, `SidebarTrigger`, `SidebarUserCard`
 - Props: `collapsible`, `mobileTitle`, `side`, `variant` (* required)
 
+## SlashMenu
+
+> Inline command / mention listbox anchored to the caret of a composer textarea.
+
+- Import: `import { SlashMenu } from "@sutra/ui/ai"` ([full page](md/SlashMenu.md))
+- Props: `anchorRef`*, `commands`*, `emptyState`, `emptyText`, `filter`, `heading`, `maxRows`, `onSelect`, `trigger` (* required)
+
 ## SparkBar
 
 > Tiny inline column chart. A left-to-right island like `Sparkline`: the first bar is always on the physical left.
@@ -10468,7 +10475,6 @@ These are domain components; open `md/<Name>.md` for props and notes.
 - `SkillCard` (`@sutra/ui/agent-admin`): Skill list card: name, description, provenance, category, toolset icons and an enable switch.
 - `SkillDetail` (`@sutra/ui/agent-admin`): Skill detail: header with actions, SKILL.md preview, frontmatter and security scan tabs.
 - `SkipButton` (`@sutra/ui/media`): Circular-arrow button that skips back or forward a number of seconds.
-- `SlashMenu` (`@sutra/ui/ai`): Inline command / mention listbox anchored to the caret of a composer textarea.
 - `SlotFill` (`@sutra/ui/agent-admin`): Declaratively contribute `children` to a slot while mounted. Renders nothing in place.
 - `SlotOutlet` (`@sutra/ui/agent-admin`): Renders every contribution registered for `name`, in order, each isolated by an error boundary.
 - `SlotProvider` (`@sutra/ui/agent-admin`): Provides a slot registry to `SlotOutlet` and `SlotFill` below it.
