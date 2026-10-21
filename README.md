@@ -1,13 +1,15 @@
-# Sutra
+# Sutra UI
 
-Monorepo for the Sutra personal suite.
+The Sutra design system: React 19 components, tokens, hooks, brand assets and page blocks on Tailwind CSS v4 and Radix. This repository holds the publishable package (`@sutra/ui`) and its playground; the Sutra suite apps live in a separate repository and consume the package from npm.
+
+[Contributing](CONTRIBUTING.md) · [Releasing](RELEASING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · MIT licence
 
 | Path | What |
 | --- | --- |
 | `packages/ui` | **@sutra/ui**: design tokens, components (primitives, patterns and domain kits), hooks, assets and blocks |
 | `apps/playground` | Vite showcase for every component and block; also serves `llms.txt`, `llms-full.txt` and the per-component markdown at `/md/` |
-| `docs/` | Written and generated docs: `notes/<Name>.md` (hand-written per-component notes), `components/` and `hooks/` (generated reference pages), `research/` (historical analyses and plans) |
-| `design/` | Brand and design-review material (`brand/` holds the crescent mark sources, `review/` the October 2026 review sheets, `brand-options/` the earlier logo options); not shipped |
+| `docs/` | Written and generated docs: `notes/<Name>.md` (hand-written per-component notes), `components/` and `hooks/` (generated reference pages) |
+| `design/` | Brand and design-review material (`brand/` holds the crescent mark sources, `brand-options/` the earlier logo options); not shipped |
 | `skills/sutra-ui` | A Claude skill for building with Sutra: `SKILL.md` plus `references/` (`components.md`, `entries.md`, `sizing.md` are generated, `conventions.md` is a hand-written digest of CONVENTIONS.md) |
 
 ```bash

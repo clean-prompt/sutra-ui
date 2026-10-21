@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify (typecheck, tests, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4 # the pnpm version comes from "packageManager" in package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+      - name: Show what would be published
+        run: npm pack --dry-run
+        working-directory: packages/ui
+
+  layout-audit:
+    name: Layout audit (informational)
+    runs-on: ubuntu-latest
+    needs: verify
+    # The audit lists layout findings (overflow, clipping, small targets) for every playground page. It has no stored
+    # baseline in CI yet, so it reports and uploads the results instead of failing the build.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter playground exec playwright install --with-deps chromium
+      - run: pnpm audit:all --tag ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: layout-audit
+          path: apps/playground/audit/ci-*.json
+          if-no-files-found: ignore

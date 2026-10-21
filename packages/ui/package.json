@@ -2,6 +2,30 @@
   "name": "@sutra/ui",
   "version": "0.1.0",
   "description": "Sutra design system — React components, tokens and blocks for the Sutra personal suite.",
+  "license": "MIT",
+  "author": "0eai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0eai/sutra-ui.git",
+    "directory": "packages/ui"
+  },
+  "homepage": "https://github.com/0eai/sutra-ui#readme",
+  "bugs": {
+    "url": "https://github.com/0eai/sutra-ui/issues"
+  },
+  "keywords": [
+    "react",
+    "design-system",
+    "components",
+    "tailwindcss",
+    "tailwind-v4",
+    "radix",
+    "ui",
+    "accessible",
+    "rtl",
+    "dark-mode",
+    "typescript"
+  ],
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -3806,7 +3830,9 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -3828,7 +3854,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "verify": "tsc --noEmit && node scripts/gen-index.mjs --check && node scripts/gen-springs.mjs --check && node scripts/gen-motion-net.mjs --check && node scripts/gen-docs.mjs --check && node scripts/gen-llms.mjs --check && vitest run && pnpm build && node scripts/check-exports.mjs",
-    "gen:world": "node scripts/gen-world.mjs"
+    "gen:world": "node scripts/gen-world.mjs",
+    "prepublishOnly": "pnpm build && node scripts/check-exports.mjs"
   },
   "peerDependencies": {
     "@codemirror/commands": "^6",
@@ -3955,5 +3982,9 @@
     "typescript": "^5.8.3",
     "vitest": "3",
     "world-atlas": "^2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

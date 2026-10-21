@@ -43,7 +43,7 @@ bug, **Deprecated** keeps working and shows a strike-through in editors.
 - The official kunji brand logo and key mark.
 - The Bead logo: `SutraMark` (a ring bead strung on a thread), the drawn `SutraWordmark`, mono `SutraAppIcon`s, final SVGs in `design/brand` and the playground favicon.
   Since replaced by the crescent mark (see Changed).
-- Logo and app-icon options and two research reports (`docs/research`): the PanelUI analysis and the uselayouts analysis, merged into the improvement plan.
+- Logo and app-icon options (`design/brand-options`); two research reports on other design systems and an improvement plan were kept outside the repository.
 
 #### Motion (CSS first, no animation library)
 - Shared motion tokens, keyframes and a reduced-motion safety net; simple animations across the components, guarded by `test/motion-guard.test.ts`.
