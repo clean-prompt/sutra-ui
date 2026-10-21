@@ -30,7 +30,7 @@ Pre-releases: use a version such as `0.2.0-next.1` and the tag `v0.2.0-next.1`; 
 
 The workflow already asks npm for an OIDC login (`id-token: write`, npm 11.5.1 or newer) and falls back to the `NPM_TOKEN` secret. To drop the token:
 
-1. On npmjs.com open the package > Settings > Trusted Publisher > GitHub Actions, and enter owner `clean-prompt`, repository `sutra-ui`, workflow filename `release.yml` (leave the environment empty).
+1. On npmjs.com open the package > Settings > Trusted Publisher > GitHub Actions, and enter owner `clean-prompt`, repository `sutra-ui`, workflow filename `release.yml` (leave the environment empty). Under "Allowed actions" tick **Allow `npm publish`**: without it a trusted publisher may only run `npm stage publish`, which stages a version for manual approval. "Allow `npm dist-tag`" is not needed (the workflow sets the tag with `npm publish --tag`).
 2. Cut a release (a `-next.N` pre-release is a safe first try). Check that the Release run publishes and the version page shows the provenance badge.
 3. Only then delete the `NPM_TOKEN` repository secret and revoke the token on npmjs.com. Optionally set the package's publishing access to "Require two-factor authentication and disallow tokens".
 
