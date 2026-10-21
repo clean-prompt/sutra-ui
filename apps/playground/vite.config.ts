@@ -2,13 +2,17 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
+import { readFileSync } from "node:fs";
 import { demoSourcePlugin } from "./plugins/demo-source";
 import { docsMarkdownPlugin } from "./plugins/docs-md";
 
 const ui = path.resolve(__dirname, "../../packages/ui/src");
+const uiVersion: string = JSON.parse(readFileSync(path.resolve(__dirname, "../../packages/ui/package.json"), "utf8")).version;
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), demoSourcePlugin(), docsMarkdownPlugin()],
+  // The library version from packages/ui/package.json, shown in the sidebar header.
+  define: { __SUTRA_UI_VERSION__: JSON.stringify(uiVersion) },
   resolve: {
     // Point straight at the package source so edits hot-reload without a build.
     alias: [

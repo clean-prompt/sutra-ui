@@ -144,8 +144,16 @@ function AppSidebar({ section, page, anchor }: { section: string; page: string; 
       <SidebarHeader className="h-14 flex-row items-center px-4">
         <a href={href("foundations", "colors")} className="inline-flex items-center gap-2">
           <SutraLogo size="sm" />
+        </a>
+        <a
+          href={`https://github.com/clean-prompt/sutra-ui/releases/tag/v${__SUTRA_UI_VERSION__}`}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Sutra UI version ${__SUTRA_UI_VERSION__}, release notes`}
+          className="ms-auto"
+        >
           <Badge variant="outline" size="sm">
-            UI
+            v{__SUTRA_UI_VERSION__}
           </Badge>
         </a>
       </SidebarHeader>
