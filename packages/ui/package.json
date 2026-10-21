@@ -6,12 +6,12 @@
   "author": "0eai",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CleanPromptOrg/sutra-ui.git",
+    "url": "git+https://github.com/clean-prompt/sutra-ui.git",
     "directory": "packages/ui"
   },
-  "homepage": "https://github.com/CleanPromptOrg/sutra-ui#readme",
+  "homepage": "https://github.com/clean-prompt/sutra-ui#readme",
   "bugs": {
-    "url": "https://github.com/CleanPromptOrg/sutra-ui/issues"
+    "url": "https://github.com/clean-prompt/sutra-ui/issues"
   },
   "keywords": [
     "react",
